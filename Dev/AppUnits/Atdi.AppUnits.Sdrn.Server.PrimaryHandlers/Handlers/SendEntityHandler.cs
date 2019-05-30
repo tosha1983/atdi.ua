@@ -37,11 +37,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
+                result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 string idEntity = "";
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 try
                 {
-                    result.Status = SdrnMessageHandlingStatus.Trash;
                     var entityObject = incomingEnvelope.DeliveryObject;
 
                     queryExecuter.BeginTransaction();
@@ -75,11 +75,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 {
                     queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
-                    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
-                    {
-                        result.Status = SdrnMessageHandlingStatus.Error;
-                        result.ReasonFailure = e.ToString();
-                    }
+                    result.Status = SdrnMessageHandlingStatus.Error;
+                    result.ReasonFailure = e.ToString();
                 }
                 finally
                 {

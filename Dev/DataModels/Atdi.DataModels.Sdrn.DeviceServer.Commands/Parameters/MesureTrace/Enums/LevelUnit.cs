@@ -12,5 +12,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         dBmkV,
         dBmkVm,
         mkV,
+        Unknown
     }
 }

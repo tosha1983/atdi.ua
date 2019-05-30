@@ -1,0 +1,77 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+      <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+          <Setter Property="HorizontalAlignment" Value="Stretch"/>
+          <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      </Style>
+      <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+          <Setter Property="TextBlock.TextAlignment" Value="Center" />
+      </Style>
+      <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+          <Setter Property="TextBlock.TextAlignment" Value="Right" />
+      </Style>
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True" MinHeight="30">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}"  SelectedItem="{Binding CurrentStation}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Icsm Table" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Icsm Id" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Station Name" Binding="{Binding Path=StationName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Lat, DEC" Binding="{Binding Path=Lat}"></DataGridTextColumn>
+            <DataGridTextColumn Header="AGL, m" Binding="{Binding Path=Agl}"></DataGridTextColumn>
+            <DataGridTextColumn Header="EIRP, dBW" Binding="{Binding Path=Eirp}"></DataGridTextColumn>
+            <DataGridTextColumn Header="BW, kHz" Binding="{Binding Path=Bw}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Freq" Binding="{Binding Path=Freq}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Owner" Binding="{Binding Path=Owner}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Relived Level, dBm" Binding="{Binding Path=RelivedLevel}"></DataGridTextColumn>
+            <DataGridTextColumn Header="Distance, km" Binding="{Binding Path=Distance}"></DataGridTextColumn>
+          </DataGrid.Columns>
+        </cdg:CustomDataGridStations>
+        <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
+        <Grid Grid.Row="2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+          </Grid.RowDefinitions>
+          <maps:Map Grid.Row="0" DrawingData="{Binding CurrentMapData}">
+            <!--<Map.Style>
+              <Style TargetType="Map">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding ButtonAssociatedVisibility}" Value="Hidden">
+                    <Setter Property="Grid.RowSpan" Value="2"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding ButtonAssociatedVisibility}" Value="Visible">
+                    <Setter Property="Grid.Row" Value="0"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Map.Style>-->
+          </maps:Map>
+          <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Content="Associated" Command="{Binding AssociatedCommand}" Width="120" Height="40"/>
+        </Grid>
+    </Grid>
+    </DockPanel>
+</UserControl>

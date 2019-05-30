@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly IRepository<DM.Sensor, int?> _repositorySensor;
         private readonly ITimeService _timeService;
         private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
-
+        private readonly ConfigMessaging _config;
 
         public SendMeasTaskHandler(
            ITimeService timeService,
@@ -35,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
            IRepository<DM.Sensor, int?> repositorySensor,
            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
            ITaskStarter taskStarter,
+           ConfigMessaging config,
            ILogger logger)
         {
             this._processingDispatcher = processingDispatcher;
@@ -45,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             this._repositorySensor = repositorySensor;
             this._timeService = timeService;
             this._repositoryLastUpdateByInt = repositoryLastUpdateByInt;
+            this._config = config;
         }
 
 
@@ -55,10 +57,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             {
                 if ((message.Data != null) && (message.Data.SdrnServer != null) && (message.Data.SensorName != null) && (message.Data.EquipmentTechId != null))
                 {
-                    // здесь предварительная проверка(валидация) таска на возможность физической обработки
-                    if (Validation(message.Data)) // пока заглушка
+                    DM.Sensor sensor = null;
+                    var sensors = this._repositorySensor.LoadAllObjects();
+                    if ((sensors!=null) && (sensors.Length>0))
                     {
-
+                        sensor = sensors[0];
+                    }
+                    // здесь предварительная проверка(валидация) таска на возможность физической обработки
+                    if (Validation(message.Data, sensor)) // пока заглушка
+                    {
                         var lastUpdate = new LastUpdate()
                         {
                             TableName = "XBS_TASKPARAMETERS",
@@ -87,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                         {
 
-                            var taskParameters = message.Data.Convert();
+                            var taskParameters = message.Data.Convert(_config);
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
@@ -98,7 +105,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
                         {
 
-                            var taskParameters = message.Data.Convert();
+                            var taskParameters = message.Data.Convert(_config);
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
@@ -109,7 +116,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
                         {
 
-                            var taskParameters = message.Data.Convert();
+                            var taskParameters = message.Data.Convert(_config);
                             var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
 
                             this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
@@ -162,17 +169,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         /// </summary>
         /// <param name="measTask"></param>
         /// <returns></returns>
-        public bool Validation(DM.MeasTask measTask/*, DM.Sensor sensor*/)
+        public bool Validation(DM.MeasTask measTask, DM.Sensor sensor)
         {
-            /*
             bool isSuccessValidation = false;
             if ((measTask.SensorName == sensor.Name) && (measTask.EquipmentTechId == sensor.Equipment.TechId))
             {
                 isSuccessValidation = true;
             }
             return isSuccessValidation;
-            */
-            return true;
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         double? RBW_Hz { get; set; }
         double? VBW_Hz { get; set; }
         double? StepSO_kHz { get; set; }
+        double? SweepTime_ms { get; set; }
         int? NChenal { get; set; }
         double? LevelMinOccup_dBm { get; set; }
         string Type_of_SO { get; set; }
@@ -27,6 +28,15 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         DateTime? StartTime { get; set; }
         DateTime? StopTime { get; set; }
         int? NCount { get; set; }
+        int SensorId { get; set; }
         ITaskParametersFreq[] ListTaskParametersFreq { get; set; }
+        int? CompareTraceJustWithRefLevels { get; set; }
+        int? AutoDivisionEmitting { get; set; }
+        double? DifferenceMaxMax { get; set; }
+        int? FiltrationTrace { get; set; }
+        double? AllowableExcess_dB { get; set; }
+        double? PercentForCalcNoise { get; set; }
+        int? SignalizationNChenal { get; set; }
+        int? SignalizationNCount { get; set; }
     }
 }

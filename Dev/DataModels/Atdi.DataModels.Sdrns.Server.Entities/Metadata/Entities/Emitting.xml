@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Emitting"
+  Title       = "Emitting"
+  Desc        = ""
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_EMITTING</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
+    <Field Desc="StartFrequency_MHz" Title="StartFrequency_MHz" Name="StartFrequency_MHz" DataType="Decimal.22.8" SourceName="STARTFREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="StopFrequency_MHz" Title="StopFrequency_MHz" Name="StopFrequency_MHz" DataType="Decimal.22.8" SourceName="STOPFREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="CurentPower_dBm" Title="CurentPower_dBm" Name="CurentPower_dBm" DataType="Decimal.22.8" SourceName="CURRPOWER_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="ReferenceLevel_dBm" Title="ReferenceLevel_dBm" Name="ReferenceLevel_dBm" DataType="Decimal.22.8" SourceName="REFLEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="MeanDeviationFromReference" Title="MeanDeviationFromReference" Name="MeanDeviationFromReference" DataType="Decimal.22.8" SourceName="MEANDEVFROM_REF" SourceType="Column" Required="false"/>
+    <Field Desc="TriggerDeviationFromReference" Title="TriggerDeviationFromReference" Name="TriggerDeviationFromReference" DataType="Decimal.22.8" SourceName="TRIGGERDEVFROM_REF" SourceType="Column" Required="false"/>
+    <Field Desc="RollOffFactor" Title="RollOffFactor" Name="RollOffFactor" DataType="Decimal.22.8" SourceName="ROLLOFFACTOR" SourceType="Column" Required="false"/>
+    <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Decimal.22.8" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsDistribution" Title="LevelsDistribution" Name="LevelsDistribution" DataType="Bytes.MAX" SourceName="LEVELSDISTR" SourceType="Column" Required="false"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="false"/>
+    <Field Desc="StationID" Title="StationID" Name="StationID" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="true"/>
+    <Field Desc="StationTableName" Title="StationTableName" Name="StationTableName" DataType="Text.50" SourceName="STATIONTABLENAME" SourceType="Column" Required="false"/>
+    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation Emitting to ResMeas">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

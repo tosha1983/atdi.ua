@@ -10,6 +10,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// <summary>
     /// Represent triggers levels adopted to trace of Devise (SDR)
     /// </summary>
+    [Serializable]
     public class ReferenceLevels
     {
         public double StartFrequency_Hz;

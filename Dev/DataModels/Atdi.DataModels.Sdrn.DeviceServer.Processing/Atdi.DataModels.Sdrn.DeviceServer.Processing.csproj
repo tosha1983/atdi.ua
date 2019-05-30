@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessGPS.cs" />
-    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessBandWidth.cs" />
-    <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSignalization.cs" />
+    <Compile Include="ExceptionProcess\GPS\ExceptionProcessGPS.cs" />
+    <Compile Include="ExceptionProcess\BW\ExceptionProcessBandWidth.cs" />
+    <Compile Include="ExceptionProcess\Signalization\ExceptionProcessSignalization.cs" />
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
@@ -112,6 +112,8 @@
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Convertors\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

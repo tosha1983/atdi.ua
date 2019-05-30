@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Contains the results of transmitter measurements
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class GeneralMeasResult
     {
         /// <summary>

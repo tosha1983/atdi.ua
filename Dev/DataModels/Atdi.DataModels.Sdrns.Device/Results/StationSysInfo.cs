@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// System information
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class StationSysInfo
     {
         /// <summary>

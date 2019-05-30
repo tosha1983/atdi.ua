@@ -203,8 +203,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         RBW = rbw;
                         VBW = vbw;
                         SweepTime = (decimal)command.Parameter.SweepTime_s;
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection), context);
-
+                        StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));
+                  
                     }
                     else
                     {
@@ -765,7 +765,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         public int Device_FirmwareVersion = 0;
 
-        public int Device_FirmwareVersionActual = 7;
+        public int Device_FirmwareVersionActual = 8;
 
         public string Device_APIVersion = "";
 

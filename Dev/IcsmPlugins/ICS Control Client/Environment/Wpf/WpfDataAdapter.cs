@@ -35,7 +35,7 @@ namespace XICSM.ICSControlClient.Environment.Wpf
         {
             this._currentIndex = -1;
             var dataRows = new List<TData>();
-            for (int index = 0; index < this._source.Length; index++)
+            for (int index = 0; index < this._data.Length; index++)
             {
                 var dataRow = this._data[index];
                 if (dataRow == null)
@@ -52,9 +52,19 @@ namespace XICSM.ICSControlClient.Environment.Wpf
             this._data = dataRows.ToArray();
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
+
+        //public void Delete(TData[] rows)
+        //{
+        //    this._source.ToArray().De
+        //}
+
         public void ClearFilter()
         {
             this.Source = this._source;
+        }
+        public int Count()
+        {
+            return this._data.Length;// .Count();
         }
         public TSource[] Source
         {

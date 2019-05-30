@@ -34,5 +34,8 @@ namespace XICSM.ICSControlClient.Models.Views
         public string SensorTechId { get; set; }
         public int? CountStationMeasurements { get; set; }
         public int? CountUnknownStationMeasurements { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime StopTime { get; set; }
+        public int? ScansNumber { get; set; }
     }
 }

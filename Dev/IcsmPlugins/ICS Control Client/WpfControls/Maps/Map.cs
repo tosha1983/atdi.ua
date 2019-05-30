@@ -10,6 +10,7 @@ using GMap.NET;
 using GMap.NET.WindowsPresentation;
 using GMap.NET.MapProviders;
 using System.Windows.Shapes;
+using System.Windows.Media;
 
 namespace XICSM.ICSControlClient.WpfControls.Maps
 {
@@ -45,9 +46,14 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                     {
                         var mapPoint = this.FromLatLngToLocal(new PointLatLng(point.Location.Lat, point.Location.Lon));
 
-                        var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon));
-                        marker.Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width };
-                        marker.ZIndex = int.MaxValue;
+                        var marker = new GMapMarker(new PointLatLng(point.Location.Lat, point.Location.Lon))
+                        {
+                            Shape = new Ellipse() { Stroke = point.Color, Fill = point.Fill, Opacity = point.Opacity, Width = point.Width, Height = point.Width, ToolTip = point.Name },
+                            ZIndex = int.MaxValue,
+                            Offset = new Point() { X = -point.Width / 2, Y = -point.Width / 2 }
+                        };
+                        
+                        //marker. 
                         this.Markers.Add(marker);
                     });
                 }
@@ -86,21 +92,6 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                     {
                         if (route.Points != null && route.Points.Length > 0)
                         {
-                            //IList<PointLatLng> routePoints = new List<PointLatLng>();
-                            //route.Points.ToList().ForEach(point =>
-                            //{
-                            //    routePoints.Add(new PointLatLng(point.Lat, point.Lon));
-                            //});
-
-                            //GMapRoute mapRoute = new GMapRoute(routePoints);
-                            //mapRoute.RegenerateShape(this);
-
-                            //((System.Windows.Shapes.Path)mapRoute.Shape).Stroke = new System.Windows.Media.SolidColorBrush(route.Color);
-                            //((System.Windows.Shapes.Path)mapRoute.Shape).StrokeThickness = 1;
-
-                            ////mapRoute.ZIndex = int.MaxValue;
-                            //this.Markers.Add(mapRoute);
-
                             for (int i = 0; i < route.Points.Count(); i++)
                             {
                                 if (i + 1 < route.Points.Count())

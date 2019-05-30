@@ -40,6 +40,18 @@ namespace Atdi.Modules.AmqpBroker
 
         public int Number { get => _channelNumber; }
 
+        public bool IsOpen
+        {
+            get
+            {
+                if (_channel != null)
+                {
+                    return _channel.IsOpen;
+                }
+                return false;
+            }
+        }
+
         public void EstablishChannel(bool onlyInstance = false)
         {
             try

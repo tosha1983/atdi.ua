@@ -20,6 +20,8 @@ namespace Atdi.Modules.Sdrn.Server.Events
         }
 
         public int MeasTaskId { get; set; }
+        public int SensorId { get; set; }
+        public string MeasTaskIds { get; set; }
         public string SensorName { get; set; }
         public string EquipmentTechId { get; set; }
        

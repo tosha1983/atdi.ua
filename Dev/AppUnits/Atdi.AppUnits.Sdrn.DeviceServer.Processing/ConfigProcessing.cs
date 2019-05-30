@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
-    public class ConfigProcessing 
+    public class ConfigProcessing
     {
         /// <summary>
         /// Время в миллисекундах задержки потока обработки отложенных задач
@@ -21,10 +21,48 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         public int MaxDurationBeforeStartTimeTask { get; set; }
 
+
         /// <summary>
-        /// Время в миллисекундах  задержки перед отправкой результата в шину
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Signaling
         /// </summary>
-        public int DurationForSendResult { get; set; }
+        public int durationForSendResultSignaling { get; set; }
+
+        /// <summary>
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения BandWidth
+        /// </summary>
+        public int durationForSendResultBandWidth { get; set; }
+
+        /// <summary>
+        /// Максимальное время в миллисекундах, выделяемое для выполнения одного измерения типа BandWidth
+        /// </summary>
+        public int durationForMeasBW_ms { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string BandwidthEstimationType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Smooth { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ComponentConfigProperty("X_Beta.double")]
+        public double X_Beta { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int MaximumIgnorPoint { get; set; }
+
+        /// <summary>
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Spectrum Occupation
+        /// </summary>
+
+        public int durationForSendResultSO { get; set; }
 
         /// <summary>
         /// Время в миллисекундах  ожидания сообщения типа SensorRegistrationResult в воркере RegisterSensorTaskWorker
@@ -70,6 +108,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         [ComponentConfigProperty("LatDelta.double")]
         public double LatDelta { get; set; }
+
+
         /// <summary>
         /// Периодичность в миллисекундах  отправки сообщений о координатах сенсора в SDRNS
         /// </summary>

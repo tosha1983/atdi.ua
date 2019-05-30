@@ -32,6 +32,11 @@ namespace Atdi.DataModels.Sdrns.Device
         public string EquipmentTechId { get; set; }
 
         /// <summary>
+        /// Sensor identifier
+        /// </summary>
+        [DataMember]
+        public int SensorId { get; set; }
+        /// <summary>
         /// Task identifier
         /// </summary>
         [DataMember]
@@ -95,7 +100,8 @@ namespace Atdi.DataModels.Sdrns.Device
         ///// Reference situation
         ///// </summary>
         [DataMember]
-        public ReferenceSituation  RefSituation { get; set; }
+        //public ReferenceSituation[]  RefSituation { get; set; }
+        public ReferenceSituation RefSituation { get; set; }
 
         ///// <summary>
         ///// Measurement equipment parameters
@@ -137,5 +143,12 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public StandardScanParameter[] ScanParameters { get; set; }
+
+        /// <summary>
+        /// Set Signaling MeasTask parameters
+        /// </summary>
+        [DataMember]
+        public SignalingMeasTask  SignalingMeasTaskParameters { get; set; }
+        
     }
 }

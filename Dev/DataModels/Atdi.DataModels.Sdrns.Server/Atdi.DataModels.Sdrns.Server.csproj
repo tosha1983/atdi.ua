@@ -43,8 +43,17 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Test\TestDeliveryObjects.cs" />
+    <Compile Include="Test\TestMessage4.cs" />
+    <Compile Include="Test\TestMessage3.cs" />
+    <Compile Include="Test\TestMessage2.cs" />
+    <Compile Include="Test\TestMessage1.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj">
+      <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
+      <Name>Atdi.DataModels.Api.DataBus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
       <Name>Atdi.DataModels.Sdrns</Name>

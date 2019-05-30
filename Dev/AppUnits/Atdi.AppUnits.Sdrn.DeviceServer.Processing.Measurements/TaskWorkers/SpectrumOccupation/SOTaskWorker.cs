@@ -89,7 +89,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //////////////////////////////////////////////
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
 
-                    var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
+                    var maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
                     if (maximumDurationMeas < 0)
                     {
                         // обновление TaskParameters в БД
@@ -100,9 +100,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
-                        deviceCommandResult.CustTxt1 = "";
                         deviceCommandResult.Status = StatusTask.C.ToString();
-                        deviceCommandResult.CustNbr1 = int.Parse(context.Task.taskParameters.SDRTaskId);
+                        deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
 
                         var publisher = this._busGate.CreatePublisher("main");
                         publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
@@ -158,14 +157,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (error._ex != null)
                             {
                                 /// реакция на ошибку выполнения команды
-                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
+                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
                                 switch (error._failureReason)
                                 {
                                     case CommandFailureReason.DeviceIsBusy:
                                     case CommandFailureReason.CanceledExecution:
                                     case CommandFailureReason.TimeoutExpired:
                                     case CommandFailureReason.CanceledBeforeExecution:
-                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas), error._ex.StackTrace);
                                         Thread.Sleep((int)maximumDurationMeas);
                                         return;
                                     case CommandFailureReason.NotFoundConvertor:
@@ -174,18 +173,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
-                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
                                             context.Cancel();
                                             return;
                                         }
                                         else
                                         {
-                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas), error._ex.StackTrace);
                                             Thread.Sleep(durationToRepietMeas);
                                         }
                                         break;
                                     case CommandFailureReason.Exception:
-                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
                                         context.Cancel();
                                         return;
                                     default:
@@ -206,11 +205,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outSpectrumOcupation.fSemplesResult != null)
                         {
                             DM.MeasResults measResult = new DM.MeasResults();
+                            measResult.Status = "N";
+                            context.Task.CountSendResults++;
+                            measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            measResult.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
                             measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
                             measResult.ScansNumber = outSpectrumOcupation.NN;
                             measResult.StartTime = context.Task.LastTimeSend.Value;
                             measResult.StopTime = currTime;
                             measResult.Location = new DataModels.Sdrns.GeoLocation();
+                            measResult.Measured = currTime;
                             //////////////////////////////////////////////
                             // 
                             //  Здесь получаем данные с GPS приемника
@@ -250,7 +254,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
-                            measResult.TaskId = context.Task.taskParameters.SDRTaskId;
+
+                            measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
+                        
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
                             publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
@@ -268,7 +274,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (outSpectrumOcupation != null)
                     {
                         TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                        if (timeSpan.TotalMilliseconds > context.Task.durationForSendResult)
+                        if (timeSpan.TotalMilliseconds > context.Task.durationForSendResultSO)
                         {
                             //реакция на принятые результаты измерения
                             if (outSpectrumOcupation.fSemplesResult != null)
@@ -291,7 +297,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (outSpectrumOcupation != null)
                         {
                             TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResult / 2.0))
+                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResultSO / 2.0))
                             {
                                 action.Invoke();
                             }
@@ -335,23 +341,5 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 context.Abort(e);
             }
         }
-
-        /// <summary>
-        ///Вычисление задержки выполнения потока результатом является количество vмилисекунд на которое необходимо приостановить поток
-        /// </summary>
-        /// <param name="taskParameters">Параметры таска</param> 
-        /// <param name="doneCount">Количество измерений которое было проведено</param>
-        /// <returns></returns>
-        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
-        {
-            DateTime dateTimeNow = DateTime.Now;
-            if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
-            TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            double interval_ms = interval.TotalMilliseconds;
-            if (taskParameters.NCount <= DoneCount) { return -1; }
-            long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
-            return duration;
-        }
-
     }
 }

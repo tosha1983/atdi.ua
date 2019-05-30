@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -36,6 +37,35 @@
             <MenuItem Header="Show/Hide Meas Results Detail" Command="{Binding ShowHideMeasResultsDetailCommand}"/>
             <MenuItem Header="Meas. result" Command="{Binding MeasResultCommand}"/>
         </Menu>
+        
+        <StatusBar DockPanel.Dock="Bottom">
+          <StatusBar.ItemsPanel>
+            <ItemsPanelTemplate>
+              <Grid>
+                  <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="200" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="200" />
+                  </Grid.ColumnDefinitions>
+              </Grid>
+            </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+              <ProgressBar Value="0" Width="190" Height="16" IsIndeterminate="{Binding StatusBarIsIndeterminate}"/>
+                
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2">
+              <TextBlock Text="{Binding StatusBarTitle}" />
+            </StatusBarItem>
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4">
+              <TextBlock Text="{Binding StatusBarDescription}" />
+            </StatusBarItem>
+        </StatusBar>
+
         <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -61,7 +91,7 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}">
+                    <cdg:CustomDataGridMeasTasks Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}">
                         <DataGrid.Style>
                             <Style TargetType="DataGrid">
                                 <Style.Triggers>
@@ -94,8 +124,8 @@
                             <DataGridTextColumn Header="TypeMeasurements" Binding="{Binding Path=TypeMeasurements}"></DataGridTextColumn>
                             <DataGridTextColumn Header="DateCreated" Binding="{Binding Path=DateCreated}"></DataGridTextColumn>
                             <DataGridTextColumn Header="CreatedBy" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
-                        </DataGrid.Columns>                  
-                    </DataGrid>
+                        </DataGrid.Columns>
+                    </cdg:CustomDataGridMeasTasks>
 
                     <GridSplitter Visibility="{Binding MeasTaskDetailVisibility}" Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                     </GridSplitter>
@@ -313,6 +343,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
+                
                 </Grid>
             </GroupBox>
         
@@ -350,9 +381,9 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Grid.Style>                      
-                        
-                        <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResults}" >
+                        </Grid.Style>
+
+                      <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResults}" >
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
                                     <Style.Triggers>
@@ -375,7 +406,7 @@
                                 <DataGridTextColumn Header="№ Points" Binding="{Binding Path=PointsNumber}"></DataGridTextColumn>-->
                                 <DataGridTextColumn Header="SubTaskId" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
                             </DataGrid.Columns>                        
-                        </DataGrid>
+                        </cdg:CustomDataGridMeasResult>
 
                         <GridSplitter Visibility="{Binding ResultStationsVisibility}" Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         </GridSplitter>
@@ -603,7 +634,7 @@
                                          </Grid>
                                     </Expander>                                  
                                     <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                        <Grid DataContext="{Binding CurrentMeasurementResults}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -613,10 +644,10 @@
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TimeStartMeas"  />
-                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=GeneralResultTimeStartMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
+                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=StartTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "TimeFinishMeas"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GeneralResultTimeFinishMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=StopTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
                                          </Grid>
                                     </Expander>
                                     <Expander Grid.Column="0" Grid.Row="6" Header="LevelMeasurements" Visibility="{Binding ResLevelMes1Visibility}">
@@ -722,5 +753,6 @@
                 </Grid>
             </GroupBox>
         </Grid>
+
     </DockPanel>
 </UserControl>

@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.Server
         protected override void OnInstallUnit()
         {
             var environment = new SdrnServerEnvironment(this.Config);
-            this.Container.RegisterInstance<ISdrnServerEnvironment>(environment, ServiceLifetime.Singleton);
+            this.Container.RegisterInstance<ISdrnServerEnvironment, ISdrnServerEnvironmentModifier>(environment, ServiceLifetime.Singleton);
 
             var eventSiteConfig = new EventSiteConfig();
             SetValueToEventSiteConfig(eventSiteConfig, EventSiteConfig.ApiVersion);

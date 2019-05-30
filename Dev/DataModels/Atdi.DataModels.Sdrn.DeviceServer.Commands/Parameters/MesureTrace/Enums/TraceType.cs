@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         ClearWhrite, 
         Average, 
         MaxHold, 
-        MinHold, 
+        MinHold,
+        Unknown
     }
 }

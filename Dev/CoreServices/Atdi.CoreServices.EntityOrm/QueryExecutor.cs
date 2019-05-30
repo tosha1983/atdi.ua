@@ -21,7 +21,6 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
         private readonly EntityOrmQueryBuilder _icsmOrmQueryBuilder;
-        private const int _maxBatchSizeBuffer = 300;
         private const string _propertyName = "Statement";
         private const string _nameIdentFieldParameter = "v_ID";
 
@@ -672,101 +671,111 @@ namespace Atdi.CoreServices.EntityOrm
 
         public int Execute(IQueryStatement statement)
         {
-            var dicIdentField = new KeyValuePair<string, DataType>();
+            int recordsAffected = 0;
+            try
+            {
+                var dicIdentField = new KeyValuePair<string, DataType>();
 
-            if (statement == null)
-            {
-                throw new ArgumentNullException(nameof(statement));
-            }
-
-            var extractType = statement.GetType();
-
-            if (extractType.Name.Contains(typeof(QuerySelectStatement).Name))
-            {
-                statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QuerySelectStatement;
-            }
-            else if (extractType.Name.Contains(typeof(QueryDeleteStatement).Name))
-            {
-                statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QueryDeleteStatement;
-            }
-            else if (extractType.Name.Contains(typeof(QueryInsertStatement).Name))
-            {
-                statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QueryInsertStatement;
-            }
-            else if (extractType.Name.Contains(typeof(QueryUpdateStatement).Name))
-            {
-                statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QueryUpdateStatement;
-            }
-
-
-            var command = new EngineCommand();
-
-            
-            if (statement is QueryUpdateStatement queryUpdateStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
-            }
-            else if (statement is QueryDeleteStatement queryDeleteStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
-            }
-            else if (statement is QuerySelectStatement querySelectStatement)
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
-            }
-            else if (statement is QueryInsertStatement queryInsertStatement)
-            {
-                dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
-                if (!string.IsNullOrEmpty(dicIdentField.Key))
+                if (statement == null)
                 {
-                    if ((dicIdentField.Value != DataType.String) && (dicIdentField.Value != DataType.Guid))
+                    throw new ArgumentNullException(nameof(statement));
+                }
+
+                var extractType = statement.GetType();
+
+                if (extractType.Name.Contains(typeof(QuerySelectStatement).Name))
+                {
+                    statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QuerySelectStatement;
+                }
+                else if (extractType.Name.Contains(typeof(QueryDeleteStatement).Name))
+                {
+                    statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QueryDeleteStatement;
+                }
+                else if (extractType.Name.Contains(typeof(QueryInsertStatement).Name))
+                {
+                    statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QueryInsertStatement;
+                }
+                else if (extractType.Name.Contains(typeof(QueryUpdateStatement).Name))
+                {
+                    statement = extractType.GetProperty(_propertyName).GetValue(statement, null) as QueryUpdateStatement;
+                }
+
+
+                var command = new EngineCommand();
+
+
+                if (statement is QueryUpdateStatement queryUpdateStatement)
+                {
+                    command.Text = this._icsmOrmQueryBuilder.BuildUpdateStatement(queryUpdateStatement, command.Parameters);
+                }
+                else if (statement is QueryDeleteStatement queryDeleteStatement)
+                {
+                    command.Text = this._icsmOrmQueryBuilder.BuildDeleteStatement(queryDeleteStatement, command.Parameters);
+                }
+                else if (statement is QuerySelectStatement querySelectStatement)
+                {
+                    command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(querySelectStatement, command.Parameters);
+                }
+                else if (statement is QueryInsertStatement queryInsertStatement)
+                {
+                    dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
+                    if (!string.IsNullOrEmpty(dicIdentField.Key))
                     {
-                        command.Text = this._icsmOrmQueryBuilder.BuildInsertStatementExecuteAndFetch(queryInsertStatement, command.Parameters);
-                        EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
-                        engineCommandParameter.Name = _nameIdentFieldParameter;
-                        engineCommandParameter.DataType = DataType.Integer;
-                        command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(_nameIdentFieldParameter, engineCommandParameter));
+                        if ((dicIdentField.Value != DataType.String) && (dicIdentField.Value != DataType.Guid))
+                        {
+                            command.Text = this._icsmOrmQueryBuilder.BuildInsertStatementExecuteAndFetch(queryInsertStatement, command.Parameters);
+                            EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
+                            engineCommandParameter.Name = _nameIdentFieldParameter;
+                            engineCommandParameter.DataType = DataType.Integer;
+                            command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(_nameIdentFieldParameter, engineCommandParameter));
+                        }
+                        else
+                        {
+                            command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                        }
                     }
                     else
                     {
-                        command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                        throw new InvalidOperationException("Not found primary key description");
                     }
+                }
+
+                if (command == null)
+                {
+                    throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
+                }
+
+                if (statement is QuerySelectStatement)
+                {
+                    this._dataEngine.Execute(command, reader =>
+                    {
+                        while (reader.Read())
+                        {
+                            recordsAffected++;
+                        }
+                    });
                 }
                 else
                 {
-                    throw new InvalidOperationException("Not found primary key description");
-                }
-            }
-
-            if (command == null)
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statement.GetType().Name));
-            }
-
-            int recordsAffected = 0;
-            if (statement is QuerySelectStatement)
-            {
-                this._dataEngine.Execute(command, reader =>
-                {
-                    while (reader.Read())
+                    if (statement is QueryInsertStatement)
                     {
-                        recordsAffected++;
+                        recordsAffected = this._dataEngine.Execute(command);
                     }
-                });
+                    else if (statement is QueryUpdateStatement)
+                    {
+                        recordsAffected = this._dataEngine.Execute(command);
+                    }
+                    else if (statement is QueryDeleteStatement)
+                    {
+                        recordsAffected = this._dataEngine.Execute(command);
+                    }
+                }
             }
-            else
+            catch (Exception e)
             {
-                if (statement is QueryInsertStatement)
+                if (e.Message != Exceptions.AbortedBuildSqlStatement)
                 {
-                    recordsAffected = this._dataEngine.Execute(command);
-                }
-                else if (statement is QueryUpdateStatement)
-                {
-                    recordsAffected = this._dataEngine.Execute(command);
-                }
-                else if (statement is QueryDeleteStatement)
-                {
-                    recordsAffected = this._dataEngine.Execute(command);
+                    throw new InvalidOperationException(e.Message, e);
                 }
             }
             return recordsAffected;
@@ -970,7 +979,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int j = 0; j < listBulkQueryInsert.Length; j++)
             {
                 cnt++;
-                if (cnt == _maxBatchSizeBuffer)
+                if (cnt == _syntax.MaxBatchSizeBuffer)
                 {
                     listTempBulkQueryInsert.Add(listBulkQueryInsert[j]);
                     var command = new EngineCommand();
@@ -1047,7 +1056,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int j = 0; j < listBulkQueryInsert.Length; j++)
             {
                 cnt++;
-                if (cnt == _maxBatchSizeBuffer)
+                if (cnt == _syntax.MaxBatchSizeBuffer)
                 {
                     listTempBulkQueryInsert.Add(listBulkQueryInsert[j]);
                     var command = new EngineCommand();

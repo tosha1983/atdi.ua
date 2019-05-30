@@ -53,6 +53,17 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public DateTime TimeMeas;
+
+        ///// <summary>
+        ///// Time start (SpectrumOccupation, Level, BandwidthMeas)
+        ///// </summary>
+        [DataMember]
+        public DateTime StartTime { get; set; }
+        ///// <summary>
+        ///// Time stop  (SpectrumOccupation, Level, BandwidthMeas)
+        ///// </summary>
+        [DataMember]
+        public DateTime StopTime { get; set; }
         /// <summary>
         /// Rank of data
         /// </summary>
@@ -99,6 +110,16 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public ResultsMeasurementsStation[] ResultsMeasStation;
         /// <summary>
+        /// Reference levels
+        /// </summary>
+        [DataMember]
+        public ReferenceLevels RefLevels { get; set; }
+        /// <summary>
+        /// Emittings
+        /// </summary>
+        [DataMember]
+        public Emitting[] Emittings { get; set; }
+        /// <summary>
         /// 
         /// </summary>
         [DataMember]
@@ -123,5 +144,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public int? CountUnknownStationMeasurements;
+        /// <summary>
+        /// Scans Number
+        /// </summary>
+        [DataMember]
+        public int? ScansNumber;
+
     }
 }

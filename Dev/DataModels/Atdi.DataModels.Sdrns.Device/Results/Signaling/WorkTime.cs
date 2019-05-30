@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    [Serializable]
     public class WorkTime
     {
         public DateTime StartEmitting;
         public DateTime StopEmitting;
         public int HitCount;
         public float PersentAvailability;
+        public int ScanCount;
+        public int TempCount;
     }
 }

@@ -12,6 +12,7 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
 using Atdi.DataModels.EntityOrm;
 using Atdi.DataModels.Sdrns.Device;
+using System.Linq;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
@@ -58,172 +59,190 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
 
-                DateTime dateTimeNow = DateTime.Now;
-                TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;
-                if (waitStartTask.TotalMilliseconds > 0)
-                {
-                    //Засыпаем до начала выполнения задачи
-                    Thread.Sleep((int)waitStartTask.TotalMilliseconds);
-                }
-
-                var maximumDurationMeas = CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
-                // 
-                //  Вычисление MesureTraceParameter
-                // 
-                ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
-
+                var parentProc = context.Descriptor.Parent;
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер 
                 //
                 //////////////////////////////////////////////
+                var datenow = DateTime.Now;
+                //context.Task.CountCallBW++;
                 var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
-                DateTime currTime = DateTime.Now;
-                _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
-                this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
-                (
-                    ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                ) =>
+                if (context.Task.durationForMeasBW_ms > 0)
                 {
-                    taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
-                });
+                    deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
+                }
+                else
+                {
+                    deviceCommand.Timeout = 200;
+                }
+                deviceCommand.Delay = 0;
+                deviceCommand.Options = CommandOption.StartImmediately;
+                //_logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, "Check time start" + Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
+
+                if (parentProc != null)
+                {
+                    if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
+                    {
+                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        (
+                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            parentProc.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
+                        });
+                    }
+                    else
+                    {
+                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        (
+                            ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
+                        });
+                    }
+                }
+                else
+                {
+                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                    (
+                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                    ) =>
+                    {
+                        taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(failureReason, ex));
+                    });
+                }
+
+
                 //////////////////////////////////////////////
                 // 
                 // Получение очередного  результат от Result Handler
                 //
                 //////////////////////////////////////////////
-                MeasResults outResultData = null;
-                bool isDown = context.WaitEvent<MeasResults>(out outResultData, (int)context.Task.maximumTimeForWaitingResultBandWidth);
-                if (isDown == false) // таймут - результатов нет
+                ///
+                if (parentProc == null)
                 {
-                    var error = new ExceptionProcessBandWidth();
-                    if (context.WaitEvent<ExceptionProcessBandWidth>(out error, 1) == true)
+                    BWResult outResultData = null;
+                    bool isDown = context.WaitEvent<BWResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
+                    if (isDown == false) // таймут - результатов нет
                     {
-                        if (error._ex != null)
+                        //context.Task.CountGetResultBWNegative++;
+                        var error = new ExceptionProcessBandWidth();
+                        if (context.WaitEvent<ExceptionProcessBandWidth>(out error, 1) == true)
                         {
-                            /// реакция на ошибку выполнения команды
-                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id));
-                            switch (error._failureReason)
+                            if (error._ex != null)
                             {
-                                case CommandFailureReason.DeviceIsBusy:
-                                case CommandFailureReason.CanceledExecution:
-                                case CommandFailureReason.TimeoutExpired:
-                                case CommandFailureReason.CanceledBeforeExecution:
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas));
-                                    Thread.Sleep((int)maximumDurationMeas);
-                                    return;
-                                case CommandFailureReason.NotFoundConvertor:
-                                case CommandFailureReason.NotFoundDevice:
-                                    var durationToRepietMeas = (int)maximumDurationMeas * (int)context.Task.KoeffWaitingDevice;
-                                    TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
-                                    if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
-                                    {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                                        context.Cancel();
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas));
-                                        Thread.Sleep(durationToRepietMeas);
-                                    }
-                                    break;
-                                case CommandFailureReason.Exception:
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
-                                    context.Cancel();
-                                    return;
-                                default:
-                                    throw new NotImplementedException($"Type {error._failureReason} not supported");
+                                /// реакция на ошибку выполнения команды
+                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
+                                context.Cancel();
                             }
                         }
                     }
-                }
-                else
-                {
-                    // есть результат
-                }
-
-
-                var action = new Action(() =>
-                {
-                        //реакция на принятые результаты измерения
-                    if (outResultData != null)
+                    else
                     {
+                        // есть результат
+                        //context.Task.CountGetResultBWPositive++;
+                    }
+
+                    DateTime currTime = DateTime.Now;
+                    var action = new Action(() =>
+                    {
+                    //реакция на принятые результаты измерения
+                    if (outResultData != null)
+                        {
+                            DM.MeasResults measResult = new DM.MeasResults();
+                            context.Task.CountSendResults++;
+                            measResult.ResultId = string.Format("{0}|{1}", context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            measResult.Status = "N";
+                            measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
+                            measResult.Levels_dBm = outResultData.Levels_dBm;
+                            if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length > 0))
+                            {
+                                var floatFreq_Hz = outResultData.Freq_Hz.Select(x => (float)x).ToArray();
+                                measResult.Frequencies = floatFreq_Hz;
+                            }
+                            measResult.BandwidthResult = new BandwidthMeasResult();
+                            measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
+                            measResult.BandwidthResult.Bandwidth_kHz = outResultData.Bandwidth_kHz;
+                            measResult.BandwidthResult.T1 = outResultData.T1;
+                            measResult.BandwidthResult.T2 = outResultData.T2;
+                            measResult.BandwidthResult.СorrectnessEstimations = outResultData.СorrectnessEstimations;
+                            measResult.BandwidthResult.TraceCount = outResultData.TraceCount;
+                            measResult.StartTime = context.Task.LastTimeSend.Value;
+                            measResult.StopTime = currTime;
+                            measResult.Location = new DataModels.Sdrns.GeoLocation();
+                            measResult.Measured = currTime;
                         //////////////////////////////////////////////
                         // 
                         //  Здесь получаем данные с GPS приемника
                         //  
                         //////////////////////////////////////////////
-                        outResultData.Location = new DataModels.Sdrns.GeoLocation();
                         var parentProcess = context.Process.Parent;
-                        if (parentProcess != null)
-                        {
-                            if (parentProcess is DispatchProcess)
+                            if (parentProcess != null)
                             {
-                                DispatchProcess dispatchProcessParent = null;
-                                try
+                                if (parentProcess is DispatchProcess)
                                 {
-                                    dispatchProcessParent = (parentProcess as DispatchProcess);
-                                    if (dispatchProcessParent != null)
+                                    DispatchProcess dispatchProcessParent = null;
+                                    try
                                     {
-                                        outResultData.Location.ASL = dispatchProcessParent.Asl;
-                                        outResultData.Location.Lon = dispatchProcessParent.Lon;
-                                        outResultData.Location.Lat = dispatchProcessParent.Lat;
+                                        dispatchProcessParent = (parentProcess as DispatchProcess);
+                                        if (dispatchProcessParent != null)
+                                        {
+                                            measResult.Location.ASL = dispatchProcessParent.Asl;
+                                            measResult.Location.Lon = dispatchProcessParent.Lon;
+                                            measResult.Location.Lat = dispatchProcessParent.Lat;
+                                        }
+                                        else
+                                        {
+                                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                        _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
                                     }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                    _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
                                 }
                             }
                             else
                             {
-                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
-                        }
-                        else
-                        {
-                            _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
-                        }
-                        outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
+                            measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
                         //Отправка результатов в шину 
                         var publisher = this._busGate.CreatePublisher("main");
-                        publisher.Send<DM.MeasResults>("SendMeasResults", outResultData);
-                        publisher.Dispose();
-                        context.Task.MeasResults = null;
-                        context.Task.LastTimeSend = currTime;
+                            publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                            publisher.Dispose();
+                            context.Task.MeasBWResults = null;
+                        }
+                    });
+
+
+                    //////////////////////////////////////////////
+                    // 
+                    //  Принять решение о полноте результатов
+                    //  
+                    //////////////////////////////////////////////
+                    if (outResultData != null)
+                    {
+                        action.Invoke();
                     }
-                });
 
-
-                //////////////////////////////////////////////
-                // 
-                //  Принять решение о полноте результатов
-                //  
-                //////////////////////////////////////////////
-
-
+                }
                 //////////////////////////////////////////////
                 // 
                 // Принятие решение о завершении таска
                 // 
                 //
                 //////////////////////////////////////////////
-
-
-
+                context.Finish();
+                _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.FinishedBandWidthTaskWorker);
 
             }
             catch (Exception e)
@@ -231,25 +250,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.UnknownErrorBandWidthTaskWorker, e.Message);
                 context.Abort(e);
             }
-        }
-
-
-
-        /// <summary>
-        ///Вычисление задержки выполнения потока результатом является количество vмилисекунд на которое необходимо приостановить поток
-        /// </summary>
-        /// <param name="taskParameters">Параметры таска</param> 
-        /// <param name="doneCount">Количество измерений которое было проведено</param>
-        /// <returns></returns>
-        private long CalculateTimeSleep(TaskParameters taskParameters, int DoneCount)
-        {
-            DateTime dateTimeNow = DateTime.Now;
-            if (dateTimeNow > taskParameters.StopTime.Value) { return -1; }
-            TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
-            double interval_ms = interval.TotalMilliseconds;
-            if (taskParameters.NCount <= DoneCount) { return -1; }
-            long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
-            return duration;
         }
     }
 }

@@ -29,6 +29,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int InsertSelect<TModelInsert,TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement);
 
+        //TPKResult Insert<TPKResult>(IQueryInsertStatement statements);
+
         void BeginTransaction();
 
         void CommitTransaction();
@@ -187,7 +189,5 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         DateTimeOffset GetValue(Expression<Func<TModel, DateTimeOffset>> columnExpression);
         DateTimeOffset? GetValue(Expression<Func<TModel, DateTimeOffset?>> columnExpression);
         Enum GetValue(Expression<Func<TModel, Enum>> columnExpression);
-        Object GetValue(Expression<Func<TModel, Object>> columnExpression);
-
     }
 }

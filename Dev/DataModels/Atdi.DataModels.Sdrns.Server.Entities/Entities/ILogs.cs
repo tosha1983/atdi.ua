@@ -17,5 +17,26 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Info { get; set; }
         string Who { get; set; }
         DateTime When { get; set; }
+
     }
+
+    //public abstract class Logs
+    //{
+    //    public class PrimaryKey
+    //    {
+    //        public int Id { get; set; }
+    //    }
+
+    //}
+
+    //public class Test
+    //{
+    //    void Test12()
+    //    {
+    //        var d = default(Logs.IFields);
+    //        d.Event;
+
+    //        Logs.PrimaryKey
+    //    }
+    //}
 }

@@ -15,31 +15,122 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public class BandWidthTaskResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, BandWidthTask, BandWidthProcess>
     {
+        //  constant
+        private static BandWidthEstimation.BandwidthEstimationType bandwidthEstimationTypeDefault = BandWidthEstimation.BandwidthEstimationType.xFromCentr;
+        private static double X_beta = 25;
+        // end constant
+
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<BandWidthTask, BandWidthProcess> taskContext)
         {
             if (result != null)
             {
+             
                 try
                 {
-                    var measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level);
+                    float[] Levels = result.Level;
+                    if (taskContext.Task.Smooth) { Levels = SmoothTrace.blackman(Levels); }
+                    int MaximumIgnorPoint =(int)Math.Round(result.Level.Length / 300.0);
+                    MeasBandwidthResult measBandWidthResults = null;
+                    var parentProcess = taskContext.Descriptor.Parent;
+                    if (parentProcess != null)
+                    {
+                        if ((parentProcess is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
+                        {
+                            BandWidthEstimation.BandwidthEstimationType bandwidthEstimationType;
+                            if (Enum.TryParse(taskContext.Task.BandwidthEstimationType, out bandwidthEstimationType))
+                            {
+                                measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationType, taskContext.Task.X_Beta, taskContext.Task.MaximumIgnorPoint);
+                            }
+                            else
+                            {
+                                measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationTypeDefault, X_beta, MaximumIgnorPoint);
+                            }
+                        }
+                        else
+                        {
+                            measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationTypeDefault, X_beta, MaximumIgnorPoint);
+                        }
+                    }
+                    else
+                    {
+                        measBandWidthResults = BandWidthEstimation.GetBandwidthPoint(result.Level, bandwidthEstimationTypeDefault, X_beta, MaximumIgnorPoint);
+                    }
+
+
+
+                    if ((measBandWidthResults.СorrectnessEstimations != null) && (measBandWidthResults.СorrectnessEstimations == true))
+                    {
+                        taskContext.Task.MeasBWResults = new BWResult();
+                        if (measBandWidthResults.MarkerIndex != null)
+                        {
+                            taskContext.Task.MeasBWResults.MarkerIndex = measBandWidthResults.MarkerIndex.Value;
+                        }
+                        if (measBandWidthResults.T1 != null)
+                        {
+                            taskContext.Task.MeasBWResults.T1 = measBandWidthResults.T1.Value;
+                        }
+                        if (measBandWidthResults.T2 != null)
+                        {
+                            taskContext.Task.MeasBWResults.T2 = measBandWidthResults.T2.Value;
+                        }
+
+                        taskContext.Task.MeasBWResults.Bandwidth_kHz = ((taskContext.Task.MeasBWResults.T2 - taskContext.Task.MeasBWResults.T1) *
+                            ((result.Freq_Hz[result.Freq_Hz.Length - 1] - result.Freq_Hz[0]) / (result.Freq_Hz.Length - 1))) / 1000;
+
+                        taskContext.Task.MeasBWResults.Levels_dBm = result.Level;
+                        taskContext.Task.MeasBWResults.Freq_Hz = result.Freq_Hz;
+                        taskContext.Task.MeasBWResults.СorrectnessEstimations = measBandWidthResults.СorrectnessEstimations.Value;
+                        taskContext.Task.MeasBWResults.TimeMeas = DateTime.Now;
+                        /*
+                        string val = "";
+                        string newVal = "";
+                        if ((taskContext.Task.MeasBWResults.Levels_dBm != null) && (taskContext.Task.MeasBWResults.Levels_dBm.Length > 50))
+                        {
+                            val = string.Join(",", taskContext.Task.MeasBWResults.Levels_dBm);
+                            newVal = val;
+                        }
+                        */
+
+                    }
 
                     // Отправка результата в родительский процесс (если он есть)
-                    var parentProcess = taskContext.Descriptor.Parent;
+
                     if (parentProcess != null)
                     {
                         ///если родительский контекст - сигнализация, то отправить результат 
                         if (parentProcess is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>)
                         {
-                            parentProcess.SetEvent(measBandWidthResults);
+                            if (taskContext.Task.MeasBWResults != null)
+                            {
+                                parentProcess.SetEvent(taskContext.Task.MeasBWResults);
+                            }
+                            else
+                            {
+                                parentProcess.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(CommandFailureReason.Exception, new Exception()));
+                            }
                         }
                         else // иначе отправка в воркер BandWidthTaskWorker 
                         {
-                            taskContext.SetEvent(measBandWidthResults);
+                            if (taskContext.Task.MeasBWResults != null)
+                            {
+                                taskContext.SetEvent(taskContext.Task.MeasBWResults);
+                            }
+                            else
+                            {
+                                taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(CommandFailureReason.Exception, new Exception()));
+                            }
                         }
                     }
                     else // иначе отправка в воркер BandWidthTaskWorker 
                     {
-                        taskContext.SetEvent(measBandWidthResults);
+                        if (taskContext.Task.MeasBWResults != null)
+                        {
+                            taskContext.SetEvent(taskContext.Task.MeasBWResults);
+                        }
+                        else
+                        {
+                            taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(CommandFailureReason.Exception, new Exception()));
+                        }
                     }
                 }
                 catch (Exception ex)

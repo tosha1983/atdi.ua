@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         
 
-        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
+        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, int? SensorId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return null;
@@ -51,9 +51,13 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
                             ((Type == "Del") && (SubTaskStation.Status == "Z")))
                         {
+                            if (SensorId!= SubTaskStation.StationId.Value)
+                            {
+                                continue;
+                            }
+
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            int? IdentValueTaskSDR = SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
-                            MTSDR.TaskId = MeasTaskId.ToString();//IdentValueTaskSDR.GetValueOrDefault().ToString();
+                            MTSDR.TaskId = string.Format("{0}|{1}|{2}|{3}", MeasTaskId, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
                             if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
@@ -91,6 +95,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     case MeasurementType.BandwidthMeas:
                                         MTSDR.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                                         break;
+                                    case MeasurementType.Signaling:
+                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
+                                        break;
+
                                     default:
                                         throw new NotImplementedException($"Type '{task.MeasDtParam.TypeMeasurements}' not supported");
                                 }
@@ -158,30 +166,56 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     MTSDR.Frequencies.Step_kHz = task.MeasFreqParam.Step;
                                 }
 
-                                if (task.RefSituation!=null)
+                                if (task.SignalingMeasTaskParameters != null)
                                 {
-                                    if (task.RefSituation.ReferenceSignal != null)
+                                    MTSDR.SignalingMeasTaskParameters = new DEV.SignalingMeasTask();
+                                    MTSDR.SignalingMeasTaskParameters.allowableExcess_dB = task.SignalingMeasTaskParameters.allowableExcess_dB;
+                                    MTSDR.SignalingMeasTaskParameters.AutoDivisionEmitting = task.SignalingMeasTaskParameters.AutoDivisionEmitting;
+                                    MTSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = task.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels;
+                                    MTSDR.SignalingMeasTaskParameters.DifferenceMaxMax = task.SignalingMeasTaskParameters.DifferenceMaxMax;
+                                    MTSDR.SignalingMeasTaskParameters.FiltrationTrace = task.SignalingMeasTaskParameters.FiltrationTrace;
+                                    MTSDR.SignalingMeasTaskParameters.SignalizationNChenal = task.SignalingMeasTaskParameters.SignalizationNChenal;
+                                    MTSDR.SignalingMeasTaskParameters.SignalizationNCount = task.SignalingMeasTaskParameters.SignalizationNCount;
+                                }
+
+                                    if (task.RefSituation!=null)
+                                {
+                                    if (task.RefSituation != null)
                                     {
-                                        MTSDR.RefSituation = new DEV.ReferenceSituation();
-                                        var referenceSignal = task.RefSituation.ReferenceSignal;
-                                        if (referenceSignal.Length > 0)
+                                        var listReferenceSituation = new List<DEV.ReferenceSituation>();
+                                        for (int k = 0; k < task.RefSituation.Length; k++)
                                         {
-                                            MTSDR.RefSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
-                                            for (int l=0; l< referenceSignal.Length; l++)
+                                            var refSituation = new DEV.ReferenceSituation();
+                                            var refSituationTemp = task.RefSituation[k];
+                                            refSituation.SensorId = refSituationTemp.SensorId;
+
+                                            var referenceSignal = refSituationTemp.ReferenceSignal;
+                                            if (referenceSignal.Length > 0)
                                             {
-                                                var refSituationReferenceSignal = MTSDR.RefSituation.ReferenceSignal[l];
-                                                refSituationReferenceSignal = new DEV.ReferenceSignal();
-                                                refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
-                                                refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
-                                                refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
-                                                refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
-                                                if (referenceSignal[l].SignalMask!=null)
+                                                refSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
+                                                for (int l = 0; l < referenceSignal.Length; l++)
                                                 {
-                                                    refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
-                                                    refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
+                                                    var refSituationReferenceSignal = refSituation.ReferenceSignal[l];
+                                                    refSituationReferenceSignal = new DEV.ReferenceSignal();
+                                                    refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
+                                                    refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
+                                                    refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                                                    refSituationReferenceSignal.IcsmId = referenceSignal[l].IcsmId;
+                                                    refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
+                                                    if (referenceSignal[l].SignalMask != null)
+                                                    {
+                                                        refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
+                                                        refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
+                                                    }
+                                                    refSituation.ReferenceSignal[l] = refSituationReferenceSignal;
                                                 }
-                                                MTSDR.RefSituation.ReferenceSignal[l] = refSituationReferenceSignal;
                                             }
+                                            listReferenceSituation.Add(refSituation);
+                                        }
+                                        if (listReferenceSituation.Count > 0)
+                                        {
+                                            //MTSDR.RefSituation = listReferenceSituation.ToArray();
+                                            MTSDR.RefSituation = listReferenceSituation[0];
                                         }
                                     }
                                 }
@@ -319,79 +353,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             return ListMTSDR.ToArray();
         }
-
-        public int? SaveTaskSDRToDB(int SubTaskId, int SubTaskStationId, int TaskId, int SensorId)
-        {
-            int? numVal = null;
-            int? Num = null;
-            bool isNew = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            try
-            {
-                queryExecuter.BeginTransaction();
-                var builderMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().From();
-                builderMeasTaskSDR.Select(c => c.Id);
-                builderMeasTaskSDR.Select(c => c.Num);
-                builderMeasTaskSDR.OrderByDesc(c => c.Num);
-                queryExecuter.Fetch(builderMeasTaskSDR, readerMeasTaskSDR =>
-                {
-                    if (readerMeasTaskSDR.Read())
-                    {
-                        Num = readerMeasTaskSDR.GetValue(c=>c.Num);
-                    }
-                    return true;
-                });
-                
-                if (Num==null)
-                {
-                    Num = 0;
-                }
-                ++Num;
-
-                builderMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().From();
-                builderMeasTaskSDR.Select(c => c.Id);
-                builderMeasTaskSDR.Select(c => c.Num);
-                builderMeasTaskSDR.Where(c=>c.MeasTaskId, ConditionOperator.Equal, TaskId);
-                builderMeasTaskSDR.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, SubTaskId);
-                builderMeasTaskSDR.Where(c => c.MeasSubTaskStaId, ConditionOperator.Equal, SubTaskStationId);
-                builderMeasTaskSDR.Where(c => c.SensorId, ConditionOperator.Equal, SensorId);
-                builderMeasTaskSDR.OrderByDesc(c => c.Id);
-                queryExecuter.Fetch(builderMeasTaskSDR, readerMeasTaskSDR =>
-                {
-                    if (readerMeasTaskSDR.Read())
-                    {
-                        isNew = true;
-                        numVal = readerMeasTaskSDR.GetValue(c=>c.Num);
-                    }
-                    return true;
-                });
-
-               
-
-                if (!isNew)
-                {
-                    var builderInsertMeasTaskSDR = this._dataLayer.GetBuilder<MD.IMeasTaskSDR>().Insert();
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasTaskId, TaskId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasSubTaskId, SubTaskId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.MeasSubTaskStaId, SubTaskStationId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.SensorId, SensorId);
-                    builderInsertMeasTaskSDR.SetValue(c => c.Num, Num);
-                    builderInsertMeasTaskSDR.Select(c => c.Id);
-                    queryExecuter.ExecuteAndFetch(builderInsertMeasTaskSDR, reader =>
-                    {
-                        return true;
-                    });
-                    numVal = Num;
-                    queryExecuter.CommitTransaction();
-                }
-            }
-            catch (Exception e)
-            {
-                queryExecuter.RollbackTransaction();
-                this._logger.Exception(Contexts.ThisComponent, e);
-            }
-            return numVal;
-        }
+       
     }
 }
 

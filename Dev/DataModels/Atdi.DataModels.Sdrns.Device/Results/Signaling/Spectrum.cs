@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    [Serializable]
     public class Spectrum
     {
         public float[] Levels_dBm;
@@ -15,8 +16,9 @@ namespace Atdi.DataModels.Sdrns.Device
         public int T2;
         public int MarkerIndex;
         public double Bandwidth_kHz;
-        public bool СorrectnessEstimations;
+        public bool СorrectnessEstimations; 
         public int TraceCount;
         public float SignalLevel_dBm;
+        public bool Contravention; // при нарушении true
     }
 }

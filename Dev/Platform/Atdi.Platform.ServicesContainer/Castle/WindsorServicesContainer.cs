@@ -181,6 +181,18 @@ namespace Atdi.Platform.ServicesContainer.Castle
             this._container.Register(component);
         }
 
+        public void RegisterInstance<TService1, TService2>(TService1 instance, ServiceLifetime lifetime = ServiceLifetime.Transient)
+            where TService1 : class
+            where TService2 : class
+        {
+            var component = Component
+                .For<TService1, TService2>()
+                .Instance(instance)
+                .SetLifestyle(lifetime);
+
+            this._container.Register(component);
+        }
+
         public void RegisterInstance(Type serviceType, object instance, ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
             var component = Component

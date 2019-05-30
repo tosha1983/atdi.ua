@@ -834,6 +834,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
     public class DummyTimeService : ITimeService
     {
         private readonly ITimeStamp _timeStamp;
+        private long _timeCorrection;
 
         public DummyTimeService()
         {
@@ -841,6 +842,31 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
 
         public ITimeStamp TimeStamp => this._timeStamp;
+
+        public long TimeCorrection
+        {
+            get
+            {
+                return Interlocked.Read(ref this._timeCorrection);
+            }
+            set
+            {
+                Interlocked.Exchange(ref this._timeCorrection, value);
+            }
+        }
+
+        public DateTime GetGnssTime()
+        {
+            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
+            return DateTime.Now; 
+
+        }
+
+        public DateTime GetGnssUtcTime()
+        {
+            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
+            return DateTime.UtcNow;
+        }
     }
     class TimeStamp : ITimeStamp
     {

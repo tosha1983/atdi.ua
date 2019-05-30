@@ -1838,6 +1838,13 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
                     }
+
+
+                    if (statement.ColumnsValues.Count == 0)
+                    {
+                        throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
+                    }
+
                     var changedColumns = new string[statement.ColumnsValues.Count];
                     var selectedParameters = new string[statement.ColumnsValues.Count];
                     for (int i = 0; i < statement.ColumnsValues.Count; i++)
@@ -1907,7 +1914,7 @@ namespace Atdi.CoreServices.EntityOrm
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
-                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+                throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
         }
 
@@ -1920,6 +1927,11 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
+            if (statement.ColumnsValues.Count == 0)
+            {
+                this.Logger.Warning(Contexts.LegacyServicesEntity, Categories.BuildingStatement, Events.NoFieldsSpecified);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
+            }
             try
             {
                 var listAlias = new List<AliasField>();
@@ -1962,7 +1974,7 @@ namespace Atdi.CoreServices.EntityOrm
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
-                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+                throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
          }
 
@@ -2023,7 +2035,7 @@ namespace Atdi.CoreServices.EntityOrm
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
-                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+                throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
         }
 
@@ -2036,6 +2048,11 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildInsertStatementExecuteAndFetch(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
+            if (statement.ColumnsValues.Count == 0)
+            {
+                this.Logger.Warning(Contexts.LegacyServicesEntity, Categories.BuildingStatement, Events.NoFieldsSpecified);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
+            }
             try
             {
                 var listAlias = new List<AliasField>();
@@ -2112,7 +2129,7 @@ namespace Atdi.CoreServices.EntityOrm
             catch (Exception e)
             {
                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
-                throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
+                throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
         }
         public KeyValuePair<string, DataType> GetIdentFieldFromTable(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
@@ -2186,6 +2203,12 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildUpdateStatement(QueryUpdateStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
+            if (statement.ColumnsValues.Count == 0)
+            {
+                this.Logger.Warning(Contexts.LegacyServicesEntity, Categories.BuildingStatement, Events.NoFieldsSpecified);
+                throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
+            }
+
             try
             {
                 var columns = new List<ColumnOperand>();

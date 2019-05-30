@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ILogger _logger;
         private readonly ITimeService _timeService;
         private readonly IController _controller;
-        private ConfigProcessing  _configProcessing;
+        private ConfigProcessing _configProcessing;
         private readonly IBusGate _busGate;
         private readonly IRepository<DM.Sensor, int?> _repositorySensor;
 
@@ -61,17 +61,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 // Отправка команды в контроллер GPS
                 //
                 //////////////////////////////////////////////
-                var gpsParameter = new GpsParameter();
-                gpsParameter.GpsMode = GpsMode.Start;
-                var gpsDevice = new GpsCommand(gpsParameter);
 
-                this._controller.SendCommand<GpsResult>(context, gpsDevice,
-                (
-                      ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                ) =>
-                {
-                    taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
-                });
 
                 while (true)
                 {
@@ -89,6 +79,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     //
                     //////////////////////////////////////////////
                     System.Threading.Thread.Sleep(this._configProcessing.PeriodSendCoordinatesToSDRNS);
+                    var gpsParameter = new GpsParameter();
+                    gpsParameter.GpsMode = GpsMode.Start;
+                    var gpsDevice = new GpsCommand(gpsParameter);
+
+                    this._controller.SendCommand<GpsResult>(context, gpsDevice,
+                    (
+                          ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                    ) =>
+                    {
+                        taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
+                    });
+
                     GpsResult gpsResult = null;
                     bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
                     if (isWait)

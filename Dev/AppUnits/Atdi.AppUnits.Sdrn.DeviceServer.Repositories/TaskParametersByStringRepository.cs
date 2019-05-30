@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public TaskParameters[] LoadAllObjects()
@@ -72,13 +72,65 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 builderInsertTaskParameters.Select(c => c.TypeTechnology);
                 builderInsertTaskParameters.Select(c => c.Type_of_SO);
                 builderInsertTaskParameters.Select(c => c.VBW_Hz);
+                builderInsertTaskParameters.Select(c => c.SweepTime_ms);
                 builderInsertTaskParameters.Select(c => c.Id);
+                builderInsertTaskParameters.Select(c => c.SensorId);
+                builderInsertTaskParameters.Select(c => c.CompareTraceJustWithRefLevels);
+                builderInsertTaskParameters.Select(c => c.AutoDivisionEmitting);
+                builderInsertTaskParameters.Select(c => c.DifferenceMaxMax);
+                builderInsertTaskParameters.Select(c => c.FiltrationTrace);
+                builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
+                builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+                builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+                builderInsertTaskParameters.Select(c => c.SignalizationNCount);
                 builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, SDRTaskId);
                 queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
                 {
                     if (readerMeasTask.Read())
                     {
                         taskParameters = new TaskParameters();
+
+                        if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
+                        {
+                            taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
+                        {
+                            taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
+                        {
+                            taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value == 1 ? true : false;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
+                        {
+                            taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
+                        {
+                            taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
+                        {
+                            taskParameters.DifferenceMaxMax = readerMeasTask.GetValue(c => c.DifferenceMaxMax).Value;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.AllowableExcess_dB) != null)
+                        {
+                            taskParameters.allowableExcess_dB = readerMeasTask.GetValue(c => c.AllowableExcess_dB).Value;
+                        }
+
+                        if (readerMeasTask.GetValue(c => c.PercentForCalcNoise) != null)
+                        {
+                            taskParameters.PercentForCalcNoise = readerMeasTask.GetValue(c => c.PercentForCalcNoise).Value;
+                        }
+
+                        taskParameters.SensorId = readerMeasTask.GetValue(c => c.SensorId);
 
                         if (readerMeasTask.GetValue(c => c.LevelMinOccup_dBm) != null)
                         {
@@ -141,6 +193,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             taskParameters.StopTime = readerMeasTask.GetValue(c => c.StopTime).Value;
                         }
 
+                        if (readerMeasTask.GetValue(c => c.SweepTime_ms) != null)
+                        {
+                            taskParameters.SweepTime_s = readerMeasTask.GetValue(c => c.SweepTime_ms).Value;
+                        }
+
 
                         TypeTechnology typeTechnology;
                         if (Enum.TryParse<TypeTechnology>(readerMeasTask.GetValue(c => c.TypeTechnology) != null ? readerMeasTask.GetValue(c => c.TypeTechnology).ToString() : "", out typeTechnology))
@@ -181,65 +238,93 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                         //ReferenceSignal
 
-                        var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                        var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
-                        builderReferenceSignalRaw.Select(c => c.Id);
-                        builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
-                        builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
-                        builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
-                        builderReferenceSignalRaw.Select(c => c.MeasTaskId);
-                        builderReferenceSignalRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
+                        var listReferenceSituation = new List<DataModels.Sdrns.Device.ReferenceSituation>();
+                        var builderReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().From();
+                        builderReferenceSituationRaw.Select(c => c.Id);
+                        builderReferenceSituationRaw.Select(c => c.SensorId);
+                        builderReferenceSituationRaw.Select(c => c.MeasTaskId);
+                        builderReferenceSituationRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        queryExecuter.Fetch(builderReferenceSituationRaw, readerReferenceSituationRaw =>
                         {
-                            while (readerReferenceSignalRaw.Read())
+                            while (readerReferenceSituationRaw.Read())
                             {
-                                var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
-                                if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
+                                var refSituation = new DataModels.Sdrns.Device.ReferenceSituation();
+                                if (readerReferenceSituationRaw.GetValue(c => c.SensorId).HasValue)
                                 {
-                                    referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
-                                }
-                                if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
-                                {
-                                    referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
-                                }
-                                if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
-                                {
-                                    referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                                    refSituation.SensorId = readerReferenceSituationRaw.GetValue(c => c.SensorId).Value;
                                 }
 
-                                referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
-                                var freqs = new List<double>();
-                                var loss = new List<float>();
-                                var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
-                                builderSignalMaskRaw.Select(c => c.Id);
-                                builderSignalMaskRaw.Select(c => c.Freq_kHz);
-                                builderSignalMaskRaw.Select(c => c.Loss_dB);
-                                builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
-                                builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
-                                queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                                var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
+                                var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                                builderReferenceSignalRaw.Select(c => c.Id);
+                                builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
+                                builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
+                                builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
+                                builderReferenceSignalRaw.Select(c => c.RefSituationId);
+                                builderReferenceSignalRaw.Where(c => c.RefSituationId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
+                                queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
                                 {
-                                    while (readerSignalMaskRaw.Read())
+                                    while (readerReferenceSignalRaw.Read())
                                     {
-                                        if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+
+                                        var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
+                                        if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
                                         {
-                                            freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                            referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
                                         }
-                                        if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                        if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
                                         {
-                                            loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                            referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
                                         }
+                                        if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
+                                        {
+                                            referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
+                                        }
+
+                                        referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
+                                        List<double> freqs = new List<double>();
+                                        List<float> loss = new List<float>();
+                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                        builderSignalMaskRaw.Select(c => c.Id);
+                                        builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
+                                        builderSignalMaskRaw.Select(c => c.Freq_kHz);
+                                        builderSignalMaskRaw.Select(c => c.Loss_dB);
+                                        builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
+                                        queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                                        {
+                                            while (readerSignalMaskRaw.Read())
+                                            {
+                                                if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
+                                                {
+                                                    freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
+                                                }
+                                                if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
+                                                {
+                                                    loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                                }
+                                            }
+                                            return true;
+                                        });
+
+                                        referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
+                                        referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+
+                                        referenceSignals.Add(referenceSignal);
                                     }
                                     return true;
                                 });
 
-                                referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
-                                referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+                                refSituation.ReferenceSignal = referenceSignals.ToArray();
 
-                                referenceSignals.Add(referenceSignal);
+                                listReferenceSituation.Add(refSituation);
                             }
                             return true;
                         });
-                        taskParameters.ReferenceSignals = referenceSignals.ToArray();
+
+                        if (listReferenceSituation.Count > 0)
+                        {
+                            taskParameters.RefSituation = listReferenceSituation[0];
+                        }
                     }
                     return true;
                 });

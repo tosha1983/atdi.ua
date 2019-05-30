@@ -17,18 +17,29 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
 
-        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer,  ILogger logger)
         {
             this._eventEmitter = eventEmitter;
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
 
+        public bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        {
+            var saveResDb = new SaveResults(_dataLayer, _logger);
+            return saveResDb.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName);
+        }
 
         public MeasTaskIdentifier CreateMeasTask(MeasTask task)
         {
-            var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer, _logger);
+            var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer,  _logger);
             return createMeasTaskHandler.Handle(task);
+        }
+
+        public bool DeleteEmitting(int[] emittingsId)
+        {
+            var saveResDb = new SaveResults(_dataLayer, _logger);
+            return saveResDb.DeleteEmitting(emittingsId);
         }
 
         public CommonOperationDataResult<int> DeleteMeasResults(MeasurementResultsIdentifier MeasResultsId)
@@ -67,10 +78,22 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadMeasTask.GetMeasTaskHeader(taskId);
         }
 
-        public MeasurementResults GetMeasurementResultByResId(int ResId)
+        public MeasTask GetMeasTaskById(int id)
+        {
+            var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
+            return loadMeasTask.GetMeasTaskById(id);
+        }
+
+        public MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
-            return loadResults.GetMeasurementResultByResId(ResId);
+            return loadResults.GetMeasurementResultByResId(ResId, isLoadAllData, StartFrequency_Hz, StopFrequency_Hz);
+        }
+
+        public ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
+        {
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetReferenceLevelsByResultId(resId, isLoadAllData, StartFrequency_Hz, StopFrequency_Hz);
         }
 
         public ResultsMeasurementsStation[] GetResMeasStation(int ResId, int StationId)
@@ -211,9 +234,15 @@ namespace Atdi.WcfServices.Sdrn.Server
             var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
             return measTaskProcess.StopMeasTask(taskId);
         }
-    }
 
-    
+        public Emitting[] GetEmittingsByIcsmId(int[] ids, string icsmTableName)
+        {
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetEmittingsByIcsmId(ids, icsmTableName);
+        }
+        
+    }
+   
 
 }
 

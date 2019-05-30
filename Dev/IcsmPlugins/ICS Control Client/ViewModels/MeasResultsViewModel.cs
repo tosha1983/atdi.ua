@@ -37,7 +37,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand SearchStationCommand { get; set; }
         #endregion
 
-        #region Corrent Objects
+        #region Current Objects
         private MeasurementResultsViewModel _currentMeasurementResults;
         private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStation;
         private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStationData;
@@ -274,7 +274,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
                 this._resultsMeasurementsStations.Source = sdrMeasResults;
 
-                var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId);
+                var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId, null, null);
                 LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
                 UpFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Max(f => f.Freq));
             }
@@ -435,7 +435,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
 
             var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
@@ -493,7 +493,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId);
+            var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
 
             var count = sdrMeasResults.FrequenciesMeasurements.Length;
             var points = new Point[count];
@@ -739,10 +739,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 byte.TryParse(Math.Round(rezVal, 0).ToString(), out id);
             }
 
-            byte a;
-            byte b;
-            byte.TryParse(id.ToString(), out a);
-            byte.TryParse((255 - id).ToString(), out b);
+            byte.TryParse(id.ToString(), out byte a);
+            byte.TryParse((255 - id).ToString(), out byte b);
 
             return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(a, a, b));
         }
@@ -764,9 +762,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 int taskId = this._currentMeasurementResults.MeasTaskId;
                 string stationId = this._currentResultsMeasurementsStationData.StationId;
 
-                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog();
-                sfd.Filter = "CSV (*.csv)|*.csv";
-                sfd.FileName = "FS_Meas_Res_" + taskId.ToString() + "_" + stationId + ".csv";
+                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog()
+                {
+                    Filter = "CSV (*.csv)|*.csv",
+                    FileName = "FS_Meas_Res_" + taskId.ToString() + "_" + stationId + ".csv"
+                };
                 if (sfd.ShowDialog() == FRM.DialogResult.OK)
                 {
                     //MessageBox.Show("Data will be exported and you will be notified when it is ready.");
@@ -919,8 +919,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (stations.Count() > 0)
                 {
-                    var dlgForm = new FM.StationListForm();
-                    dlgForm.stationIDs = string.Join(",", stations.Keys.ToArray());
+                    var dlgForm = new FM.StationListForm() { stationIDs = string.Join(",", stations.Keys.ToArray()) };
                     dlgForm.ShowDialog();
                     dlgForm.Dispose();
                 }

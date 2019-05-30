@@ -87,6 +87,13 @@
     <Compile Include="OldAPI\Models\Measurements\Route.cs" />
     <Compile Include="OldAPI\Models\Measurements\RoutePoint.cs" />
     <Compile Include="OldAPI\Models\Measurements\ShortMeasurementResults.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\Emitting.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\EmittingParameters.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\LevelsDistribution.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\ReferenceLevels.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\Spectrum.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\WorkTime.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingMeasTask.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalMask.cs" />
     <Compile Include="OldAPI\Models\Measurements\StationMeasurements.cs" />
     <Compile Include="OldAPI\Models\ResultsMeasurementsStation\LevelMeasurementsCar.cs" />

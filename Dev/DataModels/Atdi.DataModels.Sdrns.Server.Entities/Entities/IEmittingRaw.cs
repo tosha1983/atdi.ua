@@ -20,6 +20,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? RollOffFactor { get; set; }
         double? StandardBW { get; set; }
         int? ResMeasId { get; set; }
+        byte[] LevelsDistribution { get; set; }
         IResMeasRaw RESMEASRAW { get; set; }
+        int? SensorId { get; set; }
+        int? StationID { get; set; }
+        string StationTableName { get; set; }
     }
 }

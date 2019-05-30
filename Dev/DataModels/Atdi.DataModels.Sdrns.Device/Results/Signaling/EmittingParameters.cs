@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    [Serializable]
     public class EmittingParameters
     {
         public double RollOffFactor; // from 0.85 to 1.35

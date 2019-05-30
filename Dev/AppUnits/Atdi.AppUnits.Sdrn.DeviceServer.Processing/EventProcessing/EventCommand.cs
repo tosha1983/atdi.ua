@@ -56,10 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         else
                         {
                             // здесь необходимо добавлять в список отложенных задач
-                            if (!listDeferredTasks.Contains(tskParam))
-                            {
-                                listDeferredTasks.Add(tskParam);
-                            }
+                            listDeferredTasks.Add(tskParam);
                         }
                     }
                     else if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
@@ -99,10 +96,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             else
                             {
                                 // здесь необходимо добавлять в список отложенных задач
-                                if (!listDeferredTasks.Contains(tskParam))
-                                {
-                                    listDeferredTasks.Add(tskParam);
-                                }
+                                listDeferredTasks.Add(tskParam);
                             }
                         }
                         else if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))

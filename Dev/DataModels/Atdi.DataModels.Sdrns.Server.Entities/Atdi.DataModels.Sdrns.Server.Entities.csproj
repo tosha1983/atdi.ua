@@ -43,9 +43,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\IAntennaPattern.cs" />
+    <Compile Include="Entities\IDetailReferenceLevels.cs" />
+    <Compile Include="Entities\IDetailSpectrumLevels.cs" />
     <Compile Include="Entities\IDetailSpectrumLevelsRaw.cs" />
+    <Compile Include="Entities\IEmitting.cs" />
+    <Compile Include="Entities\ILevelsDistribution.cs" />
     <Compile Include="Entities\ILevelsDistributionRaw.cs" />
+    <Compile Include="Entities\IMeasTaskSignaling.cs" />
+    <Compile Include="Entities\IReferenceLevels.cs" />
+    <Compile Include="Entities\IReferenceSituation.cs" />
+    <Compile Include="Entities\IReferenceSignal.cs" />
+    <Compile Include="Entities\ISignalMask.cs" />
     <Compile Include="Entities\ISignalMaskRaw.cs" />
+    <Compile Include="Entities\ISpectrum.cs" />
+    <Compile Include="Entities\IWorkTime.cs" />
     <Compile Include="Entities\IWorkTimeRaw.cs" />
     <Compile Include="Entities\IReferenceLevelsRaw.cs" />
     <Compile Include="Entities\IReferenceSignalRaw.cs" />
@@ -149,6 +160,10 @@
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\Bearing.xml" />
+    <Content Include="Metadata\Entities\DetailReferenceLevels.xml" />
+    <Content Include="Metadata\Entities\DetailSpectrumLevels.xml" />
+    <Content Include="Metadata\Entities\Emitting.xml" />
+    <Content Include="Metadata\Entities\LevelsDistribution.xml" />
     <Content Include="Metadata\Entities\LevelsDistributionRaw.xml" />
     <Content Include="Metadata\Entities\DetailSpectrumLevelsRaw.xml" />
     <Content Include="Metadata\Entities\EmittingRaw.xml" />
@@ -158,7 +173,13 @@
     <Content Include="Metadata\Entities\FreqSample.xml" />
     <Content Include="Metadata\Entities\LinkResSensorRaw.xml" />
     <Content Include="Metadata\Entities\Logs.xml" />
+    <Content Include="Metadata\Entities\MeasTaskSignaling.xml" />
+    <Content Include="Metadata\Entities\ReferenceSituation.xml" />
+    <Content Include="Metadata\Entities\ReferenceSignal.xml" />
+    <Content Include="Metadata\Entities\SignalMask.xml" />
+    <Content Include="Metadata\Entities\Spectrum.xml" />
     <Content Include="Metadata\Entities\SpectrumRaw.xml" />
+    <Content Include="Metadata\Entities\WorkTime.xml" />
     <Content Include="Metadata\Entities\WorkTimeRaw.xml" />
     <Content Include="Metadata\Entities\ReferenceLevelsRaw.xml" />
     <Content Include="Metadata\Entities\ReferenceSignalRaw.xml" />
@@ -169,7 +190,9 @@
     <Content Include="Metadata\Entities\LinkSectorMaskElement.xml" />
     <Content Include="Metadata\Entities\ResLevels.xml" />
     <Content Include="Metadata\Entities\ResLevMeasOnline.xml" />
-    <Content Include="Metadata\Entities\FreqSampleRaw.xml" />
+    <Content Include="Metadata\Entities\FreqSampleRaw.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Metadata\Entities\ResLocSensorMeas.xml" />
     <Content Include="Metadata\Entities\ResLocSensorRaw.xml" />
     <Content Include="Metadata\Entities\ResMeas.xml" />
@@ -193,6 +216,7 @@
     <Content Include="Metadata\Entities\ResSysInfoRaw.xml" />
     <Content Include="Metadata\Entities\DetailReferenceLevelsRaw.xml" />
     <Content Include="Metadata\Entities\SignalMaskRaw.xml" />
+    <Content Include="Metadata\Entities\ReferenceLevels.xml" />
     <Content Include="Metadata\Entities\XVUnit2.xml" />
     <Content Include="Metadata\Entities\SectorMaskElement.xml" />
     <Content Include="Metadata\Entities\MeasDtParam.xml" />

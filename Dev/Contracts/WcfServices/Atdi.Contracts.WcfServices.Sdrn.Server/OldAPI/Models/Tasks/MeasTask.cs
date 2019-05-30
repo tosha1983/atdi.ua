@@ -124,6 +124,12 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         ///// Reference situation
         ///// </summary>
         [DataMember]
-        public ReferenceSituation RefSituation { get; set; }
+        public ReferenceSituation[] RefSituation { get; set; }
+
+        /// <summary>
+        /// Set Signaling MeasTask Parameters
+        /// </summary>
+        [DataMember]
+        public SignalingMeasTask SignalingMeasTaskParameters { get; set; }
     }
 }

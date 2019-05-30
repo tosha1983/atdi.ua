@@ -17,7 +17,6 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly ILogger _logger;
 
 
-
         public MeasTaskProcess(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
@@ -84,30 +83,55 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var fndSensor = loadSensor.LoadObjectSensor(SensorId);
                         if (fndSensor != null)
                         {
-                            if ((fndSensor.Name != null) && (fndSensor.Equipment!=null))
+                            if ((fndSensor.Name != null) && (fndSensor.Equipment != null))
                             {
                                 if (actionType == MeasTaskMode.New.ToString())
                                 {
-                                    measTask.CreateAllSubTasks();
+                                    if ((measTask.MeasTimeParamList.PerStart > measTask.MeasTimeParamList.PerStop) || (measTask.MeasTimeParamList.TimeStart > measTask.MeasTimeParamList.TimeStop))
+                                    {
+                                        this._logger.Error(Contexts.ThisComponent, Categories.Processing, Events.MeasTimeParamListIncorrect.Text);
+                                        throw new Exception(Events.MeasTimeParamListIncorrect.Text);
+                                    }
+                                    else
+                                    {
+                                        measTask.CreateAllSubTasks();
+                                        if (measTask.RefSituation != null)
+                                        {
+                                            for (int p = 0; p < measTask.RefSituation.Length; p++)
+                                            {
+                                                var refSituation = measTask.RefSituation[p];
+                                                if (refSituation != null)
+                                                {
+                                                    for (int z = 0; z < refSituation.ReferenceSignal.Length; z++)
+                                                    {
+                                                        if (refSituation.ReferenceSignal[z] != null)
+                                                        {
+                                                            MeasTaskExtend.SetDefaultSignalMask(ref refSituation.ReferenceSignal[z]);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                                 if ((measTask.Stations != null) && (measTask.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null))
                                 {
                                     measTask.UpdateStatusSubTasks(SensorId, actionType, isOnline);
-                                    if (actionType == MeasTaskMode.New.ToString())
+                                    if ((actionType == MeasTaskMode.New.ToString()) && (IdTsk == null))
                                     {
                                         IdTsk = CreateNewMeasTask(measTask, MeasTaskMode.New.ToString());
                                     }
-                                    else if (actionType == MeasTaskMode.Stop.ToString())
+                                    else if ((actionType == MeasTaskMode.Stop.ToString()) && (measTask.Id!=null))
                                     {
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.F.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
-                                    else if (actionType == MeasTaskMode.Run.ToString())
+                                    else if ((actionType == MeasTaskMode.Run.ToString()) && (measTask.Id != null))
                                     {
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.A.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
-                                    else if (actionType == MeasTaskMode.Del.ToString())
+                                    else if ((actionType == MeasTaskMode.Del.ToString()) && (measTask.Id != null))
                                     {
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.Z.ToString());
                                         IdTsk = measTask.Id.Value;
@@ -115,18 +139,57 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                     if ((IdTsk != null) && (isSendMessageToBus))
                                     {
-                                        var masTaskEvent = new OnMeasTaskEvent()
+                                        var measTaskIds = "";
+                                        if (measTask.MeasSubTasks != null)
                                         {
-                                            MeasTaskId = IdTsk.Value,
-                                            SensorName = fndSensor.Name,
-                                            EquipmentTechId = fndSensor.Equipment.TechId,
-                                            Name = $"On{actionType}MeasTaskEvent"
-                                        };
-                                        this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                            for (int f = 0; f < measTask.MeasSubTasks.Length; f++)
+                                            {
+                                                var SubTask = measTask.MeasSubTasks[f];
+                                                if (SubTask.MeasSubTaskStations != null)
+                                                {
+                                                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                                                    {
+                                                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+                                                        measTaskIds = string.Format("{0}|{1}|{2}|{3}", IdTsk.Value, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
+                                                        if (actionType != MeasTaskMode.New.ToString())
+                                                        {
+                                                            var masTaskEvent = new OnMeasTaskEvent()
+                                                            {
+                                                                SensorId = SensorId,
+                                                                MeasTaskId = IdTsk.Value,
+                                                                SensorName = fndSensor.Name,
+                                                                EquipmentTechId = fndSensor.Equipment.TechId,
+                                                                Name = $"On{actionType}MeasTaskEvent",
+                                                                MeasTaskIds = measTaskIds
+                                                            };
+                                                            this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                                            {
+                                                                Rule = EventEmittingRule.Default,
+                                                                Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if (actionType == MeasTaskMode.New.ToString())
                                         {
-                                             Rule = EventEmittingRule.Default,
-                                             Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
-                                        });
+                                            var masTaskEvent = new OnMeasTaskEvent()
+                                            {
+                                                SensorId = SensorId,
+                                                MeasTaskId = IdTsk.Value,
+                                                SensorName = fndSensor.Name,
+                                                EquipmentTechId = fndSensor.Equipment.TechId,
+                                                Name = $"On{actionType}MeasTaskEvent",
+                                                MeasTaskIds = measTaskIds
+                                            };
+                                            this._eventEmitter.Emit(masTaskEvent, new EventEmittingOptions()
+                                            {
+                                                Rule = EventEmittingRule.Default,
+                                                Destination = new string[] { $"SubscriberOn{actionType}MeasTaskEvent" }
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -216,6 +279,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                         Process(measTaskedit, massSensor, MeasTaskMode.Del.ToString(), false, out isSuccessTemp, out id, true);
                         result.State = isSuccessTemp == true ? CommonOperationState.Success : CommonOperationState.Fault;
 
+
+                        var saveResDb = new SaveResults(_dataLayer, _logger);
+                        var valDelRes = saveResDb.DeleteResultFromDB(new MeasurementResultsIdentifier() { MeasTaskId = new MeasTaskIdentifier() { Value = taskId.Value } }, Status.Z.ToString());  
+                        if (valDelRes.State== CommonOperationState.Fault)
+                        {
+                            result.State = CommonOperationState.Fault;
+                        }
                     }
                     else result.State = CommonOperationState.Fault;
                 }
@@ -223,6 +293,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     result.State = CommonOperationState.Fault;
                 }
+
             }
             catch (Exception e)
             {

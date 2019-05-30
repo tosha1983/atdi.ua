@@ -540,8 +540,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
-                result.Status = SdrnMessageHandlingStatus.Confirmed;
-
+                result.Status = SdrnMessageHandlingStatus.Unprocessed;
                 var sensorUpdate = false;
                 var sensorExistsInDb = false;
                 try
@@ -575,17 +574,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 catch (Exception e)
                 {
                     this._logger.Exception(Contexts.PrimaryHandler, Categories.MessageProcessing, e, this);
-                    if (result.Status == SdrnMessageHandlingStatus.Unprocessed)
-                    {
-                        result.Status = SdrnMessageHandlingStatus.Error;
-                        result.ReasonFailure = e.ToString();
-                    }
+                    result.Status = SdrnMessageHandlingStatus.Error;
+                    result.ReasonFailure = e.ToString();
                 }
                 finally
                 {
                     // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
                     // формируем объект подтвержденяи о обновлении данных о сенсоре
-                    var updateSensor= new SensorUpdatingResult
+                    var updateSensor = new SensorUpdatingResult
                     {
                         EquipmentTechId = incomingEnvelope.DeliveryObject.Equipment.TechId,
                         SensorName = incomingEnvelope.DeliveryObject.Name,

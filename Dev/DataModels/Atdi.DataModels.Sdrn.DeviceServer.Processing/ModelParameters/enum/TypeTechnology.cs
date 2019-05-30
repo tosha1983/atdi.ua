@@ -8,12 +8,12 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
     public enum TypeTechnology
     {
+        Unknown,
         GSM,
         UMTS,
         CDMA,
         LTE,
-        PMR,
-        Ununknown
+        PMR
     }
 }
 

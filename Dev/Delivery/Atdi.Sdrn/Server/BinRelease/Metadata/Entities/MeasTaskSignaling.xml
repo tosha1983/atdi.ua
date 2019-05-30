@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "MeasTaskSignaling"
+  Title       = "MeasTaskSignaling"
+  Desc        = "The MeasTaskSignaling"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>XBS_MEASTASKSIGNAL</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="AutoDivisionEmitting" Title="AutoDivisionEmitting" Name="AutoDivisionEmitting" DataType="Integer.32" SourceName="AUTODIVEMIT" SourceType="Column" Required="false"/>
+    <Field Desc="CompareTraceJustWithRefLevels" Title="CompareTraceJustWithRefLevels" Name="CompareTraceJustWithRefLevels" DataType="Integer.32" SourceName="CMPTRACEJUST" SourceType="Column" Required="false"/>
+    <Field Desc="FiltrationTrace" Title="FiltrationTrace" Name="FiltrationTrace" DataType="Integer.32" SourceName="FILTRATIONTRACE" SourceType="Column" Required="false"/>
+    <Field Desc="DifferenceMaxMax" Title="DifferenceMaxMax" Name="DifferenceMaxMax" DataType="Decimal.22.8" SourceName="DIFFMAXMAX" SourceType="Column" Required="false"/>
+    <Field Desc="allowableExcess_dB" Title="allowableExcess_dB" Name="allowableExcess_dB" DataType="Decimal.22.8" SourceName="ALLOWEXCESSDB" SourceType="Column" Required="false"/>
+    <Field Desc="SignalizationNCount" Title="SignalizationNCount" Name="SignalizationNCount" DataType="Integer.32" SourceName="SIGNNCOUNT" SourceType="Column" Required="false"/>
+    <Field Desc="SignalizationNChenal" Title="SignalizationNChenal" Name="SignalizationNChenal" DataType="Integer.32" SourceName="SIGNNCHENAL" SourceType="Column" Required="false"/>
+    <Field Desc="IdMeasTask" Title="IdMeasTask" Name="IdMeasTask" DataType="Integer.64" SourceName="IDMEASTASK" SourceType="Column" Required="true"/>
+    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasTaskSignaling to MeasTask">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">IdMeasTask</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

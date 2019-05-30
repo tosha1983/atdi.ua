@@ -73,13 +73,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         var process = _processingDispatcher.Start<SpectrumOccupationProcess>(context.Process);
                                         var soTask = new SOTask();
                                         soTask.sensorParameters = context.Process.activeSensor.Convert();
-                                        soTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                        soTask.durationForSendResultSO = this._config.durationForSendResultSO; // файл конфигурации (с него надо брать)
                                         soTask.maximumTimeForWaitingResultSO = this._config.maximumTimeForWaitingResultSO;
                                         soTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
                                         soTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                         soTask.LastTimeSend = DateTime.Now;
                                         soTask.taskParameters = taskParameters;
-                                        soTask.mesureTraceParameter = soTask.taskParameters.Convert();
+                                        soTask.mesureTraceParameter = soTask.taskParameters.ConvertForSO();
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
                                         _taskStarter.RunParallel(soTask, process, context);
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(soTask.Id));
@@ -93,31 +93,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 {
                                     var signalProcess = _processingDispatcher.Start<SignalizationProcess>(context.Process);
                                     var signalTask = new SignalizationTask();
-                                    signalTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                    signalTask.durationForSendResultSignaling = this._config.durationForSendResultSignaling; // файл конфигурации (с него надо брать)
                                     signalTask.maximumTimeForWaitingResultSignalization = this._config.maximumTimeForWaitingResultSO;
                                     signalTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
                                     signalTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     signalTask.LastTimeSend = DateTime.Now;
                                     signalTask.taskParameters = taskParameters;
-                                    signalTask.mesureTraceParameter = signalTask.taskParameters.Convert();
+                                    signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
+                                    signalTask.actionConvertBW = ConvertTaskParametersToMesureTraceParameterForBandWidth.ConvertForBW;
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
                                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));
+                                    if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                    {
+                                        context.Process.listDeferredTasks.Remove(taskParameters);
+                                    }
                                 }
                                 else if (taskParameters.MeasurementType == MeasType.BandwidthMeas)
                                 {
                                     var bandWidthProcess = _processingDispatcher.Start<BandWidthProcess>(context.Process);
                                     var bandWidtTask = new BandWidthTask();
-                                    bandWidtTask.durationForSendResult = this._config.DurationForSendResult; // файл конфигурации (с него надо брать)
+                                    bandWidtTask.BandwidthEstimationType = this._config.BandwidthEstimationType;
+                                    bandWidtTask.Smooth = this._config.Smooth;
+                                    bandWidtTask.X_Beta = this._config.X_Beta;
+                                    bandWidtTask.MaximumIgnorPoint = this._config.MaximumIgnorPoint;
+                                    bandWidtTask.durationForMeasBW_ms = this._config.durationForMeasBW_ms;
+                                    bandWidtTask.durationForSendResultBandWidth = this._config.durationForSendResultBandWidth; // файл конфигурации (с него надо брать)
                                     bandWidtTask.maximumTimeForWaitingResultBandWidth = this._config.maximumTimeForWaitingResultBandWidth;
                                     bandWidtTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
                                     bandWidtTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     bandWidtTask.LastTimeSend = DateTime.Now;
                                     bandWidtTask.taskParameters = taskParameters;
-                                    bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.Convert();
+                                    bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
                                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(bandWidtTask.Id));
+                                    if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                    {
+                                        context.Process.listDeferredTasks.Remove(taskParameters);
+                                    }
                                 }
                                 else
                                 {

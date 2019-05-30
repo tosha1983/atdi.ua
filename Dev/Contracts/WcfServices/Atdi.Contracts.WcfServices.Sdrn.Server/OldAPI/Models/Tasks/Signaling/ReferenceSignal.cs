@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
-    public struct ReferenceSignal
+    public class ReferenceSignal
     {
         public double Frequency_MHz;
         public double Bandwidth_kHz;
         public double LevelSignal_dBm;
         public SignalMask SignalMask;
+        public int IcsmId;
+        public string IcsmTable;
     }
 }

@@ -255,7 +255,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        MeasurementResults GetMeasurementResultByResId(int ResId);
+        MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
         /// <summary>
         /// 
@@ -265,6 +265,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         MeasTask GetMeasTaskHeader(MeasTaskIdentifier taskId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="otherArgs"></param>
+        /// <returns></returns>
+        [OperationContract]
+        MeasTask GetMeasTaskById(int id);
 
         /// <summary>
         /// 
@@ -292,6 +301,43 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resId"></param>
+        /// <param name="StartFrequency_Hz"></param>
+        /// <param name="StopFrequency_Hz"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
+
+        /// <summary>
+        /// Delete emittings
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool DeleteEmitting(int[] emittingsId);
+
+        /// <summary>
+        /// Add association station by emitting
+        /// </summary>
+        /// <param name="emittingId"></param>
+        /// <param name="AssociatedStationID"></param>
+        /// <param name="AssociatedStationTableName"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName);
+
+        /// <summary>
+        /// Get Emittings by IcsmId identifiers
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="icsmTableName"></param>
+        /// <returns></returns>
+        [OperationContract]
+        Emitting[] GetEmittingsByIcsmId(int[] ids, string icsmTableName);
 
     }
 }

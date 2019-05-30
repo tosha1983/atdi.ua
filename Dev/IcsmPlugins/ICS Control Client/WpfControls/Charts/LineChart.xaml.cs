@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Diagnostics;
 using System.Windows.Shapes;
 using XICSM.ICSControlClient;
 
@@ -35,10 +36,18 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
     public partial class LineChart : UserControl
     {
+        private Point startPoint;
+        private Point stopPoint;
+        private Rectangle rect;
+
         private ChartOption _option;
         private ChartLineStyle _lineStyle;
         private ChartColumnsStyle _columnsStyle;
         private ChartGridStyle _gridStyle;
+
+        private double[] _selectedRangeX;
+        private Point _mouseClickPoint;
+        private ContextMenu _contextMenu;
 
         private static ChartOption GetDefaultChartOption()
         {
@@ -56,7 +65,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 YMax = 10,
                 YTick = 1,
                 YInnerTickCount = 5,
-                YLabel = "Y - Label"
+                YLabel = "Y - Label",
+                UseZoom = false
             };
         }
         public LineChart()
@@ -96,9 +106,10 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 Thickness = 1,
                 Pattern = LinePatternEnum.Solid
             };
-            
+
+            _contextMenu = new ContextMenu();
         }
-        private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void ChartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             DrawChart();
         }
@@ -115,20 +126,37 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             chartCanvas.Children.RemoveRange(1, chartCanvas.Children.Count - 1);
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
 
+            rect = new Rectangle()
+            {
+                Stroke = Brushes.LightBlue,
+                StrokeThickness = 2,
+                Fill = new SolidColorBrush(Color.FromArgb(50, 0, 100, 0))
+            };
+            chartCanvas.Children.Add(rect);
+
             this.DrawGridlines();
 
-            if(this._option.Points == null)
+            if(this._option.Points == null && this._option.PointsArray == null)
             {
                 return;
             }
 
             if (this._option.ChartType == ChartType.Line)
             {
-                this.DrawLine();
+                if (this._option.PointsArray == null)
+                    this.DrawLine();
+                else
+                    this.DrawLines();
+
+                if (this._option.LinesArray != null)
+                    this.DrawNewLines();
             }
             else if (this._option.ChartType == ChartType.Columns)
             {
                 this.DrawColumns();
+
+                if (this._option.LinesArray != null)
+                    this.DrawNewLines();
             }
 
         }
@@ -140,10 +168,9 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             double offset = 0;
             double dx, dy;
 
-            TextBlock tb = new TextBlock();
+            TextBlock tb = new TextBlock() { Text = this._option.XMax.ToString() };
 
             //  determine right offset:
-            tb.Text = this._option.XMax.ToString();
             tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             Size size = tb.DesiredSize;
             var rightOffset = size.Width / 2 + 2;
@@ -152,9 +179,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             for (dy = this._option.YMin; dy <= this._option.YMax; dy += this._option.YTick)
             {
                 pt = NormalizePoint(new Point(this._option.XMin, dy));
-                tb = new TextBlock();
-                tb.Text = dy.ToString();
-                tb.TextAlignment = TextAlignment.Right;
+                tb = new TextBlock() { Text = dy.ToString(), TextAlignment = TextAlignment.Right };
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 if (offset < size.Width)
@@ -167,10 +192,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             Canvas.SetBottom(chartCanvas, bottomOffset);
             chartCanvas.Width = Math.Abs(textCanvas.Width - leftOffset - rightOffset);
             chartCanvas.Height = Math.Abs(textCanvas.Height - bottomOffset - size.Height / 2);
-            Rectangle chartRect = new Rectangle();
-            chartRect.Stroke = Brushes.Black;
-            chartRect.Width = chartCanvas.Width;
-            chartRect.Height = chartCanvas.Height;
+            Rectangle chartRect = new Rectangle() { Stroke = Brushes.Black, Width = chartCanvas.Width, Height = chartCanvas.Height };
             chartCanvas.Children.Add(chartRect);
 
             // Create vertical gridlines:
@@ -237,16 +259,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             for (dx = this._option.XMin; dx.LessOrEqual(this._option.XMax); dx += this._option.XTick)
             {
                 pt = NormalizePoint(new Point(dx, this._option.YMin));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X;
-                tick.Y1 = pt.Y + 5;
-                tick.X2 = pt.X;
-                tick.Y2 = pt.Y - 5;
+                tick = new Line()
+                {
+                    Stroke = Brushes.Black,
+                    X1 = pt.X,
+                    Y1 = pt.Y + 5,
+                    X2 = pt.X,
+                    Y2 = pt.Y - 5
+                };
                 chartCanvas.Children.Add(tick);
 
-                tb = new TextBlock();
-                tb.Text = dx.ToString();
+                tb = new TextBlock() { Text = dx.ToString() };
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 textCanvas.Children.Add(tb);
@@ -271,16 +294,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             for (dy = this._option.YMin; dy.LessOrEqual(this._option.YMax); dy += this._option.YTick)
             {
                 pt = NormalizePoint(new Point(this._option.XMin, dy));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X - 5;
-                tick.Y1 = pt.Y;
-                tick.X2 = pt.X + 5;
-                tick.Y2 = pt.Y;
+                tick = new Line()
+                {
+                    Stroke = Brushes.Black,
+                    X1 = pt.X - 5,
+                    Y1 = pt.Y,
+                    X2 = pt.X + 5,
+                    Y2 = pt.Y
+                };
                 chartCanvas.Children.Add(tick);
 
-                tb = new TextBlock();
-                tb.Text = dy.ToString();
+                tb = new TextBlock() { Text = dy.ToString() };
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 textCanvas.Children.Add(tb);
@@ -358,10 +382,78 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             }
             chartCanvas.Children.Add(line);
         }
-
-        private void ApplyStyleToLine(Polyline line)
+        private void DrawLines()
         {
-            line.Stroke = this._lineStyle.Color;
+            foreach (var points in _option.PointsArray)
+            {
+                var line = new Polyline();
+                this.ApplyStyleToLine(line, points.LineColor);
+
+                for (int i = 0; i < points.Points.Length; i++)
+                {
+                    var point = this.NormalizePoint(points.Points[i]);
+                    line.Points.Add(point);
+                }
+                chartCanvas.Children.Add(line);
+            }
+        }
+        private void DrawNewLines()
+        {
+            foreach (var lines in this._option.LinesArray)
+            {
+                if (lines.IsHorizontal)
+                {
+                    var line = new Polyline();
+                    this.ApplyStyleToLine(line, lines.LineColor);
+
+                    var point = this.NormalizePoint(lines.Point);
+                    line.Points.Add(new Point() { X = 0, Y = point.Y });
+                    line.Points.Add(new Point() { X = chartCanvas.ActualWidth, Y = point.Y });
+                    chartCanvas.Children.Add(line);
+
+                    if (!string.IsNullOrEmpty(lines.Name))
+                    {
+                        var tb = new TextBlock()
+                        {
+                            Foreground = lines.LineColor,
+                            FontSize = 10,
+                            Text = lines.Name
+                        };
+                        tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                        chartCanvas.Children.Add(tb);
+                        Canvas.SetLeft(tb, 5);
+                        Canvas.SetTop(tb, point.Y + 5);
+                    }
+                }
+                if (lines.IsVertical)
+                {
+                    var line = new Polyline();
+                    this.ApplyStyleToLine(line, lines.LineColor);
+
+                    var point = this.NormalizePoint(lines.Point);
+                    line.Points.Add(new Point() { X = point.X, Y = 0 });
+                    line.Points.Add(new Point() { X = point.X, Y = chartCanvas.ActualHeight });
+                    chartCanvas.Children.Add(line);
+
+                    if (!string.IsNullOrEmpty(lines.Name))
+                    {
+                        var tb = new TextBlock()
+                        {
+                            Foreground = lines.LineColor,
+                            FontSize = 10,
+                            Text = lines.Name,
+                        };
+                        tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                        chartCanvas.Children.Add(tb);
+                        Canvas.SetLeft(tb, point.X + 5);
+                        Canvas.SetTop(tb, chartCanvas.ActualHeight - 25);
+                    }
+                }
+            }
+        }
+        private void ApplyStyleToLine(Polyline line, Brush lineColor)
+        {
+            line.Stroke = lineColor;
             line.StrokeThickness = this._lineStyle.Thickness;
 
             switch (this._lineStyle.Pattern)
@@ -380,65 +472,77 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     break;
             }
         }
+        private void ApplyStyleToLine(Polyline line)
+        {
+            this.ApplyStyleToLine(line, this._lineStyle.Color);
+        }
 
         private void DrawColumns()
         {
-            var points = this._option.Points;
-            var normolizedPoints = points.Select(p => this.NormalizePoint(p)).ToArray();
-
-            if (normolizedPoints.Length > 2)
+            try
             {
-                for (int i = 0; i < points.Length; i++)
+                var points = this._option.Points;
+                var normolizedPoints = points.Select(p => this.NormalizePoint(p)).ToArray();
 
+                if (normolizedPoints.Length > 2)
+                {
+                    for (int i = 0; i < points.Length; i++)
+
+                    {
+                        var rect = new Rectangle();
+                        this.ApplyStyleToColumnRectangle(rect);
+
+                        var currentPoint = normolizedPoints[i];
+                        var posX = currentPoint.X;
+                        var posY = currentPoint.Y;
+
+                        rect.Height = chartCanvas.Height - Math.Abs(currentPoint.Y);
+
+                        if (i == 0)
+                        {
+                            var nextPoint = normolizedPoints[i + 1];
+                            rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2);
+                        }
+                        else if (i == normolizedPoints.Length - 1)
+                        {
+                            var prevPoint = normolizedPoints[i - 1];
+                            rect.Width = 0.9 * ((currentPoint.X - prevPoint.X) / 2);
+                            posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
+                        }
+                        else
+                        {
+                            var nextPoint = normolizedPoints[i + 1];
+                            var prevPoint = normolizedPoints[i - 1];
+                            rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2 + (currentPoint.X - prevPoint.X) / 2);
+                            posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
+                        }
+
+                        chartCanvas.Children.Add(rect);
+                        Canvas.SetLeft(rect, posX);
+                        Canvas.SetTop(rect, posY);
+                    }
+
+                }
+                else if (normolizedPoints.Length == 1)
                 {
                     var rect = new Rectangle();
                     this.ApplyStyleToColumnRectangle(rect);
 
-                    var currentPoint = normolizedPoints[i];
-                    var posX = currentPoint.X;
+                    var currentPoint = normolizedPoints[0];
+
+                    var posX = currentPoint.X - 5;
                     var posY = currentPoint.Y;
-
                     rect.Height = chartCanvas.Height - Math.Abs(currentPoint.Y);
-
-                    if (i == 0)
-                    {
-                        var nextPoint = normolizedPoints[i + 1];
-                        rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2);
-                    }
-                    else if (i == normolizedPoints.Length - 1)
-                    {
-                        var prevPoint = normolizedPoints[i - 1];
-                        rect.Width = 0.9 * ((currentPoint.X - prevPoint.X) / 2);
-                        posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
-                    }
-                    else
-                    {
-                        var nextPoint = normolizedPoints[i + 1];
-                        var prevPoint = normolizedPoints[i - 1];
-                        rect.Width = 0.9 * ((nextPoint.X - currentPoint.X) / 2 + (currentPoint.X - prevPoint.X) / 2);
-                        posX = posX - (0.9 * ((currentPoint.X - prevPoint.X) / 2));
-                    }
-
+                    //rect.Height = Math.Abs(currentPoint.Y);
+                    rect.Width = 10;
                     chartCanvas.Children.Add(rect);
                     Canvas.SetLeft(rect, posX);
                     Canvas.SetTop(rect, posY);
                 }
-
             }
-            else if (normolizedPoints.Length == 1)
+            catch (Exception)
             {
-                var rect = new Rectangle();
-                this.ApplyStyleToColumnRectangle(rect);
-
-                var currentPoint = normolizedPoints[0];
-
-                var posX = currentPoint.X - 5;
-                var posY = currentPoint.Y;
-                rect.Height = Math.Abs(currentPoint.Y);
-                rect.Width = 10;
-                chartCanvas.Children.Add(rect);
-                Canvas.SetLeft(rect, posX);
-                Canvas.SetTop(rect, posY);
+                //throw;
             }
         }
 
@@ -448,9 +552,24 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 chartCanvas.Width = 270;
             if (chartCanvas.Height.ToString() == "NaN")
                 chartCanvas.Height = 250;
-            Point result = new Point();
-            result.X = (pt.X - this._option.XMin) * chartCanvas.Width / (this._option.XMax - this._option.XMin);
-            result.Y = chartCanvas.Height - (pt.Y - this._option.YMin) * chartCanvas.Height / (this._option.YMax - this._option.YMin);
+            Point result = new Point()
+            {
+                X = (pt.X - this._option.XMin) * chartCanvas.Width / (this._option.XMax - this._option.XMin),
+                Y = chartCanvas.Height - (pt.Y - this._option.YMin) * chartCanvas.Height / (this._option.YMax - this._option.YMin)
+            };
+            return result;
+        }
+        private Point DeNormalizePoint(Point pt)
+        {
+            if (chartCanvas.Width.ToString() == "NaN")
+                chartCanvas.Width = 270;
+            if (chartCanvas.Height.ToString() == "NaN")
+                chartCanvas.Height = 250;
+            Point result = new Point()
+            {
+                X = (pt.X * (this._option.XMax - this._option.XMin) / chartCanvas.Width) + this._option.XMin,
+                Y = ((chartCanvas.Height - pt.Y) * (this._option.YMax - this._option.YMin) + this._option.YMin * chartCanvas.Height) / chartCanvas.Height
+            };
             return result;
         }
 
@@ -472,11 +591,27 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             {
                 //SetValue(OptionProperty, value);
                 this._option = value;
+
+                foreach (MenuItem menuItem in _contextMenu.Items)
+                {
+                    menuItem.Click -= Menu_Click;
+                }
+                _contextMenu.Items.Clear();
+                chartCanvas.ContextMenu = null;
+
+                if (this._option.MenuItems != null && this._option.MenuItems.Length > 0)
+                {
+                    foreach (ChartMenuItem menuItem in this._option.MenuItems)
+                    {
+                        var item = new MenuItem() { Header = menuItem.Header, Name = menuItem.Name };
+                        item.Click += Menu_Click;
+                        _contextMenu.Items.Add(item);
+                    }
+                    chartCanvas.ContextMenu = _contextMenu;
+                }
                 DrawChart();
             }
         }
-
-        
 
         public static DependencyProperty IsXGridProperty = DependencyProperty.Register("IsXGrid", typeof(bool), typeof(LineChart),
             new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
@@ -532,9 +667,43 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             }
         }
 
+        public static DependencyProperty SelectedRangeXProperty = DependencyProperty.Register("SelectedRangeX", typeof(double[]), typeof(LineChart),
+           new FrameworkPropertyMetadata(default(double[]), new PropertyChangedCallback(OnPropertyChanged)));
 
+        public double[] SelectedRangeX
+        {
+            get { return (double[])GetValue(SelectedRangeXProperty); } 
+            set
+            {
+                SetValue(SelectedRangeXProperty, value);
+                this._selectedRangeX = value;
+            }
+        }
 
+        public static DependencyProperty MouseClickPointProperty = DependencyProperty.Register("MouseClickPoint", typeof(Point), typeof(LineChart),
+           new FrameworkPropertyMetadata(default(Point), new PropertyChangedCallback(OnPropertyChanged)));
 
+        public Point MouseClickPoint
+        {
+            get { return (Point)GetValue(MouseClickPointProperty); }
+            set
+            {
+                SetValue(MouseClickPointProperty, value);
+                this._mouseClickPoint = value;
+            }
+        }
+
+        public static DependencyProperty MenuClickProperty = DependencyProperty.Register("MenuClick", typeof(MenuItem), typeof(LineChart),
+            new FrameworkPropertyMetadata(default(MenuItem), new PropertyChangedCallback(OnPropertyChanged)));
+
+        public MenuItem MenuClick
+        {
+            get { return (MenuItem)GetValue(MenuClickProperty); }
+            set
+            {
+                SetValue(MenuClickProperty, value);
+            }
+        }
 
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -550,6 +719,101 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 lcc.IsYGrid = (bool)e.NewValue;
             else if (e.Property == OptionProperty)
                 lcc.Option = (ChartOption)e.NewValue;
+        }
+        private void ChartCanvas_LeftMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (this._option.UseZoom)
+                {
+                    startPoint = e.GetPosition(chartCanvas);
+
+                    Canvas.SetLeft(rect, startPoint.X);
+                    Canvas.SetTop(rect, 0);
+                }
+            }
+            catch (Exception msg)
+            {
+                Debug.Print(msg.Message);
+            }
+        }
+        private void ChartCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (this._option.UseZoom)
+                {
+                    if (e.LeftButton == MouseButtonState.Released || rect == null)
+                        return;
+
+                    var pos = e.GetPosition(chartCanvas);
+                    stopPoint = pos;
+                    var x = Math.Min(pos.X, startPoint.X);
+                    var y = Math.Min(pos.Y, 0);
+                    var w = Math.Max(pos.X, startPoint.X) - x;
+                    var h = Math.Max(pos.Y, startPoint.Y) - y;
+
+                    rect.Width = w;
+                    rect.Height = chartCanvas.ActualHeight;
+
+                    Canvas.SetLeft(rect, x);
+                    Canvas.SetTop(rect, y);
+                }
+            }
+            catch (Exception msg)
+            {
+                Debug.Print(msg.Message);
+            }
+        }
+        private void ChartCanvas_LeftMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this._option.UseZoom)
+            {
+                Point point1 = new Point() { X = startPoint.X, Y = startPoint.Y };
+                Point point2 = new Point() { X = stopPoint.X, Y = stopPoint.Y };
+
+                var realPoint1 = DeNormalizePoint(point1);
+                var realPoint2 = DeNormalizePoint(point2);
+
+                double[] result;
+                if (realPoint1.X > realPoint2.X)
+                    result = new double[] { realPoint2.X, realPoint1.X };
+                else
+                    result = new double[] { realPoint1.X, realPoint2.X };
+
+                if (realPoint1.X != realPoint2.X)
+                    this.SelectedRangeX = result;
+            }
+
+            var pos = e.GetPosition(chartCanvas);
+            _mouseClickPoint = DeNormalizePoint(new Point() { X = pos.X, Y = pos.Y });
+        }
+
+        private void ChartCanvas_RightMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var pos = e.GetPosition(chartCanvas);
+            _mouseClickPoint = DeNormalizePoint(new Point() { X = pos.X, Y = pos.Y });
+
+            //if (this._option.MenuItems != null && this._option.MenuItems.Length > 0)
+            //{
+            //    var canvas = sender as Canvas;
+            //    var menu = new ContextMenu();
+
+            //    foreach (var menuItem in this._option.MenuItems)
+            //    {
+            //        var item = new MenuItem();
+            //        item.Header = menuItem.Header;
+            //        item.Name = menuItem.Name;
+            //        item.Click += Menu_Click; //new RoutedEventHandler(Menu_Click);
+            //        menu.Items.Add(item);
+            //    }
+            //   canvas.ContextMenu = menu;
+            //}
+        }
+        private void Menu_Click(object sender, RoutedEventArgs e)
+        {
+            MouseClickPoint = _mouseClickPoint;
+            MenuClick = sender as MenuItem;
         }
     }
 }

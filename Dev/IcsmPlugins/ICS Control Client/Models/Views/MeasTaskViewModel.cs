@@ -46,7 +46,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public IList<MeasurementType> MeasDtParamTypeMeasurementsValues
         {
             //get { return Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>().ToList<MeasurementType>(); }
-            get { return new List<MeasurementType>() { MeasurementType.Level, MeasurementType.SpectrumOccupation}; }
+            get { return new List<MeasurementType>() { MeasurementType.Level, MeasurementType.SpectrumOccupation, MeasurementType.Signaling }; }
         }
 
         public double? MeasDtParamRBW { get; set; }
@@ -122,6 +122,16 @@ namespace XICSM.ICSControlClient.Models.Views
         public StationDataForMeasurements[] StationsForMeasurements { get; set; }
 
         public MeasStation[] Stations { get; set; }
+
+        public SignalingMeasTask SignalingMeasTaskParameters { get; set; }
+
+        public bool? CompareTraceJustWithRefLevels { get; set; }
+        public bool? AutoDivisionEmitting { get; set; }
+        public double? DifferenceMaxMax { get; set; }
+        public bool? FiltrationTrace { get; set; }
+        public double? AllowableExcess_dB { get; set; }
+        public int? SignalizationNCount { get; set; }
+        public int? SignalizationNChenal { get; set; }
 
         public string this[string columnName]
         {
