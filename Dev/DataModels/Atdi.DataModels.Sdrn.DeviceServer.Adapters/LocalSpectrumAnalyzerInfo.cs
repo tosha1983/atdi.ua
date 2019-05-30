@@ -14,64 +14,29 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters
         /// 3 = Anritsu
         /// </summary>
         public int InstrManufacture { get; set; }
-        public ParamWithUI InstrManufacrureData
-        {
-            get
-            {
-                ParamWithUI im = new InstrManufacrures().Unk;
-                if (InstrManufacture == 1) im = new InstrManufacrures().RuS;
-                else if (InstrManufacture == 2) im = new InstrManufacrures().Keysight;
-                else if (InstrManufacture == 3) im = new InstrManufacrures().Anritsu;
-                return im;
-            }
-            set { }
-        }
         public string InstrModel { get; set; }
         public string SerialNumber { get; set; }
         public bool HiSpeed { get; set; }
 
+        public decimal FreqMin { get; set; }
+        public decimal FreqMax { get; set; }
         public List<DeviceOption> InstrOption { get; set; }
         public List<DeviceOption> DefaultInstrOption { get; set; }
         public List<DeviceOption> LoadedInstrOption { get; set; }
-        private int _NumberOfTrace = 0;
-        public int NumberOfTrace
-        {
-            get { return _NumberOfTrace; }
-            set { _NumberOfTrace = value; }
-        }
+        public int NumberOfTrace { get; set; } = 0;
         public List<ParamWithId> TraceType { get; set; }
         public List<ParamWithId> TraceDetector { get; set; }
-        private bool _ChangeableSweepType = false;
-        public bool ChangeableSweepType
-        {
-            get { return _ChangeableSweepType; }
-            set { _ChangeableSweepType = value; }
-        }
+        public bool ChangeableSweepType { get; set; } = false;
         public List<ParamWithId> SweepType { get; set; }
-        private bool _SweepPointFix = false;
-        public bool SweepPointFix
-        {
-            get { return _SweepPointFix; }
-            set { _SweepPointFix = value; }
-        }
+        public bool SweepPointFix { get; set; } = false;
         public int[] SweepPointArr { get; set; }
-        public double SWTMin { get; set; }
-        public double SWTMax { get; set; }
+        public decimal SWTMin { get; set; }
+        public decimal SWTMax { get; set; }
         public int DefaultSweepPoint { get; set; }
         public decimal[] RBWArr { get; set; }
         public decimal[] VBWArr { get; set; }
-        private bool _CouplingRatio = false;
-        public bool CouplingRatio
-        {
-            get { return _CouplingRatio; }
-            set { _CouplingRatio = value; }
-        }
-        public List<ParamWithId> LevelUnits
-        {
-            get { return _LevelUnits; }
-            set { _LevelUnits = value; }
-        }
-        private List<ParamWithId> _LevelUnits = new List<ParamWithId>() { };
+        public bool CouplingRatio { get; set; } = false;
+        public List<ParamWithId> LevelUnits { get; set; } = new List<ParamWithId>() { };
 
         private bool _PreAmp = false;
         public bool PreAmp
@@ -83,20 +48,18 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters
         public decimal AttStep { get; set; }
         public decimal[] RangeArr { get; set; }
 
-        public bool Battery { get; set; }
-        public bool NdB { get; set; }
-        public bool OBW { get; set; }
-        public bool ChnPow { get; set; }
+        public bool Battery { get; set; }       
         public bool RangeFixed { get; set; }
         public decimal RefLevelMin { get; set; }
         public decimal RefLevelMax { get; set; }
         public decimal RefLevelStep { get; set; }
 
-        //private List<Transducer> _Transducers;
-        //public List<Transducer> Transducers
-        //{
-        //    get { return _Transducers; }
-        //    set { _Transducers = value; OnPropertyChanged("Transducers"); }
-        //}       
+        public bool IQAvailable { get; set; }
+        public decimal IQMaxSampleSpeed { get; set; }
+        public decimal IQMinSampleSpeed { get; set; }
+        public int IQMaxSampleLength { get; set; }
+        public decimal TriggerOffsetMax { get; set; }
+        public bool OptimizationAvailable { get; set; }
+        public List<ParamWithId> Optimization { get; set; }          
     }
 }

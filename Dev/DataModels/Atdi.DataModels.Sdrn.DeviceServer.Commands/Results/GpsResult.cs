@@ -15,5 +15,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
         public double? Lon;
         public double? Lat;
         public double? Asl;
+        public Enums.DeviceStatus DeviceStatus;
     }
 }

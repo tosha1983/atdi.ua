@@ -46,6 +46,7 @@
     <Compile Include="Commands\MesureTraceCommand.cs" />
     <Compile Include="Parameters\GpsParameter.cs" />
     <Compile Include="Parameters\Gps\Enums\GpsMode.cs" />
+    <Compile Include="Results\Enums\DeviceStatus.cs" />
     <Compile Include="Results\GpsResult.cs" />
     <Compile Include="Test\MesureGpsLocationExampleCommand.cs" />
     <Compile Include="Parameters\MesureIQStreamParameter.cs" />

@@ -19,6 +19,7 @@ using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Shaders;
 using SharpGL.SceneGraph;
 using ADP = Atdi.AppUnits.Sdrn.DeviceServer.Adapters;
+using MEN = Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums;
 
 namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 {
@@ -33,7 +34,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         float[] Trace1RGB = new float[3] { 0.3529f, 0.6274f, 0.7843f };
         float[] Trace2RGB = new float[3] { 0.1375f, 0.6274f, 0.1375f };
         float[] Trace3RGB = new float[3] { 0.7843f, 0.2352f, 0.2352f };
-        
+
         float[] Level = new float[] { };
         double[] Freq = new double[] { };
         #endregion
@@ -83,10 +84,15 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             get { return (string)GetValue(LevelUnitProperty); }
             set { SetValue(LevelUnitProperty, value); }
         }
-        public ADP.SignalHound.Adapter Adapter
+        public ADP.SpectrumAnalyzer.Adapter ANAdapter
         {
-            get { return (ADP.SignalHound.Adapter)GetValue(AdapterProperty); }
-            set { SetValue(AdapterProperty, value); }
+            get;
+            set;
+        }
+        public ADP.SignalHound.Adapter SHAdapter
+        {
+            get;
+            set;
         }
         public static readonly DependencyProperty RefLevelProperty = DependencyProperty.Register("RefLevel", typeof(double), typeof(DrawSpectrum), new PropertyMetadata(0d, null));
         public static readonly DependencyProperty LowestLevelProperty = DependencyProperty.Register("LowestLevel", typeof(double), typeof(DrawSpectrum), new PropertyMetadata(-100d, null));
@@ -97,7 +103,6 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         public static readonly DependencyProperty FreqStopProperty = DependencyProperty.Register("FreqStop", typeof(double), typeof(DrawSpectrum), new PropertyMetadata(155000000d, null));
         public static readonly DependencyProperty TracePointsProperty = DependencyProperty.Register("TracePoints", typeof(int), typeof(DrawSpectrum), new PropertyMetadata(1601, null));
         public static readonly DependencyProperty LevelUnitProperty = DependencyProperty.Register("LevelUnit", typeof(string), typeof(DrawSpectrum), new PropertyMetadata("dBm", null));
-        public static readonly DependencyProperty AdapterProperty = DependencyProperty.Register("Adapter", typeof(ADP.SignalHound.Adapter), typeof(DrawSpectrum), null);
 
 
         #endregion
@@ -169,27 +174,42 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 #region Device Drawing
                 #region
 
-
-                Level = Adapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
-                Freq = Adapter.FreqArr;
-                FreqCentr = (double)Adapter.FreqCentr;
-                FreqSpan = (double)Adapter.FreqSpan;
-                FreqStop = (double)Adapter.FreqStop;
-                FreqStart = (double)Adapter.FreqStart;
-                LevelUnit = Adapter.LevelUnit.ToString();
-                if (Adapter.LevelUnit == DataModels.Sdrn.DeviceServer.Adapters.Enums.LevelUnit.dBm)
+                if (this.Name == "DS_AN")
                 {
-                    RefLevel = (double)Adapter.RefLevel;
-                    LowestLevel = (double)Adapter.LowestLevel;
-                    Range = (double)Adapter.Range;
-                }
-                else if (Adapter.LevelUnit == DataModels.Sdrn.DeviceServer.Adapters.Enums.LevelUnit.dBµV)
-                {
-                    RefLevel = (double)Adapter.RefLevel + 107;
-                    LowestLevel = (double)Adapter.LowestLevel + 107;
-                    Range = (double)Adapter.Range;
-                }
+                    if (ANAdapter != null)
+                    {
+                        Level = ANAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
+                        Freq = ANAdapter.FreqArr;
+                        FreqCentr = (double)ANAdapter.FreqCentr;
+                        FreqSpan = (double)ANAdapter.FreqSpan;
+                        FreqStop = (double)ANAdapter.FreqStop;
+                        FreqStart = (double)ANAdapter.FreqStart;
+                        LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnits.Id).ToString();
 
+                        RefLevel = (double)ANAdapter.RefLevel;
+
+                        Range = (double)ANAdapter.Range;
+                        LowestLevel = RefLevel - Range;
+                    }
+                }
+                if (this.Name == "DS_SH")
+                {
+                    if (SHAdapter != null)
+                    {
+                        Level = SHAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
+                        Freq = SHAdapter.FreqArr;
+                        FreqCentr = (double)SHAdapter.FreqCentr;
+                        FreqSpan = (double)SHAdapter.FreqSpan;
+                        FreqStop = (double)SHAdapter.FreqStop;
+                        FreqStart = (double)SHAdapter.FreqStart;
+                        LevelUnit = SHAdapter.LevelUnit.ToString();
+
+                        RefLevel = (double)SHAdapter.RefLevel;
+
+                        Range = (double)SHAdapter.Range;
+                        LowestLevel = RefLevel - Range;
+                    }                    
+                }
                 #endregion
 
 
@@ -202,8 +222,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //OpenGL gl = openGLControl.OpenGL;
                 var gl = args.OpenGL;
                 gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-                 
-                
+
+
                 gl.LoadIdentity();
                 gl.Ortho2D(FreqStart - wGrid * 0.1, FreqStop + wGrid * 0.1, LowestLevel - 0.01, RefLevel + 0.01);
 
@@ -253,12 +273,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                     }
                 }
-                gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " + 
-                    Math.Round( Adapter.RBW,2) + "  " + Math.Round(Freq[10] - Freq[9],2));
-                gl.Flush();
-                //gl.DrawText(10, (int)13, 1.0f, 0.0f, 0.0f, "Segoe UI Mono", 10.0f, string.Format(String.Concat((int)(RefLevel / 10) * 10 - (Range / 10) *1, LevelUnit), 10, 8));
-                //gl.Flush();
-                if (Freq != null && Freq.Length > 0)
+
+                if (this.Name == "DS_AN" && ANAdapter != null)
+                {
+                    gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
+                    Math.Round(ANAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
+                    gl.Flush();
+                }
+                if (this.Name == "DS_SH" && SHAdapter != null)
+                {
+                    gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
+                       Math.Round(SHAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
+                    gl.Flush();
+                }
+                    //gl.DrawText(10, (int)13, 1.0f, 0.0f, 0.0f, "Segoe UI Mono", 10.0f, string.Format(String.Concat((int)(RefLevel / 10) * 10 - (Range / 10) *1, LevelUnit), 10, 8));
+                    //gl.Flush();
+                    if (Freq != null && Freq.Length > 0 && Level != null && Level.Length > 0)
                 {
                     gl.Begin(BeginMode.LineStrip);
                     gl.Color(Trace1RGB[0], Trace1RGB[1], Trace1RGB[2]);
@@ -300,7 +330,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //    else if (RFOverload == 1) gl.DrawText((int)w - 110, (int)h - 13, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, "IF Overload");
                 //    gl.Flush();
                 //}
-                
+
                 gl.Flush();
             }
             catch { }
