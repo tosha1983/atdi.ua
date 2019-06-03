@@ -95,6 +95,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
                     if (isWait)
                     {
+                        //var gnssTime = this._timeService.GetGnssTime();
+                        //var gnssUtcTime = this._timeService.GetGnssUtcTime();
+
                         context.Process.Asl = gpsResult.Asl.Value;
                         context.Process.Lon = gpsResult.Lon.Value;
                         context.Process.Lat = gpsResult.Lat.Value;
