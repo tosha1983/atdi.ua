@@ -336,6 +336,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     }
                     #endregion SweepTime
 
+                    #region Костыль от некоректных данных спектра от прошлого измерения
+                    if (UniqueData.InstrManufacture == 1)
+                    {
+                        if (UniqueData.InstrModel.Contains("FPL"))
+                        {
+                            //Thread.Sleep((int)(SweepTime * 4000 + 20));
+                        }
+                        else
+                        {
+                            Thread.Sleep((int)(SweepTime * 4000 + 10));
+                        }
+                    }
+                    else if (UniqueData.InstrManufacture == 2)
+                    {
+                        Thread.Sleep((int)(SweepTime * 4000 + 30));
+                    }
+                    else if (UniqueData.InstrManufacture == 3)
+                    {
+                        Thread.Sleep((int)(SweepTime * 4000 + 30));
+                    }
+                    #endregion
+
+
                     //Устанавливаем сколько трейсов хотим
                     if (command.Parameter.TraceCount > 0)
                     {
@@ -593,7 +616,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
                 SetSampleLength(SampleLength);
                 //SetIQMeasTime(IQMeasTimeAll);
-                GetIQStream(IQMeasTimeAll, SampleLength);
+
+                COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final)
+                {
+                    DeviceStatus = COMR.Enums.DeviceStatus.Normal
+                };
+                if (GetIQStream(ref result, IQMeasTimeAll, SampleLength))
+                {
+                    context.PushResult(result);
+                }
+                context.Unlock();
+                context.Finish();
             }
             catch (Exception e)
             {
@@ -3816,8 +3849,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             }
         }
 
-        private void GetIQStream(decimal meastime, int sample)
+        private bool GetIQStream(ref COMR.MesureIQStreamResult result, decimal meastime, int sample)
         {
+            bool res = false;
             try
             {
                 if (UniqueData.InstrManufacture == 1)
@@ -3880,7 +3914,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
                     //Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
                     IQArr = temp;
+
+                    result.iq_samples[0] = temp;
+                    result.OneSempleDuration_ns = (long)(SampleTimeLength / 1000000000);
+                    //result.TimeStamp = ;
+                    //result.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// надыбать время первого семпла
+                    //result.PPSTimeDifference_ns = TimeToStartBlockWithPPS;// когда был ппс точно относительно первого семпла
+
                 }
+
+                res = true;
             }
             #region Exception
             catch (VisaException v_exp)
@@ -3892,6 +3935,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 _logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
+            return res;
         }
         #endregion
 
