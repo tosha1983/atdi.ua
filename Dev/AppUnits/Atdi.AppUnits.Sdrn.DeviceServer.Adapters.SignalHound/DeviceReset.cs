@@ -433,143 +433,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             byte[] propertyBuffer = new byte[requiredSize];
             CheckWin32CallSuccess(SetupDiGetDeviceInstanceId(infoSet, ref devInfo, sb, propertyBuffer.Length, out requiredSize));
 
-            return sb.ToString();// Encoding.Unicode.GetString(propertyBuffer);
+            return sb.ToString();
         }
 
 
-        public static void DeviceState(Func<string, bool> hardwareIdFilter, bool enable)
-        {
-            Guid nullGuid = Guid.Empty;
-            using (SafeDeviceInformationSetHandle infoSet = SetupDiGetClassDevs(ref nullGuid, null, IntPtr.Zero, DIGCF.ALLCLASSES))
-            {
-                CheckWin32CallSuccess(!infoSet.IsInvalid);
-
-                SP_DEVINFO_DATA devInfo = new SP_DEVINFO_DATA();
-                devInfo.cbSize = (UInt32)Marshal.SizeOf(devInfo);
-
-                for (uint index = 0; ; ++index)
-                {
-                    CheckWin32CallSuccess(SetupDiEnumDeviceInfo(infoSet, index, ref devInfo));
-
-                    string hardwareId = GetDeviceInstance(infoSet, devInfo);//ref devInfo, SPDRP.HARDWAREID);
-
-                    if ((!string.IsNullOrEmpty(hardwareId)) && (hardwareIdFilter(hardwareId)))
-                    {
-                        Console.WriteLine(hardwareId);
-                        Console.WriteLine(GetDeviceInstance(infoSet, devInfo));
-                        break;
-                    }
-                }
-
-                SP_CLASSINSTALL_HEADER classinstallHeader = new SP_CLASSINSTALL_HEADER();
-                classinstallHeader.cbSize = (UInt32)Marshal.SizeOf(classinstallHeader);
-                classinstallHeader.InstallFunction = DIF.PROPERTYCHANGE;
-
-                SP_PROPCHANGE_PARAMS propchangeParams = new SP_PROPCHANGE_PARAMS
-                {
-                    ClassInstallHeader = classinstallHeader,
-                    StateChange = enable ? DICS.ENABLE : DICS.DISABLE,
-                    Scope = DICS_FLAG.GLOBAL,
-                    HwProfile = 0,
-                };
-
-                CheckWin32CallSuccess(SetupDiSetClassInstallParams(infoSet, ref devInfo, ref propchangeParams, (UInt32)Marshal.SizeOf(propchangeParams)));
-
-                CheckWin32CallSuccess(SetupDiChangeState(infoSet, ref devInfo));
-            }
-        }
-
-        public static bool SignalHoundBB60State(string SerialNumber, FindDeviceBy DeviceBy, bool enable)
-        {
-            bool res = false;
-            string BB60C = @"USB\VID_2817&PID_0002";//@"USB\VID_090C&PID_1000";// @"USB\VID_2817&PID_0002";
-            string BB60C_2 = @"USB\VID_2817&PID_0005"; //@"USB\VID_090C&PID_1000";//@"USB\VID_2817&PID_0005";
-            string BB60CWithSN = BB60C + @"\" + SerialNumber;// @"USB\VID_2817&PID_0002";
-            string BB60C_2WithSN = BB60C_2 + @"\" + SerialNumber;//@"USB\VID_2817&PID_0005";
-            string DeviceName = "BB60";
-            //по идее гуид класса устройств с USB, по одному нему нельзя т.к. попытается грохнуть все с USB
-            Guid USBGuid = new Guid("36fc9e60-c465-11cf-8056-444553540000");
-
-            Guid nullGuid = Guid.Empty;
-            using (SafeDeviceInformationSetHandle infoSet = SetupDiGetClassDevs(ref nullGuid, null, IntPtr.Zero, DIGCF.ALLCLASSES))
-            {
-                CheckWin32CallSuccess(!infoSet.IsInvalid);
-
-                SP_DEVINFO_DATA devInfo = new SP_DEVINFO_DATA();
-                devInfo.cbSize = (UInt32)Marshal.SizeOf(devInfo);
-
-                for (uint index = 0; ; ++index)
-                {
-                    bool success = SetupDiEnumDeviceInfo(infoSet, index, ref devInfo);
-                    if (!success)
-                    {
-                        // No more devices in the device information set
-                        break;
-                    }
-
-                    string hardwareId = GetDeviceInstance(infoSet, devInfo);
-
-                    bool thisdev = false;
-                    if ((!string.IsNullOrEmpty(hardwareId)))
-                    {
-                        if (DeviceBy == FindDeviceBy.VIDPID &&
-                            devInfo.ClassGuid == USBGuid &&
-                            (hardwareId.Contains(BB60C) || hardwareId.Contains(BB60C_2)) &&
-                            GetStringPropertyForDevice(infoSet, ref devInfo, SPDRP.DEVICEDESC).Contains(DeviceName))
-                        {
-                            thisdev = true;
-                        }
-                        else if (DeviceBy == FindDeviceBy.VIDPIDSN &&
-                            devInfo.ClassGuid == USBGuid &&
-                            (hardwareId.Contains(BB60CWithSN) || hardwareId.Contains(BB60C_2WithSN)) &&
-                            GetStringPropertyForDevice(infoSet, ref devInfo, SPDRP.DEVICEDESC).Contains(DeviceName))
-                        {
-                            thisdev = true;
-                        }
-                        else if (DeviceBy == FindDeviceBy.All &&
-                            devInfo.ClassGuid == USBGuid &&
-                            (hardwareId.Contains(BB60CWithSN) || hardwareId.Contains(BB60C_2WithSN)) &&
-                            GetStringPropertyForDevice(infoSet, ref devInfo, SPDRP.DEVICEDESC).Contains(DeviceName))
-                        {
-                            thisdev = true;
-                        }
-                    }
-                    if (thisdev)
-                    {
-                        Console.WriteLine(hardwareId);
-                        Console.WriteLine(GetStringPropertyForDevice(infoSet, ref devInfo, SPDRP.HARDWAREID));
-                        try
-                        {
-                            SP_CLASSINSTALL_HEADER classinstallHeader = new SP_CLASSINSTALL_HEADER();
-                            classinstallHeader.cbSize = (UInt32)Marshal.SizeOf(classinstallHeader);
-                            classinstallHeader.InstallFunction = DIF.PROPERTYCHANGE;
-
-                            SP_PROPCHANGE_PARAMS propchangeParams = new SP_PROPCHANGE_PARAMS
-                            {
-                                ClassInstallHeader = classinstallHeader,
-                                StateChange = enable ? DICS.ENABLE : DICS.DISABLE,
-                                Scope = DICS_FLAG.GLOBAL,
-                                HwProfile = 0,
-                            };
-
-                            CheckWin32CallSuccess(SetupDiSetClassInstallParams(infoSet, ref devInfo, ref propchangeParams, (UInt32)Marshal.SizeOf(propchangeParams)));
-
-                            CheckWin32CallSuccess(SetupDiChangeState(infoSet, ref devInfo));
-
-                            res = thisdev;
-                            Console.WriteLine(res);
-                        }
-                        catch { }
-                        finally { }
-                        //break;
-                    }
-                }
-
-
-            }
-
-            return res;
-        }
+        
 
         public static bool SignalHoundBB60StatePrepared(string SerialNumber, bool enable)
         {
@@ -611,10 +479,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
 
                         if (thisdev)
-                        {
-                            Console.WriteLine(hardwareId);
-                            Console.WriteLine(GetStringPropertyForDevice(infoSet, ref devInfo, SPDRP.HARDWAREID));
-
+                        {                           
                             SP_CLASSINSTALL_HEADER classinstallHeader = new SP_CLASSINSTALL_HEADER();
                             classinstallHeader.cbSize = (UInt32)Marshal.SizeOf(classinstallHeader);
                             classinstallHeader.InstallFunction = DIF.PROPERTYCHANGE;
@@ -632,7 +497,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             CheckWin32CallSuccess(SetupDiChangeState(infoSet, ref devInfo));
 
                             res = thisdev;
-                            Console.WriteLine(res);
                         }
                     }
                 }
