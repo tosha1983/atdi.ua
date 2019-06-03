@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
@@ -15,6 +16,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         int readLock;
         SerialPort serialPort;
 
+        static bool isRunning = false;
+
+        List<long> OffsetToAvg = new List<long>();
+        bool _CDHolding= false;
+        long CorrectTime { get; set; }
+        public long OffsetToAvged { get; set; }
+        
+
         public SerialPortSettings PortSettings { get; private set; }
 
         #region NMEAPort
@@ -23,7 +32,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             get { return serialPort.IsOpen; }
         }
-        
+
+        public void SetCorrectionTime(long correctTime)
+        {
+            CorrectTime = correctTime;
+            OffsetToAvged = CorrectTime;
+            if (isRunning == false)
+            {
+                StartPPSMonitor();
+            }
+        }
+
         #endregion
 
         #endregion
@@ -36,20 +55,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             #region serialPort initialization
 
             PortSettings = portSettings;
-
             serialPort = new SerialPort(
                 PortSettings.PortName,
                 (int)PortSettings.PortBaudRate,
                 PortSettings.PortParity,
                 (int)PortSettings.PortDataBits,
-                PortSettings.PortStopBits);
-
-            serialPort.Handshake = portSettings.PortHandshake;
-            serialPort.Encoding = Encoding.ASCII;
+                PortSettings.PortStopBits)
+            {
+                Handshake = portSettings.PortHandshake,
+                Encoding = Encoding.ASCII
+            };
 
             serialPort.ErrorReceived += new SerialErrorReceivedEventHandler(serialPort_ErrorReceived);
             serialPort.DataReceived += new SerialDataReceivedEventHandler(serialPort_DataReceived);
-
             #endregion
         }
       
@@ -134,6 +152,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         #region Handlers
 
         #region serialPort
+
+        private void StartPPSMonitor()
+        {
+            var PPSThread = new Thread(GetPPSData)
+            {
+                Name = "PPSThread",
+                IsBackground = true
+            };
+            PPSThread.Start();
+            isRunning = true;
+        }
+
+        void GetPPSData()
+        {
+            long PPSStep = 10000000;
+            bool b;
+            long offtime = 0;
+            while (serialPort.IsOpen)
+            {
+                b = serialPort.CDHolding;
+                if (b != _CDHolding)
+                {
+                    if (b)
+                    {
+                        offtime = (int)CorrectTime + PPSStep;
+                        if ((int)CorrectTime != 0)
+                        {
+                            if (OffsetToAvg.Count > 599)
+                            { OffsetToAvg.RemoveAt(0); }
+                            OffsetToAvg.Add(offtime);
+
+                            OffsetToAvged = OffsetToAvg[0];
+
+                            for (int i = 1; i < OffsetToAvg.Count; i++)
+                            {
+                                OffsetToAvged += OffsetToAvg[i];
+                            }
+
+                            OffsetToAvged = OffsetToAvged / OffsetToAvg.Count;
+                            CorrectTime = 0;
+                        }
+                        Thread.Sleep(900);
+                    }
+                    _CDHolding = b;
+                }
+            }
+        }
 
         private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {

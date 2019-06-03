@@ -15,6 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
     /// </summary>
     public class GPSAdapter : IAdapter
     {
+        private readonly ITimeService _timeService;
         private readonly ILogger _logger;
         private readonly ConfigGPS _config;
         private GNSSReceiverWrapper gnssWrapper;
@@ -29,11 +30,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         /// <param name="logger"></param>
         public GPSAdapter(ConfigGPS config,
             IWorkScheduler workScheduler,
+            ITimeService timeService,
             ILogger logger)
         {
             this._logger = logger;
             this._config = config;
             this._logger = logger;
+            this._timeService = timeService;
             this._workScheduler = workScheduler;
         }
 
@@ -161,7 +164,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 var sentence = (result as NMEAStandartSentence);
                                 if (sentence.SentenceID == SentenceIdentifiers.GGA)
                                 {
-
                                     if (_executionContextGps.Token.IsCancellationRequested)
                                     {
                                         _executionContextGps.Cancel();
@@ -185,6 +187,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                     // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
                                     _executionContextGps.Finish();
                                     gnssWrapper.LogEvent -= new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+                                }
+                                if ((sentence.TalkerID == TalkerIdentifiers.GP) &&
+                                (sentence.SentenceID == SentenceIdentifiers.RMC))
+                                {
+                                    gnssWrapper.port.SetCorrectionTime(((DateTime)sentence.parameters[0]).Ticks - this._timeService.TimeStamp.Ticks);
+                                    this._timeService.TimeCorrection = gnssWrapper.port.OffsetToAvged;
                                 }
                             }
                         }

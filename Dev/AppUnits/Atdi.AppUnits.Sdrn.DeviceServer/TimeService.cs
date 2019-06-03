@@ -34,14 +34,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
         public DateTime GetGnssTime()
         {
-            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
-            return DateTime.Now;
+            var date = new DateTime(TimeStamp.Ticks + TimeCorrection, DateTimeKind.Utc);
+            return date.ToLocalTime();
         }
 
         public DateTime GetGnssUtcTime()
         {
-            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
-            return DateTime.UtcNow;
+            return new DateTime(TimeStamp.Ticks + TimeCorrection, DateTimeKind.Utc);
         }
     }
 }
