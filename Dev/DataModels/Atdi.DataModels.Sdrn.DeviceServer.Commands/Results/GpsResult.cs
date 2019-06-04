@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
                : base(partIndex, status)
         {
         }
+        public long? TimeCorrection { get; set; }
         public double? Lon;
         public double? Lat;
         public double? Asl;

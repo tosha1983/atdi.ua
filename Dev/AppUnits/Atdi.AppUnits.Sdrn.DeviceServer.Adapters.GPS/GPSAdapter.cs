@@ -22,6 +22,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         private IExecutionContext _executionContextGps;
         private readonly IWorkScheduler _workScheduler;
         private ulong part = 0;
+        private COMR.GpsResult resultMember = null;
         /// <summary>
         /// Все объекты адаптера создаются через DI-контейнер 
         /// Запрашиваем через конструктор необходимые сервисы
@@ -74,7 +75,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Start)
                 {
                     _executionContextGps = context;
-                    gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+                    resultMember = new COMR.GpsResult(part++, CommandResultStatus.Next);
                 }
                 else if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Stop)
                 {
@@ -136,6 +137,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 try
                 {
                     gnssWrapper.Open();
+                    gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
                     this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OpenDevice);
                 }
                 catch (Exception ex)
@@ -150,12 +152,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             try
             {
-                if ((_executionContextGps != null) && (e != null))
+                if ((_executionContextGps != null) && (e != null) && (resultMember!=null))
                 {
-                    var resultMember = new COMR.GpsResult(part++, CommandResultStatus.Final);
                     var data = e.LogString;
                     if (data != null)
                     {
+                        if (!data.EndsWith("\r\n"))
+                        {
+                            data += "\r\n";
+                        }
+                        if (!data.StartsWith("$"))
+                        {
+                            data = data.Insert(0,"$");
+                        }
+
+                        
                         var result = NMEAParser.Parse(data);
                         if (result != null)
                         {
@@ -181,18 +192,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                         resultMember.Lon = resultMember.Lon * (-1);
                                     resultMember.Lon = (double)Math.Round(resultMember.Lon.Value, 6);
                                     resultMember.Asl = (double)Math.Round((double)sentence.parameters[8], 2);
+                                }
+                                if ((sentence.TalkerID == TalkerIdentifiers.GP) && (sentence.SentenceID == SentenceIdentifiers.RMC))
+                                {
+                                    if (this._config.EnabledPPS)
+                                    {
+                                        if (sentence.parameters[2] != null)
+                                        {
+                                            resultMember.Lat = Convert.ToDouble(sentence.parameters[2]);
+                                        }
+                                        if (sentence.parameters[4] != null)
+                                        {
+                                            resultMember.Lon = Convert.ToDouble(sentence.parameters[4]);
+                                        }
+                                        gnssWrapper.port.SetCorrectionTime(((DateTime)sentence.parameters[0]).Ticks - this._timeService.TimeStamp.Ticks);
+                                        this._timeService.TimeCorrection = gnssWrapper.port.OffsetToAvged;
+                                    }
+                                    else
+                                    {
+                                        this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - this._timeService.TimeStamp.Ticks;
+                                    }
 
-
+                                    resultMember.TimeCorrection = this._timeService.TimeCorrection;
+                                }
+                                if ((resultMember.Lon != null) && (resultMember.Lat != null) && (resultMember.Asl!=null) && (resultMember.TimeCorrection != null))
+                                {
                                     _executionContextGps.PushResult(resultMember);
                                     // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
                                     _executionContextGps.Finish();
-                                    gnssWrapper.LogEvent -= new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
-                                }
-                                if ((sentence.TalkerID == TalkerIdentifiers.GP) &&
-                                (sentence.SentenceID == SentenceIdentifiers.RMC))
-                                {
-                                    gnssWrapper.port.SetCorrectionTime(((DateTime)sentence.parameters[0]).Ticks - this._timeService.TimeStamp.Ticks);
-                                    this._timeService.TimeCorrection = gnssWrapper.port.OffsetToAvged;
                                 }
                             }
                         }
