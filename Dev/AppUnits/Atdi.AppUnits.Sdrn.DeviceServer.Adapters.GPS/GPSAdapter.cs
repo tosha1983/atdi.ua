@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using COM = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using COMR = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 using Atdi.DataModels.Sdrn.DeviceServer.Processing;
-
+using Atdi.Common;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 {
@@ -205,12 +205,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                         {
                                             resultMember.Lon = Convert.ToDouble(sentence.parameters[4]);
                                         }
-                                        gnssWrapper.port.SetCorrectionTime(((DateTime)sentence.parameters[0]).Ticks - this._timeService.TimeStamp.Ticks);
+                                        gnssWrapper.port.SetUTCTime(((DateTime)sentence.parameters[0]).Ticks);
                                         this._timeService.TimeCorrection = gnssWrapper.port.OffsetToAvged;
                                     }
                                     else
                                     {
-                                        this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - this._timeService.TimeStamp.Ticks;
+                                        this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - WinAPITime.GetTimeStamp();
                                     }
 
                                     resultMember.TimeCorrection = this._timeService.TimeCorrection;

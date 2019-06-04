@@ -3,6 +3,7 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
+using Atdi.Common;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
@@ -20,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
         List<long> OffsetToAvg = new List<long>();
         bool _CDHolding= false;
-        long CorrectTime { get; set; }
+        long UTCTime { get; set; }
         public long OffsetToAvged { get; set; }
         
 
@@ -33,10 +34,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             get { return serialPort.IsOpen; }
         }
 
-        public void SetCorrectionTime(long correctTime)
+        public void SetUTCTime(long utcTime)
         {
-            CorrectTime = correctTime;
-            OffsetToAvged = CorrectTime;
+            UTCTime = utcTime;
             if (isRunning == false)
             {
                 StartPPSMonitor();
@@ -176,8 +176,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 {
                     if (b)
                     {
-                        offtime = (int)CorrectTime + PPSStep;
-                        if ((int)CorrectTime != 0)
+                        offtime = UTCTime - WinAPITime.GetTimeStamp() + PPSStep;// (int)CorrectTime + PPSStep;
+                        if ((int)UTCTime != 0)
                         {
                             if (OffsetToAvg.Count > 599)
                             { OffsetToAvg.RemoveAt(0); }
@@ -191,7 +191,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                             }
 
                             OffsetToAvged = OffsetToAvged / OffsetToAvg.Count;
-                            CorrectTime = 0;
                         }
                         Thread.Sleep(900);
                     }

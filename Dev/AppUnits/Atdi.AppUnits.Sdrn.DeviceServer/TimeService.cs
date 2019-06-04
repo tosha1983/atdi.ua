@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Atdi.Common;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer
 {
@@ -34,13 +35,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
         public DateTime GetGnssTime()
         {
-            var date = new DateTime(TimeStamp.Ticks + TimeCorrection, DateTimeKind.Utc);
+            var date = new DateTime(WinAPITime.GetTimeStamp() + TimeCorrection, DateTimeKind.Utc);
             return date.ToLocalTime();
         }
 
         public DateTime GetGnssUtcTime()
         {
-            return new DateTime(TimeStamp.Ticks + TimeCorrection, DateTimeKind.Utc);
+            return new DateTime(WinAPITime.GetTimeStamp() + TimeCorrection, DateTimeKind.Utc);
         }
     }
 }
