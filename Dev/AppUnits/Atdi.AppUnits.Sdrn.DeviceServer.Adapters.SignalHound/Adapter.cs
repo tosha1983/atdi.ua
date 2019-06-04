@@ -204,7 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         VBW = vbw;
                         SweepTime = (decimal)command.Parameter.SweepTime_s;
                         StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));
-                  
+
                     }
                     else
                     {
@@ -268,7 +268,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
                                 result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
 
-
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                                 context.PushResult(result);
                             }
 
@@ -279,7 +279,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                                 // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
                                 var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Ragged);
-
+                                result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                                 context.PushResult(result2);
 
 
@@ -313,6 +313,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
 
                                 var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Ragged);
+                                result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                                 //Скорее нет результатов
                                 //result2.Freq_Hz = new double[FreqArr.Length];
                                 //result2.Level = new float[FreqArr.Length];
@@ -336,7 +337,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
                             {
                                 Freq_Hz = new double[FreqArr.Length],
-                                Level = new float[FreqArr.Length]
+                                Level = new float[FreqArr.Length],
+                                DeviceStatus = COMR.Enums.DeviceStatus.Normal
                             };
                             for (int j = 0; j < FreqArr.Length; j++)
                             {
@@ -494,7 +496,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         IdleState = true;
 
                         //инициализация перед пуском, подготавливаемся к приему данных 
-                        COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final); //ReceivedIQStream riq = new ReceivedIQStream();
+                        COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final)
+                        {
+                            DeviceStatus = COMR.Enums.DeviceStatus.Normal
+                        }; 
                         TempIQData tiq = new TempIQData();
                         InitialReceivedIQStream(ref result, ref tiq, BlockDuration, ReceiveTime, command.Parameter.TimeStart * 100);
                         //закончили подготовку
@@ -1564,6 +1569,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         iq_samples = new float[IQStopIndex - IQStartIndex][]
                     };
                     Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
+                    
                 }
                 else
                 {
@@ -1571,7 +1577,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
-
+                IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                 if (JustWithSignal && !SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
                 {
                     throw new Exception("Signal not detected");
@@ -1712,7 +1718,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             return rpps;
         }
         #endregion Adapter Properties
-#endregion Private Method
+        #endregion Private Method
 
 
         private class TempIQData
