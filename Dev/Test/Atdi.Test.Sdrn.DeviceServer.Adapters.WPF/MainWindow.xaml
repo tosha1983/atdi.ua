@@ -12,17 +12,56 @@
             <ColumnDefinition Width="200">
             </ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <local:DrawSpectrum x:Name="DS" />
+        <TabControl>
+            <TabItem Header="Speq">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <local:DrawSpectrum x:Name="DS_AN" />
+                    <local:DrawSpectrum x:Name="DS_SH" Grid.Row="1" />
+                    <!--<local:DrawIQ x:Name="ANIQ" />
+            <local:DrawIQ x:Name="SHIQ" Grid.Row="1" />-->
+                </Grid>
+            </TabItem>
+            <TabItem Header="IQ">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <local:DrawIQ x:Name="ANIQ" />
+                    <local:DrawIQ x:Name="SHIQ" Grid.Row="1" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
+        
         <StackPanel Grid.Column="1">
+            <Button Click="StartTime_Click" Content="Time"/>
             <Button Click="Connect_Click" Content="Connect"/>
             <Button Click="Disconnect_Click" Content="Disconnect"/>
             <Button Click="SaveToFile" Content="Save Trace To File"/>
             <RepeatButton Click="SetMeas1_Click" Content="Set Meas 1" Delay="10"/>
             <TextBox Name="points"  Text="800"/>
-            <RepeatButton Click="SetMeas2_Click" Content="Set Meas 2" Delay="10"/>
-            <RepeatButton Click="SetMeas21_Click" Content="Set Meas 21" Delay="10"/>
+
+
+            <RepeatButton Click="GetTime_Click" Content="GET Time" Margin="0,10,0,0"/>
+            <RepeatButton Click="GetTrace_Click" Content="GET Trace" />
+            <RepeatButton Click="SetMeas2_Click" Content="GET Trace2" />
+            <RepeatButton Click="SetMeas3_Click" Content="GET Trace3" />
+            <RepeatButton Click="SetMeas1800_Click" Content="GET Trace 1800" />
+            <RepeatButton Click="SetMeas1800AVG_Click" Content="GET Trace 1800 AVG" />
+            <RepeatButton Click="SetMeasIQ_Click" Content="GET IQ" />
+            
+            <RepeatButton Click="SetMeas21_Click" Content="Set Meas 21" Margin="0,20,0,0" Delay="10"/>
             <RepeatButton Click="SetMeas22_Click" Content="Set Meas 22" Delay="10"/>
             <Button Click="GetIQ1_Click" Content="GetIQ1" Margin="0,10,0,0"/>
+            <Button Click="SetWND_Click" Content="SET IQ AN" Margin="0,10,0,0"/>
+            <Button Click="SetWNDType_Click" Content="SPEC/IQ" Margin="0,10,0,0"/>
+            <RepeatButton Click="GetIQAN_Click" Content="AN GET IQ" Margin="0,10,0,0"/>
+            
         </StackPanel>
         
     </Grid>

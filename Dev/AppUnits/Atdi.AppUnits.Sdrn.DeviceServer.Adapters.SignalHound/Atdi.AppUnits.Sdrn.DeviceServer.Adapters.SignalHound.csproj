@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -67,6 +67,7 @@
     <Compile Include="AdapterDriver.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AveragedTrace.cs" />
+    <Compile Include="DeviceReset.cs" />
     <Compile Include="LocalParametersConverter.cs" />
     <Compile Include="Enums\Attenuator.cs" />
     <Compile Include="Enums\DemodType.cs" />

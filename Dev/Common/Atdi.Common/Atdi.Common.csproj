@@ -45,6 +45,8 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\SerializationExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="WinAPITime.cs" />
+    <Compile Include="OSInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BinaryDecoder.cs" />
     <Compile Include="TimeStamp.cs" />

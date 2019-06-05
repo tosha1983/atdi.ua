@@ -446,7 +446,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 }
                                                 if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
                                                 {
-                                                    loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                                    loss.Add(readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
                                                 }
                                             }
                                             return true;

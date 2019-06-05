@@ -208,7 +208,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
     {
         #region Properties
 
-        NMEASerialPort port;
+        public NMEASerialPort port;
         private delegate void ProcessCommandDelegate(object[] parameters);
         private Dictionary<SentenceIdentifiers, ProcessCommandDelegate> cmdProcessor;
 

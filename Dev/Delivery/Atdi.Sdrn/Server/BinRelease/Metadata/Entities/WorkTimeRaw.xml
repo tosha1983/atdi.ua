@@ -14,7 +14,7 @@
     <Field Desc="StartEmitting" Title="StartEmitting" Name="StartEmitting" DataType="DateTime" SourceName="STARTEMIT" SourceType="Column" Required="false"/>
     <Field Desc="StopEmitting" Title="StopEmitting" Name="StopEmitting" DataType="DateTime" SourceName="STOPTEMIT" SourceType="Column" Required="false"/>
     <Field Desc="HitCount" Title="HitCount" Name="HitCount" DataType="Integer.32" SourceName="HITCOUNT" SourceType="Column" Required="false"/>
-    <Field Desc="PersentAvailability" Title="PersentAvailability" Name="PersentAvailability" DataType="Decimal.22.8" SourceName="PERCENTAVAILABLE" SourceType="Column" Required="false"/>
+    <Field Desc="PersentAvailability" Title="PersentAvailability" Name="PersentAvailability" DataType="Float.22.8" SourceName="PERCENTAVAILABLE" SourceType="Column" Required="false"/>
     <Field Desc="EmittingId" Title="EmittingId" Name="EmittingId" DataType="Integer.64" SourceName="EMITTING_ID" SourceType="Column" Required="false"/>
     <Field Name="EMITTING" SourceType="Reference" SourceName="EmittingRaw" Title="Relation WorkTimeRaw to EmittingRaw">
       <PrimaryKeyMapping>

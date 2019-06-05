@@ -16,5 +16,11 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
         public float[] Level;
         public double[] Freq_Hz;
         public long TimeStamp; //Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
+        public int RefLevel_dBm;//Возвращает в любом случаее текущий установленный
+        public int Att_dB;//Возвращает в любом случаее текущий установленный
+        public int PreAmp_dB;//Возвращает в любом случаее текущий установленный
+        public double RBW_Hz;//Возвращает в любом случаее текущий установленный
+        public double VBW_Hz;//Возвращает в любом случаее текущий установленный
+        public Enums.DeviceStatus DeviceStatus;
     }
 }
