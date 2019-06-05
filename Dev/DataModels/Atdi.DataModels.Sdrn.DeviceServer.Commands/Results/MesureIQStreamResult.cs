@@ -16,5 +16,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
         public long OneSempleDuration_ns;
         public long TimeStamp; //Тики относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
         public long PPSTimeDifference_ns; //PPS относительно ближайшей секунды TimeStamp;
+        public Enums.DeviceStatus DeviceStatus;
     }
 }

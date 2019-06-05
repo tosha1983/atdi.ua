@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Atdi.Common;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer
 {
@@ -34,14 +35,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
         public DateTime GetGnssTime()
         {
-            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
-            return DateTime.Now;
+            var date = new DateTime(WinAPITime.GetTimeStamp() + TimeCorrection, DateTimeKind.Utc);
+            return date.ToLocalTime();
         }
 
         public DateTime GetGnssUtcTime()
         {
-            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
-            return DateTime.UtcNow;
+            return new DateTime(WinAPITime.GetTimeStamp() + TimeCorrection, DateTimeKind.Utc);
         }
     }
 }

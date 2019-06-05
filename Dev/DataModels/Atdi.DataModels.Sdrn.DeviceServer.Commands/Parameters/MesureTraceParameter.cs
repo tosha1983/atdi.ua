@@ -12,7 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         public double VBW_Hz; // -1 = auto; 
         public decimal FreqStart_Hz; // mandatory 
         public decimal FreqStop_Hz;  // mandatory 
-        public double SweepTime_s; //-1 = auto
+        public double SweepTime_s; //-1 = auto Для Анализаторов спектра всегда -1 = auto
         public int Att_dB; //-1 = auto, 
         public int PreAmp_dB; //-1 = auto, 
         public int RefLevel_dBm; // 1000000000 = auto
