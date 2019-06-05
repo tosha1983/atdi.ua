@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AC = Atdi.Common;
 using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.DataModels.Sdrn.DeviceServer.Adapters;
 using ADP = Atdi.AppUnits.Sdrn.DeviceServer.Adapters;
 using CMD = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using Atdi.UnitTest.Sdrn.DeviceServer;
@@ -35,6 +36,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         //ADP.SignalHound.Adapter adapter;
         ADP.SpectrumAnalyzer.Adapter ANadapter;
         ADP.SignalHound.Adapter SHadapter;
+
+        ADP.GPS.GPSAdapter GPSadapter;
         GNSSNMEA gnss;
 
         private delegate void AnyDelegate();
@@ -43,6 +46,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         private AnyDelegate AND;
         private Thread SHThread;
         private AnyDelegate SHD;
+
+        private Thread GPSThread;
+        private AnyDelegate GPSD;
         public MainWindow()
         {
             InitializeComponent();
@@ -72,19 +78,25 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //TimeThread.IsBackground = true;
             //TimeThread.Start();
 
-            ANThread = new Thread(ANWorks);
-            ANThread.Name = "ANThread";
-            ANThread.IsBackground = true;
-            ANThread.Start();
-            AND += ANConnect;
+            //ANThread = new Thread(ANWorks);
+            //ANThread.Name = "ANThread";
+            //ANThread.IsBackground = true;
+            //ANThread.Start();
+            //AND += ANConnect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
+
+            GPSThread = new Thread(GPSWorks);
+            GPSThread.Name = "GPSThread";
+            GPSThread.IsBackground = true;
+            GPSThread.Start();
+            GPSD += GPSConnect;
         }
-        long NextSecond = 0;
+        //long NextSecond = 0;
         private void GetGPSData()
         {
             while (true)
@@ -93,7 +105,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 {
                     //Debug.WriteLine(gnss.LocalTime.Ticks);
                     //Debug.WriteLine("GNSS " + new DateTime(gnss.LocalTime.Ticks).ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
-                    NextSecond = gnss.LocalTime.Ticks + 10000000;
+                    //NextSecond = gnss.LocalTime.Ticks + 10000000;
                     //Debug.WriteLine("Time " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
                     //Debug.WriteLine("Next " + new DateTime(NextSecond).ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
                     if (add)
@@ -178,6 +190,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var adapterConfig = new ADP.SignalHound.AdapterConfig()
                 {
                     SerialNumber = "16319373",
+                    GPSPPSConnected = true,
+                    Reference10MHzConnected = true,
+                    SyncCPUtoGPS = true,
+                    GPSPortBaudRate = 115200,
+                    GPSPortNumber = 29,
+
                 };
 
                 SHadapter = new ADP.SignalHound.Adapter(adapterConfig, logger, TimeService);
@@ -209,13 +227,70 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
 
 
+        private void GPSWorks()
+        {
+            TimeSpan ts = new TimeSpan(10000);
+            bool Cycle = true;
+            while (Cycle)
+            {
+                if (GPSD != null) { GPSD(); }
+                Thread.Sleep(ts);
+            }
+        }
+        private void GPSConnect()
+        {
+            try
+            {
+                var adapterConfig = new ADP.GPS.ConfigGPS()
+                {
+                    PortName = "COM21",
+                    PortBaudRate = "baudRate115200",
+                    PortDataBits = "dataBits8",
+                    PortHandshake = "None",
+                    PortParity = "None",
+                    PortStopBits = "One",
+                };
+                IWorkScheduler _workScheduler = new Atdi.AppUnits.Sdrn.DeviceServer.Processing.TestWorkScheduler(logger);
+                GPSadapter = new ADP.GPS.GPSAdapter(adapterConfig, _workScheduler, TimeService, logger);
+
+
+
+
+                //SHIQ.ANAdapter = ANadapter;
+                GPSadapter.Connect(adapterHost);
+
+                CMD.Parameters.GpsParameter par = new CMD.Parameters.GpsParameter();
+                par.GpsMode = CMD.Parameters.GpsMode.Start;
+                CMD.GpsCommand command = new CMD.GpsCommand(par);
+                var context = new DummyExecutionContext(logger);
+                GPSadapter.GPSCommandHandler(command, context);
+            }
+            finally
+            {
+                GPSD -= GPSConnect;
+            }
+        }
+
+        private void GPSDisconnect()
+        {
+            try
+            {
+                SHadapter.Disconnect();
+            }
+            finally
+            {
+                GPSThread.Abort();
+                GPSD -= GPSDisconnect;
+            }
+        }
+
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             ANadapter.Connect(adapterHost);
         }
         private void Disconnect_Click(object sender, RoutedEventArgs e)
         {
-            gnss.CloseConGPS();
+            //gnss.CloseConGPS();
             AND += ANDisconnect;
             SHD += SHDisconnect;
         }
@@ -526,6 +601,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             try
             {
+                //до следующей секунды
+                //long time = TimeService.GetGnssTime().Ticks;
+                //long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
+                //long NextSecond = time + ToNextSecond;
+                //long NextSecond2 = time + ToNextSecond - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //Debug.WriteLine("\r\n" + new TimeSpan(ToNextSecond).ToString() + " Next");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssTime().Ticks).ToString() + " NOW");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond2).ToString() + " Set Param");
+
+
                 // send command
                 var context = new DummyExecutionContext(logger);
                 var command = new CMD.MesureIQStreamCommand();
@@ -538,16 +624,18 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = 0;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.BitRate_MBs = 0.6;
-                command.Parameter.IQBlockDuration_s = 1.1;
-                command.Parameter.IQReceivTime_s = 2.1;
-                command.Parameter.MandatoryPPS = true;
+                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = false;
                 command.Parameter.MandatorySignal = false;
-                long offset = DateTime.Now.Ticks - NextSecond;
-                command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+
+                long offset = (long)(0.0 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
                 //command.Parameter.TimeStart += (long)(0.1 * 10000000);
 
-                Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
-                Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
                 ANadapter.MesureIQStreamCommandHandler(command, context);
             }
             finally
@@ -565,17 +653,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //135,5
                 //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
                 //command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
+                //command.Parameter.BitRate_MBs = 0.9;
+                //command.Parameter.Att_dB = 10;
+                //command.Parameter.PreAmp_dB = 10;
                 command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.BitRate_MBs = 0.1;
                 command.Parameter.Att_dB = 0;
-                command.Parameter.PreAmp_dB = 10;
+                command.Parameter.PreAmp_dB = 30;
+
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.BitRate_MBs = 0.05;
-                command.Parameter.IQBlockDuration_s = 0.2;
-                command.Parameter.IQReceivTime_s = 2.5;
+                command.Parameter.IQBlockDuration_s = 0.5;
+                command.Parameter.IQReceivTime_s = 3.5;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = true;
-                command.Parameter.TimeStart = 1000000 + DateTime.UtcNow.Ticks + - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                long tttt = TimeService.GetGnssUtcTime().Ticks;
+                command.Parameter.TimeStart = 300000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long offset = DateTime.Now.Ticks - NextSecond;
                 //command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 ////command.Parameter.TimeStart += (long)(0.1 * 10000000);
@@ -588,6 +681,14 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 SHD -= GetIQSH;
             }
+        }
+
+        private void GetTime_Click(object sender, RoutedEventArgs e)
+        {
+
+            Debug.WriteLine("new");
+            Debug.WriteLine(TimeService.GetGnssTime());
+            Debug.WriteLine(TimeService.GetGnssUtcTime());
         }
         private void GetTrace_Click(object sender, RoutedEventArgs e)
         {
@@ -684,7 +785,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             { ind = tracepoints.Length - 1; }
             return ind;
         }
-        
+
         private void SetMeas21_Click(object sender, RoutedEventArgs e)
         {
             //    // send command
@@ -793,7 +894,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.IQReceivTime_s = 1.1;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = false;
-                long offset = DateTime.Now.Ticks - NextSecond;
+                long offset = DateTime.Now.Ticks;// - NextSecond;
                 command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //command.Parameter.TimeStart += (long)(0.1 * 10000000);
 
@@ -829,10 +930,45 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
         }
 
-        
+
     }
     public class DummyTimeService : ITimeService
     {
+        //private readonly ITimeStamp _timeStamp;
+        //private long _timeCorrection;
+
+        //public DummyTimeService()
+        //{
+        //    this._timeStamp = new TimeStamp();
+        //}
+
+        //public ITimeStamp TimeStamp => this._timeStamp;
+
+        //public long TimeCorrection
+        //{
+        //    get
+        //    {
+        //        return Interlocked.Read(ref this._timeCorrection);
+        //    }
+        //    set
+        //    {
+        //        Interlocked.Exchange(ref this._timeCorrection, value);
+        //    }
+        //}
+
+        //public DateTime GetGnssTime()
+        //{
+        //    ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
+        //    return DateTime.Now;
+
+        //}
+
+        //public DateTime GetGnssUtcTime()
+        //{
+        //    ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
+        //    return DateTime.UtcNow;
+        //}
+
         private readonly ITimeStamp _timeStamp;
         private long _timeCorrection;
 
@@ -857,17 +993,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         public DateTime GetGnssTime()
         {
-            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
-            return DateTime.Now; 
-
+            var date = new DateTime(MyTime.GetTimeStamp() + TimeCorrection, DateTimeKind.Utc);
+            return date.ToLocalTime();
         }
 
         public DateTime GetGnssUtcTime()
         {
-            ///TODO: Необходимо дописать код учитывающий поправку времени относительно GPS
-            return DateTime.UtcNow;
+            return new DateTime(MyTime.GetTimeStamp() + TimeCorrection, DateTimeKind.Utc);
         }
     }
+
     class TimeStamp : ITimeStamp
     {
         public long Milliseconds => AC.TimeStamp.Milliseconds;

@@ -60,6 +60,10 @@
       <Project>{608fac29-91cb-43af-a45b-1a0f31870041}</Project>
       <Name>Atdi.Contracts.Api.EventSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
+      <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
+      <Name>Atdi.DataModels.Api.EventSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.AmqpBroker\Atdi.Modules.AmqpBroker.csproj">
       <Project>{714f342f-3838-4088-80e5-a54c4173b0ea}</Project>
       <Name>Atdi.Modules.AmqpBroker</Name>

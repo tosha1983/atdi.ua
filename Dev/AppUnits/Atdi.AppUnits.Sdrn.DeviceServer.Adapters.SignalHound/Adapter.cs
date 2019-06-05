@@ -131,14 +131,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     // что то меряем
                     if (IdleState)
                     {
-                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
+                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
                     {
                         FreqStart = LPC.FreqStart(this, command.Parameter.FreqStart_Hz);
                         FreqStop = LPC.FreqStop(this, command.Parameter.FreqStop_Hz);
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
+                        StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
                     }
 
                     EN.Attenuator att = LPC.Attenuator(command.Parameter.Att_dB);
@@ -154,14 +154,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             RefLevel = command.Parameter.RefLevel_dBm;
                         }
 
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
+                        StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
                     }
 
                     EN.Gain gain = LPC.Gain(command.Parameter.PreAmp_dB);
                     if (gain != Gain)
                     {
                         Gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
+                        StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
                     }
 
                     if (command.Parameter.RBW_Hz < 0)
@@ -215,7 +215,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             RBW = rbw;
                             VBW = vbw;
                             SweepTime = (decimal)command.Parameter.SweepTime_s;
-                            StatusErrorWithExecutionContext(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection), context);
+                            StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection), context);
                         }
                     }
 
@@ -230,7 +230,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         throw new Exception("TraceCount must be set greater than zero.");
                     }
                     LPC.DetectorType(this, command.Parameter.DetectorType);
-                    StatusErrorWithExecutionContext(AdapterDriver.bbConfigureAcquisition(_Device_ID, (uint)DetectorToSet, (uint)Scale), context);
+                    StatusError(AdapterDriver.bbConfigureAcquisition(_Device_ID, (uint)DetectorToSet, (uint)Scale), context);
 
                     TraceType = LPC.TraceType(command.Parameter.TraceType);
                     LevelUnit = LPC.LevelUnit(command.Parameter.LevelUnit);
@@ -240,7 +240,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         DeviceMode = EN.Mode.Sweeping;
                         FlagMode = EN.Flag.StreamIQ;
                     }
-                    StatusErrorWithExecutionContext(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
+                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
 
                     IdleState = true;
                     //Меряем
@@ -354,7 +354,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (IdleState)
                     {
-                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
+                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     // снимаем блокировку с текущей команды
@@ -379,7 +379,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     if (IdleState)
                     {
-                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
+                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                 }
@@ -392,6 +392,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
 
         }
+        
         /// <summary>
         /// Получает IQ Данные
         /// 
@@ -444,13 +445,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (IdleState)
                     {
-                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
+                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
                     {
                         (FreqStart, FreqStop) = LPC.IQFreqStartStop(this, command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz);
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
+                        StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
                     }
 
                     EN.Attenuator att = LPC.Attenuator(command.Parameter.Att_dB);
@@ -465,25 +466,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             RefLevel = command.Parameter.RefLevel_dBm;
                         }
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
+                        StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
                     }
 
                     EN.Gain gain = LPC.Gain(command.Parameter.PreAmp_dB);
                     if (gain != Gain)
                     {
                         Gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                        StatusErrorWithExecutionContext(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
+                        StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
                     }
 
                     DownsampleFactor = LPC.IQDownsampleFactor(command.Parameter.BitRate_MBs, FreqSpan);
-                    StatusErrorWithExecutionContext(AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan), context);
+                    StatusError(AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan), context);
 
                     if (DeviceMode != EN.Mode.Streaming || FlagMode != EN.Flag.StreamIQ)
                     {
                         DeviceMode = EN.Mode.Streaming;
                         FlagMode = EN.Flag.StreamIQ;
                     }
-                    StatusErrorWithExecutionContext(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
+                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
 
                     (double BlockDuration, double ReceiveTime) = LPC.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
 
@@ -491,7 +492,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if ((command.Parameter.MandatoryPPS && MainConfig.AvailabilityPPS) || !command.Parameter.MandatoryPPS)
                     {
                         return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
-                        StatusErrorWithExecutionContext(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec), context);
+                        StatusError(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec), context);
 
                         IdleState = true;
 
@@ -499,7 +500,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final)
                         {
                             DeviceStatus = COMR.Enums.DeviceStatus.Normal
-                        }; 
+                        };
                         TempIQData tiq = new TempIQData();
                         InitialReceivedIQStream(ref result, ref tiq, BlockDuration, ReceiveTime, command.Parameter.TimeStart * 100);
                         //закончили подготовку
@@ -530,7 +531,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                     if (IdleState)
                     {
-                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
+                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                     context.Unlock();
@@ -547,12 +548,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     if (IdleState)
                     {
-                        StatusErrorWithExecutionContext(AdapterDriver.bbAbort(_Device_ID), context);
+                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
                         IdleState = false;
                     }
                 }
                 catch { }
-                // желательно записать влог
+                Debug.WriteLine(e.Message);
+                    // желательно записать влог
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
@@ -770,11 +772,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         public int Device_FirmwareVersion = 0;
 
-        public int Device_FirmwareVersionActual = 8;
+        public int[] Device_FirmwareVersionActual = new int[] { 7, 8 };
 
         public string Device_APIVersion = "";
 
-        public string Device_APIVersionActual = "4.1.0";
+        public string Device_APIVersionActual = "4.2.0";
         #endregion
 
         #region IQStream
@@ -794,7 +796,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             /// иницируем его параметрами сконфигурации
             /// проверяем к чем оно готово
 
-            //Status = AdapterDriver.bbOpenDevice(ref _Device_ID);
+           // StatusError(AdapterDriver.bbOpenDevice(ref _Device_ID));
             int snac = int.Parse(SN);
             bool err = StatusError(AdapterDriver.bbOpenDeviceBySerialNumber(ref _Device_ID, snac));
             if (!err)
@@ -812,7 +814,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     throw new Exception("Unsupported version of API SignalHound");
                 }
                 StatusError(AdapterDriver.bbGetFirmwareVersion(_Device_ID, ref Device_FirmwareVersion));
-                if (Device_FirmwareVersion != Device_FirmwareVersionActual)
+
+                bool Firmware = false;
+                for (int i = 0; i < Device_FirmwareVersionActual.Length; i++)
+                {
+                    if (!Firmware && Device_FirmwareVersion == Device_FirmwareVersionActual[i])
+                    {
+                        Firmware = true; }
+                }
+                if (!Firmware)
                 {
                     throw new Exception("Unsupported firmware version");
                 }
@@ -838,7 +848,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         /// <param name="status"></param>
         /// <param name="context"></param>
         /// <returns>true = NoErrore, false = AnyError</returns>
-        private bool StatusErrorWithExecutionContext(EN.Status status, IExecutionContext context)
+        private bool StatusError(EN.Status status, IExecutionContext context)
         {
             Status = status;
             bool res = true;
@@ -1000,8 +1010,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureIO(_Device_ID, 0, (uint)EN.Port2.InTriggerRisingEdge));
-                //StatusError(AdapterDriver.bbConfigureIO(_Device_ID, 1, (uint)EN.Port1.ExtRefIn));
+                uint port1 = 0;
+                uint port2 = 0;
+                if (_adapterConfig.GPSPPSConnected)
+                {
+                    port2 = (uint)EN.Port2.InTriggerRisingEdge;                    
+                }
+                if (_adapterConfig.Reference10MHzConnected)
+                {
+                    port1 = (uint)EN.Port1.ExtRefIn;
+                }
+                StatusError(AdapterDriver.bbConfigureIO(_Device_ID, port1, port2));
+                if (_adapterConfig.SyncCPUtoGPS)
+                {
+                    if (_adapterConfig.GPSPortNumber > -1 && _adapterConfig.GPSPortBaudRate > 1000)
+                    {
+                        StatusError(AdapterDriver.bbSyncCPUtoGPS(_adapterConfig.GPSPortNumber, _adapterConfig.GPSPortBaudRate));
+                    }
+                }
             }
             #region Exception
             catch (Exception exp)
@@ -1378,7 +1404,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             // сформировано пустое место
         }
-        //public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
+        public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
         private bool GetIQStream(ref COMR.MesureIQStreamResult IQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool WithPPS, bool JustWithSignal)
         {
             bool done = false;
@@ -1431,10 +1457,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if (NecessaryBlockIndex == 0)
                     {
                         IQStartIndex = AllBlockIndex;
+                        
                     }
                     StatusError(AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQData[NecessaryBlockIndex], return_len, tempIQStream.TrDataTemp, 71, 1,
                         ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano));
-
+                    
                     if (!ReceivedBlockWithErrors && IQStopIndex == 0 && NecessaryBlockIndex == tempIQStream.BlocksCount - 1)
                     {
                         IQStopIndex = AllBlockIndex;
@@ -1443,7 +1470,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 else//уже приняли нужные данные, то сюда
                 {
                     StatusError(AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQDataTemp, return_len, tempIQStream.TrDataTemp, 71, 1,
-                       ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano));
+                       ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano), context);
                 }
 
                 //Если вдруг принимаем данные с ошибками то генерируем ошибки, т.к. данные некоректны
@@ -1456,6 +1483,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 tempIQStream.BlockTime[AllBlockIndex] = ((long)iqSec) * 1000000000 + iqNano;
                 PrevBlockTime = ThisBlockTime;
                 ThisBlockTime = tempIQStream.BlockTime[AllBlockIndex];
+                //Debug.WriteLine((_timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks - tempIQStream.BlockTime[AllBlockIndex]/100 - 131072) + " strat block");
                 if (PrevBlockTime != 0)
                 {
                     tempIQStream.BlockTimeDelta[AllBlockIndex] = ThisBlockTime - PrevBlockTime;
@@ -1483,6 +1511,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         //провтыкали время старта
                         if (tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration > tempIQStream.TimeStart)
                         {
+                            //Debug.WriteLine(tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration - tempIQStream.TimeStart);
                             throw new Exception("The task was started after the required start time of the task.");//Задача была запущена после необходимого времени старта задачи
                         }
                         NecessaryBlockIndex--;//т.к. не началось время прослушки данных то уменьшим индексм и на то же место запишем болок заново
@@ -1547,14 +1576,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                     }
                     //В этом блоке есть пропук во времени, установим индекс конца блоков и продолжим слушать, может еще PPS нежен
-                    if (tempIQStream.BlockTimeDelta.Length > 1 && tempIQStream.OneSempleDuration != tempIQStream.BlockTimeDelta[AllBlockIndex] / return_len)
+                    if (AllBlockIndex > 0 && tempIQStream.OneSempleDuration != tempIQStream.BlockTimeDelta[AllBlockIndex] / return_len)
                     {
                         if (!ReceivedBlockWithErrors && IQStopIndex == 0)
                         {
                             IQStopIndex = AllBlockIndex - 1;
+                            
+                            Debug.WriteLine("C ошибкой " + Atdi.DataModels.Sdrn.DeviceServer.Adapters.MyTime.GetTimeStamp() + " " + IQStopIndex);
                         }
-                        //IsCancellationRequested = true;
                         ReceivedBlockWithErrors = true;
+                        //IsCancellationRequested = true;
                     }
                 }
             }
@@ -1576,6 +1607,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     IQStreamResult.iq_samples = tempIQStream.IQData;
                 }
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                Debug.WriteLine(IQStreamResult.TimeStamp);
+                Debug.WriteLine("Результат " + IQStartIndex + " " + IQStopIndex);
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                 if (JustWithSignal && !SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
@@ -1609,11 +1642,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion обработка полученных данных  
                 done = true;
-                //IQArr = new float[tempIQStream.IQData.Length * tempIQStream.IQData[0].Length];//del
-                //for (int i = 0; i < tempIQStream.IQData.Length; i++)//del
-                //{
-                //    Array.Copy(tempIQStream.IQData[i], 0, IQArr, i * tempIQStream.IQData[i].Length, tempIQStream.IQData[i].Length);//del
-                //}
+                IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length];//del
+                for (int i = 0; i < IQStreamResult.iq_samples.Length; i++)//del
+                {
+                    Array.Copy(IQStreamResult.iq_samples[i], 0, IQArr, i * IQStreamResult.iq_samples[i].Length, IQStreamResult.iq_samples[i].Length);//del
+                }
             }
             return done;
         }

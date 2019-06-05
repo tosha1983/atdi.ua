@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels.Api.EventSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,16 @@ namespace Atdi.Contracts.Api.EventSystem
             };
 
             var @event = new Event(eventName, source);
+            emitter.Emit(@event, options);
+        }
+
+        public static void Emit(this IEventEmitter emitter, IEvent @event)
+        {
+            var options = new EventEmittingOptions
+            {
+                Rule = EventEmittingRule.Default
+            };
+
             emitter.Emit(@event, options);
         }
     }

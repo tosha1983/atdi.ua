@@ -184,7 +184,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 }
                 if (this.Name == "SHIQ" && SHAdapter != null)
                 {
-                    //IQ = SHAdapter.IQArr;
+                    IQ = SHAdapter.IQArr;
                     //TriggerOffset = (double)SHAdapter.TriggerOffset;
                 }
                 //IQ = ANAdapter.IQArr;

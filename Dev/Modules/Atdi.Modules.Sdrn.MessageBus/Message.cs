@@ -24,5 +24,7 @@ namespace Atdi.Modules.Sdrn.MessageBus
         public IDictionary<string, object> Headers { get; set; } 
 
         public byte[] Body { get; set; }
+
+        public long Timestamp { get; set; }
     }
 }

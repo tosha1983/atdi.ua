@@ -42,9 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Event.cs" />
-    <Compile Include="EventEmittingOptions.cs" />
-    <Compile Include="IEvent.cs" />
     <Compile Include="IEventDispatcher.cs" />
     <Compile Include="IEventEmitter.cs" />
     <Compile Include="IEventSite.cs" />
@@ -52,6 +49,12 @@
     <Compile Include="IEventSubscriber.cs" />
     <Compile Include="ISubscriberActivator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
+      <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
+      <Name>Atdi.DataModels.Api.EventSystem</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
