@@ -35,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))
             {
+                /*
                 if ((@event.MeasTaskId>0) && (@event.SensorId >0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
                 {
                     try
@@ -58,6 +59,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         this._logger.Exception(Contexts.PrimaryHandler, ex);
                     }
                 }
+                */
             }
         }
     }

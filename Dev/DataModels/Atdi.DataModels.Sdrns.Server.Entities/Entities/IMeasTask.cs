@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IMeasTask
     {
-        int Id { get; set; }
+        long Id { get; set; }
         string Status { get; set; }
         int? OrderId { get; set; }
         string Type { get; set; }

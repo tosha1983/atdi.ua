@@ -32,6 +32,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))
             {
+                /*
                 if (!string.IsNullOrEmpty(@event.MeasTaskIds) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
                 {
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DEV.DeviceCommand>();
@@ -46,6 +47,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     envelop.DeliveryObject.CustTxt1 = @event.MeasTaskIds;
                     _messagePublisher.Send(envelop);
                 }
+                */
             }
         }
     }

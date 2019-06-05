@@ -69,8 +69,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 try
                 {
                     queryExecuter.BeginTransaction();
+                    long?[] emittingsIdConvert = emittingsId.Select(n => (long?)(n)).ToArray();
                     var builderUpdateEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Update();
-                    builderUpdateEmitting.Where(c => c.Id, ConditionOperator.In, emittingsId);
+                    builderUpdateEmitting.Where(c => c.Id, ConditionOperator.In, emittingsIdConvert);
                     builderUpdateEmitting.SetValue(c => c.StationID, AssociatedStationID);
                     builderUpdateEmitting.SetValue(c => c.StationTableName, AssociatedStationTableName);
                     if (queryExecuter.Execute(builderUpdateEmitting)>0)
@@ -99,7 +100,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 try
                 {
                     queryExecuter.BeginTransaction();
-                    var nullableEmittings = emittingsId.Cast<int?>().ToArray();
+                    var nullableEmittings = emittingsId.Cast<long?>().ToArray();
 
                     var builderDeleteWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Delete();
                     builderDeleteWorkTime.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
@@ -114,7 +115,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     var cntDelISpectrum = queryExecuter.Execute(builderDeleteSpectrum);
 
                     var builderDeleteEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Delete();
-                    builderDeleteEmitting.Where(c => c.Id, ConditionOperator.In, emittingsId);
+                    builderDeleteEmitting.Where(c => c.Id, ConditionOperator.In, nullableEmittings);
                     var cntDelIEmitting = queryExecuter.Execute(builderDeleteEmitting);
 
                     queryExecuter.CommitTransaction();

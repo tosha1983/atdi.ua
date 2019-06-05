@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResSysInfo
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Bandwidth { get; set; }
         int? BaseId { get; set; }
         int? Bsic { get; set; }
@@ -45,7 +45,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? Tac { get; set; }
         string TypeCdmaevdo { get; set; }
         int? Ucid { get; set; }
-        int? ResStGeneralId { get; set; }
+        long? ResStGeneralId { get; set; }
         IResStGeneral RESSTGENERAL { get; set; }
     }
 }

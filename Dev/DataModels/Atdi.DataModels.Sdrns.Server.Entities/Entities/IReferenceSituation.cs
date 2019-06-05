@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IReferenceSituation
     {
-        int Id { get; set; }
-        int? SensorId { get; set; }
-        int? MeasTaskId { get; set; }
+        long Id { get; set; }
+        long? SensorId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
         ISensor SENSOR { get; set; }
     }

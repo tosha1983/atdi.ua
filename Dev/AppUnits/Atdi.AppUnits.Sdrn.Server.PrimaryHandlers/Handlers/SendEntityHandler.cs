@@ -35,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
         public void Handle(ISdrnIncomingEnvelope<Entity> incomingEnvelope, ISdrnMessageHandlingResult result)
         {
+            /*
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
@@ -112,6 +113,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 }
 
             }
+            */
         
         }
 

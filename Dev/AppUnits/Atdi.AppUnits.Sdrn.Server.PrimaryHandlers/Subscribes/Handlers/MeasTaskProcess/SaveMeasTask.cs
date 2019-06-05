@@ -20,6 +20,7 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
 
+    /*
     public class SaveMeasTask
     {
         private readonly ILogger _logger;
@@ -353,7 +354,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             return ListMTSDR.ToArray();
         }
-       
     }
+    */
 }
 

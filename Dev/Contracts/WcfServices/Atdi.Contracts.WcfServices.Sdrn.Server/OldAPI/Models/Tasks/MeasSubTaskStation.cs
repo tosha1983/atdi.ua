@@ -18,7 +18,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// Id
         /// </summary>
         [DataMember]
-        public int Id;
+        public long Id;
         /// <summary>
         /// StationId
         /// </summary>

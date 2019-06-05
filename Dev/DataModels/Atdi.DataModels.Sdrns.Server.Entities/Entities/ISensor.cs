@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensor
     {
-        int Id { get; set; }
-        int? SensorIdentifierId { get; set; }
+        long Id { get; set; }
+        long? SensorIdentifierId { get; set; }
         string Status { get; set; }
         string Name { get; set; }
         string Administration { get; set; }

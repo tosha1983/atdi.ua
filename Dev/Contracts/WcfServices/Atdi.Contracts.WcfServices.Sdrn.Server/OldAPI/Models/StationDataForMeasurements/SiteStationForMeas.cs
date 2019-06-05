@@ -12,7 +12,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class SiteStationForMeas // параметры сайта
     {
         [DataMember]
-        public int Id;
+        public long Id;
         [DataMember]
         public double? Lon; //DEC
         [DataMember]

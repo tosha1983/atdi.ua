@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IStationSite
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Lon { get; set; }
         double Lat { get; set; }
         string Address { get; set; }

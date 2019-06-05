@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IEmitting
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? StartFrequency_MHz { get; set; }
         double? StopFrequency_MHz { get; set; }
         double? CurentPower_dBm { get; set; }
@@ -19,11 +19,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? TriggerDeviationFromReference { get; set; }
         double? RollOffFactor { get; set; }
         double? StandardBW { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         byte[] LevelsDistribution { get; set; }
         IResMeas RESMEAS { get; set; }
-        int? SensorId { get; set; }
-        int? StationID { get; set; }
+        long? SensorId { get; set; }
+        long? StationID { get; set; }
         string StationTableName { get; set; }
     }
 }

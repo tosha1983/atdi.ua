@@ -38,6 +38,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
         public void Handle(ISdrnIncomingEnvelope<DeviceCommandResult> incomingEnvelope, ISdrnMessageHandlingResult result)
         {
+            /*
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
@@ -193,8 +194,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     result.ReasonFailure = e.ToString();
                 }
 
+    */
             }
-        }
+        
     }
 }
 

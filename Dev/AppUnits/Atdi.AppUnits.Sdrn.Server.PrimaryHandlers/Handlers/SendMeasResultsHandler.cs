@@ -25,8 +25,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         private readonly Configs _configs;
 
         public SendMeasResultsHandler(
-            ISdrnMessagePublisher messagePublisher, 
-            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnMessagePublisher messagePublisher,
+            IDataLayer<EntityDataOrm> dataLayer,
             ISdrnServerEnvironment environment,
             Configs configs,
             IEventEmitter eventEmitter, ILogger logger)
@@ -39,6 +39,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._configs = configs;
         }
 
+        /*
         public void GetMeasTaskSDRIdentifier(string ResultIds, string TaskId, string SensorName, string SensorTechId, out int SubTaskId, out int SubTaskStationId, out int SensorId, out int ResultId, out int TaskIdOut)
         {
             TaskIdOut = -1;
@@ -912,6 +913,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                 }
 
             }
+        }
+        */
+        public void Handle(ISdrnIncomingEnvelope<MeasResults> incomingEnvelope, ISdrnMessageHandlingResult result)
+        {
+
         }
     }
 }

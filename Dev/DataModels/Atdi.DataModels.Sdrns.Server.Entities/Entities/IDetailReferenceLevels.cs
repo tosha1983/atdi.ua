@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IDetailReferenceLevels
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? level { get; set; }
-        int? ReferenceLevelId { get; set; }
+        long? ReferenceLevelId { get; set; }
         IReferenceLevels REFLEVELS { get; set; }
     }
 }

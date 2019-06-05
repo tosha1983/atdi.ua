@@ -15,11 +15,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class ResultsMeasurementsStation // этот класс необходим для передачи данных станций для которых производиться обмер
     {
         [DataMember]
-        public int Id;
+        public long Id;
         [DataMember]
         public string Idstation;
         [DataMember]
-        public int? IdSector;
+        public long? IdSector;
         [DataMember]
         public string Status;
         [DataMember]

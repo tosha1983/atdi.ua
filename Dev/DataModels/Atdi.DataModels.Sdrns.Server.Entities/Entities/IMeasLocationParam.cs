@@ -10,12 +10,12 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IMeasLocationParam
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }
         double? Asl { get; set; }
         double? MaxDist { get; set; }
-        int? MeasTaskId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
     }
 }

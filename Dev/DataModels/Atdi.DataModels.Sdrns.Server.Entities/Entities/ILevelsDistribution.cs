@@ -10,10 +10,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILevelsDistribution
     {
-        int Id { get; set; }
+        long Id { get; set; }
         int? level { get; set; }
         int? count { get; set; }
-        int? EmittingId { get; set; }
+        long? EmittingId { get; set; }
         IEmitting EMITTING { get; set; }
     }
 }

@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IAntennaPattern
     {
-        int Id { get; set; }
-        int? SensorAntennaId { get; set; }
+        long Id { get; set; }
+        long? SensorAntennaId { get; set; }
         double? Freq { get; set; }
         double? Gain { get; set; }
         string DiagA { get; set; }

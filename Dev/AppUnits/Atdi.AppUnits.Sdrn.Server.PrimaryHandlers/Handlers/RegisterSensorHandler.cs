@@ -29,6 +29,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._logger = logger;
         }
 
+        /*
         public bool CreateSensor(ISdrnIncomingEnvelope<Sensor> incomingEnvelope)
         {
             var resultValue = false;
@@ -290,10 +291,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             }
             return resultValue;
         }
-
+        */
 
         public void Handle(ISdrnIncomingEnvelope<Sensor> incomingEnvelope, ISdrnMessageHandlingResult result)
         {
+            /*
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.MessageProcessing, this))
             {
                 result.Status = SdrnMessageHandlingStatus.Unprocessed;
@@ -372,6 +374,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                     _messagePublisher.Send(envelop);
                 }
             }
+            */
         }
     }
 }

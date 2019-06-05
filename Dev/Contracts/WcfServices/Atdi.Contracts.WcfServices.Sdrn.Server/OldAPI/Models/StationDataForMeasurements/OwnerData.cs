@@ -12,7 +12,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class OwnerData 
     {
         [DataMember]
-        public int Id;
+        public long Id;
         [DataMember]
         public string OwnerName;
         [DataMember]

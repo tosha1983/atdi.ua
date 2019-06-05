@@ -138,9 +138,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
 
-        public int? SaveMeasTaskInDB(MeasTask value)
+        public long? SaveMeasTaskInDB(MeasTask value)
         {
-            int? ID = null;
+            long? ID = null;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             if (value.Id != null)
             {
@@ -183,7 +183,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         if (value.SignalingMeasTaskParameters != null)
                         {
-                            int valueIdMeasTaskSignaling = -1;
+                            long valueIdMeasTaskSignaling = -1;
                             var builderInsertMeasTaskSignaling = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().Insert();
                             if (value.SignalingMeasTaskParameters.allowableExcess_dB != null)
                             {
@@ -229,7 +229,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             for (int l = 0; l < value.RefSituation.Length; l++)
                             {
-                                int valueIdReferenceSituationRaw = -1;
+                                long valueIdReferenceSituationRaw = -1;
                                 var refSituationReferenceSignal = value.RefSituation[l];
                                 var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
                                 builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
@@ -244,7 +244,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         {
                                             for (int j = 0; j < refSituationReferenceSignal.ReferenceSignal.Length; j++)
                                             {
-                                                int valueIdReferenceSignal = -1;
+                                                long valueIdReferenceSignal = -1;
                                                 var situationReferenceSignal = refSituationReferenceSignal.ReferenceSignal[j];
 
 
@@ -299,7 +299,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (value.MeasDtParam != null)
                         {
-                            int valueIdMeasDtParam = -1;
+                            long valueIdMeasDtParam = -1;
                             var builderInsertMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().Insert();
                             builderInsertMeasDtParam.SetValue(c => c.Demod, value.MeasDtParam.Demod);
                             builderInsertMeasDtParam.SetValue(c => c.DetectType, value.MeasDtParam.DetectType.ToString());
@@ -331,7 +331,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var locParam = value.MeasLocParams[u];
                                 if (locParam.Id != null)
                                 {
-                                    int valueIdMeasLocationParam = -1;
+                                    long valueIdMeasLocationParam = -1;
                                     var builderInsertMeasLocationParam = this._dataLayer.GetBuilder<MD.IMeasLocationParam>().Insert();
                                     builderInsertMeasLocationParam.SetValue(c => c.Asl, locParam.ASL);
                                     builderInsertMeasLocationParam.SetValue(c => c.Lat, locParam.Lat);
@@ -354,7 +354,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (value.MeasOther != null)
                         {
                             var measOther = value.MeasOther;
-                            int valueIdMeasOther = -1;
+                            long valueIdMeasOther = -1;
                             var builderInsertMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().Insert();
                             builderInsertMeasOther.SetValue(c => c.LevelMinOccup, measOther.LevelMinOccup);
                             builderInsertMeasOther.SetValue(c => c.Nchenal, measOther.NChenal);
@@ -381,7 +381,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var measSubTask = value.MeasSubTasks[u];
                                 if (measSubTask.Id != null)
                                 {
-                                    int valueIdmeasSubTask = -1;
+                                    long valueIdmeasSubTask = -1;
                                     var builderInsertMeasSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Insert();
                                     builderInsertMeasSubTask.SetValue(c => c.Interval, measSubTask.Interval);
                                     builderInsertMeasSubTask.SetValue(c => c.Status, measSubTask.Status);
@@ -405,7 +405,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         for (int v = 0; v < measSubTask.MeasSubTaskStations.Length; v++)
                                         {
                                             var subTaskStation = measSubTask.MeasSubTaskStations[v];
-                                            int valueIdmeasSubTaskSta = -1;
+                                            long valueIdmeasSubTaskSta = -1;
                                             var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Insert();
                                             builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskStation.Count);
                                             builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskStation.Status);
@@ -436,7 +436,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             var freq_param = value.MeasFreqParam;
                             {
-                                int? idMeasFreqParam = -1;
+                                long? idMeasFreqParam = -1;
                                 if (freq_param != null)
                                 {
                                     var builderInsertMeasFreqParam = this._dataLayer.GetBuilder<MD.IMeasFreqParam>().Insert();
@@ -505,9 +505,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var stationDataParam = value.StationsForMeasurements[v];
 
-                                int? idstationDataParam = -1;
-                                int? idOwnerdata = -1;
-                                int? idSite = -1;
+                                long? idstationDataParam = -1;
+                                long? idOwnerdata = -1;
+                                long? idSite = -1;
 
                                 if (stationDataParam.Owner != null)
                                 {
@@ -580,7 +580,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 if (idstationDataParam > -1)
                                 {
-                                    int? idLinkMeasStation = -1;
+                                    long? idLinkMeasStation = -1;
                                     var builderInsertLinkMeasStation = this._dataLayer.GetBuilder<MD.ILinkMeasStation>().Insert();
                                     builderInsertLinkMeasStation.SetValue(c => c.StationId, idstationDataParam);
                                     builderInsertLinkMeasStation.SetValue(c => c.MeasTaskId, ID.Value);
@@ -603,7 +603,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         var sector = stationDataParam.Sectors[g];
 
-                                        int? idSecForMeas = -1;
+                                        long? idSecForMeas = -1;
                                         //this._logger.Info(Contexts.ThisComponent, $"AGL-{sector.AGL};Azimut-{sector.Azimut};BW-{sector.BW};ClassEmission-{sector.ClassEmission};EIRP-{sector.EIRP};IdSector-{sector.IdSector};idstationDataParam-{idstationDataParam}");
                                         var builderInsertSector = this._dataLayer.GetBuilder<MD.ISector>().Insert();
                                         builderInsertSector.SetValue(c => c.Agl, sector.AGL);
@@ -635,7 +635,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             {
                                                 var freq = sector.Frequencies[d];
                                                 //this._logger.Info(Contexts.ThisComponent, $"ChannalNumber-{freq.ChannalNumber};Frequency-{freq.Frequency};IdPlan-{freq.IdPlan};Id-{freq.Id}");
-                                                int? idSectorFreq = null;
+                                                long? idSectorFreq = null;
                                                 var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
                                                 builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
                                                 builderInsertSectorFreq.SetValue(c => c.Frequency, freq.Frequency);
@@ -680,7 +680,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             {
                                                 var maskBw = sector.MaskBW[d];
 
-                                                int? sectorMaskElemId = -1;
+                                                long? sectorMaskElemId = -1;
                                                 var builderInsertSectorMaskElement = this._dataLayer.GetBuilder<MD.ISectorMaskElement>().Insert();
                                                 builderInsertSectorMaskElement.SetValue(c => c.Level, maskBw.level);
                                                 builderInsertSectorMaskElement.SetValue(c => c.Bw, maskBw.BW);

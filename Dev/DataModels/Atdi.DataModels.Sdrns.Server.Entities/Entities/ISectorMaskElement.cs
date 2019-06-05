@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISectorMaskElement
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Level { get; set; }
         double? Bw { get; set; }
     }

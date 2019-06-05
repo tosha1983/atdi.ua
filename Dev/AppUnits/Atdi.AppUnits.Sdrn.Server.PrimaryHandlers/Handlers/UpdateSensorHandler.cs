@@ -21,9 +21,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
         private readonly ILogger _logger;
 
         public UpdateSensorHandler(
-            ISdrnMessagePublisher messagePublisher, 
-            IDataLayer<EntityDataOrm> dataLayer, 
-            ISdrnServerEnvironment environment, 
+            ISdrnMessagePublisher messagePublisher,
+            IDataLayer<EntityDataOrm> dataLayer,
+            ISdrnServerEnvironment environment,
             IEventEmitter eventEmitter, ILogger logger)
         {
             this._messagePublisher = messagePublisher;
@@ -33,8 +33,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
             this._logger = logger;
         }
 
-     
 
+        /*
         public bool UpdateSensor(ISdrnIncomingEnvelope<Sensor> incomingEnvelope)
         {
             var resultValue = false;
@@ -613,7 +613,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
 
             }
         }
-
+        */
+        public void Handle(ISdrnIncomingEnvelope<Sensor> incomingEnvelope, ISdrnMessageHandlingResult result)
+        {
+        }
     }
 }
 

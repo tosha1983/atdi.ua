@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IDetailSpectrumLevels
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? level { get; set; }
-        int? SpectrumId { get; set; }
+        long? SpectrumId { get; set; }
         ISpectrum SPECTRUM { get; set; }
     }
 }
