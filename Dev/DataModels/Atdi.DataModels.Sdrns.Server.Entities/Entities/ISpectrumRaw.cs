@@ -20,7 +20,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? CorrectnessEstimations { get; set; }
         int? Contravention { get; set; }
         int? TraceCount { get; set; }
-        double? SignalLevel_dBm { get; set; }
+        float? SignalLevel_dBm { get; set; }
         int? EmittingId { get; set; }
         byte[] LevelsdBm { get; set; }
         IEmittingRaw EMITTING { get; set; }

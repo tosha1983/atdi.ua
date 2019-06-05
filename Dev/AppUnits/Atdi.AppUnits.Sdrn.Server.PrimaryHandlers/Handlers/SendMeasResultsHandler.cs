@@ -661,8 +661,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                             builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations==true ? 1 : 0);
                                         }
                                         builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
-                                        builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
-                                        builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, Convert.ToDouble(generalResult.SpectrumSteps_kHz));
+                                        builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, generalResult.SpectrumStartFreq_MHz);
+                                        builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, generalResult.SpectrumSteps_kHz);
                                         builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
                                         builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
                                         builderInsertResStGeneral.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
@@ -801,7 +801,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Handlers
                                                     var lstIns = new IQueryInsertStatement<MD.IResStLevelsSpectRaw>[station.GeneralResult.LevelsSpectrum_dBm.Length];
                                                     for (int l = 0; l < station.GeneralResult.LevelsSpectrum_dBm.Length; l++)
                                                     {
-                                                        double lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
+                                                        var lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
                                                         var builderInsertResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpectRaw>().Insert();
                                                         builderInsertResStLevelsSpect.SetValue(c => c.LevelSpecrum, lvl);
                                                         builderInsertResStLevelsSpect.SetValue(c => c.ResStGeneralId, IDResGeneral);

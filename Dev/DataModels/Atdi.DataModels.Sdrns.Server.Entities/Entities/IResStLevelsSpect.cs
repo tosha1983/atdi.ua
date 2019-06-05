@@ -12,7 +12,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         int Id { get; set; }
         int? ResStGeneralId { get; set; }
-        double? LevelSpecrum { get; set; }
+        float? LevelSpecrum { get; set; }
         IResStGeneral RESSTGENERAL { get; set; }
     }
 }

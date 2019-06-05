@@ -386,19 +386,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             generalMeasResult.OffsetFrequency_mk = readerGeneralResult.GetValue(c => c.OffsetFrequency);
 
                             var specrumStartFreq = readerGeneralResult.GetValue(c => c.SpecrumStartFreq);
-                            if (specrumStartFreq >= 0.001 && specrumStartFreq <= 400000)
-                                generalMeasResult.SpectrumStartFreq_MHz = (decimal)specrumStartFreq;
+                            if (specrumStartFreq >= 0.001m && specrumStartFreq <= 400000m)
+                                generalMeasResult.SpectrumStartFreq_MHz = specrumStartFreq;
                             else
                                 removeGroup1 = true;
 
                             var specrumSteps = readerGeneralResult.GetValue(c => c.SpecrumSteps);
 
-                            if (specrumSteps >= 0.001 && specrumSteps <= 100000)
-                                generalMeasResult.SpectrumSteps_kHz = (decimal)specrumSteps;
+                            if (specrumSteps >= 0.001m && specrumSteps <= 100000m)
+                                generalMeasResult.SpectrumSteps_kHz = specrumSteps;
                             else
                                 removeGroup1 = true;
 
-                            generalMeasResult.MeasDuration_sec = readerGeneralResult.GetValue(c => c.DurationMeas).Value;
+                            if (readerGeneralResult.GetValue(c => c.DurationMeas).HasValue)
+                            {
+                                generalMeasResult.MeasDuration_sec = readerGeneralResult.GetValue(c => c.DurationMeas).Value;
+                            }
                             generalMeasResult.MeasStartTime = readerGeneralResult.GetValue(c => c.TimeStartMeas);
                             generalMeasResult.MeasFinishTime = readerGeneralResult.GetValue(c => c.TimeFinishMeas);
                             generalMeasResult.RBW_kHz = readerGeneralResult.GetValue(c => c.Rbw);
@@ -472,7 +475,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         var levelSpecrum = readerStLevelsSpect.GetValue(c => c.LevelSpecrum);
                                         if (levelSpecrum.HasValue)
                                         {
-                                            listStLevelsSpect.Add((float)levelSpecrum.Value);
+                                            listStLevelsSpect.Add(levelSpecrum.Value);
                                         }
                                     }
                                     return true;
@@ -1023,12 +1026,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     }
                                     if (generalResult.SpectrumStartFreq_MHz.HasValue)
                                     {
-                                        builderUpdateResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
+                                        builderUpdateResStGeneral.SetValue(c => c.SpecrumStartFreq, generalResult.SpectrumStartFreq_MHz);
                                         isUpdate = true;
                                     }
                                     if (generalResult.SpectrumSteps_kHz.HasValue)
                                     {
-                                        builderUpdateResStGeneral.SetValue(c => c.SpecrumSteps, Convert.ToDouble(generalResult.SpectrumSteps_kHz));
+                                        builderUpdateResStGeneral.SetValue(c => c.SpecrumSteps, generalResult.SpectrumSteps_kHz);
                                         isUpdate = true;
                                     }
                                     if (generalResult.MeasStartTime.HasValue && startTime.HasValue && generalResult.MeasStartTime.Value < startTime)
@@ -1328,8 +1331,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
                                                 }
                                                 builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
-                                                builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
-                                                builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, Convert.ToDouble(generalResult.SpectrumSteps_kHz));
+                                                builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, generalResult.SpectrumStartFreq_MHz);
+                                                builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, generalResult.SpectrumSteps_kHz);
                                                 builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
                                                 builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
                                                 builderInsertResStGeneral.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
@@ -1482,7 +1485,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                             var lstIns = new IQueryInsertStatement<MD.IResStLevelsSpect>[station.GeneralResult.LevelsSpectrum_dBm.Length];
                                                             for (int l = 0; l < station.GeneralResult.LevelsSpectrum_dBm.Length; l++)
                                                             {
-                                                                double lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
+                                                                var lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
                                                                 var builderInsertResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpect>().Insert();
                                                                 builderInsertResStLevelsSpect.SetValue(c => c.LevelSpecrum, lvl);
                                                                 builderInsertResStLevelsSpect.SetValue(c => c.ResStGeneralId, IDResGeneral);
@@ -1701,8 +1704,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                             builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
                                         }
                                         builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
-                                        builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, Convert.ToDouble(generalResult.SpectrumStartFreq_MHz));
-                                        builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, Convert.ToDouble(generalResult.SpectrumSteps_kHz));
+                                        builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, generalResult.SpectrumStartFreq_MHz);
+                                        builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, generalResult.SpectrumSteps_kHz);
                                         builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
                                         builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
                                         builderInsertResStGeneral.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
@@ -1851,7 +1854,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     var lstIns = new IQueryInsertStatement<MD.IResStLevelsSpect>[station.GeneralResult.LevelsSpectrum_dBm.Length];
                                                     for (int l = 0; l < station.GeneralResult.LevelsSpectrum_dBm.Length; l++)
                                                     {
-                                                        double lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
+                                                        var lvl = station.GeneralResult.LevelsSpectrum_dBm[l];
                                                         var builderInsertResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpect>().Insert();
                                                         builderInsertResStLevelsSpect.SetValue(c => c.LevelSpecrum, lvl);
                                                         builderInsertResStLevelsSpect.SetValue(c => c.ResStGeneralId, IDResGeneral);
@@ -2038,7 +2041,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     var freq_MHz = reader.GetValue(c => c.Freq_MHz);
                     if (freq_MHz.HasValue && freq_MHz >= 0 && freq_MHz.Value <= 400000)
-                        freqSample.Freq_MHz = (float)freq_MHz.Value;
+                        freqSample.Freq_MHz = freq_MHz.Value;
                     else
                     {
                         WriteLog("Incorrect value Freq_MHz", "IFreqSampleRaw");
@@ -2047,7 +2050,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                     var occupationPt = reader.GetValue(c => c.OccupationPt);
                     if (occupationPt.HasValue && occupationPt >= 0 && occupationPt.Value <= 100)
-                        freqSample.Occupation_Pt = (float)occupationPt.Value;
+                        freqSample.Occupation_Pt = occupationPt.Value;
                     else
                     {
                         WriteLog("Incorrect value Freq_MHz", "IFreqSampleRaw");
@@ -2058,19 +2061,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     {
                         var level_dBm = reader.GetValue(c => c.Level_dBm);
                         if (level_dBm.HasValue && level_dBm.Value >= -150 && level_dBm.Value <= 20)
-                            freqSample.Level_dBm = (float)level_dBm.Value;
+                            freqSample.Level_dBm = level_dBm.Value;
 
                         var level_dBmkVm = reader.GetValue(c => c.Level_dBmkVm);
                         if (level_dBmkVm.HasValue && level_dBmkVm.Value >= 10 && level_dBmkVm.Value <= 140)
-                            freqSample.Level_dBmkVm = (float)level_dBmkVm.Value;
+                            freqSample.Level_dBmkVm = level_dBmkVm.Value;
 
                         var levelMin_dBm = reader.GetValue(c => c.LevelMin_dBm);
                         if (levelMin_dBm.HasValue && levelMin_dBm.Value >= -120 && levelMin_dBm.Value <= 20)
-                            freqSample.LevelMin_dBm = (float)levelMin_dBm.Value;
+                            freqSample.LevelMin_dBm = levelMin_dBm.Value;
 
                         var levelMax_dBm = reader.GetValue(c => c.LevelMax_dBm);
                         if (levelMax_dBm.HasValue && levelMax_dBm.Value >= -120 && levelMax_dBm.Value <= 20)
-                            freqSample.LevelMax_dBm = (float)levelMax_dBm.Value;
+                            freqSample.LevelMax_dBm = levelMax_dBm.Value;
 
                         listFrequencySample.Add(freqSample);
                     }
@@ -2392,7 +2395,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                             var persentAvailability = readerTime.GetValue(c => c.PersentAvailability);
                             if (persentAvailability.HasValue && persentAvailability.Value >= 0 && persentAvailability.Value <= 100)
-                                workTime.PersentAvailability = (float)persentAvailability.Value;
+                                workTime.PersentAvailability = persentAvailability.Value;
                             else
                             {
                                 WriteLog("Incorrect value PersentAvailability", "IWorkTimeRaw");
@@ -2427,7 +2430,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             var freq_kHz = readerSignalMask.GetValue(c => c.Freq_kHz);
 
                             if (loss_dB.HasValue && loss_dB.Value >= -100 && loss_dB.Value <= 500)
-                                listLoss_dB.Add((float)loss_dB.Value);
+                                listLoss_dB.Add(loss_dB.Value);
                             else
                                 WriteLog("Incorrect value Loss_dB", "ISignalMaskRaw");
                             if (freq_kHz.HasValue && freq_kHz.Value >= -1000000 && freq_kHz.Value <= 1000000)
@@ -2541,7 +2544,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                             var signalLevel_dBm = readerSpectrum.GetValue(c => c.SignalLevel_dBm);
                             if (signalLevel_dBm.HasValue && signalLevel_dBm.Value >= -200 && signalLevel_dBm.Value <= 50)
-                                spectrum.SignalLevel_dBm = (float)signalLevel_dBm.Value;
+                                spectrum.SignalLevel_dBm = signalLevel_dBm.Value;
                             else
                                 WriteLog("Incorrect value SignalLevel_dBm", "ISpectrumRaw");
 

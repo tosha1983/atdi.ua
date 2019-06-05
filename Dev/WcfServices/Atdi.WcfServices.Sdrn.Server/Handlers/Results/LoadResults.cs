@@ -357,7 +357,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (readerTime.GetValue(c => c.HitCount).HasValue)
                             workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
                         if (readerTime.GetValue(c => c.PersentAvailability).HasValue)
-                            workTime.PersentAvailability = (float)readerTime.GetValue(c => c.PersentAvailability).Value;
+                            workTime.PersentAvailability = readerTime.GetValue(c => c.PersentAvailability).Value;
 
                         listWorkTimes.Add(new KeyValuePair<int, WorkTime>(readerTime.GetValue(c => c.EMITTING.Id), workTime));
                     }
@@ -384,7 +384,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         listFreq_kHz = new List<double>();
 
                         if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue)
-                            listLoss_dB.Add((float)readerSignalMask.GetValue(c => c.Loss_dB).Value);
+                            listLoss_dB.Add(readerSignalMask.GetValue(c => c.Loss_dB).Value);
 
                         if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue)
                             listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
@@ -474,7 +474,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                             if (readerSpectrum.GetValue(c => c.SignalLevel_dBm).HasValue)
                             {
-                                spectrum.SignalLevel_dBm = (float)readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value;
+                                spectrum.SignalLevel_dBm = readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value;
                             }
 
 
@@ -752,7 +752,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             if (readerTime.GetValue(c => c.HitCount).HasValue)
                                 workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
                             if (readerTime.GetValue(c => c.PersentAvailability).HasValue)
-                                workTime.PersentAvailability = (float)readerTime.GetValue(c => c.PersentAvailability).Value;
+                                workTime.PersentAvailability = readerTime.GetValue(c => c.PersentAvailability).Value;
 
                             listWorkTimes.Add(new KeyValuePair<int, WorkTime>(readerTime.GetValue(c => c.EMITTING.Id), workTime));
                         }
@@ -779,7 +779,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             listFreq_kHz = new List<double>();
 
                             if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue)
-                                listLoss_dB.Add((float)readerSignalMask.GetValue(c => c.Loss_dB).Value);
+                                listLoss_dB.Add(readerSignalMask.GetValue(c => c.Loss_dB).Value);
 
                             if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue)
                                 listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
@@ -847,7 +847,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 if (readerSpectrum.GetValue(c => c.SignalLevel_dBm).HasValue)
                                 {
-                                    spectrum.SignalLevel_dBm = (float)readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value;
+                                    spectrum.SignalLevel_dBm = readerSpectrum.GetValue(c => c.SignalLevel_dBm).Value;
                                 }
 
 
@@ -1843,7 +1843,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum) != null)
                                         {
-                                            levelSpectrum.Add((float)readerResStLevelsSpect.GetValue(c => c.LevelSpecrum));
+                                            if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).HasValue)
+                                            {
+                                                levelSpectrum.Add(readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
+                                            }
                                         }
                                     }
                                     return true;
@@ -2461,7 +2464,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum) != null)
                                         {
-                                            levelSpectrum.Add((float)readerResStLevelsSpect.GetValue(c => c.LevelSpecrum));
+                                            levelSpectrum.Add(readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
                                         }
                                     }
                                     return true;
@@ -3289,7 +3292,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             {
                                                 if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum) != null)
                                                 {
-                                                    levelSpectrum.Add((float)readerResStLevelsSpect.GetValue(c => c.LevelSpecrum));
+                                                    levelSpectrum.Add(readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
                                                 }
                                             }
                                             return true;

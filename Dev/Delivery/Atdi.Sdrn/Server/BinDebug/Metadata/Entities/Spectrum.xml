@@ -19,7 +19,7 @@
     <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BW_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="CorrectnessEstimations" Title="CorrectnessEstimations" Name="CorrectnessEstimations" DataType="Integer.32" SourceName="CORRECT_ESTIM" SourceType="Column" Required="false"/>
     <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
-    <Field Desc="SignalLevel_dBm" Title="SignalLevel_dBm" Name="SignalLevel_dBm" DataType="Decimal.22.8" SourceName="SIGNALLEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="SignalLevel_dBm" Title="SignalLevel_dBm" Name="SignalLevel_dBm" DataType="Float.22.8" SourceName="SIGNALLEVEL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="LevelsdBm" Title="LevelsdBm" Name="LevelsdBm" DataType="Bytes.MAX" SourceName="LEVELSDBM" SourceType="Column" Required="false"/>
     <Field Desc="EmittingId" Title="EmittingId" Name="EmittingId" DataType="Integer.64" SourceName="EMITTING_ID" SourceType="Column" Required="true"/>
     <Field Desc="Contravention" Title="Contravention" Name="Contravention" DataType="Integer.32" SourceName="CONTRAVENTION" SourceType="Column" Required="false"/>

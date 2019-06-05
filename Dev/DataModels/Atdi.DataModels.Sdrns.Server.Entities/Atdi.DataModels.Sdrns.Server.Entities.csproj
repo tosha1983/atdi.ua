@@ -137,6 +137,8 @@
   <ItemGroup>
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\Float.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\Float.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
