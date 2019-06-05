@@ -21,8 +21,8 @@
     <Field Desc="TimeStartMeas" Title="TimeStartMeas" Name="TimeStartMeas" DataType="DateTime" SourceName="TIMESTARTMEASDATE" SourceType="Column" Required="false"/>
     <Field Desc="TimeFinishMeas" Title="TimeFinishMeas" Name="TimeFinishMeas" DataType="DateTime" SourceName="TIMEFINISHMEAS" SourceType="Column" Required="false"/>
     <Field Desc="OffsetFrequency" Title="OffsetFrequency" Name="OffsetFrequency" DataType="Decimal.22.8" SourceName="OFFSETFREQUENCY" SourceType="Column" Required="false"/>
-    <Field Desc="SpecrumStartFreq" Title="SpecrumStartFreq" Name="SpecrumStartFreq" DataType="Decimal.30.10" SourceName="SPECRUMSTARTFREQ" SourceType="Column" Required="false"/>
-    <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Decimal.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
+    <Field Desc="SpecrumStartFreq" Title="SpecrumStartFreq" Name="SpecrumStartFreq" DataType="Float.30.10" SourceName="SPECRUMSTARTFREQ" SourceType="Column" Required="false"/>
+    <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Float.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
     <Field Desc="Correctnessestim" Title="Correctnessestim" Name="Correctnessestim" DataType="Integer.32" SourceName="CORRECTNESSESTIM" SourceType="Column" Required="false"/>
     <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
     <Field Desc="Rbw" Title="Rbw" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false"/>

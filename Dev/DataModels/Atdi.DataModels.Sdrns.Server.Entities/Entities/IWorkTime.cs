@@ -14,7 +14,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? StartEmitting { get; set; }
         DateTime? StopEmitting { get; set; }
         int? HitCount { get; set; }
-        double? PersentAvailability { get; set; }
+        float? PersentAvailability { get; set; }
         int? EmittingId { get; set; }
         IEmitting EMITTING { get; set; }
     }

@@ -638,7 +638,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 int? idSectorFreq = null;
                                                 var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
                                                 builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
-                                                builderInsertSectorFreq.SetValue(c => c.Frequency, (double?)freq.Frequency);
+                                                builderInsertSectorFreq.SetValue(c => c.Frequency, freq.Frequency);
                                                 builderInsertSectorFreq.SetValue(c => c.PlanId, freq.IdPlan);
                                                 builderInsertSectorFreq.SetValue(c => c.IdFreq, freq.Id);
                                                 builderInsertSectorFreq.Select(c => c.Id);

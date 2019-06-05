@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Decimal.22.8" SourceName="LOSS_DB" SourceType="Column" Required="false"/>
+    <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Float.22.8" SourceName="LOSS_DB" SourceType="Column" Required="false"/>
     <Field Desc="Freq_kHz" Title="Freq_kHz" Name="Freq_kHz" DataType="Decimal.22.8" SourceName="FREQ_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="ReferenceSignalId" Title="ReferenceSignalId" Name="ReferenceSignalId" DataType="Integer.64" SourceName="REFSIGNAL_ID" SourceType="Column" Required="false"/>
     <Field Desc="EmittingId" Title="EmittingId" Name="EmittingId" DataType="Integer.64" SourceName="EMITTING_ID" SourceType="Column" Required="false"/>

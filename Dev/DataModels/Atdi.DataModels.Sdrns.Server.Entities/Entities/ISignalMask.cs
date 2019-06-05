@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface ISignalMask
     {
         int Id { get; set; }
-        double? Loss_dB { get; set; }
+        float? Loss_dB { get; set; }
         double? Freq_kHz { get; set; }
         int? ReferenceSignalId { get; set; }
         int? EmittingId { get; set; }

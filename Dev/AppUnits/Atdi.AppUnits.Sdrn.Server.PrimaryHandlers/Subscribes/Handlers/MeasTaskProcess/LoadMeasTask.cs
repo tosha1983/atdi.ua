@@ -190,7 +190,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                 }
                                                 if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
                                                 {
-                                                    loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
+                                                    loss.Add(readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
                                                 }
                                             }
                                             return true;
@@ -617,7 +617,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     {
                                         var freqM = new FrequencyForSectorFormICSM();
                                         freqM.ChannalNumber = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.ChannelNumber);
-                                        freqM.Frequency = (decimal)readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.Frequency);
+                                        freqM.Frequency = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.Frequency);
                                         freqM.Id = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.IdFreq);
                                         freqM.IdPlan = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.PlanId);
                                         lFreqICSM.Add(freqM);

@@ -24,8 +24,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? TimeStartMeas { get; set; }
         DateTime? TimeFinishMeas { get; set; }
         double? OffsetFrequency { get; set; }
-        double? SpecrumStartFreq { get; set; }
-        double? SpecrumSteps { get; set; }
+        decimal? SpecrumStartFreq { get; set; }
+        decimal? SpecrumSteps { get; set; }
         int? Correctnessestim { get; set; }
         int? TraceCount { get; set; }
         IResMeasStation RESMEASSTA { get; set; }
