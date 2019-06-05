@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Contracts.Api.EventSystem
+namespace Atdi.DataModels.Api.EventSystem
 {
     public interface IEvent
     {

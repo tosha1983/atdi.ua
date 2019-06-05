@@ -60,6 +60,14 @@
       <Project>{6ae823e9-2c99-4fff-a94c-c5ee46b74c69}</Project>
       <Name>Atdi.AppUnits.Sdrn.BusController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Server.DevicesBus\Atdi.AppUnits.Sdrn.Server.DevicesBus.csproj">
+      <Project>{7c4b925b-2e30-4285-81b3-0c7ce4c997d7}</Project>
+      <Name>Atdi.AppUnits.Sdrn.Server.DevicesBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Server.EventSubscribers\Atdi.AppUnits.Sdrn.Server.EventSubscribers.csproj">
+      <Project>{204fdab1-d57b-42c8-b60c-5b8042949df6}</Project>
+      <Name>Atdi.AppUnits.Sdrn.Server.EventSubscribers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers\Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.csproj">
       <Project>{dc9f7815-c9ca-495c-a383-234913fccce6}</Project>
       <Name>Atdi.AppUnits.Sdrn.Server.PrimaryHandlers</Name>
@@ -104,6 +112,10 @@
       <Project>{0284cba5-d336-4a39-8519-3f2c48d433d7}</Project>
       <Name>Atdi.CoreServices.EntityOrm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
+      <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
+      <Name>Atdi.DataModels.Api.EventSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
@@ -115,6 +127,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Events\Atdi.DataModels.Sdrns.Server.Events.csproj">
+      <Project>{e41db4c2-2171-4e39-b437-221c0ce195f2}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Events</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>

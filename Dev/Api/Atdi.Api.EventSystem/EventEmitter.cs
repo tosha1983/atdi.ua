@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.Api.EventSystem;
+using Atdi.DataModels.Api.EventSystem;
 using Atdi.Modules.AmqpBroker;
 using System;
 using System.Collections.Generic;

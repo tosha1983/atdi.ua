@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IAmqpMessage.cs" />
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\IDetailReferenceLevels.cs" />
     <Compile Include="Entities\IDetailSpectrumLevels.cs" />
@@ -135,8 +136,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.XBS_AMQP_MESSAGES.sql" />
+    <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\DateTimeOffset.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
@@ -159,6 +163,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
+    <Content Include="Metadata\Entities\AmqpMessage.xml" />
     <Content Include="Metadata\Entities\Bearing.xml" />
     <Content Include="Metadata\Entities\DetailReferenceLevels.xml" />
     <Content Include="Metadata\Entities\DetailSpectrumLevels.xml" />
@@ -251,6 +256,8 @@
     <Content Include="Metadata\Units\Level.dBm.xml" />
     <Content Include="Metadata\Units\Frequency.kHz.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DataLayer\Oracle\Tables\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -49,6 +49,10 @@
       <Project>{608fac29-91cb-43af-a45b-1a0f31870041}</Project>
       <Name>Atdi.Contracts.Api.EventSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
+      <Project>{61E920B8-8945-420C-A8C8-BC9A7CBF6F70}</Project>
+      <Name>Atdi.DataModels.Api.EventSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>

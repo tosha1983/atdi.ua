@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.Api.EventSystem;
+using Atdi.DataModels.Api.EventSystem;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
