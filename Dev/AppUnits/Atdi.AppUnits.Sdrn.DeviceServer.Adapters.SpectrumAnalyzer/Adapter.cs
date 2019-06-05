@@ -604,15 +604,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 //    SetSampleSpeed(samplespeed);
                 //}
 
+
+
+
+
+                long time = _timeService.GetGnssTime().Ticks;
+                long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
+
                 //IQMeasTime
-                decimal delay = -0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
+                decimal delay = Math.Abs( ((decimal)ToNextSecond )/ 10000000 )-0.1m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
                 //ищем ближайшее целое по отношени к длительности семпла
-                int divisor = -1 + (int)Math.Floor(delay / SampleTimeLength);
-                delay = divisor * SampleTimeLength;
-                SetTriggerOffset(delay);
+                int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
+                //delay = divisor * SampleTimeLength;
+                SetTriggerOffset(divisor * SampleTimeLength);
                 IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
                 IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s + delay;
-
+                Debug.WriteLine("\r\n" + delay.ToString() + " delay"); 
+                Debug.WriteLine("\r\n" + IQMeasTimeAll.ToString() + " All");
+                Debug.WriteLine("\r\n" + new TimeSpan((long)(IQMeasTimeAll * 10000000) + time).ToString(@"hh\:mm\:ss\.fffffff") + " Stop");
                 SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
                 SetSampleLength(SampleLength);
                 //SetIQMeasTime(IQMeasTimeAll);
@@ -624,7 +633,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 if (GetIQStream(ref result, IQMeasTimeAll, SampleLength))
                 {
                     context.PushResult(result);
+                    //Debug.WriteLine("\r\n" + new TimeSpan(_timeService.GetGnssTime().Ticks).ToString() + " Result");
                 }
+                Debug.WriteLine("\r\n" + new TimeSpan(_timeService.GetGnssTime().Ticks).ToString(@"hh\:mm\:ss\.fffffff") + " Result");
                 context.Unlock();
                 context.Finish();
             }
@@ -3912,7 +3923,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     TriggerOffsetInSample = decimal.Parse(dfghkjdp);
                     //Посчитаем когда точно был триггер относительно первого семпла
                     TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
-                    //Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
+                    Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
                     IQArr = temp;
 
                     result.iq_samples[0] = temp;

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.DataModels.Sdrn.DeviceServer.Adapters;
 //using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
