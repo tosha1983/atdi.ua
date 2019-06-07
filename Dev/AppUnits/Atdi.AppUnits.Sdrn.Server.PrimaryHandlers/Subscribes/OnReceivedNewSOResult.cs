@@ -1,4 +1,5 @@
-﻿using Atdi.Contracts.Api.EventSystem;
+﻿/*
+using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Api.EventSystem;
 using Atdi.Platform.Logging;
 using System;
@@ -3080,8 +3081,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             builderInsertLog.Select(c => c.Id);
             queryExecuter.Execute(builderInsertLog);
         }
-
-       
-
     }
 }
+*/

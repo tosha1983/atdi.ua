@@ -12,11 +12,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class FrequencyForSectorFormICSM // перечень частот
     {
         [DataMember]
-        public int? Id; // Идентификатор частоты
+        public long? Id; // Идентификатор частоты
         [DataMember]
-        public int? IdPlan; // Идетификатор частотного плана
+        public long? IdPlan; // Идетификатор частотного плана
         [DataMember]
-        public int? ChannalNumber;
+        public long? ChannalNumber;
         [DataMember]
         public decimal? Frequency; //МГц;
     }

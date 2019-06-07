@@ -122,6 +122,17 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                 });
         }
 
+        public static IQuerySelectStatement Where(this IQuerySelectStatement query, string column, long? value)
+        {
+            return query.Where(
+                new ConditionExpression
+                {
+                    LeftOperand = new ColumnOperand { ColumnName = column },
+                    Operator = ConditionOperator.Equal,
+                    RightOperand = new LongValueOperand { Value = value }
+                });
+        }
+
         public static IQuerySelectStatement Where(this IQuerySelectStatement query, string column, bool? value)
         {
             return query.Where(

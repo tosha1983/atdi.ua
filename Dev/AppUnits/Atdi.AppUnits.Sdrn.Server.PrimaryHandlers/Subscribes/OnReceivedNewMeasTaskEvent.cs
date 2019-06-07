@@ -35,7 +35,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))
             {
-                /*
                 if ((@event.MeasTaskId>0) && (@event.SensorId >0) && (@event.SensorName != null) && (@event.EquipmentTechId != null))
                 {
                     try
@@ -49,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
                             envelop.SensorName = @event.SensorName;
                             envelop.SensorTechId = @event.EquipmentTechId;
-                            listMeasTask[i].SensorId = @event.SensorId;
+                            listMeasTask[i].SensorId = (int)@event.SensorId;
                             envelop.DeliveryObject = listMeasTask[i];
                             _messagePublisher.Send(envelop);
                         }
@@ -59,7 +58,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         this._logger.Exception(Contexts.PrimaryHandler, ex);
                     }
                 }
-                */
             }
         }
     }

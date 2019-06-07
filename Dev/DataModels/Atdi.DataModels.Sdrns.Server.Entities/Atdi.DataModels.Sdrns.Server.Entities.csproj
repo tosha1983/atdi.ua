@@ -44,10 +44,7 @@
   <ItemGroup>
     <Compile Include="Entities\IAmqpMessage.cs" />
     <Compile Include="Entities\IAntennaPattern.cs" />
-    <Compile Include="Entities\IDetailReferenceLevels.cs" />
-    <Compile Include="Entities\IDetailSpectrumLevels.cs" />
     <Compile Include="Entities\IEmitting.cs" />
-    <Compile Include="Entities\ILevelsDistribution.cs" />
     <Compile Include="Entities\IMeasTaskSignaling.cs" />
     <Compile Include="Entities\IReferenceLevels.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
@@ -142,10 +139,7 @@
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\AmqpMessage.xml" />
     <Content Include="Metadata\Entities\Bearing.xml" />
-    <Content Include="Metadata\Entities\DetailReferenceLevels.xml" />
-    <Content Include="Metadata\Entities\DetailSpectrumLevels.xml" />
     <Content Include="Metadata\Entities\Emitting.xml" />
-    <Content Include="Metadata\Entities\LevelsDistribution.xml" />
     <Content Include="Metadata\Entities\Entity.xml" />
     <Content Include="Metadata\Entities\EntityPart.xml" />
     <Content Include="Metadata\Entities\FreqSample.xml" />
