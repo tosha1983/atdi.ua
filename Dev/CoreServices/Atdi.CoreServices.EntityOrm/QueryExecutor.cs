@@ -671,16 +671,15 @@ namespace Atdi.CoreServices.EntityOrm
 
         public int Execute(IQueryStatement statement)
         {
+            if (statement == null)
+            {
+                throw new ArgumentNullException(nameof(statement));
+            }
+
             int recordsAffected = 0;
+
             try
             {
-                var dicIdentField = new KeyValuePair<string, DataType>();
-
-                if (statement == null)
-                {
-                    throw new ArgumentNullException(nameof(statement));
-                }
-
                 var extractType = statement.GetType();
 
                 if (extractType.Name.Contains(typeof(QuerySelectStatement).Name))
@@ -718,26 +717,30 @@ namespace Atdi.CoreServices.EntityOrm
                 }
                 else if (statement is QueryInsertStatement queryInsertStatement)
                 {
-                    dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
-                    if (!string.IsNullOrEmpty(dicIdentField.Key))
-                    {
-                        if ((dicIdentField.Value != DataType.String) && (dicIdentField.Value != DataType.Guid))
-                        {
-                            command.Text = this._icsmOrmQueryBuilder.BuildInsertStatementExecuteAndFetch(queryInsertStatement, command.Parameters);
-                            EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
-                            engineCommandParameter.Name = _nameIdentFieldParameter;
-                            engineCommandParameter.DataType = DataType.Integer;
-                            command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(_nameIdentFieldParameter, engineCommandParameter));
-                        }
-                        else
-                        {
-                            command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
-                        }
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Not found primary key description");
-                    }
+                    command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+
+                    // закрыл следующую логику, так как в этом контексте по ряду причин ей не место
+                    //var dicIdentField = new KeyValuePair<string, DataType>();
+                    //dicIdentField = this._icsmOrmQueryBuilder.GetIdentFieldFromTable(queryInsertStatement, command.Parameters);
+                    //if (!string.IsNullOrEmpty(dicIdentField.Key))
+                    //{
+                    //    if ((dicIdentField.Value != DataType.String) && (dicIdentField.Value != DataType.Guid))
+                    //    {
+                    //        command.Text = this._icsmOrmQueryBuilder.BuildInsertStatementExecuteAndFetch(queryInsertStatement, command.Parameters);
+                    //        EngineCommandParameter engineCommandParameter = new EngineCommandParameter();
+                    //        engineCommandParameter.Name = _nameIdentFieldParameter;
+                    //        engineCommandParameter.DataType = DataType.Integer;
+                    //        command.Parameters.Add(new KeyValuePair<string, EngineCommandParameter>(_nameIdentFieldParameter, engineCommandParameter));
+                    //    }
+                    //    else
+                    //    {
+                    //        command.Text = this._icsmOrmQueryBuilder.BuildInsertStatement(queryInsertStatement, command.Parameters);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    throw new InvalidOperationException("Not found primary key description");
+                    //}
                 }
 
                 if (command == null)

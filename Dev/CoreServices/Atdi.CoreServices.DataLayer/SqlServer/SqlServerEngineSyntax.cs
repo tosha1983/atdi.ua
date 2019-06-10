@@ -344,7 +344,8 @@ namespace Atdi.CoreServices.DataLayer
             var statement = new StringBuilder();
             if (identyFieldName != null)
             {
-                var nextValueScript = string.Format("SELECT @v_ID = IDENT_CURRENT('{0}')", sourceExpression);
+                //var nextValueScript = string.Format("SELECT @v_ID = IDENT_CURRENT('{0}')", sourceExpression);
+                var nextValueScript = "SELECT @v_ID = @@IDENTITY";
                 if (identyFieldName != null)
                 {
                     statement.AppendLine($"INSERT INTO {sourceExpression} ({columnsExpression}) ");

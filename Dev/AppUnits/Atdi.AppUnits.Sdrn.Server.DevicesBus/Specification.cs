@@ -16,6 +16,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
     {
         public static readonly EventCategory Disposing = "Disposing";
         public static readonly EventCategory Notify = "Notify";
+        public static readonly EventCategory Processing = "Processing";
         public static readonly EventCategory OnReceivedNewSOResultEvent = "OnReceivedNewSOResultEvent";
         
     }

@@ -20,6 +20,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly ISdrnServerEnvironment _environment;
         private readonly BusConnectionFactory _busConnectionFactory;
         private readonly MessageConverter _messageConverter;
+        private readonly MessageProcessing _messageProcessing;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly IEventEmitter _eventEmitter;
         private readonly IServicesResolver _servicesResolver;
@@ -36,7 +37,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             SdrnBusControllerConfig busControllerConfig, 
             ISdrnServerEnvironment environment, 
             BusConnectionFactory busConnectionFactory, 
-            MessageConverter messageConverter, 
+            MessageConverter messageConverter,
+            MessageProcessing messageProcessing,
             IDataLayer<EntityDataOrm> dataLayer,
             IEventEmitter eventEmitter,
             IServicesResolver servicesResolver, 
@@ -46,6 +48,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this._environment = environment;
             this._busConnectionFactory = busConnectionFactory;
             this._messageConverter = messageConverter;
+            this._messageProcessing = messageProcessing;
             this._dataLayer = dataLayer;
             this._eventEmitter = eventEmitter;
             this._servicesResolver = servicesResolver;
@@ -156,7 +159,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         busConnection: consumerConnection,
                         busControllerConfig: _busControllerConfig,
                         servicesResolver: _servicesResolver,
-                        eventEmitter: _eventEmitter,
+                        messageProcessing: _messageProcessing,
                         dataLayer: _dataLayer,
                         logger: _logger);
                     consumers.Add(consumer);

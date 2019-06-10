@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IAmqpEvent.cs" />
     <Compile Include="Entities\IAmqpMessage.cs" />
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\IDetailReferenceLevels.cs" />
@@ -136,6 +137,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.XBS_AMQP_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.XBS_AMQP_MESSAGES.sql" />
     <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
@@ -164,6 +166,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\AmqpEvent.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\AmqpMessage.xml" />
     <Content Include="Metadata\Entities\Bearing.xml" />

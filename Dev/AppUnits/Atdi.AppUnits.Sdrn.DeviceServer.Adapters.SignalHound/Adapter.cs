@@ -698,7 +698,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #endregion
 
         #region Trace Data
-        private bool NewTrace;
+        //private bool NewTrace;
 
         private decimal FreqStep = 10000;
 
@@ -748,7 +748,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         /// <summary>
         /// последняя температура калибровки
         /// </summary>
-        private double Device_LastCalcBoardTemp;
+        //private double Device_LastCalcBoardTemp;
 
         public double Device_USBVoltage;
 
@@ -1377,7 +1377,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         TraceReset = false;
                     }
                 }
-                NewTrace = true;
+               // NewTrace = true;
             }
         }
 
@@ -1582,7 +1582,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             IQStopIndex = AllBlockIndex - 1;
                             
-                            Debug.WriteLine("C ошибкой " + Atdi.DataModels.Sdrn.DeviceServer.Adapters.MyTime.GetTimeStamp() + " " + IQStopIndex);
+                           // Debug.WriteLine("C ошибкой " + Atdi.DataModels.Sdrn.DeviceServer.Adapters.MyTime.GetTimeStamp() + " " + IQStopIndex);
                         }
                         ReceivedBlockWithErrors = true;
                         //IsCancellationRequested = true;

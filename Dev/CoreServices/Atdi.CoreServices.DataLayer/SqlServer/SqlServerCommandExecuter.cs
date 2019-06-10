@@ -116,7 +116,7 @@ namespace Atdi.CoreServices.DataLayer
                 case DataType.Float:
                     return SqlDbType.Float;
                 case DataType.Long:
-                    return SqlDbType.Float;
+                    return SqlDbType.BigInt;
                 case DataType.Decimal:
                     return SqlDbType.Decimal;
                 case DataType.Byte:
