@@ -20,7 +20,8 @@
     <Field Desc="RollOffFactor" Title="RollOffFactor" Name="RollOffFactor" DataType="Decimal.22.8" SourceName="ROLLOFFACTOR" SourceType="Column" Required="false"/>
     <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Decimal.22.8" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
-    <Field Desc="LevelsDistribution" Title="LevelsDistribution" Name="LevelsDistribution" DataType="Bytes.MAX" SourceName="LEVELSDISTR" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsDistributionLvl" Title="LevelsDistributionLvl" Name="LevelsDistributionLvl" DataType="Bytes.MAX" SourceName="LEVELSDISTRIBUTIONLVL" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsDistributionCount" Title="LevelsDistributionCount" Name="LevelsDistributionCount" DataType="Bytes.MAX" SourceName="LEVELSDISTRIBUTIONCOUNT" SourceType="Column" Required="false"/>
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="false"/>
     <Field Desc="StationID" Title="StationID" Name="StationID" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="true"/>
     <Field Desc="StationTableName" Title="StationTableName" Name="StationTableName" DataType="Text.50" SourceName="STATIONTABLENAME" SourceType="Column" Required="false"/>
