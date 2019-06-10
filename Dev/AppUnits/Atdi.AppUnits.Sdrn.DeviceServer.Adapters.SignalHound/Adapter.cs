@@ -392,7 +392,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
 
         }
-        
+
         /// <summary>
         /// Получает IQ Данные
         /// 
@@ -553,8 +553,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                 }
                 catch { }
-                Debug.WriteLine(e.Message);
-                    // желательно записать влог
+                // желательно записать влог
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
@@ -796,7 +795,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             /// иницируем его параметрами сконфигурации
             /// проверяем к чем оно готово
 
-           // StatusError(AdapterDriver.bbOpenDevice(ref _Device_ID));
+            // StatusError(AdapterDriver.bbOpenDevice(ref _Device_ID));
             int snac = int.Parse(SN);
             bool err = StatusError(AdapterDriver.bbOpenDeviceBySerialNumber(ref _Device_ID, snac));
             if (!err)
@@ -820,7 +819,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     if (!Firmware && Device_FirmwareVersion == Device_FirmwareVersionActual[i])
                     {
-                        Firmware = true; }
+                        Firmware = true;
+                    }
                 }
                 if (!Firmware)
                 {
@@ -834,7 +834,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 SetGain();
                 SetRbwVbwSweepTimeRbwType();
                 SetPortType();
-                StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, 0));
+                
+                StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.TimeStamp));
                 IsRuning = true;
                 IdleState = true;
                 res = true;
@@ -1014,20 +1015,42 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 uint port2 = 0;
                 if (_adapterConfig.GPSPPSConnected)
                 {
-                    port2 = (uint)EN.Port2.InTriggerRisingEdge;                    
+                    port2 = (uint)EN.Port2.InTriggerRisingEdge;
                 }
                 if (_adapterConfig.Reference10MHzConnected)
                 {
                     port1 = (uint)EN.Port1.ExtRefIn;
                 }
                 StatusError(AdapterDriver.bbConfigureIO(_Device_ID, port1, port2));
-                if (_adapterConfig.SyncCPUtoGPS)
-                {
-                    if (_adapterConfig.GPSPortNumber > -1 && _adapterConfig.GPSPortBaudRate > 1000)
-                    {
-                        StatusError(AdapterDriver.bbSyncCPUtoGPS(_adapterConfig.GPSPortNumber, _adapterConfig.GPSPortBaudRate));
-                    }
-                }
+                //пока неработает
+                //if (_adapterConfig.SyncCPUtoGPS)
+                //{
+                //    if (_adapterConfig.GPSPortNumber > -1 && _adapterConfig.GPSPortBaudRate > 1000)
+                //    {
+                //        StatusError(AdapterDriver.bbSyncCPUtoGPS(_adapterConfig.GPSPortNumber, _adapterConfig.GPSPortBaudRate));
+                //        DeviceMode = EN.Mode.Streaming;
+                //        StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.StreamIQ | (uint)EN.Flag.TimeStamp));
+
+                //        //int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
+                //        //StatusError(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec));
+                //        //float[] iqSamplesX = new float[return_len * 2];
+                //        //int[] TrDataTemp = new int[71];
+                //        //AdapterDriver.bbIQPacket bbIQPacket = new AdapterDriver.bbIQPacket()
+                //        //{
+                //        //    iqData = new float[return_len * 2],
+                //        //    triggers = new int[71],
+                //        //    iqCount = 0,
+                //        //    triggerCount = 0,
+                //        //    purge = true,
+                //        //    dataRemaining = 0,
+                //        //    iqNano = 0,
+                //        //    iqSec = 0,
+                //        //    sampleLoss = 0
+                //        //};
+                //        //Thread.Sleep(2000);
+                //        //StatusError(AdapterDriver.bbGetIQ(_Device_ID, ref bbIQPacket));
+                //    }
+                //}
             }
             #region Exception
             catch (Exception exp)
@@ -1384,8 +1407,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         private void InitialReceivedIQStream(ref COMR.MesureIQStreamResult IQStreamResult, ref TempIQData tempIQStream, double blockDuration, double receivTime, long timeStart)
         {
             // Формирование пустого места для записи данных
-
-            //if (tempIQStream == null) tempIQStream = new TempIQData();
             tempIQStream.BlocksCount = (int)Math.Ceiling(blockDuration * samples_per_sec / return_len);
             tempIQStream.BlocksAll = (int)Math.Ceiling(receivTime * samples_per_sec / return_len);
             tempIQStream.TimeStart = timeStart;
@@ -1457,11 +1478,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if (NecessaryBlockIndex == 0)
                     {
                         IQStartIndex = AllBlockIndex;
-                        
+
                     }
                     StatusError(AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQData[NecessaryBlockIndex], return_len, tempIQStream.TrDataTemp, 71, 1,
                         ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano));
-                    
+
                     if (!ReceivedBlockWithErrors && IQStopIndex == 0 && NecessaryBlockIndex == tempIQStream.BlocksCount - 1)
                     {
                         IQStopIndex = AllBlockIndex;
@@ -1483,7 +1504,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 tempIQStream.BlockTime[AllBlockIndex] = ((long)iqSec) * 1000000000 + iqNano;
                 PrevBlockTime = ThisBlockTime;
                 ThisBlockTime = tempIQStream.BlockTime[AllBlockIndex];
-                //Debug.WriteLine((_timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks - tempIQStream.BlockTime[AllBlockIndex]/100 - 131072) + " strat block");
                 if (PrevBlockTime != 0)
                 {
                     tempIQStream.BlockTimeDelta[AllBlockIndex] = ThisBlockTime - PrevBlockTime;
@@ -1505,13 +1525,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if (tempIQStream.BlockTime[AllBlockIndex] <= tempIQStream.TimeStart && tempIQStream.TimeStart <= tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration)
                     {
                         GetBlockOnTime = true;
+                        IQStartIndex = AllBlockIndex;
                     }
                     else
                     {
                         //провтыкали время старта
                         if (tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration > tempIQStream.TimeStart)
                         {
-                            //Debug.WriteLine(tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration - tempIQStream.TimeStart);
                             throw new Exception("The task was started after the required start time of the task.");//Задача была запущена после необходимого времени старта задачи
                         }
                         NecessaryBlockIndex--;//т.к. не началось время прослушки данных то уменьшим индексм и на то же место запишем болок заново
@@ -1535,6 +1555,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                     if ((tempIQStream.IQData[NecessaryBlockIndex][j + 4] >= TrigerLevel) || (tempIQStream.IQData[NecessaryBlockIndex][j + 5] >= TrigerLevel))
                                     {
                                         SignalFound = true;//Есть сигнал 
+                                        IQStartIndex = AllBlockIndex;
                                         break;
                                     }
                                 }
@@ -1580,11 +1601,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     {
                         if (!ReceivedBlockWithErrors && IQStopIndex == 0)
                         {
-                            IQStopIndex = AllBlockIndex - 1;
-                            
-                            Debug.WriteLine("C ошибкой " + Atdi.DataModels.Sdrn.DeviceServer.Adapters.MyTime.GetTimeStamp() + " " + IQStopIndex);
+                            //хотим с сигналом и есть сигнал!!! до этого момента нам всеравно
+                            if (JustWithSignal && SignalFound)
+                            {
+                                IQStopIndex = AllBlockIndex - 1;
+                                ReceivedBlockWithErrors = true;
+                            }
+                            else if (JustWithSignal && !SignalFound)//хотим с сигналом и до того как появился сигнал нам на ошибку всеравно!!!
+                            {
+                            }
+                            else if (!JustWithSignal) // просто хотим записать
+                            {
+                                IQStopIndex = AllBlockIndex - 1;
+                                ReceivedBlockWithErrors = true;
+                            }
                         }
-                        ReceivedBlockWithErrors = true;
+                        
                         //IsCancellationRequested = true;
                     }
                 }
@@ -1595,20 +1627,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 #region обработка полученных данных
                 if (ReceivedBlockWithErrors)
                 {
-                    IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
+                    if (IQStartIndex < IQStopIndex)
                     {
-                        iq_samples = new float[IQStopIndex - IQStartIndex][]
-                    };
-                    Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
-                    
+                        IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
+                        {
+                            iq_samples = new float[IQStopIndex - IQStartIndex][]
+                        };
+                        Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
+                    }
+                    else
+                    {
+                        throw new Exception("Data received with error, no valid data.");//Задача была запущена после необходимого времени старта задачи
+                    }
                 }
                 else
                 {
                     IQStreamResult.iq_samples = tempIQStream.IQData;
                 }
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                Debug.WriteLine(IQStreamResult.TimeStamp);
-                Debug.WriteLine("Результат " + IQStartIndex + " " + IQStopIndex);
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                 if (JustWithSignal && !SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
@@ -1642,11 +1678,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion обработка полученных данных  
                 done = true;
-                IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length];//del
-                for (int i = 0; i < IQStreamResult.iq_samples.Length; i++)//del
-                {
-                    Array.Copy(IQStreamResult.iq_samples[i], 0, IQArr, i * IQStreamResult.iq_samples[i].Length, IQStreamResult.iq_samples[i].Length);//del
-                }
+
             }
             return done;
         }
