@@ -36,7 +36,6 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listIdsEmittings = new List<long>();
             var listEmitings = new List<KeyValuePair<long, Emitting>>();
             var listWorkTimes = new List<KeyValuePair<long, WorkTime>>();
-            var listSignalMask = new List<KeyValuePair<long, SignalMask>>();
             var listSpectrum = new List<KeyValuePair<long, Spectrum>>();
             referenceLevels = new ReferenceLevels();
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
@@ -44,7 +43,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listEmitting = new List<Emitting>();
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c => c.SensorId, c => c.StationID, c => c.StationTableName)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistributionLvl, c => c.LevelsDistributionCount, c => c.SensorId, c => c.StationID, c => c.StationTableName, c => c.Loss_dB, c => c.Freq_kHz)
             .OrderByAsc(c => c.StartFrequency_MHz)
             .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
             //.Where(c => c.Id, ConditionOperator.Equal, 1216364);
@@ -124,44 +123,30 @@ namespace Atdi.WcfServices.Sdrn.Server
                         emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
                     }
 
-                    var listLevel = new List<int>();
-                    var listCount = new List<int>();
 
-                    if (reader.GetValue(c => c.LevelsDistribution) != null)
-                    {
-                        var objLevelsDistribution = BinaryDecoder.Deserialize<string>(reader.GetValue(c => c.LevelsDistribution));
-                        if (!string.IsNullOrEmpty(objLevelsDistribution))
-                        {
-                            var wrds = objLevelsDistribution.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                            if ((wrds != null) && (wrds.Length > 0))
-                            {
-                                for (int h = 0; h < wrds.Length; h++)
-                                {
-                                    var oneString = wrds[h];
-                                    if (!string.IsNullOrEmpty(oneString))
-                                    {
-                                        var wrdLevelCount = oneString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                        if ((wrdLevelCount != null) && (wrdLevelCount.Length == 2))
-                                        {
-                                            int levelValue; int countValue;
-                                            if ((int.TryParse(wrdLevelCount[0], out levelValue)) && (int.TryParse(wrdLevelCount[1], out countValue)))
-                                            {
-                                                listLevel.Add(levelValue);
-                                                listCount.Add(countValue);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                     var levelDist = new LevelsDistribution();
-                    if (listLevel.Count > 0)
-                        levelDist.Levels = listLevel.ToArray();
-                    if (listCount.Count > 0)
-                        levelDist.Count = listCount.ToArray();
+                    if (reader.GetValue(c => c.LevelsDistributionLvl) != null)
+                    {
+                        levelDist.Levels = reader.GetValue(c => c.LevelsDistributionLvl);
+                    }
+                    if (reader.GetValue(c => c.LevelsDistributionCount) != null)
+                    {
+                        levelDist.Count = reader.GetValue(c => c.LevelsDistributionCount);
+                    }
+                   
                     emitting.LevelsDistribution = levelDist;
                     emitting.EmittingParameters = emittingParam;
+
+                    var signalMask = new SignalMask();
+                    if (reader.GetValue(c => c.Loss_dB) != null)
+                    {
+                        signalMask.Loss_dB = reader.GetValue(c => c.Loss_dB);
+                    }
+                    if (reader.GetValue(c => c.Freq_kHz) != null)
+                    {
+                        signalMask.Freq_kHz = reader.GetValue(c => c.Freq_kHz);
+                    }
+                    emitting.SignalMask = signalMask;
                     listIdsEmittings.Add(reader.GetValue(c => c.Id));
                     listEmitings.Add(new KeyValuePair<long, Emitting>(reader.GetValue(c => c.Id), emitting));
                 }
@@ -197,83 +182,21 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
 
-            var listIntEmittingSignalMask = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
-            for (int i = 0; i < listIntEmittingSignalMask.Count; i++)
-            {
-                var listLoss_dB = new List<float>();
-                var listFreq_kHz = new List<double>();
-                var querySignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>()
-                .From()
-                .Select(c => c.Id, c => c.Loss_dB, c => c.Freq_kHz, c => c.EMITTING.Id)
-                .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSignalMask[i]);
-                queryExecuter.Fetch(querySignalMask, readerSignalMask =>
-                {
-                    while (readerSignalMask.Read())
-                    {
-                        listLoss_dB = new List<float>();
-                        listFreq_kHz = new List<double>();
-
-                        if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue)
-                            listLoss_dB.Add(readerSignalMask.GetValue(c => c.Loss_dB).Value);
-
-                        if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue)
-                            listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
-
-                        var signalMask = new SignalMask();
-                        if (listLoss_dB.Count > 0)
-                            signalMask.Loss_dB = listLoss_dB.ToArray();
-                        if (listFreq_kHz.Count > 0)
-                            signalMask.Freq_kHz = listFreq_kHz.ToArray();
-
-                        listSignalMask.Add(new KeyValuePair<long, SignalMask>(readerSignalMask.GetValue(c => c.EMITTING.Id), signalMask));
-                    }
-                    return true;
-                });
-            }
-
             var listIntEmittingSpectrum = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
             for (int i = 0; i < listIntEmittingSpectrum.Count; i++)
             {
                 var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                        .From()
-                       .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
+                       .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                        .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
                 queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                 {
                     while (readerSpectrum.Read())
                     {
                         var spectrum = new Spectrum();
-                        var listLevelsdBm = new List<float>();
-
-                        if (readerSpectrum.GetValue(c => c.LevelsdBm) != null)
+                        if (readerSpectrum.GetValue(c => c.Levels_dBm) != null)
                         {
-                            var levelsdBm = BinaryDecoder.Deserialize<float[]>(readerSpectrum.GetValue(c => c.LevelsdBm));
-                            if (levelsdBm != null)
-                            {
-                                listLevelsdBm.AddRange(levelsdBm as float[]);
-
-                                ////////////////////
-                                /*
-                                if (readerSpectrum.GetValue(c => c.Id) == 1373893)
-                                {
-                                    var lelvDbm = levelsdBm as float[];
-                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
-                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
-                                    //int[] startStop;
-                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
-                                }
-
-                                if (readerSpectrum.GetValue(c => c.Id) == 1373894)
-                                {
-                                    var lelvDbm = levelsdBm as float[];
-                                    spectrum.SpectrumStartFreq_MHz = readerSpectrum.GetValue(c => c.SpectrumStartFreq_MHz).Value;
-                                    spectrum.SpectrumSteps_kHz = readerSpectrum.GetValue(c => c.SpectrumSteps_kHz).Value;
-                                    //int[] startStop;
-                                    //var val = Counting(lelvDbm, 0, lelvDbm.Length - 1, out startStop);
-                                }
-                                */
-                                /////
-                            }
+                            spectrum.Levels_dBm = readerSpectrum.GetValue(c => c.Levels_dBm);
                         }
                        
                         if (spectrum.SpectrumStartFreq_MHz == 0)
@@ -335,7 +258,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 spectrum.Contravention = readerSpectrum.GetValue(c => c.Contravention).Value == 1 ? true : false;
                             }
                         }
-                        spectrum.Levels_dBm = listLevelsdBm.ToArray();
                         listSpectrum.Add(new KeyValuePair<long, Spectrum>(readerSpectrum.GetValue(c => c.EMITTING.Id), spectrum));
                     }
                     return true;
@@ -367,28 +289,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                     }
 
                     listWorkTimes.RemoveAll(c => c.Key == id);
-                    var fndSignalMask = listSignalMask.FindAll(c => c.Key == id);
-                    if (fndSignalMask != null)
-                    {
-                        var arrayFndSignalMask = fndSignalMask.ToArray();
-                        var signalMask = new SignalMask();
-                        var listLoss_dB = new List<float>();
-                        var listFreq_kHz = new List<double>();
-                        for (int t = 0; t < arrayFndSignalMask.Length; t++)
-                        {
-                            var x = arrayFndSignalMask[t];
-                            listLoss_dB.AddRange(x.Value.Loss_dB);
-                            listFreq_kHz.AddRange(x.Value.Freq_kHz);
-                        }
-                        if (listLoss_dB.Count > 0)
-                        {
-                            signalMask.Loss_dB = listLoss_dB.ToArray();
-                            signalMask.Freq_kHz = listFreq_kHz.ToArray();
-                        }
-                        emitting.SignalMask = signalMask;
-                    }
-                    listSignalMask.RemoveAll(c => c.Key == id);
-
 
                     var fndSpectrum = listSpectrum.FindAll(c => c.Key == id);
                     if (fndSpectrum != null)
@@ -427,7 +327,6 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listIdsEmittings = new List<long>();
             var listEmitings = new List<KeyValuePair<long, Emitting>>();
             var listWorkTimes = new List<KeyValuePair<long, WorkTime>>();
-            var listSignalMask = new List<KeyValuePair<long, SignalMask>>();
             var listSpectrum = new List<KeyValuePair<long, Spectrum>>();
             var listSensors = new List<Sensor>();
             var listEmitting = new List<Emitting>();
@@ -439,7 +338,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 long?[] listIntIdsConvert = listIntids[l].Select(n => (long?)(n)).ToArray();
                 var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistribution, c => c.SensorId, c => c.StationID, c => c.StationTableName)
+            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistributionLvl, c => c.LevelsDistributionCount, c => c.SensorId, c => c.StationID, c => c.StationTableName, c => c.Loss_dB, c => c.Freq_kHz)
             .OrderByAsc(c => c.StartFrequency_MHz)
             .Where(c => c.StationID, ConditionOperator.In, listIntIdsConvert)
                 .Where(c => c.StationTableName, ConditionOperator.Equal, icsmTableName);
@@ -519,44 +418,32 @@ namespace Atdi.WcfServices.Sdrn.Server
                         emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
                     }
 
-                    var listLevel = new List<int>();
-                    var listCount = new List<int>();
-
-                    if (reader.GetValue(c => c.LevelsDistribution) != null)
-                    {
-                        var objLevelsDistribution = BinaryDecoder.Deserialize<string>(reader.GetValue(c => c.LevelsDistribution));
-                        if (!string.IsNullOrEmpty(objLevelsDistribution))
-                        {
-                            var wrds = objLevelsDistribution.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                            if ((wrds != null) && (wrds.Length > 0))
-                            {
-                                for (int h = 0; h < wrds.Length; h++)
-                                {
-                                    var oneString = wrds[h];
-                                    if (!string.IsNullOrEmpty(oneString))
-                                    {
-                                        var wrdLevelCount = oneString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                        if ((wrdLevelCount != null) && (wrdLevelCount.Length == 2))
-                                        {
-                                            int levelValue; int countValue;
-                                            if ((int.TryParse(wrdLevelCount[0], out levelValue)) && (int.TryParse(wrdLevelCount[1], out countValue)))
-                                            {
-                                                listLevel.Add(levelValue);
-                                                listCount.Add(countValue);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                     var levelDist = new LevelsDistribution();
-                    if (listLevel.Count > 0)
-                        levelDist.Levels = listLevel.ToArray();
-                    if (listCount.Count > 0)
-                        levelDist.Count = listCount.ToArray();
+
+                    if (reader.GetValue(c => c.LevelsDistributionLvl) != null)
+                    {
+                        levelDist.Levels = reader.GetValue(c => c.LevelsDistributionLvl);
+                    }
+
+                    if (reader.GetValue(c => c.LevelsDistributionCount) != null)
+                    {
+                        levelDist.Count = reader.GetValue(c => c.LevelsDistributionCount);
+                    }
+
                     emitting.LevelsDistribution = levelDist;
                     emitting.EmittingParameters = emittingParam;
+
+                    var signalMask = new SignalMask();
+                    if (reader.GetValue(c => c.Loss_dB) != null)
+                    {
+                        signalMask.Loss_dB = reader.GetValue(c => c.Loss_dB);
+                    }
+                    if (reader.GetValue(c => c.Freq_kHz) != null)
+                    {
+                        signalMask.Freq_kHz = reader.GetValue(c => c.Freq_kHz);
+                    }
+                    emitting.SignalMask = signalMask;
+
                     listIdsEmittings.Add(reader.GetValue(c => c.Id));
                     listEmitings.Add(new KeyValuePair<long, Emitting>(reader.GetValue(c => c.Id), emitting));
                 }
@@ -592,61 +479,22 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
 
-                var listIntEmittingSignalMask = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
-                for (int i = 0; i < listIntEmittingSignalMask.Count; i++)
-                {
-                    var listLoss_dB = new List<float>();
-                    var listFreq_kHz = new List<double>();
-                    var querySignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>()
-                    .From()
-                    .Select(c => c.Id, c => c.Loss_dB, c => c.Freq_kHz, c => c.EMITTING.Id)
-                    .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSignalMask[i]);
-                    queryExecuter.Fetch(querySignalMask, readerSignalMask =>
-                    {
-                        while (readerSignalMask.Read())
-                        {
-                            listLoss_dB = new List<float>();
-                            listFreq_kHz = new List<double>();
-
-                            if (readerSignalMask.GetValue(c => c.Loss_dB).HasValue)
-                                listLoss_dB.Add(readerSignalMask.GetValue(c => c.Loss_dB).Value);
-
-                            if (readerSignalMask.GetValue(c => c.Freq_kHz).HasValue)
-                                listFreq_kHz.Add(readerSignalMask.GetValue(c => c.Freq_kHz).Value);
-
-                            var signalMask = new SignalMask();
-                            if (listLoss_dB.Count > 0)
-                                signalMask.Loss_dB = listLoss_dB.ToArray();
-                            if (listFreq_kHz.Count > 0)
-                                signalMask.Freq_kHz = listFreq_kHz.ToArray();
-
-                            listSignalMask.Add(new KeyValuePair<long, SignalMask>(readerSignalMask.GetValue(c => c.EMITTING.Id), signalMask));
-                        }
-                        return true;
-                    });
-                }
-
                 var listIntEmittingSpectrum = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
                 for (int i = 0; i < listIntEmittingSpectrum.Count; i++)
                 {
                     var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                            .From()
-                           .Select(c => c.Id, c => c.LevelsdBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
+                           .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                            .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
                     queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                     {
                         while (readerSpectrum.Read())
                         {
                             var spectrum = new Spectrum();
-                            var listLevelsdBm = new List<float>();
 
-                            if (readerSpectrum.GetValue(c => c.LevelsdBm) != null)
+                            if (readerSpectrum.GetValue(c => c.Levels_dBm) != null)
                             {
-                                var levelsdBm = BinaryDecoder.Deserialize<float[]>(readerSpectrum.GetValue(c => c.LevelsdBm));
-                                if (levelsdBm != null)
-                                {
-                                    listLevelsdBm.AddRange(levelsdBm as float[]);
-                                }
+                                spectrum.Levels_dBm = readerSpectrum.GetValue(c => c.Levels_dBm);
                             }
 
                             if (spectrum.SpectrumStartFreq_MHz == 0)
@@ -708,7 +556,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     spectrum.Contravention = readerSpectrum.GetValue(c => c.Contravention).Value == 1 ? true : false;
                                 }
                             }
-                            spectrum.Levels_dBm = listLevelsdBm.ToArray();
+                           
                             listSpectrum.Add(new KeyValuePair<long, Spectrum>(readerSpectrum.GetValue(c => c.EMITTING.Id), spectrum));
                         }
                         return true;
@@ -740,28 +588,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
 
                         listWorkTimes.RemoveAll(c => c.Key == id);
-                        var fndSignalMask = listSignalMask.FindAll(c => c.Key == id);
-                        if (fndSignalMask != null)
-                        {
-                            var arrayFndSignalMask = fndSignalMask.ToArray();
-                            var signalMask = new SignalMask();
-                            var listLoss_dB = new List<float>();
-                            var listFreq_kHz = new List<double>();
-                            for (int t = 0; t < arrayFndSignalMask.Length; t++)
-                            {
-                                var x = arrayFndSignalMask[t];
-                                listLoss_dB.AddRange(x.Value.Loss_dB);
-                                listFreq_kHz.AddRange(x.Value.Freq_kHz);
-                            }
-                            if (listLoss_dB.Count > 0)
-                            {
-                                signalMask.Loss_dB = listLoss_dB.ToArray();
-                                signalMask.Freq_kHz = listFreq_kHz.ToArray();
-                            }
-                            emitting.SignalMask = signalMask;
-                        }
-                        listSignalMask.RemoveAll(c => c.Key == id);
-
 
                         var fndSpectrum = listSpectrum.FindAll(c => c.Key == id);
                         if (fndSpectrum != null)
@@ -829,7 +655,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
                .From()
-               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.ReferenceLevels)
+               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
                .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
                .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
                .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
@@ -848,13 +674,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                             level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
                         }
 
-                        if (readerLevels.GetValue(c => c.ReferenceLevels) != null)
+                        if (readerLevels.GetValue(c => c.RefLevels) != null)
                         {
-                            var refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
-                            if (refLevels != null)
-                            {
-                                level.levels = refLevels as float[];
-                            }
+                            level.levels = readerLevels.GetValue(c => c.RefLevels);
                         }
                     }
                     return true;
@@ -908,7 +730,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
                .From()
-               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.ReferenceLevels)
+               .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
                .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
                .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
                .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
@@ -928,13 +750,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                             level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
                         }
 
-                        if (readerLevels.GetValue(c => c.ReferenceLevels) != null)
+                        if (readerLevels.GetValue(c => c.RefLevels) != null)
                         {
-                            var refLevels = BinaryDecoder.Deserialize<float[]>(readerLevels.GetValue(c => c.ReferenceLevels));
-                            if (refLevels != null)
-                            {
-                                level.levels = refLevels as float[];
-                            }
+                            level.levels = readerLevels.GetValue(c => c.RefLevels);
                         }
                     }
                     return true;
@@ -1616,6 +1434,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.TraceCount);
                         builderResStGeneral.Select(c => c.Rbw);
                         builderResStGeneral.Select(c => c.Vbw);
+                        builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
                         builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
@@ -1627,8 +1446,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                                 measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                                 measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                                measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                                measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
                                 measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                                 measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                 measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -1658,30 +1477,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 });
                                 measurementsParameterGeneral.MaskBW = listMaskElements.ToArray();
-
-
-
-                                var levelSpectrum = new List<float>();
-                                var builderResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpect>().From();
-                                builderResStLevelsSpect.Select(c => c.LevelSpecrum);
-                                builderResStLevelsSpect.Select(c => c.Id);
-                                builderResStLevelsSpect.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
-                                builderResStLevelsSpect.OrderByAsc(c => c.Id);
-                                queryExecuter.Fetch(builderResStLevelsSpect, readerResStLevelsSpect =>
-                                {
-                                    while (readerResStLevelsSpect.Read())
-                                    {
-                                        if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum) != null)
-                                        {
-                                            if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).HasValue)
-                                            {
-                                                levelSpectrum.Add(readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
-                                            }
-                                        }
-                                    }
-                                    return true;
-                                });
-                                measurementsParameterGeneral.LevelsSpecrum = levelSpectrum.ToArray();
+                                measurementsParameterGeneral.LevelsSpecrum = readerResStGeneral.GetValue(c=>c.LevelsSpectrumdBm);
 
 
                                 var valSysInfo = "";
@@ -1735,13 +1531,13 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                         var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
                                         .From()
-                                        .Select(c => c.Id, c => c.BinData, c => c.Type)
+                                        .Select(c => c.Id, c => c.Data, c => c.Type)
                                         .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
                                         queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
                                         {
                                             while (readerStationSysInfoBls.Read())
                                             {
-                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData))) + Environment.NewLine;
+                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", readerStationSysInfoBls.GetValue(c => c.Data)) + Environment.NewLine;
                                                 valSysInfo += string.Format("SysInfoBlocks.Type  : {0}", readerStationSysInfoBls.GetValue(c => c.Type)) + Environment.NewLine;
                                             }
                                             return true;
@@ -1784,7 +1580,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var levelMeasurementsCar = new LevelMeasurementsCar();
                                 levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
                                 levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
+                                levelMeasurementsCar.CentralFrequency = readerResStLevelCar.GetValue(c => c.CentralFrequency);
                                 levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
                                 levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
                                 levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
@@ -2161,6 +1957,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.TraceCount);
                         builderResStGeneral.Select(c => c.Rbw);
                         builderResStGeneral.Select(c => c.Vbw);
+                        builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
                         builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
@@ -2172,8 +1969,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                                 measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                                 measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                                measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                                measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
                                 measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                                 measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                 measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -2201,28 +1998,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 });
                                 measurementsParameterGeneral.MaskBW = listMaskElements.ToArray();
-
-
-
-                                var levelSpectrum = new List<float>();
-                                var builderResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpect>().From();
-                                builderResStLevelsSpect.Select(c => c.LevelSpecrum);
-                                builderResStLevelsSpect.Select(c => c.Id);
-                                builderResStLevelsSpect.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
-                                builderResStLevelsSpect.OrderByAsc(c => c.Id);
-                                queryExecuter.Fetch(builderResStLevelsSpect, readerResStLevelsSpect =>
-                                {
-                                    while (readerResStLevelsSpect.Read())
-                                    {
-                                        if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum) != null)
-                                        {
-                                            levelSpectrum.Add(readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
-                                        }
-                                    }
-                                    return true;
-
-                                });
-                                measurementsParameterGeneral.LevelsSpecrum = levelSpectrum.ToArray();
+                                measurementsParameterGeneral.LevelsSpecrum = readerResStGeneral.GetValue(c=>c.LevelsSpectrumdBm);
 
 
 
@@ -2277,13 +2053,13 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                         var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
                                         .From()
-                                        .Select(c => c.Id, c => c.BinData, c => c.Type)
+                                        .Select(c => c.Id, c => c.Data, c => c.Type)
                                         .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
                                         queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
                                         {
                                             while (readerStationSysInfoBls.Read())
                                             {
-                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", BinaryDecoder.Deserialize<string>(readerStationSysInfoBls.GetValue(c => c.BinData))) + Environment.NewLine;
+                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", readerStationSysInfoBls.GetValue(c => c.Data)) + Environment.NewLine;
                                                 valSysInfo += string.Format("SysInfoBlocks.Type  : {0}", readerStationSysInfoBls.GetValue(c => c.Type)) + Environment.NewLine;
                                             }
                                             return true;
@@ -2327,7 +2103,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var levelMeasurementsCar = new LevelMeasurementsCar();
                                 levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
                                 levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
+                                levelMeasurementsCar.CentralFrequency = readerResStLevelCar.GetValue(c => c.CentralFrequency);
                                 levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
                                 levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
                                 levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
@@ -2988,6 +2764,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResStGeneral.Select(c => c.TraceCount);
                                 builderResStGeneral.Select(c => c.Rbw);
                                 builderResStGeneral.Select(c => c.Vbw);
+                                builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
                                 builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                                 builderResStGeneral.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
@@ -2999,8 +2776,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                                         measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                                         measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                                        measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                                        measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                        measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                        measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
                                         measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                                         measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                         measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -3029,28 +2806,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                         });
                                         measurementsParameterGeneral.MaskBW = listMaskElements.ToArray();
-
-
-
-                                        var levelSpectrum = new List<float>();
-                                        var builderResStLevelsSpect = this._dataLayer.GetBuilder<MD.IResStLevelsSpect>().From();
-                                        builderResStLevelsSpect.Select(c => c.LevelSpecrum);
-                                        builderResStLevelsSpect.Select(c => c.Id);
-                                        builderResStLevelsSpect.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
-                                        builderResStLevelsSpect.OrderByAsc(c => c.Id);
-                                        queryExecuter.Fetch(builderResStLevelsSpect, readerResStLevelsSpect =>
-                                        {
-                                            while (readerResStLevelsSpect.Read())
-                                            {
-                                                if (readerResStLevelsSpect.GetValue(c => c.LevelSpecrum) != null)
-                                                {
-                                                    levelSpectrum.Add(readerResStLevelsSpect.GetValue(c => c.LevelSpecrum).Value);
-                                                }
-                                            }
-                                            return true;
-
-                                        });
-                                        measurementsParameterGeneral.LevelsSpecrum = levelSpectrum.ToArray();
+                                        measurementsParameterGeneral.LevelsSpecrum = readerResStGeneral.GetValue(c=>c.LevelsSpectrumdBm);
                                     }
                                     return true;
                                 });
@@ -3080,7 +2836,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var levelMeasurementsCar = new LevelMeasurementsCar();
                                         levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
                                         levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                        levelMeasurementsCar.CentralFrequency = (decimal?)readerResStLevelCar.GetValue(c => c.CentralFrequency);
+                                        levelMeasurementsCar.CentralFrequency = readerResStLevelCar.GetValue(c => c.CentralFrequency);
                                         levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
                                         levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
                                         levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);

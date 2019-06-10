@@ -49,7 +49,6 @@
     <Compile Include="Entities\IReferenceLevels.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
     <Compile Include="Entities\IReferenceSignal.cs" />
-    <Compile Include="Entities\ISignalMask.cs" />
     <Compile Include="Entities\ISpectrum.cs" />
     <Compile Include="Entities\IWorkTime.cs" />
     <Compile Include="Entities\IBearing.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="Entities\IResRoutes.cs" />
     <Compile Include="Entities\IResStGeneral.cs" />
     <Compile Include="Entities\IResStLevelCar.cs" />
-    <Compile Include="Entities\IResStLevelsSpect.cs" />
     <Compile Include="Entities\IResStMaskElement.cs" />
     <Compile Include="Entities\IResSysInfo.cs" />
     <Compile Include="Entities\IResSysInfoBlocks.cs" />
@@ -147,7 +145,6 @@
     <Content Include="Metadata\Entities\MeasTaskSignaling.xml" />
     <Content Include="Metadata\Entities\ReferenceSituation.xml" />
     <Content Include="Metadata\Entities\ReferenceSignal.xml" />
-    <Content Include="Metadata\Entities\SignalMask.xml" />
     <Content Include="Metadata\Entities\Spectrum.xml" />
     <Content Include="Metadata\Entities\WorkTime.xml" />
     <Content Include="Metadata\Entities\LinkMeasStation.xml" />
@@ -162,7 +159,6 @@
     <Content Include="Metadata\Entities\ResMeasStation.xml" />
     <Content Include="Metadata\Entities\ResStGeneral.xml" />
     <Content Include="Metadata\Entities\ResStLevelCar.xml" />
-    <Content Include="Metadata\Entities\ResStLevelsSpect.xml" />
     <Content Include="Metadata\Entities\ResStMaskElement.xml" />
     <Content Include="Metadata\Entities\ResSysInfo.xml" />
     <Content Include="Metadata\Entities\ResSysInfoBlocks.xml" />

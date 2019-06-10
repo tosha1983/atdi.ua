@@ -28,6 +28,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         decimal? SpecrumSteps { get; set; }
         int? Correctnessestim { get; set; }
         int? TraceCount { get; set; }
+        float[] LevelsSpectrumdBm { get; set; }
         IResMeasStation RESMEASSTA { get; set; }
     }
 }
