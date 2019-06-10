@@ -22,7 +22,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? TraceCount { get; set; }
         float? SignalLevel_dBm { get; set; }
         long? EmittingId { get; set; }
-        byte[] LevelsdBm { get; set; }
+        //byte[] LevelsdBm { get; set; }
+        float[] Levels_dBm { get; set; }
         IEmitting EMITTING { get; set; }
     }
 }
