@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResStLevelCar
     {
-        int Id { get; set; }
-        int? ResStationId { get; set; }
+        long Id { get; set; }
+        long? ResStationId { get; set; }
         double? Bw { get; set; }
         double? Altitude { get; set; }
         double? CentralFrequency { get; set; }

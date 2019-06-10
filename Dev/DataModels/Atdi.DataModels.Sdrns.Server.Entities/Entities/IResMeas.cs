@@ -10,11 +10,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResMeas
     {
-        int Id { get; set; }
+        long Id { get; set; }
         string MeasTaskId { get; set; }
-        int? MeasSubTaskId { get; set; }
-        int? MeasSubTaskStationId { get; set; }
-        int? SensorId { get; set; }
+        long? MeasSubTaskId { get; set; }
+        long? MeasSubTaskStationId { get; set; }
+        long? SensorId { get; set; }
         double? AntVal { get; set; }
         DateTime? TimeMeas { get; set; }
         int? DataRank { get; set; }

@@ -100,6 +100,8 @@ namespace Atdi.CoreServices.DataLayer
                     return DbType.Int32;
                 case DataType.DateTime:
                     return DbType.DateTime;
+                case DataType.DateTimeOffset:
+                    return DbType.DateTimeOffset;
                 case DataType.Double:
                     return DbType.Double;
                 case DataType.Float:

@@ -10,15 +10,15 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResMeasStation
     {
-        int Id { get; set; }
+        long Id { get; set; }
         string GlobalSID { get; set; }
         string MeasGlobalSID { get; set; }
-        int? SectorId { get; set; }
-        int? IdStation { get; set; }
+        long? SectorId { get; set; }
+        long? IdStation { get; set; }
         string Status { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         string Standard { get; set; }
-        int? StationId { get; set; }
+        long? StationId { get; set; }
         ISector SECTOR { get; set; }
         IResMeas RESMEAS { get; set; }
         IStation STATION { get; set; }

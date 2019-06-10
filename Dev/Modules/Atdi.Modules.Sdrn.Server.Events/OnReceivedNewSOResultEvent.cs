@@ -1,4 +1,4 @@
-﻿using Atdi.Contracts.Api.EventSystem;
+﻿using Atdi.DataModels.Api.EventSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +19,6 @@ namespace Atdi.Modules.Sdrn.Server.Events
         {
         }
 
-        public int ResultId { get; set; }
+        public long ResultId { get; set; }
     }
 }

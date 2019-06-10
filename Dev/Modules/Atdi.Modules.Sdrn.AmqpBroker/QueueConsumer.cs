@@ -172,6 +172,10 @@ namespace Atdi.Modules.Sdrn.AmqpBroker
             {
                 message.CorrelationId = properties.CorrelationId;
             }
+            if (properties.IsTimestampPresent())
+            {
+                message.Timestamp = properties.Timestamp.UnixTime;
+            }
 
             var context = new DeliveryContext
             {

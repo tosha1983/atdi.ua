@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DevicesBus\IMessagesSite.cs" />
+    <Compile Include="DevicesBus\IMessageProcessingScope.cs" />
     <Compile Include="ISdrnEnvelope.cs" />
     <Compile Include="ISdrnMessageDispatcher.cs" />
     <Compile Include="ISdrnMessageHandlingResult.cs" />

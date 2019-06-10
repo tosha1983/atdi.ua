@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Atdi.Contracts.Api.EventSystem;
+using Atdi.DataModels.Api.EventSystem;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
@@ -30,9 +31,9 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="measTask"></param>
         /// <param name="ActionType"></param>
         /// <returns></returns>
-        public int? CreateNewMeasTask(MeasTask measTask, string ActionType)
+        public long? CreateNewMeasTask(MeasTask measTask, string ActionType)
         {
-            int? NewIdMeasTask = -1;
+            long? NewIdMeasTask = -1;
             if (measTask != null)
             {
                 var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
@@ -64,7 +65,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="isSuccess"></param>
         /// <param name="idTask"></param>
         /// <returns></returns>
-        public bool Process(MeasTask measTask, int[] sensorIds, string actionType, bool isOnline, out bool isSuccess, out int? idTask, bool isSendMessageToBus)
+        public bool Process(MeasTask measTask, long[] sensorIds, string actionType, bool isOnline, out bool isSuccess, out long? idTask, bool isSendMessageToBus)
         {
             isSuccess = false;
             idTask = null;
@@ -73,13 +74,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, string.Format(Events.HandlerMeasTaskProcessStart.Text, actionType));
                 var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
                 var loadSensor = new LoadSensor(_dataLayer, _logger);
-                int? IdTsk = null;
+                long? IdTsk = null;
                 if (measTask != null)
                 {
                     for (int d = 0; d < sensorIds.Length; d++)
                     {
-                        int SensorId = sensorIds[d];
-
+                        long SensorId = sensorIds[d];
                         var fndSensor = loadSensor.LoadObjectSensor(SensorId);
                         if (fndSensor != null)
                         {
@@ -226,7 +226,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (Res.Count > 0) mt = Res[0];
                     if (mt != null)
                     {
-                        var SensorIds = new List<int>();
+                        var SensorIds = new List<long>();
                         if (mt.MeasSubTasks != null)
                         {
 
@@ -262,7 +262,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                         }
 
-                        int? id = null;
+                        long? id = null;
                         var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                         bool isSuccessTemp = false;
 
@@ -319,7 +319,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (Res.Count > 0) mt = Res[0];
                     if (mt != null)
                     {
-                        var SensorIds = new List<int>();
+                        var SensorIds = new List<long>();
                         if (mt.MeasSubTasks != null)
                         {
                             for (int d = 0; d < mt.MeasSubTasks.Length; d++)
@@ -358,7 +358,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (massSensor.Length > 0)
                         {
                             bool isSuccess = false;
-                            int? id = null;
+                            long? id = null;
                             Process(measTaskedit, massSensor, MeasTaskMode.Run.ToString(), false, out isSuccess, out id, true);
                             result.State = CommonOperationState.Success;
                         }
@@ -389,7 +389,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (Res.Count > 0) mt = Res[0];
                     if (mt != null)
                     {
-                        var SensorIds = new List<int>();
+                        var SensorIds = new List<long>();
                         if (mt.MeasSubTasks != null)
                         {
                             for (int d = 0; d < mt.MeasSubTasks.Length; d++)
@@ -428,7 +428,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         if (massSensor.Length > 0)
                         {
                             bool isSuccess = false;
-                            int? id = null;
+                            long? id = null;
                             Process(measTaskedit, massSensor, MeasTaskMode.Stop.ToString(), false, out isSuccess, out id, true);
                             result.State = CommonOperationState.Success;
                         }

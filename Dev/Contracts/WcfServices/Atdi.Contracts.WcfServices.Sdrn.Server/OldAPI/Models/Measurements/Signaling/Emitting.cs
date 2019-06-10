@@ -8,7 +8,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
     public class Emitting
     {
-        public int? Id;
+        public long? Id;
         public double StartFrequency_MHz;
         public double StopFrequency_MHz;
         public double CurentPower_dBm;
@@ -23,6 +23,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public string SensorName;
         public string SensorTechId;
         public String AssociatedStationTableName;
-        public int AssociatedStationID;
+        public long AssociatedStationID;
     }
 }

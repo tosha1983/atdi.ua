@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResLevels
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? ValueLvl { get; set; }
         double? StddevLev { get; set; }
         double? VMinLvl { get; set; }
@@ -27,7 +27,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? VMMaxSpect { get; set; }
         double? LimitSpect { get; set; }
         double? OccupancySpect { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
 }

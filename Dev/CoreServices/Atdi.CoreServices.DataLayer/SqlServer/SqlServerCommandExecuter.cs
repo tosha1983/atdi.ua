@@ -123,6 +123,8 @@ namespace Atdi.CoreServices.DataLayer
                     return SqlDbType.TinyInt;
                 case DataType.Bytes:
                     return SqlDbType.VarBinary;
+                case DataType.DateTimeOffset:
+                    return SqlDbType.DateTimeOffset;
                 default:
                     throw new InvalidCastException();
             }

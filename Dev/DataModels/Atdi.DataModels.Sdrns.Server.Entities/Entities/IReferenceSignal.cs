@@ -10,11 +10,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IReferenceSignal
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Frequency_MHz { get; set; }
         double? Bandwidth_kHz { get; set; }
         double? LevelSignal_dBm { get; set; }
-        int? RefSituationId { get; set; }
+        long? RefSituationId { get; set; }
         int? IcsmId { get; set; }
         string IcsmTable { get; set; }
         IReferenceSituation REFSITUATION { get; set; }

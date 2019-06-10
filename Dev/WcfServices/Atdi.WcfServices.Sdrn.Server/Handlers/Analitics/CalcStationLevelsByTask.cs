@@ -37,6 +37,8 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetStationLevelsByTaskMethod.Text);
                 double ANT_VAL = 0; // єто костыль
+                long[] MeasResultIDConvert = paramsStationLevelsByTask.MeasResultID.Select(n => (long)(n)).ToArray();
+
                 var listLevelMeas2 = new List<StationLevelsByTask>();
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
@@ -57,7 +59,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStLevelCar.Select(c => c.RESSTATION.RESMEAS.MeasTaskId);
                 if ((paramsStationLevelsByTask.MeasResultID != null) && (paramsStationLevelsByTask.MeasResultID.Count>0))
                 {
-                    builderResStLevelCar.Where(c => c.RESSTATION.RESMEAS.Id, ConditionOperator.In, paramsStationLevelsByTask.MeasResultID.ToArray());
+                    builderResStLevelCar.Where(c => c.RESSTATION.RESMEAS.Id, ConditionOperator.In, MeasResultIDConvert);
                 }
                 if (paramsStationLevelsByTask.MeasTaskId>0)
                 {

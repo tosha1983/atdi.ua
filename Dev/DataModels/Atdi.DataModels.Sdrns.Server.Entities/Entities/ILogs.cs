@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILogs
     {
-        int Id { get; set; }
+        long Id { get; set; }
         string Event { get; set; }
         string TableName { get; set; }
         int? Lcount { get; set; }

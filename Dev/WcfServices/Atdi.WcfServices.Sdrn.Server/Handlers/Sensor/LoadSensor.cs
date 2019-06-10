@@ -346,7 +346,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return valSensors.ToArray();
         }
 
-        public Sensor LoadObjectSensor(int id)
+        public Sensor LoadObjectSensor(long id)
         {
             var val = new Sensor();
             try
@@ -660,7 +660,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return val;
         }
 
-        public ShortSensor LoadShortSensor(int id)
+        public ShortSensor LoadShortSensor(long id)
         {
             var val = new ShortSensor();
             try

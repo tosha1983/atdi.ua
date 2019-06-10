@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorLocation
     {
-        int Id { get; set; }
-        int? SensorId { get; set; }
+        long Id { get; set; }
+        long? SensorId { get; set; }
         DateTime? DateFrom { get; set; }
         DateTime? DateTo { get; set; }
         DateTime? DateCreated { get; set; }

@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISpectrum
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? SpectrumStartFreq_MHz { get; set; }
         double? SpectrumSteps_kHz { get; set; }
         int? T1 { get; set; }
@@ -21,7 +21,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? Contravention { get; set; }
         int? TraceCount { get; set; }
         float? SignalLevel_dBm { get; set; }
-        int? EmittingId { get; set; }
+        long? EmittingId { get; set; }
         byte[] LevelsdBm { get; set; }
         IEmitting EMITTING { get; set; }
     }

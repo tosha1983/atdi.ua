@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResLevMeasOnline
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Value { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
 }

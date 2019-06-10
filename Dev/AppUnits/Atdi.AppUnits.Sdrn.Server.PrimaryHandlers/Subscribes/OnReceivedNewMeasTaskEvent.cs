@@ -11,7 +11,7 @@ using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using DEV = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
-
+using Atdi.DataModels.Api.EventSystem;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
@@ -48,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
                             envelop.SensorName = @event.SensorName;
                             envelop.SensorTechId = @event.EquipmentTechId;
-                            listMeasTask[i].SensorId = @event.SensorId;
+                            listMeasTask[i].SensorId = (int)@event.SensorId;
                             envelop.DeliveryObject = listMeasTask[i];
                             _messagePublisher.Send(envelop);
                         }

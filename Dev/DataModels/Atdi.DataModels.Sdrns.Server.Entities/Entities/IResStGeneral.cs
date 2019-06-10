@@ -10,11 +10,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResStGeneral
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? BW { get; set; }
         double? Rbw { get; set; }
         double? Vbw { get; set; }
-        int? ResMeasStaId { get; set; }
+        long? ResMeasStaId { get; set; }
         double? CentralFrequency { get; set; }
         double? CentralFrequencyMeas { get; set; }
         double? DurationMeas { get; set; }

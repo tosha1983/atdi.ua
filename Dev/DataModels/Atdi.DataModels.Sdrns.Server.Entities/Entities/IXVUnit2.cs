@@ -20,7 +20,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? SpecrumSteps { get; }
         int? T1 { get; }
         int? T2 { get; }
-        int Id { get; }
+        long Id { get; }
         string MeasGlobalSid { get; }
     }
 }

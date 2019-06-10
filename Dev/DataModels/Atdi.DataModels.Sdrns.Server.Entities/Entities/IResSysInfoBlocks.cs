@@ -10,11 +10,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResSysInfoBlocks
     {
-        int Id { get; set; }
+        long Id { get; set; }
         string Data { get; set; }
         byte[]  BinData { get; set; }
         string Type { get; set; }
-        int? ResSysInfoId { get; set; }
+        long? ResSysInfoId { get; set; }
         IResSysInfo RESSYSINFO { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResRoutes
     {
-        int Id { get; set; }
+        long Id { get; set; }
         string RouteId { get; set; }
         double? Agl { get; set; }
         double? Asl { get; set; }
@@ -19,7 +19,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Lat { get; set; }
         double? Lon { get; set; }
         string PointStayType { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
 }

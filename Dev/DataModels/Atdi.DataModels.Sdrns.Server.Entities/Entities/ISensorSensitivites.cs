@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorSensitivites
     {
-        int Id { get; set; }
-        int? SensorEquipId { get; set; }
+        long Id { get; set; }
+        long? SensorEquipId { get; set; }
         double? Freq { get; set; }
         double? Ktbf { get; set; }
         double? Noisef { get; set; }

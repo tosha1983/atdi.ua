@@ -10,8 +10,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IBearing
     {
-        int Id { get; set; }
-        int? ResMeasStaId { get; set; }
+        long Id { get; set; }
+        long? ResMeasStaId { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }
         double? Asl { get; set; }
@@ -24,6 +24,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double CentralFrequency_MHz { get; set; }
         double Bearing { get; set; }
         double? AntennaAzimut { get; set; }
-        IResMeasStaRaw RESMEASSTA { get; set; }
+        IResMeasStation RESMEASSTA { get; set; }
     }
 }

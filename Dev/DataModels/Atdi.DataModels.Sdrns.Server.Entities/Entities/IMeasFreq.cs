@@ -10,9 +10,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IMeasFreq
     {
-        int Id { get; set; }
+        long Id { get; set; }
         double? Freq { get; set; }
-        int MeasFreqParamId { get; set; }
+        long? MeasFreqParamId { get; set; }
         IMeasFreqParam MEASFREQPARAM { get; set; }
     }
 }

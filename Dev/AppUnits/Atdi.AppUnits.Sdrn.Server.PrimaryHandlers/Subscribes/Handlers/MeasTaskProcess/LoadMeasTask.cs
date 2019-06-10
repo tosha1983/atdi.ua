@@ -19,7 +19,6 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
-
     public class LoadMeasTask
     {
         private readonly ILogger _logger;
@@ -32,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         }
 
 
-        public MeasTask ReadTask(int id)
+        public MeasTask ReadTask(long id)
         {
             var measTask = new MeasTask();
             try
@@ -480,7 +479,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             return measTask;
         }
 
-        public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(int taskId)
+        public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(long taskId)
         {
             var listStationData = new List<StationDataForMeasurements>();
             try
@@ -664,7 +663,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             return listStationData.ToArray();
         }
-
+        /*
         public  List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
         {
             var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
@@ -926,8 +925,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             return ListMTSDR;
         }
-
-      
+        */
     }
 }
 

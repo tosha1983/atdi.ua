@@ -238,6 +238,12 @@ namespace Atdi.CoreServices.EntityOrm
                     var valueAsInteger = valueOperand as IntegerValueOperand;
                     parameter.Value = valueAsInteger.Value;
                     break;
+
+                case DataModels.DataType.Long:
+                    var valueAsLong = valueOperand as LongValueOperand;
+                    parameter.Value = valueAsLong.Value;
+                    break;
+
                 case DataModels.DataType.DateTime:
                     var valueAsDateTime = valueOperand as DateTimeValueOperand;
                     parameter.Value = valueAsDateTime.Value;

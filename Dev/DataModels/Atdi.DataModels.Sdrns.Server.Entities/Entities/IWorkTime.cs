@@ -10,12 +10,12 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IWorkTime
     {
-        int Id { get; set; }
+        long Id { get; set; }
         DateTime? StartEmitting { get; set; }
         DateTime? StopEmitting { get; set; }
         int? HitCount { get; set; }
         float? PersentAvailability { get; set; }
-        int? EmittingId { get; set; }
+        long? EmittingId { get; set; }
         IEmitting EMITTING { get; set; }
     }
 }

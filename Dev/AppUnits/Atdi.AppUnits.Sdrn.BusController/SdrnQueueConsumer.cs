@@ -1,4 +1,8 @@
-﻿using Atdi.Contracts.Sdrn.Server;
+﻿using Atdi.Contracts.Api.EventSystem;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.CoreServices.EntityOrm;
+using Atdi.Contracts.Sdrn.Server;
+using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.Modules.Sdrn.AmqpBroker;
 using Atdi.Modules.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
@@ -8,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MD = Atdi.DataModels.Sdrns.Server.Entities;
 
 namespace Atdi.AppUnits.Sdrn.BusController
 {
@@ -21,9 +26,22 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly BusConnection _busConnection;
         private readonly SdrnBusControllerConfig _busControllerConfig;
         private readonly IServicesResolver _servicesResolver;
+        private readonly IDataLayer<EntityDataOrm> _dataLayer;
+        private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
 
-        public SdrnQueueConsumer(string tag, string routingKey, string queue, MessageConverter messageConverter, SdrnHandlerLibrary handlerLibrary, BusConnection busConnection, SdrnBusControllerConfig busControllerConfig, IServicesResolver servicesResolver, ILogger logger)
+        public SdrnQueueConsumer(
+            string tag, 
+            string routingKey, 
+            string queue, 
+            MessageConverter messageConverter, 
+            SdrnHandlerLibrary handlerLibrary, 
+            BusConnection busConnection, 
+            SdrnBusControllerConfig busControllerConfig, 
+            IServicesResolver servicesResolver, 
+            IDataLayer<EntityDataOrm> dataLayer,
+            IEventEmitter eventEmitter,
+            ILogger logger)
         {
             this._tag = tag;
             this._routingKey = routingKey;
@@ -33,6 +51,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this._busConnection = busConnection;
             this._busControllerConfig = busControllerConfig;
             this._servicesResolver = servicesResolver;
+            this._dataLayer = dataLayer;
+            this._eventEmitter = eventEmitter;
             this._logger = logger;
         }
 
@@ -47,11 +67,88 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                 try
                 {
-                    if (string.IsNullOrEmpty(message.Id) || string.IsNullOrEmpty(message.Type) || string.IsNullOrEmpty(message.AppId) || message.Headers == null)
+                    if (string.IsNullOrEmpty(message.Id) 
+                        || string.IsNullOrEmpty(message.Type) 
+                        || string.IsNullOrEmpty(message.AppId)
+                        || string.IsNullOrEmpty(message.ContentType)
+                        || message.Headers == null)
                     {
-                        throw new InvalidOperationException("The message contains an incorrect head");
+                        handlingResult.Status = SdrnMessageHandlingStatus.Trash;
+                        handlingResult.ReasonFailure = "The message contains an incorrect head";
+                        this.RedirectMessage(message, deliveryContext, handlingResult);
+                        return MessageHandlingResult.Confirm;
                     }
 
+                    if (!"application/sdrn".Equals(message.ContentType))
+                    {
+                        throw new InvalidOperationException("The message contains an incorrect conent type");
+                    }
+
+                    var sdrnServer = GetHeaderValue(message.Headers, "SdrnServer");
+                    if (!_busControllerConfig.Environment.ServerInstance.Equals(sdrnServer, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new InvalidOperationException("The message contains an incorrect SDRN server name");
+                    }
+                    var sensorName = GetHeaderValue(message.Headers, "SensorName");
+                    if (string.IsNullOrWhiteSpace(sensorName))
+                    {
+                        throw new InvalidOperationException("The message contains an incorrect Sensor Name");
+                    }
+                    var sensorTechId = GetHeaderValue(message.Headers, "SensorTechId");
+                    if (string.IsNullOrWhiteSpace(sensorName))
+                    {
+                        throw new InvalidOperationException("The message contains an incorrect Sensor Tech Id");
+                    }
+
+
+                    var queryInsert = this._dataLayer.GetBuilder<MD.IAmqpMessage>()
+                        .Insert()
+                        .SetValue(c => c.StatusCode, 1) // 1 - created, 2 - start processing, 3 - finish processed
+                        .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+                        .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+                        .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
+                        .SetValue(c => c.PropExchange, deliveryContext.Exchange)
+                        .SetValue(c => c.PropDeliveryTag, deliveryContext.DeliveryTag)
+                        .SetValue(c => c.PropConsumerTag, deliveryContext.ConsumerTag)
+
+                        .SetValue(c => c.PropAppId, message.AppId)
+                        .SetValue(c => c.PropMessageId, message.Id)
+                        .SetValue(c => c.PropType, message.Type)
+                        .SetValue(c => c.PropContentEncoding, message.ContentEncoding)
+                        .SetValue(c => c.PropContentType, message.ContentType)
+                        .SetValue(c => c.PropCorrelationId, message.CorrelationId)
+                        .SetValue(c => c.PropTimestamp, message.Timestamp)
+                        .SetValue(c => c.HeaderCreated, GetHeaderValue(message.Headers, "Created"))
+                        .SetValue(c => c.HeaderSdrnServer, sdrnServer)
+                        .SetValue(c => c.HeaderSensorName, sensorName)
+                        .SetValue(c => c.HeaderSensorTechId, sensorTechId)
+
+                        .SetValue(c => c.BodyContentType, "json")
+                        .SetValue(c => c.BodyContentEncoding, "compressed")
+                        .SetValue(c => c.BodyContent, Compressor.Compress(message.Body))
+                        .Select(c => c.Id);
+
+                    var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+
+                    long messageId =  queryExecuter.ExecuteAndFetch(queryInsert, reader =>
+                    {
+                        long id = -1;
+                        if (reader.Read())
+                        {
+                           id = reader.GetValue(c => c.Id);
+                        }
+                        return id;
+                    });
+
+                    var busEvent = new DevicesBusEvent($"On{message.Type}DeviceBusEvent", "SdrnDeviceBusController")
+                    {
+                        BusMessageId = messageId
+                    };
+
+                    _eventEmitter.Emit(busEvent);
+
+                    return MessageHandlingResult.Confirm;
+                    /*
                     var messageObject = _messageConverter.Deserialize(message);
                     var handlerTypes = this._handlerLibrary.GetHandlerTypes(message.Type, messageObject.Type);
 
@@ -62,11 +159,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         return MessageHandlingResult.Confirm;
                     }
 
-                    var sdrnServer = GetHeaderValue(message.Headers, "SdrnServer");
-                    if (!_busControllerConfig.Environment.ServerInstance.Equals(sdrnServer, StringComparison.OrdinalIgnoreCase))
-                    {
-                        throw new InvalidOperationException("The message contains an incorrect SDRN server name");
-                    }
+                    
 
                     var messageHeader = new SdrnIncomingEnvelopeProperties
                     {
@@ -120,6 +213,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                     this.RedirectMessage(message, deliveryContext, handlingResult);
                     return MessageHandlingResult.Confirm;
+                    */
                 }
                 catch (Exception e)
                 {

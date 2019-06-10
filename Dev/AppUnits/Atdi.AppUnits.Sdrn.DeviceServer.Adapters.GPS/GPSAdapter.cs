@@ -195,16 +195,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 }
                                 if ((sentence.TalkerID == TalkerIdentifiers.GP) && (sentence.SentenceID == SentenceIdentifiers.RMC))
                                 {
+                                    if (sentence.parameters[2] != null)
+                                    {
+                                        resultMember.Lat = Convert.ToDouble(sentence.parameters[2]);
+                                    }
+                                    if (sentence.parameters[4] != null)
+                                    {
+                                        resultMember.Lon = Convert.ToDouble(sentence.parameters[4]);
+                                    }
+
                                     if (this._config.EnabledPPS)
                                     {
-                                        if (sentence.parameters[2] != null)
-                                        {
-                                            resultMember.Lat = Convert.ToDouble(sentence.parameters[2]);
-                                        }
-                                        if (sentence.parameters[4] != null)
-                                        {
-                                            resultMember.Lon = Convert.ToDouble(sentence.parameters[4]);
-                                        }
                                         gnssWrapper.port.SetUTCTime(((DateTime)sentence.parameters[0]).Ticks);
                                         this._timeService.TimeCorrection = gnssWrapper.port.OffsetToAvged;
                                     }
@@ -212,7 +213,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                     {
                                         this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - WinAPITime.GetTimeStamp();
                                     }
-
                                     resultMember.TimeCorrection = this._timeService.TimeCorrection;
                                 }
                                 if ((resultMember.Lon != null) && (resultMember.Lat != null) && (resultMember.Asl!=null) && (resultMember.TimeCorrection != null))

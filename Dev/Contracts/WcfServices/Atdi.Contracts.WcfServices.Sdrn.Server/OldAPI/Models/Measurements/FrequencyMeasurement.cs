@@ -18,7 +18,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// id
         /// </summary>
         [DataMember]
-        public int Id;
+        public long Id;
         /// <summary>
         /// Frequency, Mhz
         /// </summary>

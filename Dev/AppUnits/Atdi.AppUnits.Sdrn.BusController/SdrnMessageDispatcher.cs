@@ -1,4 +1,7 @@
-﻿using Atdi.Contracts.Sdrn.Server;
+﻿using Atdi.Contracts.Api.EventSystem;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.CoreServices.EntityOrm;
+using Atdi.Contracts.Sdrn.Server;
 using Atdi.Modules.Sdrn.AmqpBroker;
 using Atdi.Modules.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
@@ -17,6 +20,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly ISdrnServerEnvironment _environment;
         private readonly BusConnectionFactory _busConnectionFactory;
         private readonly MessageConverter _messageConverter;
+        private readonly IDataLayer<EntityDataOrm> _dataLayer;
+        private readonly IEventEmitter _eventEmitter;
         private readonly IServicesResolver _servicesResolver;
         private readonly ILogger _logger;
         private BusConnection _busConnection;
@@ -27,12 +32,22 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly List<BusConnection> _consumerConnections;
         private readonly SdrnQueueConsumer[] _consumers; 
 
-        public SdrnMessageDispatcher(SdrnBusControllerConfig busControllerConfig, ISdrnServerEnvironment environment, BusConnectionFactory busConnectionFactory, MessageConverter messageConverter, IServicesResolver servicesResolver, ILogger logger)
+        public SdrnMessageDispatcher(
+            SdrnBusControllerConfig busControllerConfig, 
+            ISdrnServerEnvironment environment, 
+            BusConnectionFactory busConnectionFactory, 
+            MessageConverter messageConverter, 
+            IDataLayer<EntityDataOrm> dataLayer,
+            IEventEmitter eventEmitter,
+            IServicesResolver servicesResolver, 
+            ILogger logger)
         {
             this._busControllerConfig = busControllerConfig;
             this._environment = environment;
             this._busConnectionFactory = busConnectionFactory;
             this._messageConverter = messageConverter;
+            this._dataLayer = dataLayer;
+            this._eventEmitter = eventEmitter;
             this._servicesResolver = servicesResolver;
             this._logger = logger;
             this._handlerLibrary = new SdrnHandlerLibrary(this._servicesResolver);
@@ -141,6 +156,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         busConnection: consumerConnection,
                         busControllerConfig: _busControllerConfig,
                         servicesResolver: _servicesResolver,
+                        eventEmitter: _eventEmitter,
+                        dataLayer: _dataLayer,
                         logger: _logger);
                     consumers.Add(consumer);
                 }
