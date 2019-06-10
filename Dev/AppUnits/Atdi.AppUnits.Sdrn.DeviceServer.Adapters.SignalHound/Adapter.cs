@@ -1022,34 +1022,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     port1 = (uint)EN.Port1.ExtRefIn;
                 }
                 StatusError(AdapterDriver.bbConfigureIO(_Device_ID, port1, port2));
-                if (_adapterConfig.SyncCPUtoGPS)
-                {
-                    if (_adapterConfig.GPSPortNumber > -1 && _adapterConfig.GPSPortBaudRate > 1000)
-                    {
-                        StatusError(AdapterDriver.bbSyncCPUtoGPS(_adapterConfig.GPSPortNumber, _adapterConfig.GPSPortBaudRate));
-                        DeviceMode = EN.Mode.Streaming;
-                        StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.StreamIQ | (uint)EN.Flag.TimeStamp));
+                //пока неработает
+                //if (_adapterConfig.SyncCPUtoGPS)
+                //{
+                //    if (_adapterConfig.GPSPortNumber > -1 && _adapterConfig.GPSPortBaudRate > 1000)
+                //    {
+                //        StatusError(AdapterDriver.bbSyncCPUtoGPS(_adapterConfig.GPSPortNumber, _adapterConfig.GPSPortBaudRate));
+                //        DeviceMode = EN.Mode.Streaming;
+                //        StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.StreamIQ | (uint)EN.Flag.TimeStamp));
 
-                        //int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
-                        //StatusError(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec));
-                        //float[] iqSamplesX = new float[return_len * 2];
-                        //int[] TrDataTemp = new int[71];
-                        //AdapterDriver.bbIQPacket bbIQPacket = new AdapterDriver.bbIQPacket()
-                        //{
-                        //    iqData = new float[return_len * 2],
-                        //    triggers = new int[71],
-                        //    iqCount = 0,
-                        //    triggerCount = 0,
-                        //    purge = true,
-                        //    dataRemaining = 0,
-                        //    iqNano = 0,
-                        //    iqSec = 0,
-                        //    sampleLoss = 0
-                        //};
-                        //Thread.Sleep(2000);
-                        //StatusError(AdapterDriver.bbGetIQ(_Device_ID, ref bbIQPacket));
-                    }
-                }
+                //        //int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
+                //        //StatusError(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec));
+                //        //float[] iqSamplesX = new float[return_len * 2];
+                //        //int[] TrDataTemp = new int[71];
+                //        //AdapterDriver.bbIQPacket bbIQPacket = new AdapterDriver.bbIQPacket()
+                //        //{
+                //        //    iqData = new float[return_len * 2],
+                //        //    triggers = new int[71],
+                //        //    iqCount = 0,
+                //        //    triggerCount = 0,
+                //        //    purge = true,
+                //        //    dataRemaining = 0,
+                //        //    iqNano = 0,
+                //        //    iqSec = 0,
+                //        //    sampleLoss = 0
+                //        //};
+                //        //Thread.Sleep(2000);
+                //        //StatusError(AdapterDriver.bbGetIQ(_Device_ID, ref bbIQPacket));
+                //    }
+                //}
             }
             #region Exception
             catch (Exception exp)
