@@ -83,9 +83,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
                         else
                         {
-                            if ((readerResStLevelCar.GetValue(c => c.CentralFrequency).Value > 0.01) && (readerResStLevelCar.GetValue(c => c.LevelDbm) > -300) && (readerResStLevelCar.GetValue(c => c.LevelDbm) < -10))
+                            if ((readerResStLevelCar.GetValue(c => c.CentralFrequency).Value > 0.01m) && (readerResStLevelCar.GetValue(c => c.LevelDbm) > -300) && (readerResStLevelCar.GetValue(c => c.LevelDbm) < -10))
                             {
-                                tx.Level_dBmkVm = Math.Round((float)(77.2 + 20 * Math.Log10(readerResStLevelCar.GetValue(c => c.CentralFrequency).Value) + readerResStLevelCar.GetValue(c => c.LevelDbm) - ANT_VAL), 2);
+                                tx.Level_dBmkVm = Math.Round((float)(77.2 + 20 * Math.Log10((double)readerResStLevelCar.GetValue(c => c.CentralFrequency).Value) + readerResStLevelCar.GetValue(c => c.LevelDbm) - ANT_VAL), 2);
                                 lOUT.Add(tx);
                             }
                         }

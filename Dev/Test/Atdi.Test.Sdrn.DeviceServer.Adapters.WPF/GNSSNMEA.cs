@@ -313,7 +313,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     {
                         if (b)
                         {
-                            offtime = UTCTime.Ticks - MyTime.GetTimeStamp() + PPSStep;
+                            offtime = UTCTime.Ticks - Atdi.Common.WinAPITime.GetTimeStamp() + PPSStep;
                             //offtime = UTCTime.Ticks;// - PPSStep;
                             // offtime = MyTime.GetTimeStamp() - 504911232000000000;//621355968000000000;// - UTCTime.Ticks - PPSStep;
                             if (UTCTime.Ticks != 0)

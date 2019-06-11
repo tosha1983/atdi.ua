@@ -106,9 +106,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderDeleteWorkTime.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
                     var cntDelIWorkTime = queryExecuter.Execute(builderDeleteWorkTime);
 
-                    var builderDeleteSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();
-                    builderDeleteSignalMask.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
-                    var cntDelISignalMask = queryExecuter.Execute(builderDeleteSignalMask);
+                    //var builderDeleteSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();
+                    //builderDeleteSignalMask.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
+                    //var cntDelISignalMask = queryExecuter.Execute(builderDeleteSignalMask);
 
                     var builderDeleteSpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Delete();
                     builderDeleteSpectrum.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);

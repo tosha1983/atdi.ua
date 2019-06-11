@@ -400,6 +400,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderReferenceSignalRaw.Select(c => c.RefSituationId);
                                 builderReferenceSignalRaw.Select(c => c.IcsmId);
                                 builderReferenceSignalRaw.Select(c => c.IcsmTable);
+                                builderReferenceSignalRaw.Select(c => c.Loss_dB);
+                                builderReferenceSignalRaw.Select(c => c.Freq_kHz);
                                 builderReferenceSignalRaw.Where(c => c.RefSituationId, ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
                                 {
@@ -425,35 +427,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         }
 
                                         referenceSignal.IcsmTable = readerReferenceSignalRaw.GetValue(c => c.IcsmTable);
-
                                         referenceSignal.SignalMask = new SignalMask();
-                                        List<double> freqs = new List<double>();
-                                        List<float> loss = new List<float>();
-                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
-                                        builderSignalMaskRaw.Select(c => c.Id);
-                                        builderSignalMaskRaw.Select(c => c.EmittingId);
-                                        builderSignalMaskRaw.Select(c => c.Freq_kHz);
-                                        builderSignalMaskRaw.Select(c => c.Loss_dB);
-                                        builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
-                                        builderSignalMaskRaw.Where(c => c.ReferenceSignalId, ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
-                                        queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
+                                        if (readerReferenceSignalRaw.GetValue(c => c.Loss_dB) != null)
                                         {
-                                            while (readerSignalMaskRaw.Read())
-                                            {
-                                                if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
-                                                {
-                                                    freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
-                                                }
-                                                if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
-                                                {
-                                                    loss.Add(readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
-                                                }
-                                            }
-                                            return true;
-                                        });
-
-                                        referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
-                                        referenceSignal.SignalMask.Loss_dB = loss.ToArray();
+                                            referenceSignal.SignalMask.Loss_dB = readerReferenceSignalRaw.GetValue(c => c.Loss_dB);
+                                        }
+                                        if (readerReferenceSignalRaw.GetValue(c => c.Freq_kHz) != null)
+                                        {
+                                            referenceSignal.SignalMask.Freq_kHz = readerReferenceSignalRaw.GetValue(c => c.Freq_kHz);
+                                        }
 
                                         referenceSignals.Add(referenceSignal);
                                     }

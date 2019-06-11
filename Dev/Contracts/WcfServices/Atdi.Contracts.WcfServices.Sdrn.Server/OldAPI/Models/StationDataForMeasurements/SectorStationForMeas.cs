@@ -19,7 +19,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public double? AGL;//м, высота над уровнем земли
         [DataMember]
-        public int IdSector; //В ICSM
+        public long IdSector; //В ICSM
         [DataMember]
         public double? EIRP;//дБм
         [DataMember]

@@ -14,8 +14,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         public bool Reference10MHzConnected { get; set; }
         public bool GPSPPSConnected { get; set; }
-        public bool SyncCPUtoGPS { get; set; }
-        public int GPSPortNumber { get; set; }
-        public int GPSPortBaudRate { get; set; }
+        //пока незаработает недоступно
+        //public bool SyncCPUtoGPS { get; set; }
+        //public int GPSPortNumber { get; set; }
+        //public int GPSPortBaudRate { get; set; }
     }
 }
