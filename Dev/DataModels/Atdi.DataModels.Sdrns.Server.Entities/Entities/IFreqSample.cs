@@ -11,12 +11,12 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface IFreqSample
     {
         long Id { get; set; }
-        float? Freq_MHz { get; set; }
-        float? Level_dBm { get; set; }
-        float? Level_dBmkVm { get; set; }
-        float? LevelMin_dBm { get; set; }
-        float? LevelMax_dBm { get; set; }
-        float? OccupationPt { get; set; }
+        double? Freq_MHz { get; set; }
+        double? Level_dBm { get; set; }
+        double? Level_dBmkVm { get; set; }
+        double? LevelMin_dBm { get; set; }
+        double? LevelMax_dBm { get; set; }
+        double? OccupationPt { get; set; }
         long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }

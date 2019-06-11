@@ -1446,8 +1446,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                                 measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                                 measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                                measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                                measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
                                 measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                                 measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                 measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -1870,8 +1870,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                             measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                             measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                            measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                            measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                            measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                            measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
                             measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                             measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                             measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -1969,8 +1969,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                                 measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                                 measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                                measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                                measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
                                 measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                                 measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                 measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -2776,8 +2776,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                                         measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                                         measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                                        measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                                        measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                        measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                        measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
                                         measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                                         measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                         measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);

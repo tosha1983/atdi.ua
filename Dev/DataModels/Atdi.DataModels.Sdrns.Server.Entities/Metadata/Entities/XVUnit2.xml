@@ -17,7 +17,7 @@
     <Field Desc="TimeOfMeasurements" Title="TimeOfMeasurements" Name="TimeOfMeasurements" DataType="DateTime" SourceName="TIMEOFMEASUREMENTS" SourceType="Column" Required="false"/>
     <Field Desc="BW" Title="BW" Name="BW" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="IdStation" Title="IdStation" Name="IdStation" DataType="Counter.64" SourceName="IDSTATION" SourceType="Column" Required="false"/>
-    <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Decimal.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
+    <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Double.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
     <Field Desc="T1" Title="T1" Name="T1" DataType="Counter.32" SourceName="T1" SourceType="Column" Required="false"/>
     <Field Desc="T2" Title="T2" Name="T2" DataType="Counter.32" SourceName="T2" SourceType="Column" Required="false"/>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="false"/>
