@@ -25,8 +25,8 @@
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="false"/>
     <Field Desc="StationID" Title="StationID" Name="StationID" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="true"/>
     <Field Desc="StationTableName" Title="StationTableName" Name="StationTableName" DataType="Text.50" SourceName="STATIONTABLENAME" SourceType="Column" Required="false"/>
-    <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Bytes.MAX" SourceName="LOSSDB" SourceType="Column" Required="false"/>
-    <Field Desc="Freq_kHz" Title="Freq_kHz" Name="Freq_kHz" DataType="Bytes.MAX" SourceName="FREQKHZ" SourceType="Column" Required="false"/>
+    <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Bytes.MAX" SourceName="LOSS_DB" SourceType="Column" Required="false"/>
+    <Field Desc="Freq_kHz" Title="Freq_kHz" Name="Freq_kHz" DataType="Bytes.MAX" SourceName="FREQ_KHZ" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation Emitting to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
