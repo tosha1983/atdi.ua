@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
-namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Commands
+namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
 {
-    class MesureSystemInfoCommand : CommandBase<Parameters.MesureSystemInfoParameter>
+    public class MesureSystemInfoCommand : CommandBase<Parameters.MesureSystemInfoParameter>
     {
         public MesureSystemInfoCommand()
             : base(CommandType.MesureSysInfo, new MesureSystemInfoParameter())
