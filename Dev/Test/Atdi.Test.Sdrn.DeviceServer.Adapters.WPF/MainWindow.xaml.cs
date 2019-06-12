@@ -36,6 +36,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         //ADP.SignalHound.Adapter adapter;
         ADP.SpectrumAnalyzer.Adapter ANadapter;
         ADP.SignalHound.Adapter SHadapter;
+        ADP.RSTSMx.Adapter TSMxadapter;
 
         ADP.GPS.GPSAdapter GPSadapter;
         GNSSNMEA gnss;
@@ -49,6 +50,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private Thread GPSThread;
         private AnyDelegate GPSD;
+
+        private Thread TSMxThread;
+        private AnyDelegate TSMxD;
         public MainWindow()
         {
             InitializeComponent();
@@ -84,17 +88,24 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //ANThread.Start();
             //AND += ANConnect;
 
-            SHThread = new Thread(SHWorks);
-            SHThread.Name = "SHThread";
-            SHThread.IsBackground = true;
-            SHThread.Start();
-            SHD += SHConnect;
+            //SHThread = new Thread(SHWorks);
+            //SHThread.Name = "SHThread";
+            //SHThread.IsBackground = true;
+            //SHThread.Start();
+            //SHD += SHConnect;
 
             //GPSThread = new Thread(GPSWorks);
             //GPSThread.Name = "GPSThread";
             //GPSThread.IsBackground = true;
             //GPSThread.Start();
             //GPSD += GPSConnect;
+
+
+            TSMxThread = new Thread(TSMxWorks);
+            TSMxThread.Name = "TSMxThread";
+            TSMxThread.IsBackground = true;
+            TSMxThread.Start();
+            TSMxD += TSMxConnect;
         }
         //long NextSecond = 0;
         private void GetGPSData()
@@ -192,9 +203,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     SerialNumber = "16319373",
                     GPSPPSConnected = true,
                     Reference10MHzConnected = true,
-                    SyncCPUtoGPS = true,
-                    GPSPortBaudRate = 38400,
-                    GPSPortNumber = 1,
+                    //SyncCPUtoGPS = true,
+                    //GPSPortBaudRate = 38400,
+                    //GPSPortNumber = 1,
 
                 };
 
@@ -282,6 +293,55 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 GPSThread.Abort();
                 GPSD -= GPSDisconnect;
+            }
+        }
+
+        private void TSMxWorks()
+        {
+            TimeSpan ts = new TimeSpan(10000);
+            bool Cycle = true;
+            while (Cycle)
+            {
+                if (TSMxD != null) { TSMxD(); }
+                Thread.Sleep(ts);
+            }
+        }
+        private void TSMxConnect()
+        {
+            try
+            {
+                var adapterConfig = new ADP.RSTSMx.AdapterConfig()
+                {
+                    DeviceType = 2,
+                    IPAddress = "192.168.2.50",
+                    RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
+                };
+                TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
+
+
+
+
+                //SHIQ.ANAdapter = ANadapter;
+                TSMxadapter.Connect(adapterHost);
+
+                
+            }
+            finally
+            {
+                TSMxD -= TSMxConnect;
+            }
+        }
+
+        private void TSMxDisconnect()
+        {
+            try
+            {
+                TSMxadapter.Disconnect();
+            }
+            finally
+            {
+                TSMxThread.Abort();
+                TSMxD -= TSMxDisconnect;
             }
         }
 
