@@ -229,18 +229,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             for (int l = 0; l < value.RefSituation.Length; l++)
                             {
-                                long valueIdReferenceSituationRaw = -1;
+                                long valueIdReferenceSituation = -1;
                                 var refSituationReferenceSignal = value.RefSituation[l];
-                                var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
-                                builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
-                                builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
-                                builderInsertReferenceSituationRaw.Select(c => c.Id);
-                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSituationRaw, readerReferenceSituationRaw =>
+                                var builderInsertReferenceSituation = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
+                                builderInsertReferenceSituation.SetValue(c => c.MeasTaskId, ID);
+                                builderInsertReferenceSituation.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
+                                builderInsertReferenceSituation.Select(c => c.Id);
+                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSituation, readerReferenceSituationRaw =>
                                 {
                                     while (readerReferenceSituationRaw.Read())
                                     {
-                                        valueIdReferenceSituationRaw = readerReferenceSituationRaw.GetValue(c => c.Id);
-                                        if (valueIdReferenceSituationRaw > 0)
+                                        valueIdReferenceSituation = readerReferenceSituationRaw.GetValue(c => c.Id);
+                                        if (valueIdReferenceSituation > 0)
                                         {
                                             for (int j = 0; j < refSituationReferenceSignal.ReferenceSignal.Length; j++)
                                             {
@@ -248,43 +248,31 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 var situationReferenceSignal = refSituationReferenceSignal.ReferenceSignal[j];
 
 
-                                                var builderInsertReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().Insert();
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.Bandwidth_kHz, situationReferenceSignal.Bandwidth_kHz);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.RefSituationId, valueIdReferenceSituationRaw);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.IcsmId, situationReferenceSignal.IcsmId);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.IcsmTable, situationReferenceSignal.IcsmTable);
-                                                builderInsertReferenceSignalRaw.Select(c => c.Id);
-                                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSignalRaw, readerReferenceSignalRaw =>
+                                                var builderInsertReferenceSignal = this._dataLayer.GetBuilder<MD.IReferenceSignal>().Insert();
+                                                builderInsertReferenceSignal.SetValue(c => c.Bandwidth_kHz, situationReferenceSignal.Bandwidth_kHz);
+                                                builderInsertReferenceSignal.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
+                                                builderInsertReferenceSignal.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
+                                                builderInsertReferenceSignal.SetValue(c => c.RefSituationId, valueIdReferenceSituation);
+                                                builderInsertReferenceSignal.SetValue(c => c.IcsmId, situationReferenceSignal.IcsmId);
+                                                builderInsertReferenceSignal.SetValue(c => c.IcsmTable, situationReferenceSignal.IcsmTable);
+                                                var signalMask = situationReferenceSignal.SignalMask;
+                                                if (signalMask != null)
+                                                {
+                                                    if (signalMask.Loss_dB != null)
+                                                    {
+                                                        builderInsertReferenceSignal.SetValue(c => c.Loss_dB, signalMask.Loss_dB);
+                                                    }
+                                                    if (signalMask.Freq_kHz != null)
+                                                    {
+                                                        builderInsertReferenceSignal.SetValue(c => c.Freq_kHz, signalMask.Freq_kHz);
+                                                    }
+                                                }
+                                                builderInsertReferenceSignal.Select(c => c.Id);
+                                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSignal, readerReferenceSignalRaw =>
                                                 {
                                                     while (readerReferenceSignalRaw.Read())
                                                     {
                                                         valueIdReferenceSignal = readerReferenceSignalRaw.GetValue(c => c.Id);
-                                                        if (valueIdReferenceSignal > 0)
-                                                        {
-                                                            var signalMask = situationReferenceSignal.SignalMask;
-                                                            if (signalMask != null)
-                                                            {
-                                                                var lstInsSignalMaskRaw = new IQueryInsertStatement<MD.ISignalMask>[signalMask.Freq_kHz.Length];
-                                                                for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
-                                                                {
-                                                                    var freq_kH = signalMask.Freq_kHz[k];
-                                                                    var loss_dB = signalMask.Loss_dB[k];
-
-                                                                    var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
-                                                                    builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
-                                                                    builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
-                                                                    builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, valueIdReferenceSignal);
-                                                                    builderInsertSignalMaskRaw.Select(c => c.Id);
-                                                                    lstInsSignalMaskRaw[k] = builderInsertSignalMaskRaw;
-                                                                }
-                                                                queryExecuter.ExecuteAndFetch(lstInsSignalMaskRaw, readerSignalMaskRaw =>
-                                                                {
-                                                                    return true;
-                                                                });
-                                                            }
-                                                        }
                                                     }
                                                     return true;
                                                 });

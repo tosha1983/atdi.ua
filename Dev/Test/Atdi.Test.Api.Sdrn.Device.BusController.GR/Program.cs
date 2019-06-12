@@ -282,7 +282,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.GR
 
                 publisher.Send("SendMeasResults", measResult, $"ID #{i}");
 
-
+                entity.EntityId = Guid.NewGuid().ToString();
                 publisher.Send("SendEntity", entity, $"#{i}");
                 entityPart.PartIndex = i;
                 publisher.Send("SendEntityPart", entityPart, $"ID #{i}");

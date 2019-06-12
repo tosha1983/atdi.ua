@@ -14,7 +14,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         long? ResStationId { get; set; }
         double? Bw { get; set; }
         double? Altitude { get; set; }
-        double? CentralFrequency { get; set; }
+        decimal? CentralFrequency { get; set; }
         double? DifferenceTimeStamp { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }
