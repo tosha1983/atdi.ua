@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.GSM
 {
-    public class GSM_Channel 
+    public class BandFreq
     {
         public int ARFCN;
         public decimal FreqUp;
         public decimal FreqDn;
-        public string StandartSubband;        
     }
 }

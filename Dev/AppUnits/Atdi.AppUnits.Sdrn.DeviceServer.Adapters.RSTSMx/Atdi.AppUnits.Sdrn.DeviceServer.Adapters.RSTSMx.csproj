@@ -55,16 +55,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UMTSBTSData.cs" />
+    <Compile Include="CDMAEVDO\BTSData.cs" />
+    <Compile Include="CDMAEVDO\Channel.cs" />
+    <Compile Include="GSM\BandData.cs" />
+    <Compile Include="GSM\BandFreq.cs" />
+    <Compile Include="LTE\BTSData.cs" />
+    <Compile Include="LTE\Channel.cs" />
+    <Compile Include="UMTS\BTSData.cs" />
     <Compile Include="Adapter.cs" />
     <Compile Include="AdapterConfig.cs" />
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="GSMBTSData.cs" />
-    <Compile Include="GSMSIType.cs" />
-    <Compile Include="GSM_Channel.cs" />
+    <Compile Include="GSM\BTSData.cs" />
+    <Compile Include="SIType.cs" />
+    <Compile Include="GSM\Channel.cs" />
     <Compile Include="LocalParametersConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="UMTS\Channel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

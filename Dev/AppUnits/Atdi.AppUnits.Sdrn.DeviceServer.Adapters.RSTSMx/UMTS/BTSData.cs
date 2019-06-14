@@ -5,34 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 using COMRMSI = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureSystemInfo;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.UMTS
 {
-    public class GSMBTSData
+    public class BTSData
     {
         #region 
-
         public uint FreqIndex;
 
-        #region GSM_Channel
-        public int ARFCN;
+        #region UMTS_Channel
+        public int UARFCN_DN;
+
+        public int UARFCN_UP;
 
         public decimal FreqUp;
 
         public decimal FreqDn;
 
         public string StandartSubband;
+
+
         #endregion
-
-
-        public uint IndSCHInfo;
-
-        public uint IndFirstSCHInfo;
 
         public double TimeOfSlotInSec;
 
         public double TimeOfSlotInSecssch;
 
-        public int BSIC;
+        public int SC;
 
         public int MCC;
 
@@ -40,12 +38,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
         public int LAC;
 
-        public int CID;
+        public int UCID;
 
+        public int RNC;
+
+        public int CID;
 
         public string GCID;
 
-        public double Power;
+        public double ISCP;
+
+        public double RSCP;
 
         /// <summary>
         /// напряженность этого сигнала
@@ -53,69 +56,72 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
         public double Strenght;
 
         /// <summary>
-        /// Carrier-to-Interference 
+        /// P total
         /// </summary>
-        public double CarToInt;
+        public double InbandPower;
 
+        public double CodePower;
+
+        public double IcIo;
+
+        /// <summary>
+        /// определяет есть ли GCID
+        /// </summary>
         public bool FullData;
 
         public long LastLevelUpdete = 0;
 
-        public long LastDetectionLevelUpdete = 0;
+        public long LastDetectionLevelUpdete;
 
+        public bool ThisIsMaximumSignalAtThisFrequency;
         #endregion
-       
-        public bool ThisIsMaximumSignalAtThisFrequency = false;
+
 
         public COMRMSI.SystemInformationBlock[] SysInfoBlocks;
 
         public COMRMSI.StationSystemInfo StationSysInfo;
 
-        /// <summary>
-        /// пишет изфу в station_sys_info 
-        /// </summary>
         public void GetStationInfo()
         {
             StationSysInfo = new COMRMSI.StationSystemInfo()
             {
                 Freq_Hz = FreqDn,
-                Standart = "GSM",
-                BandWidth_Hz = 271000,
-                Level_dBm = Power,
+                Standart = "UMTS",
+                BandWidth_Hz = 4850000,
+                Level_dBm = RSCP,
                 GCID = GCID,
                 CID = CID,
                 MCC = MCC,
                 MNC = MNC,
                 Time = LastLevelUpdete,
-                
+
                 SysInfoBlocks = SysInfoBlocks,
                 BaseId = null,
-                BSIC = BSIC,
-                ChannelNumber = ARFCN,
-                CodePower = null,
-                CtoI = CarToInt,
+                BSIC = null,
+                ChannelNumber = UARFCN_DN,
+                CodePower = CodePower,
+                CtoI = null,
                 ECI = null,
                 eNodeBid = null,
-                IcIo = null,
-                InbandPower = null,
-                ISCP = null,
+                IcIo = IcIo,
+                InbandPower = InbandPower,
+                ISCP = ISCP,
                 LAC = LAC,
                 NID = null,
                 PCI = null,
                 PN = null,
-                Power = Power,
-                PTotal = null,
-                RNC = null,
-                RSCP = null,
+                Power = null,
+                PTotal = InbandPower,
+                RNC = RNC,
+                RSCP = RSCP,
                 RSRP = null,
                 RSRQ = null,
-                SC = null,
+                SC = SC,
                 SID = null,
                 TAC = null,
                 TypeCDMAEBDO = "",
-                UCID = null
+                UCID = UCID
             };
         }
     }
-    
 }
