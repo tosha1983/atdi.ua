@@ -47,6 +47,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         IQuerySelectStatement<TModel> Distinct();
 
     }
+
     public interface IQuerySelectStatementOperation
     {
         bool Between<TValue>(TValue testValue, TValue arg1, TValue arg2);
@@ -54,9 +55,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         bool NotBetween<TValue>(TValue testValue, TValue arg1, TValue arg2);
 
         bool Like(string testValue, string arg);
+
         bool NotLike(string testValue, string arg);
 
         bool In<TValue>(TValue testValue, params TValue[] args);
+
         bool NotIn<TValue>(TValue testValue, params TValue[] args);
     }
 
@@ -111,6 +114,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                     RightOperand = new StringValueOperand { Value = value }
                 });
         }
+
         public static IQuerySelectStatement Where(this IQuerySelectStatement query, string column, int? value)
         {
             return query.Where(

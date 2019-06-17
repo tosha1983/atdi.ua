@@ -37,16 +37,16 @@
         <Or>
           <And>
             <Equal>
-              <Field Name="#source.TableName"/>
+              <Field Name="POS.TableName"/>
               <Value>Antenna</Value>
             </Equal>
             <Equal>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.Id"/>
+              <Field Name="POS.Id"/>
+              <Field Name="Id"/>
             </Equal>
             <Equal>
-              <Field Name="#source.PosType"/>
-              <Field Name="#this.EXT1.PosType"/>
+              <Field Name="POS.PosType"/>
+              <Field Name="EXT1.PosType"/>
             </Equal>
           </And>
           <And>

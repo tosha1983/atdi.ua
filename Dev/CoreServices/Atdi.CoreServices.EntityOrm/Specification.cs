@@ -15,7 +15,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventContext DataLayerCoreServices = "DataLayer Core Services";
         public static readonly EventContext SqlServerEngine = "SQL Server Engine";
         public static readonly EventContext OracleEngine = "Oracle Engine";
-        public static readonly EventContext LegacyServicesEntity = "EntityOrm Legacy Services";
+        public static readonly EventContext EntityOrm = "EntityOrm";
         public static readonly EventContext BuidJoinRelation = "Build Join Releation";
         public static readonly EventContext BuidJoinExtension= "Build Join Extension";
         public static readonly EventContext BuidJoinReference = "Build Join Reference";
@@ -68,6 +68,8 @@ namespace Atdi.CoreServices.EntityOrm
 
     static class Exceptions
     {
+        public static readonly ExceptionText UndefinedRootPath = "Undefined a config parameter Root Path";
+        public static readonly ExceptionText UndefinedEntitiesPath = "Undefined a config parameter Entities Path";
         public static readonly ExceptionText EngineTypeNotSupported = "The data engine with type '{0}' is not supported";
         public static readonly ExceptionText DataLimitTypeNotSupported = "The data limit with type '{0}' is not supported";
         public static readonly ExceptionText SortDirectionNotSupported = "The sort direction with name '{0}' is not supported";

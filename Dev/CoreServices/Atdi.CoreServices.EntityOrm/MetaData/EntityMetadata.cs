@@ -20,15 +20,17 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public IEntityMetadata BaseEntity { get; set; }
 
-        public InheritanceType? Inheritance { get; set; }
-
-        public IEntityMetadata ExtendEntity { get; set; }
-
         public IDataSourceMetadata DataSource { get; set; }
 
         public IPrimaryKeyMetadata PrimaryKey { get; set; }
 
         public IReadOnlyDictionary<string, IFieldMetadata> Fields { get; set; }
 
+        public string QualifiedName { get; set; }
+
+        public override string ToString()
+        {
+            return $"{this.Name}: Type = '{Type}', Base = '{BaseEntity?.QualifiedName}', Count fields = {Fields.Count}";
+        }
     }
 }

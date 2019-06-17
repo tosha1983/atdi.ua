@@ -18,6 +18,7 @@ namespace Atdi.DataModels
     [KnownType(typeof(BytesColumnValue))]
     [KnownType(typeof(GuidColumnValue))]
     [KnownType(typeof(CharColumnValue))]
+    [KnownType(typeof(CharsColumnValue))]
     [KnownType(typeof(ShortColumnValue))]
     [KnownType(typeof(UnsignedShortColumnValue))]
     [KnownType(typeof(UnsignedIntegerColumnValue))]
@@ -44,6 +45,164 @@ namespace Atdi.DataModels
 
         [DataMember]
         public DataType DataType { get; set; }
+
+        public static ColumnValue Create(DataType dataType, object value, string name)
+        {
+            return null;
+        }
+
+        public static ColumnValue Create<T>(T value, string name)
+        {
+            var result = default(ColumnValue);
+            var type = typeof(T);
+            
+            if (type == typeof(bool) || type == typeof(bool?))
+            {
+                result = new BooleanColumnValue
+                {
+                    Value = (bool?)(object)value
+                };
+            }
+            else if (type == typeof(char) || type == typeof(char?))
+            {
+                result = new CharColumnValue
+                {
+                    Value = (char?)(object)value
+                };
+            }
+            else if (type == typeof(char[]))
+            {
+                result = new CharsColumnValue
+                {
+                    Value = (char[])(object)value
+                };
+            }
+            else if (type == typeof(string))
+            {
+                result = new StringColumnValue
+                {
+                    Value = (string)(object)value
+                };
+            }
+            else if (type == typeof(short) || type == typeof(short?))
+            {
+                result = new ShortColumnValue
+                {
+                    Value = (short?)(object)value
+                };
+            }
+            else if (type == typeof(ushort) || type == typeof(ushort?))
+            {
+                result = new UnsignedShortColumnValue
+                {
+                    Value = (ushort?)(object)value
+                };
+            }
+            else if (type == typeof(int) || type == typeof(int?))
+            {
+                result = new IntegerColumnValue
+                {
+                    Value = (int?)(object)value
+                };
+            }
+            else if (type == typeof(uint) || type == typeof(uint?))
+            {
+                result = new UnsignedIntegerColumnValue
+                {
+                    Value = (uint?)(object)value
+                };
+            }
+            else if (type == typeof(long) || type == typeof(long?))
+            {
+                result = new LongColumnValue
+                {
+                    Value = (long?)(object)value
+                };
+            }
+            else if (type == typeof(ulong) || type == typeof(ulong?))
+            {
+                result = new UnsignedLongColumnValue
+                {
+                    Value = (ulong?)(object)value
+                };
+            }
+            else if (type == typeof(float) || type == typeof(float?))
+            {
+                result = new FloatColumnValue
+                {
+                    Value = (float?)(object)value
+                };
+            }
+            else if (type == typeof(double) || type == typeof(double?))
+            {
+                result = new DoubleColumnValue
+                {
+                    Value = (double?)(object)value
+                };
+            }
+            else if (type == typeof(decimal) || type == typeof(decimal?))
+            {
+                result = new DecimalColumnValue
+                {
+                    Value = (decimal?)(object)value
+                };
+            }
+            else if (type == typeof(byte) || type == typeof(byte?))
+            {
+                result = new ByteColumnValue
+                {
+                    Value = (byte?)(object)value
+                };
+            }
+            else if (type == typeof(sbyte) || type == typeof(sbyte?))
+            {
+                result = new SignedByteColumnValue
+                {
+                    Value = (sbyte?)(object)value
+                };
+            }
+            else if (type == typeof(byte[]))
+            {
+                result = new BytesColumnValue
+                {
+                    Value = (byte[])(object)value
+                };
+            }
+            else if (type == typeof(Guid) || type == typeof(Guid?))
+            {
+                result = new GuidColumnValue
+                {
+                    Value = (Guid?)(object)value
+                };
+            }
+            else if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+            {
+                result = new TimeColumnValue
+                {
+                    Value = (TimeSpan?)(object)value
+                };
+            }
+            else if (type == typeof(DateTime) || type == typeof(DateTime?))
+            {
+                result = new DateTimeColumnValue
+                {
+                    Value = (DateTime?)(object)value
+                };
+            }
+            else if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                result = new DateTimeOffsetColumnValue
+                {
+                    Value = (DateTimeOffset?)(object)value
+                };
+            }
+            else
+            {
+                throw new InvalidCastException($"Unsupported type {type.AssemblyQualifiedName} for creating column value");
+            }
+            result.Name = name;
+            return result;
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -56,6 +215,19 @@ namespace Atdi.DataModels
 
         [DataMember]
         public string Value { get; set; }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(this.Value))
+            {
+                return $"{this.Name}({this.DataType}) is empty";
+            }
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -68,6 +240,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public bool? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -80,6 +261,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public DateTime? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -91,7 +281,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public Int32? Value { get; set; }
+        public int? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -104,6 +303,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public double? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -116,6 +324,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public Single? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -128,6 +345,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public decimal? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -140,6 +366,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public byte? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -152,6 +387,20 @@ namespace Atdi.DataModels
 
         [DataMember]
         public byte[] Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+
+            if (this.Value.Length == 0)
+            {
+                return $"{this.Name}({this.DataType}) is empty";
+            }
+            return $"{this.Name}({this.DataType}).Length = '{this.Value.Length}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -164,6 +413,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public Guid? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -175,7 +433,37 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public Char? Value { get; set; }
+        public char? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
+    }
+
+    [DataContract(Namespace = CommonSpecification.Namespace)]
+    public class CharsColumnValue : ColumnValue
+    {
+        public CharsColumnValue()
+        {
+            this.DataType = DataType.Chars;
+        }
+
+        [DataMember]
+        public char[] Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -187,7 +475,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public Int16? Value { get; set; }
+        public short? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -199,7 +496,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public UInt16? Value { get; set; }
+        public ushort? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -211,7 +517,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public UInt32? Value { get; set; }
+        public uint? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -223,7 +538,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public Int64? Value { get; set; }
+        public long? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -235,7 +559,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public UInt64? Value { get; set; }
+        public ulong? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -248,6 +581,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public sbyte? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -260,6 +602,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public TimeSpan? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
 
@@ -273,6 +624,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public DateTime? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -285,6 +645,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public DateTimeOffset? Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -297,6 +666,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public string Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -309,6 +687,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public string Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -321,6 +708,15 @@ namespace Atdi.DataModels
 
         [DataMember]
         public Enum Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
@@ -332,7 +728,16 @@ namespace Atdi.DataModels
         }
 
         [DataMember]
-        public Object Value { get; set; }
+        public object Value { get; set; }
+
+        public override string ToString()
+        {
+            if (this.Value == null)
+            {
+                return $"{this.Name}({this.DataType}) is null";
+            }
+            return $"{this.Name}({this.DataType}) = '{this.Value}'";
+        }
     }
 
     public static class ColumnValueExtensions
@@ -343,16 +748,16 @@ namespace Atdi.DataModels
             {
                 case DataType.String:
                     return ((StringColumnValue)column).Value;
-                case DataType.Boolean:
-                    return ((BooleanColumnValue)column).Value;
                 case DataType.Integer:
                     return ((IntegerColumnValue)column).Value;
-                case DataType.DateTime:
-                    return ((DateTimeColumnValue)column).Value;
-                case DataType.Double:
-                    return ((DoubleColumnValue)column).Value;
                 case DataType.Float:
                     return ((FloatColumnValue)column).Value;
+                case DataType.Double:
+                    return ((DoubleColumnValue)column).Value;
+                case DataType.Boolean:
+                    return ((BooleanColumnValue)column).Value;
+                case DataType.DateTime:
+                    return ((DateTimeColumnValue)column).Value;
                 case DataType.Decimal:
                     return ((DecimalColumnValue)column).Value;
                 case DataType.Byte:
@@ -363,6 +768,8 @@ namespace Atdi.DataModels
                     return ((GuidColumnValue)column).Value;
                 case DataType.Char:
                     return ((CharColumnValue)column).Value;
+                case DataType.Chars:
+                    return ((CharsColumnValue)column).Value;
                 case DataType.Short:
                     return ((ShortColumnValue)column).Value;
                 case DataType.UnsignedShort:
@@ -382,13 +789,13 @@ namespace Atdi.DataModels
                 case DataType.DateTimeOffset:
                     return ((DateTimeOffsetColumnValue)column).Value;
                 case DataType.Xml:
-                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                    return ((XmlColumnValue)column).Value;
                 case DataType.Json:
-                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                    return ((JsonColumnValue)column).Value;
                 case DataType.ClrEnum:
-                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                    return ((ClrEnumColumnValue)column).Value;
                 case DataType.ClrType:
-                    throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
+                    return ((ClrTypeColumnValue)column).Value; ;
                 default:
                     throw new InvalidOperationException($"Unsupported data type with name '{column.DataType}'");
             }

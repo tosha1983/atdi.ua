@@ -58,6 +58,7 @@
     <Compile Include="Entities\ISignalMask.cs" />
     <Compile Include="Entities\ISignalMaskRaw.cs" />
     <Compile Include="Entities\ISpectrum.cs" />
+    <Compile Include="Entities\ITestDataType.cs" />
     <Compile Include="Entities\IWorkTime.cs" />
     <Compile Include="Entities\IWorkTimeRaw.cs" />
     <Compile Include="Entities\IReferenceLevelsRaw.cs" />
@@ -147,6 +148,7 @@
     <Content Include="Metadata\DataTypes\Database\Float.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Integer.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
@@ -165,7 +167,14 @@
     <Content Include="Metadata\DataTypes\Database\Text.2000.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.250.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\TestRefSubBookExt2.xml" />
+    <Content Include="Metadata\Entities\TestRefSubBookExt1.xml" />
+    <Content Include="Metadata\Entities\TestRefSubBook.xml" />
+    <Content Include="Metadata\Entities\TestRefBook.xml" />
+    <Content Include="Metadata\Entities\TestRefRoot.xml" />
+    <Content Include="Metadata\Entities\TestDataType.xml" />
     <Content Include="Metadata\Entities\AmqpEvent.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\AmqpMessage.xml" />

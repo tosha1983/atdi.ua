@@ -24,7 +24,9 @@ namespace Atdi.Test.Platform
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
                     var logger = resolver.Resolve<ILogger>();
-                    LoggerTest.Run(logger);
+                    EntityOrmTest.Run(resolver);
+
+                   //LoggerTest.Run(logger);
 
                 }
                 catch (Exception e)

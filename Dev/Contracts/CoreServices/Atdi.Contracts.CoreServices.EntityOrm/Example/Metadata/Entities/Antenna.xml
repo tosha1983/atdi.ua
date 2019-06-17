@@ -3,9 +3,8 @@
   Name        = "Antenna" 
   Title       = "Antenna" 
   Desc        = "The antenna"
-  Inheritance = "Prototype"
   BaseEntity  = "Atdi.DataModels.SDRN.Server.AntennaBase"
-  Type        = "Normal"
+  Type        = "Prototype"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   
   <DataSource Type="Database" Object="Table">
@@ -29,54 +28,54 @@
            Title="Antenna extention"  />
     
     <Field Name="POS" 
-           SourceType="Column" 
+           SourceType="Relation" 
            SourceName="AntennaPosition" 
            Title="Antenna position" >
       <RelationCondition JoinType="Outer">
         <Or>
           <And>
             <Equal>
-              <Field Name="#source.TableName"/>
+              <Field Name="POS.TableName"/>
               <Value>Antenna</Value>
             </Equal>
             <Equal>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.Id"/>
+              <Field Name="POS.Id"/>
+              <Field Name="Id"/>
             </Equal>
             <Equal>
-              <Field Name="#source.PosType"/>
-              <Field Name="#this.EXT1.PosType"/>
+              <Field Name="POS.PosType"/>
+              <Field Name="EXT1.PosType"/>
             </Equal>
           </And>
           <And>
             <Equal>
-              <Field Name="#source.TableName"/>
+              <Field Name="POS.TableName"/>
               <Value>AntennaBase</Value>
             </Equal>
             <Equal>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.Id"/>
+              <Field Name="POS.Id"/>
+              <Field Name="Id"/>
             </Equal>
             <Equal>
-              <Field Name="#source.PosType"/>
-              <Field Name="#this.EXT1.PosType"/>
+              <Field Name="POS.PosType"/>
+              <Field Name="EXT1.PosType"/>
             </Equal>
           </And>
           <And>
             <In>
-              <Field Name="#source.TableName"/>
+              <Field Name="POS.TableName"/>
               <Values>
                 <Value>Antenna</Value>
                 <Value>AntennaBase</Value>
               </Values>
             </In>
             <Equal>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.Id"/>
+              <Field Name="POS.Id"/>
+              <Field Name="Id"/>
             </Equal>
             <Equal>
-              <Field Name="#source.PosType"/>
-              <Field Name="#this.EXT1.PosType"/>
+              <Field Name="POS.PosType"/>
+              <Field Name="EXT1.PosType"/>
             </Equal>
           </And>
         </Or>

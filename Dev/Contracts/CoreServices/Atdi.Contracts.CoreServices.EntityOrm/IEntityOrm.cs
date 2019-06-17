@@ -15,10 +15,20 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
      //   IReadOnlyDictionary<IExtensionFieldMetadata, string> ExtensionFieldMetadata { get; }
     //    IReadOnlyDictionary<IFieldMetadata, string> ColumnFieldMetadata { get; }
 
-        IEntityMetadata GetEntityMetadata(string entityName);
+        IEntityMetadata GetEntityMetadata(string entityPath, IEntityMetadata relatedEntity = null);
 
-        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, Atdi.Contracts.CoreServices.EntityOrm.Metadata.DataSourceType dataSourceType);
+        IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, DataSourceType dataSourceType);
 
         IUnitMetadata GetUnitMetadata(string unitName);
+    }
+
+    public static class EntityOrmExtensions
+    {
+        public static IEntityMetadata GetEntityMetadata<TModel>(this IEntityOrm entityOrm)
+        {
+            var modelTypeName = typeof(TModel).Name;
+            var entityName = (modelTypeName[0] == 'I' ? modelTypeName.Substring(1, modelTypeName.Length - 1) : modelTypeName);
+            return entityOrm.GetEntityMetadata(entityName);
+        }
     }
 }

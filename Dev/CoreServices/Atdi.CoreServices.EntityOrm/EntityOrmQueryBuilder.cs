@@ -19,16 +19,17 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IDataEngine _dataEngine;
         private readonly IEngineSyntax _syntax;
         private readonly ConditionParser _conditionParser;
-        private readonly IEntityOrm _entityMetadata;
-      
+        private readonly IEntityOrm _entityOrm;
+        private readonly DataTypeSystem _dataTypeSystem;
 
-        public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityOrm entityMetadata, ILogger logger) : base(logger)
+        public EntityOrmQueryBuilder(IDataEngine dataEngine, IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, ILogger logger) : base(logger)
         {
-            this._entityMetadata = entityMetadata;
+            this._entityOrm = entityOrm;
+            this._dataTypeSystem = dataTypeSystem;
             this._dataEngine = dataEngine;
             this._syntax = dataEngine.Syntax;
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
-            logger.Debug(Contexts.LegacyServicesEntity, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
+            logger.Debug(Contexts.EntityOrm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryBuilder);
         }
 
         /// <summary>
@@ -42,8 +43,8 @@ namespace Atdi.CoreServices.EntityOrm
             string resultJoin = "";
             try
             {
-                var entityMetadata1 = _entityMetadata.GetEntityMetadata(TableName1.EntityName);
-                var entityMetadata2 = _entityMetadata.GetEntityMetadata(TableName2.EntityName);
+                var entityMetadata1 = _entityOrm.GetEntityMetadata(TableName1.EntityName);
+                var entityMetadata2 = _entityOrm.GetEntityMetadata(TableName2.EntityName);
                 if ((entityMetadata1 != null) && (entityMetadata2 != null))
                 {
                     if (entityMetadata1.BaseEntity != null)
@@ -102,7 +103,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
             return resultJoin;
@@ -142,7 +143,7 @@ namespace Atdi.CoreServices.EntityOrm
                         }
                     }
 
-                    var entityObject = _entityMetadata.GetEntityMetadata(EntityName);
+                    var entityObject = _entityOrm.GetEntityMetadata(EntityName);
                     RelTableNameFrom = entityObject.DataSource.Name;
                     var findReferenceMetaData = entityObject.Fields;
                     var fndMeta = findReferenceMetaData.ToList().FindAll(z =>  z.Value.SourceType == FieldSourceType.Relation).Select(c=>c.Value);
@@ -284,7 +285,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
             return resultJoin;
@@ -503,8 +504,8 @@ namespace Atdi.CoreServices.EntityOrm
                             if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks == null))
                             {
                                 string name = RefTableNameFrom;
-                                RefTableNameFrom = _entityMetadata.GetEntityMetadata(name).DataSource.Name;
-                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                RefTableNameFrom = _entityOrm.GetEntityMetadata(name).DataSource.Name;
+                                var findReferenceMetaData = _entityOrm.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                 string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                 if (fndMeta != null)
@@ -517,8 +518,8 @@ namespace Atdi.CoreServices.EntityOrm
                                 if (aliasFieldFind.EntityMetadataLinks.Count == 0)
                                 {
                                     string name = RefTableNameFrom;
-                                    RefTableNameFrom = _entityMetadata.GetEntityMetadata(name).DataSource.Name;
-                                    var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                    RefTableNameFrom = _entityOrm.GetEntityMetadata(name).DataSource.Name;
+                                    var findReferenceMetaData = _entityOrm.GetEntityMetadata(name).Fields;
                                     IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                     string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                     if (fndMeta != null)
@@ -541,7 +542,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                                 RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[index].DataSource.Name;
                                 string name = aliasFieldFind.EntityMetadataLinks[index].Name;
-                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                var findReferenceMetaData = _entityOrm.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                 string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Extension, RefTableNameTo);
                                 if (fndMeta != null)
@@ -563,7 +564,7 @@ namespace Atdi.CoreServices.EntityOrm
                                 IEntityMetadata metadataExtEntity = referenceFieldMetadataFnd.ExtensionEntity;
                                 if (metadataExtEntity != null)
                                 {
-                                    IEntityMetadata metadataExtendedEntity = metadataExtEntity.ExtendEntity;
+                                    IEntityMetadata metadataExtendedEntity = metadataExtEntity.BaseEntity;
                                     DataSource = referenceFieldMetadataFnd.ExtensionEntity.DataSource.Name;
                                     var stringBuilderRef = new List<string>();
                                     if (metadataExtEntity.PrimaryKey != null)
@@ -577,7 +578,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                     IFieldMetadata fieldMetadataDb2 = metadataExtendedEntity.Fields.ToList().Find(z => z.Key == FieldRef.Key).Value;
                                                     var aliasFieldTo = aliasFields.Find(v => v.DBTableName == RefTableNameTo);
                                                     var aliasFieldFrom = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                    var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
+                                                    var entityMetadataRefTableName = _entityOrm.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
                                                     if ((entityMetadataRefTableName != null) && (fieldMetadataDb2 != null))
                                                     {
                                                         foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
@@ -621,7 +622,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
             return resultJoin;
@@ -690,8 +691,8 @@ namespace Atdi.CoreServices.EntityOrm
                             if ((countSubLevels == 0) && (aliasFieldFind.EntityMetadataLinks == null))
                             {
                                 string name = RefTableNameFrom;
-                                RefTableNameFrom = _entityMetadata.GetEntityMetadata(name).DataSource.Name;
-                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                RefTableNameFrom = _entityOrm.GetEntityMetadata(name).DataSource.Name;
+                                var findReferenceMetaData = _entityOrm.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                 string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                 if (fndMeta != null)
@@ -704,8 +705,8 @@ namespace Atdi.CoreServices.EntityOrm
                                 if (aliasFieldFind.EntityMetadataLinks.Count == 0)
                                 {
                                     string name = RefTableNameFrom;
-                                    RefTableNameFrom = _entityMetadata.GetEntityMetadata(name).DataSource.Name;
-                                    var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                    RefTableNameFrom = _entityOrm.GetEntityMetadata(name).DataSource.Name;
+                                    var findReferenceMetaData = _entityOrm.GetEntityMetadata(name).Fields;
                                     IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                     string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                     if (fndMeta != null)
@@ -729,7 +730,7 @@ namespace Atdi.CoreServices.EntityOrm
                                
                                 RefTableNameFrom = aliasFieldFind.EntityMetadataLinks[index].DataSource.Name;
                                 string name = aliasFieldFind.EntityMetadataLinks[index].Name;
-                                var findReferenceMetaData = _entityMetadata.GetEntityMetadata(name).Fields;
+                                var findReferenceMetaData = _entityOrm.GetEntityMetadata(name).Fields;
                                 IFieldMetadata fndMeta = FindMetaDataValue(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                 string fndMetaName = FindMetaDataKey(findReferenceMetaData.ToList(), FieldSourceType.Reference, RefTableNameTo);
                                 if (fndMeta != null)
@@ -763,7 +764,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                     IFieldMetadata fieldMetadataDb2 = metadataRefEntity.Fields.ToList().Find(z => z.Key == FieldRef.Key).Value;
                                                     var aliasFieldTo = aliasFields.Find(v => v.DBTableName == RefTableNameTo);
                                                     var aliasFieldFrom = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                    var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
+                                                    var entityMetadataRefTableName = _entityOrm.GetEntityMetadata(aliasFieldFrom != null ? aliasFieldFrom.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameTo)));
                                                     if ((entityMetadataRefTableName != null) && (fieldMetadataDb2 != null))
                                                     {
                                                         foreach (var FieldRefV in entityMetadataRefTableName.PrimaryKey.FieldRefs)
@@ -837,7 +838,7 @@ namespace Atdi.CoreServices.EntityOrm
                                                             string FieldName = FieldRef.Key;
                                                             string FieldNameFrom = fieldProperties.DBFieldName;
                                                             var DbValx = aliasFields.Find(v => v.DBTableName == RefTableNameFrom);
-                                                            var entityMetadataRefTableName = _entityMetadata.GetEntityMetadata(DbValx != null ? DbValx.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)));
+                                                            var entityMetadataRefTableName = _entityOrm.GetEntityMetadata(DbValx != null ? DbValx.EntityName : throw new Exception(string.Format(Exceptions.NotFoundAlias, RefTableNameFrom)));
                                                             if (entityMetadataRefTableName != null)
                                                             {
                                                                 var valueMetaData = entityMetadataRefTableName.Fields.ToList().Find(z => z.Key == FieldName).Value;
@@ -900,7 +901,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
             return resultJoin;
@@ -921,7 +922,7 @@ namespace Atdi.CoreServices.EntityOrm
 
             listFieldPropertiesOut = new List<FieldProperties>();
             const string PrefixTableName = "Tcaz_";
-            var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
+            var entityMetadata = _entityOrm.GetEntityMetadata(EntityName);
             var schemaTable = entityMetadata.DataSource.Schema;
             var selectedColumns = new List<string>(fieldPathValue);
             var listFieldProperties = BuildSelectStatement(EntityName, selectedColumns);
@@ -1130,7 +1131,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int l = 0; l < entityMetadata.Fields.Count; l++)
             {
                 var valuesFieldMetaData = entityMetadata.Fields.Values;
-                if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column)))
                 {
                     IFieldMetadata fieldMetadataColumn = valuesFieldMetaData.ElementAt(l);
                     if (fieldMetadataColumn != null)
@@ -1141,7 +1142,7 @@ namespace Atdi.CoreServices.EntityOrm
                         }
                     }
                 }
-                else if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                else if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension)))
                 {
                     var extensionMetaData = ((ExtensionFieldMetadata)(valuesFieldMetaData.ElementAt(l))).ExtensionEntity;
                     if (extensionMetaData != null)
@@ -1159,7 +1160,7 @@ namespace Atdi.CoreServices.EntityOrm
                         {
                             for (int lx = 0; lx < entityMetadata.Fields.Count; lx++)
                             {
-                                if ((valuesFieldMetaData.ElementAt(lx).SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                if ((valuesFieldMetaData.ElementAt(lx).SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension)))
                                 {
                                     fieldMetadataColumn = valuesFieldMetaData.ElementAt(lx);
                                     if (fieldMetadataColumn != null)
@@ -1175,7 +1176,7 @@ namespace Atdi.CoreServices.EntityOrm
                         }
                     }
                 }
-                else if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                else if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference)))
                 {
                     var refMetaData = ((ReferenceFieldMetadata)(valuesFieldMetaData.ElementAt(l))).RefEntity;
                     if (refMetaData != null)
@@ -1202,7 +1203,7 @@ namespace Atdi.CoreServices.EntityOrm
                         }
                     }
                 }
-                else if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                else if ((valuesFieldMetaData.ElementAt(l).SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation)))
                 {
                     var relMetaData = ((RelationFieldMetadata)(valuesFieldMetaData.ElementAt(l))).RelatedEntity;
                     if (relMetaData != null)
@@ -1324,13 +1325,13 @@ namespace Atdi.CoreServices.EntityOrm
         /// <param name="fields"></param>
         /// <param name="fieldSourceTypeFilter"></param>
         /// <param name="isPrimaryKeyOnly"></param>
-        private List<FieldProperties> BuildSelectStatement(string EntityName, IEnumerable<string> fieldsValue, FieldSourceType fieldSourceTypeFilter = FieldSourceType.All, bool isPrimaryKeyOnly = false)
+        private List<FieldProperties> BuildSelectStatement(string EntityName, IEnumerable<string> fieldsValue, FieldSourceType fieldSourceTypeFilter = FieldSourceType.Column, bool isPrimaryKeyOnly = false)
         {
             var listFieldProperties = new List<FieldProperties>();
             try
             {
                 const string ExtendedName = "EXTENDED";
-                var entityMetadata = _entityMetadata.GetEntityMetadata(EntityName);
+                var entityMetadata = _entityOrm.GetEntityMetadata(EntityName);
                 var oldentityMetadata = entityMetadata;
                 var fields = new List<string>(fieldsValue);
                 for (int i = 0; i < fields.Count; i++)
@@ -1343,10 +1344,10 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         if (nextNames[j] == ExtendedName)
                         {
-                            if (entityMetadata.ExtendEntity != null)
+                            if (entityMetadata.BaseEntity != null)
                             {
                                 bool LastObject = false;
-                                entityMetadata = entityMetadata.ExtendEntity;
+                                entityMetadata = entityMetadata.BaseEntity;
                                 if (j < nextNames.Length - 1)
                                 {
                                     j++;
@@ -1377,7 +1378,7 @@ namespace Atdi.CoreServices.EntityOrm
                                             }
                                             else
                                             {
-                                                if (fieldMetadataFindx.SourceType == FieldSourceType.Column && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                                if (fieldMetadataFindx.SourceType == FieldSourceType.Column && ((fieldSourceTypeFilter == FieldSourceType.Column)))
                                                 {
                                                     if (AddNewFieldProperties(fieldMetadataFindx, entityMetadata, j, nextNames, fieldMetadataFindx.SourceType, ref listFieldProperties))
                                                     {
@@ -1405,7 +1406,7 @@ namespace Atdi.CoreServices.EntityOrm
                                     }
                                     else
                                     {
-                                        if ((fieldMetadataFindx1.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        if ((fieldMetadataFindx1.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column)))
                                         {
                                             AddNewFieldProperties(fieldMetadataFindx1, entityMetadata, j, nextNames, fieldMetadataFindx1.SourceType, ref listFieldProperties);
                                         }
@@ -1426,7 +1427,7 @@ namespace Atdi.CoreServices.EntityOrm
                             fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == nextNames[j]);
                             if (fieldName.Value != null)
                             {
-                                if ((fieldName.Value.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                if ((fieldName.Value.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column)))
                                 {
                                     if (isPrimaryKeyOnly)
                                     {
@@ -1438,25 +1439,25 @@ namespace Atdi.CoreServices.EntityOrm
                                     AddNewFieldProperties(fieldName.Value, entityMetadata, fields[i], fieldName.Value.SourceType, ref listEntityMetaDataLinks, ref listFieldProperties);
                                     entityMetadata = oldentityMetadata;
                                 }
-                                else if ((fieldName.Value.SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension)))
                                 {
                                     var extensionMetaData = ((ExtensionFieldMetadata)(fieldName.Value)).ExtensionEntity;
                                     IFieldMetadata fieldMetadata = fieldName.Value;
                                     RescanFieldsManul(extensionMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks, ref listFieldProperties);
                                 }
-                                else if ((fieldName.Value.SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference)))
                                 {
                                     IEntityMetadata refMetaData = ((ReferenceFieldMetadata)(fieldName.Value)).RefEntity;
                                     IFieldMetadata fieldMetadata = fieldName.Value;
                                     RescanFieldsManul(refMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks, ref listFieldProperties);
                                 }
-                                else if ((fieldName.Value.SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                else if ((fieldName.Value.SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation)))
                                 {
                                     var relatedMetaData = ((RelationFieldMetadata)(fieldName.Value)).RelatedEntity;
                                     IFieldMetadata fieldMetadata = fieldName.Value;
                                     RescanFieldsManul(relatedMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks, ref listFieldProperties);
                                 }
-                                else if ((fieldName.Value.SourceType == FieldSourceType.Expression) && ((fieldSourceTypeFilter == FieldSourceType.Expression) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                else 
                                 {
                                     throw new NotImplementedException(Exceptions.HandlerTypeExpressionNotSupported);
                                 }
@@ -1470,7 +1471,7 @@ namespace Atdi.CoreServices.EntityOrm
                                     fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == nextNames[j]);
                                     if (fieldName.Value != null)
                                     {
-                                        if ((fieldName.Value.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        if ((fieldName.Value.SourceType == FieldSourceType.Column) && ((fieldSourceTypeFilter == FieldSourceType.Column)))
                                         {
                                             if (isPrimaryKeyOnly)
                                             {
@@ -1482,26 +1483,26 @@ namespace Atdi.CoreServices.EntityOrm
                                             AddNewFieldProperties(fieldName.Value, entityMetadata, fields[i], fieldName.Value.SourceType, ref listEntityMetaDataLinks, ref listFieldProperties);
                                             entityMetadata = oldentityMetadata;
                                         }
-                                        else if ((fieldName.Value.SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Extension) && ((fieldSourceTypeFilter == FieldSourceType.Extension)))
                                         {
                                             var extensionMetaData = ((ExtensionFieldMetadata)(fieldName.Value)).ExtensionEntity;
                                             IFieldMetadata fieldMetadata = fieldName.Value;
                                             RescanFieldsManul(extensionMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks, ref listFieldProperties);
                                         }
-                                        else if ((fieldName.Value.SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Reference) && ((fieldSourceTypeFilter == FieldSourceType.Reference)))
                                         {
                                             IEntityMetadata refMetaData = ((ReferenceFieldMetadata)(fieldName.Value)).RefEntity;
                                             IFieldMetadata fieldMetadata = fieldName.Value;
                                             RescanFieldsManul(refMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks, ref listFieldProperties);
                                         }
-                                        else if ((fieldName.Value.SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        else if ((fieldName.Value.SourceType == FieldSourceType.Relation) && ((fieldSourceTypeFilter == FieldSourceType.Relation)))
                                         {
                                             var relatedMetaData = ((RelationFieldMetadata)(fieldName.Value)).RelatedEntity;
                                             IFieldMetadata fieldMetadata = fieldName.Value;
                                             RescanFieldsManul(relatedMetaData, fieldMetadata, ref entityMetadata, oldentityMetadata, i, j, fields, nextNames, isPrimaryKeyOnly, ref listEntityMetaDataLinks, ref listFieldProperties);
 
                                         }
-                                        else if ((fieldName.Value.SourceType == FieldSourceType.Expression) && ((fieldSourceTypeFilter == FieldSourceType.Expression) || (fieldSourceTypeFilter == FieldSourceType.All)))
+                                        else 
                                         {
                                             throw new NotImplementedException(Exceptions.HandlerTypeExpressionNotSupported);
                                         }
@@ -1514,7 +1515,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
             return listFieldProperties;
@@ -1531,14 +1532,17 @@ namespace Atdi.CoreServices.EntityOrm
         {
             try
             {
-                var selectColumns = statement.Table.SelectColumns;
-                var selectedColumns = statement.Table.Columns.Values.ToArray();
+                var queryDescriptor = statement.QueryDecriptor;
+                var entity = queryDescriptor.Entity;
+
+                var selectColumns = queryDescriptor.SelectableFields;
+                var selectedColumns = queryDescriptor.Cache.Values.ToArray();
                 var listAlias = new List<AliasField>();
                 var listFieldProperties = new List<FieldProperties>();
-                var fromExpression = BuildJoinStatement(statement.Table.Name, selectedColumns.Select(t => t.Name), parameters, out listAlias, ref listFieldProperties);
+                var fromExpression = BuildJoinStatement(statement.QueryDecriptor.Entity.Name, selectedColumns.Select(t => t.Path), parameters, out listAlias, ref listFieldProperties);
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
-                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
+                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Path);
                     if (dbField != null)
                     {
                         var column = selectedColumns[i];
@@ -1550,16 +1554,16 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
                 var conditionsColumns = new List<ColumnOperand>();
-                AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
+                AppendColumnsFromConditions(queryDescriptor.Conditions, conditionsColumns);
                 var whereColumns = conditionsColumns.ToArray();
-                var sortColumns = statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Orders.ToArray();
-                var fieldCount = whereColumns.Length + sortColumns.Length;
-                listFieldProperties.AddRange(BuildSelectStatement(statement.Table.Name, sortColumns.Select(t => t.Column.Name)));
-                listFieldProperties.AddRange(BuildSelectStatement(statement.Table.Name, selectedColumns.Select(t => t.Name)));
+                var sortColumns = queryDescriptor.SortableFields; // GetSortableFields(); // == null ? new SortableFieldDescriptor[] { } : queryDescriptor.SortableFields.ToArray();
+                var fieldCount = whereColumns.Length + sortColumns.Count;
+                listFieldProperties.AddRange(BuildSelectStatement(entity.Name, sortColumns.Select(t => t.Field.Path)));
+                listFieldProperties.AddRange(BuildSelectStatement(entity.Name, selectedColumns.Select(t => t.Path)));
                 var columnExpressions = new List<string>();
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
-                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
+                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Path);
                     if (dbField != null)
                     {
                         AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
@@ -1595,13 +1599,13 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
 
-                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                var whereExpression = this.BuildWhereExpression(queryDescriptor.Conditions, parameters);
                 // to build the order by section
-                var orderByColumns = new string[sortColumns.Length];
-                for (int i = 0; i < sortColumns.Length; i++)
+                var orderByColumns = new string[sortColumns.Count];
+                for (int i = 0; i < sortColumns.Count; i++)
                 {
                     var column = sortColumns[i];
-                    var dbField = listFieldProperties.Find(z => z.Alias == sortColumns[i].Column.Name);
+                    var dbField = listFieldProperties.Find(z => z.Alias == sortColumns[i].Field.Path);
                     var encodeColumn = "";
                     encodeColumn = this._syntax.EncodeFieldName(dbField.DBFieldName);
                     AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
@@ -1613,7 +1617,7 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
                 // add on top (n)
-                var limit = statement.Limit;
+                var limit = queryDescriptor.Limit;
 
                 // add group by
                 var selectStatement = this._syntax.SelectExpression(columnExpressions.ToArray(), fromExpression, whereExpression, orderByColumns, limit);
@@ -1621,7 +1625,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
         }
@@ -1637,15 +1641,17 @@ namespace Atdi.CoreServices.EntityOrm
         {
             try
             {
-                var selectColumns = statement.Table.SelectColumns;
-                var selectedColumns = statement.Table.Columns.Values.ToArray();
+                var queryDecriptor = statement.QueryDecriptor;
+                var entity = queryDecriptor.Entity;
+                var selectColumns = statement.QueryDecriptor.SelectableFields;
+                var selectedColumns = statement.QueryDecriptor.Cache.Values.ToArray();
                 var listAlias = new List<AliasField>();
                 var listFieldProperties = new List<FieldProperties>();
                 var tableName = "";
-                var fromExpression = BuildJoinStatement(statement.Table.Name, selectedColumns.Select(t => t.Name), parameters, out listAlias, ref listFieldProperties);
+                var fromExpression = BuildJoinStatement(entity.Name, selectedColumns.Select(t => t.Path), parameters, out listAlias, ref listFieldProperties);
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
-                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
+                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Path);
                     if (dbField != null)
                     {
                         var column = selectedColumns[i];
@@ -1658,12 +1664,12 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
                 var conditionsColumns = new List<ColumnOperand>();
-                AppendColumnsFromConditions(statement.Conditions, conditionsColumns);
+                AppendColumnsFromConditions(statement.QueryDecriptor.Conditions, conditionsColumns);
                 var whereColumns = conditionsColumns.ToArray();
-                var sortColumns = statement.Orders == null ? new QuerySelectStatement.OrderByColumnDescriptor[] { } : statement.Orders.ToArray();
-                var fieldCount = whereColumns.Length + sortColumns.Length;
-                listFieldProperties.AddRange(BuildSelectStatement(statement.Table.Name, sortColumns.Select(t => t.Column.Name)));
-                listFieldProperties.AddRange(BuildSelectStatement(statement.Table.Name, selectedColumns.Select(t => t.Name)));
+                var sortColumns = statement.QueryDecriptor.SortableFields; // GetSortableFields(); //Orders == null ? new SortableFieldDescriptor[] { } : statement.Orders.ToArray();
+                var fieldCount = whereColumns.Length + sortColumns.Count;
+                listFieldProperties.AddRange(BuildSelectStatement(entity.Name, sortColumns.Select(t => t.Field.Path)));
+                listFieldProperties.AddRange(BuildSelectStatement(entity.Name, selectedColumns.Select(t => t.Path)));
                 var columnExpressions = new List<string>();
                 if (this._dataEngine.Config.Type == DataEngineType.Oracle)
                 {
@@ -1671,7 +1677,7 @@ namespace Atdi.CoreServices.EntityOrm
                 }
                 for (int i = 0; i < selectedColumns.Length; i++)
                 {
-                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Name);
+                    var dbField = listFieldProperties.Find(z => z.Alias == selectedColumns[i].Path);
                     if (dbField != null)
                     {
                         AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
@@ -1707,13 +1713,13 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
 
-                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                var whereExpression = this.BuildWhereExpression(statement.QueryDecriptor.Conditions, parameters);
                 // to build the order by section
-                var orderByColumns = new string[sortColumns.Length];
-                for (int i = 0; i < sortColumns.Length; i++)
+                var orderByColumns = new string[sortColumns.Count];
+                for (int i = 0; i < sortColumns.Count; i++)
                 {
                     var column = sortColumns[i];
-                    var dbField = listFieldProperties.Find(z => z.Alias == sortColumns[i].Column.Name);
+                    var dbField = listFieldProperties.Find(z => z.Alias == sortColumns[i].Field.Path);
                     var encodeColumn = "";
                     encodeColumn = this._syntax.EncodeFieldName(dbField.DBFieldName);
                     AliasField aliasField = listAlias.Find(z => z.DBTableName == dbField.DBTableName);
@@ -1725,7 +1731,7 @@ namespace Atdi.CoreServices.EntityOrm
                     }
                 }
                 // add on top (n)
-                var limit = statement.Limit;
+                var limit = statement.QueryDecriptor.Limit;
 
                 // add group by
                 var selectStatement = this._syntax.SelectExpression(columnExpressions.ToArray(), fromExpression, whereExpression, orderByColumns, limit);
@@ -1733,12 +1739,12 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSelectStatement, e);
             }
         }
 
-        public string BuildWhereExpression(List<Condition> conditions, IDictionary<string, EngineCommandParameter> parameters)
+        public string BuildWhereExpression(IReadOnlyList<Condition> conditions, IDictionary<string, EngineCommandParameter> parameters)
          {
              if (conditions == null || conditions.Count == 0)
              {
@@ -1749,25 +1755,26 @@ namespace Atdi.CoreServices.EntityOrm
              return result;
          }
 
-         public string BuildSetValuesExpression(List<ColumnValue> columns, IDictionary<string, EngineCommandParameter> parameters)
+         public string BuildSetValuesExpression(FieldValueDescriptor[] columns, IDictionary<string, EngineCommandParameter> parameters)
          {
-             if (columns == null || columns.Count == 0)
+             if (columns == null || columns.Length == 0)
              {
                  return null;
              }
-             var values = new string[columns.Count];
-             for (int i = 0; i < columns.Count; i++)
+             var values = new string[columns.Length];
+             for (int i = 0; i < columns.Length; i++)
              {
                  var column = columns[i];
                  var parameter = new EngineCommandParameter
                  {
-                     DataType = column.DataType,
-                     Name = "v_" + column.Name,
-                     Value = column.GetValue()
+                     // ВНИМАНИЕ - ТУТ НУЖНА КОНВЕРТАЦИЯ ЧЕРЕЗ СИСТЕМУ ТИПОВ 
+                     DataType = column.Store.DataType,
+                     Name = "v_" + column.Store.Name,
+                     Value = column.Store.GetValue()
 
                  };
                 parameters.Add(parameter.Name, parameter);
-                 values[i] = this._syntax.SetColumnValueExpression(this._syntax.EncodeFieldName(column.Name), this._syntax.EncodeParameterName(parameter.Name));
+                 values[i] = this._syntax.SetColumnValueExpression(this._syntax.EncodeFieldName(column.Store.Name), this._syntax.EncodeParameterName(parameter.Name));
              }
              var result = string.Join("," + Environment.NewLine, values);
              return result;
@@ -1785,13 +1792,13 @@ namespace Atdi.CoreServices.EntityOrm
              try
              {
                 var listFieldProperties = new List<FieldProperties>();
-                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                var entityMetadata = statement.QueryDecriptor.Entity;
                 var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
                 var columns = new List<ColumnOperand>();
-                AppendColumnsFromConditions(statement.Conditions, columns);
+                AppendColumnsFromConditions(statement.QueryDecriptor.Conditions, columns);
                 var columnsArray = columns.ToArray();
                 var listAlias = new List<AliasField>();
-                var fromStatement = BuildJoinStatement(statement.TableName, columnsArray.Select(c => c.ColumnName), parameters, out listAlias, ref listFieldProperties);
+                var fromStatement = BuildJoinStatement(statement.QueryDecriptor.Entity.Name, columnsArray.Select(c => c.ColumnName), parameters, out listAlias, ref listFieldProperties);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                      var column = columnsArray[i];
@@ -1799,13 +1806,13 @@ namespace Atdi.CoreServices.EntityOrm
                      column.ColumnName = dbField.SourceName;
                 }
 
-                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                var whereExpression = this.BuildWhereExpression(statement.QueryDecriptor.Conditions, parameters);
                 var deleteStatement = this._syntax.DeleteExpression(sourceExpression, fromStatement, whereExpression);
                 return deleteStatement;
              }
              catch (Exception e)
              {
-                 this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                 this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                  throw new InvalidOperationException(Exceptions.AbortedBuildDeleteStatement, e);
              }
          }
@@ -1836,41 +1843,45 @@ namespace Atdi.CoreServices.EntityOrm
                     var listAlias = new List<AliasField>();
                     if (j == 0)
                     {
-                        entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                        //  entityMetadata = _entityOrm.GetEntityMetadata(statement.EntityName);
+                        entityMetadata = statement.QueryDecriptor.Entity;
                     }
 
 
-                    if (statement.ColumnsValues.Count == 0)
+                    var statementValues = statement.QueryDecriptor.GetValues();
+                    if (statementValues.Length == 0)
                     {
                         throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
                     }
 
-                    var changedColumns = new string[statement.ColumnsValues.Count];
-                    var selectedParameters = new string[statement.ColumnsValues.Count];
-                    for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                    var changedColumns = new string[statementValues.Length];
+                    var selectedParameters = new string[statementValues.Length];
+                    for (int i = 0; i < statementValues.Length; i++)
                     {
-                        KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
-                        if (fieldName.Value != null)
-                        {
-                            var column = statement.ColumnsValues[i];
-                            column.Name = fieldName.Value.SourceName;
-                            var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
-                            column = columnValueReplaced;
+                        //KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
+                        //if (fieldName.Value != null)
+                        //{
+                            var statementValue = statementValues[i];
+
+                            var insertedValue = statementValue.Store.GetValue();
+                            //column.Name = fieldName.Value.SourceName;
+                            var preparedValue = GetColumnValue(insertedValue, statementValue.Descriptor.Field.SourceName, statementValue.Descriptor.Field.DataType as DataTypeMetadata);
+                            //column = columnValueReplaced;
                             var parameter = new EngineCommandParameter
                             {
-                                DataType = column.DataType,
-                                Name = "v_" + column.Name + j.ToString(),
-                                Value = column.GetValue()
+                                DataType = preparedValue.DataType,
+                                Name = "v_" + preparedValue.Name + j.ToString(),
+                                Value = preparedValue.GetValue()
                             };
 
                             parameters.Add(parameter.Name, parameter);
                             selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
-                            changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
-                        }
-                        else
-                        {
-                            throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + statement.ColumnsValues[i].Name));
-                        }
+                            changedColumns[i] = this._syntax.EncodeFieldName(preparedValue.Name);
+                        //}
+                        //else
+                        //{
+                        //    throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.EntityMetadata.Name + "." + statement.ColumnsValues[i].Name));
+                        //}
                     }
                     listSelectedParameters.Add(string.Join(", ", selectedParameters));
 
@@ -1913,7 +1924,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
         }
@@ -1927,42 +1938,46 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildInsertStatement(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
-            if (statement.ColumnsValues.Count == 0)
+            var statementValues = statement.QueryDecriptor.GetValues();
+            if (statementValues.Length == 0)
             {
-                this.Logger.Warning(Contexts.LegacyServicesEntity, Categories.BuildingStatement, Events.NoFieldsSpecified);
+                this.Logger.Warning(Contexts.EntityOrm, Categories.BuildingStatement, Events.NoFieldsSpecified);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
             }
+
             try
             {
-                var listAlias = new List<AliasField>();
-                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                //var listAlias = new List<AliasField>();
+                var entityMetadata = statement.QueryDecriptor.Entity; //_entityOrm.GetEntityMetadata(statement.EntityName);
                 var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
-                var changedColumns = new string[statement.ColumnsValues.Count];
-                var selectedParameters = new string[statement.ColumnsValues.Count];
-                for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                var changedColumns = new string[statementValues.Length];
+                var selectedParameters = new string[statementValues.Length];
+                for (int i = 0; i < statementValues.Length; i++)
                 {
-                    KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
-                    if (fieldName.Value != null)
-                    {
-                        var column = statement.ColumnsValues[i];
-                        column.Name = fieldName.Value.SourceName;
-                        var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
-                        column = columnValueReplaced;
-                        var parameter = new EngineCommandParameter
-                        {
-                            DataType = column.DataType,
-                            Name = "v_" + column.Name,
-                            Value = column.GetValue()
-                        };
+                    //KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
+                    //if (fieldName.Value != null)
+                    //{
+                    var statementValue = statementValues[i];
 
-                        parameters.Add(parameter.Name, parameter);
-                        selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
-                        changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
-                    }
-                    else
+                    var insertedValue = statementValue.Store.GetValue();
+                    //column.Name = fieldName.Value.SourceName;
+                    var preparedValue = GetColumnValue(insertedValue, statementValue.Descriptor.Field.SourceName, statementValue.Descriptor.Field.DataType as DataTypeMetadata);
+                    //column = columnValueReplaced;
+                    var parameter = new EngineCommandParameter
                     {
-                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + statement.ColumnsValues[i].Name));
-                    }
+                        DataType = preparedValue.DataType,
+                        Name = "v_" + preparedValue.Name,
+                        Value = preparedValue.GetValue()
+                    };
+
+                    parameters.Add(parameter.Name, parameter);
+                    selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
+                    changedColumns[i] = this._syntax.EncodeFieldName(preparedValue.Name);
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.EntityMetadata.Name + "." + statement.ColumnsValues[i].Name));
+                    //}
                 }
               
 
@@ -1973,7 +1988,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
          }
@@ -1990,13 +2005,13 @@ namespace Atdi.CoreServices.EntityOrm
             try
             {
                var selectCommandText = BuildSelectStatementWithAllocId(statementSelect, parameters);
-               var entityMetadata = _entityMetadata.GetEntityMetadata(statementInsert.TableName);
+                var entityMetadata = statementInsert.QueryDecriptor.Entity; // _entityOrm.GetEntityMetadata(statementInsert.EntityName);
                var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
-               var selectedParameters = statementSelect.Table.SelectColumns;
+               var selectedParameters = statementSelect.QueryDecriptor.SelectableFields;
                var changedColumns = new List<string>();
                foreach (var item in selectedParameters)
                {
-                   KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == item.Value.Name);
+                   KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == item.Value.Path);
                    if (fieldName.Value != null)
                    {
                         changedColumns.Add(fieldName.Value.SourceName);
@@ -2034,7 +2049,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
         }
@@ -2048,42 +2063,47 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildInsertStatementExecuteAndFetch(QueryInsertStatement statement, IDictionary<string, EngineCommandParameter> parameters)
         {
-            if (statement.ColumnsValues.Count == 0)
+            var queryDecriptor = statement.QueryDecriptor;
+            var values = queryDecriptor.GetValues();
+            if (values.Length == 0)
             {
-                this.Logger.Warning(Contexts.LegacyServicesEntity, Categories.BuildingStatement, Events.NoFieldsSpecified);
+                this.Logger.Warning(Contexts.EntityOrm, Categories.BuildingStatement, Events.NoFieldsSpecified);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
             }
+
             try
             {
                 var listAlias = new List<AliasField>();
-                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                var entityMetadata = statement.QueryDecriptor.Entity; // _entityOrm.GetEntityMetadata(statement.EntityName);
                 var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
-                var changedColumns = new string[statement.ColumnsValues.Count];
-                var selectedParameters = new string[statement.ColumnsValues.Count];
-                for (int i = 0; i < statement.ColumnsValues.Count; i++)
+                var changedColumns = new string[values.Length];
+                var selectedParameters = new string[values.Length];
+                for (int i = 0; i < values.Length; i++)
                 {
-                    KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
-                    if (fieldName.Value != null)
-                    {
-                        var column = statement.ColumnsValues[i];
-                        column.Name = fieldName.Value.SourceName;
-                        var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
-                        column = columnValueReplaced;
+                    //KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
+                    //if (fieldName.Value != null)
+                    //{
+                    var fieldValue = values[i];
+                    var fieldName = fieldValue.Descriptor.Field.Name;
+                        //var column = statement.ColumnsValues[i];
+                        //column.Name = fieldName.Value.SourceName;
+                    var paramColumn = GetColumnValue(fieldValue.Store.GetValue(), fieldName, fieldValue.Descriptor.Field.DataType as DataTypeMetadata);
+                        //column = columnValueReplaced;
                         var parameter = new EngineCommandParameter
                         {
-                            DataType = column.DataType,
-                            Name = "v_" + column.Name,
-                            Value = column.GetValue()
+                            DataType = paramColumn.DataType,
+                            Name = "v_" + fieldName,
+                            Value = paramColumn.GetValue()
                         };
 
                         parameters.Add(parameter.Name, parameter);
                         selectedParameters[i] = this._syntax.EncodeParameterName(parameter.Name);
-                        changedColumns[i] = this._syntax.EncodeFieldName(column.Name);
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.TableName + "." + statement.ColumnsValues[i].Name));
-                    }
+                        changedColumns[i] = this._syntax.EncodeFieldName(fieldName);
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception(string.Format(Exceptions.NotFoundDetailInformation, statement.QueryDecriptor.Entity.Name + "." + statement.ColumnsValues[i].Name));
+                    //}
                 }
                 int cntPrimaryKey = 0;
                 string primaryKeyField = null;
@@ -2128,7 +2148,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildInsertStatement, e);
             }
         }
@@ -2136,7 +2156,7 @@ namespace Atdi.CoreServices.EntityOrm
         {
             try
             {
-                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                var entityMetadata = statement.QueryDecriptor.Entity; // _entityOrm.GetEntityMetadata(statement.EntityName);
                 if (entityMetadata.PrimaryKey != null)
                 {
                     var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
@@ -2158,7 +2178,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
             }
         }
@@ -2168,7 +2188,7 @@ namespace Atdi.CoreServices.EntityOrm
             string identFieldName = null;
             try
             {
-                var entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                var entityMetadata = statement.QueryDecriptor.Entity;
                 if (entityMetadata.PrimaryKey != null)
                 {
                     var primaryKeys = entityMetadata.PrimaryKey.FieldRefs;
@@ -2190,7 +2210,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
             }
         }
@@ -2203,35 +2223,37 @@ namespace Atdi.CoreServices.EntityOrm
         /// <returns></returns>
         public string BuildUpdateStatement(QueryUpdateStatement statement, IDictionary<string, EngineCommandParameter> parameters)
          {
-            if (statement.ColumnsValues.Count == 0)
+            if (statement.QueryDecriptor.Fields.Count == 0)
             {
-                this.Logger.Warning(Contexts.LegacyServicesEntity, Categories.BuildingStatement, Events.NoFieldsSpecified);
+                this.Logger.Warning(Contexts.EntityOrm, Categories.BuildingStatement, Events.NoFieldsSpecified);
                 throw new InvalidOperationException(Exceptions.AbortedBuildSqlStatement);
             }
 
             try
             {
                 var columns = new List<ColumnOperand>();
-                AppendColumnsFromConditions(statement.Conditions, columns);
+                AppendColumnsFromConditions(statement.QueryDecriptor.Conditions, columns);
                 var columnsArray = columns.ToArray();
-                IEntityMetadata entityMetadata = _entityMetadata.GetEntityMetadata(statement.TableName);
+                IEntityMetadata entityMetadata = statement.QueryDecriptor.Entity;
                 var sourceExpression = this._syntax.EncodeTableName(entityMetadata.DataSource.Schema, entityMetadata.DataSource.Name);
-                for (int i = 0; i < statement.ColumnsValues.Count; i++)
-                {
-                    KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
-                    if (fieldName.Value != null)
-                    {
-                        var column = statement.ColumnsValues[i];
-                        column.Name = fieldName.Value.SourceName;
-                        var columnValueReplaced = QuerySelectStatement.GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
-                        column = columnValueReplaced;
-                    }
+
+                //var fieldValues = statement.QueryDecriptor.GetValues();
+                //for (int i = 0; i < fieldValues.Length; i++)
+                //{
+                //    KeyValuePair<string, IFieldMetadata> fieldName = entityMetadata.Fields.ToList().Find(t => t.Key == statement.ColumnsValues[i].Name);
+                //    if (fieldName.Value != null)
+                //    {
+                //        var column = statement.QueryDecriptor.Fields.Values[i];
+                //        column.Name = fieldName.Value.SourceName;
+                //        var columnValueReplaced = GetColumnValue(column.GetValue(), column.Name, fieldName.Value.DataType as DataTypeMetadata);
+                //        column = columnValueReplaced;
+                //    }
                   
-                }
-                var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
+                //}
+                var valuesExpression = this.BuildSetValuesExpression(statement.QueryDecriptor.GetValues(), parameters);
                 var listAlias = new List<AliasField>();
                 var listFieldProperties = new List<FieldProperties>();
-                var fromStatement = BuildJoinStatement(statement.TableName, columnsArray.Select(c => c.ColumnName), parameters, out listAlias, ref listFieldProperties);
+                var fromStatement = BuildJoinStatement(statement.QueryDecriptor.Entity.Name, columnsArray.Select(c => c.ColumnName), parameters, out listAlias, ref listFieldProperties);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                     var column = columnsArray[i];
@@ -2240,18 +2262,18 @@ namespace Atdi.CoreServices.EntityOrm
                     var dbField = listFieldProperties.Find(z=>z.Alias== column.ColumnName);
                     column.ColumnName = dbField.DBFieldName;
                 }
-                var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
+                var whereExpression = this.BuildWhereExpression(statement.QueryDecriptor.Conditions, parameters);
                 var updateStatement = this._syntax.UpdateExpression(sourceExpression, valuesExpression, fromStatement, whereExpression);
                 return updateStatement;
             }
             catch (Exception e)
             {
-                this.Logger.Exception(Contexts.LegacyServicesEntity, Categories.BuildingStatement, e, this);
+                this.Logger.Exception(Contexts.EntityOrm, Categories.BuildingStatement, e, this);
                 throw new InvalidOperationException(Exceptions.AbortedBuildUpdateStatement, e);
             }
          }
 
-         private void AppendColumnsFromConditions(List<Condition> conditions, List<ColumnOperand> columns)
+         private void AppendColumnsFromConditions(IReadOnlyList<Condition> conditions, List<ColumnOperand> columns)
          {
              if (conditions == null || conditions.Count == 0)
              {
@@ -2305,5 +2327,93 @@ namespace Atdi.CoreServices.EntityOrm
         {
         }
 
+        public static ColumnValue GetColumnValue(object value, string nameColumn, DataTypeMetadata dataTypeMetadata)
+        {
+            ColumnValue result = null;
+            switch (dataTypeMetadata.SourceVarType.ToString())
+            {
+                case "BOOL":
+                    result = Convesrion.ConversionBool(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BIT":
+                    result = Convesrion.ConversionBit(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BYTE":
+                    result = Convesrion.ConversionByte(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BYTES":
+                    result = Convesrion.ConversionBytes(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "BLOB":
+                    result = Convesrion.ConversionBlob(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT08":
+                    result = Convesrion.ConversionInt08(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT16":
+                    result = Convesrion.ConversionInt16(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT32":
+                    result = Convesrion.ConversionInt32(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "INT64":
+                    result = Convesrion.ConversionInt64(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NCHAR":
+                    result = Convesrion.ConversionNchar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NVARCHAR":
+                    result = Convesrion.ConversionNvarChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "NTEXT":
+                    result = Convesrion.ConversionNText(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "CHAR":
+                    result = Convesrion.ConversionChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "VARCHAR":
+                    result = Convesrion.ConversionVarChar(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "TEXT":
+                    result = Convesrion.ConversionText(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "TIME":
+                    result = Convesrion.ConversionTime(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATE":
+                    result = Convesrion.ConversionDate(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATETIME":
+                    result = Convesrion.ConversionDateTime(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DATETIMEOFFSET":
+                    result = Convesrion.ConversionDateTimeOffset(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "MONEY":
+                    result = Convesrion.ConversionMoney(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "FLOAT":
+                    result = Convesrion.ConversionFloat(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DOUBLE":
+                    result = Convesrion.ConversionDouble(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "DECIMAL":
+                    result = Convesrion.ConversionDecimal(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "GUID":
+                    result = Convesrion.ConversionGuid(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "XML":
+                    result = Convesrion.ConversionXml(value, nameColumn, dataTypeMetadata);
+                    break;
+                case "JSON":
+                    result = Convesrion.ConversionJson(value, nameColumn, dataTypeMetadata);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{dataTypeMetadata.SourceVarType.ToString()}'");
+            }
+            return result;
+        }
     }
 }

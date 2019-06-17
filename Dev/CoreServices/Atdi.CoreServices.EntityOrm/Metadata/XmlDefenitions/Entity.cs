@@ -14,8 +14,9 @@
 namespace Atdi.CoreServices.EntityOrm.Metadata
 {
     using System.Xml.Serialization;
+
     
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
     [System.SerializableAttribute()]
@@ -56,17 +57,18 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string BaseEntity;
         
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public InheritanceType Inheritance;
+        ///// <remarks/>
+        //[System.Xml.Serialization.XmlAttributeAttribute()]
+        //[System.ComponentModel.DefaultValueAttribute(InheritanceType.None)]
+        //public InheritanceType Inheritance;
         
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool InheritanceSpecified;
+        ///// <remarks/>
+        //[System.Xml.Serialization.XmlIgnoreAttribute()]
+        //public bool InheritanceSpecified;
         
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string ExtendEntity;
+        ///// <remarks/>
+        //[System.Xml.Serialization.XmlAttributeAttribute()]
+        //public string ExtendEntity;
         
         public EntityDef() {
             this.Type = EntityType.Normal;
@@ -117,7 +119,24 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         /// <remarks/>
         Excel,
     }
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://schemas.atdi.com/orm/entity.xsd")]
+    public enum StoreContentType
+    {
+
+        /// <remarks/>
+        Binary,
+
+        /// <remarks/>
+        Json,
+
+        /// <remarks/>
+        Xml
+    }
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
     [System.SerializableAttribute()]
@@ -445,9 +464,29 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("And", typeof(ConditionExpressionDef))]
+        [System.Xml.Serialization.XmlElementAttribute("BeginWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Between", typeof(BetweenOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Contains", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("EndWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Equal", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("GreaterEqual", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("GreaterThan", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("In", typeof(InOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("IsNotNull", typeof(OneOperandOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("IsNull", typeof(OneOperandOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("LessEqual", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("LessThan", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("Like", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotBeginWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotBetween", typeof(BetweenOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotContains", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotEndWith", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotEqual", typeof(TwoOperandsOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotIn", typeof(InOperationDef))]
+        [System.Xml.Serialization.XmlElementAttribute("NotLike", typeof(TwoOperandsOperationDef))]
         [System.Xml.Serialization.XmlElementAttribute("Or", typeof(ConditionExpressionDef))]
         [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName")]
-        public ConditionExpressionDef Item;
+        public object Item;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -463,10 +502,70 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd", IncludeInSchema=false)]
     public enum ItemChoiceType {
-        
+
         /// <remarks/>
         And,
-        
+
+        /// <remarks/>
+        BeginWith,
+
+        /// <remarks/>
+        Between,
+
+        /// <remarks/>
+        Contains,
+
+        /// <remarks/>
+        EndWith,
+
+        /// <remarks/>
+        Equal,
+
+        /// <remarks/>
+        GreaterEqual,
+
+        /// <remarks/>
+        GreaterThan,
+
+        /// <remarks/>
+        In,
+
+        /// <remarks/>
+        IsNotNull,
+
+        /// <remarks/>
+        IsNull,
+
+        /// <remarks/>
+        LessEqual,
+
+        /// <remarks/>
+        LessThan,
+
+        /// <remarks/>
+        Like,
+
+        /// <remarks/>
+        NotBeginWith,
+
+        /// <remarks/>
+        NotBetween,
+
+        /// <remarks/>
+        NotContains,
+
+        /// <remarks/>
+        NotEndWith,
+
+        /// <remarks/>
+        NotEqual,
+
+        /// <remarks/>
+        NotIn,
+
+        /// <remarks/>
+        NotLike,
+
         /// <remarks/>
         Or,
     }
@@ -573,23 +672,38 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         Predefined,
+
+        /// <remarks/>
+        Prototype,
+
+        /// <remarks/>
+        Role,
+
+        /// <remarks/>
+        Simple,
+
+        /// <remarks/>
+        Abstruct
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
-    public enum InheritanceType {
+    //[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    //[System.SerializableAttribute()]
+    //[System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.atdi.com/orm/entity.xsd")]
+    //public enum InheritanceType {
+
+    //    /// <remarks/>
+    //    None,
+
+    //    /// <remarks/>
+    //    Prototype,
         
-        /// <remarks/>
-        Prototype,
+    //    /// <remarks/>
+    //    Role,
         
-        /// <remarks/>
-        Role,
-        
-        /// <remarks/>
-        Simple,
-    }
+    //    /// <remarks/>
+    //    Simple,
+    //}
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
@@ -608,7 +722,10 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         public DataTypeDefSourceVarType SourceVarType;
-        
+
+        /// <remarks/>
+        public DataTypeDefStoreContentType StoreContentType;
+
         /// <remarks/>
         public DataTypeDefLength Length;
         
@@ -717,7 +834,10 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         Char,
-        
+
+        /// <remarks/>
+        Chars,
+
         /// <remarks/>
         Long,
         
@@ -765,7 +885,21 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         [System.Xml.Serialization.XmlTextAttribute()]
         public DataSourceVarType Value;
     }
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://schemas.atdi.com/orm/entity.xsd")]
+    public partial class DataTypeDefStoreContentType
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public StoreContentType Value;
+    }
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
     [System.SerializableAttribute()]
@@ -789,7 +923,10 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         NCHAR,
-        
+
+        /// <remarks/>
+        NCHARS,
+
         /// <remarks/>
         NVARCHAR,
         
@@ -798,7 +935,10 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         CHAR,
-        
+
+        /// <remarks/>
+        CHARS,
+
         /// <remarks/>
         VARCHAR,
         

@@ -11,7 +11,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
     [Serializable]
     public class PrimaryKeyFieldRefMetadata : IPrimaryKeyFieldRefMetadata
     {
-        public IPrimaryKeyFieldRefMetadata Field { get; set; }
+        public IFieldMetadata Field { get; set; }
 
         public SortDirection SortOrder { get; set; }
     }

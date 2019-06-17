@@ -15,4 +15,5 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         public DataType DataType { get; set; }
     }
+
 }
