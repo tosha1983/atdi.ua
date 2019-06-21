@@ -10,12 +10,7 @@ namespace Atdi.CoreServices.EntityOrm
 {
     internal sealed class QueryExecutor : LoggedObject, IQueryExecutor
     {
-        private sealed class DbFieldDescriptor
-        {
-            public DataSetColumn Column { get; set; }
-            public Type DbType { get; set; }
-            public int Ordinal { get; set; }
-        }
+        
 
         private readonly IDataEngine _dataEngine;
         private readonly IEngineSyntax _syntax;
@@ -32,6 +27,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._conditionParser = new ConditionParser(dataEngine.Syntax);
             this._icsmOrmQueryBuilder = icsmOrmQueryBuilder;
             this._dataTypeSystem = dataTypeSystem;
+
             logger.Debug(Contexts.EntityOrm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
         }
 
@@ -58,7 +54,12 @@ namespace Atdi.CoreServices.EntityOrm
             }
         }
 
-
+        //private sealed class DbFieldDescriptor
+        //{
+        //    public DataSetColumn Column { get; set; }
+        //    public Type DbType { get; set; }
+        //    public int Ordinal { get; set; }
+        //}
         //private TypedCellsDataSet ReadToTypedCellsDataSet(Atdi.Contracts.CoreServices.DataLayer.IDataReader dataReader, DataSetColumn[] columns)
         //{
         //    var dataSet = new DataModels.TypedCellsDataSet
@@ -601,18 +602,12 @@ namespace Atdi.CoreServices.EntityOrm
         //}
 
 
-
-      
-
         private EngineCommand BuildSelectCommand(QuerySelectStatement statement)
         {
             var command = new EngineCommand();
             command.Text = this._icsmOrmQueryBuilder.BuildSelectStatement(statement, command.Parameters);
             return command;
         }
-
-
-
 
 
         public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
@@ -668,10 +663,6 @@ namespace Atdi.CoreServices.EntityOrm
             throw new NotImplementedException();
         }
 
-        public int Execute<TModel>(IQueryStatement statement)
-        {
-            throw new Exception();
-        }
 
         public int Execute(IQueryStatement statement)
         {
@@ -754,7 +745,7 @@ namespace Atdi.CoreServices.EntityOrm
 
                 if (statement is QuerySelectStatement)
                 {
-                    this._dataEngine.Execute(command, reader =>
+                    this._dataEngine.Execute(command, (System.Data.IDataReader reader) =>
                     {
                         while (reader.Read())
                         {
@@ -786,22 +777,6 @@ namespace Atdi.CoreServices.EntityOrm
                 }
             }
             return recordsAffected;
-        }
-
-
-        public void BeginTransaction()
-        {
-            this._dataEngine.BeginTransaction();
-        }
-
-        public void CommitTransaction()
-        {
-            this._dataEngine.CommitTransaction();
-        }
-
-        public void RollbackTransaction()
-        {
-            this._dataEngine.RollbackTransaction();
         }
 
         public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
@@ -1115,36 +1090,46 @@ namespace Atdi.CoreServices.EntityOrm
             return result;
         }
 
-
-        public int InsertSelect<TModelInsert, TModelSelect>(IQueryStatement<TModelInsert> statementInsert, IQuerySelectStatement<TModelSelect> selectStatement)
+        public object Execute(IQueryStatement statement, Type resultType)
         {
-            var rowAffected = 0;
-            IQueryStatement statementQueryInsert = null;
-            IQueryStatement statementQuerySelect = null;
-            var extractTypeInsert = statementInsert.GetType();
-            var extractTypeSelect = selectStatement.GetType();
-            if (extractTypeSelect.Name.Contains(typeof(QuerySelectStatement).Name))
-            {
-                statementQuerySelect = extractTypeSelect.GetProperty(_propertyName).GetValue(selectStatement, null) as QuerySelectStatement;
-            }
-            if (extractTypeInsert.Name.Contains(typeof(QueryInsertStatement).Name))
-            {
-                statementQueryInsert = extractTypeInsert.GetProperty(_propertyName).GetValue(statementInsert, null) as QueryInsertStatement;
-            }
-
-            var command = new EngineCommand();
-
-            if ((statementQueryInsert is QueryInsertStatement queryInsertStatement) && (statementQuerySelect is QuerySelectStatement querySelectStatement))
-            {
-                command.Text = this._icsmOrmQueryBuilder.BuildInsertSelectStatement(queryInsertStatement, querySelectStatement, command.Parameters);
-                rowAffected += this._dataEngine.Execute(command);
-            }
-            else
-            {
-                throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statementInsert.GetType().Name) + " or " + Exceptions.QueryStatementNotSupported.With(selectStatement.GetType().Name));
-            }
-            return rowAffected;
+            throw new NotImplementedException();
         }
+
+        public TResult Execute<TResult>(IQueryStatement statement)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        //public int InsertSelect<TModelInsert, TModelSelect>(IQueryStatement<TModelInsert> statementInsert, IQuerySelectStatement<TModelSelect> selectStatement)
+        //{
+        //    var rowAffected = 0;
+        //    IQueryStatement statementQueryInsert = null;
+        //    IQueryStatement statementQuerySelect = null;
+        //    var extractTypeInsert = statementInsert.GetType();
+        //    var extractTypeSelect = selectStatement.GetType();
+        //    if (extractTypeSelect.Name.Contains(typeof(QuerySelectStatement).Name))
+        //    {
+        //        statementQuerySelect = extractTypeSelect.GetProperty(_propertyName).GetValue(selectStatement, null) as QuerySelectStatement;
+        //    }
+        //    if (extractTypeInsert.Name.Contains(typeof(QueryInsertStatement).Name))
+        //    {
+        //        statementQueryInsert = extractTypeInsert.GetProperty(_propertyName).GetValue(statementInsert, null) as QueryInsertStatement;
+        //    }
+
+        //    var command = new EngineCommand();
+
+        //    if ((statementQueryInsert is QueryInsertStatement queryInsertStatement) && (statementQuerySelect is QuerySelectStatement querySelectStatement))
+        //    {
+        //        command.Text = this._icsmOrmQueryBuilder.BuildInsertSelectStatement(queryInsertStatement, querySelectStatement, command.Parameters);
+        //        rowAffected += this._dataEngine.Execute(command);
+        //    }
+        //    else
+        //    {
+        //        throw new InvalidOperationException(Exceptions.QueryStatementNotSupported.With(statementInsert.GetType().Name) + " or " + Exceptions.QueryStatementNotSupported.With(selectStatement.GetType().Name));
+        //    }
+        //    return rowAffected;
+        //}
     }
 }
 

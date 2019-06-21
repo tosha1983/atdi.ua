@@ -12,7 +12,7 @@ using Atdi.DataModels;
 using System.Runtime.CompilerServices;
 
 
-namespace Atdi.CoreServices.DataLayer
+namespace Atdi.CoreServices.DataLayer.Oracle
 {
     internal sealed class OracleCommandExecuter : LoggedObject, IDisposable
     {

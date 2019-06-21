@@ -30,6 +30,11 @@ namespace Atdi.LegacyServices.Icsm
 
         public IQueryBuilder Builder => _queryBuilder;
 
+        public IDataLayerScope<TContext> BeginScope<TContext>() where TContext : IDataContext, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
             var contextType = typeof(TContext);
@@ -52,9 +57,9 @@ namespace Atdi.LegacyServices.Icsm
             return new QueryBuilder<TModel>(this.Logger);
         }
 
-        public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
-        {
-            return _dataLayer.GetDataEngine<TContext>();
-        }
+        //public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
+        //{
+        //    return _dataLayer.GetDataEngine<TContext>();
+        //}
     }
 }

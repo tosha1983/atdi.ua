@@ -29,10 +29,16 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.Entities
         bool? Boolean_BOOL_Nvarchar { get; set; }
     }
 
-    [Entity]
-    public interface ITestRefRoot
+    [EntityPrimaryKey]
+    public interface ITestRefRoot_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ITestRefRoot : ITestRefRoot_PK
+    {
+        
 
         ITestRefBook BOOK1 { get; set; }
 
@@ -43,31 +49,41 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.Entities
         ITestRefSubBook REL1 { get; set; }
     }
 
-    [Entity]
-    public interface ITestRefBook
+    [EntityPrimaryKey]
+    public interface ITestRefBook_PK
     {
         long Id { get; set; }
+    }
+    [Entity]
+    public interface ITestRefBook : ITestRefBook_PK
+    {
+        
 
         string Name { get; set; }
 
         ITestRefSubBook SUBBOOK1 { get; set; }
     }
 
-    [Entity]
-    public interface ITestRefSubBook
+    [EntityPrimaryKey]
+    public interface ITestRefSubBook_PK
     {
         string Code { get; set; }
 
         string SubType { get; set; }
+    }
 
+    [Entity]
+    public interface ITestRefSubBook : ITestRefSubBook_PK
+    {
         string Name { get; set; }
 
         ITestRefSubBookExt1 EXT1 { get; set; }
+
         ITestRefSubBookExt2 EXT2 { get; set; }
     }
 
     [Entity]
-    public interface ITestRefSubBookExt1
+    public interface ITestRefSubBookExt1 : ITestRefSubBook_PK
     {
         string Prop1 { get; set; }
 
@@ -77,7 +93,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.Entities
     }
 
     [Entity]
-    public interface ITestRefSubBookExt2
+    public interface ITestRefSubBookExt2 : ITestRefSubBook_PK
     {
         string Prop1 { get; set; }
 

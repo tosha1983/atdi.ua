@@ -10,13 +10,13 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 {
     public interface IQuerySelectStatement : IQueryStatement
     {
-        IQuerySelectStatement Select(params string[] columns);
+        IQuerySelectStatement Select(params string[] paths);
 
         IQuerySelectStatement Where(Condition condition);
 
-        IQuerySelectStatement OrderByAsc(params string[] columns);
+        IQuerySelectStatement OrderByAsc(params string[] paths);
 
-        IQuerySelectStatement OrderByDesc(params string[] columns);
+        IQuerySelectStatement OrderByDesc(params string[] paths);
 
         IQuerySelectStatement OnTop(int count);
 

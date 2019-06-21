@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using Atdi.DataModels;
 using Atdi.DataModels.DataConstraint;
 
-namespace Atdi.CoreServices.DataLayer
+namespace Atdi.CoreServices.DataLayer.Oracle
 {
     internal sealed class OracleEngineSyntax : IEngineSyntax, IConstraintEngineSyntax
     {

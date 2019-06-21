@@ -1031,7 +1031,7 @@ namespace Atdi.CoreServices.EntityOrm
 
             entityMetadata.Fields = this.BuildFieldsMetadata(entityMetadata, entityDef);
 
-            entityMetadata.PrimaryKey = BuildPrimariKeyMetadata(entityMetadata, entityDef);
+            entityMetadata.PrimaryKey = this.BuildPrimariKeyMetadata(entityMetadata, entityDef);
 
             return entityMetadata;
         }

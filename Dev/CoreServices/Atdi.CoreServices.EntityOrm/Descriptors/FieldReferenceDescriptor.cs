@@ -10,6 +10,8 @@ namespace Atdi.CoreServices.EntityOrm
     public sealed class FieldReferenceDescriptor
     {
         // очень важно хранить пару  - сущность и поле, так как поле может быть получено по наследству от базовой сущности
+        //  REF1.REF2.Ref3.Ref4.Id
+        // FieldReferenceDescriptor.Next = FieldReferenceDescriptor.Next = FieldReferenceDescriptor.Next
         public IEntityMetadata Entity { get; set; }
 
         public IFieldMetadata Field { get; set; }

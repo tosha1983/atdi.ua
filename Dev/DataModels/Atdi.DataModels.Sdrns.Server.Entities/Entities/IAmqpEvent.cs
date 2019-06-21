@@ -7,14 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IAmqpEvent
+    public interface IAmqpEvent_PK
     {
         long Id { get; set; }
+    }
 
+    [Entity]
+    public interface IAmqpEvent : IAmqpEvent_PK
+    {
         string PropType { get; set; }
 
         DateTimeOffset CreatedDate { get; set; }
 
     }
+
 }

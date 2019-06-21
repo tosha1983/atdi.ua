@@ -28,6 +28,12 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IQueryBuilder Builder => _queryBuilder;
 
+        public IDataLayerScope<TContext> BeginScope<TContext>() 
+            where TContext : IDataContext, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
             var engine = this._dataLayer.GetDataEngine<TContext>();
@@ -41,9 +47,9 @@ namespace Atdi.CoreServices.EntityOrm
             return new QueryBuilder<TModel>(this._entityOrm, this.Logger);
         }
 
-        public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
-        {
-            return _dataLayer.GetDataEngine<TContext>();
-        }
+        //public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
+        //{
+        //    return _dataLayer.GetDataEngine<TContext>();
+        //}
     }
 }

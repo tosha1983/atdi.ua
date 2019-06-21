@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,21 +11,76 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         IDataEngineConfig Config { get; }
 
-        void Execute(EngineCommand command, Action<System.Data.IDataReader> handler);
-
-        int Execute(EngineCommand command);
-
-
-        object ExecuteScalar(EngineCommand command);
+        IEngineExecuter CreateExecuter();
 
         // To Do: Have to do it
         IEngineSyntax Syntax { get; }
 
-        void BeginTransaction();
+    }
 
-        void CommitTransaction();
+    public static class DataEngineExtensions
+    {
 
-        void RollbackTransaction();
-        
+        public static void Execute(this IDataEngine dataEngine, EngineCommand command, Action<System.Data.IDataReader> handler)
+        {
+            var pattern = new Patterns.EngineCommandPattern
+            {
+                Command = command
+            };
+            pattern.DefResult<EngineExecutionReaderResult<System.Data.IDataReader>>()
+                .Handler = (reader) => handler(reader);
+
+            using (var executer = dataEngine.CreateExecuter())
+            {
+                executer.Execute(pattern);
+            }
+        }
+
+        public static void Execute(this IDataEngine dataEngine, EngineCommand command, Action<IEngineDataReader> handler)
+        {
+            var pattern = new Patterns.EngineCommandPattern
+            {
+                Command = command
+            };
+            pattern.DefResult<EngineExecutionReaderResult<IEngineDataReader>>()
+                .Handler = (reader) => handler(reader);
+
+            using (var executer = dataEngine.CreateExecuter())
+            {
+                executer.Execute(pattern);
+            }
+        }
+
+        public static int Execute(this IDataEngine dataEngine, EngineCommand command)
+        {
+            var pattern = new Patterns.EngineCommandPattern
+            {
+                Command = command
+            };
+            pattern.DefResult<EngineExecutionRowsAffectedResult>();
+
+            using (var executer = dataEngine.CreateExecuter())
+            {
+                executer.Execute(pattern);
+            }
+
+            return pattern.AsResult<EngineExecutionRowsAffectedResult>().RowsAffected;
+        }
+
+        public static object ExecuteScalar(this IDataEngine dataEngine, EngineCommand command)
+        {
+            var pattern = new Patterns.EngineCommandPattern
+            {
+                Command = command
+            };
+            pattern.DefResult<EngineExecutionScalarResult<object>>();
+
+            using (var executer = dataEngine.CreateExecuter())
+            {
+                executer.Execute(pattern);
+            }
+
+            return pattern.AsResult<EngineExecutionScalarResult<object>>().Value;
+        }
     }
 }

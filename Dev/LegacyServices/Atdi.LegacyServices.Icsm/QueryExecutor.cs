@@ -647,22 +647,6 @@ namespace Atdi.LegacyServices.Icsm
             }
         }
 
-        public void BeginTransaction()
-        {
-            this._dataEngine.BeginTransaction();
-        }
-
-        public void CommitTransaction()
-        {
-            this._dataEngine.CommitTransaction();
-        }
-
-        public void RollbackTransaction()
-        {
-            this._dataEngine.RollbackTransaction();
-        }
-
-
         public int Execute(IQueryStatement statement)
         {
             if (statement == null)
@@ -701,10 +685,7 @@ namespace Atdi.LegacyServices.Icsm
             return command;
         }
 
-        public int ExecuteScalar(IQueryStatement statement)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
         {
@@ -726,7 +707,12 @@ namespace Atdi.LegacyServices.Icsm
             throw new NotImplementedException();
         }
 
-        public int InsertSelect<TModelInsert, TModelSelect>(IQueryStatement<TModelInsert> statement, IQuerySelectStatement<TModelSelect> selectStatement)
+        public object Execute(IQueryStatement statement, Type resultType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TResult Execute<TResult>(IQueryStatement statement)
         {
             throw new NotImplementedException();
         }

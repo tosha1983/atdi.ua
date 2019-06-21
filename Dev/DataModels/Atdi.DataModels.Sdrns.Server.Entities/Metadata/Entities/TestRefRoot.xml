@@ -16,7 +16,7 @@
     <Field Name="BOOK1" SourceName="TestRefBook" SourceType="Reference" Required="true" Desc="" Title="BOOK1"/>
     <Field Name="BOOK2" SourceName="TestRefBook" SourceType="Reference" Required="true" Desc="" Title="BOOK2">
       <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">Book2Id</Mapped>
+        <Mapped KeyFieldName="Id" MatchWith="Field">SecondBookId</Mapped>
       </PrimaryKeyMapping>
     </Field>
     <Field Name="SecondBookId" DataType="Integer.64" SourceName="BOOK2_REF_2_ID" SourceType="Column" Required="true" Desc="MeasTaskId" Title="SecondBookId" />

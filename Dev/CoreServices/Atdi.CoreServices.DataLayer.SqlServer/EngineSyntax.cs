@@ -10,9 +10,9 @@ using System.Data.SqlClient;
 using Atdi.DataModels;
 using Atdi.DataModels.DataConstraint;
 
-namespace Atdi.CoreServices.DataLayer
+namespace Atdi.CoreServices.DataLayer.SqlServer
 {
-    internal sealed class SqlServerEngineSyntax : IEngineSyntax, IConstraintEngineSyntax
+    internal sealed class EngineSyntax : IEngineSyntax, IConstraintEngineSyntax
     {
         private const string IDENT = "    ";
         private readonly IFormatProvider _formatProvider = System.Globalization.CultureInfo.InvariantCulture;
