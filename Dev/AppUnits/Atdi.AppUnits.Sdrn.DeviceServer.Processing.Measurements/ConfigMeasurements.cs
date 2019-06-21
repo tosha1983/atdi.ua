@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public class ExampleConfig
+    public class ConfigMeasurements
     {
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool EnableBandWidthTask { get; set; }
     }
 }

@@ -1,21 +1,22 @@
 ﻿using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.AppComponent;
 
-namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
+namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 {
     public class AppServerComponent : AppUnitComponent
     {
 
-        public AppServerComponent() 
-            : base("SdrnDeviceServerProcessingMeasurementsAppUnit")
+        public AppServerComponent()
+            : base("SdrnDeviceServerRSTSMxAdapterAppUnit")
         {
-            
+
         }
 
         protected override void OnInstallUnit()
         {
-            var exampleConfig = this.Config.Extract<ConfigMeasurements>();
-            this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
+            var adapterConfig = this.Config.Extract<AdapterConfig>();
+            this.Container.RegisterInstance(adapterConfig, ServiceLifetime.Singleton);
+
         }
 
         protected override void OnActivateUnit()
