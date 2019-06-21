@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ANTENNA_PATTERN](
-	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[SENSORANTENNA_ID] [bigint] NULL,
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SENSORANTENNA_ID] [int] NULL,
 	[FREQ] [float] NULL,
 	[GAIN] [float] NULL,
 	[DIAGA] [varchar](1000) NULL,

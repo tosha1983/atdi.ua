@@ -1,7 +1,7 @@
 ﻿
 CREATE TABLE [dbo].[SENSOR_EQUIP_SENSITIVITES](
-	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[SENSOREQUIP_ID] [bigint] NULL,
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SENSOREQUIP_ID] [int] NULL,
 	[FREQ] [float] NULL,
 	[KTBF] [float] NULL,
 	[NOISEF] [float] NULL,
