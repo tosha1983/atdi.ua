@@ -677,7 +677,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
                                 if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
                                 var listMeasSubTaskStation = new List<MeasSubTaskStation>();
-                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
+                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
                                 builderMeasSubTaskSta.Select(c => c.Id);
                                 builderMeasSubTaskSta.Select(c => c.Count);
                                 builderMeasSubTaskSta.Select(c => c.MeasSubTaskId);
@@ -1031,7 +1031,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
                                 if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
                                 var listMeasSubTaskStation = new List<MeasSubTaskStation>();
-                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
+                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
                                 builderMeasSubTaskSta.Select(c => c.Id);
                                 builderMeasSubTaskSta.Select(c => c.Count);
                                 builderMeasSubTaskSta.Select(c => c.MeasSubTaskId);

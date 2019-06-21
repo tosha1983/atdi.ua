@@ -1411,6 +1411,8 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         double? rbw = null;
                         double? vbw = null;
+                        double? bw = null;
+                        double? centralFrequency = null;
 
 
 
@@ -1454,7 +1456,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
                                 rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                 vbw = readerResStGeneral.GetValue(c => c.Vbw);
-
+                                bw = readerResStGeneral.GetValue(c => c.BW);
+                                centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -1561,8 +1564,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
                         builderResStLevelCar.Select(c => c.Agl);
                         builderResStLevelCar.Select(c => c.Altitude);
-                        builderResStLevelCar.Select(c => c.Bw);
-                        builderResStLevelCar.Select(c => c.CentralFrequency);
                         builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
                         builderResStLevelCar.Select(c => c.Id);
                         builderResStLevelCar.Select(c => c.Lat);
@@ -1579,16 +1580,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var levelMeasurementsCar = new LevelMeasurementsCar();
                                 levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
-                                levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                levelMeasurementsCar.CentralFrequency = readerResStLevelCar.GetValue(c => c.CentralFrequency);
                                 levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
                                 levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
                                 levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
                                 levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
                                 levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
+
                                 levelMeasurementsCar.RBW = rbw;
                                 levelMeasurementsCar.VBW = vbw;
-
+                                levelMeasurementsCar.BW = bw;
+                                levelMeasurementsCar.CentralFrequency = (decimal?)centralFrequency;
 
 
                                 if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
@@ -1936,6 +1937,8 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         double? rbw = null;
                         double? vbw = null;
+                        double? bw = null;
+                        double? centralFrequency = null;
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -1977,6 +1980,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
                                 rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                 vbw = readerResStGeneral.GetValue(c => c.Vbw);
+                                bw = readerResStGeneral.GetValue(c => c.BW);
+                                centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -2084,8 +2089,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
                         builderResStLevelCar.Select(c => c.Agl);
                         builderResStLevelCar.Select(c => c.Altitude);
-                        builderResStLevelCar.Select(c => c.Bw);
-                        builderResStLevelCar.Select(c => c.CentralFrequency);
                         builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
                         builderResStLevelCar.Select(c => c.Id);
                         builderResStLevelCar.Select(c => c.Lat);
@@ -2102,8 +2105,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var levelMeasurementsCar = new LevelMeasurementsCar();
                                 levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
-                                levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                levelMeasurementsCar.CentralFrequency = readerResStLevelCar.GetValue(c => c.CentralFrequency);
                                 levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
                                 levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
                                 levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
@@ -2111,6 +2112,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
                                 levelMeasurementsCar.RBW = rbw;
                                 levelMeasurementsCar.VBW = vbw;
+                                levelMeasurementsCar.BW = bw;
+                                levelMeasurementsCar.CentralFrequency = (decimal?)centralFrequency;
 
                                 if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
                                 {
@@ -2743,6 +2746,8 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 double? rbw = null;
                                 double? vbw = null;
+                                double? bw = null;
+                                double? centralFrequency = null;
 
                                 var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -2784,6 +2789,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
                                         rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                         vbw = readerResStGeneral.GetValue(c => c.Vbw);
+                                        bw = readerResStGeneral.GetValue(c => c.BW);
+                                        centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
 
 
                                         var listMaskElements = new List<MaskElements>();
@@ -2817,8 +2824,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
                                 builderResStLevelCar.Select(c => c.Agl);
                                 builderResStLevelCar.Select(c => c.Altitude);
-                                builderResStLevelCar.Select(c => c.Bw);
-                                builderResStLevelCar.Select(c => c.CentralFrequency);
                                 builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
                                 builderResStLevelCar.Select(c => c.Id);
                                 builderResStLevelCar.Select(c => c.Lat);
@@ -2835,8 +2840,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         var levelMeasurementsCar = new LevelMeasurementsCar();
                                         levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
-                                        levelMeasurementsCar.BW = readerResStLevelCar.GetValue(c => c.Bw);
-                                        levelMeasurementsCar.CentralFrequency = readerResStLevelCar.GetValue(c => c.CentralFrequency);
                                         levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
                                         levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
                                         levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
@@ -2844,6 +2847,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
                                         levelMeasurementsCar.RBW = rbw;
                                         levelMeasurementsCar.VBW = vbw;
+                                        levelMeasurementsCar.BW = bw;
+                                        levelMeasurementsCar.CentralFrequency = (decimal?)centralFrequency;
 
                                         if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
                                         {

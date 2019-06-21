@@ -46,8 +46,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStLevelCar.Select(c => c.RESSTATION.SectorId);
                 builderResStLevelCar.Select(c => c.Agl);
                 builderResStLevelCar.Select(c => c.Altitude);
-                builderResStLevelCar.Select(c => c.Bw);
-                builderResStLevelCar.Select(c => c.CentralFrequency);
                 builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
                 builderResStLevelCar.Select(c => c.Id);
                 builderResStLevelCar.Select(c => c.Lat);
@@ -73,23 +71,35 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     while (readerResStLevelCar.Read())
                     {
-                        var tx = new StationLevelsByTask();
-                        tx.Lon = readerResStLevelCar.GetValue(c => c.Lon);
-                        tx.Lat = readerResStLevelCar.GetValue(c => c.Lat);
-                        if (((readerResStLevelCar.GetValue(c => c.LevelDbmkvm) != 0) && (readerResStLevelCar.GetValue(c => c.LevelDbmkvm) != -1)) && (readerResStLevelCar.GetValue(c => c.LevelDbmkvm) > -30) && (readerResStLevelCar.GetValue(c => c.LevelDbmkvm) < 200))
+                        var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
+                        builderResStGeneral.Select(c => c.BW);
+                        builderResStGeneral.Select(c => c.CentralFrequency);
+                        builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResStLevelCar.GetValue(c => c.ResStationId));
+                        queryExecuter.Fetch(builderResStGeneral, readerIResStGeneral =>
                         {
-                            tx.Level_dBmkVm = Math.Round(readerResStLevelCar.GetValue(c => c.LevelDbmkvm).Value, 2);
-                            lOUT.Add(tx);
-                        }
-                        else
-                        {
-                            if ((readerResStLevelCar.GetValue(c => c.CentralFrequency).Value > 0.01m) && (readerResStLevelCar.GetValue(c => c.LevelDbm) > -300) && (readerResStLevelCar.GetValue(c => c.LevelDbm) < -10))
+                            while (readerIResStGeneral.Read())
                             {
-                                tx.Level_dBmkVm = Math.Round((float)(77.2 + 20 * Math.Log10((double)readerResStLevelCar.GetValue(c => c.CentralFrequency).Value) + readerResStLevelCar.GetValue(c => c.LevelDbm) - ANT_VAL), 2);
-                                lOUT.Add(tx);
-                            }
-                        }
+                                var tx = new StationLevelsByTask();
+                                tx.Lon = readerResStLevelCar.GetValue(c => c.Lon);
+                                tx.Lat = readerResStLevelCar.GetValue(c => c.Lat);
+                                if (((readerResStLevelCar.GetValue(c => c.LevelDbmkvm) != 0) && (readerResStLevelCar.GetValue(c => c.LevelDbmkvm) != -1)) && (readerResStLevelCar.GetValue(c => c.LevelDbmkvm) > -30) && (readerResStLevelCar.GetValue(c => c.LevelDbmkvm) < 200))
+                                {
+                                    tx.Level_dBmkVm = Math.Round(readerResStLevelCar.GetValue(c => c.LevelDbmkvm).Value, 2);
+                                    lOUT.Add(tx);
+                                }
+                                else
+                                {
+                                    if ((readerIResStGeneral.GetValue(c => c.CentralFrequency).Value > 0.01) && (readerResStLevelCar.GetValue(c => c.LevelDbm) > -300) && (readerResStLevelCar.GetValue(c => c.LevelDbm) < -10))
+                                    {
+                                        tx.Level_dBmkVm = Math.Round((float)(77.2 + 20 * Math.Log10((double)readerIResStGeneral.GetValue(c => c.CentralFrequency).Value) + readerResStLevelCar.GetValue(c => c.LevelDbm) - ANT_VAL), 2);
+                                        lOUT.Add(tx);
+                                    }
+                                }
 
+                                break;
+                            }
+                            return true;
+                        });
                     }
                     return true;
                 });

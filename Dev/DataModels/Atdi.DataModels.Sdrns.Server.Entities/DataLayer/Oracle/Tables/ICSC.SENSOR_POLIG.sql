@@ -1,0 +1,84 @@
+﻿CREATE TABLE ICSC.SENSOR_POLIG
+(
+  ID         NUMBER(15)                         NOT NULL,
+  SENSOR_ID  NUMBER(15),
+  LON        NUMBER(22,8),
+  LAT        NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_SENSORPOLIG_PK ON ICSC.SENSOR_POLIG
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.XBS_SENSORPOLIG_SENSORID_FK ON ICSC.SENSOR_POLIG
+(SENSOR_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.SENSOR_POLIG ADD (
+  CONSTRAINT XBS_SENSORPOLIG_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.SENSOR_POLIG ADD (
+  CONSTRAINT FK_XBS_SENSORPOLIG_XBS_SENSOR 
+ FOREIGN KEY (SENSOR_ID) 
+ REFERENCES ICSC.SENSOR (ID));

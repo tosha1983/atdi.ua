@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResStLevelCar
+    public interface IResStLevelCar_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IResStLevelCar : IResStLevelCar_PK
+    {
         long? ResStationId { get; set; }
-        double? Bw { get; set; }
         double? Altitude { get; set; }
-        decimal? CentralFrequency { get; set; }
         double? DifferenceTimeStamp { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }

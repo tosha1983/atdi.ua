@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SPECTRUM</Name>
+    <Name>SPECTRUM</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
@@ -15,10 +15,10 @@
     <Field Desc="SpectrumSteps_kHz" Title="SpectrumSteps_kHz" Name="SpectrumSteps_kHz" DataType="Decimal.22.8" SourceName="STEPFREQ_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="T1" Title="T1" Name="T1" DataType="Integer.32" SourceName="T1" SourceType="Column" Required="false"/>
     <Field Desc="T2" Title="T2" Name="T2" DataType="Integer.32" SourceName="T2" SourceType="Column" Required="false"/>
-    <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKERINDEX" SourceType="Column" Required="false"/>
+    <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKER_INDEX" SourceType="Column" Required="false"/>
     <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BW_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="CorrectnessEstimations" Title="CorrectnessEstimations" Name="CorrectnessEstimations" DataType="Integer.32" SourceName="CORRECT_ESTIM" SourceType="Column" Required="false"/>
-    <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
+    <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACE_COUNT" SourceType="Column" Required="false"/>
     <Field Desc="SignalLevel_dBm" Title="SignalLevel_dBm" Name="SignalLevel_dBm" DataType="Float.22.8" SourceName="SIGNALLEVEL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="Levels_dBm" Title="Levels_dBm" Name="Levels_dBm" DataType="Bytes.MAX" SourceName="LEVELS_DBM" SourceType="Column" Required="false"/>
     <Field Desc="EmittingId" Title="EmittingId" Name="EmittingId" DataType="Integer.64" SourceName="EMITTING_ID" SourceType="Column" Required="true"/>

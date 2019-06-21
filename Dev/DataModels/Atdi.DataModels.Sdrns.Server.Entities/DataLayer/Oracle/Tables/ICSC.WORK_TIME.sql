@@ -1,0 +1,86 @@
+﻿CREATE TABLE ICSC.WORK_TIME
+(
+  ID                 NUMBER(15)                 NOT NULL,
+  START_EMIT         DATE,
+  STOP_EMIT          DATE,
+  HIT_COUNT          NUMBER(9),
+  PERCENT_AVAILABLE  NUMBER(22,8),
+  EMITTING_ID        NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE INDEX ICSC.XBS_WORKTIME_EMITTING_ID_FK ON ICSC.WORK_TIME
+(EMITTING_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_WORKTIME_PK ON ICSC.WORK_TIME
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.WORK_TIME ADD (
+  CONSTRAINT XBS_WORKTIME_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.WORK_TIME ADD (
+  CONSTRAINT FK_XBS_WORKTIME_XBS_EMITTING 
+ FOREIGN KEY (EMITTING_ID) 
+ REFERENCES ICSC.EMITTING (ID));

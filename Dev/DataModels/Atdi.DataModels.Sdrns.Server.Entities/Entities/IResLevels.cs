@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResLevels
+    public interface IResLevels_PK
     {
         long Id { get; set; }
+    }
+
+
+    [Entity]
+    public interface IResLevels : IResLevels_PK
+    {
         double? ValueLvl { get; set; }
         double? StddevLev { get; set; }
         double? VMinLvl { get; set; }

@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IEmitting
+    public interface IEmitting_PK
     {
         long Id { get; set; }
+    }
+    [Entity]
+    public interface IEmitting: IEmitting_PK
+    {
         double? StartFrequency_MHz { get; set; }
         double? StopFrequency_MHz { get; set; }
         double? CurentPower_dBm { get; set; }

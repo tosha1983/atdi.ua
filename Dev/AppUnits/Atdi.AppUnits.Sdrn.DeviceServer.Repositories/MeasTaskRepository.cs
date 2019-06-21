@@ -15,7 +15,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
-    public sealed class MeasTaskRepository : IRepository<MeasTask, int?>
+    public sealed class MeasTaskRepository : IRepository<MeasTask, long?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
@@ -28,9 +28,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         }
 
 
-        public int? Create(MeasTask item)
+        public long? Create(MeasTask item)
         {
-            int? ID = null;
+            long? ID = null;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             if (item != null)
             {
@@ -69,7 +69,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             for (int i = 0; i < item.ScanParameters.Length; i++)
                             {
                                 var itemScanParameters = item.ScanParameters[i];
-                                int? idStandardScanParameter = null;
+                                long? idStandardScanParameter = null;
                                 var builderInsertStandardScanParameter = this._dataLayer.GetBuilder<MD.IStandardScanParameter>().Insert();
                                 builderInsertStandardScanParameter.SetValue(c => c.DetectLevelDbm, itemScanParameters.DetectionLevel_dBm);
                                 if (itemScanParameters.DeviceParam != null)
@@ -107,7 +107,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             for (int i = 0; i < item.Stations.Length; i++)
                             {
-                                int? idIStationLicenseInfo = null;
+                                long? idIStationLicenseInfo = null;
                                 var station = item.Stations[i];
                                 if (station != null)
                                 {
@@ -129,7 +129,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         return true;
                                     });
 
-                                    int? idOwnerData = null;
+                                    long? idOwnerData = null;
                                     var owner = station.Owner;
                                     var builderInsertIOwnerData = this._dataLayer.GetBuilder<MD.IOwnerData>().Insert();
                                     builderInsertIOwnerData.SetValue(c => c.Address, owner.Address);
@@ -147,7 +147,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         return true;
                                     });
 
-                                    int? idStationSite = null;
+                                    long? idStationSite = null;
                                     var site = station.Site;
                                     var builderStationSite = this._dataLayer.GetBuilder<MD.IStationSite>().Insert();
                                     builderStationSite.SetValue(c => c.Address, site.Adress);
@@ -165,7 +165,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     });
 
 
-                                    int? idMeasStation = null;
+                                    long? idMeasStation = null;
                                     var builderInsertMeasStation = this._dataLayer.GetBuilder<MD.IMeasStation>().Insert();
                                     builderInsertMeasStation.SetValue(c => c.GlobalSid, station.GlobalSid);
                                     builderInsertMeasStation.SetValue(c => c.MeasTaskId, ID.Value);
@@ -192,7 +192,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     {
                                         for (int j = 0; j < sectors.Length; j++)
                                         {
-                                            int? idSector = null;
+                                            long? idSector = null;
                                             var builderInsertISector = this._dataLayer.GetBuilder<MD.ISector>().Insert();
                                             builderInsertISector.SetValue(c => c.Agl, sectors[j].AGL);
                                             builderInsertISector.SetValue(c => c.Azimut, sectors[j].Azimuth);
@@ -275,13 +275,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             throw new NotImplementedException();
         }
 
-        public bool Delete(int? id)
+        public bool Delete(long? id)
         {
             throw new NotImplementedException();
         }
   
 
-        MeasTask IRepository<MeasTask,int?>.LoadObject(int? id)
+        MeasTask IRepository<MeasTask, long?>.LoadObject(long? id)
         {
             throw new NotImplementedException();
         }

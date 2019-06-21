@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_TASKPARAMFREQ</Name>
+    <Name>TASK_PARAMETERS_FREQ</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>

@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ISensorLocation
+    public interface ISensorLocation_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ISensorLocation : ISensorLocation_PK
+    {
         long? SensorId { get; set; }
         DateTime? DateFrom { get; set; }
         DateTime? DateTo { get; set; }

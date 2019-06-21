@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IAmqpMessage
+    public interface IAmqpMessage_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IAmqpMessage: IAmqpMessage_PK
+    {
 
         byte StatusCode { get; set; }
 

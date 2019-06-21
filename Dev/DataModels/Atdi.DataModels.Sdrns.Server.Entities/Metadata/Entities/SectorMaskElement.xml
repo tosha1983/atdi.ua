@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SECTORMASKELEM</Name>
+    <Name>SECTOR_MASK_ELEM</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>

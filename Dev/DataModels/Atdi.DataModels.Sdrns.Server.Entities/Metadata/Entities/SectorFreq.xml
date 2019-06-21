@@ -6,13 +6,13 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SECTORFREQ</Name>
+    <Name>SECTOR_FREQ</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="PlanId" Title="PlanId" Name="PlanId" DataType="Integer.64" SourceName="IDPLAN" SourceType="Column" Required="true"/>
-    <Field Desc="ChannelNumber" Title="ChannelNumber" Name="ChannelNumber" DataType="Integer.64" SourceName="CHANNALNUMBER" SourceType="Column" Required="true"/>
+    <Field Desc="PlanId" Title="PlanId" Name="PlanId" DataType="Integer.64" SourceName="ID_PLAN" SourceType="Column" Required="true"/>
+    <Field Desc="ChannelNumber" Title="ChannelNumber" Name="ChannelNumber" DataType="Integer.64" SourceName="CHANNAL_NUMBER" SourceType="Column" Required="true"/>
     <Field Desc="Frequency" Title="Frequency" Name="Frequency" DataType="Decimal.22.8" SourceName="FREQUENCY" SourceType="Column" Required="false"/>
     <Field Desc="IdFreq" Title="IdFreq" Name="IdFreq" DataType="Integer.64" SourceName="ID_FREQ" SourceType="Column" Required="true"/>
   </Fields>

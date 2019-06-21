@@ -6,18 +6,18 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_FREQSAMPLE</Name>
+    <Name>FREQ_SAMPLE</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Frequency, MHz" Title="Frequency, MHz" Name="Freq_MHz" DataType="Double.30.10" SourceName="FREQMHZ" SourceType="Column" Required="false" Unit="Frequency.MHz.xml"/>
-    <Field Desc="Level, dBm" Title="Level, dBm" Name="Level_dBm" DataType="Double.30.10" SourceName="LEVELDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
-    <Field Desc="Level, dBmkVm" Title="Level, dBmkVm" Name="Level_dBmkVm" DataType="Double.30.10" SourceName="LEVELDBMKVM" SourceType="Column" Required="false"/>
-    <Field Desc="Level min dBm" Title="Level min dBm" Name="LevelMin_dBm" DataType="Double.30.10" SourceName="LEVELMINDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
-    <Field Desc="Level max dBm" Title="Level max dBm" Name="LevelMax_dBm" DataType="Double.30.10" SourceName="LEVELMAXDBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
-    <Field Desc="OccupationPt" Title="OccupationPt" Name="OccupationPt" DataType="Double.30.10" SourceName="OCCUPATIONPT" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
+    <Field Desc="Frequency, MHz" Title="Frequency, MHz" Name="Freq_MHz" DataType="Double.30.10" SourceName="FREQ_MHZ" SourceType="Column" Required="false" Unit="Frequency.MHz.xml"/>
+    <Field Desc="Level, dBm" Title="Level, dBm" Name="Level_dBm" DataType="Double.30.10" SourceName="LEVEL_DBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
+    <Field Desc="Level, dBmkVm" Title="Level, dBmkVm" Name="Level_dBmkVm" DataType="Double.30.10" SourceName="LEVEL_DBMKVM" SourceType="Column" Required="false"/>
+    <Field Desc="Level min dBm" Title="Level min dBm" Name="LevelMin_dBm" DataType="Double.30.10" SourceName="LEVEL_MIN_DBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
+    <Field Desc="Level max dBm" Title="Level max dBm" Name="LevelMax_dBm" DataType="Double.30.10" SourceName="LEVEL_MAX_DBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
+    <Field Desc="OccupationPt" Title="OccupationPt" Name="OccupationPt" DataType="Double.30.10" SourceName="OCCUPATION_PT" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RESMEAS_ID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation FreqSample to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>

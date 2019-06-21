@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasTaskSignaling
+    public interface IMeasTaskSignaling_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IMeasTaskSignaling: IMeasTaskSignaling_PK
+    {
         int? CompareTraceJustWithRefLevels { get; set; }
         int? AutoDivisionEmitting { get; set; }
         double? DifferenceMaxMax { get; set; }

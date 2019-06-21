@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_TASKPARAMETERS</Name>
+    <Name>TASK_PARAMETERS</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>

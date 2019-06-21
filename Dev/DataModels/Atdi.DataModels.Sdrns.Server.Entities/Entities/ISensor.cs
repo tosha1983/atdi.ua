@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ISensor
+    public interface ISensor_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ISensor : ISensor_PK
+    {
         long? SensorIdentifierId { get; set; }
         string Status { get; set; }
         string Name { get; set; }

@@ -7,19 +7,22 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface IMeasStation
+    public interface IMeasStation_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+    }
+        [Entity]
+    public interface IMeasStation : IMeasStation_PK
+    {
         string StationId { get; set; }
         string GlobalSid { get; set; }
         string OwnerGlobalSid { get; set; }
         string Status { get; set; }
         string Standard { get; set; }
-        int? MeasTaskId { get; set; }
-        int? OwnerId { get; set; }
-        int? SiteId { get; set; }
-        int? LicenceId { get; set; }
+        long? MeasTaskId { get; set; }
+        long? OwnerId { get; set; }
+        long? SiteId { get; set; }
+        long? LicenceId { get; set; }
         IMeasTask MEASTASK { get; set; }
         IOwnerData OWNER { get; set; }
         IStationSite SITE { get; set; }

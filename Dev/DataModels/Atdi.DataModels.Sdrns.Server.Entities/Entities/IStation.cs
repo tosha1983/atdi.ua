@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IStation
+    public interface IStation_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IStation : IStation_PK
+    {
         string GlobalSID { get; set; }
         string Status { get; set; }
         string Standart { get; set; }

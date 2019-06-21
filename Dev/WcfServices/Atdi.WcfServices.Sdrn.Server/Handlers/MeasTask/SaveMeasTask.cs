@@ -61,7 +61,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     var msSubTask = measTask.MeasSubTasks.ToList().Find(t => t.Id.Value == id);
                                     if (msSubTask != null)
                                     {
-                                        var builderSelectMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
+                                        var builderSelectMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
                                         builderSelectMeasSubTaskSta.Select(c => c.Id);
                                         builderSelectMeasSubTaskSta.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
                                         builderSelectMeasSubTaskSta.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
@@ -74,7 +74,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 {
                                                     if (msSubTaskSta.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0)
                                                     {
-                                                        var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Update();
+                                                        var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().Update();
                                                         builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, readereasSubTaskSta.GetValue(c => c.Id));
                                                         builderUpdateMeasSubTaskStaSave.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                                                         builderUpdateMeasSubTaskStaSave.SetValue(c => c.Status, status);
@@ -166,7 +166,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderInsertMeasTask.SetValue(c => c.TimeStart, value.MeasTimeParamList.TimeStart);
                         builderInsertMeasTask.SetValue(c => c.TimeStop, value.MeasTimeParamList.TimeStop);
                         builderInsertMeasTask.SetValue(c => c.PerInterval, value.MeasTimeParamList.PerInterval);
-                        //builderInsertMeasTask.SetValue(c => c., value.MeasTimeParamList.Days);
                     }
                     builderInsertMeasTask.Select(c => c.Id);
                     queryExecuter.ExecuteAndFetch(builderInsertMeasTask, readerMeasTask =>
@@ -394,7 +393,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         {
                                             var subTaskStation = measSubTask.MeasSubTaskStations[v];
                                             long valueIdmeasSubTaskSta = -1;
-                                            var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().Insert();
+                                            var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().Insert();
                                             builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskStation.Count);
                                             builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskStation.Status);
                                             if (subTaskStation.StationId != null)

@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResSysInfo
+    public interface IResSysInfo_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IResSysInfo : IResSysInfo_PK
+    {
         double? Bandwidth { get; set; }
         int? BaseId { get; set; }
         int? Bsic { get; set; }

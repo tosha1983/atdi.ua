@@ -7,12 +7,17 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface ITaskParametersFreq
+    public interface ITaskParametersFreq_PK
     {
-        int? Id { get; set; }
+        long? Id { get; set; }
+    }
+
+
+        [Entity]
+    public interface ITaskParametersFreq : ITaskParametersFreq_PK
+    {
         double? FreqCH { get; set; }
-        int? IdTaskParameters { get; set; }
+        long? IdTaskParameters { get; set; }
         ITaskParameters TASKPARAMETERS { get; set; }
     }
 }

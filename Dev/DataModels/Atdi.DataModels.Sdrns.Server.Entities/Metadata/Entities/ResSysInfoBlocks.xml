@@ -6,14 +6,14 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_RESSYSINFOBLOCKS</Name>
+    <Name>RES_SYS_INFO_BLOCKS</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
     <Field Desc="Data" Title="Data" Name="Data" DataType="Bytes.MAX" SourceName="DATA" SourceType="Column" Required="false"/>
     <Field Desc="Type" Title="Type" Name="Type" DataType="Text.50" SourceName="TYPE" SourceType="Column" Required="false"/>
-    <Field Desc="ResSysInfoId" Title="ResSysInfoId" Name="ResSysInfoId" DataType="Integer.64" SourceName="XBS_RESSYSINFO_ID" SourceType="Column" Required="false"/>
+    <Field Desc="ResSysInfoId" Title="ResSysInfoId" Name="ResSysInfoId" DataType="Integer.64" SourceName="RESSYSINFO_ID" SourceType="Column" Required="false"/>
     <Field Name="RESSYSINFO" SourceType="Reference" SourceName="ResSysInfo" Title="Relation ResSysInfoBlocks to ResSysInfo">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResSysInfoId</Mapped>

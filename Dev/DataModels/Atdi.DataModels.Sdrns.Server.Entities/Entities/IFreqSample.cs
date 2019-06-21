@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IFreqSample
+    public interface IFreqSample_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IFreqSample: IFreqSample_PK
+    {
         double? Freq_MHz { get; set; }
         double? Level_dBm { get; set; }
         double? Level_dBmkVm { get; set; }

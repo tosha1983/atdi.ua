@@ -49,7 +49,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 long[] MeasResultIDConvert = options.MeasResultID.Select(n => (long)(n)).ToArray();
 
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var builderXVUnit2 = this._dataLayer.GetBuilder<MD.IXVUnit2>().From();
+                var builderXVUnit2 = this._dataLayer.GetBuilder<MD.IUnit>().From();
                 builderXVUnit2.Select(c => c.BW);
                 builderXVUnit2.Select(c => c.CentralFrequency);
                 builderXVUnit2.Select(c => c.Id);

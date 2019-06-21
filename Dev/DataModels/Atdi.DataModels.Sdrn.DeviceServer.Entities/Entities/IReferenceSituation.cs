@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface IReferenceSituation
+    public interface IReferenceSituation_PK
     {
-        int Id { get; set; }
-        int? SensorId { get; set; }
-        int? MeasTaskId { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface IReferenceSituation : IReferenceSituation_PK
+    {
+        long? SensorId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
         ISensor SENSOR { get; set; }
     }

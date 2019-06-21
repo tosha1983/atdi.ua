@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResStMaskElement
+    public interface IResStMaskElement_PK
     {
         long Id { get; set; }
+    }
+
+        [Entity]
+    public interface IResStMaskElement : IResStMaskElement_PK
+    {
         long? ResStGeneralId { get; set; }
         double? Bw { get; set; }
         double? Level { get; set; }

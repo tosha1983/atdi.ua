@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IBearing
+    public interface IBearing_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IBearing: IBearing_PK
+    {
         long? ResMeasStaId { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }

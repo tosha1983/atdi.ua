@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ILinkSectorFreq
+    public interface ILinkSectorFreq_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ILinkSectorFreq: ILinkSectorFreq_PK
+    {
         long? SectorFreqId { get; set; }
         long? SectorId { get; set; }
         ISectorFreq SECTORFREQ { get; set; }

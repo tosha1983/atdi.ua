@@ -1,0 +1,66 @@
+﻿CREATE TABLE ICSC.MEAS_STATION
+(
+  ID            NUMBER(15)                      NOT NULL,
+  STATION_ID    NUMBER(15)                      NOT NULL,
+  STATION_TYPE  NVARCHAR2(50),
+  ID_MEASTASK   NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_MEASSTATION_PK ON ICSC.MEAS_STATION
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.MEAS_STATION ADD (
+  CONSTRAINT XBS_MEASSTATION_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.MEAS_STATION ADD (
+  CONSTRAINT FK_XBS_MEASSTATION_XBS_MEASTAS 
+ FOREIGN KEY (ID_MEASTASK) 
+ REFERENCES ICSC.MEAS_TASK (ID));

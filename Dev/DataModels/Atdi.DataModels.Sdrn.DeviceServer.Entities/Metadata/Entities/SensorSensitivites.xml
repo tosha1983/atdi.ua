@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SENSOREQUIPSENS</Name>
+    <Name>SENSOR_EQUIP_SENSITIVITES</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>
