@@ -422,5 +422,9 @@ namespace Atdi.Platform.AppServer
 
             this.Logger.Info(Contexts.AppServerHost, Categories.Disposabling, Events.ServerComponentsUninstalled);
         }
+
+        public IServicesContainer Container { get => this._container; }
+
+        public IServerContext Context { get => this._serverContext; }
     }
 }

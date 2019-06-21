@@ -99,9 +99,9 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
                 return true;
             });
 
-            if (amqpMessage.StatusCode != 1)
+            if (amqpMessage.StatusCode > 1)
             {
-                throw new InvalidOperationException($"The message with ID #{_messageId} has  incorrect status code #{amqpMessage.StatusCode}");
+                throw new InvalidOperationException($"The message with ID #{_messageId} has invalid status code #{amqpMessage.StatusCode}");
             }
 
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.Platform.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,10 @@ namespace Atdi.Platform.AppServer
         void Start();
 
         void Stop();
+
+        IServicesContainer Container { get;  }
+
+        IServerContext Context { get; }
+
     }
 }

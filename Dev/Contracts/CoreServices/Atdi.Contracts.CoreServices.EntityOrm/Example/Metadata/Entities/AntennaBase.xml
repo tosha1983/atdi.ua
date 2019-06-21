@@ -7,7 +7,7 @@
         Type  = "Normal"
         >
   <DataSource Type="Database" Object="Table">
-    <Name_>ANTENNA_BASE</Name_>
+    <Name>ANTENNA_BASE</Name>
     <Schema>dbo</Schema>
   </DataSource>
   

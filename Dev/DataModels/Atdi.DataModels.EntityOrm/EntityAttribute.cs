@@ -11,4 +11,10 @@ namespace Atdi.DataModels.EntityOrm
     {
 
     }
+
+    [AttributeUsage(AttributeTargets.Interface)]
+    public class EntityPrimaryKeyAttribute : Attribute
+    {
+
+    }
 }

@@ -20,7 +20,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public DataSourceVarType SourceVarType { get; set; }
 
-        public int? Length { get; set; }
+        public long? Length { get; set; }
 
         public int? Precision { get; set; }
 
@@ -32,6 +32,13 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public bool Multiple { get; set; }
 
+        public StoreContentType ContentType { get; set; }
+
+        public override string ToString()
+        {
+            // DataBase.Array.Integer: ClrType, BLOB
+            return $"{this.DataSourceType}.{this.Name}: Code = {CodeVarType}, Store = {SourceVarType}";
+        }
     }
 
 }

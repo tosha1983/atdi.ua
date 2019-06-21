@@ -15,6 +15,13 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         Excel
     }
 
+    public enum StoreContentType
+    {
+        Binary = 0,
+        Json,
+        Xml
+    }
+
     public enum DataSourceObject
     {
         Table = 0,
@@ -28,10 +35,15 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         Reference,
         Extension,
         Relation,
-        Expression,
-        All
+        //Expression,
+        //All
     }
 
+    public enum RelationJoinType
+    {
+        Inner,
+        Outer
+    }
     public enum EntityType
     {
         /// <summary>
@@ -54,24 +66,43 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         /// <summary>
         /// Сущность содержит предопределенные значения, опциональный набор данных.
         /// </summary>
-        Predefined
-    }
+        Predefined,
 
-    public enum InheritanceType
-    {
         /// <summary>
         /// Прототипное наследование (по умолчанию) - Базовая таблица - Таблица наследуемой сущности - Общий первичный ключ - отношение один к одному
         /// </summary>
-        Prototype = 0,
+        Prototype,
+
         /// <summary>
         /// Ролевое наследование - Базовая таблица - таблицы ролевых сущностей - Синхронизация значений для пересикающиеся по именам поля среди всех таблиц Общий первичный ключ - отношение один к одному
         /// </summary>
         Role,
+
         /// <summary>
         /// Простое наследование - Базовой таблицы нет или она не используется - Таблица наследуемой сущности получает все поля базовой сущности, включая первичный ключ - нет физических отношений так как одна таблица.
         /// </summary>
         Simple
     }
+
+    //public enum InheritanceType
+    //{
+    //    /// <summary>
+    //    /// Прототипное наследование (по умолчанию) - Базовая таблица - Таблица наследуемой сущности - Общий первичный ключ - отношение один к одному
+    //    /// </summary>
+    //    None = 0,
+    //    /// <summary>
+    //    /// Прототипное наследование (по умолчанию) - Базовая таблица - Таблица наследуемой сущности - Общий первичный ключ - отношение один к одному
+    //    /// </summary>
+    //    Prototype,
+    //    /// <summary>
+    //    /// Ролевое наследование - Базовая таблица - таблицы ролевых сущностей - Синхронизация значений для пересикающиеся по именам поля среди всех таблиц Общий первичный ключ - отношение один к одному
+    //    /// </summary>
+    //    Role,
+    //    /// <summary>
+    //    /// Простое наследование - Базовой таблицы нет или она не используется - Таблица наследуемой сущности получает все поля базовой сущности, включая первичный ключ - нет физических отношений так как одна таблица.
+    //    /// </summary>
+    //    Simple
+    //}
 
     public enum PrimaryKeyMappedMatchWith
     {

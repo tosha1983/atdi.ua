@@ -17,10 +17,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
         public static readonly EventCategory Declaring = "Declaring";
         public static readonly EventCategory Registration = "Registration";
         public static readonly EventCategory Processing = "Processing";
+        public static readonly EventCategory ThreadRunning = "ThreadRunning";
+        public static readonly EventCategory MessagesHandling = "MessagesHandling";
     }
 
     static class Events
     {
+        public static readonly EventText AbortAmqpMessageProcessingThread = "Abort the thread of the AMQP Messages Processing";
+        public static readonly EventText AmqpMessageProcessingError = "Error occurred while AMQP Messages Processing";
+        public static readonly EventText RanAmqpMessageProcessingThread = "The thread of AMQP Messages Processing was ran";
+
         public static readonly EventText HandlerTypeWasRegistred = "The handler type was registered successfully: '{0}'";
         public static readonly EventText ReceivedMessage = "Received a message: Consumer: '{0}', RoutingKey: '{1}', Exchange: '{2}', DeliveryTag: #{3}, MessageType: '{4}', MessageId: '{5}'";
         //public static readonly EventText UnableToOpenHost = "Unable to open the service host: {0}";

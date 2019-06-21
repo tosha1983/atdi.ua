@@ -14,14 +14,20 @@ namespace Atdi.Contracts.CoreServices.DataLayer
            
     }
 
-
-    public interface IDataLayer<TDataOrm> : IDataLayer
+    public interface IDataLayer<TDataOrm> //: IDataLayer
         where TDataOrm : IDataOrm
     {
         IQueryBuilder Builder { get; }
 
         IQueryExecutor Executor<TContext>() 
             where TContext : IDataContext, new();
+
         IQueryBuilder<TModel> GetBuilder<TModel>();
+
+        IDataLayerScope<TContext> BeginScope<TContext>()
+             where TContext : IDataContext, new();
     }
+
+    
+    
 }

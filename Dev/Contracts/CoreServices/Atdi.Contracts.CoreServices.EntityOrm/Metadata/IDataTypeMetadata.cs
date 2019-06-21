@@ -18,9 +18,11 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         Type CodeVarClrType { get; }
 
+        StoreContentType ContentType { get; }
+
         DataSourceVarType SourceVarType { get; }
 
-        int? Length { get; }
+        long? Length { get; }
 
         int? Precision { get; }
 

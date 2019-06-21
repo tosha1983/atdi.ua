@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Common;
 using Atdi.DataModels;
+using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
 namespace Atdi.CoreServices.EntityOrm
 {
@@ -16,11 +17,15 @@ namespace Atdi.CoreServices.EntityOrm
     {
         private readonly System.Data.IDataReader _dataReader;
         private readonly IReadOnlyDictionary<string, string> _columnsMapper;
+        private readonly IDataTypeMetadata[] _fieldTypeMetadatas;
+        private readonly DataTypeSystem _dataTypeSystem;
 
-        public QueryDataReader(System.Data.IDataReader dataReader, IReadOnlyDictionary<string, string> columnsMapper)
+        public QueryDataReader(System.Data.IDataReader dataReader, IReadOnlyDictionary<string, string> columnsMapper, IDataTypeMetadata[] fieldTypeMetadatas, DataTypeSystem dataTypeSystem)
         {
             this._dataReader = dataReader;
             this._columnsMapper = columnsMapper;
+            this._fieldTypeMetadatas = fieldTypeMetadatas;
+            this._dataTypeSystem = dataTypeSystem;
         }
 
         public object GetValueAsObject(DataType columnType, Type fieldDbType, int ordinal)
@@ -995,88 +1000,16 @@ namespace Atdi.CoreServices.EntityOrm
             return this.GetValueAsBoolean(fieldDbType, ordinal);
         }
 
+        private T GetInternalValue<T>(int ordinal)
+        {
+            var fieldTypeMetadata = _fieldTypeMetadatas[ordinal];
+            return _dataTypeSystem.GetDecoder<T>(fieldTypeMetadata).DecodeAs(_dataReader, ordinal);
+        }
+
         public bool GetValueAsBoolean(Type fieldDbType, int ordinal)
         {
-            if (fieldDbType == typeof(bool))
-            {
-                return _dataReader.GetBoolean(ordinal);
-            }
-            if (fieldDbType == typeof(int))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
-            }
-            if (fieldDbType == typeof(string))
-            {
-                return Convert.ToBoolean(_dataReader.GetString(ordinal));
-            }
-            if (fieldDbType == typeof(char))
-            {
-                return Convert.ToBoolean(_dataReader.GetChar(ordinal));
-            }
-            if (fieldDbType == typeof(short))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
-            }
-            if (fieldDbType == typeof(long))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
-            }
-
-            if (fieldDbType == typeof(UInt16))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
-            }
-            if (fieldDbType == typeof(UInt32))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
-            }
-            if (fieldDbType == typeof(UInt64))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
-            }
-
-            if (fieldDbType == typeof(double))
-            {
-                return Convert.ToBoolean(_dataReader.GetDouble(ordinal));
-            }
-            if (fieldDbType == typeof(float))
-            {
-                return Convert.ToBoolean(_dataReader.GetFloat(ordinal));
-            }
-            if (fieldDbType == typeof(decimal))
-            {
-                return Convert.ToBoolean(_dataReader.GetDecimal(ordinal));
-            }
-            if (fieldDbType == typeof(byte))
-            {
-                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
-            }
-            if (fieldDbType == typeof(byte[]))
-            {
-                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
-                var result = new byte[size];
-                const int lehght = 1;
-                long readBytes = 0;
-                int offset = 0;
-                while (readBytes < size)
-                {
-                    if (lehght <= size - readBytes)
-                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
-                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
-
-                    offset += lehght;
-                }
-                if (result.Length > 0)
-                {
-                    return Convert.ToBoolean(result[0]);
-                }
-            }
-            if (fieldDbType == typeof(sbyte))
-            {
-                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
-            }
-
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            var value = GetInternalValue<bool?>(ordinal);
+            return value.Value;
         }
 
         public int? GetNullableValueAsInt32(Type fieldDbType, int ordinal)
@@ -1817,96 +1750,24 @@ namespace Atdi.CoreServices.EntityOrm
     {
         private readonly System.Data.IDataReader _dataReader;
         private readonly IReadOnlyDictionary<string, string> _columnsMapper;
-        public QueryDataReader(System.Data.IDataReader dataReader, IReadOnlyDictionary<string, string> columnsMapper)
+        private readonly IDataTypeMetadata[] _fieldTypeMetadatas;
+        private readonly DataTypeSystem _dataTypeSystem;
+
+        public QueryDataReader(System.Data.IDataReader dataReader, IReadOnlyDictionary<string, string> columnsMapper, IDataTypeMetadata[] fieldTypeMetadatas, DataTypeSystem dataTypeSystem)
         {
             this._dataReader = dataReader;
             this._columnsMapper = columnsMapper;
+            this._fieldTypeMetadatas = fieldTypeMetadatas;
+            this._dataTypeSystem = dataTypeSystem;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool GetValueAsBoolean(int ordinal)
+        private static TimeSpan DateTimeToTimeSpan(DateTime? ts)
         {
-            var fieldDbType = _dataReader.GetFieldType(ordinal);
-            if (fieldDbType == typeof(bool))
-            {
-                return _dataReader.GetBoolean(ordinal);
-            }
-            if (fieldDbType == typeof(int))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
-            }
-            if (fieldDbType == typeof(string))
-            {
-                return Convert.ToBoolean(_dataReader.GetString(ordinal));
-            }
-            if (fieldDbType == typeof(char))
-            {
-                return Convert.ToBoolean(_dataReader.GetChar(ordinal));
-            }
-            if (fieldDbType == typeof(short))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
-            }
-            if (fieldDbType == typeof(long))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
-            }
-
-            if (fieldDbType == typeof(UInt16))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt16(ordinal));
-            }
-            if (fieldDbType == typeof(UInt32))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt32(ordinal));
-            }
-            if (fieldDbType == typeof(UInt64))
-            {
-                return Convert.ToBoolean(_dataReader.GetInt64(ordinal));
-            }
-
-            if (fieldDbType == typeof(double))
-            {
-                return Convert.ToBoolean(_dataReader.GetDouble(ordinal));
-            }
-            if (fieldDbType == typeof(float))
-            {
-                return Convert.ToBoolean(_dataReader.GetFloat(ordinal));
-            }
-            if (fieldDbType == typeof(decimal))
-            {
-                return Convert.ToBoolean(_dataReader.GetDecimal(ordinal));
-            }
-            if (fieldDbType == typeof(byte))
-            {
-                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
-            }
-            if (fieldDbType == typeof(byte[]))
-            {
-                var size = _dataReader.GetBytes(ordinal, 0, null, 0, 0);
-                var result = new byte[size];
-                const int lehght = 1;
-                long readBytes = 0;
-                int offset = 0;
-                while (readBytes < size)
-                {
-                    if (lehght <= size - readBytes)
-                        readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, lehght);
-                    else readBytes += _dataReader.GetBytes(ordinal, offset, result, offset, (int)(size - readBytes));
-
-                    offset += lehght;
-                }
-                if (result.Length > 0)
-                {
-                    return Convert.ToBoolean(result[0]);
-                }
-            }
-            if (fieldDbType == typeof(sbyte))
-            {
-                return Convert.ToBoolean(_dataReader.GetByte(ordinal));
-            }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
+            if (!ts.HasValue) return TimeSpan.Zero;
+            else return new TimeSpan(0, ts.Value.Hour, ts.Value.Minute, ts.Value.Second, ts.Value.Millisecond);
         }
+
+        #region GetValueAsXXX
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetValueAsInt32(int ordinal)
@@ -1999,12 +1860,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
-        }
-
-        public TimeSpan DateTimeToTimeSpan(DateTime? ts)
-        {
-            if (!ts.HasValue) return TimeSpan.Zero;
-            else return new TimeSpan(0, ts.Value.Hour, ts.Value.Minute, ts.Value.Second, ts.Value.Millisecond);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2542,7 +2397,6 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public char GetValueAsChar(int ordinal)
         {
@@ -2744,7 +2598,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public UInt16 GetValueAsUnsignedShort(int ordinal)
@@ -3255,7 +3108,6 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string GetValueAsJson(int ordinal)
         {
@@ -3292,8 +3144,9 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
+        #endregion
 
-
+        #region GetValue
 
         public char GetValue(Expression<Func<TModel, char>> columnExpression)
         {
@@ -3322,7 +3175,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsChar(columnIndex);
         }
 
-
         public short GetValue(Expression<Func<TModel, short>> columnExpression)
         {
             if (columnExpression == null)
@@ -3334,7 +3186,6 @@ namespace Atdi.CoreServices.EntityOrm
             var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
             return GetValueAsShort(columnIndex);
         }
-
 
         public short? GetValue(Expression<Func<TModel, short?>> columnExpression)
         {
@@ -3351,7 +3202,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return GetValueAsShort(columnIndex);
         }
-
 
         public UInt16 GetValue(Expression<Func<TModel, UInt16>> columnExpression)
         {
@@ -3492,8 +3342,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return GetValueAsSignedByte(columnIndex);
         }
-
-
+        
         public TimeSpan GetValue(Expression<Func<TModel, TimeSpan>> columnExpression)
         {
             if (columnExpression == null)
@@ -3533,6 +3382,7 @@ namespace Atdi.CoreServices.EntityOrm
             var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
             return GetValueAsDate(columnIndex);
         }
+
         public DateTime? GetValue(Expression<Func<TModel, DateTime?>> columnExpression)
         {
             if (columnExpression == null)
@@ -3589,34 +3439,16 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsClrEnum(columnIndex);
         }
 
-
         public bool GetValue(Expression<Func<TModel, bool>> columnExpression)
         {
-            if (columnExpression == null)
-            {
-                throw new ArgumentNullException(nameof(columnExpression));
-            }
-
-            var columnName = columnExpression.Body.GetMemberName();
-            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
-            return GetValueAsBoolean(columnIndex);
+            var result = GetInternalValue<bool?, bool>(columnExpression);
+            return result.Value;
         }
 
         public bool? GetValue(Expression<Func<TModel, bool?>> columnExpression)
         {
-            if (columnExpression == null)
-            {
-                throw new ArgumentNullException(nameof(columnExpression));
-            }
-
-            var columnName = columnExpression.Body.GetMemberName();
-            var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
-            if (_dataReader.IsDBNull(columnIndex))
-            {
-                return null;
-            }
-
-            return GetValueAsBoolean(columnIndex);
+            var result = GetInternalValue<bool?, bool?>(columnExpression);
+            return result;
         }
 
         public int GetValue(Expression<Func<TModel, int>> columnExpression)
@@ -3735,7 +3567,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsDecimal(columnIndex);
         }
 
-
         public string GetValue(Expression<Func<TModel, string>> columnExpression)
         {
             if (columnExpression == null)
@@ -3812,11 +3643,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsGuid(columnIndex);
         }
 
-        public bool Read()
-        {
-            return this._dataReader.Read();
-        }
-
         public byte[] GetValue(Expression<Func<TModel, byte[]>> columnExpression)
         {
             if (columnExpression == null)
@@ -3832,6 +3658,120 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return GetValueAsBytes(columnIndex);
         }
+
+        #endregion
+
+        #region GetValue[]
+
+        public int[] GetValue(Expression<Func<TModel, int[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float[] GetValue(Expression<Func<TModel, float[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double[] GetValue(Expression<Func<TModel, double[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal[] GetValue(Expression<Func<TModel, decimal[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool[] GetValue(Expression<Func<TModel, bool[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string[] GetValue(Expression<Func<TModel, string[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime[] GetValue(Expression<Func<TModel, DateTime[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Guid[] GetValue(Expression<Func<TModel, Guid[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public char[] GetValue(Expression<Func<TModel, char[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short[] GetValue(Expression<Func<TModel, short[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort[] GetValue(Expression<Func<TModel, ushort[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint[] GetValue(Expression<Func<TModel, uint[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long[] GetValue(Expression<Func<TModel, long[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong[] GetValue(Expression<Func<TModel, ulong[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte[] GetValue(Expression<Func<TModel, sbyte[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan[] GetValue(Expression<Func<TModel, TimeSpan[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset[] GetValue(Expression<Func<TModel, DateTimeOffset[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        public bool Read()
+        {
+            return this._dataReader.Read();
+        }
+
+        private TResult GetInternalValue<TResult, TExprResult>(Expression<Func<TModel, TExprResult>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var ordinal = _dataReader.GetOrdinal(this._columnsMapper[columnName]); if (_dataReader.IsDBNull(ordinal))
+            {
+                return default(TResult);
+            }
+            var value = _dataTypeSystem.GetDecoder<TResult>(_fieldTypeMetadatas[ordinal]).DecodeAs(_dataReader, ordinal);
+            return value;
+        }
+
+        
     }
 
 }

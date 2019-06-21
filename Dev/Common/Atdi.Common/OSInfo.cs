@@ -93,7 +93,7 @@ namespace Atdi.Common
                     //operatingSystem += " " + getOSArchitecture().ToString() + "-bit";
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             { }
             //Return the information we've gathered.
             return operatingSystem;

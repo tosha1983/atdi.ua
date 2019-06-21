@@ -15,7 +15,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQueryInsertStatement SetValues(ColumnValue[] columnsValues);
 
-        IQueryInsertStatement Select(params string[] columns);
+        IQueryInsertStatement Select(params string[] paths);
     }
 
     public interface IQueryInsertStatement<TModel> : IQueryStatement<TModel>

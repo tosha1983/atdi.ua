@@ -59,8 +59,8 @@
         <Or>
           <And>
             <Equal>
-              <Field Name="#source.Id"/>
-              <Field Name="#this.Id"/>
+              <Field Name="POS2.Id"/>
+              <Field Name="Id"/>
             </Equal>
           </And>
         </Or>

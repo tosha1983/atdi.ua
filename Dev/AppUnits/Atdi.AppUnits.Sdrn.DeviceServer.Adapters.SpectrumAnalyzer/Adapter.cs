@@ -1647,7 +1647,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         private decimal BatteryCharge = 0;
 
-        private bool BatteryCharging = false;
+        public bool BatteryCharging = false;
         #endregion Battery
 
         #region IQ
@@ -1668,7 +1668,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         private decimal TriggerOffsetInSample { get; set; } = 10000;
         #region runs
         private bool IsRuning;
-        private long LastUpdate;
+        //private long LastUpdate;
         #endregion
 
 

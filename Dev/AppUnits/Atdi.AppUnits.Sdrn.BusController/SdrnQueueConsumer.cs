@@ -25,10 +25,13 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly SdrnHandlerLibrary _handlerLibrary;
         private readonly BusConnection _busConnection;
         private readonly SdrnBusControllerConfig _busControllerConfig;
+        private readonly MessageProcessing _messageProcessing;
         private readonly IServicesResolver _servicesResolver;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
-        private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
+        private readonly IQueryExecutor _queryExecutor;
+        private readonly IQueryBuilder<MD.IAmqpMessage> _amqpMessageQueryBuilder;
+        private readonly IQueryBuilder<MD.IAmqpEvent> _amqpEventQueryBuilder;
 
         public SdrnQueueConsumer(
             string tag, 
@@ -37,10 +40,10 @@ namespace Atdi.AppUnits.Sdrn.BusController
             MessageConverter messageConverter, 
             SdrnHandlerLibrary handlerLibrary, 
             BusConnection busConnection, 
-            SdrnBusControllerConfig busControllerConfig, 
+            SdrnBusControllerConfig busControllerConfig,
+            MessageProcessing messageProcessing,
             IServicesResolver servicesResolver, 
             IDataLayer<EntityDataOrm> dataLayer,
-            IEventEmitter eventEmitter,
             ILogger logger)
         {
             this._tag = tag;
@@ -50,10 +53,13 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this._handlerLibrary = handlerLibrary;
             this._busConnection = busConnection;
             this._busControllerConfig = busControllerConfig;
+            this._messageProcessing = messageProcessing;
             this._servicesResolver = servicesResolver;
             this._dataLayer = dataLayer;
-            this._eventEmitter = eventEmitter;
             this._logger = logger;
+            this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
+            this._amqpMessageQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpMessage>();
+            this._amqpEventQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpEvent>();
         }
 
         public MessageHandlingResult Handle(Message message, IDeliveryContext deliveryContext)
@@ -101,9 +107,9 @@ namespace Atdi.AppUnits.Sdrn.BusController
                     }
 
 
-                    var queryInsert = this._dataLayer.GetBuilder<MD.IAmqpMessage>()
+                    var queryInsert = this._amqpMessageQueryBuilder
                         .Insert()
-                        .SetValue(c => c.StatusCode, 1) // 1 - created, 2 - start processing, 3 - finish processed
+                        .SetValue(c => c.StatusCode, 0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
                         .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
                         .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
                         .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
@@ -128,9 +134,9 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         .SetValue(c => c.BodyContent, Compressor.Compress(message.Body))
                         .Select(c => c.Id);
 
-                    var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                    
 
-                    long messageId =  queryExecuter.ExecuteAndFetch(queryInsert, reader =>
+                    long messageId = _queryExecutor.ExecuteAndFetch(queryInsert, reader =>
                     {
                         long id = -1;
                         if (reader.Read())
@@ -140,12 +146,21 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         return id;
                     });
 
-                    var busEvent = new DevicesBusEvent($"On{message.Type}DeviceBusEvent", "SdrnDeviceBusController")
-                    {
-                        BusMessageId = messageId
-                    };
+                    var eventQueryInsert = this._amqpEventQueryBuilder
+                        .Insert()
+                        .SetValue(c => c.Id, messageId)
+                        .SetValue(c => c.PropType, message.Type);
 
-                    _eventEmitter.Emit(busEvent);
+                    _queryExecutor.Execute(eventQueryInsert);
+
+                    _messageProcessing.OnCreatedMessage();
+
+                    //var busEvent = new DevicesBusEvent($"On{message.Type}DeviceBusEvent", "SdrnDeviceBusController")
+                    //{
+                    //    BusMessageId = messageId
+                    //};
+
+                    //_eventEmitter.Emit(busEvent);
 
                     return MessageHandlingResult.Confirm;
                     /*

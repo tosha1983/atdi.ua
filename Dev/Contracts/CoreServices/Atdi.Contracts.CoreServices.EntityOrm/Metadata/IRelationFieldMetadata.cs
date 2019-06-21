@@ -14,5 +14,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         IEntityMetadata RelatedEntity { get; }
 
         DataModels.DataConstraint.Condition RelationCondition { get; }
+
+        RelationJoinType JoinType { get; }
     }
 }

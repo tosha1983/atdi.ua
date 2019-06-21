@@ -161,7 +161,12 @@ namespace Atdi.DataModels
         /// The value of JSON string.
         /// </summary>
         [EnumMember]
-        Json
+        Json,
 
+        /// <summary>
+        /// The type is System.Char[]. Array of Unicode 16-bit character. Range U+0000 to U+ffff.
+        /// </summary>
+        [EnumMember]
+        Chars
     }
 }
