@@ -26,11 +26,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITimeService _timeService;
         private readonly IWorkScheduler _workScheduler;
         private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
+        private readonly ConfigMeasurements _configMeasurements;
 
         public SignalizationTaskResultHandler(ILogger logger,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
             IWorkScheduler workScheduler,
+            ConfigMeasurements configMeasurements,
             IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
             ITimeService timeService)
         {
@@ -40,6 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._timeService = timeService;
             this._workScheduler = workScheduler;
             this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
+            this._configMeasurements = configMeasurements;
         }
 
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
@@ -62,34 +65,37 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // Результат содержится в taskContext.Task.EmittingsRaw
                 //получаем результаты BW
                 var listMeasBandwidthResult = new List<BWResult>();
-                while (true)
+                if (this._configMeasurements.EnableBandWidthTask == true)
                 {
-                    var error = new ExceptionProcessBandWidth();
-                    if (taskContext.WaitEvent<ExceptionProcessBandWidth>(out error,1) == true)
+                    while (true)
                     {
-                        //if (error._ex!=null)
-                        //{
+                        var error = new ExceptionProcessBandWidth();
+                        if (taskContext.WaitEvent<ExceptionProcessBandWidth>(out error, 1) == true)
+                        {
+                            //if (error._ex!=null)
+                            //{
                             //if (error._ex.Message!= "MeasBWResults is Null")
                             //{
-                                //taskContext.Task.CountGetResultBWN++;
+                            //taskContext.Task.CountGetResultBWN++;
                             //}
-                        //}
-                        //taskContext.Task.CountGetResultBWNegative++;
-                    }
-
-                    BWResult outMeasBandwidthResultData = null;
-                    bool isDown = taskContext.WaitEvent<BWResult>(out outMeasBandwidthResultData,1);
-                    if (isDown == true)
-                    {
-                        if (outMeasBandwidthResultData != null)
-                        {
-                            //taskContext.Task.CountGetResultBWPositive++;
-                            listMeasBandwidthResult.Add(outMeasBandwidthResultData);
+                            //}
+                            //taskContext.Task.CountGetResultBWNegative++;
                         }
-                    }
-                    else
-                    {
-                        break;
+
+                        BWResult outMeasBandwidthResultData = null;
+                        bool isDown = taskContext.WaitEvent<BWResult>(out outMeasBandwidthResultData, 1);
+                        if (isDown == true)
+                        {
+                            if (outMeasBandwidthResultData != null)
+                            {
+                                //taskContext.Task.CountGetResultBWPositive++;
+                                listMeasBandwidthResult.Add(outMeasBandwidthResultData);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
                 //Обработка результатов BW если они есть
@@ -113,14 +119,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 //Нужно ли исследование существующих сигналов?
-                if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForBW))
+                if (this._configMeasurements.EnableBandWidthTask == true)
                 {
-                    //if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
-                    //{
-                    //    taskContext.Task.EmittingsDetailed = CalcEmittingDetailed.GetEmittingDetailed(listMeasBandwidthResult);
-                    //}
-                    // вызов функции по отправке BandWidthTask в контроллер
-                    SendCommandBW(taskContext);
+                    if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForBW))
+                    {
+                        // вызов функции по отправке BandWidthTask в контроллер
+                        SendCommandBW(taskContext);
+                    }
                 }
                 // Отправка результата в Task Handler
                 if (taskContext.Task.EmittingsSummary != null)
@@ -135,47 +140,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     var sortedByFreqAsc = from z in allEmitting orderby z.StartFrequency_MHz ascending select z;
                     measResults.Emittings = sortedByFreqAsc.ToArray();
                     measResults.RefLevels = taskContext.Task.ReferenceLevels;
-                    /*
-                    if (measResults.Emittings != null)
-                    {
-                        for (int i = 0; i < measResults.Emittings.Length; i++)
-                        {
-                            var fnd = measResults.Emittings[i];
-                            if (fnd.WorkTimes != null)
-                            {
-                                var f = fnd.WorkTimes.ToList().Find(c => c.PersentAvailability < 0 || c.PersentAvailability > 100);
-                                if (f != null)
-                                {
-
-                                }
-
-                                var f_hit = fnd.WorkTimes.ToList().Find(c => c.HitCount == 0);
-                                if (f_hit != null)
-                                {
-
-                                }
-
-                            }
-
-                            if (fnd.LevelsDistribution == null)
-                            {
-
-                            }
-                            else
-                            {
-                                if (fnd.LevelsDistribution != null)
-                                {
-                                    int f_cnt = fnd.LevelsDistribution.Count.Count(x => x == 0);
-                                    if (f_cnt == fnd.LevelsDistribution.Count.Length)
-                                    {
-
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    */
                     taskContext.SetEvent(measResults);
                 }
 

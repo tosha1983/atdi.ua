@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ILinkMeasStation
+    public interface ILinkMeasStation_PK
     {
-        int Id { get; set; }
-        int? MeasTaskId { get; set; }
-        int? StationId { get; set; }
+        long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ILinkMeasStation: ILinkMeasStation_PK
+    {
+        long? MeasTaskId { get; set; }
+        long? StationId { get; set; }
         IMeasTask MEASTASK { get; set; }
         IStation STATION { get; set; }
     }

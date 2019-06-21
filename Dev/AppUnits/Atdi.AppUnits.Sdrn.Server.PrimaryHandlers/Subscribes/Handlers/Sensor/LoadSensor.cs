@@ -19,7 +19,6 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
-
     public class LoadSensor
     {
         private readonly ILogger _logger;
@@ -32,10 +31,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         }
 
 
-        public int? ReadSensor(string Name, string TechId)
+        public long? ReadSensor(string Name, string TechId)
         {
-            int? id = null;
-
+            long? id = null;
             var query = this._dataLayer.GetBuilder<MD.ISensor>()
                 .From()
                 .Select(c => c.Name)
@@ -54,11 +52,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 }
                 return true;
             });
-
             return id;
         }
 
-        public DateTime? GetLastActivity(int id)
+        public DateTime? GetLastActivity(long id)
         {
             DateTime? lastActivity = null;
             var query = this._dataLayer.GetBuilder<MD.ISensor>()

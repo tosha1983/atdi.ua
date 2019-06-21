@@ -17,7 +17,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public string Idstation;
         [DataMember]
-        public int? IdSector;
+        public long? IdSector;
         [DataMember]
         public string Status;
         [DataMember]

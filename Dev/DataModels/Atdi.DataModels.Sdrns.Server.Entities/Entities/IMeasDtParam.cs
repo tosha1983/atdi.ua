@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasDtParam
+    public interface IMeasDtParam_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+        [Entity]
+    public interface IMeasDtParam: IMeasDtParam_PK
+    {
         string TypeMeasurements { get; set; }
         string DetectType { get; set; }
         double? Rfattenuation { get; set; }
@@ -21,7 +24,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Mode { get; set; }
         double? Rbw { get; set; }
         double? Vbw { get; set; }
-        int? MeasTaskId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
     }
 }

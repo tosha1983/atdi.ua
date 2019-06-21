@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface ILastUpdate
+    public interface ILastUpdate_PK
     {
-        int? Id { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface ILastUpdate : ILastUpdate_PK
+    {
         string TableName { get; set; }
         DateTime? LastUpdate { get; set; }
         string Status { get; set; }

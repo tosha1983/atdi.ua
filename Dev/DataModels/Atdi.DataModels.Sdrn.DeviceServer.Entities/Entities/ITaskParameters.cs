@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface ITaskParameters
+    public interface ITaskParameters_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+    }
+
+        [Entity]
+    public interface ITaskParameters : ITaskParameters_PK
+    {
         string SDRTaskId { get; set; }
         string MeasurementType { get; set; }
         double? MinFreq_MHz { get; set; }

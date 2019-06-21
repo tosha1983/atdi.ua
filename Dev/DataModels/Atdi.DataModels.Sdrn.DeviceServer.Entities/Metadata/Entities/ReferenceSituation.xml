@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_REFSITUATION</Name>
+    <Name>REFERENCE_SITUATION</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>

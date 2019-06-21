@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IOwnerData
+    public interface IOwnerData_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IOwnerData : IOwnerData_PK
+    {
         string OwnerName { get; set; }
         string OKPO { get; set; }
         string ZIP { get; set; }
         string CODE { get; set; }
         string Address { get; set; }
-        int? StationDatFormId { get; set; }
+        long? StationDatFormId { get; set; }
     }
 }

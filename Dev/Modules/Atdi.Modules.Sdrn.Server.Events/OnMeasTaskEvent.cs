@@ -1,5 +1,4 @@
-﻿using Atdi.Contracts.Api.EventSystem;
-using Atdi.DataModels.Api.EventSystem;
+﻿using Atdi.DataModels.Api.EventSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +19,8 @@ namespace Atdi.Modules.Sdrn.Server.Events
         {
         }
 
-        public int MeasTaskId { get; set; }
-        public int SensorId { get; set; }
+        public long MeasTaskId { get; set; }
+        public long SensorId { get; set; }
         public string MeasTaskIds { get; set; }
         public string SensorName { get; set; }
         public string EquipmentTechId { get; set; }

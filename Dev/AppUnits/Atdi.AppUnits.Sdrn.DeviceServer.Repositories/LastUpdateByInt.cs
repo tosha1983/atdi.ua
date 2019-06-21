@@ -13,7 +13,7 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
-    public sealed class LastUpdateByInt : IRepository<LastUpdate, int?>
+    public sealed class LastUpdateByInt : IRepository<LastUpdate, long?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
@@ -25,9 +25,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             this._logger = logger;
         }
 
-        public int? Create(LastUpdate item)
+        public long? Create(LastUpdate item)
         {
-            int? ID = null;
+            long? ID = null;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             if (item != null)
             {
@@ -59,7 +59,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return ID;
         }
 
-        public bool Delete(int? id)
+        public bool Delete(long? id)
         {
             bool isSuccessDelete = false;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
@@ -117,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         }
             
 
-        public LastUpdate LoadObject(int? id)
+        public LastUpdate LoadObject(long? id)
         {
             LastUpdate val = null;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();

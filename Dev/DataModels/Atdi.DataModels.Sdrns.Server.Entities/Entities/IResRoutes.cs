@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResRoutes
+    public interface IResRoutes_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+
+    [Entity]
+    public interface IResRoutes : IResRoutes_PK
+    {
         string RouteId { get; set; }
         double? Agl { get; set; }
         double? Asl { get; set; }
@@ -19,7 +24,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Lat { get; set; }
         double? Lon { get; set; }
         string PointStayType { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
 }

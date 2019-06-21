@@ -69,8 +69,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 try
                 {
                     queryExecuter.BeginTransaction();
+                    long?[] emittingsIdConvert = emittingsId.Select(n => (long?)(n)).ToArray();
                     var builderUpdateEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Update();
-                    builderUpdateEmitting.Where(c => c.Id, ConditionOperator.In, emittingsId);
+                    builderUpdateEmitting.Where(c => c.Id, ConditionOperator.In, emittingsIdConvert);
                     builderUpdateEmitting.SetValue(c => c.StationID, AssociatedStationID);
                     builderUpdateEmitting.SetValue(c => c.StationTableName, AssociatedStationTableName);
                     if (queryExecuter.Execute(builderUpdateEmitting)>0)
@@ -99,22 +100,22 @@ namespace Atdi.WcfServices.Sdrn.Server
                 try
                 {
                     queryExecuter.BeginTransaction();
-                    var nullableEmittings = emittingsId.Cast<int?>().ToArray();
+                    var nullableEmittings = emittingsId.Cast<long?>().ToArray();
 
                     var builderDeleteWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Delete();
                     builderDeleteWorkTime.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
                     var cntDelIWorkTime = queryExecuter.Execute(builderDeleteWorkTime);
 
-                    var builderDeleteSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();
-                    builderDeleteSignalMask.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
-                    var cntDelISignalMask = queryExecuter.Execute(builderDeleteSignalMask);
+                    //var builderDeleteSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();
+                    //builderDeleteSignalMask.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
+                    //var cntDelISignalMask = queryExecuter.Execute(builderDeleteSignalMask);
 
                     var builderDeleteSpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Delete();
                     builderDeleteSpectrum.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
                     var cntDelISpectrum = queryExecuter.Execute(builderDeleteSpectrum);
 
                     var builderDeleteEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Delete();
-                    builderDeleteEmitting.Where(c => c.Id, ConditionOperator.In, emittingsId);
+                    builderDeleteEmitting.Where(c => c.Id, ConditionOperator.In, nullableEmittings);
                     var cntDelIEmitting = queryExecuter.Execute(builderDeleteEmitting);
 
                     queryExecuter.CommitTransaction();

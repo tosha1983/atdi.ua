@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IEmitting
+    public interface IEmitting_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+    [Entity]
+    public interface IEmitting: IEmitting_PK
+    {
         double? StartFrequency_MHz { get; set; }
         double? StopFrequency_MHz { get; set; }
         double? CurentPower_dBm { get; set; }
@@ -19,11 +22,15 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? TriggerDeviationFromReference { get; set; }
         double? RollOffFactor { get; set; }
         double? StandardBW { get; set; }
-        int? ResMeasId { get; set; }
-        byte[] LevelsDistribution { get; set; }
+        long? ResMeasId { get; set; }
+        //byte[] LevelsDistribution { get; set; }
+        int[] LevelsDistributionLvl { get; set; }
+        int[] LevelsDistributionCount { get; set; }
         IResMeas RESMEAS { get; set; }
-        int? SensorId { get; set; }
-        int? StationID { get; set; }
+        long? SensorId { get; set; }
+        long? StationID { get; set; }
         string StationTableName { get; set; }
+        float[] Loss_dB { get; set; }
+        double[] Freq_kHz { get; set; }
     }
 }

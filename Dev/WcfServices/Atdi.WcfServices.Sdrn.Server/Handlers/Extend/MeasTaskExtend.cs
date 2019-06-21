@@ -103,7 +103,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         }
 
 
-        public static void UpdateStatusSubTasks(this MeasTask task, int Id_Sensor, string Type, bool isOnline)
+        public static void UpdateStatusSubTasks(this MeasTask task, long Id_Sensor, string Type, bool isOnline)
         {
             if (task.MeasSubTasks == null) return;
             var measSubTasks = task.MeasSubTasks.ToArray();

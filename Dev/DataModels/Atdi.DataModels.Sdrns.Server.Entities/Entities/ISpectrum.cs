@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-
     public interface ISpectrum_PK
     {
-        int Id { get; set; }
- 
+        long Id { get; set; }
     }
 
     [Entity]
@@ -27,8 +25,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? Contravention { get; set; }
         int? TraceCount { get; set; }
         float? SignalLevel_dBm { get; set; }
-        int? EmittingId { get; set; }
-        byte[] LevelsdBm { get; set; }
+        long? EmittingId { get; set; }
+        float[] Levels_dBm { get; set; }
         IEmitting EMITTING { get; set; }
     }
 }

@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_AMQP_MESSAGES</Name>
+    <Name>AMQP_MESSAGES</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>

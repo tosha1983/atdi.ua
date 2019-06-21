@@ -64,6 +64,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         public static extern EN.Status bbGetIQUnpacked(int device, float[] iqData, int iqCount, int[] triggers, int triggerCount, int purge, ref int dataRemaining, ref int sampleLoss, ref int sec, ref int nano);
 
         [DllImport("bb_api.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern EN.Status bbGetIQ(int device, ref bbIQPacket pkt);
+
+        [DllImport("bb_api.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern EN.Status bbQueryTraceInfo(int device, ref uint trace_len, ref double bin_size, ref double start);
 
         [DllImport("bb_api.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -152,5 +155,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         [DllImport("bb_api.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern EN.Status bbQueryRealTimeInfo(int device,
             ref int frameWidth, ref int frameHeight);
+
+        public struct bbIQPacket
+        {
+            public float[] iqData;
+            public int iqCount;
+            public int[] triggers;
+            public int triggerCount;
+            public bool purge;
+            public int dataRemaining;
+            public int sampleLoss;
+            public int iqSec;
+            public int iqNano;
+        }
     }
 }

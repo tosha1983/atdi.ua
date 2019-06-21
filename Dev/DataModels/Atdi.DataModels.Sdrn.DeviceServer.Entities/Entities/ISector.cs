@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface ISector
+    public interface ISector_PK
     {
-        int Id { get; set; }
+       long?  Id { get; set; }
+    }
+
+        [Entity]
+    public interface ISector : ISector_PK
+    {
         string SectorId { get; set; }
         double? Agl { get; set; }
         double? Eirp { get; set; }
         double? Azimut { get; set; }
         double? Bw { get; set; }
         string ClassEmission { get; set; }
-        int? StationId { get; set; }
+        long? StationId { get; set; }
         IMeasStation STATION { get; set; }
     }
 }

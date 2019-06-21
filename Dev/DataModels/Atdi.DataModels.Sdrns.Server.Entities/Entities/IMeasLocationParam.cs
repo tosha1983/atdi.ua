@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasLocationParam
+    public interface IMeasLocationParam_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+        [Entity]
+    public interface IMeasLocationParam: IMeasLocationParam_PK
+    {
         double? Lon { get; set; }
         double? Lat { get; set; }
         double? Asl { get; set; }
         double? MaxDist { get; set; }
-        int? MeasTaskId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
     }
 }

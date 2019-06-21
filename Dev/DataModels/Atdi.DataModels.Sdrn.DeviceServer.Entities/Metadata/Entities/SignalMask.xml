@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "SignalMask"
+  Title       = "SignalMask"
+  Desc        = ""
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SIGNAL_MASK</Name>
+    <Schema>dbo</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
+    <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Decimal.22.8" SourceName="LOSS_DB" SourceType="Column" Required="false"/>
+    <Field Desc="Freq_kHz" Title="Freq_kHz" Name="Freq_kHz" DataType="Decimal.22.8" SourceName="FREQ_KHZ" SourceType="Column" Required="false"/>
+    <Field Desc="ReferenceSignalId" Title="ReferenceSignalId" Name="ReferenceSignalId" DataType="Integer.64" SourceName="REFSIGNAL_ID" SourceType="Column" Required="false"/>
+    <Field Name="REFSIGNAL" SourceType="Reference" SourceName="ReferenceSignal" Title="Relation SignalMask to ReferenceSignal">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="Id" MatchWith="Field">ReferenceSignalId</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ISensorSensitivites
+    public interface ISensorSensitivites_PK
     {
-        int Id { get; set; }
-        int? SensorEquipId { get; set; }
+        long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ISensorSensitivites : ISensorSensitivites_PK
+    {
+        long? SensorEquipId { get; set; }
         double? Freq { get; set; }
         double? Ktbf { get; set; }
         double? Noisef { get; set; }

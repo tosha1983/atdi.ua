@@ -46,9 +46,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var listLevelMeas2 = new List<LevelMeasurementsCarForSO>();
                 double? MaxFreq = options.Frequencies_MHz.Max();
                 double? MinFreq = options.Frequencies_MHz.Min();
+                long[] MeasResultIDConvert = options.MeasResultID.Select(n => (long)(n)).ToArray();
 
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var builderXVUnit2 = this._dataLayer.GetBuilder<MD.IXVUnit2>().From();
+                var builderXVUnit2 = this._dataLayer.GetBuilder<MD.IUnit>().From();
                 builderXVUnit2.Select(c => c.BW);
                 builderXVUnit2.Select(c => c.CentralFrequency);
                 builderXVUnit2.Select(c => c.Id);
@@ -65,7 +66,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderXVUnit2.Where(c => c.Lon, ConditionOperator.LessEqual, options.LonMax);
                 builderXVUnit2.Where(c => c.Lat, ConditionOperator.GreaterEqual, options.LatMin);
                 builderXVUnit2.Where(c => c.Lat, ConditionOperator.LessEqual, options.LatMax);
-                builderXVUnit2.Where(c => c.Id, ConditionOperator.In, options.MeasResultID.ToArray());
+                builderXVUnit2.Where(c => c.Id, ConditionOperator.In, MeasResultIDConvert);
                 builderXVUnit2.Where(c => c.CentralFrequency, ConditionOperator.GreaterThan, (MinFreq - (options.BW_kHz / 2000)));
                 builderXVUnit2.Where(c => c.CentralFrequency, ConditionOperator.LessThan, (MaxFreq + (options.BW_kHz / 2000)));
                 queryExecuter.Fetch(builderXVUnit2, readerXVUnit2 =>

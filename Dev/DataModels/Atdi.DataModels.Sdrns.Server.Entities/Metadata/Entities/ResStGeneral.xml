@@ -6,28 +6,29 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_RESSTGENERAL</Name>
+    <Name>RES_STGENERAL</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="ResMeasStaId" Title="ResMeasStaId" Name="ResMeasStaId" DataType="Integer.64" SourceName="RESMEASSTATIONID" SourceType="Column" Required="false"/>
-    <Field Desc="CentralFrequency" Title="CentralFrequency" Name="CentralFrequency" DataType="Decimal.22.8" SourceName="CENTRALFREQUENCY" SourceType="Column" Required="false"/>
-    <Field Desc="CentralFrequencyMeas" Title="CentralFrequencyMeas" Name="CentralFrequencyMeas" DataType="Decimal.22.8" SourceName="CENTRALFREQUENCYMEAS" SourceType="Column" Required="false"/>
-    <Field Desc="DurationMeas" Title="DurationMeas" Name="DurationMeas" DataType="Decimal.22.8" SourceName="DURATIONMEAS" SourceType="Column" Required="false"/>
-    <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKERINDEX" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasStaId" Title="ResMeasStaId" Name="ResMeasStaId" DataType="Integer.64" SourceName="RES_MEAS_STATION_ID" SourceType="Column" Required="false"/>
+    <Field Desc="CentralFrequency" Title="CentralFrequency" Name="CentralFrequency" DataType="Decimal.22.8" SourceName="CENTRAL_FREQUENCY" SourceType="Column" Required="false"/>
+    <Field Desc="CentralFrequencyMeas" Title="CentralFrequencyMeas" Name="CentralFrequencyMeas" DataType="Decimal.22.8" SourceName="CENTRAL_FREQUENCY_MEAS" SourceType="Column" Required="false"/>
+    <Field Desc="DurationMeas" Title="DurationMeas" Name="DurationMeas" DataType="Decimal.22.8" SourceName="DURATION_MEAS" SourceType="Column" Required="false"/>
+    <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKER_INDEX" SourceType="Column" Required="false"/>
     <Field Desc="T1" Title="T1" Name="T1" DataType="Integer.32" SourceName="T1" SourceType="Column" Required="false"/>
     <Field Desc="T2" Title="T2" Name="T2" DataType="Integer.32" SourceName="T2" SourceType="Column" Required="false"/>
-    <Field Desc="TimeStartMeas" Title="TimeStartMeas" Name="TimeStartMeas" DataType="DateTime" SourceName="TIMESTARTMEASDATE" SourceType="Column" Required="false"/>
-    <Field Desc="TimeFinishMeas" Title="TimeFinishMeas" Name="TimeFinishMeas" DataType="DateTime" SourceName="TIMEFINISHMEAS" SourceType="Column" Required="false"/>
-    <Field Desc="OffsetFrequency" Title="OffsetFrequency" Name="OffsetFrequency" DataType="Decimal.22.8" SourceName="OFFSETFREQUENCY" SourceType="Column" Required="false"/>
-    <Field Desc="SpecrumStartFreq" Title="SpecrumStartFreq" Name="SpecrumStartFreq" DataType="Float.30.10" SourceName="SPECRUMSTARTFREQ" SourceType="Column" Required="false"/>
-    <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Float.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
-    <Field Desc="Correctnessestim" Title="Correctnessestim" Name="Correctnessestim" DataType="Integer.32" SourceName="CORRECTNESSESTIM" SourceType="Column" Required="false"/>
-    <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACECOUNT" SourceType="Column" Required="false"/>
+    <Field Desc="TimeStartMeas" Title="TimeStartMeas" Name="TimeStartMeas" DataType="DateTime" SourceName="TIME_START_MEAS_DATE" SourceType="Column" Required="false"/>
+    <Field Desc="TimeFinishMeas" Title="TimeFinishMeas" Name="TimeFinishMeas" DataType="DateTime" SourceName="TIME_FINISH_MEAS" SourceType="Column" Required="false"/>
+    <Field Desc="OffsetFrequency" Title="OffsetFrequency" Name="OffsetFrequency" DataType="Decimal.22.8" SourceName="OFFSET_FREQUENCY" SourceType="Column" Required="false"/>
+    <Field Desc="SpecrumStartFreq" Title="SpecrumStartFreq" Name="SpecrumStartFreq" DataType="Double.30.10" SourceName="SPECRUM_START_FREQ" SourceType="Column" Required="false"/>
+    <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Double.30.10" SourceName="SPECRUM_STEPS" SourceType="Column" Required="false"/>
+    <Field Desc="Correctnessestim" Title="Correctnessestim" Name="Correctnessestim" DataType="Integer.32" SourceName="CORRECTNESS_ESTIM" SourceType="Column" Required="false"/>
+    <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACE_COUNT" SourceType="Column" Required="false"/>
     <Field Desc="Rbw" Title="Rbw" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false"/>
     <Field Desc="Vbw" Title="Vbw" Name="Vbw" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false"/>
     <Field Desc="BW" Title="BW" Name="BW" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsSpectrumdBm" Title="LevelsSpectrumdBm" Name="LevelsSpectrumdBm" DataType="Bytes.MAX" SourceName="LEVEL_SSPECTRUM_DBM" SourceType="Column" Required="false"/>
     <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStGeneral to ResMeasStation">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>

@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
         
 
-        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, int? SensorId, string Type = "New")
+        public  Atdi.DataModels.Sdrns.Device.MeasTask[] CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, long? MeasTaskId, long? SensorId, string Type = "New")
         {
             List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
             if (task.MeasSubTasks == null) return null;
@@ -187,7 +187,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         {
                                             var refSituation = new DEV.ReferenceSituation();
                                             var refSituationTemp = task.RefSituation[k];
-                                            refSituation.SensorId = refSituationTemp.SensorId;
+                                            refSituation.SensorId = (int)refSituationTemp.SensorId;
 
                                             var referenceSignal = refSituationTemp.ReferenceSignal;
                                             if (referenceSignal.Length > 0)
@@ -262,7 +262,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                     var owner = stationI.Owner;
                                                     owner.Address = station.Owner.Addres;
                                                     owner.Code = station.Owner.Code;
-                                                    owner.Id = station.Owner.Id;
+                                                    owner.Id = (int)station.Owner.Id;
                                                     owner.OKPO = station.Owner.OKPO;
                                                     owner.OwnerName = station.Owner.OwnerName;
                                                     owner.Zip = station.Owner.Zip;
@@ -332,10 +332,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                                             for (int k = 0; k < sector.Frequencies.Length; k++)
                                                             {
                                                                 statSector.Frequencies[k] = new DataModels.Sdrns.Device.SectorFrequency();
-                                                                statSector.Frequencies[k].ChannelNumber = sector.Frequencies[k].ChannalNumber;
+                                                                statSector.Frequencies[k].ChannelNumber = (int?)sector.Frequencies[k].ChannalNumber;
                                                                 statSector.Frequencies[k].Frequency_MHz = sector.Frequencies[k].Frequency;
-                                                                statSector.Frequencies[k].Id = sector.Frequencies[k].Id;
-                                                                statSector.Frequencies[k].PlanId = sector.Frequencies[k].IdPlan;
+                                                                statSector.Frequencies[k].Id = (int?)sector.Frequencies[k].Id;
+                                                                statSector.Frequencies[k].PlanId = (int?)sector.Frequencies[k].IdPlan;
                                                             }
                                                         }
                                                         statSector.SectorId = sector.IdSector.ToString();
@@ -353,7 +353,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             return ListMTSDR.ToArray();
         }
-       
     }
 }
 

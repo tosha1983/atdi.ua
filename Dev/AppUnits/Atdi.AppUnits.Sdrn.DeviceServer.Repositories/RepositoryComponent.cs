@@ -26,11 +26,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         protected override void OnInstall()
         {
-            this.Container.Register<IRepository<Sensor, int?>, SensorsRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IRepository<MeasTask, int?>, MeasTaskRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IRepository<TaskParameters, int?>, TaskParametersByIntRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<Sensor, long?>, SensorsRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<MeasTask, long?>, MeasTaskRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<TaskParameters, long?>, TaskParametersByIntRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<IRepository<TaskParameters, string>, TaskParametersByStringRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IRepository<LastUpdate, int?>, LastUpdateByInt>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<LastUpdate, long?>, LastUpdateByInt>(Platform.DependencyInjection.ServiceLifetime.Singleton);
         }
     }
 }

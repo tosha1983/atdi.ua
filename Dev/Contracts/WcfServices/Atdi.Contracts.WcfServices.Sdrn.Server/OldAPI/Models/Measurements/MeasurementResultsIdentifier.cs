@@ -18,7 +18,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// 
         /// </summary>
         [DataMember]
-        public int MeasSdrResultsId;
+        public long MeasSdrResultsId;
         /// <summary>
         /// Id of Measurements Task
         /// </summary>
@@ -28,11 +28,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// Id of Measurements Sub Task
         /// </summary>
         [DataMember]
-        public int SubMeasTaskId;
+        public long SubMeasTaskId;
         /// <summary>
         /// Id of Measurements Sub Task for station/sensor
         /// </summary>
         [DataMember]
-        public int SubMeasTaskStationId;
+        public long SubMeasTaskStationId;
     }
 }

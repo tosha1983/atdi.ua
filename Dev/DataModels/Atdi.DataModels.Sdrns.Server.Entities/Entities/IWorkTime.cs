@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IWorkTime
+    public interface IWorkTime_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IWorkTime : IWorkTime_PK
+    {
         DateTime? StartEmitting { get; set; }
         DateTime? StopEmitting { get; set; }
         int? HitCount { get; set; }
         float? PersentAvailability { get; set; }
-        int? EmittingId { get; set; }
+        long? EmittingId { get; set; }
         IEmitting EMITTING { get; set; }
     }
 }

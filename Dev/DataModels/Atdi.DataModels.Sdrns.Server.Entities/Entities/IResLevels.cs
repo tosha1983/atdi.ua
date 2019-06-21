@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResLevels
+    public interface IResLevels_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+
+    [Entity]
+    public interface IResLevels : IResLevels_PK
+    {
         double? ValueLvl { get; set; }
         double? StddevLev { get; set; }
         double? VMinLvl { get; set; }
@@ -27,7 +32,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? VMMaxSpect { get; set; }
         double? LimitSpect { get; set; }
         double? OccupancySpect { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
 }

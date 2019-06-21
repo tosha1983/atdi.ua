@@ -21,7 +21,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public OwnerData Owner;
         [DataMember]
-        public int IdStation; // Идентификатор в ICSM
+        public long IdStation; // Идентификатор в ICSM
         [DataMember]
         public string GlobalSID;
         [DataMember]
@@ -35,8 +35,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public PermissionForAssignment LicenseParameter;
         [DataMember]
-        public int IdOwner;
+        public long IdOwner;
         [DataMember]
-        public int IdSite;
+        public long IdSite;
     }
 }

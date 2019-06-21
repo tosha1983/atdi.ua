@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasOther
+    public interface IMeasOther_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IMeasOther: IMeasOther_PK
+    {
         int? SwNumber { get; set; }
         string TypeSpectrumscan { get; set; }
         string TypeSpectrumOccupation { get; set; }
         double? LevelMinOccup { get; set; }
         int? Nchenal { get; set; }
-        int? MeasTaskId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
     }
 }

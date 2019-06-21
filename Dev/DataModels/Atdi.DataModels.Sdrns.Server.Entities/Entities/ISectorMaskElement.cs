@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ISectorMaskElement
+    public interface ISectorMaskElement_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+    [Entity]
+    public interface ISectorMaskElement : ISectorMaskElement_PK
+    {
         double? Level { get; set; }
         double? Bw { get; set; }
     }

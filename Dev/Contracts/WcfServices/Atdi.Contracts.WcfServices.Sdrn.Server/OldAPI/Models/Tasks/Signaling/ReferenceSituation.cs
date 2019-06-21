@@ -9,6 +9,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class ReferenceSituation
     {
         public ReferenceSignal[] ReferenceSignal;
-        public int SensorId;
+        public long SensorId;
     }
 }

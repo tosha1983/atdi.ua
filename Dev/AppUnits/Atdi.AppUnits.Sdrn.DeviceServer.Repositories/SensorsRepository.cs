@@ -16,7 +16,7 @@ using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 { 
-    public sealed class SensorsRepository : IRepository<Sensor,int?>
+    public sealed class SensorsRepository : IRepository<Sensor, long?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
@@ -28,9 +28,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             this._logger = logger;
         }
 
-        public int? Create(Sensor item)
+        public long? Create(Sensor item)
         {
-            int? idSensor = -1;
+            long? idSensor = -1;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             try
             {
@@ -79,7 +79,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (sensorData.Antenna != null)
                     {
-                        int idSensorAntenna = -1;
+                        long? idSensorAntenna = -1;
                         var builderInsertAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().Insert();
                         builderInsertAntenna.SetValue(c => c.AddLoss, sensorData.Antenna.AddLoss);
                         builderInsertAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
@@ -121,7 +121,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             if (sensorData.Antenna.Patterns != null)
                             {
-                                int idSensorAntennaPattern = -1;
+                                long? idSensorAntennaPattern = -1;
                                 foreach (AntennaPattern patt in sensorData.Antenna.Patterns)
                                 {
                                     var builderInsertAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Insert();
@@ -149,7 +149,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                     if (sensorData.Equipment != null)
                     {
-                        int idSensorEquipment = -1;
+                        long? idSensorEquipment = -1;
                         var builderInsertEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>().Insert();
                         builderInsertEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
                         builderInsertEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
@@ -193,7 +193,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             foreach (EquipmentSensitivity senseqps in sensorData.Equipment.Sensitivities)
                             {
-                                int idSensorEquipmentSensitivities = -1;
+                                long? idSensorEquipmentSensitivities = -1;
                                 var builderInsertSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Insert();
                                 builderInsertSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
                                 builderInsertSensorEquipmentSensitivities.SetValue(c => c.Freq, senseqps.Freq_MHz);
@@ -217,7 +217,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         if (sensorData.Polygon != null)
                         {
                             SensorPolygon sensPolygon = sensorData.Polygon;
-                            int idsensPolygon = -1;
+                            long? idsensPolygon = -1;
                             foreach (Atdi.DataModels.Sdrns.GeoPoint geo in sensPolygon.Points)
                             {
                                 var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
@@ -240,7 +240,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
                         if (sensorData.Locations != null)
                         {
-                            int idsensLocations = -1;
+                            long? idsensLocations = -1;
                             foreach (var location in sensorData.Locations)
                             {
                                 var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
@@ -276,7 +276,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return idSensor;
         }
 
-        public bool Delete(int? id)
+        public bool Delete(long? id)
         {
             throw new NotImplementedException();
         }
@@ -288,7 +288,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
 
      
-        public Sensor LoadObject(int? id)
+        public Sensor LoadObject(long? id)
         {
             throw new NotImplementedException();
         }
@@ -301,7 +301,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public bool Update(Sensor item)
         {
             bool isSuccess = false;
-            int? idSensor = -1;
+            long? idSensor = -1;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             try
             {
@@ -384,7 +384,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return isSuccess;
         }
 
-        Sensor[] IRepository<Sensor,int?>.LoadAllObjects()
+        Sensor[] IRepository<Sensor,long?>.LoadAllObjects()
         {
             var listSensors = new List<Sensor>();
             Sensor val = null;

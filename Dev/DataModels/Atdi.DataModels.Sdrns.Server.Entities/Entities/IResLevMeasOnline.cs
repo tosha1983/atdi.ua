@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResLevMeasOnline
+    public interface IResLevMeasOnline_PK
     {
-        int Id { get; set; }
+        long Id { get; set; }
+    }
+
+        [Entity]
+    public interface IResLevMeasOnline : IResLevMeasOnline_PK
+    {
         double? Value { get; set; }
-        int? ResMeasId { get; set; }
+        long? ResMeasId { get; set; }
         IResMeas RESMEAS { get; set; }
     }
 }
