@@ -9,14 +9,14 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
     public interface ISensorAntenna_PK
     {
-        long? Id { get; set; }
+        int? Id { get; set; }
     }
 
 
-        [Entity]
+    [Entity]
     public interface ISensorAntenna : ISensorAntenna_PK
     {
-        long? SensorId { get; set; }
+        int? SensorId { get; set; }
         string Code { get; set; }
         double? Slewang { get; set; }
         string Manufacturer { get; set; }

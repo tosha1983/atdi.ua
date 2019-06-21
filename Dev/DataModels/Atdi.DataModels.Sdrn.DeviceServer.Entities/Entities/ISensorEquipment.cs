@@ -9,13 +9,13 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
     public interface ISensorEquipment_PK
     {
-        long? Id { get; set; }
+        int? Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface ISensorEquipment : ISensorEquipment_PK
     {
-        long? SensorId { get; set; }
+        int? SensorId { get; set; }
         string Code { get; set; }
         string Manufacturer { get; set; }
         string Name { get; set; }
