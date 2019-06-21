@@ -140,6 +140,8 @@
   <ItemGroup>
     <Content Include="DataLayer\SqlServer\Tables\ICSC.XBS_AMQP_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.XBS_AMQP_MESSAGES.sql" />
+    <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
     <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
