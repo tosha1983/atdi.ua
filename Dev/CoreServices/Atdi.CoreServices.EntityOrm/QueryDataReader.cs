@@ -1761,7 +1761,13 @@ namespace Atdi.CoreServices.EntityOrm
             this._dataTypeSystem = dataTypeSystem;
         }
 
-        
+        private static TimeSpan DateTimeToTimeSpan(DateTime? ts)
+        {
+            if (!ts.HasValue) return TimeSpan.Zero;
+            else return new TimeSpan(0, ts.Value.Hour, ts.Value.Minute, ts.Value.Second, ts.Value.Millisecond);
+        }
+
+        #region GetValueAsXXX
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetValueAsInt32(int ordinal)
@@ -1854,12 +1860,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
-        }
-
-        public TimeSpan DateTimeToTimeSpan(DateTime? ts)
-        {
-            if (!ts.HasValue) return TimeSpan.Zero;
-            else return new TimeSpan(0, ts.Value.Hour, ts.Value.Minute, ts.Value.Second, ts.Value.Millisecond);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2397,7 +2397,6 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public char GetValueAsChar(int ordinal)
         {
@@ -2599,7 +2598,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public UInt16 GetValueAsUnsignedShort(int ordinal)
@@ -3110,7 +3108,6 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, _dataReader.GetName(ordinal)));
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string GetValueAsJson(int ordinal)
         {
@@ -3147,8 +3144,9 @@ namespace Atdi.CoreServices.EntityOrm
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(columnIndex)));
         }
 
+        #endregion
 
-
+        #region GetValue
 
         public char GetValue(Expression<Func<TModel, char>> columnExpression)
         {
@@ -3177,7 +3175,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsChar(columnIndex);
         }
 
-
         public short GetValue(Expression<Func<TModel, short>> columnExpression)
         {
             if (columnExpression == null)
@@ -3189,7 +3186,6 @@ namespace Atdi.CoreServices.EntityOrm
             var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
             return GetValueAsShort(columnIndex);
         }
-
 
         public short? GetValue(Expression<Func<TModel, short?>> columnExpression)
         {
@@ -3206,7 +3202,6 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return GetValueAsShort(columnIndex);
         }
-
 
         public UInt16 GetValue(Expression<Func<TModel, UInt16>> columnExpression)
         {
@@ -3347,8 +3342,7 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return GetValueAsSignedByte(columnIndex);
         }
-
-
+        
         public TimeSpan GetValue(Expression<Func<TModel, TimeSpan>> columnExpression)
         {
             if (columnExpression == null)
@@ -3388,6 +3382,7 @@ namespace Atdi.CoreServices.EntityOrm
             var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
             return GetValueAsDate(columnIndex);
         }
+
         public DateTime? GetValue(Expression<Func<TModel, DateTime?>> columnExpression)
         {
             if (columnExpression == null)
@@ -3442,22 +3437,6 @@ namespace Atdi.CoreServices.EntityOrm
             var columnName = columnExpression.Body.GetMemberName();
             var columnIndex = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
             return GetValueAsClrEnum(columnIndex);
-        }
-
-        private TResult GetInternalValue<TResult, TExprResult>(Expression<Func<TModel, TExprResult>> columnExpression)
-        {
-            if (columnExpression == null)
-            {
-                throw new ArgumentNullException(nameof(columnExpression));
-            }
-
-            var columnName = columnExpression.Body.GetMemberName();
-            var ordinal = _dataReader.GetOrdinal(this._columnsMapper[columnName]); if (_dataReader.IsDBNull(ordinal))
-            {
-                return default(TResult);
-            }
-            var value = _dataTypeSystem.GetDecoder<TResult>(_fieldTypeMetadatas[ordinal]).DecodeAs(_dataReader, ordinal);
-            return value;
         }
 
         public bool GetValue(Expression<Func<TModel, bool>> columnExpression)
@@ -3588,7 +3567,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsDecimal(columnIndex);
         }
 
-
         public string GetValue(Expression<Func<TModel, string>> columnExpression)
         {
             if (columnExpression == null)
@@ -3665,11 +3643,6 @@ namespace Atdi.CoreServices.EntityOrm
             return GetValueAsGuid(columnIndex);
         }
 
-        public bool Read()
-        {
-            return this._dataReader.Read();
-        }
-
         public byte[] GetValue(Expression<Func<TModel, byte[]>> columnExpression)
         {
             if (columnExpression == null)
@@ -3685,6 +3658,120 @@ namespace Atdi.CoreServices.EntityOrm
             }
             return GetValueAsBytes(columnIndex);
         }
+
+        #endregion
+
+        #region GetValue[]
+
+        public int[] GetValue(Expression<Func<TModel, int[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float[] GetValue(Expression<Func<TModel, float[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double[] GetValue(Expression<Func<TModel, double[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal[] GetValue(Expression<Func<TModel, decimal[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool[] GetValue(Expression<Func<TModel, bool[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string[] GetValue(Expression<Func<TModel, string[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime[] GetValue(Expression<Func<TModel, DateTime[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Guid[] GetValue(Expression<Func<TModel, Guid[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public char[] GetValue(Expression<Func<TModel, char[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short[] GetValue(Expression<Func<TModel, short[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort[] GetValue(Expression<Func<TModel, ushort[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint[] GetValue(Expression<Func<TModel, uint[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long[] GetValue(Expression<Func<TModel, long[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong[] GetValue(Expression<Func<TModel, ulong[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte[] GetValue(Expression<Func<TModel, sbyte[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan[] GetValue(Expression<Func<TModel, TimeSpan[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset[] GetValue(Expression<Func<TModel, DateTimeOffset[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        public bool Read()
+        {
+            return this._dataReader.Read();
+        }
+
+        private TResult GetInternalValue<TResult, TExprResult>(Expression<Func<TModel, TExprResult>> columnExpression)
+        {
+            if (columnExpression == null)
+            {
+                throw new ArgumentNullException(nameof(columnExpression));
+            }
+
+            var columnName = columnExpression.Body.GetMemberName();
+            var ordinal = _dataReader.GetOrdinal(this._columnsMapper[columnName]); if (_dataReader.IsDBNull(ordinal))
+            {
+                return default(TResult);
+            }
+            var value = _dataTypeSystem.GetDecoder<TResult>(_fieldTypeMetadatas[ordinal]).DecodeAs(_dataReader, ordinal);
+            return value;
+        }
+
+        
     }
 
 }

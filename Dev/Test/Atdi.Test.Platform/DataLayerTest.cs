@@ -146,7 +146,7 @@ namespace Atdi.Test.Platform
 
             Console.ReadLine();
 
-            var count = 10000;
+            //var count = 10000;
 
             //for (int j = 0; j < 10; j++)
             //{
