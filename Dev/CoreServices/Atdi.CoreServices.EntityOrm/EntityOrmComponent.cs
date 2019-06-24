@@ -25,8 +25,9 @@ namespace Atdi.CoreServices.EntityOrm
             var entityOrmConfig = new EntityOrmConfig(this.Config);
             this.Container.RegisterInstance<IEntityOrmConfig>(entityOrmConfig);
             this.Container.Register<DataTypeSystem, DataTypeSystem>(ServiceLifetime.Singleton);
-            this.Container.Register<IEntityOrm, EntityOrm>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IDataLayer<EntityDataOrm>, EntityOrmDataLayer>(Platform.DependencyInjection.ServiceLifetime.PerThread);
+            this.Container.Register<IEntityOrm, EntityOrm>(ServiceLifetime.Singleton);
+            this.Container.Register<PatternBuilderFactory, PatternBuilderFactory>(ServiceLifetime.Singleton);
+            this.Container.Register<IDataLayer<EntityDataOrm>, EntityOrmDataLayer>(ServiceLifetime.PerThread);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
         private void FindHandlersInCurrentAssembly()
         {
             _handlers.Add(typeof(PS.EngineCommandPattern), new PatternHandlers.EngineCommandPatternHandler(this.Logger));
+            _handlers.Add(typeof(PS.InsertPattern), new PatternHandlers.InsertPatternHandler(this.Logger));
         }
 
         public IQueryPatternHandler GetHandler(Type handlerType)

@@ -1,0 +1,43 @@
+if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_SYS_INFO]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+	drop table [ICSC].[RES_SYS_INFO]
+go
+create table [ICSC].[RES_SYS_INFO] (
+	[ID] 	[bigint] identity (1,1) not null,
+	[BANDWIDTH]		[numeric](22,8) null,
+	[BASEID]	[int] null,
+	[BSIC]	[int] null,
+	[CHANNELNUMBER]	[int] null,
+	[CID]	[int] null,
+	[CODE]	[numeric](22,8) null,
+	[CTOI]	[numeric](22,8) null,
+	[ECI]	[int] null,
+	[ENODEBID]	[int] null,
+	[FREQ]	[numeric](22,8) null,
+	[ICIO]	[numeric](22,8) null,
+	[INBAND_POWER]	[numeric](22,8) null,
+	[ISCP]	[numeric](22,8) null,
+	[LAC]	[int] null,
+	[AGL]	[numeric](22,8) null,
+	[ASL]	[numeric](22,8) null,
+	[LON]	[numeric](22,8) null,
+	[LAT]	[numeric](22,8) null,
+	[MCC]	[int] null,
+	[MNC]	[int] null,
+	[NID]	[int] null,
+	[PCI]	[int] null,
+	[PN]	[int] null,
+	[POWER]	[numeric](22,8) null,
+	[PTOTAL]	[numeric](22,8) null,
+	[RNC]	[int] null,
+	[RSCP]	[numeric](22,8) null,
+	[RSRP]	[numeric](22,8) null,
+	[RSRQ]	[numeric](22,8) null,
+	[SC]	[int] null,
+	[SID]	[int] null,
+	[TAC]	[int] null,
+	[TYPECDMAEVDO]	[nvarchar](250) null,
+	[UCID]	[int] null,
+	[RES_STGENERAL_ID]	[bigint] null,
+	constraint [PK_RES_SYS_INFO] primary key clustered ([ID]) on [PRIMARY]  
+) on [PRIMARY]
+go

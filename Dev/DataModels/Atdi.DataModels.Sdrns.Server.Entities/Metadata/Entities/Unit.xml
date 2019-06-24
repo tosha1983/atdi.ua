@@ -21,7 +21,7 @@
     <Field Desc="T1" Title="T1" Name="T1" DataType="Counter.32" SourceName="T1" SourceType="Column" Required="false"/>
     <Field Desc="T2" Title="T2" Name="T2" DataType="Counter.32" SourceName="T2" SourceType="Column" Required="false"/>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="false"/>
-    <Field Desc="MeasGlobalSid" Title="MeasGlobalSid" Name="MeasGlobalSid" DataType="Text.250" SourceName="ID" SourceType="Column" Required="false"/>
+    <Field Desc="MeasGlobalSid" Title="MeasGlobalSid" Name="MeasGlobalSid" DataType="Text.250" SourceName="MEASGLOBALSID" SourceType="Column" Required="false"/>
   </Fields>
 </Entity>
 

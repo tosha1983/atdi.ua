@@ -35,6 +35,9 @@ namespace Atdi.CoreServices.EntityOrm
 
     static class Categories
     {
+        public static readonly EventCategory Creation = "Creation";
+
+
         public static readonly EventCategory CreatingInstance = "Creating instance";
         public static readonly EventCategory FetchingData = "Fetching data";
         public static readonly EventCategory BuildingStatement = "Building SQL query";
@@ -43,12 +46,15 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventCategory ResultHandling = "Handling result";
         public static readonly EventCategory OpeningConnection = "Opening connection";
         public static readonly EventCategory ExecuteQuery = "Execute query";
-        
+
+        public static readonly EventCategory Processing = "Processing";
 
     }
 
     static class Events
     {
+        public static readonly EventText ObjectWasCreated = "The object of {0} was created";
+
         public static readonly EventText CreatedInstanceOfQueryBuilder = "Created instance of the ICSM ORM Query Builder";
         public static readonly EventText CreatedInstanceOfQueryExecutor = "Created instance of the ICSM ORM Query Executor";
         public static readonly EventText UnableToCreateHost = "Unable to create the service host: {0}";
@@ -103,6 +109,9 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly ExceptionText ErrorLoadEnvironment = "Error load Environment.xml - {0}";
         public static readonly ExceptionText NotFoundAlias = "Not found alias for - '{0}'";
         public static readonly ExceptionText NotFoundDetailInformation = "Not found detail information for '{0}'";
+
+
+        public static readonly ExceptionText FailedToBuildAndExecute = "Failed to build pattern and execute by the query statement type '{0}'";
     }
 
     static class ConfigParameters

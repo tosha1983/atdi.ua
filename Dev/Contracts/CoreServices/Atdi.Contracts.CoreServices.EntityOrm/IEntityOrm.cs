@@ -20,6 +20,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
         IDataTypeMetadata GetDataTypeMetadata(string dataTypeName, DataSourceType dataSourceType);
 
         IUnitMetadata GetUnitMetadata(string unitName);
+
+        object CreatePrimaryKeyInstance(IEntityMetadata entity);
+
     }
 
     public static class EntityOrmExtensions

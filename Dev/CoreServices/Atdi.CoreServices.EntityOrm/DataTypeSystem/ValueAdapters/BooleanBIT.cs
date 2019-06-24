@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.DataModels;
 using Atdi.Platform.Logging;
@@ -20,13 +21,13 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
         {
             if (storeValue == null)
             {
-                return null;
+                return (bool?)null;
             }
             var valueAsByte = Convert.ToByte(storeValue);
             return valueAsByte != 0;
         }
 
-        public override bool? DecodeAs(IDataReader dataReader, int ordinal)
+        public override bool? DecodeAs(IEngineDataReader dataReader, int ordinal)
         {
             var valueAsBit = ValueReader.ReadAsBIT(dataReader, ordinal);
             return valueAsBit != 0;

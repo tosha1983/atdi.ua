@@ -33,7 +33,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 throw new InvalidOperationException(Exceptions.UndefinedEntitiesPath);
             }
-            var filePath = ormConfig.RootPath + "\\" + ormConfig.EntitiesPath + "\\" + this.FolderPath.Replace('.', '\\') + ((string.IsNullOrEmpty(this.FolderPath)) ? "\\" : "") + this.Name + ".xml";
+            var filePath = ormConfig.EntitiesPath + "\\" + this.FolderPath.Replace('.', '\\') + ((!string.IsNullOrEmpty(this.FolderPath)) ? "\\" : "") + this.Name + ".xml";
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -77,7 +77,7 @@ namespace Atdi.CoreServices.EntityOrm
 
             return new EntityPathDescriptor
             {
-                QualifiedName = ormConfig.Namespace + ((string.IsNullOrEmpty(folders)) ? $".{folders}" : "") + "." + entityName,
+                QualifiedName = ormConfig.Namespace + ((!string.IsNullOrEmpty(folders)) ? $".{folders}" : "") + "." + entityName,
                 Name = entityName,
                 FolderPath = folders
             };

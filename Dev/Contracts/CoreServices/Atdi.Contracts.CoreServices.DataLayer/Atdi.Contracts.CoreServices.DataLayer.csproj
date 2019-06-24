@@ -71,6 +71,7 @@
     <Compile Include="IQueryUpdateStatement.cs" />
     <Compile Include="IDataLayerScope.cs" />
     <Compile Include="Patterns\EngineCommandPattern.cs" />
+    <Compile Include="Patterns\InsertPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionIsolationLevel.cs" />
   </ItemGroup>

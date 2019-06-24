@@ -11,34 +11,44 @@ using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    public sealed class EntityOrmDataLayer : LoggedObject, IDataLayer<EntityDataOrm>
+    internal sealed class EntityOrmDataLayer : LoggedObject, IDataLayer<EntityDataOrm>
     {
-        private readonly IDataLayer _dataLayer;
-        private readonly IQueryBuilder _queryBuilder;
+        private readonly IDataLayer _dataLayer;        
         private readonly IEntityOrm _entityOrm;
-        private readonly DataTypeSystem _dataTypeSystem;
+        private readonly PatternBuilderFactory _builderFactory;
+        private IQueryBuilder _queryBuilder;
 
-        public EntityOrmDataLayer(IDataLayer dataLayer, IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, ILogger logger) : base(logger)
+        public EntityOrmDataLayer(IDataLayer dataLayer, IEntityOrm entityOrm, PatternBuilderFactory builderFactory, ILogger logger) : base(logger)
         {
             this._dataLayer = dataLayer;
             this._entityOrm = entityOrm;
-            this._dataTypeSystem = dataTypeSystem;
-            this._queryBuilder = new QueryBuilder(entityOrm, logger);
+            this._builderFactory = builderFactory;
         }
 
-        public IQueryBuilder Builder => _queryBuilder;
+        public IQueryBuilder Builder
+        {
+            get
+            {
+                if (this._queryBuilder == null)
+                {
+                    this._queryBuilder = new QueryBuilder(this._entityOrm, this.Logger);
+                }
+                return this._queryBuilder;
+            }
+        }
 
-        public IDataLayerScope<TContext> BeginScope<TContext>() 
+        public IDataLayerScope<TContext> CreateScope<TContext>() 
             where TContext : IDataContext, new()
         {
-            throw new NotImplementedException();
+            var dataEngine = this._dataLayer.GetDataEngine<TContext>();
+            var scope = new DataLayerScope<TContext>(dataEngine, this._builderFactory, this.Logger);
+            return scope;
         }
 
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
             var engine = this._dataLayer.GetDataEngine<TContext>();
-            var entiryOrm = new EntityOrmQueryBuilder(engine, this._entityOrm, this._dataTypeSystem, this.Logger);
-            var executor = new QueryExecutor(engine, entiryOrm, this._dataTypeSystem, this.Logger);
+            var executor = new QueryExecutor(engine, null, this._builderFactory, this.Logger);
             return executor;
         }
 
@@ -47,9 +57,5 @@ namespace Atdi.CoreServices.EntityOrm
             return new QueryBuilder<TModel>(this._entityOrm, this.Logger);
         }
 
-        //public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
-        //{
-        //    return _dataLayer.GetDataEngine<TContext>();
-        //}
     }
 }
