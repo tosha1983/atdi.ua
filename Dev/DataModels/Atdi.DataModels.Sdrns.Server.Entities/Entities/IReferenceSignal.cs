@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IReferenceSignal_PK
     {
         long Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface IReferenceSignal : IReferenceSignal_PK
     {
         double? Frequency_MHz { get; set; }

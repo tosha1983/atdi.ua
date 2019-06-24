@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ITaskParameters_PK
     {
         long? Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface ITaskParameters : ITaskParameters_PK
     {
         string SDRTaskId { get; set; }

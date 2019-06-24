@@ -22,7 +22,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         protected override void OnInstall()
         {
-
+            this.Container
+              .Register<OracleQueryPatternFactory>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container
+                .Register<OracleEngineSyntax>(Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container
                 .Register<IOracleDataEngine, OracleDataEngine>(Platform.DependencyInjection.ServiceLifetime.Transient);
         }

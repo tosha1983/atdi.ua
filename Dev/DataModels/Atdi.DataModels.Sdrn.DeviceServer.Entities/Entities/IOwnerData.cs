@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IOwnerData_PK
     {
        long? Id { get; set; }
     }
-        [Entity]
+    [Entity]
     public interface IOwnerData : IOwnerData_PK
     {
         string OwnerName { get; set; }

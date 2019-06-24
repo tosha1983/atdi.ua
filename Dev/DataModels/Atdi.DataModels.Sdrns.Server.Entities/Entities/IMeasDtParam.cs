@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IMeasDtParam_PK
     {
         long Id { get; set; }
     }
-        [Entity]
+
+    [Entity]
     public interface IMeasDtParam: IMeasDtParam_PK
     {
         string TypeMeasurements { get; set; }

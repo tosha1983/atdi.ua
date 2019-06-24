@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IResStGeneral_PK
     {
         long Id { get; set; }
     }
-        [Entity]
+    [Entity]
     public interface IResStGeneral : IResStGeneral_PK
     {
         double? BW { get; set; }

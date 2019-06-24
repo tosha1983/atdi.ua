@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IStationLicenseInfo_PK
     {
         long? Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface IStationLicenseInfo : IStationLicenseInfo_PK
     {
         int? IcsmId { get; set; }

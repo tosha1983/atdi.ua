@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ISignalMask_PK
     {
        long? Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface ISignalMask : ISignalMask_PK
     {
         double? Loss_dB { get; set; }
