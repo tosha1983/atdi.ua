@@ -9,7 +9,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
     public interface ISensor_PK
     {
-        long? Id { get; set; }
+        int? Id { get; set; }
     }
 
         [Entity]

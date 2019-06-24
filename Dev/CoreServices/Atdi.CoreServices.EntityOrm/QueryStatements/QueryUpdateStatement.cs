@@ -13,7 +13,7 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal sealed class QueryUpdateStatement : IQueryUpdateStatement
+    internal class QueryUpdateStatement : IQueryUpdateStatement
     {
         private readonly UpdateQueryDescriptor _queryDescriptor;
 
@@ -22,7 +22,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._queryDescriptor = new UpdateQueryDescriptor(entityOrm, entityMetadata);
         }
 
-        public UpdateQueryDescriptor QueryDecriptor => this._queryDescriptor;
+        public UpdateQueryDescriptor UpdateDecriptor => this._queryDescriptor;
 
         public IQueryUpdateStatement Where(Condition condition)
         {
@@ -61,56 +61,38 @@ namespace Atdi.CoreServices.EntityOrm
 
     }
 
-    internal sealed class QueryUpdateStatement<TModel> : IQueryUpdateStatement<TModel>
+    internal sealed class QueryUpdateStatement<TModel> : QueryUpdateStatement, IQueryUpdateStatement<TModel>
     {
-        private readonly QueryUpdateStatement _statement;
-
         public QueryUpdateStatement(IEntityOrm entityOrm, IEntityMetadata entityMetadata)
+            : base(entityOrm, entityMetadata)
         {
-            this._statement = new QueryUpdateStatement(entityOrm, entityMetadata);
         }
 
-        public QueryUpdateStatement Statement => _statement;
-
-        IQueryUpdateStatement<TModel> SetValue(ColumnValue columnValue)
-        {
-            this._statement.SetValue(columnValue);
-            return this;
-        }
-
-        IQueryUpdateStatement<TModel> SetValues(ColumnValue[] columnsValues)
-        {
-            this._statement.SetValues(columnsValues);
-            return this;
-        }
-
-        public IQueryUpdateStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value)
+        IQueryUpdateStatement<TModel> IQueryUpdateStatement<TModel>.SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value)
         {
             var memberName = columnsExpression.Body.GetMemberName();
             var columnValue = ColumnValue.Create(value, memberName);
-            this._statement.SetValue(columnValue);
+            this.SetValue(columnValue);
             return this;
         }
 
-        public IQueryUpdateStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
+        IQueryUpdateStatement<TModel> IQueryUpdateStatement<TModel>.Where(Expression<Func<TModel, bool>> expression)
         {
-            this._statement.Where(ConditionHelper.ParseConditionExpression(expression));
+            this.Where(ConditionHelper.ParseConditionExpression(expression));
             return this;
         }
 
-        public IQueryUpdateStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
+        IQueryUpdateStatement<TModel> IQueryUpdateStatement<TModel>.Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
         {
-            this._statement.Where(ConditionHelper.ParseConditionExpression(expression));
+            this.Where(ConditionHelper.ParseConditionExpression(expression));
             return this;
         }
 
-        public IQueryUpdateStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
+        IQueryUpdateStatement<TModel> IQueryUpdateStatement<TModel>.Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
         {
-            this._statement.Where(ConditionHelper.ParseCondition(columnExpression, conditionOperator, values));
+            this.Where(ConditionHelper.ParseCondition(columnExpression, conditionOperator, values));
             return this;
         }
-
-        
 
         //private static readonly IFormatProvider CultureEnUs = new System.Globalization.CultureInfo("en-US");
 

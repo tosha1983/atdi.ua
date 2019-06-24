@@ -50,10 +50,7 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new InvalidOperationException($"Incorrect field path {path}");
             }
 
-            var field = new FieldDescriptor
-            {
-                Path = path
-            };
+            
 
             var fieldName = nameParts[0];
             if (!this._entityMetadata.Fields.TryGetValue(fieldName, out IFieldMetadata fieldMetadata))
@@ -61,7 +58,12 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new InvalidOperationException($"Not found a field with name '{fieldName}' from the entity {this._entityMetadata} by path '{path}'");
             }
 
-            // is it local field?
+            var field = new FieldDescriptor(this._entityMetadata, fieldMetadata)
+            {
+                Path = path
+            };
+
+            // is it no reference field?
             if (nameParts.Length == 1)
             {
                 field.Entity = this._entityMetadata;
@@ -77,9 +79,10 @@ namespace Atdi.CoreServices.EntityOrm
                 Field = fieldMetadata
             };
             field.Reference = fieldReference;
+            
             for (int i = 1; i < nameParts.Length; i++)
             {
-
+                ++field.RefDepth;
                 if (fieldMetadata.SourceType != FieldSourceType.Reference
                     && fieldMetadata.SourceType != FieldSourceType.Extension
                     && fieldMetadata.SourceType != FieldSourceType.Relation)

@@ -26,6 +26,24 @@ namespace Atdi.CoreServices.EntityOrm
 
             this._adapterTypes[(int)DataType.Boolean][(int)DataSourceVarType.BOOL] = typeof(ValueAdapters.BooleanBOOL);
             this._adapterTypes[(int)DataType.Boolean][(int)DataSourceVarType.BIT] = typeof(ValueAdapters.BooleanBIT);
+            this._adapterTypes[(int)DataType.Byte][(int)DataSourceVarType.BIT] = typeof(ValueAdapters.ByteBIT);
+            this._adapterTypes[(int)DataType.Byte][(int)DataSourceVarType.BYTE] = typeof(ValueAdapters.ByteBYTE);
+            this._adapterTypes[(int)DataType.Bytes][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.BytesBYTES);
+            this._adapterTypes[(int)DataType.Bytes][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.BytesBLOB);
+            this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.NVARCHAR] = typeof(ValueAdapters.StringNVARCHAR);
+            this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.VARCHAR] = typeof(ValueAdapters.StringVARCHAR);
+            this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.NTEXT] = typeof(ValueAdapters.StringNTEXT);
+            this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.TEXT] = typeof(ValueAdapters.StringTEXT);
+            this._adapterTypes[(int)DataType.Integer][(int)DataSourceVarType.INT32] = typeof(ValueAdapters.IntegerINT32);
+            this._adapterTypes[(int)DataType.Long][(int)DataSourceVarType.INT64] = typeof(ValueAdapters.LongINT64);
+            this._adapterTypes[(int)DataType.DateTime][(int)DataSourceVarType.DATETIME] = typeof(ValueAdapters.DateTimeDATETIME);
+            this._adapterTypes[(int)DataType.DateTimeOffset][(int)DataSourceVarType.DATETIMEOFFSET] = typeof(ValueAdapters.DateTimeOffsetDATETIMEOFFSET);
+            this._adapterTypes[(int)DataType.Guid][(int)DataSourceVarType.GUID] = typeof(ValueAdapters.GuidGUID);
+            this._adapterTypes[(int)DataType.SignedByte][(int)DataSourceVarType.INT08] = typeof(ValueAdapters.SignedByteINT08);
+            this._adapterTypes[(int)DataType.Short][(int)DataSourceVarType.INT16] = typeof(ValueAdapters.ShortINT16);
+            this._adapterTypes[(int)DataType.Decimal][(int)DataSourceVarType.DECIMAL] = typeof(ValueAdapters.DecimalDECIMAL);
+            this._adapterTypes[(int)DataType.Float][(int)DataSourceVarType.FLOAT] = typeof(ValueAdapters.FloatFLOAT);
+            this._adapterTypes[(int)DataType.Double][(int)DataSourceVarType.DOUBLE] = typeof(ValueAdapters.DoubleDOUBLE);
         }
 
         private static Type[][] BuildAdapterTypes()
@@ -98,6 +116,72 @@ namespace Atdi.CoreServices.EntityOrm
         public IValueEncoder GetEncoder(IDataTypeMetadata dataTypeMetadata)
         {
             return this.GetValueAdapterByDataType<IValueEncoder>(dataTypeMetadata);
+        }
+
+        public DataType GetSourceDataType(DataSourceVarType sourceVarType)
+        {
+            switch (sourceVarType)
+            {
+                case DataSourceVarType.BOOL:
+                    return DataType.Boolean;
+                case DataSourceVarType.BIT:
+                    return DataType.Boolean;
+                case DataSourceVarType.BYTE:
+                    return DataType.Byte;
+                case DataSourceVarType.BYTES:
+                    return DataType.Bytes;
+                case DataSourceVarType.BLOB:
+                    return DataType.Bytes;
+                case DataSourceVarType.INT08:
+                    return DataType.SignedByte;
+                case DataSourceVarType.INT16:
+                    return DataType.Short;
+                case DataSourceVarType.INT32:
+                    return DataType.Integer;
+                case DataSourceVarType.INT64:
+                    return DataType.Long;
+                case DataSourceVarType.NCHAR:
+                    return DataType.Char;
+                case DataSourceVarType.NCHARS:
+                    return DataType.Chars;
+                case DataSourceVarType.NVARCHAR:
+                    return DataType.String;
+                case DataSourceVarType.NTEXT:
+                    return DataType.String;
+                case DataSourceVarType.CHAR:
+                    return DataType.Char;
+                case DataSourceVarType.CHARS:
+                    return DataType.Chars;
+                case DataSourceVarType.VARCHAR:
+                    return DataType.String;
+                case DataSourceVarType.TEXT:
+                    return DataType.String;
+                case DataSourceVarType.TIME:
+                    return DataType.Time;
+                case DataSourceVarType.DATE:
+                    return DataType.Date;
+                case DataSourceVarType.DATETIME:
+                    return DataType.DateTime;
+                case DataSourceVarType.DATETIMEOFFSET:
+                    return DataType.DateTimeOffset;
+                case DataSourceVarType.MONEY:
+                    return DataType.Decimal;
+                case DataSourceVarType.FLOAT:
+                    return DataType.Float;
+                case DataSourceVarType.DOUBLE:
+                    return DataType.Double;
+                case DataSourceVarType.DECIMAL:
+                    return DataType.Decimal;
+                case DataSourceVarType.GUID:
+                    return DataType.Guid;
+                case DataSourceVarType.XML:
+                    return DataType.Xml;
+                case DataSourceVarType.JSON:
+                    return DataType.Json;
+                case DataSourceVarType.UNDEFINED:
+                default:
+                    throw new InvalidOperationException($"Unsupported Source Var Type '{sourceVarType}'");
+            }
         }
     }
 }

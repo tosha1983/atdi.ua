@@ -24,7 +24,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQueryBuilder<TModel> GetBuilder<TModel>();
 
-        IDataLayerScope<TContext> BeginScope<TContext>()
+        IDataLayerScope<TContext> CreateScope<TContext>()
              where TContext : IDataContext, new();
     }
 

@@ -25,13 +25,13 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         /// <summary>
         /// Результат в виде потока данных
-        /// Исподьзуется патерн пердачи делегата который будет вызвон полсе выполнения запроса или комманды
-        /// Параметры делагате произвольный но главнео наличие ссылки на объект ридера данных
+        /// Используется паттерн пердачи делегата который будет вызвон после выполнения запроса или комманды
+        /// Параметры делагате произвольные но главнео наличие ссылки на объект ридера данных
         /// </summary>
         Reader,
 
         /// <summary>
-        /// Результа в виде согласованной структуры в рамках определнного патерна.
+        /// Результа в виде согласованной структуры в рамках определенного патерна.
         /// </summary>
         Custom
     }
@@ -84,6 +84,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         }
 
         public T Value { get; set; }
+    }
+
+    public class EngineExecutionScalarResult : EngineExecutionResult
+    {
+        public EngineExecutionScalarResult()
+            : base(EngineExecutionResultKind.Scalar)
+        {
+        }
+        public object Value { get; set; }
     }
 
     public class EngineExecutionReaderResult<TReader> : EngineExecutionResult

@@ -13,7 +13,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
     }
 
 
-        [Entity]
+    [Entity]
     public interface ITaskParametersFreq : ITaskParametersFreq_PK
     {
         double? FreqCH { get; set; }

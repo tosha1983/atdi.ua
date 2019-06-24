@@ -26,6 +26,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
     {
         Table = 0,
         Query,
+        View,
         File
     }
 
@@ -148,6 +149,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         DECIMAL,
         GUID,
         XML,
-        JSON
+        JSON,
+        CHARS,
+        NCHARS
     }
 }

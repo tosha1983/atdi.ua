@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
     [Entity]
     public interface IReferenceSituation : IReferenceSituation_PK
     {
-        long? SensorId { get; set; }
+        int? SensorId { get; set; }
         long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
         ISensor SENSOR { get; set; }

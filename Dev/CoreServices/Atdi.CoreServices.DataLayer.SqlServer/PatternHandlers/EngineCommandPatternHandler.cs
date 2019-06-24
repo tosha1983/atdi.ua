@@ -32,6 +32,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
                 case EngineExecutionResultKind.Scalar:
                     pattern.AsResult<EngineExecutionScalarResult<object>>()
                         .Value = executer.ExecuteScalar(pattern.Command);
+
                     return;
                 case EngineExecutionResultKind.Reader:
                     executer.ExecuteReader(pattern.Command, sqlReader =>

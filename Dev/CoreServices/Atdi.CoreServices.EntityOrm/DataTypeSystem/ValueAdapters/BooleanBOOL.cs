@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.DataModels;
 using Atdi.Platform.Logging;
@@ -18,10 +18,14 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
         public override bool? DecodeAs(object storeValue)
         {
+            if (storeValue == null)
+            {
+                return (bool?)null;
+            }
             return Convert.ToBoolean(storeValue);
         }
 
-        public override bool? DecodeAs(IDataReader dataReader, int ordinal)
+        public override bool? DecodeAs(IEngineDataReader dataReader, int ordinal)
         {
             return ValueReader.ReadAsBOOL(dataReader, ordinal);
         }

@@ -53,11 +53,47 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
     public static class FieldMetadataExtensions
     {
-        public static bool AsReferece(this IFieldMetadata field)
+        /// <summary>
+        /// Поле как ссылка
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public static bool IsLookup(this IFieldMetadata field)
         {
             return field.SourceType == FieldSourceType.Extension
                 || field.SourceType == FieldSourceType.Reference
                 || field.SourceType == FieldSourceType.Relation;
+        }
+
+        /// <summary>
+        /// Признак того что поле является полем входящим в состав первичного ключа. 
+        /// Природа первичного ключа не учитывается - локальный набор или наследуемый или доставшийся при расширении
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public static bool IsPrimaryKey(this IFieldMetadata field)
+        {
+            if (field.SourceType != FieldSourceType.Column)
+            {
+                return false;
+            }
+
+            var primaryKey = field.Entity.DefinePrimaryKey();
+            if (primaryKey == null || primaryKey.FieldRefs == null)
+            {
+                return false;
+            }
+            return primaryKey.FieldRefs.ContainsKey(field.Name);
+        }
+
+        public static IReferenceFieldMetadata AsReference(this IFieldMetadata field)
+        {
+            if (field.SourceType == FieldSourceType.Reference)
+            {
+                return field as IReferenceFieldMetadata;
+            }
+
+            throw new InvalidCastException($"Field is not reference. Field is {field.SourceType}");
         }
 
         public static IEntityMetadata GetRefEntity(this IFieldMetadata field)
@@ -76,5 +112,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             }
             return null;
         }
+
+        
     }
 }

@@ -17,18 +17,33 @@ namespace Atdi.Test.Platform
         public static void Run(IServicesResolver servicesResolver)
         {
             var dataLayer = servicesResolver.Resolve<IDataLayer<EntityDataOrm>>();
-            var builder = dataLayer.GetBuilder<ITestDataType>();
-            var executor = dataLayer.Executor<SdrnServerDataContext>();
+            // var builder = dataLayer.GetBuilder<ITestDataType>();
+            // var executor = dataLayer.Executor<SdrnServerDataContext>();
 
-            Test_ReferenceFields(executor, dataLayer);
+            Test_InsertPatterns(dataLayer);
+            //Test_ReferenceFields(dataLayer);
             //Test_Boolean(builder, executor);
         }
 
-        private static void Test_ReferenceFields(IQueryExecutor executor, IDataLayer<EntityDataOrm> dataLayer)
+        private static void Test_InsertPatterns(IDataLayer<EntityDataOrm> dataLayer)
         {
-            var queryNoTyped = dataLayer.Builder
-                    .From("TestRefRoot")
-                    .Select("BOOK1.SUBBOOK1.EXT2.Prop1");
+            var insert = dataLayer.GetBuilder<ITestRefBook>()
+                .Insert()
+                .SetValue(c => c.Name, "Name")
+                .SetValue(c => c.SUBBOOK1.Code, "code_1")
+                .SetValue(c => c.SUBBOOK1.SubType, "sub_type_1");
+
+            using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
+            {
+               var rowsAffected = scope.Executor.Execute(insert);
+            }
+        }
+
+        private static void Test_ReferenceFields(IDataLayer<EntityDataOrm> dataLayer)
+        {
+            //var queryNoTyped = dataLayer.Builder
+            //        .From("TestRefRoot")
+            //        .Select("BOOK1.SUBBOOK1.EXT2.Prop1");
 
             var query = dataLayer.GetBuilder<ITestRefRoot>()
             .From()
@@ -64,50 +79,54 @@ namespace Atdi.Test.Platform
             .OnPercentTop(100)
             .Distinct();
 
-
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #1, execute statement without trasaction, close connaction
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close connaction
-
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #3
+            using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
             {
-                scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
-
-                scope.BeginTran(); // connaction #3: scope has transaction
-
-                scope.Executor.Execute(queryNoTyped); // connaction #3: execute statement with trasaction
-                scope.Executor.Execute(query); // connaction #3: execute statement with trasaction
-
-
-                scope.Commit(); // connaction #3:  commit trasaction
-                // connaction #3: scope has no transaction
-
-                scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
-            } // close connection #3
-
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #4
-
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #5
-            {
-                scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
-                scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
-            }
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #6
-            {
-                scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
-                scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
+                var res = scope.Executor.Execute(query);
             }
 
+            //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #1, execute statement without trasaction, close connaction
+            //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close connaction
 
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #1
-            {
-                dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close transaction
-            }
+            //using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #3
+            //{
+            //    scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
 
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #7
-            {
-                scope.Executor.Execute(query); // connaction #7: execute statement without trasaction
-            }
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #7, execute statement without trasaction, close transaction
+            //    scope.BeginTran(); // connaction #3: scope has transaction
+
+            //    scope.Executor.Execute(queryNoTyped); // connaction #3: execute statement with trasaction
+            //    scope.Executor.Execute(query); // connaction #3: execute statement with trasaction
+
+
+            //    scope.Commit(); // connaction #3:  commit trasaction
+            //    // connaction #3: scope has no transaction
+
+            //    scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
+            //} // close connection #3
+
+            //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #4
+
+            //using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #5
+            //{
+            //    scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
+            //    scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
+            //}
+            //using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #6
+            //{
+            //    scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
+            //    scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
+            //}
+
+
+            //using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #1
+            //{
+            //    dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close transaction
+            //}
+
+            //using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #7
+            //{
+            //    scope.Executor.Execute(query); // connaction #7: execute statement without trasaction
+            //}
+            //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #7, execute statement without trasaction, close transaction
 
             //SqlConnection connection = new SqlConnection();
 

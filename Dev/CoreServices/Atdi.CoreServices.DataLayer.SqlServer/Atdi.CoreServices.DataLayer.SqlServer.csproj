@@ -42,10 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppComponent.cs" />
+    <Compile Include="CommandBuilder.cs" />
     <Compile Include="DataEngine.cs" />
     <Compile Include="EngineDataReader.cs" />
     <Compile Include="EngineExecuter.cs" />
     <Compile Include="PatternHandlers\EngineCommandPatternHandler.cs" />
+    <Compile Include="PatternHandlers\InsertPatternHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryPatternFactory.cs" />
     <Compile Include="IQueryPatternHandler.cs" />

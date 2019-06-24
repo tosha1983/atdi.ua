@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[SENSOR_LOCATION](
-	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[SENSORID] [bigint] NULL,
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SENSORID] [int] NULL,
 	[DATAFROM] [datetime] NULL,
 	[DATATO] [datetime] NULL,
 	[DATACREATED] [datetime] NULL,

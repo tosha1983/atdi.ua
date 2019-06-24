@@ -9,13 +9,13 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
     public interface IAntennaPattern_PK
     {
-        long? Id { get; set; }
+        int? Id { get; set; }
     }
 
     [Entity]
     public interface IAntennaPattern : IAntennaPattern_PK
     {
-        long? SensorAntennaId { get; set; }
+        int? SensorAntennaId { get; set; }
         double? Freq { get; set; }
         double? Gain { get; set; }
         string DiagA { get; set; }
