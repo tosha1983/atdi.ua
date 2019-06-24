@@ -14,7 +14,7 @@ using Atdi.DataModels.DataConstraint;
 namespace Atdi.CoreServices.EntityOrm
 {
     
-    internal sealed class QueryInsertStatement : IQueryInsertStatement
+    internal class QueryInsertStatement : IQueryInsertStatement
     {
         private readonly InsertQueryDescriptor _queryDescriptor;
         private readonly QuerySelectStatement _selectStatement;
@@ -25,9 +25,9 @@ namespace Atdi.CoreServices.EntityOrm
             this._selectStatement = new QuerySelectStatement(entityOrm, entityMetadata);
         }
 
-        public InsertQueryDescriptor QueryDecriptor => this._queryDescriptor;
+        public InsertQueryDescriptor InsertDecriptor => this._queryDescriptor;
 
-        public QuerySelectStatement SelectStatement => _selectStatement;
+        public SelectQueryDescriptor SelectDecriptor => _selectStatement.SelectDecriptor;
 
         public IQueryInsertStatement Select(params string[] columns)
         {
@@ -61,36 +61,32 @@ namespace Atdi.CoreServices.EntityOrm
 
     }
 
-    internal sealed class QueryInsertStatement<TModel> : IQueryInsertStatement<TModel>
+    internal sealed class QueryInsertStatement<TModel> : QueryInsertStatement, IQueryInsertStatement<TModel>
     {
-        private readonly QueryInsertStatement _statement;
-
         public QueryInsertStatement(IEntityOrm entityOrm, IEntityMetadata entityMetadata)
+            : base(entityOrm, entityMetadata)
         {
-            this._statement = new QueryInsertStatement(entityOrm, entityMetadata);
         }
 
-        public QueryInsertStatement Statement => _statement;
-
-        public IQueryInsertStatement<TModel> SetValue(ColumnValue columnValue)
-        {
-            this._statement.SetValue(columnValue); 
-            return this;
-        }
+        //public IQueryInsertStatement<TModel> SetValue(ColumnValue columnValue)
+        //{
+        //    this.SetValue(columnValue); 
+        //    return this;
+        //}
 
         public IQueryInsertStatement<TModel> SetValue<TValue>(Expression<Func<TModel, TValue>> columnsExpression, TValue value)
         {
             var memberName = columnsExpression.Body.GetMemberName();
             var columnValue = ColumnValue.Create(value, memberName);
-            this._statement.SetValue(columnValue);
+            this.SetValue(columnValue);
             return this;
         }
 
-        public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
-        {
-            this._statement.SetValues(columnsValues);
-            return this;
-        }
+        //public IQueryInsertStatement<TModel> SetValues(ColumnValue[] columnsValues)
+        //{
+        //    this.SetValues(columnsValues);
+        //    return this;
+        //}
 
         public IQueryInsertStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions)
         {
@@ -102,7 +98,7 @@ namespace Atdi.CoreServices.EntityOrm
             for (int i = 0; i < columnsExpressions.Length; i++)
             {
                 var memberName = columnsExpressions[i].Body.GetMemberName();
-                _statement.Select(memberName);
+                this.Select(memberName);
             }
             return this;
         }

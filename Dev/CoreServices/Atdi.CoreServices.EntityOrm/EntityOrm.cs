@@ -984,8 +984,16 @@ namespace Atdi.CoreServices.EntityOrm
             }
             else
             {
-                // this is added me and we need to finish initialize
-                this.PadEntityMetada(entityMetadata, entityMetadataDef);
+                try
+                {
+                    // this is added me and we need to finish initialize
+                    this.PadEntityMetada(entityMetadata, entityMetadataDef);
+                }
+                catch(Exception e)
+                {
+                    
+                    throw;
+                }
             }
 
             // нужно доофрмить сущности - проинициализировать все ссылки на сущности во всех полях
@@ -1108,7 +1116,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 throw new InvalidOperationException($"Primary key fields are not defined.");
             }
-
+            primaryKeyMetadata.FieldRefs = fieldRefs;
             return primaryKeyMetadata;
         }
 
@@ -1327,7 +1335,7 @@ namespace Atdi.CoreServices.EntityOrm
                     {
                         throw new InvalidOperationException($"Attempt to reuse primary key field with name '{keyMappedDef.KeyFieldName}' when describing mapping");
                     }
-                    if (field.RefEntity.TryGetPrimaryKeyField(keyMappedDef.KeyFieldName, out IFieldMetadata keyField))
+                    if (!field.RefEntity.TryGetPrimaryKeyField(keyMappedDef.KeyFieldName, out IFieldMetadata keyField))
                     {
                         throw new InvalidOperationException($"Not found field for PK-mapping by path '{keyMappedDef.KeyFieldName}' in '{field.RefEntity}'");
                     }
@@ -1671,7 +1679,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 throw new InvalidOperationException($"Incorrect relation condition {field.Name}: undefined field name");
             }
-            if (field.Entity.TryGetLocalFieldByPath(operandAsFieldDef.Name, out IFieldMetadata fieldMetadata))
+            if (!field.Entity.TryGetLocalFieldByPath(operandAsFieldDef.Name, out IFieldMetadata fieldMetadata))
             {
                 throw new InvalidOperationException($"Incorrect relation condition {field.Name}: not found field with name '{operandAsFieldDef.Name}'");
             }
@@ -1708,6 +1716,11 @@ namespace Atdi.CoreServices.EntityOrm
             }
 
             return condition;
+        }
+
+        public object CreatePrimaryKeyInstance(IEntityMetadata entity)
+        {
+            return new object();
         }
     }
 }

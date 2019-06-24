@@ -158,5 +158,20 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             fieldMetadata = null;
             return false;
         }
+
+        public static IPrimaryKeyMetadata DefinePrimaryKey(this IEntityMetadata entityMetadata)
+        {
+            if (entityMetadata.PrimaryKey != null)
+            {
+                return entityMetadata.PrimaryKey;
+            }
+
+            if (entityMetadata.UsesBaseEntityPrimaryKey())
+            {
+                return entityMetadata.DefinePrimaryKey();
+            }
+
+            return null;
+        }
     }
 }

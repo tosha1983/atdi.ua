@@ -12,7 +12,7 @@ using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal sealed class QueryDeleteStatement : IQueryDeleteStatement
+    internal class QueryDeleteStatement : IQueryDeleteStatement
     {
         private readonly DeleteQueryDescriptor _queryDescriptor;
 
@@ -21,7 +21,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._queryDescriptor = new DeleteQueryDescriptor(entityOrm, entityMetadata);
         }
 
-        public DeleteQueryDescriptor QueryDecriptor => this._queryDescriptor;
+        public DeleteQueryDescriptor DeleteDecriptor => this._queryDescriptor;
 
         public IQueryDeleteStatement Where(Condition condition)
         {
@@ -35,32 +35,28 @@ namespace Atdi.CoreServices.EntityOrm
         }
     }
 
-    internal sealed class QueryDeleteStatement<TModel> : IQueryDeleteStatement<TModel>
+    internal sealed class QueryDeleteStatement<TModel> : QueryDeleteStatement, IQueryDeleteStatement<TModel>
     {
-        private readonly QueryDeleteStatement _statement;
-
         public QueryDeleteStatement(IEntityOrm entityOrm, IEntityMetadata entityMetadata)
+            : base(entityOrm, entityMetadata)
         {
-            this._statement = new QueryDeleteStatement(entityOrm, entityMetadata);
         }
 
-        public QueryDeleteStatement Statement => _statement;
-
-        public IQueryDeleteStatement<TModel> Where(Expression<Func<TModel, bool>> expression)
+        IQueryDeleteStatement<TModel> IQueryDeleteStatement<TModel>.Where(Expression<Func<TModel, bool>> expression)
         {
-            this._statement.Where(ConditionHelper.ParseConditionExpression(expression));
+            this.Where(ConditionHelper.ParseConditionExpression(expression));
             return this;
         }
 
-        public IQueryDeleteStatement<TModel> Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
+        IQueryDeleteStatement<TModel> IQueryDeleteStatement<TModel>.Where(Expression<Func<TModel, IQuerySelectStatementOperation, bool>> expression)
         {
-            this._statement.Where(ConditionHelper.ParseConditionExpression(expression));
+            this.Where(ConditionHelper.ParseConditionExpression(expression));
             return this;
         }
 
-        public IQueryDeleteStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
+        IQueryDeleteStatement<TModel> IQueryDeleteStatement<TModel>.Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values)
         {
-            this._statement.Where(ConditionHelper.ParseCondition(columnExpression, conditionOperator, values));
+            this.Where(ConditionHelper.ParseCondition(columnExpression, conditionOperator, values));
             return this;
         }
     }

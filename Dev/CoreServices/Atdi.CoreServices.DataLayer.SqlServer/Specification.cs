@@ -36,7 +36,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
         public static readonly EventText UnableToDisposeHost = "Unable to dispose the service host: {0}";
         public static readonly EventText ServiceHostDescriptor = "{0}";
 
-        public static readonly EventText ObjectWasCreated = "The {0} Object was created";
+        public static readonly EventText ObjectWasCreated = "The object of {0} was created";
     }
     static class TraceScopeNames
     {

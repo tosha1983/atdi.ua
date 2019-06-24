@@ -16,6 +16,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             this._parameters = new Dictionary<string, EngineCommandParameter>();
         }
 
+        public EngineCommand(IDictionary<string, EngineCommandParameter> parameters)
+        {
+            this._parameters = parameters;
+        }
+
         public string Text { get; set; }
 
 
