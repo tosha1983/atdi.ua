@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Api.EventSystem;
 using Atdi.Platform.Logging;
@@ -2052,7 +2052,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             //            freqSample.Occupation_Pt = occupationPt.Value;
             //        else
             //        {
-            //            WriteLog("Incorrect value Freq_MHz", "IFreqSampleRaw");
+            //            WriteLog("Incorrect value OccupationPt", "IFreqSampleRaw");
             //            validationResult = false;
             //        }
 
@@ -2991,7 +2991,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             //    return false;
             //}
         }
-
+        
         private bool ValidateGeoLocation<T>(T location, string tableName)
             where T : DM.GeoLocation
         {
@@ -3080,4 +3080,3 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         }
     }
 }
-*/
