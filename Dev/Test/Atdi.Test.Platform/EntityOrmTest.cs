@@ -1,7 +1,7 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
-using Atdi.DataModels.Sdrns.Server.Entities.Entities;
+using Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,8 @@ namespace Atdi.Test.Platform
 
             using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
             {
-               var rowsAffected = scope.Executor.Execute(insert);
+               var pk = scope.Executor.Execute<ITestRefBook_PK>(insert);
+                Console.WriteLine($"Id = {pk.Id}, Guid = {pk.GuidId}");
             }
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.Server.Entities.Entities
+namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [Entity]
     public interface ITestDataType
@@ -33,6 +33,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.Entities
     public interface ITestRefRoot_PK
     {
         long Id { get; set; }
+
+        Guid GuidId { get; set; }
     }
 
     [Entity]
@@ -53,6 +55,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities.Entities
     public interface ITestRefBook_PK
     {
         long Id { get; set; }
+
+        Guid GuidId { get; set; }
     }
     [Entity]
     public interface ITestRefBook : ITestRefBook_PK

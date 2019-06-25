@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,26 +8,82 @@ using System.Threading.Tasks;
 
 namespace Atdi.CoreServices.DataLayer.SqlServer
 {
+    class BuildingContex
+    {
+        private readonly CommandBuilder _builder;
+        private readonly Dictionary<string, EngineCommandParameter> _parametersByMember;
+        private readonly Dictionary<string, EngineCommandParameter> _parametersByName;
+        private int _iterationIndex;
+        private int _iterationCounter;
+
+        public BuildingContex()
+        {
+            this._builder = new CommandBuilder();
+            this._parametersByMember = new Dictionary<string, EngineCommandParameter>();
+            this._parametersByName = new Dictionary<string, EngineCommandParameter>();
+            this._iterationIndex = 0;
+            this._iterationCounter = 0;
+            this.NextIteration();
+        }
+
+        public CommandBuilder Builder => this._builder;
+
+        public void NextIteration()
+        {
+            ++this._iterationIndex;
+            this._iterationCounter = 0;
+            this._builder.StartIteration(this._iterationIndex);
+        }
+
+        public EngineCommandParameter CreateParameter(string alias, string memberName, DataType dataType, EngineParameterDirection direction)
+        {
+            ++this._iterationCounter;
+            var parameter = new EngineCommandParameter()
+            {
+                Name = $"P_I{this._iterationIndex}_C{this._iterationCounter}",
+                DataType = dataType,
+                Direction = direction
+            };
+            var key = BuildKey(alias, memberName);
+            _parametersByMember.Add(key, parameter);
+            _parametersByName.Add(parameter.Name, parameter);
+            return parameter;
+        }
+
+        public EngineCommandParameter GetParameter(string alias, string memberName)
+        {
+            var key = BuildKey(alias, memberName);
+            return _parametersByMember[key];
+        }
+
+        private static string BuildKey(string alias, string memberName)
+        {
+            return $"{alias}=>{memberName}";
+        }
+
+        public EngineCommand BuildCommand()
+        {
+            var command = new EngineCommand(this._parametersByName)
+            {
+                Text = _builder.BuildComandText()
+            };
+
+            return command;
+        }
+    }
+
     class CommandBuilder
     {
         private readonly StringBuilder _sql;
-        private int _iteration;
-        private int _counter;
-        private readonly Dictionary<string, EngineCommandParameter> _parameters;
 
         public CommandBuilder()
         {
             this._sql = new StringBuilder();
-            this._parameters = new Dictionary<string, EngineCommandParameter>();
-            this._iteration = 0;
-            this._counter = 0;
         }
 
-        public void StartIteration()
+        public void StartIteration(int iteration)
         {
-            ++this._iteration;
-            this._counter = 0;
-            _sql.AppendLine($"/* Iterration: #{this._iteration} */");
+            _sql.AppendLine($"/* Iterration: #{iteration} */");
             _sql.AppendLine();
         }
 
@@ -35,50 +92,148 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             _sql.AppendLine($"/* Expression: index = #{index}, alias = '{alias}' */");
         }
 
-        public void Insert(string schema, string source, string[] fields, EngineCommandParameter[] values, EngineCommandParameter idenityParameter = null)
+        /// <summary>
+        /// Автогенерация значения
+        /// В зависимости от типа данных применяем разнгые функции
+        ///  - для целого числа @@IDENTITY
+        ///  - для GUID - NEWID()
+        ///  - для даты - GETDATE()
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void GenerateNextValue(EngineCommandParameter parameter)
+        {
+            switch (parameter.DataType)
+            {
+                case DataModels.DataType.Long:
+                    _sql.AppendLine($"SET @{parameter.Name} = @@IDENTITY;");
+                    break;
+                case DataModels.DataType.Integer:
+                    _sql.AppendLine($"SET @{parameter.Name} = @@IDENTITY;");
+                    break;
+                case DataModels.DataType.Short:
+                    _sql.AppendLine($"SET @{parameter.Name} = @@IDENTITY;");
+                    break;
+                case DataModels.DataType.Guid:
+                    _sql.AppendLine($"SET @{parameter.Name} = NEWID();");
+                    break;
+                case DataModels.DataType.DateTime:
+                    _sql.AppendLine($"SET @{parameter.Name} = GETDATE();");
+                    break;
+                case DataModels.DataType.DateTimeOffset:
+                    _sql.AppendLine($"SET @{parameter.Name} = SYSDATETIMEOFFSET();");
+                    break;
+                case DataModels.DataType.Time:
+                    _sql.AppendLine($"SET @{parameter.Name} = GETDATE();");
+                    break;
+                case DataModels.DataType.Date:
+                    _sql.AppendLine($"SET @{parameter.Name} = GETDATE();");
+                    break;
+                
+                default:
+                    throw new InvalidOperationException($"Unsupported type to generate next value {parameter.DataType}");
+            }
+        }
+
+        /// <summary>
+        /// Автогенерация значения
+        /// В зависимости от типа данных применяем разнгые функции
+        ///  - для целого числа @@IDENTITY
+        ///  - для GUID - NEWID()
+        ///  - для даты - GETDATE()
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void SetDefault(EngineCommandParameter parameter)
+        {
+            switch (parameter.DataType)
+            {
+                case DataModels.DataType.String:
+                    _sql.AppendLine($"SET @{parameter.Name} = '';");
+                    break;
+                case DataModels.DataType.Boolean:
+                    _sql.AppendLine($"SET @{parameter.Name} = 1;");
+                    break;
+                case DataModels.DataType.Integer:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.DateTime:
+                    _sql.AppendLine($"SET @{parameter.Name} = GETDATE();");
+                    break;
+                case DataModels.DataType.DateTimeOffset:
+                    _sql.AppendLine($"SET @{parameter.Name} = SYSDATETIMEOFFSET();");
+                    break;
+                case DataModels.DataType.Double:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.Float:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.Decimal:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.Byte:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.Bytes:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0x00;");
+                    break;
+                case DataModels.DataType.Guid:
+                    _sql.AppendLine($"SET @{parameter.Name} = NEWID();");
+                    break;
+                case DataModels.DataType.Time:
+                    _sql.AppendLine($"SET @{parameter.Name} = GETDATE();");
+                    break;
+                case DataModels.DataType.Date:
+                    _sql.AppendLine($"SET @{parameter.Name} = GETDATE();");
+                    break;
+                case DataModels.DataType.Long:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.Short:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.Char:
+                    _sql.AppendLine($"SET @{parameter.Name} = '';");
+                    break;
+                case DataModels.DataType.SignedByte:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.UnsignedShort:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.UnsignedInteger:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.UnsignedLong:
+                    _sql.AppendLine($"SET @{parameter.Name} = 0;");
+                    break;
+                case DataModels.DataType.ClrType:
+                case DataModels.DataType.ClrEnum:
+                case DataModels.DataType.Xml:
+                case DataModels.DataType.Json:
+                case DataModels.DataType.Chars:
+                case DataModels.DataType.Undefined:
+                default:
+                    break;
+            }
+        }
+
+        public void Insert(string schema, string source, string[] fields, EngineCommandParameter[] values)
         {
             var fieldsClause = string.Join(", ", fields.Select(f => $"[{f}]").ToArray());
             _sql.AppendLine($"INSERT INTO [{schema}].[{source}]({fieldsClause})");
 
-            for (int i = 0; i < values.Length; i++)
-            {
-                var parameter = values[i];
-                this.AppendParameter(parameter);
-            }
             var valuesClause = string.Join(", ", values.Select(v => $"@{v.Name}").ToArray());
-
             _sql.AppendLine($"VALUES({valuesClause});");
-
-            if (idenityParameter != null)
-            {
-                this.SelectIdentity(idenityParameter);
-            }
         }
 
         public void SelectIdentity(EngineCommandParameter idenityParameter)
         {
-            this.AppendParameter(idenityParameter);
             _sql.AppendLine($"SET @{idenityParameter.Name} = @@IDENTITY;");
         }
 
-        private void AppendParameter(EngineCommandParameter parameter)
+        public string BuildComandText()
         {
-            if (parameter.Name == null || !_parameters.ContainsKey(parameter.Name))
-            {
-                ++this._counter;
-                parameter.Name = $"P_I{this._iteration}_{this._counter}";
-                _parameters.Add(parameter.Name, parameter);
-            }
-        }
-
-        public EngineCommand GetCommand()
-        {
-            var command = new EngineCommand(this._parameters)
-            {
-                Text = _sql.ToString()
-            };
-
-            return command;
+            return _sql.ToString();
         }
     }
 }

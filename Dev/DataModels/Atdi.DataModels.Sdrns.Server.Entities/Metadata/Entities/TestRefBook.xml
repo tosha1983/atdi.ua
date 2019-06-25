@@ -12,12 +12,14 @@
   <Fields>
     
     <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the message record" Title="Id record"/>
+    <Field Name="GuidId" DataType="Counter.Guid" SourceName="GUID_ID" SourceType="Column" Desc="The id of the message record" Title="Id record"/>
     <Field Name="Name" DataType="Text.50" SourceName="NAME" SourceType="Column" Required="false" Desc="Name" Title="Name" />    
     <Field Name="SUBBOOK1" SourceName="TestRefSubBook" SourceType="Reference" Required="true" Desc="" Title="SUBBOOK1"/>
 
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
+    <FieldRef Name="GuidId"/>
   </PrimaryKey>
 </Entity>
 

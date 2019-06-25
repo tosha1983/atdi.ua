@@ -74,8 +74,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         {
             return entityMetadata.Type == EntityType.Extention
                 || entityMetadata.Type == EntityType.Prototype
-                || entityMetadata.Type == EntityType.Role
-                || entityMetadata.Type == EntityType.Simple;
+                || entityMetadata.Type == EntityType.Role;
+            // при простом наследовании просто копируется вся структура и объект выглядит как Normal
+             //   || entityMetadata.Type == EntityType.Simple;
         }
         public static bool UsesBaseEntity(this IEntityMetadata entityMetadata)
         {
@@ -172,6 +173,34 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Метод пытается вернуть первичный ключ если он определен на уровне даннйо сущности
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        /// <param name="path"></param>
+        /// <param name="fieldMetadata"></param>
+        /// <returns></returns>
+        public static bool TryGetPrimaryKey(this IEntityMetadata entityMetadata, out IPrimaryKeyMetadata primaryKey)
+        {
+            if (entityMetadata.PrimaryKey != null)
+            {
+                primaryKey = entityMetadata.PrimaryKey;
+                return true;
+            }
+            primaryKey = null;
+            return false;
+        }
+        public static bool TryGetPrimaryKeyRefFields(this IEntityMetadata entityMetadata, out IPrimaryKeyFieldRefMetadata[] primaryKeyFields)
+        {
+            if (entityMetadata.PrimaryKey != null)
+            {
+                primaryKeyFields = entityMetadata.PrimaryKey.FieldRefs.Values.ToArray();
+                return true;
+            }
+            primaryKeyFields = null;
+            return false;
         }
     }
 }

@@ -7,21 +7,39 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
 {
-    // выражение запроса
-    public class QueryExpression
+    public enum QueryExpressionKind
     {
-
+        Insert,
+        Select,
+        Update,
+        Delete
     }
+
+    // выражение запроса
+    public abstract class QueryExpression
+    {
+        public QueryExpression(QueryExpressionKind kind)
+        {
+            this.Kind = kind;
+        }
+
+        public QueryExpressionKind Kind { get; }
+    }
+
     public class SelectExpression : QueryExpression
     {
-
+        public SelectExpression() 
+            : base(QueryExpressionKind.Select)
+        {
+        }
     }
+
     public class InsertExpression : QueryExpression
     {
-        /// <summary>
-        /// Описатель выражения
-        /// </summary>
-        public string Alias { get; set; }
+        public InsertExpression() 
+            : base(QueryExpressionKind.Insert)
+        {
+        }
 
         /// <summary>
         /// Целевой объект через который необходимо иницировать создание записи
@@ -41,14 +59,28 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         /// <summary>
         /// Выражение определения значения поля
         /// </summary>
-        public ValueSourceExpression Expression { get; set; }
+        public ValueExpression Expression { get; set; }
     }
 
+
+    public enum ValueExpressionKind
+    {
+        Constant,
+        Reference,
+        Generated
+    }
     /// <summary>
     /// Выражение определяющей значение 
     /// </summary>
-    public class ValueSourceExpression
+    public abstract class ValueExpression
     {
+        public ValueExpression(ValueExpressionKind kind)
+        {
+            this.Kind = kind;
+        }
+
+        public ValueExpressionKind Kind { get; }
+
         public static ConstantValueExpression CreateBy(object value)
         {
             var constValue = new ConstantValueExpression
@@ -58,108 +90,133 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
 
             return constValue;
         }
-        public static ReferenceValueExpression CreateBy(EngineMember member)
+
+        public static ReferenceValueExpression CreateBy(NamedEngineMember member)
         {
             var refValue = new ReferenceValueExpression
             {
-                Value = member
+                Member = member
             };
 
             return refValue;
         }
     }
-    public class ValueSourceExpression<TValue> : ValueSourceExpression
+
+
+    public class ConstantValueExpression : ValueExpression
     {
-        public TValue Value { get; set; }
-    }
-
-    public class ConstantValueExpression : ValueSourceExpression<object>
-    {
-    }
-
-    public class ReferenceValueExpression : ValueSourceExpression<EngineMember>
-    {
-    }
-
-    /// <summary>
-    /// Выражение источника данных
-    /// Им может быть объект хранилища или запрос
-    /// </summary>
-    public class SourceQueryExpression : QueryExpression
-    {
-
-    }
-
-    /// <summary>
-    /// Источник данных к которому можно применить операцию выборки, это может быть:
-    /// - выражение запроса
-    /// - таблица
-    /// - вьюха
-    /// </summary>
-    public class EngineSource
-    {
-        public string Alias { get; set; }
-
-        public static EngineObjectEngineSource CreateBy(EngineObject source, string alias)
+        public ConstantValueExpression() 
+            : base(ValueExpressionKind.Constant)
         {
-            var result = new EngineObjectEngineSource
-            {
-                Alias = alias,
-                Source = source
-            };
-
-            return result;
         }
-        public static SelectExpressionEngineSource CreateBy(SelectExpression source, string alias)
-        {
-            var result = new SelectExpressionEngineSource
-            {
-                Alias = alias,
-                Source = source
-            };
 
-            return result;
+        public object Value { get; set; }
+
+        public override string ToString()
+        {
+            return $"Kind = '{Kind}', ValueType = [{this.Value?.GetType().Name}]";
         }
     }
 
-    /// <summary>
-    /// Источник данных как выражение запроса
-    /// </summary>
-    public class SelectExpressionEngineSource : EngineSource
+    public class ReferenceValueExpression : ValueExpression
     {
-        public SelectExpression Source { get; set; }
+        public ReferenceValueExpression() 
+            : base(ValueExpressionKind.Reference)
+        {
+        }
+
+        public NamedEngineMember Member { get; set; }
+
+        public override string ToString()
+        {
+            return $"Kind = '{Kind}', Member = [{this.Member}]";
+        }
     }
 
-    /// <summary>
-    /// Источник данных как объект хранилища
-    /// </summary>
-    public class EngineObjectEngineSource : EngineSource
+    public enum GeneratedValueOperation
     {
-        public EngineObject Source { get; set; }
+        SetDefault,
+        SetNext
+    }
+    public class GeneratedValueExpression : ValueExpression
+    {
+        public GeneratedValueExpression()
+            : base(ValueExpressionKind.Generated)
+        {
+        }
+
+        public GeneratedValueOperation Operation { get; set; }
+
+        public override string ToString()
+        {
+            return $"Kind = '{Kind}', Operation = '{Operation}'";
+        }
     }
 
 
-    public enum EngineObjectKind
+    public enum TargetObjectKind
     {
-        Table = 0,
+        Expression,
+        Table,
         View,
         Function,
         StoredProc
     }
     /// <summary>
-    /// Объект хранилища: таблицы, запрос, функция, хранимая прцедура
+    /// Целевой объект к которому можно применить операцию выборки, изменения, вставки, удаления, это может быть:
+    /// - выражение запроса (подзапрос)
+    /// - таблица
+    /// - вьюха
     /// </summary>
-    public class EngineObject 
+    public abstract class TargetObject
     {
-        public EngineObject(EngineObjectKind kind)
+        public TargetObject(TargetObjectKind kind)
         {
             this.Kind = kind;
         }
-        public EngineObjectKind Kind { get; }
+
+        public TargetObjectKind Kind { get; }
+
+        public string Alias { get; set; }
+    }
+
+    /// <summary>
+    /// Источник данных как выражение запроса
+    /// </summary>
+    public class ExpressionObject : TargetObject
+    {
+        public ExpressionObject() 
+            : base(TargetObjectKind.Expression)
+        {
+        }
+
+        public QueryExpression Expression { get; set; }
+
+        public override string ToString()
+        {
+            return $"Kind = '{Kind}', Expression = '{this.Expression.Kind}'";
+        }
+    }
+
+ 
+    /// <summary>
+    /// Объект хранилища: таблицы, запрос, функция, хранимая прцедура
+    /// </summary>
+    public abstract class EngineObject : TargetObject
+    {
+        public EngineObject(TargetObjectKind kind) 
+            : base(kind)
+        {
+        }
 
         public string Schema { get; set; }
 
         public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return $"Kind = '{Kind}', Schema = '{Schema}', Name = '{Name}', Alias = '{Alias}'";
+        }
     }
 
     /// <summary>
@@ -168,7 +225,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
     public class EngineTable : EngineObject
     {
         public EngineTable() 
-            : base(EngineObjectKind.Table)
+            : base(TargetObjectKind.Table)
         {
         }
 
@@ -176,22 +233,37 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
     }
 
 
-    
-
     /// <summary>
     /// Объект хранилища как вью
     /// </summary>
     public class EngineView : EngineObject
     {
         public EngineView()
-            : base(EngineObjectKind.View)
+            : base(TargetObjectKind.View)
         {
         }
     }
 
+    public class EngineFunction : EngineObject
+    {
+        public EngineFunction()
+            : base(TargetObjectKind.Function)
+        {
+        }
+    }
+
+    public class EngineStoredProc : EngineObject
+    {
+        public EngineStoredProc()
+            : base(TargetObjectKind.StoredProc)
+        {
+        }
+    }
+
+
     public class EngineMember
     {
-        public EngineSource Owner { get; set; }
+        public TargetObject Owner { get; set; }
     }
 
     public class EngineTablePrimaryKey : EngineMember
@@ -202,11 +274,23 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
     public class NamedEngineMember : EngineMember
     {
         public string Name { get; set; }
+
+        public string Property { get; set; }
+
+        public override string ToString()
+        {
+            return $"Name = '{Name}', Property = '{Property}', Owner = [{this.Owner}]";
+        }
     }
 
     public class DataEngineMember : NamedEngineMember
     {
         public DataType DataType { get; set; }
+
+        public override string ToString()
+        {
+            return $"Name = '{this.Name}', DataType = '{this.DataType}', Owner = [{this.Owner}]";
+        }
     }
 
     public class  PrimaryKeyField : DataEngineMember
@@ -255,5 +339,6 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         public InsertExpression[] Expressions { get; set; }
 
 
+        public NamedEngineMember[] PrimaryKeyFields { get; set; }
     }
 }

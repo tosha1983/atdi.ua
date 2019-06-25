@@ -20,7 +20,11 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         {
             var pattern = queryPattern as PS.InsertPattern;
 
-            var command = BuildCommand(pattern);
+            var context = new BuildingContex();
+
+            this.BuildIteration(pattern, context);
+
+            var command = context.BuildCommand();
 
             switch (pattern.Result.Kind)
             {
@@ -35,7 +39,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
                     // возврат первичного ключа через исходящие параметры
                     var result = pattern.AsResult<EngineExecutionScalarResult>();
                     executer.ExecuteScalar(command);
-                    result.Value = this.DecodePrimaryKey(pattern, command);
+                    this.DecodePrimaryKey(pattern, context, command);
                     return;
                 case EngineExecutionResultKind.Reader:
                     executer.ExecuteReader(command, sqlReader =>
@@ -56,9 +60,31 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
             }
         }
 
-        private object DecodePrimaryKey(PS.InsertPattern pattern, EngineCommand command)
+        private void DecodePrimaryKey(PS.InsertPattern pattern, BuildingContex contex, EngineCommand command)
         {
-            return null;
+            var pkFields = pattern.PrimaryKeyFields;
+            if (pkFields == null || pkFields.Length == 0)
+            {
+                throw new InvalidOperationException("Primary key fields are not defined");
+            }
+
+            var instance = pattern.AsResult<EngineExecutionScalarResult>().Value;
+            if (instance == null)
+            {
+                throw new InvalidOperationException("Primary key instance are not defined");
+            }
+            var instanceType = instance.GetType();
+            for (int i = 0; i < pkFields.Length; i++)
+            {
+                var pkField = pkFields[i];
+                var parameter = contex.GetParameter(pkField.Owner.Alias, pkField.Name);
+                var property = instanceType.GetProperty(pkField.Property);
+                if (property == null)
+                {
+                    throw new InvalidOperationException($"Primary key instance does not contain a property named '{pkField.Property}'");
+                }
+                property.SetValue(instance, parameter.Value);
+            }
         }
 
         /// <summary>
@@ -66,6 +92,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         /// /* Iterration: #1 */
         /// 
         /// /* Expression: index = #1, alias = 'atdi.DataContract.Entites.BaseEntity1' */
+        /// SET @P_С1_2 = ROWID()
         /// INSERT INTO [SCHEMA_NAME].[BASE_TABLE_NAME](F1, F2)
         /// VALUES(@P_С1_1, @P_С1_2)
         /// SELECT @P_С1_3 = @@IDENTITY()
@@ -81,50 +108,78 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         /// </summary>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        private EngineCommand BuildCommand(PS.InsertPattern pattern)
+        private void BuildIteration(PS.InsertPattern pattern, BuildingContex contex)
         {
-            var builder = new CommandBuilder();
-
-            builder.StartIteration();
-
-            var allParameters = new Dictionary<string, EngineCommandParameter>();
-
             for (int i = 0; i < pattern.Expressions.Length; i++)
             {
                 var expression = pattern.Expressions[i];
-                builder.ExpresaionAlias(i, expression.Alias);
+                contex.Builder.ExpresaionAlias(i, expression.Target.Alias);
 
                 var fields = new List<string>();
                 var values = new List<EngineCommandParameter>();
 
+                var identities = new List<EngineCommandParameter>();
+
                 for (int j = 0; j < expression.Values.Length; j++)
                 {
                     var value = expression.Values[j];
-                    fields.Add(value.Property.Name);
 
-                    if (value.Expression is PS.ConstantValueExpression constantValue)
+                    // генерация значения
+                    if (value.Expression is PS.GeneratedValueExpression generatedValue)
                     {
-                        var parameter = new EngineCommandParameter
+                        var parameter = contex.CreateParameter(value.Property.Owner.Alias, value.Property.Name, value.Property.DataType, EngineParameterDirection.Output);
+
+                        // исключаем поля айдентити из прямой вставки в поле
+                        if (generatedValue.Operation == PS.GeneratedValueOperation.SetNext 
+                            && (value.Property.DataType == DataModels.DataType.Integer
+                            || value.Property.DataType == DataModels.DataType.Long
+                            || value.Property.DataType == DataModels.DataType.Short))
                         {
-                            DataType = value.Property.DataType,
-                            Direction = EngineParameterDirection.Input,
-                            Value = constantValue.Value
-                        };
+                            identities.Add(parameter);
+                        }
+                        else
+                        {
+                            if (generatedValue.Operation == PS.GeneratedValueOperation.SetDefault)
+                            {
+                                contex.Builder.SetDefault(parameter);
+                            }
+                            else if (generatedValue.Operation == PS.GeneratedValueOperation.SetNext)
+                            {
+                                contex.Builder.GenerateNextValue(parameter);
+                            }
+                            fields.Add(value.Property.Name);
+                            values.Add(parameter);
+                        }
+                    }
+                    else if (value.Expression is PS.ConstantValueExpression constantValue)
+                    {
+                        fields.Add(value.Property.Name);
+                        var parameter = contex.CreateParameter(value.Property.Owner.Alias, value.Property.Name, value.Property.DataType, EngineParameterDirection.Input);
+                        parameter.SetValue(constantValue.Value);
                         values.Add(parameter);
                     }
-                    //if (value.Expression is PS.ReferenceValueExpression referenceValue)
-                    //{
-                    //    referenceValue.Value.Owner.
-                    //}
+                    else if (value.Expression is PS.ReferenceValueExpression referenceValue)
+                    {
+                        fields.Add(value.Property.Name);
+                        var parameter = contex.GetParameter(referenceValue.Member.Owner.Alias, referenceValue.Member.Name);
+                        values.Add(parameter);
+                    }
                     else
                     {
                         throw new InvalidOperationException($"Unsupported Value Expression Type '{value.Expression.GetType().FullName}'");
                     }
                 }
-                builder.Insert(expression.Target.Schema, expression.Target.Name, fields.ToArray(), values.ToArray());
-            }
 
-            return builder.GetCommand();
+                // генерируем код создания записи
+                contex.Builder.Insert(expression.Target.Schema, expression.Target.Name, fields.ToArray(), values.ToArray());
+
+                // получаем айденти
+                if (identities.Count > 0)
+                {
+                    // генерируем получения автоинкрементных полей
+                    identities.ForEach(p => contex.Builder.GenerateNextValue(p));
+                }
+            }
         }
 
         

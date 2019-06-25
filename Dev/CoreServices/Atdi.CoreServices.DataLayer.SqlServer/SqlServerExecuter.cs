@@ -62,7 +62,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         var result = sqlCommand.ExecuteNonQuery();
-                        //this.EnsureOutputParameters();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                         return result;
                     }
                 }
@@ -70,6 +70,20 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                 {
                     this.Logger.Exception(Contexts.SqlServerEngine, Categories.Processing, e, this);
                     throw new InvalidOperationException(Exceptions.FailedToExecuteNonQuery, e);
+                }
+            }
+        }
+
+        private void EnsureOutputParameters(SqlCommand sqlCommand, EngineCommand engineCommand)
+        {
+            for (int i = 0; i < sqlCommand.Parameters.Count; i++)
+            {
+                var sqlParameter = sqlCommand.Parameters[i];
+                if (sqlParameter.Direction == ParameterDirection.Output
+                    || sqlParameter.Direction == ParameterDirection.InputOutput)
+                {
+                    var key = sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
+                    engineCommand.Parameters[key].Value = sqlParameter.Value;
                 }
             }
         }
@@ -83,7 +97,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         var result = sqlCommand.ExecuteScalar();
-                        //this.EnsureOutputParameters();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                         return result;
                     }
                 }
@@ -107,6 +121,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         reader = sqlCommand.ExecuteReader();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                     }
                     //this.EnsureOutputParameters();
                     using (var trace = this.Logger.StartTrace(Contexts.SqlServerEngine, Categories.ResultHandling, this))
@@ -141,6 +156,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         reader = sqlCommand.ExecuteReader();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                     }
                     //this.EnsureOutputParameters();
                     using (var trace = this.Logger.StartTrace(Contexts.SqlServerEngine, Categories.ResultHandling, this))
