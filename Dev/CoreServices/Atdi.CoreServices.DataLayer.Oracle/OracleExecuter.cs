@@ -264,7 +264,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 case DataType.Bytes:
                     return OracleDbType.Blob;
                 case DataType.Guid:
-                    return OracleDbType.Varchar2;
+                    return OracleDbType.Raw;
                 case DataType.DateTimeOffset:
                     return OracleDbType.TimeStampTZ;
                 case DataType.Time:

@@ -67,15 +67,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     }
 
 
-
-
-
-
-
-
-
-
-
                     isSuccessProcessed = true;
                 }
                 catch (Exception e)

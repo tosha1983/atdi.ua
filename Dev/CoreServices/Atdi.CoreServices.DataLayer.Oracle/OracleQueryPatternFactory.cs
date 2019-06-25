@@ -23,6 +23,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         private void FindHandlersInCurrentAssembly()
         {
             _handlers.Add(typeof(PS.EngineCommandPattern), new PatternHandlers.EngineCommandPatternHandler(this.Logger));
+            _handlers.Add(typeof(PS.InsertPattern), new PatternHandlers.OracleInsertPatternHandler(this.Logger));
         }
 
         public IOracleQueryPatternHandler GetHandler(Type handlerType)

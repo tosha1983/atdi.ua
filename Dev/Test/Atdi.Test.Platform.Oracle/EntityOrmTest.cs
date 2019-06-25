@@ -27,10 +27,8 @@ namespace Atdi.Test.Platform
 
         private static void Test_ReferenceFields(IQueryExecutor executor, IDataLayer<EntityDataOrm> dataLayer)
         {
-            //var queryNoTyped = dataLayer.Builder
-                    //.From("TestRefRoot")
-                    //.Select("BOOK1.SUBBOOK1.EXT2.Prop1");
 
+            /*
             var query = dataLayer.GetBuilder<ISensor>()
             .From()
             .Select(
@@ -41,25 +39,35 @@ namespace Atdi.Test.Platform
             .OrderByAsc(c => c.Id)
             .Where(c => c.Id > 0)
             .Distinct();
+            */
 
+            var query = dataLayer.GetBuilder<ISensor>()
+            .Insert()
+            .Select(
+                c => c.Id,
+                c => c.CreatedBy
+            )
+            .SetValue(c => c.Id, 2)
+            .SetValue(c => c.Name, "TEST")
+            .SetValue(c => c.TechId, "TECH17")
+            .SetValue(c => c.CreatedBy,"ICSM7");
 
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #1, execute statement without trasaction, close connaction
+            //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #1, execute statement without trasaction, close connaction
             //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close connaction
 
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #3
+            using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #3
             {
-                scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
+                //scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
 
                 scope.BeginTran(); // connaction #3: scope has transaction
 
                 //scope.Executor.Execute(queryNoTyped); // connaction #3: execute statement with trasaction
                 scope.Executor.Execute(query); // connaction #3: execute statement with trasaction
 
-
                 scope.Commit(); // connaction #3:  commit trasaction
                 // connaction #3: scope has no transaction
 
-                scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
+                //scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
             } // close connection #3
 
             /*

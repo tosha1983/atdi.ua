@@ -88,22 +88,22 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             {
                 return _reader.GetInt16(i);
             }
-            //if (type == typeof(Guid))
-            //{
-                //return _reader.GetGuid(i);
-            //}
+            if (type == typeof(Guid))
+            {
+                return GetGuid(i);
+            }
             if (type == typeof(DateTime))
             {
                 return _reader.GetDateTime(i);
             }
-            //if (type == typeof(DateTimeOffset))
-            //{
-                //return _reader.GetOracleDate(i);
-            //}
-            //if (type == typeof(TimeSpan))
-            //{
-                //return _reader.GetTimeSpan(i);
-            //}
+            if (type == typeof(DateTimeOffset))
+            {
+                return GetDateTimeOffset(i);
+            }
+            if (type == typeof(TimeSpan))
+            {
+                return  GetTimeSpan(i);
+            }
             if (type == typeof(object))
             {
                 return _reader.GetValue(i);
@@ -160,10 +160,6 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             return (byte[])_reader.GetValue(i);
         }
 
-        public char GetChar(int i)
-        {
-            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
-        }
 
         public char[] GetChars(int i)
         {
@@ -212,15 +208,21 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public DateTimeOffset GetDateTimeOffset(int i)
         {
-            var oracleDate = _reader.GetDateTime(i);
-            var localTime = DateTime.SpecifyKind(oracleDate, DateTimeKind.Local);
-            DateTimeOffset dateTimeOffset = localTime;
-            return dateTimeOffset;
+            var val = _reader.GetOracleTimeStampTZ(i);
+            var oracleTimeStamp = val.ToOracleTimeStamp();
+            return new DateTimeOffset(oracleTimeStamp.Value);
         }
 
         public TimeSpan GetTimeSpan(int i)
         {
-            return _reader.GetTimeSpan(i);
+            var oracleDate = _reader.GetDateTime(i);
+            return new TimeSpan(oracleDate.Ticks);
+        }
+
+        public Guid GetGuid(int i)
+        {
+            var guidDate = _reader.GetString(i);
+            return Guid.Parse(guidDate);
         }
 
         public float GetFloat(int i)
@@ -238,10 +240,6 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             return _reader.GetDecimal(i);
         }
 
-        public Guid GetGuid(int i)
-        {
-            return _reader.GetGuid(i);
-        }
 
         public TextReader GetTextReader(int i)
         {
@@ -269,6 +267,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         public long GetPartChars(int i, long dataIndex, char[] buffer, int bufferIndex, int length)
         {
             return _reader.GetChars(i, dataIndex, buffer, bufferIndex, length);
+        }
+
+        public char GetChar(int i)
+        {
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
         }
     }
 }

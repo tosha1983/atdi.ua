@@ -55,8 +55,13 @@ namespace Atdi.Test.Platform
                             {
                                 var type = reader.GetFieldType(i);
                                 var value = reader.GetValue(i);
-                                var ss = reader.GetValue(i, type);
                                 var name = reader.GetName(i);
+                                if (name == "VAL_AS_DATETIMEOFFSET")
+                                {
+                                    var ss = reader.GetValue(i, typeof(DateTimeOffset));
+                                }
+
+
                                 var ordinal = reader.GetOrdinal(name);
                                 var state = reader.ToString();
                                 var valIsNull = false;
@@ -111,10 +116,10 @@ namespace Atdi.Test.Platform
                                 {
                                     var val = reader.GetDateTime(i);
                                 }
-                                else if (type == typeof(TimeSpan))
-                                {
-                                    var val = reader.GetTimeSpan(i);
-                                }
+                                //else if (type == typeof(TimeSpan))
+                                //{
+                                    //var val = reader.GetTimeSpan(i);
+                                //}
                                 else if (type == typeof(object))
                                 {
                                     var val = reader.GetValue(i);
@@ -211,12 +216,12 @@ namespace Atdi.Test.Platform
             sql.AppendLine("val_as_money,");
             sql.AppendLine("val_as_smallmoney,");
             sql.AppendLine("val_as_sql_variant,");
-            sql.AppendLine("val_as_uniqueidentifier,"); //NCLOB
             sql.AppendLine("val_as_tinyint,");// NUMBER(3)
             sql.AppendLine("val_as_binary_1,"); // NUMBER(3)
             sql.AppendLine("val_as_binary_250,"); //BLOB, LONG RAW, RAW(250
             sql.AppendLine("val_as_varbinary_1,");
-            sql.AppendLine("val_as_time");
+            sql.AppendLine("val_as_time,");
+            sql.AppendLine("val_as_uniqueidentifier"); //NCLOB
 
 
 
@@ -257,13 +262,13 @@ namespace Atdi.Test.Platform
             sql.AppendLine(":val_as_money,");
             sql.AppendLine(":val_as_smallmoney,");
             sql.AppendLine(":val_as_sql_variant,");
-            sql.AppendLine(":val_as_uniqueidentifier,");
             sql.AppendLine(":val_as_tinyint,");
             sql.AppendLine(":val_as_binary_1,");
             sql.AppendLine(":val_as_binary_250,");
             sql.AppendLine(":val_as_varbinary_1,");
-            sql.AppendLine(":val_as_time");
-            
+            sql.AppendLine(":val_as_time,");
+            sql.AppendLine(":val_as_uniqueidentifier");
+
 
 
 
@@ -307,15 +312,15 @@ namespace Atdi.Test.Platform
             insertCommand.AddParameter("val_as_money", DataType.Decimal, 922337203685477.5807M);
             insertCommand.AddParameter("val_as_smallmoney", DataType.Decimal, 214748.3647M);
             insertCommand.AddParameter("val_as_sql_variant", DataType.String, "sql_variant");
-            insertCommand.AddParameter("val_as_uniqueidentifier", DataType.Guid, Guid.NewGuid());
             insertCommand.AddParameter("val_as_tinyint", DataType.Byte, byte.MaxValue);
             insertCommand.AddParameter("val_as_binary_1", DataType.SignedByte, sbyte.MaxValue);
             insertCommand.AddParameter("val_as_binary_250", DataType.Bytes, BuildBytes(250));
             insertCommand.AddParameter("val_as_varbinary_1", DataType.Bytes, BuildBytes(2 * 1024));
-
             TimeSpan span = new TimeSpan(0, 0, 0, 0, 25);
             insertCommand.AddParameter("val_as_time", DataType.Time, span);
-            
+
+            insertCommand.AddParameter("val_as_uniqueidentifier", DataType.Guid,  Guid.NewGuid());
+
 
             return insertCommand;
        
