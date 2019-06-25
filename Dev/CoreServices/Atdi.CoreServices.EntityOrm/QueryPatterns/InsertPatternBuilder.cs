@@ -15,6 +15,12 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
     
     internal sealed class InsertPatternBuilder : LoggedObject, IPatternBuilder
     {
+        class BuildingContext
+        {
+            public IFieldMetadata[] BasePrimaryKeyFields { get; set; }
+            public PS.TargetObject PrimaryKeyOwner { get; set; }
+        }
+
         private readonly IEntityOrm _entityOrm;
         private readonly DataTypeSystem _dataTypeSystem;
 
@@ -42,6 +48,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
 
             var expressions = new List<PS.InsertExpression>();
+            var context = new BuildingContext();
 
             // в начале создаем записи в таблицах согласно цепочки наследования
             var baseEntitesExpressions = this.BuildInsertExpressionForBaseEntities(insertDescriptor);
@@ -51,7 +58,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             }
 
             // затем в таблицы основной сущности
-            var mainEntityExpression = this.BuildInsertExpressionForMainEntity(insertDescriptor);
+            var mainEntityExpression = this.BuildInsertExpressionForMainEntity(insertDescriptor, context);
             expressions.Add(mainEntityExpression);
 
             // затем если есть ссылки на поля расширения, вставляем туда
@@ -59,7 +66,14 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
             var pattren = new PS.InsertPattern
             {
-                Expressions = expressions.ToArray()
+                Expressions = expressions.ToArray(),
+                PrimaryKeyFields = context?.BasePrimaryKeyFields
+                    .Select(pkField => new PS.NamedEngineMember
+                    {
+                        Owner = context.PrimaryKeyOwner,
+                        Name = pkField.SourceName,
+                        Property = pkField.Name
+                    }).ToArray()
             };
 
             return pattren;
@@ -83,7 +97,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case EngineExecutionResultKind.Scalar:
                     // скалярный тип возвращает первичный ключ ввиде объекта IEntityName_PK
                     var scalarResult = pattern.DefResult<EngineExecutionScalarResult>();
-                    scalarResult.Value = this.BuildPrimaryKeyObject(statement.InsertDecriptor.Entity);
+                    scalarResult.Value = this._entityOrm.CreatePrimaryKeyInstance(statement.InsertDecriptor.Entity); ;
                     executionContex.Executer.Execute(pattern);
                     result = (TResult)scalarResult.Value;
                     break;
@@ -110,18 +124,80 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
             return result.ToArray();
         }
-        private PS.InsertExpression BuildInsertExpressionForMainEntity(InsertQueryDescriptor descriptor)
+        private PS.InsertExpression BuildInsertExpressionForMainEntity(InsertQueryDescriptor descriptor, BuildingContext context)
         {
             var expression = new PS.InsertExpression
             {
-                Alias = descriptor.Entity.QualifiedName,
                 Target = this.BuildTargetByEntity(descriptor.Entity)
             };
 
-            var owner = PS.EngineSource.CreateBy(expression.Target, descriptor.Entity.QualifiedName);
-
             var setValues = new List<PS.SetValueExpression>();
 
+            // поля первичного ключа достались от базовоаго объекта
+            if (context.BasePrimaryKeyFields != null)
+            {
+                //просто добавляем в набор как по ссылке
+                for (int i = 0; i < context.BasePrimaryKeyFields.Length; i++)
+                {
+                    var primaryKeyField = context.BasePrimaryKeyFields[i];
+                    var setValue = new PS.SetValueExpression
+                    {
+                        Property = new PS.DataEngineMember
+                        {
+                            // владелец поля таблица этой сущности
+                            Owner = expression.Target,
+                            Name = primaryKeyField.SourceName,
+                            Property = primaryKeyField.Name,
+                            DataType = _dataTypeSystem.GetSourceDataType(primaryKeyField.DataType.SourceVarType)
+                        },
+                        // ссылка на значение полученное
+                        Expression = new PS.ReferenceValueExpression
+                        {
+                            Member = new PS.NamedEngineMember
+                            {
+                                Owner = context.PrimaryKeyOwner,
+                                Name = primaryKeyField.SourceName,
+                                Property = primaryKeyField.Name
+                            }
+                        }
+                    };
+                    setValues.Add(setValue);
+                }
+            }
+            else if (descriptor.Entity.TryGetPrimaryKeyRefFields(out IPrimaryKeyFieldRefMetadata[] pkFields))
+            {
+                // есть свой набор полей первичного ключа
+                // добавляем поля требующие автогенерации 
+                // и формируем в контексте набор полей входящих в первичный ключ
+                var pkLocalFields = new List<IFieldMetadata>();
+                for (int i = 0; i < pkFields.Length; i++)
+                {
+                    var pkField = pkFields[i];
+                    pkLocalFields.Add(pkField.Field);
+                    if (pkField.Field.DataType.Autonum != null)
+                    {
+                        var setValue = new PS.SetValueExpression
+                        {
+                            Property = new PS.DataEngineMember
+                            {
+                                // владелец поля таблица этой сущности
+                                Owner = expression.Target,
+                                Name = pkField.Field.SourceName,
+                                Property = pkField.Field.Name,
+                                DataType = _dataTypeSystem.GetSourceDataType(pkField.Field.DataType.SourceVarType)
+                            },
+                            // ссылка на значение полученное
+                            Expression = new PS.GeneratedValueExpression
+                            {
+                                Operation = PS.GeneratedValueOperation.SetNext
+                            }
+                        };
+                        setValues.Add(setValue);
+                    }
+                }
+                context.BasePrimaryKeyFields = pkLocalFields.ToArray();
+                context.PrimaryKeyOwner = expression.Target;
+            }
             // При налчии факта наследования, нужно автоматически внести сохранение полей первичного ключа
 
             // Фаза формирования локальных значений
@@ -132,7 +208,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 var fieldValue = fieldValues[i];
                 if (fieldValue.Descriptor.IsLocal)
                 {
-                    // пытаемся определить им яв хранилище, если не удалось
+                    // пытаемся определить имя в хранилище, если не удалось
                     // это означает что в данном контексте нельзя использовать поле
                     if (!fieldValue.Descriptor.TrySourceName(out string sourceName))
                     {
@@ -148,10 +224,11 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                         Property = new PS.DataEngineMember
                         {
                             Name = sourceName,
-                            Owner = owner,
+                            Owner = expression.Target,
+                            Property = fieldValue.Descriptor.Path,
                             DataType = _dataTypeSystem.GetSourceDataType(fieldValue.Descriptor.Field.DataType.SourceVarType)
                         },
-                        Expression = PS.ValueSourceExpression.CreateBy(storeValue)
+                        Expression = PS.ValueExpression.CreateBy(storeValue)
                     };
 
                     setValues.Add(setValue);
@@ -176,6 +253,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case DataSourceObject.Table:
                     var table = new PS.EngineTable
                     {
+                        Alias = entity.QualifiedName,
                         Name = dataSource.Name,
                         Schema = dataSource.Schema
                     };
@@ -184,6 +262,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case DataSourceObject.View:
                     var view = new PS.EngineTable
                     {
+                        Alias = entity.QualifiedName,
                         Name = dataSource.Name,
                         Schema = dataSource.Schema
                     };
@@ -212,8 +291,9 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                     var entityPkField = fs[i];
                     var pkTargetField = new PS.PrimaryKeyField
                     {
-                        Owner = new PS.EngineObjectEngineSource { Source = owner },
+                        Owner = owner,
                         Name = entityPkField.Field.SourceName,
+                        Property = entityPkField.Field.Name,
                         DataType = _dataTypeSystem.GetSourceDataType(entityPkField.Field.DataType.SourceVarType),
                         Generated = entityPkField.Field.DataType.Autonum != null
                     };
@@ -221,7 +301,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 }
             }
             primaryKey.Fields = pkFields.ToArray();
-            primaryKey.Owner = new PS.EngineObjectEngineSource { Source = owner };
+            primaryKey.Owner = owner;
             return primaryKey;
         }
     }

@@ -14,6 +14,8 @@ using System.IO;
 using System.Reflection;
 using Atdi.DataModels.DataConstraint;
 using Atdi.Common;
+using System.Reflection;
+using RE = System.Reflection.Emit;
 //using Atdi.CoreServices.EntityOrm.Metadata;
 
 namespace Atdi.CoreServices.EntityOrm
@@ -23,12 +25,14 @@ namespace Atdi.CoreServices.EntityOrm
         private readonly IEntityOrmConfig _config;
         private readonly ConcurrentDictionary<string, DataTypeMetadata> _dataTypeMetadataCache;
         private readonly ConcurrentDictionary<string, EntityMetadata> _entityMetadataCache;
+        private readonly ConcurrentDictionary<Type, Type> _primaryKeyTypes;
 
         public EntityOrm(IEntityOrmConfig config)
         {
             this._config = config;
             this._dataTypeMetadataCache = new ConcurrentDictionary<string, DataTypeMetadata>();
             this._entityMetadataCache = new ConcurrentDictionary<string, EntityMetadata>();
+            this._primaryKeyTypes = new ConcurrentDictionary<Type, Type>();
         }
 
 
@@ -989,7 +993,7 @@ namespace Atdi.CoreServices.EntityOrm
                     // this is added me and we need to finish initialize
                     this.PadEntityMetada(entityMetadata, entityMetadataDef);
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
                     
                     throw;
@@ -1076,7 +1080,7 @@ namespace Atdi.CoreServices.EntityOrm
 
             var primaryKeyDef = entityDef.PrimaryKey;
 
-            var primaryKeyMetadata = new PrimaryKeyMetadata
+            var primaryKeyMetadata = new PrimaryKeyMetadata(entityMetadata)
             {
                 Clustered = primaryKeyDef.Clustered
             };
@@ -1720,7 +1724,108 @@ namespace Atdi.CoreServices.EntityOrm
 
         public object CreatePrimaryKeyInstance(IEntityMetadata entity)
         {
-            return new object();
+            var primaryKey = entity.DefinePrimaryKey();
+            if (primaryKey == null)
+            {
+                return null;
+            }
+            var pkTypeName = $"{_config.Namespace}.I{primaryKey.Entity.Name}_PK, {_config.Assembly}";
+            var pkType = Type.GetType(pkTypeName);
+            if (pkType == null)
+            {
+                throw new InvalidOperationException($"Cann't found PrimaryKey Intreface by name '{pkTypeName}'");
+            }
+
+            if (!_primaryKeyTypes.TryGetValue(pkType, out Type proxyType))
+            {
+                proxyType = GenerateProxyType(pkType);
+                if (!_primaryKeyTypes.TryAdd(pkType, proxyType))
+                {
+                    if (!_primaryKeyTypes.TryGetValue(pkType, out proxyType))
+                    {
+                        throw new InvalidOperationException($"Cann't append PrimaryKey Intreface Proxy to cache by name '{pkTypeName}'");
+                    }
+                }
+            }
+
+            var insatnce = Activator.CreateInstance(proxyType);
+            return insatnce;
+        }
+
+        static Type GenerateProxyType(Type baseInterface)
+        {
+            var ns = baseInterface.Namespace;
+            var name = baseInterface.Name.Substring(1, baseInterface.Name.Length - 1);
+
+            var an = baseInterface.Assembly.GetName();
+
+            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
+                new AssemblyName("Atdi.DataModels.Sdrns.Server.EntitiesProxy, Version=1.0.0.1"),
+                RE.AssemblyBuilderAccess.RunAndSave);
+
+            var dynaminModule = assemblyBuilder.DefineDynamicModule(
+                $"{an.Name}.EntitiesProxy.Module",
+                $"{an.Name}.EntitiesProxy.dll");
+
+            var proxyTypeBuilder = dynaminModule.DefineType(
+                $"{ns}.{name}_Proxy",
+                TypeAttributes.BeforeFieldInit | TypeAttributes.Public, typeof(object), new Type[] { baseInterface });
+
+            // генерируем переменные под свойства
+            var propertiesInfo = baseInterface.GetProperties();
+            for (int i = 0; i < propertiesInfo.Length; i++)
+            {
+                var propertyInfo = propertiesInfo[i];
+                PropertyEmitter(proxyTypeBuilder, propertyInfo.Name, propertyInfo.PropertyType);
+            }
+
+            // генерируем конструктор по умолчанию
+            var constructor = proxyTypeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig, CallingConventions.Standard, new Type[] { });
+
+            var ctorIL = constructor.GetILGenerator();
+
+            var objectType = typeof(object);
+            var objectCtor = objectType.GetConstructor(new Type[0]);
+
+            ctorIL.Emit(RE.OpCodes.Ldarg_0);
+            ctorIL.Emit(RE.OpCodes.Call, objectCtor);
+            ctorIL.Emit(RE.OpCodes.Ret);
+
+
+            var proxyType = proxyTypeBuilder.CreateType();
+            assemblyBuilder.Save($"{an.Name}.EntitiesProxy.dll");
+
+            return proxyType;
+        }
+
+        static void PropertyEmitter(RE.TypeBuilder typeBuilder, string name, Type propertyType)
+        {
+            var ci = typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute).GetConstructor(new Type[] { });
+            var attrBuilder = new RE.CustomAttributeBuilder(ci, new object[0]);
+
+            var fieldBuilder = typeBuilder.DefineField(String.Format("<{0}>k__BackingField", name), propertyType, FieldAttributes.Private);
+            fieldBuilder.SetCustomAttribute(attrBuilder);
+
+            var methodAttrs = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.Final | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.SpecialName;
+
+            var getterBuilder = typeBuilder.DefineMethod(String.Format("get_{0}", name), methodAttrs, propertyType, Type.EmptyTypes);
+            getterBuilder.SetCustomAttribute(attrBuilder);
+            var getterIl = getterBuilder.GetILGenerator();
+            getterIl.Emit(RE.OpCodes.Ldarg_0);
+            getterIl.Emit(RE.OpCodes.Ldfld, fieldBuilder);
+            getterIl.Emit(RE.OpCodes.Ret);
+
+            var setterBuilder = typeBuilder.DefineMethod(String.Format("set_{0}", name), methodAttrs, typeof(void), new[] { propertyType });
+            setterBuilder.SetCustomAttribute(attrBuilder);
+            var setterIl = setterBuilder.GetILGenerator();
+            setterIl.Emit(RE.OpCodes.Ldarg_0);
+            setterIl.Emit(RE.OpCodes.Ldarg_1);
+            setterIl.Emit(RE.OpCodes.Stfld, fieldBuilder);
+            setterIl.Emit(RE.OpCodes.Ret);
+
+            var propertyBuilder = typeBuilder.DefineProperty(name, PropertyAttributes.None, CallingConventions.HasThis, propertyType, null);
+            propertyBuilder.SetGetMethod(getterBuilder);
+            propertyBuilder.SetSetMethod(setterBuilder);
         }
     }
 }

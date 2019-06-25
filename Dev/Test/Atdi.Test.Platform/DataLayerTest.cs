@@ -2,7 +2,7 @@
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels;
-using Atdi.DataModels.Sdrns.Server.Entities.Entities;
+using Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
