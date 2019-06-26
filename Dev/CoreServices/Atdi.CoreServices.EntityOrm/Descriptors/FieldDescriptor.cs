@@ -84,11 +84,11 @@ namespace Atdi.CoreServices.EntityOrm
         public bool TrySourceName(out string sourceName)
         {
             // имя можно определить только для локального поля
-            if (!this.IsLocal)
-            {
-                sourceName = null;
-                return false;
-            }
+            //if (!this.IsLocal)
+            //{
+            //    sourceName = null;
+            //    return false;
+            //}
 
             if (this.OwnerField.SourceType == FieldSourceType.Column)
             {

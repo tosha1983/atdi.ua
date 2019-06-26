@@ -14,8 +14,8 @@ using System.IO;
 using System.Reflection;
 using Atdi.DataModels.DataConstraint;
 using Atdi.Common;
-using System.Reflection;
 using RE = System.Reflection.Emit;
+
 //using Atdi.CoreServices.EntityOrm.Metadata;
 
 namespace Atdi.CoreServices.EntityOrm
@@ -1041,9 +1041,9 @@ namespace Atdi.CoreServices.EntityOrm
 
             entityMetadata.DataSource = this.BuildDataSourceMetadata(entityDef.DataSource);
 
-            entityMetadata.Fields = this.BuildFieldsMetadata(entityMetadata, entityDef);
+            this.BuildFieldsMetadata(entityMetadata, entityDef);
 
-            entityMetadata.PrimaryKey = this.BuildPrimariKeyMetadata(entityMetadata, entityDef);
+            entityMetadata.PrimaryKey = this.BuildPrimaryKeyMetadata(entityMetadata, entityDef);
 
             return entityMetadata;
         }
@@ -1066,14 +1066,14 @@ namespace Atdi.CoreServices.EntityOrm
             return dataSourceMetadata;
         }
 
-        private PrimaryKeyMetadata BuildPrimariKeyMetadata(EntityMetadata entityMetadata, Metadata.EntityDef entityDef)
+        private PrimaryKeyMetadata BuildPrimaryKeyMetadata(EntityMetadata entityMetadata, Metadata.EntityDef entityDef)
         {
             if (entityDef.PrimaryKey == null)
             {
                 return null;
             }
 
-            if (entityMetadata.UsesBaseEntityPrimaryKey())
+            if (entityMetadata.Type != EntityType.Abstruct && entityMetadata.UsesBaseEntityPrimaryKey())
             {
                 throw new InvalidOperationException($"Defined primary key for the entity '{entityMetadata.Name}' with uses inheritance");
             }
@@ -1124,7 +1124,7 @@ namespace Atdi.CoreServices.EntityOrm
             return primaryKeyMetadata;
         }
 
-        private Dictionary<string, IFieldMetadata> BuildFieldsMetadata(EntityMetadata entityMetadata, Metadata.EntityDef entityDef)
+        private void BuildFieldsMetadata(EntityMetadata entityMetadata, Metadata.EntityDef entityDef)
         {
             var fields = new Dictionary<string, IFieldMetadata>();
             var fieldDefs = entityDef.Fields;
@@ -1165,9 +1165,8 @@ namespace Atdi.CoreServices.EntityOrm
                 }
 
                 fields.Add(field.Name, field);
+                entityMetadata.AppendField(field);
             }
-
-            return fields;
         }
 
         private RelationFieldMetadata BuildFieldMetadataAsRelation(EntityMetadata entityMetadata, Metadata.FieldDef fieldDef)
@@ -1314,6 +1313,34 @@ namespace Atdi.CoreServices.EntityOrm
                         break;
                 }
             }
+
+            // кипируем в свою структуру все поля базового класса в случаи типа Simple или Role
+            if (entityMetadata.Type == EntityType.Simple 
+                || entityMetadata.Type == EntityType.Role)
+            {
+                var baseFields = entityMetadata.BaseEntity.DefineFieldsWithInherited();
+                for (int i = 0; i < baseFields.Length; i++)
+                {
+                    entityMetadata.AppendField(baseFields[i]); 
+                }
+
+                // первичный ключ также копиреум
+                if (entityMetadata.Type == EntityType.Simple && entityMetadata.PrimaryKey == null)
+                {
+                    var basePrimaryKey = entityMetadata.BaseEntity.DefinePrimaryKey();
+                    if (basePrimaryKey != null)
+                    {
+                        var localPrimaryKey = new PrimaryKeyMetadata(entityMetadata)
+                        {
+                            Clustered = basePrimaryKey.Clustered,
+                            FieldRefs = basePrimaryKey.FieldRefs
+                        };
+
+                        entityMetadata.PrimaryKey = localPrimaryKey;
+                    }
+                }
+            }
+
         }
 
         private void PadFieldMetadataAsExtension(ExtensionFieldMetadata field, Metadata.FieldDef fieldDef)
@@ -1760,7 +1787,7 @@ namespace Atdi.CoreServices.EntityOrm
             var an = baseInterface.Assembly.GetName();
 
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                new AssemblyName("Atdi.DataModels.Sdrns.Server.EntitiesProxy, Version=1.0.0.1"),
+                new AssemblyName($"{an.Name}.EntitiesProxy, Version=1.0.0.1"),
                 RE.AssemblyBuilderAccess.RunAndSave);
 
             var dynaminModule = assemblyBuilder.DefineDynamicModule(
@@ -1772,7 +1799,7 @@ namespace Atdi.CoreServices.EntityOrm
                 TypeAttributes.BeforeFieldInit | TypeAttributes.Public, typeof(object), new Type[] { baseInterface });
 
             // генерируем переменные под свойства
-            var propertiesInfo = baseInterface.GetProperties();
+            var propertiesInfo = baseInterface.GetPropertiesWithInherited();
             for (int i = 0; i < propertiesInfo.Length; i++)
             {
                 var propertyInfo = propertiesInfo[i];

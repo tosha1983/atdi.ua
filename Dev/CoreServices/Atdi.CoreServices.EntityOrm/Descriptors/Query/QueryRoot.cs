@@ -50,10 +50,8 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new InvalidOperationException($"Incorrect field path {path}");
             }
 
-            
-
             var fieldName = nameParts[0];
-            if (!this._entityMetadata.Fields.TryGetValue(fieldName, out IFieldMetadata fieldMetadata))
+            if (!this._entityMetadata.TryGetLocalField(fieldName, out IFieldMetadata fieldMetadata))
             {
                 throw new InvalidOperationException($"Not found a field with name '{fieldName}' from the entity {this._entityMetadata} by path '{path}'");
             }

@@ -269,6 +269,7 @@
     <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.DateTimeOffset.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.Guid.xml" />
     <Content Include="Metadata\DataTypes\Database\DateTimeOffset.xml" />
     <Content Include="Metadata\DataTypes\Database\Float.22.8.xml" />
@@ -295,6 +296,11 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\TestEntityAbsSmpProtoEnd.xml" />
+    <Content Include="Metadata\Entities\TestEntityAbsSmpProto1.xml" />
+    <Content Include="Metadata\Entities\TestEntityAbsSmpProto0.xml" />
+    <Content Include="Metadata\Entities\TestEntityAbsSmp.xml" />
+    <Content Include="Metadata\Entities\TestEntityAbs.xml" />
     <Content Include="Metadata\Entities\TestRefSubBookExt2.xml" />
     <Content Include="Metadata\Entities\TestRefSubBookExt1.xml" />
     <Content Include="Metadata\Entities\TestRefSubBook.xml" />

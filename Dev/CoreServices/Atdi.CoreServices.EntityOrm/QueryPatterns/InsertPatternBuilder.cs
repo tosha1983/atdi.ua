@@ -17,8 +17,16 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
     {
         class BuildingContext
         {
+            private int _aliasCounter = 0;
+
             public IFieldMetadata[] BasePrimaryKeyFields { get; set; }
             public PS.TargetObject PrimaryKeyOwner { get; set; }
+
+            public string GenerateAlias(IEntityMetadata entity)
+            {
+                ++_aliasCounter;
+                return $"{entity.Name}_{_aliasCounter}";
+            }
         }
 
         private readonly IEntityOrm _entityOrm;
@@ -51,7 +59,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             var context = new BuildingContext();
 
             // в начале создаем записи в таблицах согласно цепочки наследования
-            var baseEntitesExpressions = this.BuildInsertExpressionForBaseEntities(insertDescriptor);
+            var baseEntitesExpressions = this.BuildInsertExpressionForBaseEntities(insertDescriptor, context);
             if (baseEntitesExpressions.Length > 0)
             {
                 expressions.AddRange(baseEntitesExpressions);
@@ -63,11 +71,15 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
             // затем если есть ссылки на поля расширения, вставляем туда
             var extensionEntitesExpressions = this.BuildInsertExpressionForExtentionEntities(insertDescriptor);
+            if (extensionEntitesExpressions.Length > 0)
+            {
+                expressions.AddRange(extensionEntitesExpressions);
+            }
 
             var pattren = new PS.InsertPattern
             {
                 Expressions = expressions.ToArray(),
-                PrimaryKeyFields = context?.BasePrimaryKeyFields
+                PrimaryKeyFields = context?.BasePrimaryKeyFields?
                     .Select(pkField => new PS.NamedEngineMember
                     {
                         Owner = context.PrimaryKeyOwner,
@@ -112,28 +124,38 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             return result;
         }
 
-        private object BuildPrimaryKeyObject(IEntityMetadata entity)
-        {
-            var primaryKey = entity.DefinePrimaryKey();
 
-            return null;
-        }
-        private PS.InsertExpression[] BuildInsertExpressionForBaseEntities(InsertQueryDescriptor descriptor)
+        private PS.InsertExpression[] BuildInsertExpressionForBaseEntities(InsertQueryDescriptor descriptor, BuildingContext context)
         {
-            var result = new List<PS.InsertExpression>();
-
-            return result.ToArray();
+            var inheritChain = descriptor.Entity.DefineInheritChain();
+            var allValues = descriptor.GetValues();
+            var result = new PS.InsertExpression[inheritChain.Length];
+            for (int i = 0; i < inheritChain.Length; i++)
+            {
+                var baseEntity = inheritChain[i];
+                var baseValues = allValues.Where(f => f.Descriptor.OwnerField.BelongsEntity(baseEntity)).ToArray();
+                var baseInsertExpression = this.BuildInsertExpressionByEntity(baseEntity, baseValues, context);
+                result[i] = baseInsertExpression;
+            }
+            return result;
         }
         private PS.InsertExpression BuildInsertExpressionForMainEntity(InsertQueryDescriptor descriptor, BuildingContext context)
         {
+            // только значения для локальных полей основной сущности
+            var values = descriptor.GetValues().Where(f => f.Descriptor.IsLocal).ToArray();
+            return BuildInsertExpressionByEntity(descriptor.Entity, values, context);
+        }
+
+        private PS.InsertExpression BuildInsertExpressionByEntity(IEntityMetadata entity, FieldValueDescriptor[] fieldValues, BuildingContext context)
+        {
             var expression = new PS.InsertExpression
             {
-                Target = this.BuildTargetByEntity(descriptor.Entity)
+                Target = this.BuildTargetByEntity(entity, context)
             };
 
             var setValues = new List<PS.SetValueExpression>();
 
-            // поля первичного ключа достались от базовоаго объекта
+            // поля первичного ключа достались от базового объекта
             if (context.BasePrimaryKeyFields != null)
             {
                 //просто добавляем в набор как по ссылке
@@ -164,7 +186,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                     setValues.Add(setValue);
                 }
             }
-            else if (descriptor.Entity.TryGetPrimaryKeyRefFields(out IPrimaryKeyFieldRefMetadata[] pkFields))
+            else if (entity.TryGetPrimaryKeyRefFields(out IPrimaryKeyFieldRefMetadata[] pkFields))
             {
                 // есть свой набор полей первичного ключа
                 // добавляем поля требующие автогенерации 
@@ -201,13 +223,13 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             // При налчии факта наследования, нужно автоматически внести сохранение полей первичного ключа
 
             // Фаза формирования локальных значений
-            var fieldValues = descriptor.GetValues();
+            
             // устанавливаем значение локальным полям
             for (int i = 0; i < fieldValues.Length; i++)
             {
                 var fieldValue = fieldValues[i];
-                if (fieldValue.Descriptor.IsLocal)
-                {
+                //if (fieldValue.Descriptor.IsLocal)
+                //{
                     // пытаемся определить имя в хранилище, если не удалось
                     // это означает что в данном контексте нельзя использовать поле
                     if (!fieldValue.Descriptor.TrySourceName(out string sourceName))
@@ -217,7 +239,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
                     // подготовка значения поля
                     var storeValue = _dataTypeSystem.GetEncoder(fieldValue.Descriptor.Field.DataType).Encode(fieldValue.Store);
-                    
+
                     // строим часть паттерна
                     var setValue = new PS.SetValueExpression
                     {
@@ -232,7 +254,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                     };
 
                     setValues.Add(setValue);
-                }
+                //}
             }
             expression.Values = setValues.ToArray();
             return expression;
@@ -245,7 +267,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             return result.ToArray();
         }
 
-        private PS.EngineObject BuildTargetByEntity(IEntityMetadata  entity)
+        private PS.EngineObject BuildTargetByEntity(IEntityMetadata  entity, BuildingContext context)
         {
             var dataSource = entity.DataSource;
             switch (dataSource.Object)
@@ -253,7 +275,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case DataSourceObject.Table:
                     var table = new PS.EngineTable
                     {
-                        Alias = entity.QualifiedName,
+                        Alias = context.GenerateAlias(entity),
                         Name = dataSource.Name,
                         Schema = dataSource.Schema
                     };
@@ -262,7 +284,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case DataSourceObject.View:
                     var view = new PS.EngineTable
                     {
-                        Alias = entity.QualifiedName,
+                        Alias = context.GenerateAlias(entity),
                         Name = dataSource.Name,
                         Schema = dataSource.Schema
                     };

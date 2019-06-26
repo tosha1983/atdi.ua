@@ -7,6 +7,91 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKey]
+    public interface ITestEntityAbs_PK
+    {
+        long AbsPkId1 { get; set; }
+
+        Guid AbsPkId2 { get; set; }
+
+        DateTimeOffset AbsPkId3 { get; set; }
+    }
+
+    [Entity]
+    public interface ITestEntityAbs : ITestEntityAbs_PK
+    {
+        string AbsField1 { get; set; }
+
+        string AbsField2 { get; set; }
+
+        string AbsField3 { get; set; }
+
+    }
+
+    [EntityPrimaryKey]
+    public interface ITestEntityAbsSmp_PK : ITestEntityAbs_PK
+    {
+    }
+
+    [Entity]
+    public interface ITestEntityAbsSmp : ITestEntityAbs, ITestEntityAbsSmp_PK
+    {
+        string SmpField1 { get; set; }
+
+        string SmpField2 { get; set; }
+
+        string SmpField3 { get; set; }
+
+    }
+
+
+    [EntityPrimaryKey]
+    public interface ITestEntityAbsSmpProto0_PK : ITestEntityAbsSmp_PK
+    {
+    }
+
+    [Entity]
+    public interface ITestEntityAbsSmpProto0 : ITestEntityAbsSmp, ITestEntityAbsSmpProto0_PK
+    {
+        string Proto0Field1 { get; set; }
+
+        string Proto0Field2 { get; set; }
+
+        string Proto0Field3 { get; set; }
+
+    }
+
+    [EntityPrimaryKey]
+    public interface ITestEntityAbsSmpProto1_PK : ITestEntityAbsSmpProto0_PK
+    {
+    }
+
+    [Entity]
+    public interface ITestEntityAbsSmpProto1 : ITestEntityAbsSmpProto0, ITestEntityAbsSmpProto1_PK
+    {
+        string Proto1Field1 { get; set; }
+
+        string Proto1Field2 { get; set; }
+
+        string Proto1Field3 { get; set; }
+
+    }
+
+    [EntityPrimaryKey]
+    public interface ITestEntityAbsSmpProtoEnd_PK : ITestEntityAbsSmpProto1_PK
+    {
+    }
+
+    [Entity]
+    public interface ITestEntityAbsSmpProtoEnd : ITestEntityAbsSmpProto1, ITestEntityAbsSmpProtoEnd_PK
+    {
+        string ProtoEndField1 { get; set; }
+
+        string ProtoEndField2 { get; set; }
+
+        string ProtoEndField3 { get; set; }
+
+    }
     [Entity]
     public interface ITestDataType
     {

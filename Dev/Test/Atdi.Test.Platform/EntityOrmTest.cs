@@ -27,17 +27,56 @@ namespace Atdi.Test.Platform
 
         private static void Test_InsertPatterns(IDataLayer<EntityDataOrm> dataLayer)
         {
-            var insert = dataLayer.GetBuilder<ITestRefBook>()
-                .Insert()
-                .SetValue(c => c.Name, "Name")
-                .SetValue(c => c.SUBBOOK1.Code, "code_1")
-                .SetValue(c => c.SUBBOOK1.SubType, "sub_type_1");
+            //var insert = dataLayer.GetBuilder<ITestRefBook>()
+            //    .Insert()
+            //    .SetValue(c => c.Name, "Name")
+            //    .SetValue(c => c.SUBBOOK1.Code, "code_1")
+            //    .SetValue(c => c.SUBBOOK1.SubType, "sub_type_1");
 
-            using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
+            //using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
+            //{
+            //   var pk = scope.Executor.Execute<ITestRefBook_PK>(insert);
+            //    var pk2 = scope.Executor.Execute<ITestRefBook_PK>(insert);
+            //    var pk3 = scope.Executor.Execute<ITestRefBook_PK>(insert);
+            //    Console.WriteLine($"Id = {pk.Id}, Guid = {pk.GuidId}");
+            //}
+
+            try
             {
-               var pk = scope.Executor.Execute<ITestRefBook_PK>(insert);
-                Console.WriteLine($"Id = {pk.Id}, Guid = {pk.GuidId}");
+                var insert2 = dataLayer.GetBuilder<ITestEntityAbsSmpProtoEnd>()
+                .Insert()
+                .SetValue(c => c.AbsField1, "Abs Field 1")
+                .SetValue(c => c.AbsField2, "Abs Field 2")
+                .SetValue(c => c.AbsField3, "Abs Field 3")
+
+                .SetValue(c => c.SmpField1, "Smp Field 1")
+                .SetValue(c => c.SmpField2, "Smp Field 2")
+                .SetValue(c => c.SmpField3, "Smp Field 3")
+
+                .SetValue(c => c.Proto0Field1, "Proto 0 Field 1")
+                .SetValue(c => c.Proto0Field2, "Proto 0 Field 2")
+                .SetValue(c => c.Proto0Field3, "Proto 0 Field 3")
+
+                .SetValue(c => c.Proto1Field1, "Proto 1 Field 1")
+                .SetValue(c => c.Proto1Field2, "Proto 1 Field 2")
+                .SetValue(c => c.Proto1Field3, "Proto 1 Field 3")
+
+                .SetValue(c => c.ProtoEndField1, "Proto End Field 1")
+                .SetValue(c => c.ProtoEndField2, "Proto End Field 2")
+                .SetValue(c => c.ProtoEndField3, "Proto End Field 3");
+
+                using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    var pk = scope.Executor.Execute<ITestEntityAbsSmpProtoEnd_PK>(insert2);
+                    Console.WriteLine($"AbsPkId1 = {pk.AbsPkId1}, AbsPkId2 = {pk.AbsPkId2}, AbsPkId3 = {pk.AbsPkId3}");
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         private static void Test_ReferenceFields(IDataLayer<EntityDataOrm> dataLayer)
