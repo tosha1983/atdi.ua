@@ -24,8 +24,8 @@ namespace Atdi.Test.Platform.Oracle
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
                     var logger = resolver.Resolve<ILogger>();
-                    DataLayerTest.Run(resolver);
-                    //EntityOrmTest.Run(resolver);
+                    //DataLayerTest.Run(resolver);
+                    EntityOrmTest.Run(resolver);
 
                     //LoggerTest.Run(logger);
 

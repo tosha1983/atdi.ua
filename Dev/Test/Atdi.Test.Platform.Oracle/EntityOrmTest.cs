@@ -1,7 +1,7 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
-using Atdi.DataModels.Sdrns.Server.Entities.Entities;
+//using Atdi.DataModels.Sdrns.Server.Entities.Entities;
 using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -48,9 +48,9 @@ namespace Atdi.Test.Platform
                 c => c.CreatedBy
             )
             .SetValue(c => c.Id, 2)
-            .SetValue(c => c.Name, "TEST")
-            .SetValue(c => c.TechId, "TECH17")
-            .SetValue(c => c.CreatedBy,"ICSM7");
+            .SetValue(c => c.Name, "TEST9080")
+            .SetValue(c => c.TechId, "TECH1078")
+            .SetValue(c => c.CreatedBy,"ICSM67");
 
             //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #1, execute statement without trasaction, close connaction
             //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close connaction
@@ -62,7 +62,8 @@ namespace Atdi.Test.Platform
                 scope.BeginTran(); // connaction #3: scope has transaction
 
                 //scope.Executor.Execute(queryNoTyped); // connaction #3: execute statement with trasaction
-                scope.Executor.Execute(query); // connaction #3: execute statement with trasaction
+                var x = scope.Executor.Execute<ISensor_PK>(query); // connaction #3: execute statement with trasaction
+                //scope.Executor.Execute(query); // connaction #3: execute statement with trasaction
 
                 scope.Commit(); // connaction #3:  commit trasaction
                 // connaction #3: scope has no transaction

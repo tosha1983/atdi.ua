@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="AppComponent.cs" />
     <Compile Include="CommandBuilder.cs" />
-    <Compile Include="EngineDataReader.cs" />
+    <Compile Include="OracleEngineDataReader.cs" />
     <Compile Include="EngineExecuter.cs" />
     <Compile Include="IOracleQueryPatternHandler.cs" />
     <Compile Include="OracleDataEngine.cs" />

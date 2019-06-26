@@ -75,6 +75,24 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             }
         }
 
+        private void EnsureOutputParameters(OracleCommand sqlCommand, EngineCommand engineCommand)
+        {
+            for (int i = 0; i < sqlCommand.Parameters.Count; i++)
+            {
+                var sqlParameter = sqlCommand.Parameters[i];
+                if (sqlParameter.Direction == ParameterDirection.Output
+                    || sqlParameter.Direction == ParameterDirection.InputOutput)
+                {
+                    var key = sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
+                    var tp = sqlParameter.OracleDbType;
+                    if (tp != OracleDbType.RefCursor)
+                    {
+                        engineCommand.Parameters[key].Value = (Int64)sqlParameter.Value;
+                    }
+                }
+            }
+        }
+
         public object ExecuteScalar(EngineCommand engineCommand)
         {
             using (var sqlCommand = this.CreatCommand(engineCommand))
@@ -84,7 +102,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         var result = sqlCommand.ExecuteScalar();
-                        //this.EnsureOutputParameters();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                         return result;
                     }
                 }
@@ -194,6 +212,8 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 OracleDbType = ToSqlDbType(parameter.DataType),
                 Value = parameter.Value ?? DBNull.Value,
                 Direction = parameter.Direction.CopyTo<ParameterDirection>()
+
+                
             };
 
             // мелкая конвертация для знакового байта и безнаковіх целых
@@ -215,12 +235,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 {
                     sqlParameter.Value = Convert.ToDecimal(parameter.Value);
                 }
-                else if (parameter.DataType == DataType.Time)
-                {
-                    var timeSpan = (TimeSpan)(parameter.Value);
-                    OracleTimeStamp oracleTimeStamp = new OracleTimeStamp(new DateTime(timeSpan.Ticks));
-                    sqlParameter.Value = oracleTimeStamp;
-                }
+                //else if (parameter.DataType == DataType.Time)
+                //{
+                    //var timeSpan = (TimeSpan)(parameter.Value);
+                    //OracleTimeStamp oracleTimeStamp = new OracleTimeStamp(new DateTime(timeSpan.Ticks));
+                    //sqlParameter.Value = oracleTimeStamp;
+                //}
             }
 
             if (parameter.DataType == DataType.String && parameter.Value != null)
@@ -268,7 +288,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 case DataType.DateTimeOffset:
                     return OracleDbType.TimeStampTZ;
                 case DataType.Time:
-                    return OracleDbType.TimeStamp;
+                    return OracleDbType.IntervalDS;
                 case DataType.Date:
                     return OracleDbType.Date;
                 case DataType.Long:
@@ -293,8 +313,9 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     return OracleDbType.Decimal;
                 case DataType.ClrType:
                     return OracleDbType.Blob;
-                case DataType.Json:
                 case DataType.Undefined:
+                    return OracleDbType.RefCursor;
+                case DataType.Json:
                 default:
                     throw new InvalidCastException($"Unsupported DataType with name '{dataType}'");
             }

@@ -14,11 +14,11 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace Atdi.CoreServices.DataLayer.Oracle
 {
-    class OrcaleEngineDataReader : IEngineDataReader
+    class OracleEngineDataReader : IEngineDataReader
     {
         private readonly OracleDataReader _reader;
 
-        public OrcaleEngineDataReader(OracleDataReader reader)
+        public OracleEngineDataReader(OracleDataReader reader)
         {
             this._reader = reader;
         }
@@ -33,7 +33,25 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public Type GetFieldType(int i)
         {
-            return _reader.GetFieldType(i);
+            var providerSpecificFieldType = _reader.GetProviderSpecificFieldType(i);
+
+            if (providerSpecificFieldType.Name == "OracleTimeStampTZ")
+            {
+                return typeof(DateTimeOffset);
+            }
+            else if (providerSpecificFieldType.Name == "OracleIntervalDS")
+            {
+                return typeof(TimeSpan);
+            }
+            else if ((providerSpecificFieldType.Name == "OracleDate") || (providerSpecificFieldType.Name == "OracleTimeStampLTZ") ||
+                (providerSpecificFieldType.Name == "OracleTimeStamp"))
+            {
+                return typeof(DateTime);
+            }
+            else
+            {
+                return _reader.GetFieldType(i);
+            }
         }
 
         public string GetName(int i)
@@ -163,7 +181,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public char[] GetChars(int i)
         {
-            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetChars)));
         }
 
         public int GetInt32(int i)
@@ -173,7 +191,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public uint GetUInt32(int i)
         {
-            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetUInt32)));
         }
 
         public short GetInt16(int i)
@@ -183,7 +201,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public ushort GetUInt16(int i)
         {
-            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetUInt16)));
         }
 
         public long GetInt64(int i)
@@ -193,7 +211,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public ulong GetUInt64(int i)
         {
-            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetUInt64)));
         }
 
         public string GetString(int i)
@@ -203,26 +221,69 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public DateTime GetDateTime(int i)
         {
-            return _reader.GetDateTime(i);
+            var providerSpecificFieldType = _reader.GetProviderSpecificFieldType(i);
+
+            if (providerSpecificFieldType.Name == "OracleTimeStampLTZ")
+            {
+                return GetOracleTimeStampLTZ(i);
+            }
+            else if (providerSpecificFieldType.Name == "OracleTimeStamp")
+            {
+                return  GetOracleTimeStamp(i);
+            }
+            else
+            {
+                return _reader.GetDateTime(i);
+            }
         }
 
         public DateTimeOffset GetDateTimeOffset(int i)
         {
+            var dateTimeOffset = new DateTimeOffset();
+
+            var providerSpecificFieldType = _reader.GetProviderSpecificFieldType(i);
+
+            if (providerSpecificFieldType.Name == "OracleTimeStampTZ")
+            {
+                dateTimeOffset = GetOracleTimeStampTZ(i);
+            }
+            else
+            {
+                throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(providerSpecificFieldType.Name));
+            }
+            return dateTimeOffset;
+        }
+
+        private DateTimeOffset GetOracleTimeStampTZ(int i)
+        {
             var val = _reader.GetOracleTimeStampTZ(i);
             var oracleTimeStamp = val.ToOracleTimeStamp();
-            return new DateTimeOffset(oracleTimeStamp.Value);
+            return new DateTimeOffset(oracleTimeStamp.Value, val.GetTimeZoneOffset());
         }
+
+        private DateTime GetOracleTimeStampLTZ(int i)
+        {
+            var val = _reader.GetOracleTimeStampLTZ(i);
+            var oracleTimeStamp = val.ToOracleTimeStamp();
+            return oracleTimeStamp.Value;
+        }
+
+        private DateTime GetOracleTimeStamp(int i)
+        {
+            var oracleTimeStamp = _reader.GetOracleTimeStamp(i);
+            return oracleTimeStamp.Value;
+        }
+
 
         public TimeSpan GetTimeSpan(int i)
         {
-            var oracleDate = _reader.GetDateTime(i);
-            return new TimeSpan(oracleDate.Ticks);
+            var oracleIntervalDS = _reader.GetOracleIntervalDS(i);
+            return oracleIntervalDS.Value;
         }
 
         public Guid GetGuid(int i)
         {
-            var guidDate = _reader.GetString(i);
-            return Guid.Parse(guidDate);
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetGuid)));
         }
 
         public float GetFloat(int i)
@@ -247,7 +308,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         }
         public XmlReader GetXmlReader(int i)
         {
-            return _reader.GetXmlReader(i);
+            var text = GetString(i);
+            var stringReader = new StringReader(text);
+            var xmlReader = XmlReader.Create(stringReader);
+            return xmlReader;
         }
 
         public Stream GetStream(int i)
@@ -271,7 +335,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public char GetChar(int i)
         {
-            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetSByte)));
+            throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetChar)));
         }
     }
 }

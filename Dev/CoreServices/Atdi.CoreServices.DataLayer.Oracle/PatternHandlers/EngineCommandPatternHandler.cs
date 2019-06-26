@@ -42,7 +42,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                         }
                         if (pattern.Result is EngineExecutionReaderResult<IEngineDataReader> result2)
                         {
-                            result2.Handler(new OrcaleEngineDataReader(sqlReader));
+                            result2.Handler(new OracleEngineDataReader(sqlReader));
                         }
                     });
                     return;

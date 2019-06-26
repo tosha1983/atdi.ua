@@ -2,7 +2,6 @@
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels;
-using Atdi.DataModels.Sdrns.Server.Entities.Entities;
 using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -54,12 +53,29 @@ namespace Atdi.Test.Platform
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 var type = reader.GetFieldType(i);
-                                var value = reader.GetValue(i);
+                                var value = reader.GetValue(i, type);
+
+                               
+
                                 var name = reader.GetName(i);
+                                if (name== "VAL_AS_UNIQUEIDENTIFIER")
+                                {
+
+                                }
                                 if (name == "VAL_AS_DATETIMEOFFSET")
                                 {
-                                    var ss = reader.GetValue(i, typeof(DateTimeOffset));
+
                                 }
+                                if (name == "VAL_AS_IMAGE")
+                                {
+                                    var stream = reader.GetStream(i);
+                                }
+                                if (name == "VAL_AS_XML")
+                                {
+                                    var stream = reader.GetXmlReader(i);
+                                }
+
+                                
 
 
                                 var ordinal = reader.GetOrdinal(name);
@@ -116,10 +132,18 @@ namespace Atdi.Test.Platform
                                 {
                                     var val = reader.GetDateTime(i);
                                 }
-                                //else if (type == typeof(TimeSpan))
-                                //{
-                                    //var val = reader.GetTimeSpan(i);
-                                //}
+                                else if (type == typeof(TimeSpan))
+                                {
+                                    var val = reader.GetTimeSpan(i);
+                                }
+                                else if (type == typeof(DateTimeOffset))
+                                {
+                                    var val = reader.GetDateTimeOffset(i);
+                                }
+                                else if (type == typeof(Guid))
+                                {
+                                    var val = reader.GetGuid(i);
+                                }
                                 else if (type == typeof(object))
                                 {
                                     var val = reader.GetValue(i);
@@ -221,8 +245,9 @@ namespace Atdi.Test.Platform
             sql.AppendLine("val_as_binary_250,"); //BLOB, LONG RAW, RAW(250
             sql.AppendLine("val_as_varbinary_1,");
             sql.AppendLine("val_as_time,");
-            sql.AppendLine("val_as_uniqueidentifier"); //NCLOB
-
+            sql.AppendLine("val_as_uniqueidentifier,"); //NCLOB
+            sql.AppendLine("VAL_AS_DATETIMEOFFSET_LTZ"); //NCLOB
+            
 
 
 
@@ -267,9 +292,9 @@ namespace Atdi.Test.Platform
             sql.AppendLine(":val_as_binary_250,");
             sql.AppendLine(":val_as_varbinary_1,");
             sql.AppendLine(":val_as_time,");
-            sql.AppendLine(":val_as_uniqueidentifier");
-
-
+            sql.AppendLine(":val_as_uniqueidentifier,");
+            sql.AppendLine(":VAL_AS_DATETIMEOFFSET_LTZ");
+            
 
 
 
@@ -316,11 +341,11 @@ namespace Atdi.Test.Platform
             insertCommand.AddParameter("val_as_binary_1", DataType.SignedByte, sbyte.MaxValue);
             insertCommand.AddParameter("val_as_binary_250", DataType.Bytes, BuildBytes(250));
             insertCommand.AddParameter("val_as_varbinary_1", DataType.Bytes, BuildBytes(2 * 1024));
-            TimeSpan span = new TimeSpan(0, 0, 0, 0, 25);
-            insertCommand.AddParameter("val_as_time", DataType.Time, span);
+            insertCommand.AddParameter("val_as_time", DataType.Time, TimeSpan.FromMinutes(10));
 
             insertCommand.AddParameter("val_as_uniqueidentifier", DataType.Guid,  Guid.NewGuid());
-
+            insertCommand.AddParameter("VAL_AS_DATETIMEOFFSET_LTZ", DataType.DateTimeOffset, DateTimeOffset.Now);
+            
 
             return insertCommand;
        
@@ -329,7 +354,7 @@ namespace Atdi.Test.Platform
         private static string BuildXml()
         {
             var xml = new StringBuilder();
-            //xml.AppendLine(:"<?xml version=""1.0"" encoding=""utf-8"" ?>");
+            xml.AppendLine(@"<?xml version=""1.0"" encoding=""utf-8"" ?>");
             xml.AppendLine(@"<DataType>");
             xml.AppendLine(@"</DataType>");
             var result = xml.ToString();

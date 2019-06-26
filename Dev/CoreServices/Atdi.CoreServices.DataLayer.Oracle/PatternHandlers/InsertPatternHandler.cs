@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PS = Atdi.Contracts.CoreServices.DataLayer.Patterns;
+using Atdi.CoreServices.DataLayer.Oracle;
 using Atdi.Contracts.CoreServices.DataLayer.Patterns;
 
 namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
@@ -21,7 +22,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
         {
             var pattern = queryPattern as PS.InsertPattern;
 
-            var command = BuildCommand(pattern);
+            var context = new OracleBuildingContex();
+
+            this.BuildIteration(pattern, context);
+
+            var command = context.BuildCommand();
 
             switch (pattern.Result.Kind)
             {
@@ -36,7 +41,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                     // возврат первичного ключа через исходящие параметры
                     var result = pattern.AsResult<EngineExecutionScalarResult>();
                     executer.ExecuteScalar(command);
-                    result.Value = this.DecodePrimaryKey(pattern, command);
+                    this.DecodePrimaryKey(pattern, context, command);
                     return;
                 case EngineExecutionResultKind.Reader:
                     executer.ExecuteReader(command, sqlReader =>
@@ -47,7 +52,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                         }
                         if (pattern.Result is EngineExecutionReaderResult<IEngineDataReader> result2)
                         {
-                            result2.Handler(new OrcaleEngineDataReader(sqlReader));
+                            result2.Handler(new OracleEngineDataReader(sqlReader));
                         }
                     });
                     return;
@@ -57,88 +62,145 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
             }
         }
 
-        private object DecodePrimaryKey(PS.InsertPattern pattern, EngineCommand command)
+        private void DecodePrimaryKey(PS.InsertPattern pattern, OracleBuildingContex contex, EngineCommand command)
         {
-            return null;
+            var pkFields = pattern.PrimaryKeyFields;
+            if (pkFields == null || pkFields.Length == 0)
+            {
+                throw new InvalidOperationException("Primary key fields are not defined");
+            }
+
+            var instance = pattern.AsResult<EngineExecutionScalarResult>().Value;
+            if (instance == null)
+            {
+                throw new InvalidOperationException("Primary key instance are not defined");
+            }
+            var instanceType = instance.GetType();
+            for (int i = 0; i < pkFields.Length; i++)
+            {
+                var pkField = pkFields[i];
+                var parameter = contex.GetParameter(pkField.Owner.Alias, pkField.Name);
+                var property = instanceType.GetProperty(pkField.Property);
+                if (property == null)
+                {
+                    throw new InvalidOperationException($"Primary key instance does not contain a property named '{pkField.Property}'");
+                }
+                property.SetValue(instance, parameter.Value);
+            }
         }
 
         /// <summary>
+        /// Построитель конструкцции следующего вида
+        /// /* Iterration: #1 */
+        /// 
+        /// /* Expression: index = #1, alias = 'atdi.DataContract.Entites.BaseEntity1' */
+        /// SET @P_С1_2 = ROWID()
+        /// INSERT INTO [SCHEMA_NAME].[BASE_TABLE_NAME](F1, F2)
+        /// VALUES(@P_С1_1, @P_С1_2)
+        /// SELECT @P_С1_3 = @@IDENTITY()
+        /// 
+        /// /* Expression: index = #2, alias = 'atdi.DataContract.Entites.Entity1' */
+        /// INSERT INTO [SCHEMA_NAME].[MAIN_TABLE_NAME](F_PK, F1, F2)
+        /// VALUES(@P_С1_3, @P_С1_4, @P_С1_5)
+        /// 
+        /// /* Expression Alias (3): atdi.DataContract.Entites.ExtensionEntity1 */
+        /// INSERT INTO [SCHEMA_NAME].[MAIN_TABLE_NAME](F_PK, F1, F2)
+        /// VALUES(@P_С1_3, @P_С1_6, @P_С1_7)
         /// 
         /// </summary>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        private EngineCommand BuildCommand(PS.InsertPattern pattern)
+        private void BuildIteration(PS.InsertPattern pattern, OracleBuildingContex contex)
         {
-            var builder = new OracleCommandBuilder();
-
-            builder.StartIteration();
-
-            var allParameters = new Dictionary<string, EngineCommandParameter>();
-
             for (int i = 0; i < pattern.Expressions.Length; i++)
             {
                 var expression = pattern.Expressions[i];
-                builder.ExpresaionAlias(i, expression.Alias);
+                contex.Builder.ExpresaionAlias(i, expression.Target.Alias);
 
                 var fields = new List<string>();
                 var values = new List<EngineCommandParameter>();
 
+                var identityFields = new Dictionary<string,string>();
+
+                contex.Builder.SetBegin();
+
                 for (int j = 0; j < expression.Values.Length; j++)
                 {
                     var value = expression.Values[j];
-                    fields.Add(value.Property.Name);
-                    if (value.Expression is PS.ConstantValueExpression constantValue)
+
+                    // генерация значения
+                    if (value.Expression is PS.GeneratedValueExpression generatedValue)
                     {
-                        var parameter = new EngineCommandParameter
+                        var parameter = contex.CreateParameter(value.Property.Owner.Alias, value.Property.Name, value.Property.DataType, EngineParameterDirection.Output);
+
+                        // исключаем поля айдентити из прямой вставки в поле
+                        if (generatedValue.Operation == PS.GeneratedValueOperation.SetNext
+                            && (value.Property.DataType == DataModels.DataType.Integer
+                            || value.Property.DataType == DataModels.DataType.Long
+                            || value.Property.DataType == DataModels.DataType.Short))
                         {
-                            DataType = value.Property.DataType,
-                            Direction = EngineParameterDirection.Input,
-                            Value = constantValue.Value,
-                            Name = value.Property.Name
-                        };
-                        values.Add(parameter);
+
+                            identityFields.Add(parameter.Name, value.Property.Name);
+
+                            contex.Builder.GenerateNextValue(parameter, value.Property.Owner as EngineObject);
+                            fields.Add(value.Property.Name);
+                            values.Add(parameter);
+                        }
+                        else
+                        {
+                            if (generatedValue.Operation == PS.GeneratedValueOperation.SetDefault)
+                            {
+                                contex.Builder.SetDefault(parameter);
+                            }
+                            else if (generatedValue.Operation == PS.GeneratedValueOperation.SetNext)
+                            {
+                                contex.Builder.GenerateNextValue(parameter, value.Property.Owner as EngineObject);
+                            }
+                            fields.Add(value.Property.Name);
+                            values.Add(parameter);
+                        }
                     }
-                    //if (value.Expression is PS.ReferenceValueExpression referenceValue)
-                    //{
-                    //    referenceValue.Value.Owner.
-                    //}
+                    else if (value.Expression is PS.ConstantValueExpression constantValue)
+                    {
+                        if (!fields.Contains(value.Property.Name))
+                        {
+                            fields.Add(value.Property.Name);
+                            var parameter = contex.CreateParameter(value.Property.Owner.Alias, value.Property.Name, value.Property.DataType, EngineParameterDirection.Input);
+                            parameter.SetValue(constantValue.Value);
+                            values.Add(parameter);
+                        }
+                    }
+                    else if (value.Expression is PS.ReferenceValueExpression referenceValue)
+                    {
+                        if (!fields.Contains(value.Property.Name))
+                        {
+                            fields.Add(value.Property.Name);
+                            var parameter = contex.GetParameter(referenceValue.Member.Owner.Alias, referenceValue.Member.Name);
+                            values.Add(parameter);
+                        }
+                    }
                     else
                     {
                         throw new InvalidOperationException($"Unsupported Value Expression Type '{value.Expression.GetType().FullName}'");
+
+
                     }
                 }
-                EngineCommandParameter engineCommandParameter = null;
-                var engineTable = expression.Target as EngineTable;
-                if (engineTable!=null)
+
+                // генерируем код создания записи
+                contex.Builder.Insert(expression.Target.Schema, expression.Target.Name, fields.ToArray(), values.ToArray());
+
+                if (pattern.Result.Kind == EngineExecutionResultKind.Scalar)
                 {
-                    var primaryKey = engineTable.PrimaryKey;
-                    if (primaryKey != null)
-                    {
-                        for (int n=0; n< primaryKey.Fields.Length; n++)
-                        {
-                            var field = primaryKey.Fields[n] as PrimaryKeyField;
-                            if (((field.DataType == DataModels.DataType.Integer) || (field.DataType == DataModels.DataType.Long)
-                                    || (field.DataType == DataModels.DataType.UnsignedInteger)
-                                    || (field.DataType == DataModels.DataType.UnsignedLong)
-                                    || (field.DataType == DataModels.DataType.Short) || (field.DataType == DataModels.DataType.UnsignedShort)) && (field.Generated==true))
-                            {
-                                engineCommandParameter = new EngineCommandParameter()
-                                {
-                                    DataType = field.DataType,
-                                    Direction = EngineParameterDirection.InputOutput,
-                                    Name = field.Name
-                                };
-                                break;
-                            }
-                        }
-                    }
+                    var parameter = contex.CreateParameter("CURSOR_SELECT", ":CURSOR_SELECT", DataModels.DataType.Undefined, EngineParameterDirection.Output);
+                    contex.Builder.ForScalar(expression.Target.Schema, parameter.Name, expression.Target.Name, identityFields, pattern.Result.Kind);
                 }
-                builder.Insert(expression.Target.Schema, expression.Target.Name, fields.ToArray(), values.ToArray(), engineCommandParameter);
+                contex.Builder.SetEnd();
+
+
             }
-
-            return builder.GetCommand();
         }
-
-        
     }
 }
+
+
