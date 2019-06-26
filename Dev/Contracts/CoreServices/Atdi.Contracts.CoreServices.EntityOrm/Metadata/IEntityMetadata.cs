@@ -74,6 +74,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         {
             return entityMetadata.Type == EntityType.Extention
                 || entityMetadata.Type == EntityType.Prototype
+                || entityMetadata.Type == EntityType.Abstruct
                 || entityMetadata.Type == EntityType.Role;
             // при простом наследовании просто копируется вся структура и объект выглядит как Normal
              //   || entityMetadata.Type == EntityType.Simple;
@@ -83,6 +84,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             return entityMetadata.Type == EntityType.Extention
                 || entityMetadata.Type == EntityType.Prototype
                 || entityMetadata.Type == EntityType.Role
+                || entityMetadata.Type == EntityType.Abstruct
                 || entityMetadata.Type == EntityType.Simple;
         }
 
@@ -169,14 +171,161 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
             if (entityMetadata.UsesBaseEntityPrimaryKey())
             {
-                return entityMetadata.DefinePrimaryKey();
+                return entityMetadata.BaseEntity.DefinePrimaryKey();
             }
 
             return null;
         }
 
         /// <summary>
-        /// Метод пытается вернуть первичный ключ если он определен на уровне даннйо сущности
+        /// Метод определения всех полей сущности включая с наследуемыми
+        /// Важно: в цепочку исследования входят базовые абстрактные сущности
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        /// <returns></returns>
+        public static IFieldMetadata[] DefineFieldsWithInherited(this IEntityMetadata entityMetadata)
+        {
+            var fields = new List<IFieldMetadata>();
+
+            // копируем локальные если есть
+            var local = entityMetadata.Fields.Values.ToArray();
+            if (local.Length > 0)
+            {
+                fields.AddRange(local);
+            }
+            
+
+            // если это простая сущность или роль, не продолжаем - они и так все копируют к себе
+            if (entityMetadata.Type == EntityType.Simple
+                || entityMetadata.Type == EntityType.Role)
+            {
+                return fields.ToArray();
+            }
+
+            if (entityMetadata.UsesInheritance())
+            {
+                var inheritedField = entityMetadata.BaseEntity.DefineFieldsWithInherited();
+                if (inheritedField.Length > 0)
+                {
+                    fields.AddRange(inheritedField);
+                }
+            }
+
+            return fields.ToArray();
+        }
+
+        /// <summary>
+        /// Метод определения цепочки наследования сущностей
+        /// Важно: в цепочку не входят базовые абстрактные сущности
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        /// <returns></returns>
+        public static IEntityMetadata[] DefineInheritChain(this IEntityMetadata entityMetadata)
+        {
+            var chain = new List<IEntityMetadata>();
+            
+            if (!entityMetadata.UsesInheritance())
+            {
+                return new IEntityMetadata[] { };
+            }
+            var nextBase = entityMetadata.BaseEntity;
+            while(nextBase != null && nextBase.Type != EntityType.Abstruct)
+            {
+                if (nextBase.QualifiedName == entityMetadata.QualifiedName)
+                {
+                    throw new InvalidOperationException($"Detected looping inheritance chain by entity '{nextBase.QualifiedName}'");
+                }
+
+                chain.Add(nextBase);
+                if(nextBase.UsesInheritance())
+                {
+                    nextBase = nextBase.BaseEntity;
+                }
+                else
+                {
+                    nextBase = null;
+                }
+            }
+            chain.Reverse();
+            return chain.ToArray();
+        }
+
+        /// <summary>
+        /// Метод проверки всей цепочки наследования сущностей от замыкания
+        /// Важно: в цепочке проверяются все сущности
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        /// <returns></returns>
+        public static IEntityMetadata[] CheckFullInheritChain(this IEntityMetadata entityMetadata)
+        {
+            var chain = new Dictionary<string, IEntityMetadata>();
+
+            if (!entityMetadata.UsesInheritance())
+            {
+                return new IEntityMetadata[] { };
+            }
+            var nextBase = entityMetadata.BaseEntity;
+            while (nextBase != null )
+            {
+                if (nextBase.QualifiedName == entityMetadata.QualifiedName)
+                {
+                    throw new InvalidOperationException($"Detected looping inheritance chain by entity '{nextBase.QualifiedName}'");
+                }
+                if (chain.ContainsKey(nextBase.QualifiedName))
+                {
+                    throw new InvalidOperationException($"Detected looping inheritance chain by entity '{nextBase.QualifiedName}'");
+                }
+
+                chain.Add(nextBase.QualifiedName, nextBase);
+                if (nextBase.UsesInheritance())
+                {
+                    nextBase = nextBase.BaseEntity;
+                }
+                else
+                {
+                    nextBase = null;
+                }
+            }
+            return chain.Values.Reverse().ToArray();
+        }
+
+        /// <summary>
+        /// Метод определения полной (включая абстрактные сущности) цепочки наследования сущностей
+        /// Важно: в цепочку входитя базовые абстрактные сущности
+        /// </summary>
+        /// <param name="entityMetadata"></param>
+        /// <returns></returns>
+        public static IEntityMetadata[] DefineFullInheritChain(this IEntityMetadata entityMetadata)
+        {
+            var chain = new List<IEntityMetadata>();
+
+            if (!entityMetadata.UsesInheritance())
+            {
+                return new IEntityMetadata[] { };
+            }
+            var nextBase = entityMetadata.BaseEntity;
+            while (nextBase != null)
+            {
+                if (nextBase.QualifiedName == entityMetadata.QualifiedName)
+                {
+                    throw new InvalidOperationException($"Detected looping inheritance chain by entity '{nextBase.QualifiedName}'");
+                }
+
+                chain.Add(nextBase);
+                if (nextBase.UsesInheritance())
+                {
+                    nextBase = nextBase.BaseEntity;
+                }
+                else
+                {
+                    nextBase = null;
+                }
+            }
+            chain.Reverse();
+            return chain.ToArray();
+        }
+        /// <summary>
+        /// Метод пытается вернуть первичный ключ если он определен на уровне данной сущности
         /// </summary>
         /// <param name="entityMetadata"></param>
         /// <param name="path"></param>

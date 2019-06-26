@@ -96,6 +96,16 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             throw new InvalidCastException($"Field is not reference. Field is {field.SourceType}");
         }
 
+        public static IExtensionFieldMetadata AsExtension(this IFieldMetadata field)
+        {
+            if (field.SourceType == FieldSourceType.Extension)
+            {
+                return field as IExtensionFieldMetadata;
+            }
+
+            throw new InvalidCastException($"Field is not extention. Field is {field.SourceType}");
+        }
+
         public static IEntityMetadata GetRefEntity(this IFieldMetadata field)
         {
             if (field.SourceType == FieldSourceType.Reference)
@@ -113,6 +123,24 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             return null;
         }
 
-        
+        public static bool BelongsEntity(this IFieldMetadata field, IEntityMetadata entity)
+        {
+            // четкое совпадение
+            if (field.Entity.QualifiedName == entity.QualifiedName)
+            {
+                return true;
+            }
+
+            // это момент когда идет копирование полей, при котором описательно поле принадлежит базовому объекту
+            // но физичесик входит в состав сущности 
+            // такая ситуация при наследовании с типом Simple или Role (при Role роля копируются и хранятся в двух сущностях одновременно в базовом и наследнике)
+            if (entity.Fields.ContainsKey(field.Name))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
     }
 }

@@ -17,8 +17,16 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
     {
         class BuildingContext
         {
+            private int _aliasCounter = 0;
+
             public IFieldMetadata[] BasePrimaryKeyFields { get; set; }
             public PS.TargetObject PrimaryKeyOwner { get; set; }
+
+            public string GenerateAlias(IEntityMetadata entity)
+            {
+                ++_aliasCounter;
+                return $"{entity.Name}_{_aliasCounter}";
+            }
         }
 
         private readonly IEntityOrm _entityOrm;
@@ -44,30 +52,35 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
         private PS.InsertPattern Build(QueryInsertStatement statement)
         {
             var insertDescriptor = statement.InsertDecriptor;
-            var selectDescriptor = statement.SelectDecriptor;
-
+            //var selectDescriptor = statement.SelectDecriptor;
 
             var expressions = new List<PS.InsertExpression>();
             var context = new BuildingContext();
+            var allValues = insertDescriptor.GetValues();
+            var rootInsertEntity = insertDescriptor.Entity;
 
             // в начале создаем записи в таблицах согласно цепочки наследования
-            var baseEntitesExpressions = this.BuildInsertExpressionForBaseEntities(insertDescriptor);
+            var baseEntitesExpressions = this.BuildInsertExpressionForBaseEntities(rootInsertEntity, allValues, context);
             if (baseEntitesExpressions.Length > 0)
             {
                 expressions.AddRange(baseEntitesExpressions);
             }
 
             // затем в таблицы основной сущности
-            var mainEntityExpression = this.BuildInsertExpressionForMainEntity(insertDescriptor, context);
+            var mainEntityExpression = this.BuildInsertExpressionForMainEntity(rootInsertEntity, allValues, context);
             expressions.Add(mainEntityExpression);
 
             // затем если есть ссылки на поля расширения, вставляем туда
-            var extensionEntitesExpressions = this.BuildInsertExpressionForExtentionEntities(insertDescriptor);
+            var extensionEntitesExpressions = this.BuildInsertExpressionForExtentionEntities(rootInsertEntity, allValues, context);
+            if (extensionEntitesExpressions.Length > 0)
+            {
+                expressions.AddRange(extensionEntitesExpressions);
+            }
 
             var pattren = new PS.InsertPattern
             {
                 Expressions = expressions.ToArray(),
-                PrimaryKeyFields = context?.BasePrimaryKeyFields
+                PrimaryKeyFields = context?.BasePrimaryKeyFields?
                     .Select(pkField => new PS.NamedEngineMember
                     {
                         Owner = context.PrimaryKeyOwner,
@@ -112,28 +125,72 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             return result;
         }
 
-        private object BuildPrimaryKeyObject(IEntityMetadata entity)
-        {
-            var primaryKey = entity.DefinePrimaryKey();
 
-            return null;
+        private PS.InsertExpression[] BuildInsertExpressionForBaseEntities(IEntityMetadata rootEntity, FieldValueDescriptor[] allValues, BuildingContext context)
+        {
+            var inheritChain = rootEntity.DefineInheritChain();
+            var result = new PS.InsertExpression[inheritChain.Length];
+            for (int i = 0; i < inheritChain.Length; i++)
+            {
+                var baseEntity = inheritChain[i];
+                var baseValues = allValues
+                    .Where(f => 
+                        (f.Descriptor.OwnerField.SourceType == FieldSourceType.Column 
+                        || f.Descriptor.OwnerField.SourceType == FieldSourceType.Reference)
+                        && f.Descriptor.OwnerField.BelongsEntity(baseEntity)).ToArray();
+                var baseInsertExpression = this.BuildInsertExpressionByEntity(baseEntity, baseValues, context);
+                result[i] = baseInsertExpression;
+            }
+            return result;
         }
-        private PS.InsertExpression[] BuildInsertExpressionForBaseEntities(InsertQueryDescriptor descriptor)
+        private PS.InsertExpression BuildInsertExpressionForMainEntity(IEntityMetadata rootEntity, FieldValueDescriptor[] allValues, BuildingContext context)
+        {
+            // только значения для локальных полей основной сущности
+            var values = allValues
+                .Where(f =>
+                        (f.Descriptor.OwnerField.SourceType == FieldSourceType.Column
+                        || f.Descriptor.OwnerField.SourceType == FieldSourceType.Reference)
+                        && f.Descriptor.OwnerField.BelongsEntity(rootEntity)).ToArray();
+            return BuildInsertExpressionByEntity(rootEntity, values, context);
+        }
+
+        private PS.InsertExpression[] BuildInsertExpressionForExtentionEntities(IEntityMetadata rootEntity, FieldValueDescriptor[] allValues, BuildingContext context)
         {
             var result = new List<PS.InsertExpression>();
 
+            var inheritChain = rootEntity.DefineInheritChain();
+            // получаем список все полей ссылающихся на расширение
+            var allExtensionFields = rootEntity.DefineFieldsWithInherited().Where(f => f.SourceType == FieldSourceType.Extension).Reverse().ToArray();
+
+            for (int i = 0; i < allExtensionFields.Length; i++)
+            {
+                var extensionField = allExtensionFields[i];
+                // если поле обязательное, то мы обязан ысоздать там запись даже есл ни одно из полей расширения не заявлено для сохранения
+                // или поля расширения заявлены на вставку
+                var extensionEntity = extensionField.AsExtension().ExtensionEntity;
+                var extensionValues = allValues
+                    .Where(f =>
+                        f.Descriptor.OwnerField.SourceType == FieldSourceType.Extension 
+                    && f.Descriptor.OwnerField.AsExtension().ExtensionEntity.QualifiedName == extensionEntity.QualifiedName
+                        ).ToArray();
+                if (extensionField.Required || extensionValues.Length > 0)
+                {
+                    var insertExpression = this.BuildInsertExpressionByEntity(extensionEntity, extensionValues, context);
+                    result.Add(insertExpression);
+                }
+            }
             return result.ToArray();
         }
-        private PS.InsertExpression BuildInsertExpressionForMainEntity(InsertQueryDescriptor descriptor, BuildingContext context)
+        private PS.InsertExpression BuildInsertExpressionByEntity(IEntityMetadata entity, FieldValueDescriptor[] fieldValues, BuildingContext context)
         {
             var expression = new PS.InsertExpression
             {
-                Target = this.BuildTargetByEntity(descriptor.Entity)
+                Target = this.BuildTargetByEntity(entity, context)
             };
 
             var setValues = new List<PS.SetValueExpression>();
 
-            // поля первичного ключа достались от базовоаго объекта
+            // поля первичного ключа достались от базового объекта
             if (context.BasePrimaryKeyFields != null)
             {
                 //просто добавляем в набор как по ссылке
@@ -164,7 +221,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                     setValues.Add(setValue);
                 }
             }
-            else if (descriptor.Entity.TryGetPrimaryKeyRefFields(out IPrimaryKeyFieldRefMetadata[] pkFields))
+            else if (entity.TryGetPrimaryKeyRefFields(out IPrimaryKeyFieldRefMetadata[] pkFields))
             {
                 // есть свой набор полей первичного ключа
                 // добавляем поля требующие автогенерации 
@@ -201,13 +258,13 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             // При налчии факта наследования, нужно автоматически внести сохранение полей первичного ключа
 
             // Фаза формирования локальных значений
-            var fieldValues = descriptor.GetValues();
+            
             // устанавливаем значение локальным полям
             for (int i = 0; i < fieldValues.Length; i++)
             {
                 var fieldValue = fieldValues[i];
-                if (fieldValue.Descriptor.IsLocal)
-                {
+                //if (fieldValue.Descriptor.IsLocal)
+                //{
                     // пытаемся определить имя в хранилище, если не удалось
                     // это означает что в данном контексте нельзя использовать поле
                     if (!fieldValue.Descriptor.TrySourceName(out string sourceName))
@@ -217,7 +274,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 
                     // подготовка значения поля
                     var storeValue = _dataTypeSystem.GetEncoder(fieldValue.Descriptor.Field.DataType).Encode(fieldValue.Store);
-                    
+
                     // строим часть паттерна
                     var setValue = new PS.SetValueExpression
                     {
@@ -232,20 +289,15 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                     };
 
                     setValues.Add(setValue);
-                }
+                //}
             }
             expression.Values = setValues.ToArray();
             return expression;
         }
 
-        private PS.InsertExpression[] BuildInsertExpressionForExtentionEntities(InsertQueryDescriptor descriptor)
-        {
-            var result = new List<PS.InsertExpression>();
+        
 
-            return result.ToArray();
-        }
-
-        private PS.EngineObject BuildTargetByEntity(IEntityMetadata  entity)
+        private PS.EngineObject BuildTargetByEntity(IEntityMetadata  entity, BuildingContext context)
         {
             var dataSource = entity.DataSource;
             switch (dataSource.Object)
@@ -253,7 +305,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case DataSourceObject.Table:
                     var table = new PS.EngineTable
                     {
-                        Alias = entity.QualifiedName,
+                        Alias = context.GenerateAlias(entity),
                         Name = dataSource.Name,
                         Schema = dataSource.Schema
                     };
@@ -262,7 +314,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 case DataSourceObject.View:
                     var view = new PS.EngineTable
                     {
-                        Alias = entity.QualifiedName,
+                        Alias = context.GenerateAlias(entity),
                         Name = dataSource.Name,
                         Schema = dataSource.Schema
                     };

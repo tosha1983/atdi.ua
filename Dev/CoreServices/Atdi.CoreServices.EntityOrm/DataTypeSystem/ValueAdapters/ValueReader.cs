@@ -1004,7 +1004,21 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             {
                 return dataReader.GetGuid(ordinal);
             }
-            
+            if (fieldDbType == typeof(byte[]))
+            {
+                var store = dataReader.GetBytes(ordinal);
+                if (store.Length != 16)
+                {
+                    throw new InvalidCastException($"Incorrect value for GUID");
+                }
+                return new Guid(store);
+            }
+            if (fieldDbType == typeof(string))
+            {
+                var store = dataReader.GetString(ordinal);
+                
+                return new Guid(store);
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
         }
 
