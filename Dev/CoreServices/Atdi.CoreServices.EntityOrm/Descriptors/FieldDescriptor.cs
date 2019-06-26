@@ -96,6 +96,12 @@ namespace Atdi.CoreServices.EntityOrm
                 return true;
             }
 
+            if (this.OwnerField.SourceType == FieldSourceType.Extension && this.RefDepth == 1)
+            {
+                sourceName = this.Field.SourceName;
+                return true;
+            }
+
             if (this.OwnerField.SourceType == FieldSourceType.Reference && this.RefDepth == 1)
             {
                 // this.Field должен быть первичным ключом

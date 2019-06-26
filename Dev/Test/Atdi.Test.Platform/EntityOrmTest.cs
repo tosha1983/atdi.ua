@@ -45,25 +45,59 @@ namespace Atdi.Test.Platform
             {
                 var insert2 = dataLayer.GetBuilder<ITestEntityAbsSmpProtoEnd>()
                 .Insert()
+                // поля из абстрактной сущности
                 .SetValue(c => c.AbsField1, "Abs Field 1")
                 .SetValue(c => c.AbsField2, "Abs Field 2")
                 .SetValue(c => c.AbsField3, "Abs Field 3")
-
+                // поля сущности Simple
                 .SetValue(c => c.SmpField1, "Smp Field 1")
                 .SetValue(c => c.SmpField2, "Smp Field 2")
                 .SetValue(c => c.SmpField3, "Smp Field 3")
+                // поля из расширения сущности Simple = Requered
+                .SetValue(c => c.SMP_EXT1.Ext1SmpField1, "SMP_EXT1.Ext1SmpField1")
+                .SetValue(c => c.SMP_EXT1.Ext1SmpField2, "SMP_EXT1.Ext1SmpField2")
+                .SetValue(c => c.SMP_EXT1.Ext1SmpField3, "SMP_EXT1.Ext1SmpField3")
+                // поля из расширения сущности Simple = Not Requered
+                .SetValue(c => c.SMP_EXT2.Ext2SmpField1, "SMP_EXT2.Ext2SmpField1")
+                .SetValue(c => c.SMP_EXT2.Ext2SmpField2, "SMP_EXT2.Ext2SmpField2")
+                .SetValue(c => c.SMP_EXT2.Ext2SmpField3, "SMP_EXT2.Ext2SmpField3")
+
 
                 .SetValue(c => c.Proto0Field1, "Proto 0 Field 1")
                 .SetValue(c => c.Proto0Field2, "Proto 0 Field 2")
                 .SetValue(c => c.Proto0Field3, "Proto 0 Field 3")
 
+                .SetValue(c => c.PRT0_EXT1.Ext1Proto0Field1, "PRT0_EXT1.Ext1Proto0Field1")
+                .SetValue(c => c.PRT0_EXT1.Ext1Proto0Field2, "PRT0_EXT1.Ext1Proto0Field2")
+                .SetValue(c => c.PRT0_EXT1.Ext1Proto0Field3, "PRT0_EXT1.Ext1Proto0Field3")
+
+                .SetValue(c => c.PRT0_EXT2.Ext2Proto0Field1, "PRT0_EXT2.Ext2Proto0Field1")
+                .SetValue(c => c.PRT0_EXT2.Ext2Proto0Field2, "PRT0_EXT2.Ext2Proto0Field2")
+                .SetValue(c => c.PRT0_EXT2.Ext2Proto0Field3, "PRT0_EXT2.Ext2Proto0Field3")
+
                 .SetValue(c => c.Proto1Field1, "Proto 1 Field 1")
                 .SetValue(c => c.Proto1Field2, "Proto 1 Field 2")
                 .SetValue(c => c.Proto1Field3, "Proto 1 Field 3")
 
+                .SetValue(c => c.PRT1_EXT1.Ext1Proto1Field1, "PRT0_EXT1.Ext1Proto1Field1")
+                .SetValue(c => c.PRT1_EXT1.Ext1Proto1Field2, "PRT0_EXT1.Ext1Proto1Field2")
+                .SetValue(c => c.PRT1_EXT1.Ext1Proto1Field3, "PRT0_EXT1.Ext1Proto1Field3")
+
+                .SetValue(c => c.PRT1_EXT2.Ext2Proto1Field1, "PRT0_EXT2.Ext2Proto1Field1")
+                .SetValue(c => c.PRT1_EXT2.Ext2Proto1Field2, "PRT0_EXT2.Ext2Proto1Field2")
+                .SetValue(c => c.PRT1_EXT2.Ext2Proto1Field3, "PRT0_EXT2.Ext2Proto1Field3")
+
                 .SetValue(c => c.ProtoEndField1, "Proto End Field 1")
                 .SetValue(c => c.ProtoEndField2, "Proto End Field 2")
-                .SetValue(c => c.ProtoEndField3, "Proto End Field 3");
+                .SetValue(c => c.ProtoEndField3, "Proto End Field 3")
+
+                .SetValue(c => c.PRTEND_EXT1.Ext1ProtoEndField1, "PRTEND_EXT1.Ext1ProtoEndField1")
+                .SetValue(c => c.PRTEND_EXT1.Ext1ProtoEndField2, "PRTEND_EXT1.Ext1ProtoEndField2")
+                .SetValue(c => c.PRTEND_EXT1.Ext1ProtoEndField3, "PRTEND_EXT1.Ext1ProtoEndField3")
+
+                .SetValue(c => c.PRTEND_EXT2.Ext2ProtoEndField1, "PRTEND_EXT2.Ext2ProtoEndField1")
+                .SetValue(c => c.PRTEND_EXT2.Ext2ProtoEndField2, "PRTEND_EXT2.Ext2ProtoEndField2")
+                .SetValue(c => c.PRTEND_EXT2.Ext2ProtoEndField3, "PRTEND_EXT2.Ext2ProtoEndField3");
 
                 using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
                 {

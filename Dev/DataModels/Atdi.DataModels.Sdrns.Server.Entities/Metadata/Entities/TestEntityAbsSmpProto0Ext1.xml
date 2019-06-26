@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "TestEntityAbsSmpProtoEnd"
+  Name        = "TestEntityAbsSmpProto0Ext1"
   Title       = "Test Simple Entity"
   Desc        = ""
-  Type        = "Prototype"
-  BaseEntity  = "TestEntityAbsSmpProto1"
+  Type        = "Extention"
+  BaseEntity  = "TestEntityAbsSmpProto0"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>TEST_ENTITY_ABS_SMP_PROTO_END</Name>
+    <Name>TEST_ENTITY_ABS_SMP_PROTO_0_EXT1</Name>
     <Schema>CORE</Schema>
   </DataSource>
   <Fields>
-
-    <Field Name="ProtoEndField1" DataType="Text.10" SourceName="PRT_END_FLD_1" SourceType="Column" Desc="" Title="Smp Field 1"/>
-    <Field Name="ProtoEndField2" DataType="Text.10" SourceName="PRT_END_FLD_2" SourceType="Column" Desc="" Title="Smp Field 2"/>
-    <Field Name="ProtoEndField3" DataType="Text.10" SourceName="PRT_END_FLD_3" SourceType="Column" Desc="" Title="Smp Field 3"/>
-
-
-    <Field Name="PRTEND_EXT1" SourceName="TestEntityAbsSmpProtoEndExt1" SourceType="Extension" Title="Extension 1" Required="true"/>
-    <Field Name="PRTEND_EXT2" SourceName="TestEntityAbsSmpProtoEndExt2" SourceType="Extension" Title="Extension 2" Required="false"/>
+    
+    <Field Name="Ext1Proto0Field1" DataType="Text.10" SourceName="EXT1_PRT_0_FLD_1" SourceType="Column" Desc="" Title="Smp Field 1"/>
+    <Field Name="Ext1Proto0Field2" DataType="Text.10" SourceName="EXT1_PRT_0_FLD_2" SourceType="Column" Desc="" Title="Smp Field 2"/>
+    <Field Name="Ext1Proto0Field3" DataType="Text.10" SourceName="EXT1_PRT_0_FLD_3" SourceType="Column" Desc="" Title="Smp Field 3"/>
+    
     
   </Fields>
 

@@ -96,6 +96,16 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             throw new InvalidCastException($"Field is not reference. Field is {field.SourceType}");
         }
 
+        public static IExtensionFieldMetadata AsExtension(this IFieldMetadata field)
+        {
+            if (field.SourceType == FieldSourceType.Extension)
+            {
+                return field as IExtensionFieldMetadata;
+            }
+
+            throw new InvalidCastException($"Field is not extention. Field is {field.SourceType}");
+        }
+
         public static IEntityMetadata GetRefEntity(this IFieldMetadata field)
         {
             if (field.SourceType == FieldSourceType.Reference)

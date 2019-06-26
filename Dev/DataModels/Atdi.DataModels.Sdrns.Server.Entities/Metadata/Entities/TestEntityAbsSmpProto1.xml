@@ -16,6 +16,8 @@
     <Field Name="Proto1Field2" DataType="Text.10" SourceName="PRT_1_FLD_2" SourceType="Column" Desc="" Title="Smp Field 2"/>
     <Field Name="Proto1Field3" DataType="Text.10" SourceName="PRT_1_FLD_3" SourceType="Column" Desc="" Title="Smp Field 3"/>
 
+    <Field Name="PRT1_EXT1" SourceName="TestEntityAbsSmpProto1Ext1" SourceType="Extension" Title="Extension 1" Required="true"/>
+    <Field Name="PRT1_EXT2" SourceName="TestEntityAbsSmpProto1Ext2" SourceType="Extension" Title="Extension 2" Required="false"/>
 
   </Fields>
 

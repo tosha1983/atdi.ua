@@ -204,7 +204,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
             if (entityMetadata.UsesInheritance())
             {
-                var inheritedField = entityMetadata.DefineFieldsWithInherited();
+                var inheritedField = entityMetadata.BaseEntity.DefineFieldsWithInherited();
                 if (inheritedField.Length > 0)
                 {
                     fields.AddRange(inheritedField);
