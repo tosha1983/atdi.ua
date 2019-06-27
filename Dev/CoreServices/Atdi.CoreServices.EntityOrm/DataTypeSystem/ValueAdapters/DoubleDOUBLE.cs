@@ -33,7 +33,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
         public override double? EncodeAs(ColumnValue columnValue)
         {
-            var source = (columnValue as FloatColumnValue).Value;
+            var source = (columnValue as DoubleColumnValue).Value;
             if (!source.HasValue)
             {
                 return null;

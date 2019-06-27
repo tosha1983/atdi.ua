@@ -1,7 +1,7 @@
-if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_LOCATION_SENSOR_MEAS]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-	drop table [ICSC].[RES_LOCATION_SENSOR_MEAS]
+if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_MEAS]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+	drop table [ICSC].[RES_MEAS]
 go
-create table [ICSC].[RES_LOCATION_SENSOR_MEAS] (
+create table [ICSC].[RES_MEAS] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[MEAS_TASK_ID]	[nvarchar](150) null,
 	[SUB_MEAS_TASK_ID]	[bigint] null,
@@ -18,6 +18,6 @@ create table [ICSC].[RES_LOCATION_SENSOR_MEAS] (
 	[START_TIME]	[datetime] null,
 	[STOP_TIME]	[datetime] null,
 	[SCANS_NUMBER]	[int] null,
-	constraint [PK_RES_LOCATION_SENSOR_MEAS] primary key clustered ([ID]) on [PRIMARY]  
+	constraint [PK_RES_MEAS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

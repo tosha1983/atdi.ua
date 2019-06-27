@@ -11,10 +11,10 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
-    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
-    <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Decimal.22.8" SourceName="ASL" SourceType="Column" Required="false"/>
-    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
+    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RESMEAS_ID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLocSensorMeas to ResMeas">
       <PrimaryKeyMapping>
