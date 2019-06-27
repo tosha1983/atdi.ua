@@ -222,7 +222,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         }
 
 
-        public MeasTask GetMeasTaskById(int id)
+        public MeasTask GetMeasTaskById(long id)
         {
             MeasTask result = null;
             if (id>0)

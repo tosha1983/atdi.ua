@@ -53,35 +53,46 @@ namespace Atdi.Test.Platform
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 var type = reader.GetFieldType(i);
-                                var value = reader.GetValue(i, type);
+                                var value = reader.GetValue(i);
+                                var alias = reader.GetAlias(i);
+                                var ordinalByAlias = reader.GetOrdinalByAlias(alias);
+                                var path = reader.GetPath(i);
+                                var ordinalByPath = reader.GetOrdinalByAlias(path);
+                                var state = reader.ToString();
+                                var valIsNull = false;
+                                var len = 0;
+
+
+                                //var type = reader.GetFieldType(i);
+                                //var value = reader.GetValue(i, type);
 
                                
 
-                                var name = reader.GetName(i);
-                                if (name== "VAL_AS_UNIQUEIDENTIFIER")
-                                {
+                                //var name = reader.GetName(i);
+                                //if (name== "VAL_AS_UNIQUEIDENTIFIER")
+                                //{
 
-                                }
-                                if (name == "VAL_AS_DATETIMEOFFSET")
-                                {
+                                //}
+                                //if (name == "VAL_AS_DATETIMEOFFSET")
+                                //{
 
-                                }
-                                if (name == "VAL_AS_IMAGE")
-                                {
-                                    var stream = reader.GetStream(i);
-                                }
-                                if (name == "VAL_AS_XML")
-                                {
-                                    var stream = reader.GetXmlReader(i);
-                                }
+                                //}
+                                //if (name == "VAL_AS_IMAGE")
+                                //{
+                                    //var stream = reader.GetStream(i);
+                                //}
+                                //if (name == "VAL_AS_XML")
+                                //{
+                                    //var stream = reader.GetXmlReader(i);
+                                //}
 
                                 
 
 
-                                var ordinal = reader.GetOrdinal(name);
-                                var state = reader.ToString();
-                                var valIsNull = false;
-                                var len = 0;
+                                //var ordinal = reader.GetOrdinal(name);
+                                //var state = reader.ToString();
+                                //var valIsNull = false;
+                                //var len = 0;
                                 if (reader.IsDBNull(i))
                                 {
                                     valIsNull = true;
@@ -153,7 +164,7 @@ namespace Atdi.Test.Platform
                                     throw new InvalidProgramException("Ухты, что то не то");
                                 }
 
-                                Debug.WriteLine($"Record #{recId} : Name = '{name}', Len = {len}, Ordinal = #{ordinal}, Type = {type.Name}, IsNull = {valIsNull} ");
+                                Debug.WriteLine($"Record #{recId} : Alias = '{alias}', Path = '{path}', Len = {len}, OrdinalByA = #{ordinalByAlias}, Type = {type.Name}, IsNull = {valIsNull} ");
                             }
                         }
 

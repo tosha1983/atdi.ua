@@ -8,11 +8,41 @@ using Atdi.Contracts.CoreServices.DataLayer.Patterns;
 
 namespace Atdi.CoreServices.DataLayer.Oracle
 {
+
+    class Mapper
+    {
+        private readonly Dictionary<string, string> _mapByPath;
+        private readonly Dictionary<string, string> _mapByAlias;
+        public Mapper()
+        {
+            this._mapByAlias = new Dictionary<string, string>();
+            this._mapByPath = new Dictionary<string, string>();
+        }
+
+
+
+        public void Append(string alias, string path)
+        {
+            this._mapByPath[path] = alias;
+            this._mapByAlias[alias] = path;
+        }
+
+        public string GetAlias(string path)
+        {
+            return this._mapByPath[path];
+        }
+        public string GetPath(string alias)
+        {
+            return this._mapByAlias[alias];
+        }
+
+    }
     class OracleBuildingContex
     {
         private readonly CommandBuilder _builder;
         private readonly Dictionary<string, EngineCommandParameter> _parametersByMember;
         private readonly Dictionary<string, EngineCommandParameter> _parametersByName;
+        private readonly Mapper _mapper;
         private int _iterationIndex;
         private int _iterationCounter;
 
@@ -21,6 +51,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             this._builder = new CommandBuilder();
             this._parametersByMember = new Dictionary<string, EngineCommandParameter>();
             this._parametersByName = new Dictionary<string, EngineCommandParameter>();
+            this._mapper = new Mapper();
             this._iterationIndex = 0;
             this._iterationCounter = 0;
             this.NextIteration();
@@ -70,6 +101,8 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
             return command;
         }
+
+        public Mapper Mapper => _mapper;
     }
 
     class CommandBuilder
@@ -95,9 +128,9 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         /// <summary>
         /// Автогенерация значения
         /// В зависимости от типа данных применяем разнгые функции
-        ///  - для целого числа @@IDENTITY
-        ///  - для GUID - NEWID()
-        ///  - для даты - GETDATE()
+        ///  - для целого числа GetID
+        ///  - для GUID - SYS_GUID()
+        ///  - для даты - SYSDATE
         /// </summary>
         /// <param name="parameter"></param>
         public void GenerateNextValue(EngineCommandParameter parameter, EngineObject engineObject)
@@ -146,9 +179,9 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         /// <summary>
         /// Автогенерация значения
         /// В зависимости от типа данных применяем разнгые функции
-        ///  - для целого числа @@IDENTITY
-        ///  - для GUID - NEWID()
-        ///  - для даты - GETDATE()
+        ///  - для целого числа GetID
+        ///  - для GUID - SYS_GUID()
+        ///  - для даты - SYSDATE
         /// </summary>
         /// <param name="parameter"></param>
         public void SetDefault(EngineCommandParameter parameter)
@@ -207,7 +240,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     _sql.AppendLine($" :{parameter.Name} := 0;");
                     break;
                 case DataModels.DataType.UnsignedShort:
-                    _sql.AppendLine($" :{parameter.Name} = 0;");
+                    _sql.AppendLine($" :{parameter.Name} := 0;");
                     break;
                 case DataModels.DataType.UnsignedInteger:
                     _sql.AppendLine($" :{parameter.Name} := 0;");

@@ -22,9 +22,9 @@ namespace Atdi.Test.Platform
             //var builder = dataLayer.GetBuilder<ITestDataType>();
             var executor = dataLayer.Executor<SdrnServerDataContext>();
 
-            Test_ReferenceFields(executor, dataLayer);
+            //Test_ReferenceFields(executor, dataLayer);
             //Test_Boolean(builder, executor);
-            //Test_InsertPatternsNew(dataLayer);
+            Test_InsertPatternsNew(dataLayer);
         }
 
         private static void Test_InsertPatternsNew(IDataLayer<EntityDataOrm> dataLayer)

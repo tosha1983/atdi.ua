@@ -17,10 +17,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
     class OracleEngineDataReader : IEngineDataReader
     {
         private readonly OracleDataReader _reader;
+        private readonly Mapper _mapper;
 
-        public OracleEngineDataReader(OracleDataReader reader)
+        public OracleEngineDataReader(OracleDataReader reader, Mapper mapper)
         {
             this._reader = reader;
+            this._mapper = mapper;
         }
 
         public int Depth => _reader.Depth;
@@ -336,6 +338,28 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         public char GetChar(int i)
         {
             throw new InvalidOperationException(Exceptions.NotSupportedMethod.With(nameof(GetChar)));
+        }
+
+        public int GetOrdinalByAlias(string alias)
+        {
+            return this._reader.GetOrdinal(alias);
+        }
+
+        public int GetOrdinalByPath(string path)
+        {
+            var alias = this._mapper.GetAlias(path);
+            return this._reader.GetOrdinal(alias);
+        }
+
+        public string GetAlias(int i)
+        {
+            return _reader.GetName(i);
+        }
+
+        public string GetPath(int i)
+        {
+            var alias = _reader.GetName(i);
+            return _mapper.GetPath(alias);
         }
     }
 }

@@ -112,11 +112,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                         var oracleTimeStamp = val.ToOracleTimeStamp();
                         sqlParameter.Value = new DateTimeOffset(oracleTimeStamp.Value, val.GetTimeZoneOffset());
                     }
-                    //else if (sqlParameter.OracleDbType == OracleDbType.gu)
-                    //{
-                    //Guid valGuid = new Guid(sqlParameter.Value.ToString());
-                    //sqlParameter.Value = valGuid;
-                    //}
+
                     engineCommand.Parameters[key].Value = sqlParameter.Value;
                     if (sqlParameter.OracleDbType== OracleDbType.RefCursor)
                     {
