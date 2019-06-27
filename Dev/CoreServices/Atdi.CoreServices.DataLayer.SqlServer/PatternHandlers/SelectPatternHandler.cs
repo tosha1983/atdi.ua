@@ -37,23 +37,22 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
                     result.Value = executer.ExecuteScalar(command);
                     return;
                 case EngineExecutionResultKind.Reader:
-                    executer.ExecuteReader(command, sqlReader =>
+                    if (pattern.Result is EngineExecutionReaderResult readerResult)
                     {
-                        // тут нужно вернуть мапинг полей для чтения
-                        if (pattern.Result is EngineExecutionReaderResult<System.Data.IDataReader> result1)
+                        executer.ExecuteReader(command, sqlReader =>
                         {
-                            result1.Handler(sqlReader);
-                        }
-                        if (pattern.Result is EngineExecutionReaderResult<IEngineDataReader> result2)
-                        {
-                            result2.Handler(new EngineDataReader(sqlReader));
-                        }
-                    });
+                            readerResult.Handler(new EngineDataReader(sqlReader, context.Mapper));
+                        });
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Unsupported result object type '{pattern.Result.GetType().FullName}'");
+                    }
                     return;
                 case EngineExecutionResultKind.None:
                 case EngineExecutionResultKind.Custom:
                 default:
-                    throw new InvalidOperationException($"Unsupported result type '{pattern.Result.Kind}'");
+                    throw new InvalidOperationException($"Unsupported result kind '{pattern.Result.Kind}'");
             }
         }
 

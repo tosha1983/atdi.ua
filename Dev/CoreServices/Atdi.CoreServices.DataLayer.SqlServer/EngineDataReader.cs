@@ -14,10 +14,12 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
     class EngineDataReader : IEngineDataReader
     {
         private readonly SqlDataReader _reader;
+        private readonly Mapper _mapper;
 
-        public EngineDataReader(SqlDataReader reader)
+        public EngineDataReader(SqlDataReader reader, Mapper mapper)
         {
             this._reader = reader;
+            this._mapper = mapper;
         }
 
         public int Depth => _reader.Depth;
@@ -33,14 +35,26 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             return _reader.GetFieldType(i);
         }
 
-        public string GetName(int i)
+        public int GetOrdinalByAlias(string alias)
+        {
+            return this._reader.GetOrdinal(alias);
+        }
+
+        public int GetOrdinalByPath(string path)
+        {
+            var alias =  this._mapper.GetAlias(path);
+            return this._reader.GetOrdinal(alias);
+        }
+
+        public string GetAlias(int i)
         {
             return _reader.GetName(i);
         }
 
-        public int GetOrdinal(string name)
+        public string GetPath(int i)
         {
-            return _reader.GetOrdinal(name);
+            var alias = _reader.GetName(i);
+            return _mapper.GetPath(alias);
         }
 
         public object GetValue(int i, Type type)

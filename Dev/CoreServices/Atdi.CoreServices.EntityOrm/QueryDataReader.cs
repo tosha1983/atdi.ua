@@ -16,15 +16,13 @@ namespace Atdi.CoreServices.EntityOrm
     internal sealed class QueryDataReader : Atdi.Contracts.CoreServices.DataLayer.IDataReader
     {
         private readonly IEngineDataReader _dataReader;
-        private readonly IReadOnlyDictionary<string, string> _columnsMapper;
-        private readonly IDataTypeMetadata[] _fieldTypeMetadatas;
+        private readonly IDataTypeMetadata[] _typeMetadatas; 
         private readonly DataTypeSystem _dataTypeSystem;
 
-        public QueryDataReader(IEngineDataReader dataReader, IReadOnlyDictionary<string, string> columnsMapper, IDataTypeMetadata[] fieldTypeMetadatas, DataTypeSystem dataTypeSystem)
+        public QueryDataReader(IEngineDataReader dataReader, IDataTypeMetadata[] typeMetadatas, DataTypeSystem dataTypeSystem)
         {
             this._dataReader = dataReader;
-            this._columnsMapper = columnsMapper;
-            this._fieldTypeMetadatas = fieldTypeMetadatas;
+            this._typeMetadatas = typeMetadatas;
             this._dataTypeSystem = dataTypeSystem;
         }
 
@@ -89,7 +87,7 @@ namespace Atdi.CoreServices.EntityOrm
                     return this.GetValueAsClrType(fieldDbType, ordinal);
 
                 default:
-                    throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(ordinal)));
+                    throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetPath(ordinal)));
             }
         }
 
@@ -152,7 +150,7 @@ namespace Atdi.CoreServices.EntityOrm
                     return this.GetValueAsClrType(fieldDbType, ordinal).ToString();
 
                 default:
-                    throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetName(ordinal)));
+                    throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(columnType, _dataReader.GetPath(ordinal)));
             }
         }
 
@@ -522,9 +520,9 @@ namespace Atdi.CoreServices.EntityOrm
             return this._dataReader.Read();
         }
 
-        public int GetOrdinal(string name)
+        public int GetOrdinal(string path)
         {
-            return this._dataReader.GetOrdinal(_columnsMapper[name]);
+            return this._dataReader.GetOrdinalByPath(path);
         }
 
         public Type GetFieldType(int ordinal)
@@ -539,23 +537,21 @@ namespace Atdi.CoreServices.EntityOrm
 
         private T GetInternalValue<T>(int ordinal)
         {
-            var fieldTypeMetadata = _fieldTypeMetadatas[ordinal];
-            return _dataTypeSystem.GetDecoder<T>(fieldTypeMetadata).DecodeAs(_dataReader, ordinal);
+            var typeMetadata = _typeMetadatas[ordinal];
+            return _dataTypeSystem.GetDecoder<T>(typeMetadata).DecodeAs(_dataReader, ordinal);
         }
     }
 
     internal sealed class QueryDataReader<TModel> : IDataReader<TModel>
     {
         private readonly IEngineDataReader _dataReader;
-        private readonly IReadOnlyDictionary<string, string> _columnsMapper;
-        private readonly IDataTypeMetadata[] _fieldTypeMetadatas;
+        private readonly IDataTypeMetadata[] _typeMetadatas;
         private readonly DataTypeSystem _dataTypeSystem;
 
-        public QueryDataReader(IEngineDataReader dataReader, IReadOnlyDictionary<string, string> columnsMapper, IDataTypeMetadata[] fieldTypeMetadatas, DataTypeSystem dataTypeSystem)
+        public QueryDataReader(IEngineDataReader dataReader, IDataTypeMetadata[] typeMetadatas, DataTypeSystem dataTypeSystem)
         {
             this._dataReader = dataReader;
-            this._columnsMapper = columnsMapper;
-            this._fieldTypeMetadatas = fieldTypeMetadatas;
+            this._typeMetadatas = typeMetadatas;
             this._dataTypeSystem = dataTypeSystem;
         }
 
@@ -910,13 +906,13 @@ namespace Atdi.CoreServices.EntityOrm
                 throw new ArgumentNullException(nameof(columnExpression));
             }
 
-            var columnName = columnExpression.Body.GetMemberName();
-            var ordinal = _dataReader.GetOrdinal(this._columnsMapper[columnName]);
+            var fieldPath = columnExpression.Body.GetMemberName();
+            var ordinal = _dataReader.GetOrdinalByPath(fieldPath);
             if (_dataReader.IsDBNull(ordinal))
             {
                 return default(TResult);
             }
-            var value = _dataTypeSystem.GetDecoder<TResult>(_fieldTypeMetadatas[ordinal]).DecodeAs(_dataReader, ordinal);
+            var value = _dataTypeSystem.GetDecoder<TResult>(_typeMetadatas[ordinal]).DecodeAs(_dataReader, ordinal);
             return value;
         }
 

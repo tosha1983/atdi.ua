@@ -37,13 +37,9 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
                 case EngineExecutionResultKind.Reader:
                     executer.ExecuteReader(pattern.Command, sqlReader =>
                     {
-                        if (pattern.Result is EngineExecutionReaderResult<System.Data.IDataReader> result)
-                        {
-                            result.Handler(sqlReader);
-                        }
                         if (pattern.Result is EngineExecutionReaderResult<IEngineDataReader> result2)
                         {
-                            result2.Handler(new EngineDataReader(sqlReader));
+                            result2.Handler(new EngineDataReader(sqlReader, null));
                         }
                     });
                     return;

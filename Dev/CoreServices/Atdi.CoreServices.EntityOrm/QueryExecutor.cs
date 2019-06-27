@@ -8,7 +8,12 @@ using System.Linq;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal class PatternExecutionContex<TResult>
+    internal sealed class VoidModel
+    {
+
+    }
+
+    internal class PatternExecutionContex<TResult, TModel>
     {
         public PatternExecutionContex(IEngineExecuter executer)
         {
@@ -28,7 +33,7 @@ namespace Atdi.CoreServices.EntityOrm
             return $"Statement ='{Statement?.GetType().FullName}', Kind = {ResultKind}, Result = {typeof(TResult).FullName}[{ResultType?.FullName}]";
         }
     }
-    internal sealed class PatternExecutionContexWithHandler<TResult> : PatternExecutionContex<TResult>
+    internal sealed class PatternExecutionContexWithHandler<TResult> : PatternExecutionContex<TResult, VoidModel>
     {
         public PatternExecutionContexWithHandler(IEngineExecuter executer) 
             : base(executer)
@@ -38,7 +43,7 @@ namespace Atdi.CoreServices.EntityOrm
         public Func<IDataReader, TResult> Handler { get; set; }
     }
 
-    internal sealed class PatternExecutionContexWithHandler<TResult, TModel> : PatternExecutionContex<TResult>
+    internal sealed class PatternExecutionContexWithHandler<TResult, TModel> : PatternExecutionContex<TResult, TModel>
     {
         public PatternExecutionContexWithHandler(IEngineExecuter executer) 
             : base(executer)
@@ -78,12 +83,12 @@ namespace Atdi.CoreServices.EntityOrm
 
         private int Execute(IQueryStatement statement, IEngineExecuter engineExecuter)
         {
-            var context = new PatternExecutionContex<int>(engineExecuter)
+            var context = new PatternExecutionContex<int, VoidModel>(engineExecuter)
             {
                 ResultKind = EngineExecutionResultKind.RowsAffected,
                 Statement = statement
             };
-            var result = this._builderFactory.BuildAndExecute<int>(context);
+            var result = this._builderFactory.BuildAndExecute(context);
             return result;
         }
 
@@ -101,7 +106,7 @@ namespace Atdi.CoreServices.EntityOrm
         }
         private object Execute(IQueryStatement statement, Type resultType, IEngineExecuter engineExecuter)
         {
-            var context = new PatternExecutionContex<object>(engineExecuter)
+            var context = new PatternExecutionContex<object, VoidModel>(engineExecuter)
             {
                 ResultKind = EngineExecutionResultKind.Scalar,
                 Statement = statement,
@@ -127,7 +132,7 @@ namespace Atdi.CoreServices.EntityOrm
 
         private TResult Execute<TResult>(IQueryStatement statement, IEngineExecuter engineExecuter)
         {
-            var context = new PatternExecutionContex<TResult>(engineExecuter)
+            var context = new PatternExecutionContex<TResult, VoidModel>(engineExecuter)
             {
                 ResultKind = EngineExecutionResultKind.Scalar,
                 Statement = statement
@@ -153,7 +158,7 @@ namespace Atdi.CoreServices.EntityOrm
         {
             var context = new PatternExecutionContexWithHandler<TResult>(engineExecuter)
             {
-                ResultKind = EngineExecutionResultKind.Scalar,
+                ResultKind = EngineExecutionResultKind.Reader,
                 Statement = statement,
                 Handler = handler
             };
@@ -178,7 +183,7 @@ namespace Atdi.CoreServices.EntityOrm
         {
             var context = new PatternExecutionContexWithHandler<TResult, TModel>(engineExecuter)
             {
-                ResultKind = EngineExecutionResultKind.Scalar,
+                ResultKind = EngineExecutionResultKind.Reader,
                 Statement = statement,
                 Handler = handler
             };

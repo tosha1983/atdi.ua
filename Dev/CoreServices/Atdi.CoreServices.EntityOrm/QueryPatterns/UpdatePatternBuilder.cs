@@ -19,7 +19,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             this._dataTypeSystem = dataTypeSystem;
         }
 
-        public TResult BuildAndExecute<TResult>(PatternExecutionContex<TResult> executionContex)
+        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
         {
             var statement = executionContex.Statement as QueryUpdateStatement;
 
