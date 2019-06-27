@@ -1,12 +1,12 @@
 ﻿CREATE TABLE ICSC.OWNER_DATA
 (
-  ID                 NUMBER(15)                 NOT NULL,
-  OWNER_NAME         NVARCHAR2(100),
-  OKPO               NVARCHAR2(50),
-  ZIP                NVARCHAR2(50),
-  CODE               NVARCHAR2(50),
-  ADDRES             NVARCHAR2(2000),
-  ID_STATIONDATFORM  NUMBER(15)
+  ID          NUMBER(15)                        NOT NULL,
+  OWNER_NAME  NVARCHAR2(100),
+  OKPO        NVARCHAR2(50),
+  ZIP         NVARCHAR2(50),
+  CODE        NVARCHAR2(50),
+  ADDRES      NVARCHAR2(2000),
+  STATION_ID  NUMBER(15)
 )
 TABLESPACE USERS
 PCTUSED    0

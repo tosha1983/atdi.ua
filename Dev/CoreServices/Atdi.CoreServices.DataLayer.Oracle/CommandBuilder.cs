@@ -35,12 +35,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             this._builder.StartIteration(this._iterationIndex);
         }
 
-        public EngineCommandParameter CreateParameter(string alias, string memberName, DataModels.DataType dataType, EngineParameterDirection direction)
+        public EngineCommandParameter CreateParameter(string alias, string memberName, DataModels.DataType dataType, EngineParameterDirection direction, string prefixRefCursor = null)
         {
             ++this._iterationCounter;
             var parameter = new EngineCommandParameter()
             {
-                Name = $"P_I{this._iterationIndex}_C{this._iterationCounter}",
+                Name = prefixRefCursor ==null ? $"P_I{this._iterationIndex}_C{this._iterationCounter}" : $"P_I{this._iterationIndex}_C{this._iterationCounter}_CURSOR_{prefixRefCursor}",
                 DataType = dataType,
                 Direction = direction
             };
@@ -117,16 +117,16 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     _sql.AppendLine($"SELECT SYS_GUID() INTO :{parameter.Name} FROM DUAL;");
                     break;
                 case DataModels.DataType.DateTime:
-                    _sql.AppendLine($"SELECT GETDATE() INTO :{parameter.Name} FROM DUAL;");
+                    _sql.AppendLine($"SELECT SYSDATE INTO :{parameter.Name} FROM DUAL;");
                     break;
                 case DataModels.DataType.DateTimeOffset:
-                    _sql.AppendLine($"SELECT SYSDATETIMEOFFSET() INTO :{parameter.Name} FROM DUAL;");
+                    _sql.AppendLine($"SELECT SYSTIMESTAMP INTO :{parameter.Name} FROM DUAL;");
                     break;
                 case DataModels.DataType.Time:
-                    _sql.AppendLine($"SELECT GETDATE() INTO :{parameter.Name} FROM DUAL;");
+                    _sql.AppendLine($"SELECT SYSDATE INTO :{parameter.Name} FROM DUAL;");
                     break;
                 case DataModels.DataType.Date:
-                    _sql.AppendLine($"SELECT GETDATE() INTO :{parameter.Name} FROM DUAL;");
+                    _sql.AppendLine($"SELECT SYSDATE INTO :{parameter.Name} FROM DUAL;");
                     break;
 
                 default:
@@ -165,10 +165,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     _sql.AppendLine($" :{parameter.Name} := 0;");
                     break;
                 case DataModels.DataType.DateTime:
-                    _sql.AppendLine($" :{parameter.Name} := GETDATE();");
+                    _sql.AppendLine($" :{parameter.Name} := SYSDATE;");
                     break;
                 case DataModels.DataType.DateTimeOffset:
-                    _sql.AppendLine($" :{parameter.Name} := SYSDATETIMEOFFSET();");
+                    _sql.AppendLine($" :{parameter.Name} := SYSTIMESTAMP;");
                     break;
                 case DataModels.DataType.Double:
                     _sql.AppendLine($" :{parameter.Name} := 0;");
@@ -189,10 +189,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     _sql.AppendLine($" :{parameter.Name} := SYS_GUID();");
                     break;
                 case DataModels.DataType.Time:
-                    _sql.AppendLine($" :{parameter.Name} := GETDATE();");
+                    _sql.AppendLine($" :{parameter.Name} := SYSDATE;");
                     break;
                 case DataModels.DataType.Date:
-                    _sql.AppendLine($" :{parameter.Name} := GETDATE();");
+                    _sql.AppendLine($" :{parameter.Name} := SYSDATE;");
                     break;
                 case DataModels.DataType.Long:
                     _sql.AppendLine($" :{parameter.Name} := 0;");
@@ -235,14 +235,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             _sql.AppendLine($"VALUES({valuesClause});");
         }
 
-        public void ForScalar(string schema, string cursorName, string source, Dictionary<string, string> fields,  EngineExecutionResultKind engineExecutionResultKind)
+        public void OpenCursor(string schema, string cursorName, string source, Dictionary<string, string> fields)
         {
-            if (engineExecutionResultKind == EngineExecutionResultKind.Scalar)
-            {
-                var fieldsName = string.Join(", ", fields.Select(f => $"{f.Value}").ToArray());
-                var fieldsValues = string.Join("AND ", fields.Select(f => $"{f.Value.ToString()} = :{f.Key.ToString()}").ToArray());
-                _sql.AppendLine($" OPEN :{cursorName} FOR SELECT {fieldsName} FROM {schema}.{source} WHERE {fieldsValues}; ");
-            }
+            var fieldsName = string.Join(", ", fields.Select(f => $"{f.Value}").ToArray());
+            var fieldsValues = string.Join("AND ", fields.Select(f => $"{f.Value.ToString()} = :{f.Key.ToString()}").ToArray());
+            _sql.AppendLine($" OPEN :{cursorName} FOR SELECT {fieldsName} FROM {schema}.{source} WHERE {fieldsValues}; ");
         }
 
         public string BuildComandText()

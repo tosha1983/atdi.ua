@@ -89,29 +89,28 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
             }
         }
 
+
+
         /// <summary>
         /// Построитель конструкцции следующего вида
         /// /* Iterration: #1 */
         /// 
-        /// /* Expression: index = #1, alias = 'atdi.DataContract.Entites.BaseEntity1' */
-        /// SET @P_С1_2 = ROWID()
-        /// INSERT INTO [SCHEMA_NAME].[BASE_TABLE_NAME](F1, F2)
-        /// VALUES(@P_С1_1, @P_С1_2)
-        /// SELECT @P_С1_3 = @@IDENTITY()
+        /// EXAMPLE:
         /// 
-        /// /* Expression: index = #2, alias = 'atdi.DataContract.Entites.Entity1' */
-        /// INSERT INTO [SCHEMA_NAME].[MAIN_TABLE_NAME](F_PK, F1, F2)
-        /// VALUES(@P_С1_3, @P_С1_4, @P_С1_5)
-        /// 
-        /// /* Expression Alias (3): atdi.DataContract.Entites.ExtensionEntity1 */
-        /// INSERT INTO [SCHEMA_NAME].[MAIN_TABLE_NAME](F_PK, F1, F2)
-        /// VALUES(@P_С1_3, @P_С1_6, @P_С1_7)
+        /// BEGIN
+        /// /* Expression: index = #0, alias = 'Sensor_1' */
+        /// SELECT GetID('SENSOR') INTO :P_I1_C1 FROM DUAL;
+        /// INSERT INTO ICST.SENSOR(ID, NAME, TECHID, CREATEDBY)
+        /// VALUES(:P_I1_C1, :P_I1_C2, :P_I1_C3, :P_I1_C4);
+        /// OPEN :P_I1_C5_CURSOR_REF0 FOR SELECT ID FROM ICST.SENSOR WHERE ID = :P_I1_C1;
+        /// END;
         /// 
         /// </summary>
         /// <param name="pattern"></param>
         /// <returns></returns>
         private void BuildIteration(PS.InsertPattern pattern, OracleBuildingContex contex)
         {
+            contex.Builder.SetBegin();
             for (int i = 0; i < pattern.Expressions.Length; i++)
             {
                 var expression = pattern.Expressions[i];
@@ -122,7 +121,6 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
 
                 var identityFields = new Dictionary<string,string>();
 
-                contex.Builder.SetBegin();
 
                 for (int j = 0; j < expression.Values.Length; j++)
                 {
@@ -190,15 +188,24 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 // генерируем код создания записи
                 contex.Builder.Insert(expression.Target.Schema, expression.Target.Name, fields.ToArray(), values.ToArray());
 
+                // поиск сущности, для которой нужно открыть курсор (если задан параметр EngineExecutionResultKind.Scalar)
                 if (pattern.Result.Kind == EngineExecutionResultKind.Scalar)
                 {
-                    var parameter = contex.CreateParameter("CURSOR_SELECT", ":CURSOR_SELECT", DataModels.DataType.Undefined, EngineParameterDirection.Output);
-                    contex.Builder.ForScalar(expression.Target.Schema, parameter.Name, expression.Target.Name, identityFields, pattern.Result.Kind);
+                    var patternResultPK = (pattern.Result as EngineExecutionScalarResult).Value.GetType();
+                    var getNameEntityResult = patternResultPK.Name.Replace("_PK_Proxy", "");
+                    int index = expression.Target.Alias.IndexOf("_");
+                    if (index >= 0)
+                    {
+                        var getNameExpressionTargetEntity = expression.Target.Alias.Substring(0, index);
+                        if (getNameExpressionTargetEntity == getNameEntityResult)
+                        {
+                            var parameter = contex.CreateParameter($"REF{i}", $"REF{i}", DataModels.DataType.Undefined, EngineParameterDirection.Output, $"REF{i}");
+                            contex.Builder.OpenCursor(expression.Target.Schema, parameter.Name, expression.Target.Name, identityFields);
+                        }
+                    }
                 }
-                contex.Builder.SetEnd();
-
-
             }
+            contex.Builder.SetEnd();
         }
     }
 }

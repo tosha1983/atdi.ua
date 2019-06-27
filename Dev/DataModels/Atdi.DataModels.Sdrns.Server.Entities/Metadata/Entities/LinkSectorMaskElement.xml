@@ -11,8 +11,8 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="SectorMaskElementId" Title="SectorMaskElementId" Name="SectorMaskElementId" DataType="Integer.64" SourceName="ID_SECTORMASKELEM" SourceType="Column" Required="true"/>
-    <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="ID_SECTOR" SourceType="Column" Required="true"/>
+    <Field Desc="SectorMaskElementId" Title="SectorMaskElementId" Name="SectorMaskElementId" DataType="Integer.64" SourceName="SECTOR_MASK_ELEM_ID" SourceType="Column" Required="true"/>
+    <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="SECTOR_ID" SourceType="Column" Required="true"/>
     <Field Name="SECTORMASKELEMENT" SourceType="Reference" SourceName="SectorMaskElement" Title="Relation LinkSectorMaskElement to SectorMaskElement">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SectorMaskElementId</Mapped>

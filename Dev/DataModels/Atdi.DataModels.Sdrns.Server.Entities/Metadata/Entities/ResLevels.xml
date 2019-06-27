@@ -27,7 +27,7 @@
     <Field Desc="VMMaxSpect" Title="VMMaxSpect" Name="VMMaxSpect" DataType="Decimal.22.8" SourceName="VMMAX_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="LimitSpect" Title="LimitSpect" Name="LimitSpect" DataType="Decimal.22.8" SourceName="LIMIT_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="OccupancySpect" Title="OccupancySpect" Name="OccupancySpect" DataType="Decimal.22.8" SourceName="OCCUPANCY_SPECT" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RESMEAS_ID" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLevels to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>

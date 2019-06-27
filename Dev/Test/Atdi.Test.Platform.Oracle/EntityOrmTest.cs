@@ -17,12 +17,89 @@ namespace Atdi.Test.Platform
     {
         public static void Run(IServicesResolver servicesResolver)
         {
+         
             var dataLayer = servicesResolver.Resolve<IDataLayer<EntityDataOrm>>();
             //var builder = dataLayer.GetBuilder<ITestDataType>();
             var executor = dataLayer.Executor<SdrnServerDataContext>();
 
             Test_ReferenceFields(executor, dataLayer);
             //Test_Boolean(builder, executor);
+            //Test_InsertPatternsNew(dataLayer);
+        }
+
+        private static void Test_InsertPatternsNew(IDataLayer<EntityDataOrm> dataLayer)
+        {
+
+            try
+            {
+                var insert2 = dataLayer.GetBuilder<ITestEntityAbsSmpProtoEnd>()
+                .Insert()
+                // поля из абстрактной сущности
+                .SetValue(c => c.AbsField1, "Abs Field1")
+                .SetValue(c => c.AbsField2, "Abs Field2")
+                .SetValue(c => c.AbsField3, "Abs Field3")
+                // поля сущности Simple
+                .SetValue(c => c.SmpField1, "Smp Field1")
+                .SetValue(c => c.SmpField2, "Smp Field2")
+                .SetValue(c => c.SmpField3, "Smp Field3")
+                // поля из расширения сущности Simple = Requered
+                .SetValue(c => c.SMP_EXT1.Ext1SmpField1, "1SmpField1")
+                .SetValue(c => c.SMP_EXT1.Ext1SmpField2, "1SmpField2")
+                .SetValue(c => c.SMP_EXT1.Ext1SmpField3, "1SmpField3")
+                // поля из расширения сущности Simple = Not Requered
+                .SetValue(c => c.SMP_EXT2.Ext2SmpField1, "2SmpField1")
+                .SetValue(c => c.SMP_EXT2.Ext2SmpField2, "2.Ext2SmpField2")
+                .SetValue(c => c.SMP_EXT2.Ext2SmpField3, "2.Ext2SmpField3")
+
+
+                .SetValue(c => c.Proto0Field1, "Proto0F1")
+                .SetValue(c => c.Proto0Field2, "Proto0F2")
+                .SetValue(c => c.Proto0Field3, "Proto0F3")
+
+                .SetValue(c => c.PRT0_EXT1.Ext1Proto0Field1, "P0_E1.0F1")
+                .SetValue(c => c.PRT0_EXT1.Ext1Proto0Field2, "P0_E1.0F2")
+                .SetValue(c => c.PRT0_EXT1.Ext1Proto0Field3, "P0_E1.0F3")
+
+                .SetValue(c => c.PRT0_EXT2.Ext2Proto0Field1, "P0_E2.2F1")
+                .SetValue(c => c.PRT0_EXT2.Ext2Proto0Field2, "P0_E2.2F2")
+                .SetValue(c => c.PRT0_EXT2.Ext2Proto0Field3, "P0_E2.2F3")
+
+                .SetValue(c => c.Proto1Field1, "P1Fi 1")
+                .SetValue(c => c.Proto1Field2, "P1Fi 2")
+                .SetValue(c => c.Proto1Field3, "P1Fi 3")
+
+                .SetValue(c => c.PRT1_EXT1.Ext1Proto1Field1, "P0_T1.t111")
+                .SetValue(c => c.PRT1_EXT1.Ext1Proto1Field2, "P0_T1.t112")
+                .SetValue(c => c.PRT1_EXT1.Ext1Proto1Field3, "P0_T1.t113")
+
+                .SetValue(c => c.PRT1_EXT2.Ext2Proto1Field1, "P0_T2.t111")
+                .SetValue(c => c.PRT1_EXT2.Ext2Proto1Field2, "P0_T2.t112")
+                .SetValue(c => c.PRT1_EXT2.Ext2Proto1Field3, "P0_T1.t113")
+
+                .SetValue(c => c.ProtoEndField1, "PEndF1")
+                .SetValue(c => c.ProtoEndField2, "PEndF2")
+                .SetValue(c => c.ProtoEndField3, "PEndF3")
+
+                .SetValue(c => c.PRTEND_EXT1.Ext1ProtoEndField1, "PRTEND1_1")
+                .SetValue(c => c.PRTEND_EXT1.Ext1ProtoEndField2, "PRTEND1_3")
+                .SetValue(c => c.PRTEND_EXT1.Ext1ProtoEndField3, "PRTEND1_4")
+
+                .SetValue(c => c.PRTEND_EXT2.Ext2ProtoEndField1, "PRTEND2_1")
+                .SetValue(c => c.PRTEND_EXT2.Ext2ProtoEndField2, "PRTEND2_2")
+                .SetValue(c => c.PRTEND_EXT2.Ext2ProtoEndField3, "PRTEND2_3");
+
+                using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    var pk = scope.Executor.Execute<ITestEntityAbsSmp_PK>(insert2);
+                    Console.WriteLine($"AbsPkId1 = {pk.AbsPkId1}, AbsPkId2 = {pk.AbsPkId2}, AbsPkId3 = {pk.AbsPkId3}");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private static void Test_ReferenceFields(IQueryExecutor executor, IDataLayer<EntityDataOrm> dataLayer)
@@ -40,20 +117,42 @@ namespace Atdi.Test.Platform
             .Where(c => c.Id > 0)
             .Distinct();
             */
+            var queryExecuter = dataLayer.Executor<SdrnServerDataContext>();
 
-            var query = dataLayer.GetBuilder<ISensor>()
+            var query3 = dataLayer.GetBuilder<ISensor>()
+           .Delete()
+           .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.GreaterEqual, 0);
+
+            var query1 = dataLayer.GetBuilder<ISensor>()
             .Insert()
             .Select(
                 c => c.Id,
                 c => c.CreatedBy
             )
             .SetValue(c => c.Id, 2)
-            .SetValue(c => c.Name, "TEST9080")
+            .SetValue(c => c.Name, "TEST90801")
             .SetValue(c => c.TechId, "TECH1078")
             .SetValue(c => c.CreatedBy,"ICSM67");
 
+            var query2 = dataLayer.GetBuilder<ITestEntityAbs>()
+            .Insert()
+            .Select(
+                c => c.AbsField1,
+                c => c.AbsField2,
+                c => c.AbsField3
+            )
+            .SetValue(c => c.AbsPkId1, 2)
+            .SetValue(c => c.AbsPkId2, Guid.NewGuid())
+            .SetValue(c => c.AbsPkId3, new DateTimeOffset(DateTime.Now))
+            .SetValue(c => c.AbsField1, "F1");
+
+
             //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #1, execute statement without trasaction, close connaction
-            //dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close connaction
+            //dataLayer.Executor<SdrnServerDataContext>().Execute(query3); // create new connaction #2, execute statement without trasaction, close connaction
+
+           
+            //queryExecuter.Execute(query3);
+
 
             using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #3
             {
@@ -62,7 +161,9 @@ namespace Atdi.Test.Platform
                 scope.BeginTran(); // connaction #3: scope has transaction
 
                 //scope.Executor.Execute(queryNoTyped); // connaction #3: execute statement with trasaction
-                var x = scope.Executor.Execute<ISensor_PK>(query); // connaction #3: execute statement with trasaction
+                var x1 = scope.Executor.Execute<ISensor_PK>(query1); // connaction #3: execute statement with trasaction
+                //var x2 = scope.Executor.Execute<ITestEntityAbs_PK>(query2); // connaction #3: execute statement with trasaction
+                //scope.Executor.Execute(query2); // connaction #3: execute statement with trasaction
                 //scope.Executor.Execute(query); // connaction #3: execute statement with trasaction
 
                 scope.Commit(); // connaction #3:  commit trasaction
@@ -70,54 +171,68 @@ namespace Atdi.Test.Platform
 
                 //scope.Executor.Execute(query); // connaction #3: execute statement without trasaction
             } // close connection #3
-
-            /*
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #4
-
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #5
-            {
-                scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
-                scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
-            }
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #6
-            {
-                scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
-                scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
-            }
-
-
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #1
-            {
-                dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close transaction
-            }
-
-            using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #7
-            {
-                scope.Executor.Execute(query); // connaction #7: execute statement without trasaction
-            }
-            dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #7, execute statement without trasaction, close transaction
-
-            //SqlConnection connection = new SqlConnection();
-
-            //var tran2 = connection.BeginTransaction(System.Data.IsolationLevel.Serializable);
-            //new SqlCommand()
-
-
-            //var insertStatement = dataLayer.GetBuilder<ITestRefSubBook>()
-            //    .InitProc()
-            //    .SetParam()
-            //    .Insert()
-            //        .InsertChild()
-                    
-            //    .SetValue(c => c.Name, "Test")
-            //    .Select(c => c.Code,);
-
-            //var pk = dataLayer.Executor<SdrnServerDataContext>().Execute<ITestRefSubBook_PK>(insertStatement);
             
 
-           //dataLayer.Executor<SdrnServerDataContext>().ExecuteAndFetch(insertStatement, ())
-           */
-        }
+
+
+            /*
+            using (var scope = dataLayer.CreateScope<SdrnServerDataContext>()) // try to open new connection #3
+            {
+                scope.Executor.ExecuteAndFetch(query, reader =>
+                {
+                    reader.Read();
+                    var x = reader.GetValue(c => c.Id);
+                    return true;
+                });
+            }
+            */
+                /*
+                dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #4
+
+                using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #5
+                {
+                    scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
+                    scope.Executor.Execute(query); // connaction #5: execute statement without trasaction
+                }
+                using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #6
+                {
+                    scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
+                    scope.Executor.Execute(query); // connaction #6: execute statement without trasaction
+                }
+
+
+                using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #1
+                {
+                    dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #2, execute statement without trasaction, close transaction
+                }
+
+                using (var scope = dataLayer.BeginScope<SdrnServerDataContext>()) // try to open new connection #7
+                {
+                    scope.Executor.Execute(query); // connaction #7: execute statement without trasaction
+                }
+                dataLayer.Executor<SdrnServerDataContext>().Execute(query); // create new connaction #7, execute statement without trasaction, close transaction
+
+                //SqlConnection connection = new SqlConnection();
+
+                //var tran2 = connection.BeginTransaction(System.Data.IsolationLevel.Serializable);
+                //new SqlCommand()
+
+
+                //var insertStatement = dataLayer.GetBuilder<ITestRefSubBook>()
+                //    .InitProc()
+                //    .SetParam()
+                //    .Insert()
+                //        .InsertChild()
+
+                //    .SetValue(c => c.Name, "Test")
+                //    .Select(c => c.Code,);
+
+                //var pk = dataLayer.Executor<SdrnServerDataContext>().Execute<ITestRefSubBook_PK>(insertStatement);
+
+
+               //dataLayer.Executor<SdrnServerDataContext>().ExecuteAndFetch(insertStatement, ())
+               */
+            }
 
         private static void Test_Boolean(IQueryBuilder<ITestDataType> builder, IQueryExecutor executor)
         {

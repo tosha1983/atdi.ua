@@ -95,8 +95,6 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
         private TResult Execute<TResult>(PatternExecutionContex<TResult> executionContex, QueryInsertStatement statement, PS.InsertPattern pattern)
         {
             var result = default(TResult);
-
-
             switch (executionContex.ResultKind)
             {
                 case EngineExecutionResultKind.None:
@@ -120,8 +118,6 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 default:
                     throw new InvalidOperationException($"Unsupported result kind '{executionContex.ResultKind}'");
             }
-
-
             return result;
         }
 

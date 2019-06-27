@@ -12,8 +12,8 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
     <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Text.150" SourceName="MEAS_TASK_ID" SourceType="Column" Required="false"/>
-    <Field Desc="MeasSubTaskId" Title="MeasSubTaskId" Name="MeasSubTaskId" DataType="Integer.64" SourceName="SUB_MEAS_TASK_ID" SourceType="Column" Required="false"/>
-    <Field Desc="MeasSubTaskStationId" Title="MeasSubTaskStationId" Name="MeasSubTaskStationId" DataType="Integer.64" SourceName="SUB_MEAS_TASK_STATION_ID" SourceType="Column" Required="false"/>
+    <Field Desc="MeasSubTaskId" Title="MeasSubTaskId" Name="MeasSubTaskId" DataType="Integer.64" SourceName="MEAS_SUB_TASK_ID" SourceType="Column" Required="false"/>
+    <Field Desc="MeasSubTaskStationId" Title="MeasSubTaskStationId" Name="MeasSubTaskStationId" DataType="Integer.64" SourceName="MEAS_SUB_TASK_STATION_ID" SourceType="Column" Required="false"/>
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID" SourceType="Column" Required="false"/>
     <Field Desc="AntVal" Title="AntVal" Name="AntVal" DataType="Decimal.22.8" SourceName="ANTVAL" SourceType="Column" Required="false"/>
     <Field Desc="TimeMeas" Title="TimeMeas" Name="TimeMeas" DataType="DateTime" SourceName="TIME_MEAS" SourceType="Column" Required="false"/>

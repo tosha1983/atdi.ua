@@ -63,7 +63,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         var result = sqlCommand.ExecuteNonQuery();
-                        //this.EnsureOutputParameters();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                         return result;
                     }
                 }
@@ -84,11 +84,45 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     || sqlParameter.Direction == ParameterDirection.InputOutput)
                 {
                     var key = sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
-                    var tp = sqlParameter.OracleDbType;
-                    if (tp != OracleDbType.RefCursor)
+                    if (sqlParameter.OracleDbType == OracleDbType.Int64)
                     {
-                        engineCommand.Parameters[key].Value = (Int64)sqlParameter.Value;
+                        Int64 valInt64 = Convert.ToInt64(sqlParameter.Value.ToString());
+                        sqlParameter.Value = valInt64;
                     }
+                    else if (sqlParameter.OracleDbType == OracleDbType.Int32)
+                    {
+                        Int32 valInt32 = Convert.ToInt32(sqlParameter.Value.ToString());
+                        sqlParameter.Value = valInt32;
+                    }
+                    else if (sqlParameter.OracleDbType == OracleDbType.Int16)
+                    {
+                        Int32 valInt16 = Convert.ToInt16(sqlParameter.Value.ToString());
+                        sqlParameter.Value = valInt16;
+                    }
+                    else if (sqlParameter.OracleDbType == OracleDbType.Blob)
+                    {
+                        var bt = sqlParameter.Value;
+                        var conv = (OracleBlob)bt;
+                        Guid valGuid = new Guid(conv.Value);
+                        sqlParameter.Value = valGuid;
+                    }
+                    else if(sqlParameter.OracleDbType == OracleDbType.TimeStampTZ)
+                    {
+                        var val = (OracleTimeStampTZ)sqlParameter.Value;
+                        var oracleTimeStamp = val.ToOracleTimeStamp();
+                        sqlParameter.Value = new DateTimeOffset(oracleTimeStamp.Value, val.GetTimeZoneOffset());
+                    }
+                    //else if (sqlParameter.OracleDbType == OracleDbType.gu)
+                    //{
+                    //Guid valGuid = new Guid(sqlParameter.Value.ToString());
+                    //sqlParameter.Value = valGuid;
+                    //}
+                    engineCommand.Parameters[key].Value = sqlParameter.Value;
+                    if (sqlParameter.OracleDbType== OracleDbType.RefCursor)
+                    {
+                        sqlParameter.Dispose();
+                    }
+                    
                 }
             }
         }
@@ -126,6 +160,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         reader = sqlCommand.ExecuteReader();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                     }
                     //this.EnsureOutputParameters();
                     using (var trace = this.Logger.StartTrace(Contexts.OracleEngine, Categories.ResultHandling, this))
@@ -160,6 +195,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                     using (var trace = StartTraceExecuting(sqlCommand))
                     {
                         reader = sqlCommand.ExecuteReader();
+                        this.EnsureOutputParameters(sqlCommand, engineCommand);
                     }
 
                     using (var trace = this.Logger.StartTrace(Contexts.OracleEngine, Categories.ResultHandling, this))
@@ -209,12 +245,16 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             var sqlParameter = new OracleParameter
             {
                 ParameterName = ":" + parameter.Name,
-                OracleDbType = ToSqlDbType(parameter.DataType),
+                OracleDbType = parameter.Name.Contains("_CURSOR_REF")==false ?  ToSqlDbType(parameter.DataType) : OracleDbType.RefCursor,
                 Value = parameter.Value ?? DBNull.Value,
                 Direction = parameter.Direction.CopyTo<ParameterDirection>()
-
-                
             };
+
+            if (parameter.DataType == DataType.Guid)
+            {
+                sqlParameter.OracleDbType = OracleDbType.Blob;
+            }
+            
 
             // мелкая конвертация для знакового байта и безнаковіх целых
             if (parameter.Value != null)
@@ -235,12 +275,6 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 {
                     sqlParameter.Value = Convert.ToDecimal(parameter.Value);
                 }
-                //else if (parameter.DataType == DataType.Time)
-                //{
-                    //var timeSpan = (TimeSpan)(parameter.Value);
-                    //OracleTimeStamp oracleTimeStamp = new OracleTimeStamp(new DateTime(timeSpan.Ticks));
-                    //sqlParameter.Value = oracleTimeStamp;
-                //}
             }
 
             if (parameter.DataType == DataType.String && parameter.Value != null)
@@ -255,8 +289,6 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             {
                 sqlParameter.Size = ((char[])parameter.Value).Length;
             }
-
-
 
             return sqlParameter;
         }
@@ -314,7 +346,6 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 case DataType.ClrType:
                     return OracleDbType.Blob;
                 case DataType.Undefined:
-                    return OracleDbType.RefCursor;
                 case DataType.Json:
                 default:
                     throw new InvalidCastException($"Unsupported DataType with name '{dataType}'");
