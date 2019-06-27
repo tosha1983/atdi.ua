@@ -9,7 +9,6 @@ using System.Xml;
 namespace Atdi.Contracts.CoreServices.DataLayer
 {
     
-
     public interface IEngineDataReader
     {
         bool IsDBNull(int i);
@@ -26,9 +25,13 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         int FieldCount { get; }
 
-        string GetName(int i);
+        string GetAlias(int i);
 
-        int GetOrdinal(string name);
+        string GetPath(int i);
+
+        int GetOrdinalByAlias(string alias);
+
+        int GetOrdinalByPath(string path);
 
         Type GetFieldType(int i);
 

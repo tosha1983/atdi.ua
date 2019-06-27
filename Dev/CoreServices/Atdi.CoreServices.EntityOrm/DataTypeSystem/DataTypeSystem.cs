@@ -44,6 +44,9 @@ namespace Atdi.CoreServices.EntityOrm
             this._adapterTypes[(int)DataType.Decimal][(int)DataSourceVarType.DECIMAL] = typeof(ValueAdapters.DecimalDECIMAL);
             this._adapterTypes[(int)DataType.Float][(int)DataSourceVarType.FLOAT] = typeof(ValueAdapters.FloatFLOAT);
             this._adapterTypes[(int)DataType.Double][(int)DataSourceVarType.DOUBLE] = typeof(ValueAdapters.DoubleDOUBLE);
+
+            this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.StringBLOB);
+            this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.StringBYTES);
         }
 
         private static Type[][] BuildAdapterTypes()

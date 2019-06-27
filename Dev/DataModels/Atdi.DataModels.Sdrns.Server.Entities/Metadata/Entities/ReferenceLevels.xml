@@ -11,8 +11,8 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="StartFrequency_Hz" Title="StartFrequency_Hz" Name="StartFrequency_Hz" DataType="Decimal.22.8" SourceName="STARTFREQ_HZ" SourceType="Column" Required="false"/>
-    <Field Desc="StepFrequency_Hz" Title="StepFrequency_Hz" Name="StepFrequency_Hz" DataType="Decimal.22.8" SourceName="STEPFREQ_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="StartFrequency_Hz" Title="StartFrequency_Hz" Name="StartFrequency_Hz" DataType="Double.30.10" SourceName="STARTFREQ_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="StepFrequency_Hz" Title="StepFrequency_Hz" Name="StepFrequency_Hz" DataType="Double.30.10" SourceName="STEPFREQ_HZ" SourceType="Column" Required="false"/>
     <Field Desc="RefLevels" Title="RefLevels" Name="RefLevels" DataType="Bytes.MAX" SourceName="REF_LEVELS" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ReferenceLevels to ResMeas">

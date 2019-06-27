@@ -21,13 +21,13 @@ namespace Atdi.CoreServices.EntityOrm
                 [typeof(QueryInsertStatement)] = new QueryPatterns.InsertPatternBuilder(entityOrm, dataTypeSystem, logger),
                 [typeof(QuerySelectStatement)] = new QueryPatterns.SelectPatternBuilder(entityOrm, dataTypeSystem, logger),
                 [typeof(QueryUpdateStatement)] = new QueryPatterns.UpdatePatternBuilder(entityOrm, dataTypeSystem, logger),
-                [typeof(IQueryDeleteStatement)] = new QueryPatterns.DeletePatternBuilder(entityOrm, dataTypeSystem, logger)
+                [typeof(QueryDeleteStatement)] = new QueryPatterns.DeletePatternBuilder(entityOrm, dataTypeSystem, logger)
             };
 
             logger.Verbouse(Contexts.EntityOrm, Categories.Creation, Events.ObjectWasCreated.With("PatternBuilderFactory"));
         }
 
-        public TResult BuildAndExecute<TResult>(PatternExecutionContex<TResult> executionContex)
+        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
         {
             if (executionContex == null)
             {

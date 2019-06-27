@@ -10,7 +10,7 @@ create table [ICSC].[UNIT] (
 	[TIMEOFMEASUREMENTS]	[datetime] null,
 	[BW] 	[numeric](22,8) null,
 	[IDSTATION] [bigint] null,
-	[SPECRUMSTEPS]	[float](10) null,
+	[SPECRUMSTEPS]	[float] null,
 	[T1] [integer] null,
 	[T2] [integer] null,
 	[MEASGLOBALSID] 		[nvarchar](250) null,

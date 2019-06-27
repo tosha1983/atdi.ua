@@ -8,11 +8,41 @@ using System.Threading.Tasks;
 
 namespace Atdi.CoreServices.DataLayer.SqlServer
 {
+    class Mapper
+    {
+        private readonly Dictionary<string, string> _mapByPath;
+        private readonly Dictionary<string, string> _mapByAlias;
+        public Mapper()
+        {
+            this._mapByAlias = new Dictionary<string, string>();
+            this._mapByPath = new Dictionary<string, string>();
+        }
+
+      
+
+        public void Append(string alias, string path)
+        {
+            this._mapByPath[path] = alias;
+            this._mapByAlias[alias] = path;
+        }
+
+        public string GetAlias(string path)
+        {
+            return this._mapByPath[path];
+        }
+        public string GetPath(string alias)
+        {
+            return this._mapByAlias[alias];
+        }
+
+    }
     class BuildingContex
     {
         private readonly CommandBuilder _builder;
         private readonly Dictionary<string, EngineCommandParameter> _parametersByMember;
         private readonly Dictionary<string, EngineCommandParameter> _parametersByName;
+        private readonly Mapper _mapper;
+
         private int _iterationIndex;
         private int _iterationCounter;
 
@@ -21,6 +51,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             this._builder = new CommandBuilder();
             this._parametersByMember = new Dictionary<string, EngineCommandParameter>();
             this._parametersByName = new Dictionary<string, EngineCommandParameter>();
+            this._mapper = new Mapper();
             this._iterationIndex = 0;
             this._iterationCounter = 0;
             this.NextIteration();
@@ -70,6 +101,8 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
 
             return command;
         }
+
+        public Mapper Mapper => _mapper;
     }
 
     class CommandBuilder

@@ -8,7 +8,12 @@ using System.Linq;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal class PatternExecutionContex<TResult>
+    internal sealed class VoidModel
+    {
+
+    }
+
+    internal class PatternExecutionContex<TResult, TModel>
     {
         public PatternExecutionContex(IEngineExecuter executer)
         {
@@ -28,7 +33,7 @@ namespace Atdi.CoreServices.EntityOrm
             return $"Statement ='{Statement?.GetType().FullName}', Kind = {ResultKind}, Result = {typeof(TResult).FullName}[{ResultType?.FullName}]";
         }
     }
-    internal sealed class PatternExecutionContexWithHandler<TResult> : PatternExecutionContex<TResult>
+    internal sealed class PatternExecutionContexWithHandler<TResult> : PatternExecutionContex<TResult, VoidModel>
     {
         public PatternExecutionContexWithHandler(IEngineExecuter executer) 
             : base(executer)
@@ -38,7 +43,7 @@ namespace Atdi.CoreServices.EntityOrm
         public Func<IDataReader, TResult> Handler { get; set; }
     }
 
-    internal sealed class PatternExecutionContexWithHandler<TResult, TModel> : PatternExecutionContex<TResult>
+    internal sealed class PatternExecutionContexWithHandler<TResult, TModel> : PatternExecutionContex<TResult, TModel>
     {
         public PatternExecutionContexWithHandler(IEngineExecuter executer) 
             : base(executer)
@@ -65,18 +70,43 @@ namespace Atdi.CoreServices.EntityOrm
 
         public int Execute(IQueryStatement statement)
         {
-            var context = new PatternExecutionContex<int>(this._engineExecuter)
+            if (_engineExecuter != null)
+            {
+                return Execute(statement, _engineExecuter);
+            }
+
+            using (var engineExecuter = this._dataEngine.CreateExecuter())
+            {
+                return Execute(statement, engineExecuter);
+            }
+        }
+
+        private int Execute(IQueryStatement statement, IEngineExecuter engineExecuter)
+        {
+            var context = new PatternExecutionContex<int, VoidModel>(engineExecuter)
             {
                 ResultKind = EngineExecutionResultKind.RowsAffected,
                 Statement = statement
             };
-            var result = this._builderFactory.BuildAndExecute<int>(context);
+            var result = this._builderFactory.BuildAndExecute(context);
             return result;
         }
 
         public object Execute(IQueryStatement statement, Type resultType)
         {
-            var context = new PatternExecutionContex<object>(this._engineExecuter)
+            if (_engineExecuter != null)
+            {
+                return Execute(statement, resultType, _engineExecuter);
+            }
+
+            using (var engineExecuter = this._dataEngine.CreateExecuter())
+            {
+                return Execute(statement, resultType, engineExecuter);
+            }
+        }
+        private object Execute(IQueryStatement statement, Type resultType, IEngineExecuter engineExecuter)
+        {
+            var context = new PatternExecutionContex<object, VoidModel>(engineExecuter)
             {
                 ResultKind = EngineExecutionResultKind.Scalar,
                 Statement = statement,
@@ -86,9 +116,23 @@ namespace Atdi.CoreServices.EntityOrm
             return result;
         }
 
+
         public TResult Execute<TResult>(IQueryStatement statement)
         {
-            var context = new PatternExecutionContex<TResult>(this._engineExecuter)
+            if (_engineExecuter != null)
+            {
+                return Execute<TResult>(statement, _engineExecuter);
+            }
+
+            using (var engineExecuter = this._dataEngine.CreateExecuter())
+            {
+                return Execute<TResult>(statement, engineExecuter);
+            }
+        }
+
+        private TResult Execute<TResult>(IQueryStatement statement, IEngineExecuter engineExecuter)
+        {
+            var context = new PatternExecutionContex<TResult, VoidModel>(engineExecuter)
             {
                 ResultKind = EngineExecutionResultKind.Scalar,
                 Statement = statement
@@ -99,9 +143,22 @@ namespace Atdi.CoreServices.EntityOrm
 
         public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<IDataReader, TResult> handler)
         {
-            var context = new PatternExecutionContexWithHandler<TResult>(this._engineExecuter)
+            if (_engineExecuter != null)
             {
-                ResultKind = EngineExecutionResultKind.Scalar,
+                return ExecuteAndFetch(statement, handler, _engineExecuter);
+            }
+
+            using (var engineExecuter = this._dataEngine.CreateExecuter())
+            {
+                return ExecuteAndFetch(statement, handler, engineExecuter);
+            }
+        }
+
+        private TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<IDataReader, TResult> handler, IEngineExecuter engineExecuter)
+        {
+            var context = new PatternExecutionContexWithHandler<TResult>(engineExecuter)
+            {
+                ResultKind = EngineExecutionResultKind.Reader,
                 Statement = statement,
                 Handler = handler
             };
@@ -111,9 +168,22 @@ namespace Atdi.CoreServices.EntityOrm
 
         public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
-            var context = new PatternExecutionContexWithHandler<TResult, TModel>(this._engineExecuter)
+            if (_engineExecuter != null)
             {
-                ResultKind = EngineExecutionResultKind.Scalar,
+                return ExecuteAndFetch(statement, handler, _engineExecuter);
+            }
+
+            using (var engineExecuter = this._dataEngine.CreateExecuter())
+            {
+                return ExecuteAndFetch(statement, handler, engineExecuter);
+            }
+        }
+
+        private TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler, IEngineExecuter engineExecuter)
+        {
+            var context = new PatternExecutionContexWithHandler<TResult, TModel>(engineExecuter)
+            {
+                ResultKind = EngineExecutionResultKind.Reader,
                 Statement = statement,
                 Handler = handler
             };
@@ -122,17 +192,17 @@ namespace Atdi.CoreServices.EntityOrm
         }
 
 
-
         #region Not implemented
-        public TResult ExecuteAndFetch<TResult>(IQueryStatement[] statements, Func<IDataReader, TResult> handler)
-        {
-            throw new NotImplementedException();
-        }
 
-        public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel>[] statements, Func<IDataReader<TModel>, TResult> handler)
-        {
-            throw new NotImplementedException();
-        }
+        //public TResult ExecuteAndFetch<TResult>(IQueryStatement[] statements, Func<IDataReader, TResult> handler)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel>[] statements, Func<IDataReader<TModel>, TResult> handler)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
 
@@ -141,15 +211,16 @@ namespace Atdi.CoreServices.EntityOrm
             throw new NotImplementedException();
         }
 
-        public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)
-        {
-            throw new NotImplementedException();
-        }
+        //public TResult Fetch<TResult>(IQuerySelectStatement statement, Func<IDataReader, TResult> handler)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
-        {
-            throw new NotImplementedException();
-        }
+        //public TResult Fetch<TModel, TResult>(IQuerySelectStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         #endregion
 
 

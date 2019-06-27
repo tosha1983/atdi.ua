@@ -11,23 +11,23 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="ValueLvl" Title="ValueLvl" Name="ValueLvl" DataType="Decimal.22.8" SourceName="VALUE_LVL" SourceType="Column" Required="false"/>
+    <Field Desc="ValueLvl" Title="ValueLvl" Name="ValueLvl" DataType="Float.22.8" SourceName="VALUE_LVL" SourceType="Column" Required="false"/>
     <Field Desc="StddevLev" Title="StddevLev" Name="StddevLev" DataType="Decimal.22.8" SourceName="STDDEV_LVL" SourceType="Column" Required="false"/>
-    <Field Desc="VMinLvl" Title="VMinLvl" Name="VMinLvl" DataType="Decimal.22.8" SourceName="VMIN_LVL" SourceType="Column" Required="false"/>
-    <Field Desc="VMMaxLvl" Title="VMMaxLvl" Name="VMMaxLvl" DataType="Decimal.22.8" SourceName="VMMAX_LVL" SourceType="Column" Required="false"/>
+    <Field Desc="VMinLvl" Title="VMinLvl" Name="VMinLvl" DataType="Float.22.8" SourceName="VMIN_LVL" SourceType="Column" Required="false"/>
+    <Field Desc="VMMaxLvl" Title="VMMaxLvl" Name="VMMaxLvl" DataType="Float.22.8" SourceName="VMMAX_LVL" SourceType="Column" Required="false"/>
     <Field Desc="LimitLvl" Title="LimitLvl" Name="LimitLvl" DataType="Decimal.22.8" SourceName="LIMIT_LVL" SourceType="Column" Required="false"/>
     <Field Desc="OccupancyLvl" Title="OccupancyLvl" Name="OccupancyLvl" DataType="Decimal.22.8" SourceName="OCCUPANCY_LVL" SourceType="Column" Required="false"/>
     <Field Desc="PMinLvl" Title="PMinLvl" Name="PMinLvl" DataType="Decimal.22.8" SourceName="PMIN_LVL" SourceType="Column" Required="false"/>
     <Field Desc="PMaxLvl" Title="PMaxLvl" Name="PMaxLvl" DataType="Decimal.22.8" SourceName="PMAX_LVL" SourceType="Column" Required="false"/>
     <Field Desc="PDiffLvl" Title="PDiffLvl" Name="PDiffLvl" DataType="Decimal.22.8" SourceName="PDIFF_LVL" SourceType="Column" Required="false"/>
-    <Field Desc="FreqMeas" Title="FreqMeas" Name="FreqMeas" DataType="Decimal.22.8" SourceName="FREQ_MEAS" SourceType="Column" Required="false"/>
-    <Field Desc="ValueSpect" Title="ValueSpect" Name="ValueSpect" DataType="Decimal.22.8" SourceName="VALUE_SPECT" SourceType="Column" Required="false"/>
+    <Field Desc="FreqMeas" Title="FreqMeas" Name="FreqMeas" DataType="Float.22.8" SourceName="FREQ_MEAS" SourceType="Column" Required="false"/>
+    <Field Desc="ValueSpect" Title="ValueSpect" Name="ValueSpect" DataType="Float.22.8" SourceName="VALUE_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="StdDevSpect" Title="StdDevSpect" Name="StdDevSpect" DataType="Decimal.22.8" SourceName="STDDEV_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="VMinSpect" Title="VMinSpect" Name="VMinSpect" DataType="Decimal.22.8" SourceName="VMIN_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="VMMaxSpect" Title="VMMaxSpect" Name="VMMaxSpect" DataType="Decimal.22.8" SourceName="VMMAX_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="LimitSpect" Title="LimitSpect" Name="LimitSpect" DataType="Decimal.22.8" SourceName="LIMIT_SPECT" SourceType="Column" Required="false"/>
-    <Field Desc="OccupancySpect" Title="OccupancySpect" Name="OccupancySpect" DataType="Decimal.22.8" SourceName="OCCUPANCY_SPECT" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
+    <Field Desc="OccupancySpect" Title="OccupancySpect" Name="OccupancySpect" DataType="Float.22.8" SourceName="OCCUPANCY_SPECT" SourceType="Column" Required="false"/>
+    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RESMEAS_ID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLevels to ResMeas">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>

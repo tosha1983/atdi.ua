@@ -9,6 +9,7 @@ using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
 using Atdi.DataModels;
 using Atdi.Platform.Logging;
 
+
 namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 {
     class FloatFLOAT: ValueAdapter<float?, float?>

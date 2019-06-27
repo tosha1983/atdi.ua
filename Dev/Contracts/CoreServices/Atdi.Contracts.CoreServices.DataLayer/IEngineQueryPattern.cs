@@ -105,14 +105,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         public Action<TReader> Handler { get; set; }
     }
 
-    public class EngineExecutionReaderResult<TReader, TResult> : EngineExecutionResult
+    public class EngineExecutionReaderResult : EngineExecutionReaderResult<IEngineDataReader>
     {
-        public EngineExecutionReaderResult()
-            : base(EngineExecutionResultKind.Reader)
-        {
-        }
-
-        public Func<TReader, TResult> Handler { get; set; }
     }
 
     public abstract class EngineExecutionCustomResult : EngineExecutionResult

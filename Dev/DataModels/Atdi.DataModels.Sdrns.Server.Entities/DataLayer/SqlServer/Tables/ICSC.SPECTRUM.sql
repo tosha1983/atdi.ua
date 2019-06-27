@@ -3,12 +3,12 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[SPECTRUM]
 go
 create table [ICSC].[SPECTRUM] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[STARTFREQ_MHZ]	[numeric](28,10) null,
-	[STEPFREQ_KHZ]	[numeric](28,10) null,
+	[STARTFREQ_MHZ]	[float] null,
+	[STEPFREQ_KHZ]	[float] null,
 	[T1]	[int] null,
 	[T2]	[int] null,
 	[MARKER_INDEX]	[int] null,
-	[BW_KHZ]	[numeric](28,10) null,
+	[BW_KHZ]	[float] null,
 	[CORRECT_ESTIM]	[int] null,
 	[TRACE_COUNT]	[int] null,
 	[SIGNALLEVEL_DBM]	[real] null,

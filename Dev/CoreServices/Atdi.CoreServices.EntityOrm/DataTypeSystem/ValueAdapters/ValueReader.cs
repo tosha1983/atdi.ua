@@ -96,7 +96,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             }
 
 
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,7 +202,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(byte);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -289,7 +289,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(sbyte);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -376,7 +376,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(sbyte);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -464,7 +464,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(int);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -551,7 +551,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 }
                 return default(decimal);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -638,7 +638,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 }
                 return default(float);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -725,7 +725,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 }
                 return default(double);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -812,7 +812,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(long);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -898,7 +898,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
             //}
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -988,7 +988,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
             //}
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1019,7 +1019,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 
                 return new Guid(store);
             }
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1101,7 +1101,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
             //}
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1183,7 +1183,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
             //}
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1265,7 +1265,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
             //}
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1347,7 +1347,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
             //}
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1372,7 +1372,7 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 return dataReader.GetBytes(ordinal);
             }
 
-            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetName(ordinal)));
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
     }
 }

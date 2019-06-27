@@ -8,6 +8,6 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 {
     internal interface IPatternBuilder
     {
-        TResult BuildAndExecute<TResult>(PatternExecutionContex<TResult> executionContex);
+        TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex);
     }
 }

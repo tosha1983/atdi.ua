@@ -38,7 +38,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             this._dataTypeSystem = dataTypeSystem;
         }
 
-        public TResult BuildAndExecute<TResult>(PatternExecutionContex<TResult> executionContex)
+        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
         {
             var statement = executionContex.Statement as QueryInsertStatement;
 
@@ -92,7 +92,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             return pattren;
         }
 
-        private TResult Execute<TResult>(PatternExecutionContex<TResult> executionContex, QueryInsertStatement statement, PS.InsertPattern pattern)
+        private TResult Execute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex, QueryInsertStatement statement, PS.InsertPattern pattern)
         {
             var result = default(TResult);
             switch (executionContex.ResultKind)

@@ -55,8 +55,10 @@ namespace Atdi.Test.Platform
                             {
                                 var type = reader.GetFieldType(i);
                                 var value = reader.GetValue(i);
-                                var name = reader.GetName(i);
-                                var ordinal = reader.GetOrdinal(name);
+                                var alias  = reader.GetAlias(i);
+                                var ordinalByAlias = reader.GetOrdinalByAlias(alias);
+                                var path = reader.GetPath(i);
+                                var ordinalByPath = reader.GetOrdinalByAlias(path);
                                 var state = reader.ToString();
                                 var valIsNull = false;
                                 var len = 0;
@@ -131,7 +133,7 @@ namespace Atdi.Test.Platform
                                     throw new InvalidProgramException("Ухты, что то не то");
                                 }
 
-                                Debug.WriteLine($"Record #{recId} : Name = '{name}', Len = {len}, Ordinal = #{ordinal}, Type = {type.Name}, IsNull = {valIsNull} ");
+                                Debug.WriteLine($"Record #{recId} : Alias = '{alias}', Path = '{path}', Len = {len}, OrdinalByA = #{ordinalByAlias}, Type = {type.Name}, IsNull = {valIsNull} ");
                             }
                         }
 

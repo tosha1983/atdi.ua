@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -58,6 +59,8 @@
     <Compile Include="DataTypeSystem\ValueAdapters\LongINT64.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\IntegerINT32.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BytesBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringBLOB.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\StringTEXT.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\StringNTEXT.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\StringVARCHAR.cs" />
