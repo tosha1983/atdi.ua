@@ -26,7 +26,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
     }
 
-    public interface IQuerySelectStatement<TModel> : IQueryStatement
+    public interface IQuerySelectStatement<TModel> : IQueryStatement<TModel>
     {
         IQuerySelectStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions);
 

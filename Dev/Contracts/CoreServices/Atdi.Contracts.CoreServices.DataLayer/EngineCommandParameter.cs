@@ -9,10 +9,6 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 {
     public class EngineCommandParameter
     {
-        public string Alias { get; set; }
-
-        public string Owner { get; set; }
-
         public string Name { get; set; }
 
         public object Value { get; set; }
@@ -49,7 +45,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                 }
 
             }
-            return $"Name = '{this.Name}', Direction = '{Direction}', Alias = '{Alias}', Owner = '{Owner}', DataType = '{this.DataType}', VarType = '{Value?.GetType().FullName}', Value = '{showValue}'";
+            return $"Name = '{this.Name}', Direction = '{Direction}', DataType = '{this.DataType}', VarType = '{Value?.GetType().FullName}', Value = '{showValue}'";
         }
 
         public void SetValue(object value)

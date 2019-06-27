@@ -28,10 +28,320 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
 
     public class SelectExpression : QueryExpression
     {
-        public SelectExpression() 
+        public SelectExpression()
             : base(QueryExpressionKind.Select)
         {
         }
+
+        /// <summary>
+        /// Целевой объект через который необходимо иницировать выборку
+        /// </summary>
+        public ColumnExpression[] Columns { get; set; }
+
+        public TargetObject From { get; set; }
+
+        public JoinExpression[] Joins { get; set; }
+
+        public ConditionExpression Condition { get; set; }
+
+        public SortExpression[] Sorting { get; set; }
+    }
+
+    public enum JoinOperationType
+    {
+        Inner,
+        Left,
+        Right,
+        Full,
+        Cross
+    }
+
+    public class JoinExpression
+    {
+        public JoinOperationType Operation { get; set; }
+
+        public TargetObject Target { get; set; }
+
+        public ConditionExpression Condition { get; set; }
+    }
+
+    public enum ConditionKind
+    {
+        Complex,
+        OneOperand,
+        TwoOperand,
+        More
+    }
+
+    public class ConditionExpression
+    {
+        public ConditionExpression(ConditionKind kind)
+        {
+            this.Kind = kind;
+        }
+        public ConditionKind Kind { get; }
+    }
+
+    public enum ConditionLogicalOperator
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        And,
+        /// <summary>
+        /// 
+        /// </summary>
+        Or
+    }
+
+    public class ComplexConditionExpression : ConditionExpression
+    {
+        public ComplexConditionExpression()
+            : base(ConditionKind.Complex)
+        {
+        }
+
+        public ConditionLogicalOperator Operator { get; set; }
+
+        public ConditionExpression[] Conditions { get; set; }
+    }
+
+    /// <summary>
+    /// Describes the type of comparison for two values (or expressions) in a condition expression
+    /// </summary>
+
+    public enum OneOperandOperator
+    {
+        /// <summary>
+        /// The value is null.
+        /// </summary>
+        IsNull,
+        /// <summary>
+        /// The value is not null. 
+        /// </summary>
+        IsNotNull
+    }
+
+    public enum TwoOperandOperator
+    {
+        /// <summary>
+        /// The values are compared for equality.
+        /// </summary>
+        Equal,
+        /// <summary>
+        /// The value is greater than or equal to the compared value.
+        /// </summary>
+        GreaterEqual,
+        /// <summary>
+        /// The value is greater than the compared value.
+        /// </summary>
+        GreaterThan,
+        /// <summary>
+        /// The value is less than or equal to the compared value.
+        /// </summary>
+        LessEqual,
+        /// <summary>
+        /// The value is less than the compared value.
+        /// </summary>
+        LessThan,
+        /// <summary>
+        /// The two values are not equal.
+        /// </summary>
+        NotEqual,
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        Like,
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        NotLike,
+        /// <summary>
+        /// The value exists in a list of values.
+        /// </summary>
+        In,
+        /// <summary>
+        /// The value does not exist in a list of values.
+        /// </summary>
+        NotIn,
+        /// <summary>
+        /// The value is between two values.
+        /// </summary>
+        Between,
+        /// <summary>
+        /// The value is not between two values.
+        /// </summary>
+        NotBetween,
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        BeginWith,
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        EndWith,
+        /// <summary>
+        /// The character string is matched to the specified pattern.
+        /// </summary>
+        Contains,
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        NotBeginWith,
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        NotEndWith,
+        /// <summary>
+        /// The character string does not match the specified pattern.
+        /// </summary>
+        NotContains
+    }
+
+    public enum MoreOperandsOperator
+    {
+        
+        /// <summary>
+        /// The value exists in a list of values.
+        /// </summary>
+        In,
+        /// <summary>
+        /// The value does not exist in a list of values.
+        /// </summary>
+        NotIn,
+        /// <summary>
+        /// The value is between two values.
+        /// </summary>
+        Between,
+        /// <summary>
+        /// The value is not between two values.
+        /// </summary>
+        NotBetween
+        
+    }
+
+    public class OneOperandConditionExpression : ConditionExpression
+    {
+        public OneOperandConditionExpression() 
+            : base(ConditionKind.OneOperand)
+        {
+        }
+        OneOperandOperator Operator { get; set; }
+
+        OperandExpression Operand { get; set; }
+    }
+
+    public class TwoOperandConditionExpression : ConditionExpression
+    {
+        public TwoOperandConditionExpression()
+            : base(ConditionKind.TwoOperand)
+        {
+        }
+        TwoOperandOperator Operator { get; set; }
+
+        OperandExpression LeftOperand { get; set; }
+
+        OperandExpression RightOperand { get; set; }
+    }
+
+    public class MoreOperandsConditionExpression : ConditionExpression
+    {
+        public MoreOperandsConditionExpression()
+            : base(ConditionKind.More)
+        {
+        }
+        MoreOperandsOperator Operator { get; set; }
+
+        OperandExpression Test { get; set; }
+
+        OperandExpression[] Operands { get; set; }
+    }
+
+    public enum OperandKind
+    {
+        Member,
+        Value
+    }
+
+    public class OperandExpression
+    {
+        public OperandExpression(OperandKind kind)
+        {
+            Kind = kind;
+        }
+        public OperandKind Kind { get; }
+    }
+
+    public class MemberOperandExpression : OperandExpression
+    {
+        public MemberOperandExpression() 
+            : base(OperandKind.Member)
+        {
+        }
+
+        DataEngineMember Member { get; set; }
+    }
+
+    public class ValueOperandExpression : OperandExpression
+    {
+        public ValueOperandExpression()
+            : base(OperandKind.Value)
+        {
+        }
+
+        ValueExpression Expression { get; set; }
+    }
+
+    public enum ColumnExpressionKind
+    {
+        Member,
+        Expression
+    }
+
+    public class ColumnExpression
+    {
+        public ColumnExpression(ColumnExpressionKind kind)
+        {
+            this.Kind = kind;
+        }
+
+        public ColumnExpressionKind Kind { get; }
+    }
+
+    public class MemberColumnExpression : ColumnExpression
+    {
+        public MemberColumnExpression() 
+            : base(ColumnExpressionKind.Member)
+        {
+        }
+
+        NamedEngineMember Member { get; set; }
+    }
+
+    public class ExpressionColumnExpression : ColumnExpression
+    {
+        public ExpressionColumnExpression()
+            : base(ColumnExpressionKind.Expression)
+        {
+        }
+        ExpressionClause Expression { get; set; }
+    }
+
+    public class ExpressionClause
+    {
+
+    }
+
+    public enum SortingDirection
+    {
+        Ascending, 
+        Descending
+    }
+    public class SortExpression
+    {
+        public SortingDirection Direction { get; set; }
+
+        NamedEngineMember Member { get; set; }
     }
 
     public class InsertExpression : QueryExpression
@@ -62,7 +372,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         public ValueExpression Expression { get; set; }
     }
 
-
+    
     public enum ValueExpressionKind
     {
         Constant,
