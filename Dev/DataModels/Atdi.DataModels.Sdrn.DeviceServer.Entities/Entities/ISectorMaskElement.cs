@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ISectorMaskElement_PK
     {
         long?  Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface ISectorMaskElement : ISectorMaskElement_PK
     {
         double? Level { get; set; }

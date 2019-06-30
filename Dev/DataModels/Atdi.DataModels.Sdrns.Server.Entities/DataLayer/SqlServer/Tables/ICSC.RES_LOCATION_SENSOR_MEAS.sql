@@ -3,10 +3,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_LOCAT
 go
 create table [ICSC].[RES_LOCATION_SENSOR_MEAS] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[LON]	[numeric](22,8) null,
-	[LAT]	[numeric](22,8) null,
-	[ASL]	[numeric](22,8) null,
-	[AGL]	[numeric](22,8) null,
+	[LON]	[float] null,
+	[LAT]	[float] null,
+	[ASL]	[float] null,
+	[AGL]	[float] null,
 	[RESMEAS_ID]	[bigint] null,
 	constraint [PK_RES_LOCATION_SENSOR_MEAS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

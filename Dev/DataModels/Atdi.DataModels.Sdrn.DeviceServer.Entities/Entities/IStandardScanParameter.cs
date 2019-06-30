@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IStandardScanParameter_PK
     {
         long? Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface IStandardScanParameter : IStandardScanParameter_PK
     {
         string Standard { get; set; }

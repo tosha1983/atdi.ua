@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-
+    [EntityPrimaryKeyAttribute]
     public interface IStationSite_PK
     {
         long? Id { get; set; }
 
     }
 
-        [Entity]
+    [Entity]
     public interface IStationSite : IStationSite_PK
     {
         double? Lon { get; set; }

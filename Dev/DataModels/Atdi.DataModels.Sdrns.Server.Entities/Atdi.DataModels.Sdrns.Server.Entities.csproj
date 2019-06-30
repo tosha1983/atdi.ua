@@ -111,6 +111,7 @@
     <Content Include="DataLayer\Oracle\Functions\ICSC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Jobs\ICSC.CHECKACTIVITY_JOB.sql" />
     <Content Include="DataLayer\Oracle\Procedures\ICSC.CHECKACTIVITY.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.AMQP_EVENTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.WORK_TIME.sql" />
     <Content Include="DataLayer\Oracle\Views\ICSC.UNIT.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.STATION_SITE.sql" />
@@ -162,6 +163,7 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.BEARING.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.ANTENNA_PATTERN.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.AMQP_MESSAGES.sql" />
+    <Content Include="DataLayer\Sequences\ICSC.AMQP_EVENTS_ID_SEQ.sql" />
     <Content Include="DataLayer\Sequences\ICSC.AMQP_MESSAGES_ID_SEQ.sql" />
     <Content Include="DataLayer\Sequences\ICSC.ANTENNA_PATTERN_ID_SEQ.sql" />
     <Content Include="DataLayer\Sequences\ICSC.BEARING_ID_SEQ.sql" />

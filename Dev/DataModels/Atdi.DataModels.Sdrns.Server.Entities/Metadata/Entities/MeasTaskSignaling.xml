@@ -18,7 +18,7 @@
     <Field Desc="allowableExcess_dB" Title="allowableExcess_dB" Name="allowableExcess_dB" DataType="Decimal.22.8" SourceName="ALLOW_EXCESS_DB" SourceType="Column" Required="false"/>
     <Field Desc="SignalizationNCount" Title="SignalizationNCount" Name="SignalizationNCount" DataType="Integer.32" SourceName="SIGN_NCOUNT" SourceType="Column" Required="false"/>
     <Field Desc="SignalizationNChenal" Title="SignalizationNChenal" Name="SignalizationNChenal" DataType="Integer.32" SourceName="SIGN_NCHENAL" SourceType="Column" Required="false"/>
-    <Field Desc="IdMeasTask" Title="IdMeasTask" Name="IdMeasTask" DataType="Integer.64" SourceName="ID_MEASTASK" SourceType="Column" Required="true"/>
+    <Field Desc="IdMeasTask" Title="IdMeasTask" Name="IdMeasTask" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasTaskSignaling to MeasTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">IdMeasTask</Mapped>

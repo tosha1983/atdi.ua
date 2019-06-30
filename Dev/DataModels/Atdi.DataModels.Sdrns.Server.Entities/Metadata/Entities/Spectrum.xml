@@ -11,12 +11,12 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="SpectrumStartFreq_MHz" Title="SpectrumStartFreq_MHz" Name="SpectrumStartFreq_MHz" DataType="Decimal.22.8" SourceName="STARTFREQ_MHZ" SourceType="Column" Required="false"/>
-    <Field Desc="SpectrumSteps_kHz" Title="SpectrumSteps_kHz" Name="SpectrumSteps_kHz" DataType="Decimal.22.8" SourceName="STEPFREQ_KHZ" SourceType="Column" Required="false"/>
+    <Field Desc="SpectrumStartFreq_MHz" Title="SpectrumStartFreq_MHz" Name="SpectrumStartFreq_MHz" DataType="Double.30.10" SourceName="STARTFREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="SpectrumSteps_kHz" Title="SpectrumSteps_kHz" Name="SpectrumSteps_kHz" DataType="Double.30.10" SourceName="STEPFREQ_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="T1" Title="T1" Name="T1" DataType="Integer.32" SourceName="T1" SourceType="Column" Required="false"/>
     <Field Desc="T2" Title="T2" Name="T2" DataType="Integer.32" SourceName="T2" SourceType="Column" Required="false"/>
     <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKER_INDEX" SourceType="Column" Required="false"/>
-    <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BW_KHZ" SourceType="Column" Required="false"/>
+    <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Double.30.10" SourceName="BW_KHZ" SourceType="Column" Required="false"/>
     <Field Desc="CorrectnessEstimations" Title="CorrectnessEstimations" Name="CorrectnessEstimations" DataType="Integer.32" SourceName="CORRECT_ESTIM" SourceType="Column" Required="false"/>
     <Field Desc="TraceCount" Title="TraceCount" Name="TraceCount" DataType="Integer.32" SourceName="TRACE_COUNT" SourceType="Column" Required="false"/>
     <Field Desc="SignalLevel_dBm" Title="SignalLevel_dBm" Name="SignalLevel_dBm" DataType="Float.22.8" SourceName="SIGNALLEVEL_DBM" SourceType="Column" Required="false"/>

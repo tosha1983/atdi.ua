@@ -20,8 +20,8 @@
     <Field Desc="EndDate" Title="EndDate" Name="EndDate" DataType="DateTime" SourceName="END_DATE" SourceType="Column" Required="false"/>
     <Field Desc="CloseDate" Title="CloseDate" Name="CloseDate" DataType="DateTime" SourceName="CLOSE_DATE" SourceType="Column" Required="false"/>
     <Field Desc="DozvilName" Title="DozvilName" Name="DozvilName" DataType="Text.100" SourceName="DOZVIL_NAME" SourceType="Column" Required="false"/>
-    <Field Desc="OwnerDataId" Title="OwnerDataId" Name="OwnerDataId" DataType="Integer.64" SourceName="ID_OWNERDATA" SourceType="Column" Required="true"/>
-    <Field Desc="StationSiteId" Title="StationSiteId" Name="StationSiteId" DataType="Integer.64" SourceName="ID_STATIONSITE" SourceType="Column" Required="true"/>
+    <Field Desc="OwnerDataId" Title="OwnerDataId" Name="OwnerDataId" DataType="Integer.64" SourceName="OWNER_DATA_ID" SourceType="Column" Required="true"/>
+    <Field Desc="StationSiteId" Title="StationSiteId" Name="StationSiteId" DataType="Integer.64" SourceName="STATION_SITE_ID" SourceType="Column" Required="true"/>
     <Field Desc="IdPermission" Title="IdPermission" Name="IdPermission" DataType="Integer.64" SourceName="ID_PERMISSION" SourceType="Column" Required="true"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasLocationParam to MeasTask">
       <PrimaryKeyMapping>

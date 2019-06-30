@@ -84,7 +84,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
       
-        public static Sensor GetSensorById(int sensorId)
+        public static Sensor GetSensorById(long sensorId)
         {
             var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }));
 
@@ -268,7 +268,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static MeasTask GetMeasTaskById(int taskId)
+        public static MeasTask GetMeasTaskById(long taskId)
         {
             return Execute(contract => contract.GetMeasTaskById(taskId));
         }
@@ -276,7 +276,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         #endregion
 
         #region Actions
-        public static int CreateMeasTask(MeasTask task)
+        public static long CreateMeasTask(MeasTask task)
         {
             var result = Execute(contract => contract.CreateMeasTask(task));
 

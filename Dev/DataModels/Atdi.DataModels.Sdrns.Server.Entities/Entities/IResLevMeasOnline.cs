@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IResLevMeasOnline_PK
     {
         long Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface IResLevMeasOnline : IResLevMeasOnline_PK
     {
         double? Value { get; set; }

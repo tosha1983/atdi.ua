@@ -60,7 +60,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return result;
         }
 
-        public bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        public bool AddAssociationStationByEmitting(long[] emittingsId, long AssociatedStationID, string AssociatedStationTableName)
         {
             var isSuccess = false;
             if ((emittingsId != null) && (AssociatedStationID > 0) && (!string.IsNullOrEmpty(AssociatedStationTableName)))
@@ -90,7 +90,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return isSuccess;
         }
 
-        public bool DeleteEmitting(int[] emittingsId)
+        public bool DeleteEmitting(long[] emittingsId)
         {
             var isSuccess = true;
             if (emittingsId != null)

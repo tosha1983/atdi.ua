@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IResMeas_PK
     {
         long Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface IResMeas : IResMeas_PK
     {
         string MeasTaskId { get; set; }

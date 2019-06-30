@@ -16,7 +16,7 @@
     <Field Desc="ZIP" Title="ZIP" Name="ZIP" DataType="Text.50" SourceName="ZIP" SourceType="Column" Required="false"/>
     <Field Desc="CODE" Title="CODE" Name="CODE" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
     <Field Desc="Address" Title="Address" Name="Address" DataType="Text.2000" SourceName="ADDRES" SourceType="Column" Required="false"/>
-    <Field Desc="StationDatFormId" Title="StationDatFormId" Name="StationDatFormId" DataType="Integer.64" SourceName="ID_STATIONDATFORM" SourceType="Column" Required="false"/>
+    <Field Desc="StationDatFormId" Title="StationDatFormId" Name="StationDatFormId" DataType="Integer.64" SourceName="STATION_ID" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

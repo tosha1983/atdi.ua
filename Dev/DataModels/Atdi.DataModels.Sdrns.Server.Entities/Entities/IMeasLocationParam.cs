@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IMeasLocationParam_PK
     {
         long Id { get; set; }
     }
-        [Entity]
+    [Entity]
     public interface IMeasLocationParam: IMeasLocationParam_PK
     {
         double? Lon { get; set; }

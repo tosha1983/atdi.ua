@@ -15,7 +15,7 @@
     <Field Desc="Step" Title="Step" Name="Step" DataType="Decimal.22.8" SourceName="STEP" SourceType="Column" Required="false"/>
     <Field Desc="Rgl" Title="Rgl" Name="Rgl" DataType="Decimal.22.8" SourceName="RGL" SourceType="Column" Required="false"/>
     <Field Desc="Rgu" Title="Rgu" Name="Rgu" DataType="Decimal.22.8" SourceName="RGU" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_MEASTASK" SourceType="Column" Required="true"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasFreqParam to MeasTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>

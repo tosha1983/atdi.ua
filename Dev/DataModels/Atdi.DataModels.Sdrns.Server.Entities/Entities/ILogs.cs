@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ILogs_PK
     {
         long Id { get; set; }
@@ -17,7 +18,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         string Event { get; set; }
         string TableName { get; set; }
-        int? Lcount { get; set; }
+        long? Lcount { get; set; }
         string Info { get; set; }
         string Who { get; set; }
         DateTime When { get; set; }

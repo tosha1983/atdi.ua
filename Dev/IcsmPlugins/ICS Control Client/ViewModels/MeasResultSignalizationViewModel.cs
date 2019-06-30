@@ -325,7 +325,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (this._currentEmittings != null)
                 {
                     List<int> emitings = new List<int>();
-                    HashSet<int?> ids = new HashSet<int?>();
+                    HashSet<long?> ids = new HashSet<long?>();
                     foreach (EmittingViewModel emitting in this._currentEmittings)
                     {
                         if (emitting.Id.HasValue)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ILinkSectorMaskElement_PK
     {
         long Id { get; set; }

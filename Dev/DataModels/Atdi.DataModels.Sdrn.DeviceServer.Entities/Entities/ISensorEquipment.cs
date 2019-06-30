@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ISensorEquipment_PK
     {
         int? Id { get; set; }

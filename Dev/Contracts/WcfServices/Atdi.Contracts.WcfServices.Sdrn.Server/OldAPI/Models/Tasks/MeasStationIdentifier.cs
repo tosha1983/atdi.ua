@@ -12,6 +12,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class MeasStationIdentifier
     {
         [DataMember]
-        public int Value;
+        public long Value;
     }
 }

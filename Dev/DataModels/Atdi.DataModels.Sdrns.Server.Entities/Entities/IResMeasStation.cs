@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IResMeasStation_PK
     {
         long Id { get; set; }
     }
-        [Entity]
+
+    [Entity]
     public interface IResMeasStation : IResMeasStation_PK
     {
         string GlobalSID { get; set; }

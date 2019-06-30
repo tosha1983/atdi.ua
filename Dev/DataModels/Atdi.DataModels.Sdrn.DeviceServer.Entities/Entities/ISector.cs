@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface ISector_PK
     {
        long?  Id { get; set; }
     }
 
-        [Entity]
+    [Entity]
     public interface ISector : ISector_PK
     {
         string SectorId { get; set; }

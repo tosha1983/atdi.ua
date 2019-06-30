@@ -1,10 +1,9 @@
-﻿
-CREATE TABLE ICSC.RES_MEAS
+﻿CREATE TABLE ICSC.RES_MEAS
 (
   ID                        NUMBER(15)          NOT NULL,
   MEAS_TASK_ID              NVARCHAR2(150),
-  SUB_MEAS_TASK_ID          NUMBER(15),
-  SUB_MEAS_TASK_STATION_ID  NUMBER(15),
+  MEAS_SUB_TASK_ID          NUMBER(15),
+  MEAS_SUB_TASK_STATION_ID  NUMBER(15),
   SENSOR_ID                 NUMBER(15),
   ANTVAL                    NUMBER(22,8),
   TIME_MEAS                 DATE,

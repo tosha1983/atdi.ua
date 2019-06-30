@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
+    [EntityPrimaryKeyAttribute]
     public interface IResStGeneral_PK
     {
         long Id { get; set; }
     }
-        [Entity]
+    [Entity]
     public interface IResStGeneral : IResStGeneral_PK
     {
         double? BW { get; set; }
@@ -27,8 +28,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? TimeStartMeas { get; set; }
         DateTime? TimeFinishMeas { get; set; }
         double? OffsetFrequency { get; set; }
-        double? SpecrumStartFreq { get; set; }
-        double? SpecrumSteps { get; set; }
+        decimal? SpecrumStartFreq { get; set; }
+        decimal? SpecrumSteps { get; set; }
         int? Correctnessestim { get; set; }
         int? TraceCount { get; set; }
         float[] LevelsSpectrumdBm { get; set; }
