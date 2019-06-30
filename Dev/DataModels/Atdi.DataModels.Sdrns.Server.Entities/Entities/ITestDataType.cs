@@ -45,6 +45,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         ITestEntityAbsSmpExt1 SMP_EXT1 { get; set; }
 
         ITestEntityAbsSmpExt2 SMP_EXT2 { get; set; }
+
+        ITestEntityRef1 REFTO1R { get; set; }
+
+        ITestEntityRef1 REFTO1N { get; set; }
     }
 
     [Entity]
@@ -195,6 +199,77 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
 
     }
 
+    #region REFRENCES
+    [EntityPrimaryKey]
+    public interface ITestEntityRef1_PK
+    {
+        long Ref1PkId1 { get; set; }
+
+        Guid Ref1PkId2 { get; set; }
+
+        DateTimeOffset Ref1PkId3 { get; set; }
+    }
+
+    [Entity]
+    public interface ITestEntityRef1 : ITestEntityRef1_PK
+    {
+        string Ref1Field1 { get; set; }
+
+        string Ref1Field2 { get; set; }
+
+        string Ref1Field3 { get; set; }
+
+        ITestEntityRef2 REFTO2 { get; set; }
+    }
+
+    [EntityPrimaryKey]
+    public interface ITestEntityRef2_PK
+    {
+        long Ref2PkId1 { get; set; }
+
+        Guid Ref2PkId2 { get; set; }
+
+        DateTimeOffset Ref2PkId3 { get; set; }
+    }
+
+    [Entity]
+    public interface ITestEntityRef2 : ITestEntityRef2_PK
+    {
+        string Ref2Field1 { get; set; }
+
+        string Ref2Field2 { get; set; }
+
+        string Ref2Field3 { get; set; }
+
+        ITestEntityRef3 REFTO3 { get; set; }
+    }
+
+    [EntityPrimaryKey]
+    public interface ITestEntityRef3_PK
+    {
+        long Ref3PkId1 { get; set; }
+
+        Guid Ref3PkId2 { get; set; }
+
+        DateTimeOffset Ref3PkId3 { get; set; }
+    }
+
+    [Entity]
+    public interface ITestEntityRef3 : ITestEntityRef3_PK
+    {
+        string Ref3Field1 { get; set; }
+
+        string Ref3Field2 { get; set; }
+
+        string Ref3Field3 { get; set; }
+
+        ITestEntityAbsSmp REFABSSMP { get; set; }
+        ITestEntityAbsSmpProto0 REFPRT0 { get; set; }
+        ITestEntityAbsSmpProto1 REFPRT1 { get; set; }
+        ITestEntityAbsSmpProtoEnd REFPRTEND { get; set; }
+    }
+    #endregion
+
     [Entity]
     public interface ITestDataType
     {
@@ -254,6 +329,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Name { get; set; }
 
         ITestRefSubBook SUBBOOK1 { get; set; }
+
+        double[] ArrayDouble { get; set; }
     }
 
     [EntityPrimaryKey]

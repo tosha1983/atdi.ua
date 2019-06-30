@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.DataModels;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
 
         void IQueryPatternHandler.Handle<TPattern>(TPattern queryPattern, SqlServerExecuter executer)
         {
-            var pattern = queryPattern as PS.InsertPattern;
+            var pattern = queryPattern as PS.SelectPattern;
 
             var context = new BuildingContex();
 
@@ -74,10 +75,103 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         /// </summary>
         /// <param name="pattern"></param>
         /// <param name="contex"></param>
-        private void BuildIteration(PS.InsertPattern pattern, BuildingContex contex)
+        private void BuildIteration(PS.SelectPattern pattern, BuildingContex context)
         {
+            for (int i = 0; i < pattern.Expressions.Length; i++)
+            {
+                this.BuildExpression(pattern.Expressions[i], context);
+            }
+        }
+
+        private void BuildExpression(PS.SelectExpression expression, BuildingContex context)
+        {
+            var sqlColumns = new List<string>();
+            var sqlJoins = new List<string[]>();
+            var sqlFrom = string.Empty;
+            var sqlWhere = string.Empty;
+            var sqlDistinct = string.Empty;
+            var sqlLimit = string.Empty;
+            string[] sqlOrderBy = null;
+
+            if (expression.Destinct)
+            {
+                sqlDistinct = context.Builder.CreateDistinct();
+            }
+
+            if (expression.Limit != null)
+            {
+                sqlLimit = this.BuildLimitExpression(expression, context);
+            }
+
+            for (int i = 0; i < expression.Columns.Length; i++)
+            {
+                var column = expression.Columns[i];
+                if (column is PS.MemberColumnExpression memberColumn)
+                {
+                    string columnAlias = context.EnsureColumnAlias(memberColumn);
+                    string sourceAlias = context.EnsureSourceAlias(memberColumn.Member.Owner);
+                    var sqlColumn = context.Builder.CreateSelectColumn(sourceAlias, memberColumn.Member.Name, columnAlias);
+                    sqlColumns.Add(sqlColumn);
+                }
+            }
+
+            sqlFrom = context.BuildFromExpression(expression.From);
+
+            if (expression.Joins != null && expression.Joins.Length > 0)
+            {
+                for (int i = 0; i < expression.Joins.Length; i++)
+                {
+                    var join = expression.Joins[i];
+                    var sqlJoion = context.BuildJoinExpression(join);
+                    sqlJoins.Add(sqlJoion);
+                }
+            }
+
+            if (expression.Condition != null)
+            {
+                sqlWhere = context.BuildConditionExpression(expression.Condition);
+            }
+
+            if (expression.Sorting != null && expression.Sorting.Length > 0)
+            {
+                sqlOrderBy = this.BuildOrderByExpression(expression.Sorting, context);
+            }
+
+            context.Builder.Select(sqlColumns.ToArray(), sqlFrom, sqlJoins.ToArray(), sqlWhere, sqlOrderBy, sqlDistinct, sqlLimit);
 
         }
 
+        private string BuildLimitExpression(PS.SelectExpression expression, BuildingContex context)
+        {
+            string sqlLimit;
+            switch (expression.Limit.Type)
+            {
+                case DataModels.DataConstraint.LimitValueType.Records:
+                    sqlLimit = context.Builder.CreateCountLimt(expression.Limit.Value);
+                    break;
+                case DataModels.DataConstraint.LimitValueType.Percent:
+                    sqlLimit = context.Builder.CreatePercentLimt(expression.Limit.Value);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported records limit type '{expression.Limit.Type}'");
+            }
+
+            return sqlLimit;
+        }
+
+        private string[] BuildOrderByExpression(PS.SortExpression[] expressions, BuildingContex context)
+        {
+            var result = new string[expressions.Length];
+            for (int i = 0; i < expressions.Length; i++)
+            {
+                var expression = expressions[i];
+                var sourceAlias = context.EnsureSourceAlias(expression.Member.Owner);
+                result[i] = context.Builder.CreateSortingClause(expression.Direction, sourceAlias, expression.Member.Name);
+            }
+            return result;
+        }
+        
+
+        
     }
 }

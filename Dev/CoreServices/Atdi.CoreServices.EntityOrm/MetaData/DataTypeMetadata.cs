@@ -34,6 +34,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public StoreContentType ContentType { get; set; }
 
+        public DataType SourceCodeVarType { get; set; }
+
         public override string ToString()
         {
             // DataBase.Array.Integer: ClrType, BLOB

@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     [Serializable]
-    public class FieldMetadata : IFieldMetadata
+    public abstract class FieldMetadata : IFieldMetadata
     {
-        public FieldMetadata(IEntityMetadata entityMetadata, string name)
-            : this(entityMetadata, name, FieldSourceType.Column)
-        {
-        }
 
-        public FieldMetadata(IEntityMetadata entityMetadata, string name, FieldSourceType sourceType)
+        public FieldMetadata(IEntityMetadata entity, IEntityMetadata baseEntity, string name, FieldSourceType sourceType)
         {
-            this.Entity = entityMetadata;
+            this.Entity = entity;
+            this.BaseEntity = baseEntity;
             this.Name = name;
             this.SourceType = sourceType;
         }
@@ -40,9 +37,15 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public IEntityMetadata Entity { get; }
 
+        public IEntityMetadata BaseEntity { get; }
+
+        public IFieldDefaultMetadata Default { get; set; }
+
         public override string ToString()
         {
-            return $"{Name}: SourceType = '{this.SourceType}', SourceName = {this.SourceName}, DataType = {DataType?.Name}";
+            return $"Name = '{Name}': SourceType = '{this.SourceType}', SourceName = {this.SourceName}, DataType = {DataType?.Name}, Entity = '{Entity.Name}'";
         }
+
+        public abstract FieldMetadata CopyTo(IEntityMetadata owner);
     }
 }

@@ -48,5 +48,15 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             }
             this._localFields.Add(field.Name, field);
         }
+
+        public void CopyField(IFieldMetadata field)
+        {
+            if (_localFields.ContainsKey(field.Name))
+            {
+                throw new InvalidOperationException($"A local field named {field.Name} already exists in the local field set");
+            }
+            var cloneField = ((FieldMetadata)field).CopyTo(this);
+            this._localFields.Add(cloneField.Name, cloneField);
+        }
     }
 }

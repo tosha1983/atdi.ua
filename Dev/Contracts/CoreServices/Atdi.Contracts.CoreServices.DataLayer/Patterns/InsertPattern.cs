@@ -1,4 +1,5 @@
 ﻿using Atdi.DataModels;
+using CS = Atdi.DataModels.DataConstraint;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,36 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         public QueryExpressionKind Kind { get; }
     }
 
+    public class UpdateExpression : QueryExpression
+    {
+        public UpdateExpression()
+            : base(QueryExpressionKind.Update)
+        {
+        }
+
+        public EngineObject Target { get; set; }
+
+        public SetValueExpression[] Values { get; set; }
+
+        public JoinExpression[] Joins { get; set; }
+
+        public ConditionExpression Condition { get; set; }
+    }
+
+    public class DeleteExpression : QueryExpression
+    {
+        public DeleteExpression()
+            : base(QueryExpressionKind.Delete)
+        {
+        }
+
+        public EngineObject Target { get; set; }
+
+        public JoinExpression[] Joins { get; set; }
+
+        public ConditionExpression Condition { get; set; }
+    }
+
     public class SelectExpression : QueryExpression
     {
         public SelectExpression()
@@ -45,6 +76,12 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         public ConditionExpression Condition { get; set; }
 
         public SortExpression[] Sorting { get; set; }
+
+        public bool Destinct { get; set; }
+
+        public CS.DataLimit Limit { get; set; }
+
+
     }
 
     public enum JoinOperationType
@@ -80,6 +117,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
             this.Kind = kind;
         }
         public ConditionKind Kind { get; }
+
+        public static ConditionLogicalOperator LogicalOperator(CS.LogicalOperator logicalOperator)
+        {
+            switch (logicalOperator)
+            {
+                case CS.LogicalOperator.And:
+                    return ConditionLogicalOperator.And;
+                case CS.LogicalOperator.Or:
+                    return ConditionLogicalOperator.Or;
+                default:
+                    throw new InvalidOperationException($"Unsupported logical operator '{logicalOperator}'");
+            }
+        }
     }
 
     public enum ConditionLogicalOperator
@@ -157,22 +207,6 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         /// </summary>
         NotLike,
         /// <summary>
-        /// The value exists in a list of values.
-        /// </summary>
-        In,
-        /// <summary>
-        /// The value does not exist in a list of values.
-        /// </summary>
-        NotIn,
-        /// <summary>
-        /// The value is between two values.
-        /// </summary>
-        Between,
-        /// <summary>
-        /// The value is not between two values.
-        /// </summary>
-        NotBetween,
-        /// <summary>
         /// The character string is matched to the specified pattern.
         /// </summary>
         BeginWith,
@@ -226,9 +260,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
             : base(ConditionKind.OneOperand)
         {
         }
-        OneOperandOperator Operator { get; set; }
+        public OneOperandOperator Operator { get; set; }
 
-        OperandExpression Operand { get; set; }
+        public OperandExpression Operand { get; set; }
     }
 
     public class TwoOperandConditionExpression : ConditionExpression
@@ -237,11 +271,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
             : base(ConditionKind.TwoOperand)
         {
         }
-        TwoOperandOperator Operator { get; set; }
+        public TwoOperandOperator Operator { get; set; }
 
-        OperandExpression LeftOperand { get; set; }
+        public OperandExpression LeftOperand { get; set; }
 
-        OperandExpression RightOperand { get; set; }
+        public OperandExpression RightOperand { get; set; }
     }
 
     public class MoreOperandsConditionExpression : ConditionExpression
@@ -250,11 +284,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
             : base(ConditionKind.More)
         {
         }
-        MoreOperandsOperator Operator { get; set; }
+        public MoreOperandsOperator Operator { get; set; }
 
-        OperandExpression Test { get; set; }
+        public OperandExpression Test { get; set; }
 
-        OperandExpression[] Operands { get; set; }
+        public OperandExpression[] Operands { get; set; }
     }
 
     public enum OperandKind
@@ -279,7 +313,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         {
         }
 
-        DataEngineMember Member { get; set; }
+        public DataEngineMember Member { get; set; }
     }
 
     public class ValueOperandExpression : OperandExpression
@@ -289,7 +323,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         {
         }
 
-        ValueExpression Expression { get; set; }
+        public ValueExpression Expression { get; set; }
     }
 
     public enum ColumnExpressionKind
@@ -315,7 +349,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         {
         }
 
-        NamedEngineMember Member { get; set; }
+        public DataEngineMember Member { get; set; }
     }
 
     public class ExpressionColumnExpression : ColumnExpression
@@ -341,7 +375,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
     {
         public SortingDirection Direction { get; set; }
 
-        NamedEngineMember Member { get; set; }
+        public NamedEngineMember Member { get; set; }
     }
 
     public class InsertExpression : QueryExpression
@@ -391,9 +425,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
 
         public ValueExpressionKind Kind { get; }
 
-        public static ConstantValueExpression CreateBy(object value)
+        public static ConstantValueExpression CreateBy(object value, DataType dataType)
         {
-            var constValue = new ConstantValueExpression
+            var constValue = new ConstantValueExpression(dataType)
             {
                 Value = value
             };
@@ -412,11 +446,21 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         }
     }
 
-
-    public class ConstantValueExpression : ValueExpression
+    public class TypedValueExpression : ValueExpression
     {
-        public ConstantValueExpression() 
-            : base(ValueExpressionKind.Constant)
+        public TypedValueExpression(DataType dataType, ValueExpressionKind kind)
+            : base(kind)
+        {
+            this.DataType = dataType;
+        }
+
+        public DataType DataType { get;  }
+    }
+
+    public class ConstantValueExpression : TypedValueExpression
+    {
+        public ConstantValueExpression(DataType dataType) 
+            : base(dataType, ValueExpressionKind.Constant)
         {
         }
 
@@ -448,10 +492,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         SetDefault,
         SetNext
     }
-    public class GeneratedValueExpression : ValueExpression
+
+    public class GeneratedValueExpression : TypedValueExpression
     {
-        public GeneratedValueExpression()
-            : base(ValueExpressionKind.Generated)
+        public GeneratedValueExpression(DataType dataType)
+            : base(dataType, ValueExpressionKind.Generated)
         {
         }
 

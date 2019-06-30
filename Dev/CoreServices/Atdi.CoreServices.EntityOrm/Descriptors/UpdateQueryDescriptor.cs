@@ -29,6 +29,8 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IReadOnlyDictionary<string, FieldValueDescriptor> Fields => this._modification.Fields;
 
+        public IReadOnlyDictionary<string, FieldDescriptor> Cache => this._root.Cache;
+
         public FieldValueDescriptor[] GetValues()
         {
             return this._modification.Fields.Values.ToArray();

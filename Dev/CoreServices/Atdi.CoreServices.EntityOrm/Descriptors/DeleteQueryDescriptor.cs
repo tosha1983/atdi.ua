@@ -25,6 +25,8 @@ namespace Atdi.CoreServices.EntityOrm
 
         public IReadOnlyList<Condition> Conditions => this._condition.Conditions;
 
+        public IReadOnlyDictionary<string, FieldDescriptor> Cache => this._root.Cache;
+
         public void AppendCondition(Condition condition)
         {
             this._condition.Append(condition);

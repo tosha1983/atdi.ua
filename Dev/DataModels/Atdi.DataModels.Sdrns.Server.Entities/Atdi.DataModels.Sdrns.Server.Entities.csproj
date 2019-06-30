@@ -296,6 +296,9 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\TestEntityRef3.xml" />
+    <Content Include="Metadata\Entities\TestEntityRef2.xml" />
+    <Content Include="Metadata\Entities\TestEntityRef1.xml" />
     <Content Include="Metadata\Entities\TestEntityAbsSmpExt2.xml" />
     <Content Include="Metadata\Entities\TestEntityAbsSmpExt1.xml" />
     <Content Include="Metadata\Entities\TestEntityAbsSmpProtoEndExt1.xml" />

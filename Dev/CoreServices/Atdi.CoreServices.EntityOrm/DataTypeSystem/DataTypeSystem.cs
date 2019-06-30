@@ -47,6 +47,9 @@ namespace Atdi.CoreServices.EntityOrm
 
             this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.StringBLOB);
             this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.StringBYTES);
+
+            this._adapterTypes[(int)DataType.ClrType][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.ClrTypeBLOB);
+            this._adapterTypes[(int)DataType.ClrType][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.ClrTypeBYTES);
         }
 
         private static Type[][] BuildAdapterTypes()

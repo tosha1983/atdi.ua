@@ -49,6 +49,8 @@
     <Compile Include="PatternHandlers\EngineCommandPatternHandler.cs" />
     <Compile Include="PatternHandlers\InsertPatternHandler.cs" />
     <Compile Include="PatternHandlers\SelectPatternHandler.cs" />
+    <Compile Include="PatternHandlers\DeletePatternHandler.cs" />
+    <Compile Include="PatternHandlers\UpdatePatternHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryPatternFactory.cs" />
     <Compile Include="IQueryPatternHandler.cs" />

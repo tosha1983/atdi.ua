@@ -912,8 +912,16 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return default(TResult);
             }
-            var value = _dataTypeSystem.GetDecoder<TResult>(_typeMetadatas[ordinal]).DecodeAs(_dataReader, ordinal);
-            return value;
+            var dataType = _typeMetadatas[ordinal];
+            if (dataType.CodeVarType != DataType.ClrType)
+            {
+                var value = _dataTypeSystem.GetDecoder<TResult>(dataType).DecodeAs(_dataReader, ordinal);
+                return value;
+            }
+
+            var clrValue = _dataTypeSystem.GetDecoder<object>(dataType).DecodeAs(_dataReader, ordinal);
+            return (TResult)clrValue;
+
         }
 
         

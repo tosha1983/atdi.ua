@@ -16,6 +16,8 @@
     <Field Name="Name" DataType="Text.50" SourceName="NAME" SourceType="Column" Required="false" Desc="Name" Title="Name" />    
     <Field Name="SUBBOOK1" SourceName="TestRefSubBook" SourceType="Reference" Required="true" Desc="" Title="SUBBOOK1"/>
 
+    <Field Name="ArrayDouble" DataType="Array.Double" SourceName="ARRAY_DOUBLE" SourceType="Column" Desc="The id of the message record" Title="Array Double"/>
+
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

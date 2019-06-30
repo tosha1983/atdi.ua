@@ -77,7 +77,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
                 || entityMetadata.Type == EntityType.Abstruct
                 || entityMetadata.Type == EntityType.Role;
             // при простом наследовании просто копируется вся структура и объект выглядит как Normal
-             //   || entityMetadata.Type == EntityType.Simple;
+            //   || entityMetadata.Type == EntityType.Simple;
         }
         public static bool UsesBaseEntity(this IEntityMetadata entityMetadata)
         {
@@ -129,7 +129,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
                 fieldMetadata = null;
                 return false;
             }
-            
+
             if (pathParts.Length == 1)
             {
                 fieldMetadata = localField;
@@ -193,7 +193,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             {
                 fields.AddRange(local);
             }
-            
+
 
             // если это простая сущность или роль, не продолжаем - они и так все копируют к себе
             if (entityMetadata.Type == EntityType.Simple
@@ -223,13 +223,13 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         public static IEntityMetadata[] DefineInheritChain(this IEntityMetadata entityMetadata)
         {
             var chain = new List<IEntityMetadata>();
-            
+
             if (!entityMetadata.UsesInheritance())
             {
                 return new IEntityMetadata[] { };
             }
             var nextBase = entityMetadata.BaseEntity;
-            while(nextBase != null && nextBase.Type != EntityType.Abstruct)
+            while (nextBase != null && nextBase.Type != EntityType.Abstruct)
             {
                 if (nextBase.QualifiedName == entityMetadata.QualifiedName)
                 {
@@ -237,7 +237,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
                 }
 
                 chain.Add(nextBase);
-                if(nextBase.UsesInheritance())
+                if (nextBase.UsesInheritance())
                 {
                     nextBase = nextBase.BaseEntity;
                 }
@@ -250,6 +250,17 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
             return chain.ToArray();
         }
 
+        public static IEntityMetadata[] DefineInheritChainWithMe(this IEntityMetadata entityMetadata)
+        {
+            var chain = entityMetadata.DefineInheritChain();
+            var result = new IEntityMetadata[chain.Length + 1];
+            for (int i = 0; i < chain.Length; i++)
+            {
+                result[i] = chain[i];
+            }
+            result[chain.Length] = entityMetadata;
+            return result;
+        }
         /// <summary>
         /// Метод проверки всей цепочки наследования сущностей от замыкания
         /// Важно: в цепочке проверяются все сущности
