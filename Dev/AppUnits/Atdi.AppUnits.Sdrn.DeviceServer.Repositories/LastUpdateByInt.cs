@@ -13,13 +13,13 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
-    public sealed class LastUpdateByInt : IRepository<LastUpdate, long?>
+    public sealed class LastUpdateByInt64 : IRepository<LastUpdate, long?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
 
-        public LastUpdateByInt(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public LastUpdateByInt64(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
@@ -28,31 +28,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public long? Create(LastUpdate item)
         {
             long? ID = null;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+           
             if (item != null)
             {
                 try
                 {
-                    queryExecuter.BeginTransaction();
-                    var builderInsertILastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Insert();
-                    builderInsertILastUpdate.SetValue(c => c.TableName, item.TableName);
-                    builderInsertILastUpdate.SetValue(c => c.LastUpdate, item.LastDateTimeUpdate);
-                    builderInsertILastUpdate.SetValue(c => c.Status, item.Status);
-                    builderInsertILastUpdate.Select(c => c.Id);
-                    queryExecuter.ExecuteAndFetch(builderInsertILastUpdate, readerLastUpdate =>
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        while (readerLastUpdate.Read())
-                        {
-                            ID = readerLastUpdate.GetValue(c => c.Id);
-                        }
-                        return true;
-                    });
+                        scope.BeginTran();
 
-                    queryExecuter.CommitTransaction();
+                        var builderInsertILastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Insert();
+                        builderInsertILastUpdate.SetValue(c => c.TableName, item.TableName);
+                        builderInsertILastUpdate.SetValue(c => c.LastUpdate, item.LastDateTimeUpdate);
+                        builderInsertILastUpdate.SetValue(c => c.Status, item.Status);
+                        builderInsertILastUpdate.Select(c => c.Id);
+
+                        var lastUpdate = scope.Executor.Execute<MD.ILastUpdate_PK>(builderInsertILastUpdate);
+                        ID = lastUpdate.Id;
+
+                        scope.Commit();
+                    }
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }

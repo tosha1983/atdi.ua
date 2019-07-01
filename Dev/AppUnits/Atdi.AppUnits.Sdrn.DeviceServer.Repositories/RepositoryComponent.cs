@@ -30,7 +30,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             this.Container.Register<IRepository<MeasTask, long?>, MeasTaskRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<IRepository<TaskParameters, long?>, TaskParametersByIntRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
             this.Container.Register<IRepository<TaskParameters, string>, TaskParametersByStringRepository>(Platform.DependencyInjection.ServiceLifetime.Singleton);
-            this.Container.Register<IRepository<LastUpdate, long?>, LastUpdateByInt>(Platform.DependencyInjection.ServiceLifetime.Singleton);
+            this.Container.Register<IRepository<LastUpdate, long?>, LastUpdateByInt64>(Platform.DependencyInjection.ServiceLifetime.Singleton);
         }
     }
 }

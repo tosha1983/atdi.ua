@@ -1,31 +1,31 @@
 ﻿CREATE TABLE [dbo].[SENSOR_EQUIPMENT](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[SENSORID] [int] NULL,
+	[SENSOR_ID] [int] NULL,
 	[CODE] [varchar](50) NULL,
 	[MANUFACTURER] [varchar](50) NULL,
 	[NAME] [varchar](50) NULL,
 	[FAMILY] [varchar](50) NULL,
 	[TECHID] [varchar](200) NULL,
 	[VERSION] [varchar](50) NULL,
-	[LOWERFREQ] [float] NULL,
-	[UPPERFREQ] [float] NULL,
-	[RBWMIN] [float] NULL,
-	[RBWMAX] [float] NULL,
-	[VBWMIN] [float] NULL,
-	[VBWMAX] [float] NULL,
+	[LOWER_FREQ] [float] NULL,
+	[UPPER_FREQ] [float] NULL,
+	[RBW_MIN] [float] NULL,
+	[RBW_MAX] [float] NULL,
+	[VBW_MIN] [float] NULL,
+	[VBW_MAX] [float] NULL,
 	[MOBILITY] [tinyint] NULL,
-	[FFTPOINTMAX] [float] NULL,
-	[REFLEVELDBM] [float] NULL,
-	[OPERATIONMODE] [varchar](50) NULL,
+	[FFT_POINT_MAX] [float] NULL,
+	[REF_LEVEL_DBM] [float] NULL,
+	[OPERATION_MODE] [varchar](50) NULL,
 	[TYPE] [varchar](50) NULL,
-	[EQUIPCLASS] [varchar](50) NULL,
-	[TUNINGSTEP] [float] NULL,
-	[USETYPE] [varchar](50) NULL,
+	[EQUIP_CLASS] [varchar](50) NULL,
+	[TUNING_STEP] [float] NULL,
+	[USE_TYPE] [varchar](50) NULL,
 	[CATEGORY] [varchar](50) NULL,
 	[REMARK] [varchar](250) NULL,
-	[CUSTTXT1] [varchar](250) NULL,
-	[CUSTDATA1] [datetime] NULL,
-	[CUSTNBR1] [float] NULL,
+	[CUST_TXT1] [varchar](250) NULL,
+	[CUST_DATA1] [datetime] NULL,
+	[CUST_NBR1] [float] NULL,
  CONSTRAINT [XBS_SENSOREQUIP_PK] PRIMARY KEY NONCLUSTERED 
 (
 	[ID] ASC
@@ -37,7 +37,7 @@ GO
 SET ANSI_PADDING OFF
 GO
 
-ALTER TABLE [dbo].[SENSOR_EQUIPMENT]  WITH CHECK ADD  CONSTRAINT [FK_XBS_SENSOREQUIP_XBS_SENSOR] FOREIGN KEY([SENSORID])
+ALTER TABLE [dbo].[SENSOR_EQUIPMENT]  WITH CHECK ADD  CONSTRAINT [FK_XBS_SENSOREQUIP_XBS_SENSOR] FOREIGN KEY([SENSOR_ID])
 REFERENCES [dbo].[SENSOR] ([ID])
 GO
 

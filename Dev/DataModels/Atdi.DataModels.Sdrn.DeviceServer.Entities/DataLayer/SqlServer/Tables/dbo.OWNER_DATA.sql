@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[OWNER_DATA](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[OWNERNAME] [varchar](100) NULL,
+	[OWNER_NAME] [varchar](100) NULL,
 	[OKPO] [varchar](50) NULL,
 	[ZIP] [varchar](50) NULL,
 	[CODE] [varchar](50) NULL,

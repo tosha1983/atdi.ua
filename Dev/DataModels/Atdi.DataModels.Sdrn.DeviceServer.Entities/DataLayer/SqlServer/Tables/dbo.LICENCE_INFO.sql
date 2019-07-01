@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[LICENCE_INFO](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[ICSMID] [bigint] NULL,
+	[ICSM_ID] [bigint] NULL,
 	[NAME] [varchar](100) NULL,
-	[STARTDATE] [datetime] NULL,
-	[ENDDATE] [datetime] NULL,
-	[CLOSEDATE] [datetime] NULL,
+	[START_DATE] [datetime] NULL,
+	[END_DATE] [datetime] NULL,
+	[CLOSE_DATE] [datetime] NULL,
  CONSTRAINT [XBS_LICENCEINFO_PK] PRIMARY KEY NONCLUSTERED 
 (
 	[ID] ASC

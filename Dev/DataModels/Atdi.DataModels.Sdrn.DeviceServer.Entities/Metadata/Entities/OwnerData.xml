@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Desc="Owner ID" Title="Owner ID" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Owner name" Title="Owner name" Name="OwnerName" DataType="Text.100" SourceName="OWNERNAME" SourceType="Column" Required="false"/>
+    <Field Desc="Owner name" Title="Owner name" Name="OwnerName" DataType="Text.100" SourceName="OWNER_NAME" SourceType="Column" Required="false"/>
     <Field Desc="OKPO" Title="OKPO" Name="OKPO" DataType="Text.50" SourceName="OKPO" SourceType="Column" Required="false"/>
     <Field Desc="ZIP code" Title="ZIP code" Name="ZIP" DataType="Text.50" SourceName="ZIP" SourceType="Column" Required="false"/>
     <Field Desc="Code" Title="Code" Name="CODE" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>

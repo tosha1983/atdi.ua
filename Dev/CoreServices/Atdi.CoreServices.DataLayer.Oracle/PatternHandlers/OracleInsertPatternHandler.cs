@@ -193,7 +193,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 {
                     var patternResultPK = (pattern.Result as EngineExecutionScalarResult).Value.GetType();
                     var getNameEntityResult = patternResultPK.Name.Replace("_PK_Proxy", "");
-                    int index = expression.Target.Alias.IndexOf("_");
+                    int index = expression.Target.Alias.LastIndexOf("_");
                     if (index >= 0)
                     {
                         var getNameExpressionTargetEntity = expression.Target.Alias.Substring(0, index);

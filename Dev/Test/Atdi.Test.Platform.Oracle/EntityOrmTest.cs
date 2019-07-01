@@ -91,7 +91,7 @@ namespace Atdi.Test.Platform
                 using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
                 {
                     var pk = scope.Executor.Execute<ITestEntityAbsSmp_PK>(insert2);
-                    Console.WriteLine($"AbsPkId1 = {pk.AbsPkId1}, AbsPkId2 = {pk.AbsPkId2}, AbsPkId3 = {pk.AbsPkId3}");
+                    //Console.WriteLine($"AbsPkId1 = {pk.AbsPkId1}, AbsPkId2 = {pk.AbsPkId2}, AbsPkId3 = {pk.AbsPkId3}");
                 }
             }
             catch (Exception e)

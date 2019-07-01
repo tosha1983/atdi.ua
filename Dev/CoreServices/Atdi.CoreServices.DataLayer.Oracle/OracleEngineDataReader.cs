@@ -37,16 +37,16 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         {
             var providerSpecificFieldType = _reader.GetProviderSpecificFieldType(i);
 
-            if (providerSpecificFieldType.Name == "OracleTimeStampTZ")
+            if (providerSpecificFieldType == typeof(OracleTimeStampTZ))
             {
                 return typeof(DateTimeOffset);
             }
-            else if (providerSpecificFieldType.Name == "OracleIntervalDS")
+            else if (providerSpecificFieldType == typeof(OracleIntervalDS))
             {
                 return typeof(TimeSpan);
             }
-            else if ((providerSpecificFieldType.Name == "OracleDate") || (providerSpecificFieldType.Name == "OracleTimeStampLTZ") ||
-                (providerSpecificFieldType.Name == "OracleTimeStamp"))
+            else if ((providerSpecificFieldType == typeof(OracleDate)) || (providerSpecificFieldType == typeof(OracleTimeStampLTZ)) ||
+                (providerSpecificFieldType == typeof(OracleTimeStamp)))
             {
                 return typeof(DateTime);
             }
@@ -225,11 +225,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         {
             var providerSpecificFieldType = _reader.GetProviderSpecificFieldType(i);
 
-            if (providerSpecificFieldType.Name == "OracleTimeStampLTZ")
+            if (providerSpecificFieldType == typeof(OracleTimeStampLTZ))
             {
                 return GetOracleTimeStampLTZ(i);
             }
-            else if (providerSpecificFieldType.Name == "OracleTimeStamp")
+            else if (providerSpecificFieldType == typeof(OracleTimeStamp))
             {
                 return  GetOracleTimeStamp(i);
             }
@@ -245,7 +245,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
             var providerSpecificFieldType = _reader.GetProviderSpecificFieldType(i);
 
-            if (providerSpecificFieldType.Name == "OracleTimeStampTZ")
+            if (providerSpecificFieldType == typeof(OracleTimeStampTZ))
             {
                 dateTimeOffset = GetOracleTimeStampTZ(i);
             }

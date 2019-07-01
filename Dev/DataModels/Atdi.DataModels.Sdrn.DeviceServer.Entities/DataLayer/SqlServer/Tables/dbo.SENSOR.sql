@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[SENSOR](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[SENSORIDENTIFIER_ID] [int] NULL,
+	[SENSORIDENTIFIER_ID] [bigint] NULL,
 	[STATUS] [varchar](25) NULL,
 	[NAME] [varchar](150) NULL,
 	[ADMINISTRATION] [varchar](50) NULL,

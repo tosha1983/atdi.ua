@@ -130,16 +130,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
                                     builderInsertAntenna.SetValue(c => c.SensorId, idSensor);
                                     builderInsertAntenna.Select(c => c.Id);
-                                    scope.Executor
-                                    .ExecuteAndFetch(builderInsertAntenna, reader =>
-                                {
-                                    var result = reader.Read();
-                                    if (result)
-                                    {
-                                        idSensorAntenna = reader.GetValue(c => c.Id);
-                                    }
-                                    return result;
-                                });
+
+                                    var sensorAntenna_PK = scope.Executor.Execute<MD.ISensorAntenna_PK>(builderInsertAntenna);
+                                    idSensorAntenna = sensorAntenna_PK.Id;
                                 }
 
                                 if (idSensorAntenna > 0)
@@ -223,16 +216,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderInsertAntennaPattern.SetValue(c => c.Gain, patt.Gain);
                                                     builderInsertAntennaPattern.SetValue(c => c.SensorAntennaId, idSensorAntenna);
                                                     builderInsertAntennaPattern.Select(c => c.Id);
-                                                    scope.Executor
-                                                    .ExecuteAndFetch(builderInsertAntennaPattern, reader =>
-                                                {
-                                                    var result = reader.Read();
-                                                    if (result)
-                                                    {
-                                                        idSensorAntennaPattern = reader.GetValue(c => c.Id);
-                                                    }
-                                                    return result;
-                                                });
+
+
+                                                    var antennaPattern_PK = scope.Executor.Execute<MD.IAntennaPattern_PK>(builderInsertAntennaPattern);
+                                                    idSensorAntennaPattern = antennaPattern_PK.Id;
                                                 }
                                             }
                                         }
@@ -291,16 +278,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
                                     builderInsertEquipment.SetValue(c => c.SensorId, idSensor);
                                     builderInsertEquipment.Select(c => c.Id);
-                                    scope.Executor
-                                           .ExecuteAndFetch(builderInsertEquipment, reader =>
-                                       {
-                                           var result = reader.Read();
-                                           if (result)
-                                           {
-                                               idSensorEquipment = reader.GetValue(c => c.Id);
-                                           }
-                                           return result;
-                                       });
+
+                                    var sensorEquipment_PK = scope.Executor.Execute<MD.ISensorEquipment_PK>(builderInsertEquipment);
+                                    idSensorEquipment = sensorEquipment_PK.Id;
                                 }
 
                                 if (idSensorEquipment > 0)
@@ -387,16 +367,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
                                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, idSensorEquipment);
                                                     builderInsertSensorEquipmentSensitivities.Select(c => c.Id);
-                                                    scope.Executor
-                                                    .ExecuteAndFetch(builderInsertSensorEquipmentSensitivities, reader =>
-                                                {
-                                                    var result = reader.Read();
-                                                    if (result)
-                                                    {
-                                                        idSensorEquipmentSensitivities = reader.GetValue(c => c.Id);
-                                                    }
-                                                    return result;
-                                                });
+
+                                                    
+                                                    var sensorSensitivites_PK =  scope.Executor.Execute<MD.ISensorSensitivites_PK>(builderInsertSensorEquipmentSensitivities);
+                                                    idSensorEquipmentSensitivities = sensorSensitivites_PK.Id;
                                                 }
                                             }
                                         }
@@ -437,16 +411,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
                                                 builderInsertSensorPolygons.SetValue(c => c.SensorId, idSensor);
                                                 builderInsertSensorPolygons.Select(c => c.Id);
-                                                scope.Executor
-                                                .ExecuteAndFetch(builderInsertSensorPolygons, reader =>
-                                            {
-                                                var result = reader.Read();
-                                                if (result)
-                                                {
-                                                    idsensPolygon = reader.GetValue(c => c.Id);
-                                                }
-                                                return result;
-                                            });
+
+                                                scope.Executor.Execute(builderInsertSensorPolygons);
                                             }
                                             else
                                             {
@@ -504,17 +470,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             builderInsertSensLocations.SetValue(c => c.Status, "A");
                                             builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
                                             builderInsertSensLocations.Select(c => c.Id);
-                                            scope.Executor
-                                            .ExecuteAndFetch(builderInsertSensLocations, reader =>
-                                        {
-                                            var result = reader.Read();
-                                            if (result)
-                                            {
-                                                sensorLocation = reader.GetValue(c => c.Id);
-                                            }
-                                            return result;
-                                        });
 
+                                            scope.Executor.Execute(builderInsertSensLocations);
                                         }
                                     }
                                 }
