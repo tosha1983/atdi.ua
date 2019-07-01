@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
+    public interface IFieldDefaultMetadata
+    {
+
+    }
     public interface IFieldMetadata
     {
         /// <summary>
@@ -46,9 +50,16 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         string SourceName { get; }
 
         /// <summary>
-        /// Сущность, которой принадлежит поле
+        /// Сущность владелец поля
         /// </summary>
         IEntityMetadata Entity { get; }
+
+        /// <summary>
+        /// Базовая сущность, с которой поле было наследовано
+        /// </summary>
+        IEntityMetadata BaseEntity { get; }
+
+        IFieldDefaultMetadata Default { get; }
     }
 
     public static class FieldMetadataExtensions

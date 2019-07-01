@@ -55,7 +55,7 @@ namespace Atdi.DataModels
         {
             var result = default(ColumnValue);
             var type = typeof(T);
-            
+
             if (type == typeof(bool) || type == typeof(bool?))
             {
                 result = new BooleanColumnValue
@@ -194,6 +194,13 @@ namespace Atdi.DataModels
                 result = new DateTimeOffsetColumnValue
                 {
                     Value = (DateTimeOffset?)(object)value
+                };
+            }
+            else if (type.IsArray)
+            {
+                result = new ClrTypeColumnValue
+                {
+                    Value = value
                 };
             }
             else

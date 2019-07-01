@@ -22,13 +22,15 @@ namespace Atdi.CoreServices.EntityOrm
 {
     public class EntityOrm : IEntityOrm
     {
+        private readonly DataTypeSystem _dataTypeSystem;
         private readonly IEntityOrmConfig _config;
         private readonly ConcurrentDictionary<string, DataTypeMetadata> _dataTypeMetadataCache;
         private readonly ConcurrentDictionary<string, EntityMetadata> _entityMetadataCache;
         private readonly ConcurrentDictionary<Type, Type> _primaryKeyTypes;
 
-        public EntityOrm(IEntityOrmConfig config)
+        public EntityOrm(DataTypeSystem dataTypeSystem, IEntityOrmConfig config)
         {
+            this._dataTypeSystem = dataTypeSystem;
             this._config = config;
             this._dataTypeMetadataCache = new ConcurrentDictionary<string, DataTypeMetadata>();
             this._entityMetadataCache = new ConcurrentDictionary<string, EntityMetadata>();
@@ -113,7 +115,7 @@ namespace Atdi.CoreServices.EntityOrm
                     throw new InvalidOperationException($"Undefined SourceVarType for Data Type Metadata with name '{dataTypeName}' and source '{dataSourceType}'");
                 }
                 dataTypeMetadata.SourceVarType = (DataSourceVarType)Enum.Parse(typeof(DataSourceVarType), dataTypeDef.SourceVarType.Value.ToString());
-
+                dataTypeMetadata.SourceCodeVarType = _dataTypeSystem.GetSourceDataType(dataTypeMetadata.SourceVarType);
                 if (dataTypeDef.Autonum != null)
                 {
                     var autonumMetadata = new AutonumMetadata
@@ -1321,7 +1323,7 @@ namespace Atdi.CoreServices.EntityOrm
                 var baseFields = entityMetadata.BaseEntity.DefineFieldsWithInherited();
                 for (int i = 0; i < baseFields.Length; i++)
                 {
-                    entityMetadata.AppendField(baseFields[i]); 
+                    entityMetadata.CopyField(baseFields[i]); 
                 }
 
                 // первичный ключ также копиреум
@@ -1330,10 +1332,20 @@ namespace Atdi.CoreServices.EntityOrm
                     var basePrimaryKey = entityMetadata.BaseEntity.DefinePrimaryKey();
                     if (basePrimaryKey != null)
                     {
+                        var pkFiledRefs = new Dictionary<string, IPrimaryKeyFieldRefMetadata>();
+                        foreach (var item in basePrimaryKey.FieldRefs.Values)
+                        {
+                            var localFieldRef = new PrimaryKeyFieldRefMetadata
+                            {
+                                Field = entityMetadata.Fields[item.Field.Name],
+                                SortOrder = item.SortOrder
+                            };
+                            pkFiledRefs.Add(localFieldRef.Field.Name, localFieldRef);
+                        }
                         var localPrimaryKey = new PrimaryKeyMetadata(entityMetadata)
                         {
                             Clustered = basePrimaryKey.Clustered,
-                            FieldRefs = basePrimaryKey.FieldRefs
+                            FieldRefs = pkFiledRefs
                         };
 
                         entityMetadata.PrimaryKey = localPrimaryKey;
@@ -1756,7 +1768,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return null;
             }
-            var pkTypeName = $"{_config.Namespace}.I{primaryKey.Entity.Name}_PK, {_config.Assembly}";
+            var pkTypeName = $"{_config.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
             var pkType = Type.GetType(pkTypeName);
             if (pkType == null)
             {

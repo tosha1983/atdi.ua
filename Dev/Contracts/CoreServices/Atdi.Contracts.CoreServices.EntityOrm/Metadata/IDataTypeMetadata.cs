@@ -22,6 +22,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         DataSourceVarType SourceVarType { get; }
 
+        DataType SourceCodeVarType { get; }
+
         long? Length { get; }
 
         int? Precision { get; }

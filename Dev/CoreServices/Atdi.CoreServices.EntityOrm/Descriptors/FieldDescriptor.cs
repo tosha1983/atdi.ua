@@ -9,6 +9,8 @@ namespace Atdi.CoreServices.EntityOrm
 {
     public sealed class FieldDescriptor
     {
+        private string _path;
+
         public FieldDescriptor(IEntityMetadata owner, IFieldMetadata ownerField)
         {
             this.Owner = owner;
@@ -46,7 +48,25 @@ namespace Atdi.CoreServices.EntityOrm
         /// </summary>
         public IFieldMetadata Field { get; set; }
 
-        public string Path { get; set; }
+        public string Path
+        {
+            get => _path;
+            set
+            {
+                _path = value;
+                var parts = _path.Split('.');
+                if (parts.Length > 1)
+                {
+                    this.ParentPath = _path.Substring(0, _path.Length - 1 - parts[parts.Length - 1].Length);
+                }
+                else
+                {
+                    this.ParentPath = string.Empty;
+                }
+            }
+        }
+
+        public string ParentPath { get; set; }
 
         public override string ToString()
         {
@@ -111,7 +131,7 @@ namespace Atdi.CoreServices.EntityOrm
                     return false;
                 }
                 var pkMapping = this.OwnerField.AsReference().Mapping;
-                if (pkMapping == null || pkMapping.Fields == null || pkMapping.Fields.ContainsKey(this.Field.Name))
+                if (pkMapping == null || pkMapping.Fields == null || !pkMapping.Fields.ContainsKey(this.Field.Name))
                 {
                     sourceName = $"{this.OwnerField.Name}_{this.Field.SourceName}";
                     return true;
@@ -134,6 +154,19 @@ namespace Atdi.CoreServices.EntityOrm
 
             sourceName = null;
             return false;
+        }
+
+        public static string BuildParentPath(string path)
+        {
+            var parts = path.Split('.');
+            if (parts.Length > 1)
+            {
+                return path.Substring(0, path.Length - 1 - parts[parts.Length - 1].Length);
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
     }
 

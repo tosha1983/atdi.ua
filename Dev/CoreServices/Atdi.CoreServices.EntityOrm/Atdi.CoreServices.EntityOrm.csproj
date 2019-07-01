@@ -48,6 +48,7 @@
     <Compile Include="DataTypeSystem\ValueAdapters\ByteBIT.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BooleanBIT.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BytesBLOB.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeBYTES.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\GuidGUID.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\DateTimeOffsetDATETIMEOFFSET.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\DateTimeDATETIME.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="DataTypeSystem\ValueAdapters\LongINT64.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\IntegerINT32.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BytesBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeBLOB.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\StringBYTES.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\StringBLOB.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\StringTEXT.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="QueryBuilder.cs" />
     <Compile Include="QueryDataReader.cs" />
     <Compile Include="Helpers\ConditionHelper.cs" />
+    <Compile Include="QueryPatterns\BuildingContext.cs" />
     <Compile Include="QueryPatterns\UpdatePatternBuilder.cs" />
     <Compile Include="QueryPatterns\DeletePatternBuilder.cs" />
     <Compile Include="QueryPatterns\SelectPatternBuilder.cs" />

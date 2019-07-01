@@ -331,6 +331,65 @@ namespace Atdi.DataModels.DataConstraint
 
             throw new InvalidOperationException($"Value type not supported '{type}')");
         }
+
+        public object GetValues()
+        {
+            switch (this.DataType)
+            {
+                case DataType.String:
+                    return ((StringValuesOperand)this).Values;
+                case DataType.Integer:
+                    return ((IntegerValuesOperand)this).Values;
+                case DataType.Float:
+                    return ((FloatValuesOperand)this).Values;
+                case DataType.Double:
+                    return ((DoubleValuesOperand)this).Values;
+                case DataType.Boolean:
+                    return ((BooleanValuesOperand)this).Values;
+                case DataType.DateTime:
+                    return ((DateTimeValuesOperand)this).Values;
+                case DataType.Decimal:
+                    return ((DecimalValuesOperand)this).Values;
+                case DataType.Byte:
+                    return ((ByteValuesOperand)this).Values;
+                case DataType.Bytes:
+                    return ((BytesValuesOperand)this).Values;
+                case DataType.Guid:
+                    return ((GuidValuesOperand)this).Values;
+                case DataType.Char:
+                    return ((CharValuesOperand)this).Values;
+                case DataType.Chars:
+                    return ((CharsValuesOperand)this).Values;
+                case DataType.Short:
+                    return ((ShortValuesOperand)this).Values;
+                case DataType.UnsignedShort:
+                    return ((UnsignedShortValuesOperand)this).Values;
+                case DataType.UnsignedInteger:
+                    return ((UnsignedIntegerValuesOperand)this).Values;
+                case DataType.Long:
+                    return ((LongValuesOperand)this).Values;
+                case DataType.UnsignedLong:
+                    return ((UnsignedLongValuesOperand)this).Values;
+                case DataType.SignedByte:
+                    return ((SignedByteValuesOperand)this).Values;
+                case DataType.Time:
+                    return ((TimeValuesOperand)this).Values;
+                case DataType.Date:
+                    return ((DateValuesOperand)this).Values;
+                case DataType.DateTimeOffset:
+                    return ((DateTimeOffsetValuesOperand)this).Values;
+                case DataType.Xml:
+                    return ((XmlValuesOperand)this).Values;
+                case DataType.Json:
+                    return ((JsonValuesOperand)this).Values;
+                case DataType.ClrEnum:
+                    return ((ClrEnumValuesOperand)this).Values;
+                case DataType.ClrType:
+                    return ((ClrTypeValuesOperand)this).Values; ;
+                default:
+                    throw new InvalidOperationException($"Unsupported data type with name '{this.DataType}'");
+            }
+        }
     }
 
     [DataContract(Namespace = CommonSpecification.Namespace)]
