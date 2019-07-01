@@ -5,10 +5,10 @@ create table [ICSC].[SECTOR] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[AGL]	[numeric](22,8) null,
 	[EIRP]	[numeric](22,8) null,
-	[AZIMUT]	[numeric](22,8) null,
+	[AZIMUTH]	[numeric](22,8) null,
 	[BW]	[numeric](22,8) null,
 	[CLASS_EMISSION]	[nvarchar](20) null,
-	[ID_STATION]	[bigint] null,
+	[STATION_ID]	[bigint] null,
 	[ID_SECTOR]	[bigint] null,
 	constraint [PK_SECTOR] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

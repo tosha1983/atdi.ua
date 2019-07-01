@@ -28,7 +28,7 @@
     <Field Desc="Rbw" Title="Rbw" Name="Rbw" DataType="Double.30.10" SourceName="RBW" SourceType="Column" Required="false"/>
     <Field Desc="Vbw" Title="Vbw" Name="Vbw" DataType="Double.30.10" SourceName="VBW" SourceType="Column" Required="false"/>
     <Field Desc="BW" Title="BW" Name="BW" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
-    <Field Desc="LevelsSpectrumdBm" Title="LevelsSpectrumdBm" Name="LevelsSpectrumdBm" DataType="Bytes.MAX" SourceName="LEVEL_SSPECTRUM_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="LevelsSpectrumdBm" Title="LevelsSpectrumdBm" Name="LevelsSpectrumdBm" DataType="Array.Float" SourceName="LEVEL_SSPECTRUM_DBM" SourceType="Column" Required="false"/>
     <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStGeneral to ResMeasStation">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>

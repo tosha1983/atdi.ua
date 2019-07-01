@@ -6,7 +6,7 @@ create table [ICSC].[REFERENCE_LEVELS] (
 	[STARTFREQ_HZ]	[float] null,
 	[STEPFREQ_HZ]	[float] null,
 	[REF_LEVELS]	[varbinary](max) null,
-	[RESMEAS_ID]	[bigint] null,
+	[RES_MEAS_ID]	[bigint] null,
 	constraint [PK_REFERENCE_LEVELS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

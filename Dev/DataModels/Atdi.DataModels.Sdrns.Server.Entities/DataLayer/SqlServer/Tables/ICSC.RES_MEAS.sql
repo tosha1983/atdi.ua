@@ -4,8 +4,8 @@ go
 create table [ICSC].[RES_MEAS] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[MEAS_TASK_ID]	[nvarchar](150) null,
-	[SUB_MEAS_TASK_ID]	[bigint] null,
-	[SUB_MEAS_TASK_STATION_ID]	[bigint] null,
+	[MEAS_SUB_TASK_ID]	[bigint] null,
+	[MEAS_SUB_TASK_STATION_ID]	[bigint] null,
 	[SENSOR_ID]	[bigint] null,
 	[ANTVAL]	[numeric](22,8) null,
 	[TIME_MEAS]	[datetime] null,

@@ -8,7 +8,7 @@ create table [ICSC].[MEAS_OTHER] (
 	[TYPE_SPECTRUM_OCCUPATION]	[nvarchar](50) null,
 	[LEVEL_MIN_OCCUP]	[numeric](22,8) null,
 	[NCHENAL]	[int] null,
-	[ID_MEASTASK]	[bigint] null,
+	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_OTHER] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go
