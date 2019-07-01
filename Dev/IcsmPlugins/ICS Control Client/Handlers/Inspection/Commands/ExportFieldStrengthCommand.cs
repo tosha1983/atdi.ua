@@ -58,7 +58,7 @@ namespace XICSM.ICSControlClient.Handlers.InspectionCommnads
 
                 foreach (var insp in selectedInspections)
                 {
-                    List<int> measResultIds = new List<int>();
+                    List<long> measResultIds = new List<long>();
 
                     if (insp.id == IM.NullI || insp.taskId == IM.NullI || insp.sectorId == IM.NullI)
                     {
@@ -110,7 +110,7 @@ namespace XICSM.ICSControlClient.Handlers.InspectionCommnads
 
             return true;
         }
-        private static void CreateFileCSV(List<int> MeasResultID, Inspection inspection, bool isFewRecords, string folderName)
+        private static void CreateFileCSV(List<long> MeasResultID, Inspection inspection, bool isFewRecords, string folderName)
         {
             try
             {

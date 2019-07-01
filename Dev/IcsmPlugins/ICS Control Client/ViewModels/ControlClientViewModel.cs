@@ -329,7 +329,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private MeasTaskViewModel ReloadCurrentMeasTask(ShortMeasTaskViewModel shortMeasTask)
         {
-            var taskId = 0;
+            long taskId = 0;
             if (shortMeasTask != null)
             {
                 taskId = shortMeasTask.Id;
@@ -503,7 +503,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void ReloadShortMeasResults(ShortMeasTaskViewModel shortMeasTask)
         {
-            int taskId = 0;
+            long taskId = 0;
             if (shortMeasTask != null)
             {
                 taskId = shortMeasTask.Id;
@@ -727,7 +727,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
-                int taskId = this._currentMeasurementResults.MeasTaskId;
+                long taskId = this._currentMeasurementResults.MeasTaskId;
                 string stationId = this._currentResultsMeasurementsStationData.StationId;
 
                 FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = "FS_Meas_Res_" + taskId.ToString() + "_" + stationId + ".csv" };

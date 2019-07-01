@@ -11,7 +11,7 @@ namespace XICSM.ICSControlClient.Models.Views
     public class ShortSensorViewModel
     {
         [WpfColumn("ID", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [WpfColumn("Name", WidthRule = ColumnWidthRule.AutoSize, Width = 150, CellStyle = "", HeaderStyle = "")]
         public string Name { get; set; }

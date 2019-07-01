@@ -22,16 +22,16 @@ namespace XICSM.ICSControlClient.Models
 
         private static DataStore _instance = new DataStore();
 
-        private ConcurrentDictionary<int, MeasurementResults[]> _GetMeasResultsHeaderByTaskIdCache;
-        private ConcurrentDictionary<int, ShortSensor[]> _GetShortSensorsByTaskCache;
+        private ConcurrentDictionary<long, MeasurementResults[]> _GetMeasResultsHeaderByTaskIdCache;
+        private ConcurrentDictionary<long, ShortSensor[]> _GetShortSensorsByTaskCache;
         private ShortSensor[] _shortSensors = null;
 
-        private ConcurrentDictionary<int, MeasTaskViewModel> _GetMeasTaskHeaderByIdCache;
-        private ConcurrentDictionary<int, StationDataForMeasurements[]> _GetStationDataForMeasurementsByTaskIdCache;
-        private ConcurrentDictionary<int, Sensor> _GetSensorByIdCache;
-        private ConcurrentDictionary<int, ResultsMeasurementsStation[]> _GetResMeasStationHeaderByResIdCache;
-        private ConcurrentDictionary<int, MeasurementResults> _GetMeasurementResultByResIdCache;
-        private ConcurrentDictionary<int, MeasurementResults> _GetFullMeasurementResultByResIdCache;
+        private ConcurrentDictionary<long, MeasTaskViewModel> _GetMeasTaskHeaderByIdCache;
+        private ConcurrentDictionary<long, StationDataForMeasurements[]> _GetStationDataForMeasurementsByTaskIdCache;
+        private ConcurrentDictionary<long, Sensor> _GetSensorByIdCache;
+        private ConcurrentDictionary<long, ResultsMeasurementsStation[]> _GetResMeasStationHeaderByResIdCache;
+        private ConcurrentDictionary<long, MeasurementResults> _GetMeasurementResultByResIdCache;
+        private ConcurrentDictionary<long, MeasurementResults> _GetFullMeasurementResultByResIdCache;
 
         public static DataStore GetStore()
         {
@@ -43,7 +43,7 @@ namespace XICSM.ICSControlClient.Models
             this.Reset();
         }
 
-        public MeasurementResults[] GetMeasResultsHeaderByTaskId(int taskId)
+        public MeasurementResults[] GetMeasResultsHeaderByTaskId(long taskId)
         {
             
             var cache = this._GetMeasResultsHeaderByTaskIdCache;
@@ -114,7 +114,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public MeasTaskViewModel GetMeasTaskHeaderById(int taskId)
+        public MeasTaskViewModel GetMeasTaskHeaderById(long taskId)
         {
             var cache = this._GetMeasTaskHeaderByIdCache;
 
@@ -142,7 +142,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(int taskId)
+        public StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(long taskId)
         {
             var cache = this._GetStationDataForMeasurementsByTaskIdCache;
 
@@ -164,7 +164,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public Sensor GetSensorById(int sensorId)
+        public Sensor GetSensorById(long sensorId)
         {
             var cache = this._GetSensorByIdCache;
 
@@ -191,7 +191,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int resultsId)
+        public ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(long resultsId)
         {
             var cache = this._GetResMeasStationHeaderByResIdCache;
 
@@ -213,7 +213,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public MeasurementResults GetMeasurementResultByResId(int resultsId)
+        public MeasurementResults GetMeasurementResultByResId(long resultsId)
         {
             var cache = this._GetMeasurementResultByResIdCache;
 
@@ -235,7 +235,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public MeasurementResults GetFullMeasurementResultByResId(int resultsId)
+        public MeasurementResults GetFullMeasurementResultByResId(long resultsId)
         {
             var cache = this._GetFullMeasurementResultByResIdCache;
 
@@ -257,7 +257,7 @@ namespace XICSM.ICSControlClient.Models
             return data;
         }
 
-        public Emitting[] GetEmittingsBy(int[] stations, string tableName)
+        public Emitting[] GetEmittingsBy(long[] stations, string tableName)
         {
             try
             {
@@ -279,15 +279,15 @@ namespace XICSM.ICSControlClient.Models
 
         public void Reset()
         {
-            this._GetMeasResultsHeaderByTaskIdCache = new ConcurrentDictionary<int, MeasurementResults[]>();
-            this._GetShortSensorsByTaskCache = new ConcurrentDictionary<int, ShortSensor[]>();
+            this._GetMeasResultsHeaderByTaskIdCache = new ConcurrentDictionary<long, MeasurementResults[]>();
+            this._GetShortSensorsByTaskCache = new ConcurrentDictionary<long, ShortSensor[]>();
             this._shortSensors = null;
-            this._GetMeasTaskHeaderByIdCache = new ConcurrentDictionary<int, MeasTaskViewModel>();
-            this._GetStationDataForMeasurementsByTaskIdCache = new ConcurrentDictionary<int, StationDataForMeasurements[]>();
-            this._GetSensorByIdCache = new ConcurrentDictionary<int, Sensor>();
-            this._GetResMeasStationHeaderByResIdCache = new ConcurrentDictionary<int, ResultsMeasurementsStation[]>();
-            this._GetMeasurementResultByResIdCache = new ConcurrentDictionary<int, MeasurementResults>();
-            this._GetFullMeasurementResultByResIdCache = new ConcurrentDictionary<int, MeasurementResults>();
+            this._GetMeasTaskHeaderByIdCache = new ConcurrentDictionary<long, MeasTaskViewModel>();
+            this._GetStationDataForMeasurementsByTaskIdCache = new ConcurrentDictionary<long, StationDataForMeasurements[]>();
+            this._GetSensorByIdCache = new ConcurrentDictionary<long, Sensor>();
+            this._GetResMeasStationHeaderByResIdCache = new ConcurrentDictionary<long, ResultsMeasurementsStation[]>();
+            this._GetMeasurementResultByResIdCache = new ConcurrentDictionary<long, MeasurementResults>();
+            this._GetFullMeasurementResultByResIdCache = new ConcurrentDictionary<long, MeasurementResults>();
         }
     }
 }

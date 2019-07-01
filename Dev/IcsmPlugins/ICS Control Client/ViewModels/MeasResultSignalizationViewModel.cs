@@ -50,7 +50,7 @@ namespace XICSM.ICSControlClient.ViewModels
     }
     public class MeasResultSignalizationViewModel : WpfViewModelBase
     {
-        private int _resultId;
+        private long _resultId;
 
         #region Current Objects
         private string _emittingCaption;
@@ -83,7 +83,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand DeleteEmissionCommand { get; set; }
         #endregion
 
-        public MeasResultSignalizationViewModel(int resultId)
+        public MeasResultSignalizationViewModel(long resultId)
         {
             this._dataStore = DataStore.GetStore();
             this._dataStore.OnBeginInvoke += _dataStore_OnBeginInvoke;
@@ -324,7 +324,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 if (this._currentEmittings != null)
                 {
-                    List<int> emitings = new List<int>();
+                    List<long> emitings = new List<long>();
                     HashSet<long?> ids = new HashSet<long?>();
                     foreach (EmittingViewModel emitting in this._currentEmittings)
                     {
