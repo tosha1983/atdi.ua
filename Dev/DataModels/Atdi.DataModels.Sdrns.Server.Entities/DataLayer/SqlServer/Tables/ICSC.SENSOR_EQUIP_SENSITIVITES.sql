@@ -3,7 +3,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[SENSOR_EQ
 go
 create table [ICSC].[SENSOR_EQUIP_SENSITIVITES] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[SENSOREQUIP_ID]	[bigint] null,
+	[SENSOR_EQUIP_ID]	[bigint] null,
 	[FREQ]	[numeric](22,8) null,
 	[KTBF]	[numeric](22,8) null,
 	[NOISEF]	[numeric](22,8) null,

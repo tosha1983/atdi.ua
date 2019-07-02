@@ -6,8 +6,8 @@ create table [ICSC].[MEAS_SUB_TASK_STATION] (
 	[STATUS]	[nvarchar](50) null,
 	[COUNT]	[int] null,
 	[TIME_NEXT_TASK]	[datetime] null,
-	[ID_SENSOR]	[int] null,
-	[ID_MEASSUBTASK]	[int] null,
+	[SENSOR_ID]	[int] null,
+	[MEAS_SUB_TASK_ID]	[int] null,
 	constraint [PK_MEAS_SUB_TASK_STATION] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

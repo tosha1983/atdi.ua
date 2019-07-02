@@ -3,7 +3,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[ANTENNA_P
 go
 create table [ICSC].[ANTENNA_PATTERN] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[SENSORANTENNA_ID]	[bigint] null,
+	[SENSOR_ANTENNA_ID]	[bigint] null,
 	[FREQ]	[numeric](22,8) null,
 	[GAIN]	[numeric](22,8) null,
 	[DIAGA]	[varchar](1000) null,

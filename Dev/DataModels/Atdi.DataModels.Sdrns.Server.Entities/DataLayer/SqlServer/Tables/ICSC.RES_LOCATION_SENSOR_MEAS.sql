@@ -7,7 +7,7 @@ create table [ICSC].[RES_LOCATION_SENSOR_MEAS] (
 	[LAT]	[float] null,
 	[ASL]	[float] null,
 	[AGL]	[float] null,
-	[RESMEAS_ID]	[bigint] null,
+	[RES_MEAS_ID]	[bigint] null,
 	constraint [PK_RES_LOCATION_SENSOR_MEAS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

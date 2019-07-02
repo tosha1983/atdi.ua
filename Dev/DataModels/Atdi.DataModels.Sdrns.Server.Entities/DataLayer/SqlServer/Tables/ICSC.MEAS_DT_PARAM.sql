@@ -13,7 +13,7 @@ create table [ICSC].[MEAS_DT_PARAM] (
 	[MODE]	[nvarchar](50) null,
 	[RBW]	[numeric](22,8) null,
 	[VBW]	[numeric](22,8) null,
-	[ID_MEASTASK]	[bigint] null,
+	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_DT_PARAM] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go
