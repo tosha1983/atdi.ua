@@ -11,18 +11,8 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
-    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation ReferenceSituation to Sensor">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation ReferenceSituation to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation ReferenceSituation to MeasTask"/>
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation ReferenceSituation to Sensor"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

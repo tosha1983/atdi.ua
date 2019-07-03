@@ -10,12 +10,12 @@
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
-    <Field Desc="Lon" Title="Lon" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false"/>
-    <Field Desc="Lat" Title="Lat" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false"/>
-    <Field Desc="LeveldBm" Title="LeveldBm" Name="LeveldBm" DataType="Decimal.22.8" SourceName="LEVELDBM" SourceType="Column" Required="false"/>
-    <Field Desc="CentralFrequency" Title="CentralFrequency" Name="CentralFrequency" DataType="Decimal.22.8" SourceName="CENTRALFREQUENCY" SourceType="Column" Required="false"/>
+    <Field Desc="Lon" Title="Lon" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false"/>
+    <Field Desc="Lat" Title="Lat" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false"/>
+    <Field Desc="LeveldBm" Title="LeveldBm" Name="LeveldBm" DataType="Double.30.10" SourceName="LEVELDBM" SourceType="Column" Required="false"/>
+    <Field Desc="CentralFrequency" Title="CentralFrequency" Name="CentralFrequency" DataType="Double.30.10" SourceName="CENTRALFREQUENCY" SourceType="Column" Required="false"/>
     <Field Desc="TimeOfMeasurements" Title="TimeOfMeasurements" Name="TimeOfMeasurements" DataType="DateTime" SourceName="TIMEOFMEASUREMENTS" SourceType="Column" Required="false"/>
-    <Field Desc="BW" Title="BW" Name="BW" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="BW" Title="BW" Name="BW" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="IdStation" Title="IdStation" Name="IdStation" DataType="Counter.64" SourceName="IDSTATION" SourceType="Column" Required="false"/>
     <Field Desc="SpecrumSteps" Title="SpecrumSteps" Name="SpecrumSteps" DataType="Double.30.10" SourceName="SPECRUMSTEPS" SourceType="Column" Required="false"/>
     <Field Desc="T1" Title="T1" Name="T1" DataType="Counter.32" SourceName="T1" SourceType="Column" Required="false"/>

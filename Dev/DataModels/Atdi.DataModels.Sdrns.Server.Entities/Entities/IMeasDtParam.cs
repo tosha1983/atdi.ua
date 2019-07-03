@@ -26,7 +26,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Mode { get; set; }
         double? Rbw { get; set; }
         double? Vbw { get; set; }
-        long? MeasTaskId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
     }
 }

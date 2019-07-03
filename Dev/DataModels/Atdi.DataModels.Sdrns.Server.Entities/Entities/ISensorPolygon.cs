@@ -16,7 +16,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorPolygon : ISensorPolygon_PK
     {
-        long? SensorId { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }
         ISensor SENSOR { get; set; }

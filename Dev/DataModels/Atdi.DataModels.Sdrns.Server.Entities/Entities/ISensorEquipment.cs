@@ -16,7 +16,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorEquipment : ISensorEquipment_PK
     {
-        long? SensorId { get; set; }
         string Code { get; set; }
         string Manufacturer { get; set; }
         string Name { get; set; }

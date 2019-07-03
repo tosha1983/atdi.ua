@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "Logs"
-  Title       = "Logs"
+  Name        = "ValidationLogs"
+  Title       = "Validation logs"
   Desc        = ""
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>LOGS</Name>
+    <Name>VALIDATION_LOGS</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>

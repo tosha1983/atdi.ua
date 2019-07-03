@@ -17,7 +17,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface IMeasFreq: IMeasFreq_PK
     {
         double? Freq { get; set; }
-        long? MeasFreqParamId { get; set; }
-        IMeasFreqParam MEASFREQPARAM { get; set; }
+        IMeasFreqParam MEAS_FREQ_PARAM { get; set; }
     }
 }

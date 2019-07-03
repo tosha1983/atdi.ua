@@ -19,7 +19,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Lat { get; set; }
         double? Asl { get; set; }
         double? MaxDist { get; set; }
-        long? MeasTaskId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
     }
 }

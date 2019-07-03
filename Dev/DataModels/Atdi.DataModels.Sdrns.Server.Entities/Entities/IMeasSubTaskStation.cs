@@ -19,9 +19,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Status { get; set; }
         int? Count { get; set; }
         DateTime? TimeNextTask { get; set; }
-        long? SensorId { get; set; }
-        long? MeasSubTaskId { get; set; }
         ISector SENSOR { get; set; }
-        IMeasSubTask MEASSUBTASK { get; set; }
+        IMeasSubTask MEAS_SUB_TASK { get; set; }
     }
 }

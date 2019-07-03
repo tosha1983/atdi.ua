@@ -13,20 +13,15 @@
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
     <Field Desc="TypeMeasurements" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.50" SourceName="TYPE_MEASUREMENTS" SourceType="Column" Required="false"/>
     <Field Desc="DetectType" Title="DetectType" Name="DetectType" DataType="Text.50" SourceName="DETECT_TYPE" SourceType="Column" Required="false"/>
-    <Field Desc="Rfattenuation" Title="Rfattenuation" Name="Rfattenuation" DataType="Decimal.22.8" SourceName="RF_ATTENUATION" SourceType="Column" Required="false"/>
-    <Field Desc="Ifattenuation" Title="Ifattenuation" Name="Ifattenuation" DataType="Decimal.22.8" SourceName="IF_ATTENUATION" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTime" Title="MeasTime" Name="MeasTime" DataType="Decimal.22.8" SourceName="MEAS_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="Rfattenuation" Title="Rfattenuation" Name="Rfattenuation" DataType="Double.30.10" SourceName="RF_ATTENUATION" SourceType="Column" Required="false"/>
+    <Field Desc="Ifattenuation" Title="Ifattenuation" Name="Ifattenuation" DataType="Double.30.10" SourceName="IF_ATTENUATION" SourceType="Column" Required="false"/>
+    <Field Desc="MeasTime" Title="MeasTime" Name="MeasTime" DataType="Double.30.10" SourceName="MEAS_TIME" SourceType="Column" Required="false"/>
     <Field Desc="Demod" Title="Demod" Name="Demod" DataType="Text.50" SourceName="DEMOD" SourceType="Column" Required="false"/>
     <Field Desc="Preamplification" Title="Preamplification" Name="Preamplification" DataType="Integer.32" SourceName="PREAMPLIFICATION" SourceType="Column" Required="true"/>
     <Field Desc="Mode" Title="Mode" Name="Mode" DataType="Text.50" SourceName="MODE" SourceType="Column" Required="false"/>
-    <Field Desc="RBW, kHz" Title="RBW, kHz" Name="Rbw" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
-    <Field Desc="VBW, kHz" Title="VBW, kHz" Name="Vbw" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasDtParam to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="RBW, kHz" Title="RBW, kHz" Name="Rbw" DataType="Double.30.10" SourceName="RBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Desc="VBW, kHz" Title="VBW, kHz" Name="Vbw" DataType="Double.30.10" SourceName="VBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasDtParam to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

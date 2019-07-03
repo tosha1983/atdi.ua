@@ -47,6 +47,7 @@
     <Compile Include="DataTypeSystem\ValueAdapters\ByteBYTE.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\ByteBIT.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BooleanBIT.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ByteINT08.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BytesBLOB.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeBYTES.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\GuidGUID.cs" />

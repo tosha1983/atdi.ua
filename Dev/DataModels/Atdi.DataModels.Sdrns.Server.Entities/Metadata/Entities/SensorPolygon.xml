@@ -11,14 +11,9 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Name="SensorId" SourceType="Column" SourceName="SENSOR_ID" DataType="Integer.64" Required="true" Title="SensorId" Desc="SensorId"/>
-    <Field Name="Lon" SourceType="Column" SourceName="LON" DataType="Decimal.22.8" Required="false" Title="Longitude, DEC" Desc="Longitude, DEC" Unit="Longitude.DEC"/>
-    <Field Name="Lat" SourceType="Column" SourceName="LAT" DataType="Decimal.22.8" Required="false" Title="Latitude,  DEC" Desc="Latitude,  DEC" Unit="Latitude.DEC"/>
-    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation SensorPolygon to Sensor">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="Lon" SourceType="Column" SourceName="LON" DataType="Double.30.10" Required="false" Title="Longitude, DEC" Desc="Longitude, DEC" Unit="Longitude.DEC"/>
+    <Field Name="Lat" SourceType="Column" SourceName="LAT" DataType="Double.30.10" Required="false" Title="Latitude,  DEC" Desc="Latitude,  DEC" Unit="Latitude.DEC"/>
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SensorPolygon to Sensor"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

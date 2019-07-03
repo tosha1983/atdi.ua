@@ -11,19 +11,9 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="ID_STATION" SourceType="Column" Required="true"/>
     <Field Desc="StationType" Title="StationType" Name="StationType" DataType="Text.50" SourceName="STATION_TYPE" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
-    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation MeasLocationParam to Station">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">StationId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasLocationParam to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasStation to MeasTask"/>
+    <Field Name="STATION" SourceName="Station" SourceType="Reference" Required="true" Desc="" Title="Relation MeasStation to Station"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

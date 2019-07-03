@@ -709,7 +709,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
             {
-                var builderInsertLog = this._dataLayer.GetBuilder<MD.ILogs>().Insert();
+                var builderInsertLog = this._dataLayer.GetBuilder<MD.IValidationLogs>().Insert();
                 builderInsertLog.SetValue(c => c.TableName, tableName);
                 builderInsertLog.SetValue(c => c.When, DateTime.Now);
                 builderInsertLog.SetValue(c => c.Who, "");

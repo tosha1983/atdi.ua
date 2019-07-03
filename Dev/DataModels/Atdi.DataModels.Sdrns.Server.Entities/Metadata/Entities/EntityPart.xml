@@ -14,11 +14,7 @@
     <Field Desc="PartIndex" Title="PartIndex" Name="PartIndex" DataType="Integer.32" SourceName="PART_INDEX" SourceType="Column" Required="true"/>
     <Field Desc="Eof" Title="Eof" Name="Eof" DataType="Boolean" SourceName="EOF" SourceType="Column" Required="false"/>
     <Field Desc="Content" Title="Content" Name="Content" DataType="Bytes.MAX" SourceName="CONTENT" SourceType="Column" Required="false"/>
-    <Field Name="ENTITY" SourceType="Reference" SourceName="Entity" Title="Relation EntityPart to Entity">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">EntityId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="ENTITY" SourceName="Entity" SourceType="Reference" Required="true" Desc="" Title="Relation EntityPart to Entity"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="EntityId"/>

@@ -15,12 +15,7 @@
     <Field Desc="TimeStop" Title="TimeStop" Name="TimeStop" DataType="DateTime" SourceName="TIME_STOP" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="Interval" Title="Interval" Name="Interval" DataType="Integer.32" SourceName="INTERVAL" SourceType="Column" Required="true"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasSubTask to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasSubTask to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

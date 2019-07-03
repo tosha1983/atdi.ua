@@ -111,6 +111,8 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
         private void BuildIteration(PS.InsertPattern pattern, OracleBuildingContex contex)
         {
             contex.Builder.SetBegin();
+
+            var identityFields = new Dictionary<string, string>();
             for (int i = 0; i < pattern.Expressions.Length; i++)
             {
                 var expression = pattern.Expressions[i];
@@ -119,7 +121,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 var fields = new List<string>();
                 var values = new List<EngineCommandParameter>();
 
-                var identityFields = new Dictionary<string,string>();
+                //var identityFields = new Dictionary<string,string>();
 
 
                 for (int j = 0; j < expression.Values.Length; j++)
@@ -205,6 +207,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                     }
                 }
             }
+
             contex.Builder.SetEnd();
         }
     }
