@@ -424,7 +424,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         var builderInsertMeasStation = this._dataLayer.GetBuilder<MD.IMeasStation>().Insert();
                                         builderInsertMeasStation.SetValue(c => c.StationType, value.Stations[i].StationType);
-                                        builderInsertMeasStation.SetValue(c => c.IdStation, value.Stations[i].StationId.Value);
+                                        builderInsertMeasStation.SetValue(c => c.ClientStationCode, value.Stations[i].StationId.Value);
                                         builderInsertMeasStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
                                         builderInsertMeasStation.Select(c => c.Id);
 

@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="IdStation" Title="IdStation" Name="IdStation" DataType="Integer.64" SourceName="ID_STATION" SourceType="Column" Required="true"/>
+    <Field Desc="ClientStationCode" Title="ClientStationCode" Name="ClientStationCode" DataType="Integer.64" SourceName="CLIENT_STATION_CODE" SourceType="Column" Required="true"/>
     <Field Desc="StationType" Title="StationType" Name="StationType" DataType="Text.50" SourceName="STATION_TYPE" SourceType="Column" Required="false"/>
     <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasStation to MeasTask"/>
   </Fields>

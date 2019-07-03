@@ -474,7 +474,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     var measStations = new List<MeasStation>();
                         var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
                         builderMeasstation.Select(c => c.Id);
-                        builderMeasstation.Select(c => c.IdStation);
+                        builderMeasstation.Select(c => c.ClientStationCode);
                         builderMeasstation.Select(c => c.MEAS_TASK.Id);
                         builderMeasstation.Select(c => c.StationType);
                         builderMeasstation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
@@ -484,7 +484,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var measStation = new MeasStation();
                                 measStation.StationId = new MeasStationIdentifier();
-                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.IdStation).Value;
+                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
                                 measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
                                 measStations.Add(measStation);
                             }
@@ -828,7 +828,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var measStations = new List<MeasStation>();
                         var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
                         builderMeasstation.Select(c => c.Id);
-                        builderMeasstation.Select(c => c.IdStation);
+                        builderMeasstation.Select(c => c.ClientStationCode);
                         builderMeasstation.Select(c => c.MEAS_TASK.Id);
                         builderMeasstation.Select(c => c.StationType);
                         builderMeasstation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
@@ -838,7 +838,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var measStation = new MeasStation();
                                 measStation.StationId = new MeasStationIdentifier();
-                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.IdStation).Value;
+                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
                                 measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
                                 measStations.Add(measStation);
                             }
