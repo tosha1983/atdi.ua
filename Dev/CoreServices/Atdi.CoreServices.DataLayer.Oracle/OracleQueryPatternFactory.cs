@@ -25,7 +25,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             _handlers.Add(typeof(PS.EngineCommandPattern), new PatternHandlers.EngineCommandPatternHandler(this.Logger));
             _handlers.Add(typeof(PS.InsertPattern), new PatternHandlers.OracleInsertPatternHandler(this.Logger));
             _handlers.Add(typeof(PS.SelectPattern), new PatternHandlers.OracleSelectPatternHandler(this.Logger));
+            _handlers.Add(typeof(PS.UpdatePattern), new PatternHandlers.OracleUpdatePatternHandler(this.Logger));
+            _handlers.Add(typeof(PS.DeletePattern), new PatternHandlers.OracleDeletePatternHandler(this.Logger));
         }
+
 
         public IOracleQueryPatternHandler GetHandler(Type handlerType)
         {

@@ -98,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
                             builderInsertAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
                             builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
-                            builderInsertAntenna.SetValue(c => c.SensorId, sensor_PK.Id);
+                            builderInsertAntenna.SetValue(c => c.SENSOR.Id, sensor_PK.Id);
                             builderInsertAntenna.Select(c => c.Id);
 
                             var sensorAntenna_PK = scope.Executor.Execute<MD.ISensorAntenna_PK>(builderInsertAntenna);
@@ -116,7 +116,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                         builderInsertAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
                                         builderInsertAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
                                         builderInsertAntennaPattern.SetValue(c => c.Gain, patt.Gain);
-                                        builderInsertAntennaPattern.SetValue(c => c.SensorAntennaId, sensorAntenna_PK.Id);
+                                        builderInsertAntennaPattern.SetValue(c => c.SENSOR_ANTENNA.Id, sensorAntenna_PK.Id);
                                         builderInsertAntennaPattern.Select(c => c.Id);
 
                                         scope.Executor.Execute(builderInsertAntennaPattern);
@@ -153,7 +153,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
                             builderInsertEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
                             builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
-                            builderInsertEquipment.SetValue(c => c.SensorId, sensor_PK.Id);
+                            builderInsertEquipment.SetValue(c => c.SENSOR.Id, sensor_PK.Id);
                             builderInsertEquipment.Select(c => c.Id);
 
                             var sensorEquipment_PK = scope.Executor.Execute<MD.ISensorEquipment_PK>(builderInsertEquipment);
@@ -171,7 +171,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
-                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, sensorEquipment_PK.Id);
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.SENSOR_EQUIP.Id, sensorEquipment_PK.Id);
                                     builderInsertSensorEquipmentSensitivities.Select(c => c.Id);
 
                                     scope.Executor.Execute(builderInsertSensorEquipmentSensitivities);
@@ -187,7 +187,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
                                     builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
                                     builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
-                                    builderInsertSensorPolygons.SetValue(c => c.SensorId, sensor_PK.Id);
+                                    builderInsertSensorPolygons.SetValue(c => c.SENSOR.Id, sensor_PK.Id);
                                     builderInsertSensorPolygons.Select(c => c.Id);
 
                                     scope.Executor.Execute(builderInsertSensorPolygons);
@@ -207,7 +207,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
                                     builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
                                     builderInsertSensLocations.SetValue(c => c.Status, location.Status);
-                                    builderInsertSensLocations.SetValue(c => c.SensorId, sensor_PK.Id);
+                                    builderInsertSensLocations.SetValue(c => c.SENSOR.Id, sensor_PK.Id);
                                     builderInsertSensLocations.Select(c => c.Id);
 
                                     scope.Executor.Execute(builderInsertSensLocations);
@@ -247,7 +247,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     ;
 
                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                    .Execute(query) == 1;
+                      .Execute(query) == 1;
 
                     if (sensorExistsInDb == false)
                     {

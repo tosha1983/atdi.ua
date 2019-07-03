@@ -138,7 +138,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             }
             finally
             {
-                _messagesSite.ChangeStatus(id, 0, statusCode, statusNote);
+                _messagesSite.ChangeStatus(id, (byte)0, statusCode, statusNote);
             }
             
         }

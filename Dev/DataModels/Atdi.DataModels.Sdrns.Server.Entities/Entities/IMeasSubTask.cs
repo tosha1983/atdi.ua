@@ -19,7 +19,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? TimeStop { get; set; }
         string Status { get; set; }
         int? Interval { get; set; }
-        long? MeasTaskId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
     }
 }

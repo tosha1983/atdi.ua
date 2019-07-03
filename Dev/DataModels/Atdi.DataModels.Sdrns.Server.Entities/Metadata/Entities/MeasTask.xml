@@ -28,7 +28,7 @@
     <Field Desc="TimeStart" Title="TimeStart" Name="TimeStart" DataType="DateTime" SourceName="TIME_START" SourceType="Column" Required="false"/>
     <Field Desc="TimeStop" Title="TimeStop" Name="TimeStop" DataType="DateTime" SourceName="TIME_STOP" SourceType="Column" Required="false"/>
     <Field Desc="Days" Title="Days" Name="Days" DataType="Text.250" SourceName="DAYS" SourceType="Column" Required="false"/>
-    <Field Desc="PerInterval" Title="PerInterval" Name="PerInterval" DataType="Decimal.22.8" SourceName="PER_INTERVAL" SourceType="Column" Required="false"/>
+    <Field Desc="PerInterval" Title="PerInterval" Name="PerInterval" DataType="Double.30.10" SourceName="PER_INTERVAL" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

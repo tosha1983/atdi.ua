@@ -16,12 +16,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorSensitivites : ISensorSensitivites_PK
     {
-        long? SensorEquipId { get; set; }
         double? Freq { get; set; }
         double? Ktbf { get; set; }
         double? Noisef { get; set; }
         double? FreqStability { get; set; }
         double? AddLoss { get; set; }
-        ISensorEquipment SENSOREQUIP { get; set; }
+        ISensorEquipment SENSOR_EQUIP { get; set; }
     }
 }

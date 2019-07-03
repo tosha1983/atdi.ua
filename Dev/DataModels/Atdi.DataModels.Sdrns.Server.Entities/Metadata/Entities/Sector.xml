@@ -11,18 +11,13 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
-    <Field Desc="Eirp" Title="Eirp" Name="Eirp" DataType="Decimal.22.8" SourceName="EIRP" SourceType="Column" Required="false"/>
-    <Field Desc="Azimut" Title="Azimut" Name="Azimut" DataType="Decimal.22.8" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
-    <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Desc="Eirp" Title="Eirp" Name="Eirp" DataType="Double.30.10" SourceName="EIRP" SourceType="Column" Required="false"/>
+    <Field Desc="Azimut" Title="Azimut" Name="Azimut" DataType="Double.30.10" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
+    <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="ClassEmission" Title="ClassEmission" Name="ClassEmission" DataType="Text.20" SourceName="CLASS_EMISSION" SourceType="Column" Required="false"/>
-    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="STATION_ID" SourceType="Column" Required="true"/>
     <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="ID_SECTOR" SourceType="Column" Required="true"/>
-    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation Sector to Station">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">StationId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="STATION" SourceName="Station" SourceType="Reference" Required="true" Desc="" Title="Relation Sector to Station"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

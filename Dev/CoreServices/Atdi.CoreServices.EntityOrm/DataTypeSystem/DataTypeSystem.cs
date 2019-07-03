@@ -28,6 +28,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._adapterTypes[(int)DataType.Boolean][(int)DataSourceVarType.BIT] = typeof(ValueAdapters.BooleanBIT);
             this._adapterTypes[(int)DataType.Byte][(int)DataSourceVarType.BIT] = typeof(ValueAdapters.ByteBIT);
             this._adapterTypes[(int)DataType.Byte][(int)DataSourceVarType.BYTE] = typeof(ValueAdapters.ByteBYTE);
+            this._adapterTypes[(int)DataType.Byte][(int)DataSourceVarType.INT08] = typeof(ValueAdapters.ByteINT08);
             this._adapterTypes[(int)DataType.Bytes][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.BytesBYTES);
             this._adapterTypes[(int)DataType.Bytes][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.BytesBLOB);
             this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.NVARCHAR] = typeof(ValueAdapters.StringNVARCHAR);
@@ -44,6 +45,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._adapterTypes[(int)DataType.Decimal][(int)DataSourceVarType.DECIMAL] = typeof(ValueAdapters.DecimalDECIMAL);
             this._adapterTypes[(int)DataType.Float][(int)DataSourceVarType.FLOAT] = typeof(ValueAdapters.FloatFLOAT);
             this._adapterTypes[(int)DataType.Double][(int)DataSourceVarType.DOUBLE] = typeof(ValueAdapters.DoubleDOUBLE);
+
 
             this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.StringBLOB);
             this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.StringBYTES);

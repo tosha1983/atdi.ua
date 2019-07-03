@@ -126,7 +126,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
             var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
                 .Update()
-                .SetValue(c => c.StatusCode, 2)
+                .SetValue(c => c.StatusCode, (byte)2)
                 .SetValue(c => c.ProcessedStartDate, DateTimeOffset.Now)
                 .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
@@ -202,7 +202,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
                 var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
                 .Update()
-                .SetValue(c => c.StatusCode, (long)this.Status)
+                .SetValue(c => c.StatusCode, (byte)this.Status)
                 .SetValue(c => c.StatusNote, this.ResultNote)
                 .SetValue(c => c.ProcessedFinishDate, DateTimeOffset.Now)
                 .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);

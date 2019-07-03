@@ -16,9 +16,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IReferenceSituation : IReferenceSituation_PK
     {
-        long? SensorId { get; set; }
-        long? MeasTaskId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
         ISensor SENSOR { get; set; }
     }
 }

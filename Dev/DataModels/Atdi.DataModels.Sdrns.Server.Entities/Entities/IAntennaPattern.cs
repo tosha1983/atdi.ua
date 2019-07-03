@@ -15,12 +15,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IAntennaPattern: IAntennaPattern_PK
     {
-        long? SensorAntennaId { get; set; }
         double? Freq { get; set; }
         double? Gain { get; set; }
         string DiagA { get; set; }
         string DiagH { get; set; }
         string DiagV { get; set; }
-        ISensorAntenna SENSORANTENNA { get; set; }
+        ISensorAntenna SENSOR_ANTENNA { get; set; }
     }
 }

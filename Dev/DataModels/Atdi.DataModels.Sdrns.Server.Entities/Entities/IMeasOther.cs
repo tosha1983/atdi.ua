@@ -21,7 +21,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string TypeSpectrumOccupation { get; set; }
         double? LevelMinOccup { get; set; }
         int? Nchenal { get; set; }
-        long? MeasTaskId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
     }
 }

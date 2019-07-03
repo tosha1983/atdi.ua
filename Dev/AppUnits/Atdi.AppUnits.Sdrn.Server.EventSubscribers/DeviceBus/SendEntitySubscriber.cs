@@ -35,7 +35,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
-                var cntNewRecords = 0;
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 try
                 {
@@ -54,12 +53,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertIEntity.SetValue(c => c.ParentType, entityObject.ParentType);
                         builderInsertIEntity.SetValue(c => c.Id, entityObject.EntityId);
 
-                        cntNewRecords = scope.Executor.Execute(builderInsertIEntity);
+                        scope.Executor.Execute(builderInsertIEntity);
 
                         scope.Commit();
+                        
                         // с этого момента нужно считать что сообщение удачно обработано
                         status = SdrnMessageHandlingStatus.Confirmed;
-                        //this._eventEmitter.Emit("OnSendEntity", "SendEntityProccesing");
+
                     }
                 }
                 catch (Exception e)
@@ -85,7 +85,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         deviceCommandResult.CustTxt1 = "Error";
                     }
-                    else if (cntNewRecords>0)
+                    else if (status == SdrnMessageHandlingStatus.Confirmed)
                     {
                         deviceCommandResult.CustTxt1 = "Success";
                     }

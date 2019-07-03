@@ -109,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                     var queryInsert = this._amqpMessageQueryBuilder
                         .Insert()
-                        .SetValue(c => c.StatusCode, 0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
+                        .SetValue(c => c.StatusCode, (byte)0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
                         .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
                         .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
                         .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
@@ -134,24 +134,17 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         .SetValue(c => c.BodyContent, Compressor.Compress(message.Body))
                         .Select(c => c.Id);
 
-                    
 
-                    long messageId = _queryExecutor.ExecuteAndFetch(queryInsert, reader =>
-                    {
-                        long id = -1;
-                        if (reader.Read())
-                        {
-                           id = reader.GetValue(c => c.Id);
-                        }
-                        return id;
-                    });
+                    var messageId_PK = _queryExecutor.Execute<MD.IAmqpMessage_PK>(queryInsert);
+
 
                     var eventQueryInsert = this._amqpEventQueryBuilder
                         .Insert()
-                        .SetValue(c => c.Id, messageId)
+                        .SetValue(c => c.Id, messageId_PK.Id)
                         .SetValue(c => c.PropType, message.Type);
 
-                    _queryExecutor.Execute(eventQueryInsert);
+
+                    _queryExecutor.Execute<MD.IAmqpEvent_PK>(eventQueryInsert);
 
                     _messageProcessing.OnCreatedMessage();
 

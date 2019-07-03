@@ -3068,7 +3068,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
         private void WriteLog(string msg, string tableName)
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            var builderInsertLog = this._dataLayer.GetBuilder<MD.ILogs>().Insert();
+            var builderInsertLog = this._dataLayer.GetBuilder<MD.IValidationLogs>().Insert();
             builderInsertLog.SetValue(c => c.TableName, tableName);
             builderInsertLog.SetValue(c => c.When, DateTime.Now);
             builderInsertLog.SetValue(c => c.Who, "");

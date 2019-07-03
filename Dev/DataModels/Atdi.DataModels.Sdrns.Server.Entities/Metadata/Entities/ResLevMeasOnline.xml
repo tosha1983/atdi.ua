@@ -11,7 +11,7 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Value" Title="Value" Name="Value" DataType="Decimal.22.8" SourceName="VALUE" SourceType="Column" Required="false"/>
+    <Field Desc="Value" Title="Value" Name="Value" DataType="Double.30.10" SourceName="VALUE" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
     <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLevMeasOnline to ResMeas">
       <PrimaryKeyMapping>

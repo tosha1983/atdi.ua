@@ -16,7 +16,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISensorLocation : ISensorLocation_PK
     {
-        long? SensorId { get; set; }
         DateTime? DateFrom { get; set; }
         DateTime? DateTo { get; set; }
         DateTime? DateCreated { get; set; }

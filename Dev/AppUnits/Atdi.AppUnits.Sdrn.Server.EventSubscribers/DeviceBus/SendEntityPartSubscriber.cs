@@ -38,26 +38,26 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
                 var status = SdrnMessageHandlingStatus.Unprocessed;
-                int valIns = 0;
                 try
                 {
                     var entityObject = deliveryObject;
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
                         scope.BeginTran();
+
                         var builderInsertIEntityPart = this._dataLayer.GetBuilder<MD.IEntityPart>().Insert();
                         builderInsertIEntityPart.SetValue(c => c.Content, entityObject.Content);
-                        builderInsertIEntityPart.SetValue(c => c.EntityId, entityObject.EntityId);
+                        builderInsertIEntityPart.SetValue(c => c.ENTITY.Id, entityObject.EntityId);
                         builderInsertIEntityPart.SetValue(c => c.Eof, entityObject.EOF);
                         builderInsertIEntityPart.SetValue(c => c.PartIndex, entityObject.PartIndex);
 
-                        valIns = scope.Executor
+                        scope.Executor
                             .Execute(builderInsertIEntityPart);
 
                         scope.Commit();
+                        
                         // с этого момента нужно считать что сообщение удачно обработано
                         status = SdrnMessageHandlingStatus.Confirmed;
-                        //this._eventEmitter.Emit("OnSendEntityPart", "SendEntityPartProccesing");
                     }
                 }
                 catch (Exception e)
@@ -83,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         deviceCommandResult.CustTxt1 = "Error";
                     }
-                    else if (valIns > 0)
+                    else if (status == SdrnMessageHandlingStatus.Confirmed)
                     {
                         deviceCommandResult.CustTxt1 = "Success";
                     }

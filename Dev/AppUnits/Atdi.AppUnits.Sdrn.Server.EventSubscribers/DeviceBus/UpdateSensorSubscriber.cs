@@ -87,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 var querySensorAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>()
                                 .From()
                                 .Select(c => c.Id)
-                                .Where(c => c.SensorId, ConditionOperator.Equal, idSensor)
+                                .Where(c => c.SENSOR.Id, ConditionOperator.Equal, idSensor)
                                 .OrderByAsc(c => c.Id)
                                 ;
 
@@ -128,7 +128,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
                                     builderInsertAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
                                     builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
-                                    builderInsertAntenna.SetValue(c => c.SensorId, idSensor);
+                                    builderInsertAntenna.SetValue(c => c.SENSOR.Id, idSensor);
                                     builderInsertAntenna.Select(c => c.Id);
 
                                     var sensorAntenna_PK = scope.Executor.Execute<MD.ISensorAntenna_PK>(builderInsertAntenna);
@@ -175,7 +175,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 var querySensorAntennaPatterns = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
                                                 .From()
                                                 .Select(c => c.Id)
-                                                .Where(c => c.SensorAntennaId, ConditionOperator.Equal, idSensorAntenna)
+                                                .Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.Equal, idSensorAntenna)
                                                 .Where(c => c.Freq, ConditionOperator.Equal, patt.Freq_MHz)
                                                 .Where(c => c.Gain, ConditionOperator.Equal, patt.Gain)
                                                 .OrderByAsc(c => c.Id)
@@ -200,7 +200,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderUpdateAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
                                                     builderUpdateAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
                                                     builderUpdateAntennaPattern.SetValue(c => c.Gain, patt.Gain);
-                                                    builderUpdateAntennaPattern.SetValue(c => c.SensorAntennaId, idSensorAntenna);
                                                     builderUpdateAntennaPattern.Where(c => c.Id, ConditionOperator.Equal, idSensorAntennaPattern);
 
                                                     scope.Executor
@@ -214,7 +213,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderInsertAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
                                                     builderInsertAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
                                                     builderInsertAntennaPattern.SetValue(c => c.Gain, patt.Gain);
-                                                    builderInsertAntennaPattern.SetValue(c => c.SensorAntennaId, idSensorAntenna);
+                                                    builderInsertAntennaPattern.SetValue(c => c.SENSOR_ANTENNA.Id, idSensorAntenna);
                                                     builderInsertAntennaPattern.Select(c => c.Id);
 
 
@@ -233,7 +232,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 var querySensorEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>()
                                            .From()
                                            .Select(c => c.Id)
-                                           .Where(c => c.SensorId, ConditionOperator.Equal, idSensor)
+                                           .Where(c => c.SENSOR.Id, ConditionOperator.Equal, idSensor)
                                            .OrderByAsc(c => c.Id)
                                            ;
 
@@ -276,7 +275,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
                                     builderInsertEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
                                     builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
-                                    builderInsertEquipment.SetValue(c => c.SensorId, idSensor);
+                                    builderInsertEquipment.SetValue(c => c.SENSOR.Id, idSensor);
                                     builderInsertEquipment.Select(c => c.Id);
 
                                     var sensorEquipment_PK = scope.Executor.Execute<MD.ISensorEquipment_PK>(builderInsertEquipment);
@@ -325,7 +324,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 var querySensorSensitivites = this._dataLayer.GetBuilder<MD.ISensorSensitivites>()
                                                .From()
                                                .Select(c => c.Id)
-                                               .Where(c => c.SensorEquipId, ConditionOperator.Equal, idSensorEquipment)
+                                               .Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.Equal, idSensorEquipment)
                                                .Where(c => c.AddLoss, ConditionOperator.Equal, senseqps.AddLoss)
                                                .Where(c => c.Freq, ConditionOperator.Equal, senseqps.Freq_MHz)
                                                .Where(c => c.FreqStability, ConditionOperator.Equal, senseqps.FreqStability)
@@ -352,7 +351,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderUpdateSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
                                                     builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
                                                     builderUpdateSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
-                                                    builderUpdateSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, idSensorEquipment);
                                                     builderUpdateSensorEquipmentSensitivities.Where(c => c.Id, ConditionOperator.Equal, idSensorEquipmentSensitivities);
                                                     scope.Executor
                                                    .Execute(builderUpdateSensorEquipmentSensitivities);
@@ -365,7 +363,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
                                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
                                                     builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
-                                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, idSensorEquipment);
+                                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.SENSOR_EQUIP.Id, idSensorEquipment);
                                                     builderInsertSensorEquipmentSensitivities.Select(c => c.Id);
 
                                                     
@@ -386,7 +384,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             var querySensorPolygon = this._dataLayer.GetBuilder<MD.ISensorPolygon>()
                                             .From()
                                             .Select(c => c.Id)
-                                            .Where(c => c.SensorId, ConditionOperator.Equal, idSensor)
+                                            .Where(c => c.SENSOR.Id, ConditionOperator.Equal, idSensor)
                                             .Where(c => c.Lat, ConditionOperator.Equal, geo.Lat)
                                             .Where(c => c.Lon, ConditionOperator.Equal, geo.Lon)
                                             .OrderByAsc(c => c.Id);
@@ -402,14 +400,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             return result;
                                         });
 
-                                            long idsensPolygon = -1;
-
                                             if (idSensorPolygon == -1)
                                             {
                                                 var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
                                                 builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
                                                 builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
-                                                builderInsertSensorPolygons.SetValue(c => c.SensorId, idSensor);
+                                                builderInsertSensorPolygons.SetValue(c => c.SENSOR.Id, idSensor);
                                                 builderInsertSensorPolygons.Select(c => c.Id);
 
                                                 scope.Executor.Execute(builderInsertSensorPolygons);
@@ -420,7 +416,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 var builderUpdateSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Update();
                                                 builderUpdateSensorPolygons.SetValue(c => c.Lat, geo.Lat);
                                                 builderUpdateSensorPolygons.SetValue(c => c.Lon, geo.Lon);
-                                                builderUpdateSensorPolygons.SetValue(c => c.SensorId, idSensor);
                                                 builderUpdateSensorPolygons.Where(c => c.Id, ConditionOperator.Equal, idSensorPolygon);
                                                 scope.Executor
                                                 .Execute(builderUpdateSensorPolygons);
@@ -439,7 +434,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             var querySensorPolygon = this._dataLayer.GetBuilder<MD.ISensorLocation>()
                                             .From()
                                             .Select(c => c.Id)
-                                            .Where(c => c.SensorId, ConditionOperator.Equal, idSensor)
+                                            .Where(c => c.SENSOR.Id, ConditionOperator.Equal, idSensor)
                                             .Where(c => c.Status, ConditionOperator.Equal, "A")
                                             .OrderByAsc(c => c.Id);
 
@@ -460,7 +455,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             return result;
                                         });
 
-                                            long sensorLocation = -1;
                                             var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                             builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
                                             builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
@@ -468,7 +462,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
                                             builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
                                             builderInsertSensLocations.SetValue(c => c.Status, "A");
-                                            builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
+                                            builderInsertSensLocations.SetValue(c => c.SENSOR.Id, idSensor);
                                             builderInsertSensLocations.Select(c => c.Id);
 
                                             scope.Executor.Execute(builderInsertSensLocations);
@@ -509,7 +503,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     ;
 
                     sensorExistsInDb = this._dataLayer.Executor<SdrnServerDataContext>()
-                    .Execute(query) == 1;
+                       .Execute(query) == 1;
+          
 
                     if (sensorExistsInDb == true)
                     {
@@ -519,11 +514,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     // с этого момента нужно считать что сообщение удачно обработано
                     status = SdrnMessageHandlingStatus.Confirmed;
 
-                    // отправка события если новый сенсор создан в БД
-                    //if (sensorUpdate)
-                    //{
-                    //    this._eventEmitter.Emit("OnSensorUpdate", "UpdateSensorProccesing");
-                    //}
                 }
                 catch (Exception e)
                 {

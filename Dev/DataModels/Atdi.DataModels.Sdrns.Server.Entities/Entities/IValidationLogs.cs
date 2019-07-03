@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [EntityPrimaryKeyAttribute]
-    public interface ILogs_PK
+    public interface IValidationLogs_PK
     {
         long Id { get; set; }
     }
 
     [Entity]
-    public interface ILogs: ILogs_PK
+    public interface IValidationLogs : IValidationLogs_PK
     {
         string Event { get; set; }
         string TableName { get; set; }

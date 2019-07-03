@@ -1341,7 +1341,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSensorPolygon.Select(c => c.Id);
                         builderSensorPolygon.Select(c => c.Lon);
                         builderSensorPolygon.Select(c => c.Lat);
-                        builderSensorPolygon.Where(c => c.SensorId, ConditionOperator.In, listIntEmittingSensorPolygon[i]);
+                        builderSensorPolygon.Where(c => c.SENSOR.Id, ConditionOperator.In, listIntEmittingSensorPolygon[i]);
                         builderSensorPolygon.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderSensorPolygon, readerSensorPolygon =>
                         {
@@ -1726,9 +1726,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         var builderStation = this._dataLayer.GetBuilder<MD.IStation>().From();
-                        builderStation.Select(c => c.MeasTaskId);
+                        builderStation.Select(c => c.MEAS_TASK.Id);
                         builderStation.Select(c => c.Id);
-                        builderStation.Select(c => c.StationSiteId);
+                        builderStation.Select(c => c.STATION_SITE.Id);
                         builderStation.Where(c => c.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.StationId));
                         builderStation.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderStation, readerStation =>
@@ -1742,7 +1742,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderStationSite.Select(c => c.Lat);
                                 builderStationSite.Select(c => c.Lon);
                                 builderStationSite.Select(c => c.Region);
-                                builderStationSite.Where(c => c.Id, ConditionOperator.Equal, readerStation.GetValue(c => c.StationSiteId));
+                                builderStationSite.Where(c => c.Id, ConditionOperator.Equal, readerStation.GetValue(c => c.STATION_SITE.Id));
                                 builderStationSite.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderStationSite, readerStationSite =>
                                 {
