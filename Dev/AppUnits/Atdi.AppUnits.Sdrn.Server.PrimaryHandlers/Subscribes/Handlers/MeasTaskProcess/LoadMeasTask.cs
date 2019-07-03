@@ -98,10 +98,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
                         builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
                         builderMeasTaskSignaling.Select(c => c.FiltrationTrace);
-                        builderMeasTaskSignaling.Select(c => c.IdMeasTask);
+                        builderMeasTaskSignaling.Select(c => c.MEAS_TASK.Id);
                         builderMeasTaskSignaling.Select(c => c.SignalizationNChenal);
                         builderMeasTaskSignaling.Select(c => c.SignalizationNCount);
-                        builderMeasTaskSignaling.Where(c => c.IdMeasTask, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
                         {
                             var resultMeasTaskSignaling = true;
@@ -218,8 +218,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var measStations = new List<MeasStation>();
                         var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
                         builderMeasstation.Select(c => c.Id);
-                        builderMeasstation.Select(c => c.STATION.Id);
                         builderMeasstation.Select(c => c.MEAS_TASK.Id);
+                        builderMeasstation.Select(c => c.IdStation);
                         builderMeasstation.Select(c => c.StationType);
                         builderMeasstation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasstation, readerMeasStation =>
@@ -228,7 +228,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             {
                                 var measStation = new MeasStation();
                                 measStation.StationId = new MeasStationIdentifier();
-                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.STATION.Id);
+                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.IdStation).Value;
                                 measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
                                 measStations.Add(measStation);
                             }

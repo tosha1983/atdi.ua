@@ -19,7 +19,7 @@
     <Field Desc="CloseDate" Title="CloseDate" Name="CloseDate" DataType="DateTime" SourceName="CLOSE_DATE" SourceType="Column" Required="false"/>
     <Field Desc="DozvilName" Title="DozvilName" Name="DozvilName" DataType="Text.100" SourceName="DOZVIL_NAME" SourceType="Column" Required="false"/>
     <Field Desc="IdStation" Title="IdStation" Name="IdStation" DataType="Integer.64" SourceName="ID_STATION" SourceType="Column" Required="true"/>
-    <Field Desc="IdPermission" Title="IdPermission" Name="IdPermission" DataType="Integer.64" SourceName="ID_PERMISSION" SourceType="Column" Required="true"/>
+    <Field Desc="IdPermission" Title="IdPermission" Name="IdPermission" DataType="Integer.32" SourceName="ID_PERMISSION" SourceType="Column" Required="true"/>
     <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasLocationParam to MeasTask"/>
     <Field Name="STATION_SITE" SourceName="StationSite" SourceType="Reference" Required="true" Desc="" Title="Relation Station to StationSite"/>
     <Field Name="OWNER_DATA" SourceName="OwnerData" SourceType="Reference" Required="true" Desc="" Title="Relation Station to OwnerData"/>

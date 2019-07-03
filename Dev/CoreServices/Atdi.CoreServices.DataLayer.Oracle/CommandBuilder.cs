@@ -464,7 +464,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public void Insert(string schema, string source, string[] fields, EngineCommandParameter[] values)
         {
-            var fieldsClause = string.Join(", ", fields.Select(f => $"{f}").ToArray());
+            var fieldsClause = string.Join(", ", fields.Select(f => $"\"{f}\"").ToArray());
             _sql.AppendLine($"INSERT INTO {schema}.{source}({fieldsClause})");
 
             var valuesClause = string.Join(", ", values.Select(v => $":{v.Name}").ToArray());
@@ -583,12 +583,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public string CreateSelectColumn(string sourceAlias, string memberName, string columnAlias)
         {
-            return $"    {sourceAlias}.{memberName}  {columnAlias}";
+            return $"    {sourceAlias}.\"{memberName}\"  {columnAlias}";
         }
         public string CreateSourceObject(string schema, string source, string alias)
         {
-            //return $"{schema}.{source} AS {alias}";
-            return $"{schema}.{source} {alias}";
+            return $"{schema}.\"{source}\" {alias}";
         }
 
         public string CreateTwoOperandExpression(TwoOperandOperator logOperator, string leftOperand, string rightOperand)
@@ -733,8 +732,8 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public void OpenCursor(string schema, string cursorName, string source, Dictionary<string, string> fields)
         {
-            var fieldsName = string.Join(", ", fields.Select(f => $"{f.Value}").ToArray());
-            var fieldsValues = string.Join("AND ", fields.Select(f => $"{f.Value.ToString()} = :{f.Key.ToString()}").ToArray());
+            var fieldsName = string.Join(", ", fields.Select(f => $"\"{f.Value}\"").ToArray());
+            var fieldsValues = string.Join("AND ", fields.Select(f => $"\"{f.Value.ToString()}\" = :{f.Key.ToString()}").ToArray());
             _sql.AppendLine($" OPEN :{cursorName} FOR SELECT {fieldsName} FROM {schema}.{source} WHERE {fieldsValues}; ");
         }
 

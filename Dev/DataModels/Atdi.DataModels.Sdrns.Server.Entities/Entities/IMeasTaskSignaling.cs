@@ -23,7 +23,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? allowableExcess_dB { get; set; }
         int? SignalizationNCount { get; set; }
         int? SignalizationNChenal { get; set; }
-        long? IdMeasTask { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
     }
 }
