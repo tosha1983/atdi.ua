@@ -68,6 +68,12 @@
     <Compile Include="IPlatformInstaller.cs" />
     <Compile Include="IResourceResolver.cs" />
     <Compile Include="ITypeResolver.cs" />
+    <Compile Include="Licensing\ILicenseVerifier.cs" />
+    <Compile Include="Licensing\ILicensingManager.cs" />
+    <Compile Include="Licensing\InvalidLicenseException.cs" />
+    <Compile Include="Licensing\IVerificationResult.cs" />
+    <Compile Include="Licensing\LicenseTokenExpiredException.cs" />
+    <Compile Include="Licensing\LicensingManager.cs" />
     <Compile Include="Logging\IEventFormatter.cs" />
     <Compile Include="Logging\IConsoleEventWriter.cs" />
     <Compile Include="Logging\ILogConfig.cs" />

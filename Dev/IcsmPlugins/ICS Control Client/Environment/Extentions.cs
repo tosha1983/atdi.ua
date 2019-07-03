@@ -167,6 +167,26 @@ namespace XICSM.ICSControlClient
             return value;
         }
 
+        public static long? ToNull(this long value)
+        {
+            if (value == IM.NullI)
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        public static long? ToNull(this long? value)
+        {
+            if (value == null || value == IM.NullI)
+            {
+                return null;
+            }
+
+            return value;
+        }
+
         public static DateTime? ToNull(this DateTime value)
         {
             if (value == IM.NullT)

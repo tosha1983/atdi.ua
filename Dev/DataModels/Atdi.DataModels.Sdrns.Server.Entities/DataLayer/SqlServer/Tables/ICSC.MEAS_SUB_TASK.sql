@@ -7,7 +7,7 @@ create table [ICSC].[MEAS_SUB_TASK] (
 	[TIME_STOP]	[datetime] null,
 	[STATUS]	[nvarchar](50) null,
 	[INTERVAL]	[int] null,
-	[ID_MEASTASK]	[bigint] null,
+	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_SUB_TASK] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

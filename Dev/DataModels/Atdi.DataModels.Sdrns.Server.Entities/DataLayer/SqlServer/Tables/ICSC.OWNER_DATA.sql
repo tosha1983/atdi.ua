@@ -8,7 +8,7 @@ create table [ICSC].[OWNER_DATA] (
 	[ZIP]	[varchar](50) null,
 	[CODE]	[varchar](50) null,
 	[ADDRES]	[varchar](2000) null,
-	[ID_STATIONDATFORM]	[bigint] null,
+	[STATION_ID]	[bigint] null,
 	constraint [PK_OWNER_DATA] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

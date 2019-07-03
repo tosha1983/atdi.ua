@@ -9,7 +9,7 @@ create table [ICSC].[FREQ_SAMPLE] (
 	[LEVEL_MIN_DBM]	[float] null,
 	[LEVEL_MAX_DBM]	[float] null,
 	[OCCUPATION_PT]	[float] null,
-	[RESMEAS_ID]	[bigint] null,
+	[RES_MEAS_ID]	[bigint] null,
 	constraint [PK_FREQ_SAMPLE] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

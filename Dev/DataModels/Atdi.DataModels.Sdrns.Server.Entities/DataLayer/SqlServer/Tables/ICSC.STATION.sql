@@ -12,8 +12,8 @@ create table [ICSC].[STATION] (
 	[END_DATE]	[datetime] null,
 	[CLOSE_DATE]	[datetime] null,
 	[DOZVIL_NAME]	[nvarchar](100) null,
-	[ID_OWNERDATA]	[bigint] null,
-	[ID_STATIONSITE]	[bigint] null,
+	[OWNER_DATA_ID]	[bigint] null,
+	[STATION_SITE_ID]	[bigint] null,
 	[ID_PERMISSION]	[bigint] null,
 	constraint [PK_STATION] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

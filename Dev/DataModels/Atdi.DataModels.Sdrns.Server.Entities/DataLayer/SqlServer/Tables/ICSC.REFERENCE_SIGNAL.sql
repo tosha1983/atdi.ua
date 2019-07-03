@@ -6,7 +6,7 @@ create table [ICSC].[REFERENCE_SIGNAL] (
 	[FREQ_MHZ]	[numeric](22,8) null,
 	[BANDWIDTH_KHZ]	[numeric](22,8) null,
 	[LEVELSIGNAL_DBM]	[numeric](22,8) null,
-	[REFSITUATION_ID]	[bigint] null,
+	[REFERENCE_SITUATION_ID]	[bigint] null,
 	[ICSC_ID]	[bigint] null,
 	[ICSC_TABLE]	[nvarchar](50) null,
 	[LOSS_DB]	[varbinary](max) null,

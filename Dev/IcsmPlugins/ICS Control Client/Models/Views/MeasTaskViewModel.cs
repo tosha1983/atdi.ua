@@ -12,7 +12,7 @@ namespace XICSM.ICSControlClient.Models.Views
     public class MeasTaskViewModel : IDataErrorInfo
     {
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int? OrderId { get; set; }
 

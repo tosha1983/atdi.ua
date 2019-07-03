@@ -14,7 +14,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public string StationId { get; set; }
 
         [WpfColumn("SectorId", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int? SectorId { get; set; }
+        public long? SectorId { get; set; }
 
         [WpfColumn("Status", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string Status { get; set; }

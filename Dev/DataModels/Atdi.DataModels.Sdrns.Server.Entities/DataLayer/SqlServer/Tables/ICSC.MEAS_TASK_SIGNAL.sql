@@ -10,7 +10,7 @@ create table [ICSC].[MEAS_TASK_SIGNAL] (
 	[ALLOW_EXCESS_DB]	[numeric](22,8) null,
 	[SIGN_NCOUNT]	[int] null,
 	[SIGN_NCHENAL]	[int] null,
-	[ID_MEASTASK]	[bigint] null,
+	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_TASK_SIGNAL] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

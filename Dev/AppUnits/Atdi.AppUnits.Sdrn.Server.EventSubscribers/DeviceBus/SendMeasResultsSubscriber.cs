@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
-                var  status = SdrnMessageHandlingStatus.Unprocessed;
+                //var  status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed=false;
                 var reasonFailure = "";
                 try
@@ -64,7 +64,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 catch (Exception e)
                 {
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
-                    status = SdrnMessageHandlingStatus.Error;
+                    //status = SdrnMessageHandlingStatus.Error;
                     reasonFailure = e.StackTrace;
                 }
                 finally
@@ -401,10 +401,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         var builderInsertReferenceLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Insert();
                         builderInsertReferenceLevels.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
                         builderInsertReferenceLevels.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
-                        //if (refLevels.levels != null)
-                        //{
-                        //    builderInsertReferenceLevels.SetValue(c => c.RefLevels, refLevels.levels);
-                        //}
+                        if (refLevels.levels != null)
+                        {
+                            builderInsertReferenceLevels.SetValue(c => c.RefLevels, refLevels.levels);
+                        }
                         builderInsertReferenceLevels.SetValue(c => c.ResMeasId, valInsResMeas.Id);
                         this._queryExecutor.Execute<MD.IReferenceLevels_PK>(builderInsertReferenceLevels);
                     }
@@ -426,14 +426,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertEmitting.SetValue(c => c.StartFrequency_MHz, emitting.StartFrequency_MHz);
                             builderInsertEmitting.SetValue(c => c.StopFrequency_MHz, emitting.StopFrequency_MHz);
                             builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emitting.TriggerDeviationFromReference);
-                            //var levelsDistribution = emitting.LevelsDistribution;
-                            //if (levelsDistribution != null)
-                            //{
-                            //    builderInsertEmitting.SetValue(c => c.LevelsDistributionCount, levelsDistribution.Count);
-                            //    builderInsertEmitting.SetValue(c => c.LevelsDistributionLvl, levelsDistribution.Levels);
-                            //}
-                            //builderInsertEmitting.SetValue(c => c.Loss_dB, emitting.SignalMask.Loss_dB);
-                            //builderInsertEmitting.SetValue(c => c.Freq_kHz, emitting.SignalMask.Freq_kHz);
+                            var levelsDistribution = emitting.LevelsDistribution;
+                            if (levelsDistribution != null)
+                            {
+                                builderInsertEmitting.SetValue(c => c.LevelsDistributionCount, levelsDistribution.Count);
+                                builderInsertEmitting.SetValue(c => c.LevelsDistributionLvl, levelsDistribution.Levels);
+                            }
+                            builderInsertEmitting.SetValue(c => c.Loss_dB, emitting.SignalMask.Loss_dB);
+                            builderInsertEmitting.SetValue(c => c.Freq_kHz, emitting.SignalMask.Freq_kHz);
                             var valInsReferenceEmitting = this._queryExecutor.Execute<MD.IEmitting_PK>(builderInsertEmitting);
 
                             if (valInsReferenceEmitting.Id > 0)
@@ -467,7 +467,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertISpectrum.SetValue(c => c.T1, spectrum.T1);
                                     builderInsertISpectrum.SetValue(c => c.T2, spectrum.T2);
                                     builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
-                                    //builderInsertISpectrum.SetValue(c => c.Levels_dBm, spectrum.Levels_dBm);
+                                    builderInsertISpectrum.SetValue(c => c.Levels_dBm, spectrum.Levels_dBm);
                                     this._queryExecutor.Execute<MD.ISpectrum_PK>(builderInsertISpectrum);
                                 }
                             }
@@ -518,7 +518,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, generalResult.SpectrumSteps_kHz);
             builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
             builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
-            //builderInsertResStGeneral.SetValue(c => c.LevelsSpectrumdBm, station.GeneralResult.LevelsSpectrum_dBm);
+            builderInsertResStGeneral.SetValue(c => c.LevelsSpectrumdBm, station.GeneralResult.LevelsSpectrum_dBm);
             builderInsertResStGeneral.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
             builderInsertResStGeneral.Select(c => c.Id);
             var IDResGeneral = this._queryExecutor.Execute<MD.IResStGeneral_PK>(builderInsertResStGeneral);
