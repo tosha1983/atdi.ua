@@ -11,7 +11,7 @@ namespace Atdi.Test.Platform
     {
         public MeasResults BuildTestMeasResults()
         {
-            var c = 1;
+            var c = 100;
             var emottingsCount = c;
             var frequenciesCount = c;
             var frequencySamplesCount = c;
@@ -49,7 +49,7 @@ namespace Atdi.Test.Platform
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.SpectrumOccupation,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),

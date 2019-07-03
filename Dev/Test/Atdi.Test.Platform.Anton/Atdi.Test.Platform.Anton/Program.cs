@@ -25,7 +25,12 @@ namespace Atdi.Test.Platform
 
                     var logger = resolver.Resolve<ILogger>();
                     //DataLayerTest.Run(resolver);
-                    EntityOrmTest.Run(resolver, logger);
+                    for (int i = 0; i < 100; i++)
+                    {
+                        EntityOrmTest.Run(resolver, logger);
+                    }
+
+                    
 
                     //LoggerTest.Run(logger);
 

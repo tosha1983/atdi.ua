@@ -134,9 +134,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 if (measResult.StartTime > measResult.StopTime)
                     WriteLog("StartTime must be less than StopTime", "IResMeas");
 
-                int subMeasTaskId = -1; int subMeasTaskStaId = -1; int sensorId = -1; int resultId = -1;
-                GetIds(measResult.ResultId, measResult.TaskId, out subMeasTaskId, out subMeasTaskStaId, out sensorId, out resultId);
-
+                GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
                 long valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
@@ -165,13 +163,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 validationResult = false;
                                 WriteLog("Incorrect value Occupation_Pt", "IFreqSample");
                             }
-                                
                             if (freqSample.Freq_MHz < 0 && freqSample.Freq_MHz >= 400000)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Freq_MHz", "IFreqSample");
                             }
-
                             var builderInsertResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Insert();
                             if (freqSample.LevelMax_dBm >= -150 && freqSample.LevelMax_dBm <= 20)
                                 builderInsertResLevels.SetValue(c => c.VMMaxLvl, freqSample.LevelMax_dBm);
@@ -188,7 +184,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 this._queryExecutor.Execute(builderInsertResLevels);
                         }
                     }
-
                     if (this.ValidateGeoLocation(measResult.Location, "IResMeas"))
                     {
                         var builderInsertResLocSensorMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Insert();
@@ -247,7 +242,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
 
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
-
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId != -1 ? resultId.ToString() : measResult.ResultId);
                 builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
