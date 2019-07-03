@@ -4,8 +4,8 @@ go
 create table [ICSC].[SENSOR_POLIG] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[SENSOR_ID]	[bigint] null,
-	[LON]	[numeric](22,8) null,
-	[LAT]	[numeric](22,8) null,
+	[LON]	[float] null,
+	[LAT]	[float] null,
 	constraint [PK_SENSOR_POLIG] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

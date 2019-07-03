@@ -14,12 +14,7 @@
     <Field Desc="StartFrequency_Hz" Title="StartFrequency_Hz" Name="StartFrequency_Hz" DataType="Double.30.10" SourceName="STARTFREQ_HZ" SourceType="Column" Required="false"/>
     <Field Desc="StepFrequency_Hz" Title="StepFrequency_Hz" Name="StepFrequency_Hz" DataType="Double.30.10" SourceName="STEPFREQ_HZ" SourceType="Column" Required="false"/>
     <Field Desc="RefLevels" Title="RefLevels" Name="RefLevels" DataType="Array.Float" SourceName="REF_LEVELS" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ReferenceLevels to ResMeas">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ReferenceLevels to ResMeas"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -11,14 +11,9 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="ResStGeneralId" Title="ResStGeneralId" Name="ResStGeneralId" DataType="Integer.64" SourceName="RES_STGENERAL_ID" SourceType="Column" Required="false"/>
     <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="Level" Title="Level" Name="Level" DataType="Double.30.10" SourceName="LEVEL" SourceType="Column" Required="false"/>
-    <Field Name="RESSTGENERAL" SourceType="Reference" SourceName="ResStGeneral" Title="Relation ResStMaskElement to ResStGeneral">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResStGeneralId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Title="Relation ResStMaskElement to ResStGeneral"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

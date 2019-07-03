@@ -20,7 +20,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Lat { get; set; }
         double? Asl { get; set; }
         double? Agl { get; set; }
-        long? ResMeasId { get; set; }
-        IResMeas RESMEAS { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }

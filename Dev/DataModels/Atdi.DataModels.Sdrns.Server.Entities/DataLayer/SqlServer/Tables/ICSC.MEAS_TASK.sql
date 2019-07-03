@@ -20,7 +20,7 @@ create table [ICSC].[MEAS_TASK] (
 	[TIME_START]	[datetime] null,
 	[TIME_STOP]	[datetime] null,
 	[DAYS]	[nvarchar](250) null,
-	[PER_INTERVAL]	[numeric](22,8) null,
+	[PER_INTERVAL]	[float] null,
 	constraint [PK_MEAS_TASK] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

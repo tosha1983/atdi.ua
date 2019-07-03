@@ -11,7 +11,6 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="ResMeasStaId" Title="ResMeasStaId" Name="ResMeasStaId" DataType="Integer.64" SourceName="RES_MEAS_STATION_ID" SourceType="Column" Required="false"/>
     <Field Desc="CentralFrequency" Title="CentralFrequency" Name="CentralFrequency" DataType="Double.30.10" SourceName="CENTRAL_FREQUENCY" SourceType="Column" Required="false"/>
     <Field Desc="CentralFrequencyMeas" Title="CentralFrequencyMeas" Name="CentralFrequencyMeas" DataType="Double.30.10" SourceName="CENTRAL_FREQUENCY_MEAS" SourceType="Column" Required="false"/>
     <Field Desc="DurationMeas" Title="DurationMeas" Name="DurationMeas" DataType="Double.30.10" SourceName="DURATION_MEAS" SourceType="Column" Required="false"/>
@@ -29,11 +28,7 @@
     <Field Desc="Vbw" Title="Vbw" Name="Vbw" DataType="Double.30.10" SourceName="VBW" SourceType="Column" Required="false"/>
     <Field Desc="BW" Title="BW" Name="BW" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="LevelsSpectrumdBm" Title="LevelsSpectrumdBm" Name="LevelsSpectrumdBm" DataType="Array.Float" SourceName="LEVEL_SSPECTRUM_DBM" SourceType="Column" Required="false"/>
-    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStGeneral to ResMeasStation">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="RES_MEAS_STATION" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStGeneral to ResMeasStation"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

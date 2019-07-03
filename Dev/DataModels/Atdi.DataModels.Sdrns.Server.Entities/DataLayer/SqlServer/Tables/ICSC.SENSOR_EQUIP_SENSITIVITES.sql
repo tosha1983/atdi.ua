@@ -4,11 +4,11 @@ go
 create table [ICSC].[SENSOR_EQUIP_SENSITIVITES] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[SENSOR_EQUIP_ID]	[bigint] null,
-	[FREQ]	[numeric](22,8) null,
-	[KTBF]	[numeric](22,8) null,
-	[NOISEF]	[numeric](22,8) null,
-	[FREQ_STABILITY]	[numeric](22,8) null,
-	[ADDLOSS]	[numeric](22,8) null,
+	[FREQ]	[float] null,
+	[KTBF]	[float] null,
+	[NOISEF]	[float] null,
+	[FREQ_STABILITY]	[float] null,
+	[ADDLOSS]	[float] null,
 	constraint [PK_SENSOR_EQUIP_SENSITIVITES] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

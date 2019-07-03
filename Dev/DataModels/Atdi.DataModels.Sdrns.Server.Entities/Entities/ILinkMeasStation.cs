@@ -16,9 +16,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILinkMeasStation: ILinkMeasStation_PK
     {
-        long? MeasTaskId { get; set; }
-        long? StationId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
         IStation STATION { get; set; }
     }
 }

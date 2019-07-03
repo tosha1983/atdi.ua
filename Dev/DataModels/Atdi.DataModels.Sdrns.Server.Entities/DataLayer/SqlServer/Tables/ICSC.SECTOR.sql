@@ -3,10 +3,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[SECTOR]')
 go
 create table [ICSC].[SECTOR] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[AGL]	[numeric](22,8) null,
-	[EIRP]	[numeric](22,8) null,
-	[AZIMUTH]	[numeric](22,8) null,
-	[BW]	[numeric](22,8) null,
+	[AGL]	[float] null,
+	[EIRP]	[float] null,
+	[AZIMUTH]	[float] null,
+	[BW]	[float] null,
 	[CLASS_EMISSION]	[nvarchar](20) null,
 	[STATION_ID]	[bigint] null,
 	[ID_SECTOR]	[bigint] null,

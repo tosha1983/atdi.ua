@@ -16,9 +16,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ILinkResSensor: ILinkResSensor_PK
     {
-        long? SensorId { get; set; }
-        long? ResMeasStaId { get; set; }
         ISensor SENSOR { get; set; }
-        IResMeasStation RESMEASSTA { get; set; }
+        IResMeasStation RES_MEAS_STATION { get; set; }
     }
 }

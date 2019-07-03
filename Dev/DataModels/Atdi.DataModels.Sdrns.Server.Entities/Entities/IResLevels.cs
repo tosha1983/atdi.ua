@@ -33,7 +33,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? VMMaxSpect { get; set; }
         double? LimitSpect { get; set; }
         float? OccupancySpect { get; set; }
-        long? ResMeasId { get; set; }
-        IResMeas RESMEAS { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }
