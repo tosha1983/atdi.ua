@@ -15,12 +15,7 @@
     <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
     <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
     <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLocSensorMeas to ResMeas">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLocSensorMeas to ResMeas"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

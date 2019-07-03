@@ -3,7 +3,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_LEV_M
 go
 create table [ICSC].[RES_LEV_MEAS_ONLINE] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[VALUE]	[numeric](22,8) null,
+	[VALUE]	[float] null,
 	[RES_MEAS_ID]	[bigint] null,
 	constraint [PK_RES_LEV_MEAS_ONLINE] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

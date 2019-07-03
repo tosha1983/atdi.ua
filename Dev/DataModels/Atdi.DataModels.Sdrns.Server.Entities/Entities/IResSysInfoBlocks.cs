@@ -17,7 +17,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         string Data { get; set; }
         string Type { get; set; }
-        long? ResSysInfoId { get; set; }
-        IResSysInfo RESSYSINFO { get; set; }
+        IResSysInfo RES_SYS_INFO { get; set; }
     }
 }

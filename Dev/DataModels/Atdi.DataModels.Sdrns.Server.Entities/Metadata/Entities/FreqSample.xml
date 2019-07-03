@@ -17,12 +17,7 @@
     <Field Desc="Level min dBm" Title="Level min dBm" Name="LevelMin_dBm" DataType="Double.30.10" SourceName="LEVEL_MIN_DBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
     <Field Desc="Level max dBm" Title="Level max dBm" Name="LevelMax_dBm" DataType="Double.30.10" SourceName="LEVEL_MAX_DBM" SourceType="Column" Required="false" Unit="Level.dBm.xml"/>
     <Field Desc="OccupationPt" Title="OccupationPt" Name="OccupationPt" DataType="Double.30.10" SourceName="OCCUPATION_PT" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation FreqSample to ResMeas">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation FreqSample to ResMeas"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

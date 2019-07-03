@@ -50,7 +50,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? Tac { get; set; }
         string TypeCdmaevdo { get; set; }
         int? Ucid { get; set; }
-        long? ResStGeneralId { get; set; }
-        IResStGeneral RESSTGENERAL { get; set; }
+        IResStGeneral RES_STGENERAL { get; set; }
     }
 }

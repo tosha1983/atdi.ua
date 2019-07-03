@@ -16,7 +16,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IResStLevelCar : IResStLevelCar_PK
     {
-        long? ResStationId { get; set; }
         double? Altitude { get; set; }
         double? DifferenceTimeStamp { get; set; }
         double? Lon { get; set; }
@@ -25,6 +24,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? LevelDbmkvm { get; set; }
         DateTime? TimeOfMeasurements { get; set; }
         double? Agl { get; set; }
-        IResMeasStation RESSTATION { get; set; }
+        IResMeasStation RES_MEAS_STATION { get; set; }
     }
 }

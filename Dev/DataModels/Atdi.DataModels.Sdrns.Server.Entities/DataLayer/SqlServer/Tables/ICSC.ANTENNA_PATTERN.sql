@@ -4,8 +4,8 @@ go
 create table [ICSC].[ANTENNA_PATTERN] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[SENSOR_ANTENNA_ID]	[bigint] null,
-	[FREQ]	[numeric](22,8) null,
-	[GAIN]	[numeric](22,8) null,
+	[FREQ]	[float] null,
+	[GAIN]	[float] null,
 	[DIAGA]	[varchar](1000) null,
 	[DIAGH]	[varchar](1000) null,
 	[DIAGV]	[varchar](1000) null,

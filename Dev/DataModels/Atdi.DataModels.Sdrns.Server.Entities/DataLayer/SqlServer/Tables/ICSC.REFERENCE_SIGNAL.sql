@@ -3,9 +3,9 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[REFERENCE
 go
 create table [ICSC].[REFERENCE_SIGNAL] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[FREQ_MHZ]	[numeric](22,8) null,
-	[BANDWIDTH_KHZ]	[numeric](22,8) null,
-	[LEVELSIGNAL_DBM]	[numeric](22,8) null,
+	[FREQ_MHZ]	[float] null,
+	[BANDWIDTH_KHZ]	[float] null,
+	[LEVELSIGNAL_DBM]	[float] null,
 	[REFERENCE_SITUATION_ID]	[bigint] null,
 	[ICSC_ID]	[bigint] null,
 	[ICSC_TABLE]	[nvarchar](50) null,

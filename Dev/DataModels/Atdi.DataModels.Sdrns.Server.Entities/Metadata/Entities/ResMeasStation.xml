@@ -13,27 +13,12 @@
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
     <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.250" SourceName="GLOBAL_SID" SourceType="Column" Required="false"/>
     <Field Desc="MeasGlobalSID" Title="MeasGlobalSID" Name="MeasGlobalSID" DataType="Text.250" SourceName="MEAS_GLOBAL_SID" SourceType="Column" Required="false"/>
-    <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="SECTOR_ID" SourceType="Column" Required="false"/>
     <Field Desc="IdStation" Title="IdStation" Name="IdStation" DataType="Integer.64" SourceName="IDSTATION" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.250" SourceName="STATUS" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
     <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
-    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="STATION_ID" SourceType="Column" Required="false"/>
-    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation ResMeasStation to Sector">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">SectorId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResMeasStation to ResMeas">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation ResMeasStation to Station">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">StationId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="SECTOR" SourceType="Reference" SourceName="Sector" Title="Relation ResMeasStation to Sector"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResMeasStation to ResMeas"/>
+    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation ResMeasStation to Station"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

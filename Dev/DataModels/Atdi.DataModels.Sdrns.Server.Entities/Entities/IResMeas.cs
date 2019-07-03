@@ -17,9 +17,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface IResMeas : IResMeas_PK
     {
         string MeasTaskId { get; set; }
-        long? MeasSubTaskId { get; set; }
-        long? MeasSubTaskStationId { get; set; }
-        long? SensorId { get; set; }
         double? AntVal { get; set; }
         DateTime? TimeMeas { get; set; }
         int? DataRank { get; set; }
@@ -31,8 +28,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? StartTime { get; set; }
         DateTime? StopTime { get; set; }
         int? ScansNumber { get; set; }
-        IMeasSubTask MEASSUBTASK { get; set; }
-        IMeasSubTaskStation MEASSUBTASKSTA { get; set; }
+        IMeasSubTask MEAS_SUB_TASK { get; set; }
+        IMeasSubTaskStation MEAS_SUB_TASK_STATION { get; set; }
         ISensor SENSOR { get; set; }
     }
 }

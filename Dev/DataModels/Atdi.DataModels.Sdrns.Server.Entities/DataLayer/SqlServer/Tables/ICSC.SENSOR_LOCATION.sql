@@ -8,9 +8,9 @@ create table [ICSC].[SENSOR_LOCATION] (
 	[DATA_TO]	[datetime] null,
 	[DATA_CREATED]	[datetime] null,
 	[STATUS]	[nvarchar](25) null,
-	[LON]	[numeric](22,8) null,
-	[LAT]	[numeric](22,8) null,
-	[ASL]	[numeric](22,8) null,
+	[LON]	[float] null,
+	[LAT]	[float] null,
+	[ASL]	[float] null,
 	constraint [PK_SENSOR_LOCATION] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

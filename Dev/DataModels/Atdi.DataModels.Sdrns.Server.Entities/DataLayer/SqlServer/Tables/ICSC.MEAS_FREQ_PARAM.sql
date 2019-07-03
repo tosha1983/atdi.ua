@@ -4,9 +4,9 @@ go
 create table [ICSC].[MEAS_FREQ_PARAM] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[MODE]	[nvarchar](50) null,
-	[STEP]	[numeric](22,8) null,
-	[RGL]	[numeric](22,8) null,
-	[RGU]	[numeric](22,8) null,
+	[STEP]	[float] null,
+	[RGL]	[float] null,
+	[RGU]	[float] null,
 	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_FREQ_PARAM] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

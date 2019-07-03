@@ -7,7 +7,7 @@ create table [ICSC].[RES_MEAS] (
 	[MEAS_SUB_TASK_ID]	[bigint] null,
 	[MEAS_SUB_TASK_STATION_ID]	[bigint] null,
 	[SENSOR_ID]	[bigint] null,
-	[ANTVAL]	[numeric](22,8) null,
+	[ANTVAL]	[float] null,
 	[TIME_MEAS]	[datetime] null,
 	[DATA_RANK]	[int] null,
 	[N]	[int] null,

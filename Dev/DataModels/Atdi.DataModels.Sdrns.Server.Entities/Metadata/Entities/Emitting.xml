@@ -19,7 +19,6 @@
     <Field Desc="TriggerDeviationFromReference" Title="TriggerDeviationFromReference" Name="TriggerDeviationFromReference" DataType="Double.30.10" SourceName="TRIGGERDEVFROM_REF" SourceType="Column" Required="false"/>
     <Field Desc="RollOffFactor" Title="RollOffFactor" Name="RollOffFactor" DataType="Double.30.10" SourceName="ROLL_OFF_ACTOR" SourceType="Column" Required="false"/>
     <Field Desc="StandardBW" Title="StandardBW" Name="StandardBW" DataType="Double.30.10" SourceName="STANDARD_BW" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
     <Field Desc="LevelsDistributionLvl" Title="LevelsDistributionLvl" Name="LevelsDistributionLvl" DataType="Array.Integer" SourceName="LEVELS_DISTRIBUTION_LVL" SourceType="Column" Required="false"/>
     <Field Desc="LevelsDistributionCount" Title="LevelsDistributionCount" Name="LevelsDistributionCount" DataType="Array.Integer" SourceName="LEVELS_DISTRIBUTION_COUNT" SourceType="Column" Required="false"/>
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID" SourceType="Column" Required="false"/>
@@ -27,11 +26,7 @@
     <Field Desc="StationTableName" Title="StationTableName" Name="StationTableName" DataType="Text.50" SourceName="STATION_TABLE_NAME" SourceType="Column" Required="false"/>
     <Field Desc="Loss_dB" Title="Loss_dB" Name="Loss_dB" DataType="Array.Float" SourceName="LOSS_DB" SourceType="Column" Required="false"/>
     <Field Desc="Freq_kHz" Title="Freq_kHz" Name="Freq_kHz" DataType="Array.Double" SourceName="FREQ_KHZ" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation Emitting to ResMeas">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation Emitting to ResMeas"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -145,9 +145,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
-                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
-                builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK.Id, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SENSOR.Id, sensorId);
                 var pk = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 valInsResMeas = pk.Id;
 
@@ -179,7 +179,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertResLevels.SetValue(c => c.ValueSpect, freqSample.Level_dBmkVm);
                             builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
                             builderInsertResLevels.SetValue(c => c.FreqMeas, freqSample.Freq_MHz);
-                            builderInsertResLevels.SetValue(c => c.ResMeasId, valInsResMeas);
+                            builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, valInsResMeas);
                             if (validationResult)
                                 this._queryExecutor.Execute(builderInsertResLevels);
                         }
@@ -191,7 +191,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
                         builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
                         builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
-                        builderInsertResLocSensorMeas.SetValue(c => c.ResMeasId, valInsResMeas);
+                        builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, valInsResMeas);
                         this._queryExecutor.Execute(builderInsertResLocSensorMeas);
                     }
                 }
@@ -248,10 +248,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
-                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK.Id, subMeasTaskId);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
-                builderInsertIResMeas.SetValue(c => c.SensorId, measResult.SensorId != null ? measResult.SensorId : sensorId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SENSOR.Id, measResult.SensorId != null ? (long)measResult.SensorId : (long)sensorId);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 var idResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
@@ -279,7 +279,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertroutePoints.SetValue(c => c.StartTime, routePoint.StartTime);
                                 builderInsertroutePoints.SetValue(c => c.RouteId, route.RouteId);
                                 builderInsertroutePoints.SetValue(c => c.PointStayType, routePoint.PointStayType.ToString());
-                                builderInsertroutePoints.SetValue(c => c.ResMeasId, idResMeas.Id);
+                                builderInsertroutePoints.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
                                 this._queryExecutor.Execute(builderInsertroutePoints);
                             }
                         }
@@ -320,20 +320,20 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
                         builderInsertResMeasStation.SetValue(c => c.MeasGlobalSID, station.RealGlobalSid);
                         builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
-                        builderInsertResMeasStation.SetValue(c => c.ResMeasId, idResMeas.Id);
+                        builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
                         builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                         if (int.TryParse(station.StationId, out int Idstation))
-                            builderInsertResMeasStation.SetValue(c => c.StationId, Idstation);
+                            builderInsertResMeasStation.SetValue(c => c.STATION.Id, Idstation);
                         if (int.TryParse(station.SectorId, out int IdSector))
-                            builderInsertResMeasStation.SetValue(c => c.SectorId, IdSector);
+                            builderInsertResMeasStation.SetValue(c => c.SECTOR.Id, IdSector);
                         builderInsertResMeasStation.Select(c => c.Id);
                         var valInsResMeasStation = this._queryExecutor.Execute<MD.IResMeasStation_PK>(builderInsertResMeasStation);
 
                         if (valInsResMeasStation.Id > 0)
                         {
                             var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
-                            builderInsertLinkResSensor.SetValue(c => c.ResMeasStaId, valInsResMeasStation.Id);
-                            builderInsertLinkResSensor.SetValue(c => c.SensorId, measResult.SensorId);
+                            builderInsertLinkResSensor.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation.Id);
+                            builderInsertLinkResSensor.SetValue(c => c.SENSOR.Id, (long)measResult.SensorId);
                             builderInsertLinkResSensor.Select(c => c.Id);
                             this._queryExecutor.Execute<MD.ILinkResSensor_PK>(builderInsertLinkResSensor);
 
@@ -375,9 +375,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MeasSubTaskId, subMeasTaskId);
-                builderInsertIResMeas.SetValue(c => c.MeasSubTaskStationId, subMeasTaskStaId);
-                builderInsertIResMeas.SetValue(c => c.SensorId, sensorId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK.Id, subMeasTaskId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SENSOR.Id, sensorId);
                 var valInsResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 if (valInsResMeas.Id > 0)
                 {
@@ -386,7 +386,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
                     builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
                     builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
-                    builderInsertResLocSensorMeas.SetValue(c => c.ResMeasId, valInsResMeas.Id);
+                    builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
                     this._queryExecutor.Execute(builderInsertResLocSensorMeas);
 
                     if (measResult.RefLevels != null)
@@ -399,7 +399,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         {
                             builderInsertReferenceLevels.SetValue(c => c.RefLevels, refLevels.levels);
                         }
-                        builderInsertReferenceLevels.SetValue(c => c.ResMeasId, valInsResMeas.Id);
+                        builderInsertReferenceLevels.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
                         this._queryExecutor.Execute<MD.IReferenceLevels_PK>(builderInsertReferenceLevels);
                     }
                     if (measResult.Emittings != null)
@@ -410,7 +410,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertEmitting.SetValue(c => c.CurentPower_dBm, emitting.CurentPower_dBm);
                             builderInsertEmitting.SetValue(c => c.MeanDeviationFromReference, emitting.MeanDeviationFromReference);
                             builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emitting.ReferenceLevel_dBm);
-                            builderInsertEmitting.SetValue(c => c.ResMeasId, valInsResMeas.Id);
+                            builderInsertEmitting.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
                             builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
                             if (emitting.EmittingParameters != null)
                             {
@@ -450,7 +450,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 if (spectrum != null)
                                 {
                                     var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
-                                    builderInsertISpectrum.SetValue(c => c.EmittingId, valInsReferenceEmitting.Id);
+                                    builderInsertISpectrum.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
                                     builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations == true ? 1 : 0);
                                     builderInsertISpectrum.SetValue(c => c.Contravention, spectrum.Contravention == true ? 1 : 0);
                                     builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
@@ -513,7 +513,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
             builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
             builderInsertResStGeneral.SetValue(c => c.LevelsSpectrumdBm, station.GeneralResult.LevelsSpectrum_dBm);
-            builderInsertResStGeneral.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+            builderInsertResStGeneral.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
             builderInsertResStGeneral.Select(c => c.Id);
             var IDResGeneral = this._queryExecutor.Execute<MD.IResStGeneral_PK>(builderInsertResStGeneral);
             return IDResGeneral.Id;
@@ -562,7 +562,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertResSysInfo.SetValue(c => c.Tac, stationSysInfo.TAC);
                 builderInsertResSysInfo.SetValue(c => c.TypeCdmaevdo, stationSysInfo.TypeCDMAEVDO);
                 builderInsertResSysInfo.SetValue(c => c.Ucid, stationSysInfo.UCID);
-                builderInsertResSysInfo.SetValue(c => c.ResStGeneralId, IDResGeneral);
+                builderInsertResSysInfo.SetValue(c => c.RES_STGENERAL.Id, IDResGeneral);
                 var IDResSysInfoGeneral = this._queryExecutor.Execute<MD.IResSysInfo_PK>(builderInsertResSysInfo);
                 if (IDResSysInfoGeneral.Id > 0 && stationSysInfo.InfoBlocks != null)
                 {
@@ -571,7 +571,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         var builderInsertStationSysInfoBlock = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>().Insert();
                         builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);
                         builderInsertStationSysInfoBlock.SetValue(c => c.Type, blocks.Type);
-                        builderInsertStationSysInfoBlock.SetValue(c => c.ResSysInfoId, IDResSysInfoGeneral.Id);
+                        builderInsertStationSysInfoBlock.SetValue(c => c.RES_SYS_INFO.Id, IDResSysInfoGeneral.Id);
                         this._queryExecutor.Execute<MD.IResSysInfoBlocks_PK>(builderInsertStationSysInfoBlock);
                     }
                 }
@@ -589,7 +589,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         var builderInsertmaskElem = this._dataLayer.GetBuilder<MD.IResStMaskElement>().Insert();
                         builderInsertmaskElem.SetValue(c => c.Bw, maskElem.BW_kHz);
                         builderInsertmaskElem.SetValue(c => c.Level, maskElem.Level_dB);
-                        builderInsertmaskElem.SetValue(c => c.ResStGeneralId, IDResGeneral);
+                        builderInsertmaskElem.SetValue(c => c.RES_STGENERAL.Id, IDResGeneral);
                         this._queryExecutor.Execute(builderInsertmaskElem);
                     }
                 }
@@ -618,7 +618,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbm, car.Level_dBm);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbmkvm, car.Level_dBmkVm);
                         builderInsertResStLevelCar.SetValue(c => c.TimeOfMeasurements, car.MeasurementTime);
-                        builderInsertResStLevelCar.SetValue(c => c.ResStationId, valInsResMeasStation);
+                        builderInsertResStLevelCar.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
                         this._queryExecutor.Execute(builderInsertResStLevelCar);
                     }
                 }
@@ -631,7 +631,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 foreach (DirectionFindingData directionFindingData in station.Bearings)
                 {
                     var builderInsertBearing = this._dataLayer.GetBuilder<MD.IBearing>().Insert();
-                    builderInsertBearing.SetValue(c => c.ResMeasStaId, valInsResMeasStation);
+                    builderInsertBearing.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
                     if (directionFindingData.Location != null && this.ValidateGeoLocation<GeoLocation>(directionFindingData.Location, "IBearing"))
                     {
                         builderInsertBearing.SetValue(c => c.Agl, directionFindingData.Location.AGL);

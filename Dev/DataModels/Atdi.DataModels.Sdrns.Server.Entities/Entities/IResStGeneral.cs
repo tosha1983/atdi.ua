@@ -18,7 +18,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? BW { get; set; }
         double? Rbw { get; set; }
         double? Vbw { get; set; }
-        long? ResMeasStaId { get; set; }
         double? CentralFrequency { get; set; }
         double? CentralFrequencyMeas { get; set; }
         double? DurationMeas { get; set; }
@@ -33,6 +32,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? Correctnessestim { get; set; }
         int? TraceCount { get; set; }
         float[] LevelsSpectrumdBm { get; set; }
-        IResMeasStation RESMEASSTA { get; set; }
+        IResMeasStation RES_MEAS_STATION { get; set; }
     }
 }
