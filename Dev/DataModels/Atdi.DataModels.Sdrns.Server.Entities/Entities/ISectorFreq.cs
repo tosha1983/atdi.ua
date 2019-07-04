@@ -16,9 +16,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISectorFreq : ISectorFreq_PK
     {
-        long? PlanId { get; set; }
+        long? ClientPlanCode { get; set; }
         long? ChannelNumber { get; set; }
-        long? IdFreq { get; set; }
+        long? ClientFreqCode { get; set; }
         decimal? Frequency { get; set; }
     }
 }

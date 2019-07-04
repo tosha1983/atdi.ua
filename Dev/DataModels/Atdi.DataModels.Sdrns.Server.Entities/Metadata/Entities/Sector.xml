@@ -16,7 +16,7 @@
     <Field Desc="Azimut" Title="Azimut" Name="Azimut" DataType="Double.30.10" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
     <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="ClassEmission" Title="ClassEmission" Name="ClassEmission" DataType="Text.20" SourceName="CLASS_EMISSION" SourceType="Column" Required="false"/>
-    <Field Desc="SectorId" Title="SectorId" Name="SectorId" DataType="Integer.64" SourceName="ID_SECTOR" SourceType="Column" Required="true"/>
+    <Field Desc="ClientSectorCode" Title="ClientSectorCode" Name="ClientSectorCode" DataType="Integer.64" SourceName="CLIENT_SECTOR_CODE" SourceType="Column" Required="true"/>
     <Field Name="STATION" SourceName="Station" SourceType="Reference" Required="true" Desc="" Title="Relation Sector to Station"/>
   </Fields>
   <PrimaryKey Clustered="true">

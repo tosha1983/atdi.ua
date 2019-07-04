@@ -22,7 +22,7 @@
     <Field Desc="MaxTimeBs" Title="MaxTimeBs" Name="MaxTimeBs" DataType="Integer.32" SourceName="MAX_TIME_BS" SourceType="Column" Required="false"/>
     <Field Desc="DateCreated" Title="DateCreated" Name="DateCreated" DataType="DateTime" SourceName="DATE_CREATED" SourceType="Column" Required="false"/>
     <Field Desc="CreatedBy" Title="CreatedBy" Name="CreatedBy" DataType="Text.50" SourceName="CREATED_BY" SourceType="Column" Required="false"/>
-    <Field Desc="IdStart" Title="IdStart" Name="IdStart" DataType="Text.50" SourceName="ID_START" SourceType="Column" Required="false"/>
+    <Field Desc="IdentStart" Title="IdentStart" Name="IdentStart" DataType="Text.50" SourceName="IDENT_START" SourceType="Column" Required="false"/>
     <Field Desc="PerStart" Title="PerStart" Name="PerStart" DataType="DateTime" SourceName="PER_START" SourceType="Column" Required="false"/>
     <Field Desc="PerStop" Title="PerStop" Name="PerStop" DataType="DateTime" SourceName="PER_STOP" SourceType="Column" Required="false"/>
     <Field Desc="TimeStart" Title="TimeStart" Name="TimeStart" DataType="DateTime" SourceName="TIME_START" SourceType="Column" Required="false"/>

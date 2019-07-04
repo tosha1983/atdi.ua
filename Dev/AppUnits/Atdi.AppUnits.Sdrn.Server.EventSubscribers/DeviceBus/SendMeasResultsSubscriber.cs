@@ -138,16 +138,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 long valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
-                builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK.Id, subMeasTaskId);
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK_STATION.Id, subMeasTaskStaId);
-                builderInsertIResMeas.SetValue(c => c.SENSOR.Id, sensorId);
                 var pk = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 valInsResMeas = pk.Id;
 
@@ -244,14 +241,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId != -1 ? resultId.ToString() : measResult.ResultId);
-                builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK.Id, subMeasTaskId);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK_STATION.Id, subMeasTaskStaId);
-                builderInsertIResMeas.SetValue(c => c.SENSOR.Id, measResult.SensorId != null ? (long)measResult.SensorId : (long)sensorId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 var idResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
@@ -368,16 +362,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
-                builderInsertIResMeas.SetValue(c => c.MeasTaskId, measResult.TaskId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK.Id, subMeasTaskId);
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUB_TASK_STATION.Id, subMeasTaskStaId);
-                builderInsertIResMeas.SetValue(c => c.SENSOR.Id, sensorId);
+                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
                 var valInsResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 if (valInsResMeas.Id > 0)
                 {

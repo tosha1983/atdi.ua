@@ -6,7 +6,7 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>MEAS_SUB_TASK</Name>
+    <Name>MEAS_SUBTASK</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>

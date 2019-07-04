@@ -66,7 +66,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         {
                                             var builderSelectMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
                                             builderSelectMeasSubTaskSta.Select(c => c.Id);
-                                            builderSelectMeasSubTaskSta.Where(c => c.MEAS_SUB_TASK.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
+                                            builderSelectMeasSubTaskSta.Where(c => c.MEAS_SUBTASK.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
                                             builderSelectMeasSubTaskSta.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                                             scope.Executor.Fetch(builderSelectMeasSubTaskSta, readereasSubTaskSta =>
                                             {
@@ -89,41 +89,45 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                             {
                                                                 isSuccess = false;
                                                             }
-
-                                                            var builderUpdateSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Update();
-                                                            builderUpdateSubTask.Where(c => c.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
-                                                            builderUpdateSubTask.SetValue(c => c.Status, status);
-                                                            if (scope.Executor.Execute(builderUpdateSubTask) > 0)
-                                                            {
-                                                                isSuccess = true;
-                                                            }
-                                                            else
-                                                            {
-                                                                isSuccess = false;
-                                                            }
-
-                                                            var builderUpdateTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
-                                                            builderUpdateTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                                                            builderUpdateTask.SetValue(c => c.Status, status);
-                                                            if (scope.Executor.Execute(builderUpdateTask) > 0)
-                                                            {
-                                                                isSuccess = true;
-                                                            }
-                                                            else
-                                                            {
-                                                                isSuccess = false;
-                                                            }
+                                                           
                                                         }
                                                     }
                                                 }
                                                 return true;
                                             });
+
+
+                                            var builderUpdateSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Update();
+                                            builderUpdateSubTask.Where(c => c.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
+                                            builderUpdateSubTask.SetValue(c => c.Status, status);
+                                            if (scope.Executor.Execute(builderUpdateSubTask) > 0)
+                                            {
+                                                isSuccess = true;
+                                            }
+                                            else
+                                            {
+                                                isSuccess = false;
+                                            }
+
                                         }
                                     }
 
                                 }
                                 return true;
                             });
+
+
+                            var builderUpdateTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
+                            builderUpdateTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                            builderUpdateTask.SetValue(c => c.Status, status);
+                            if (scope.Executor.Execute(builderUpdateTask) > 0)
+                            {
+                                isSuccess = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                            }
 
                         }
                         return true;
@@ -367,7 +371,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 {
                                                     builderInsertMeasSubTaskSta.SetValue(c => c.SENSOR.Id, subTaskStation.StationId.Value);
                                                 }
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.MEAS_SUB_TASK.Id, valueIdmeasSubTask);
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.MEAS_SUBTASK.Id, valueIdmeasSubTask);
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskStation.TimeNextTask);
                                                 builderInsertMeasSubTaskSta.Select(c => c.Id);
                                                 var insertMeasSubTaskStaPK = scope.Executor.Execute<MD.IMeasSubTaskStation_PK>(builderInsertMeasSubTaskSta);
@@ -474,7 +478,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     builderInsertStation.SetValue(c => c.GlobalSID, stationDataParam.GlobalSID);
                                     builderInsertStation.SetValue(c => c.Standart, stationDataParam.Standart);
                                     builderInsertStation.SetValue(c => c.Status, stationDataParam.Status);
-                                    builderInsertStation.SetValue(c => c.IdStation, stationDataParam.IdStation);
+                                    builderInsertStation.SetValue(c => c.ClientStationCode, stationDataParam.IdStation);
                                     builderInsertStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
                                     if (stationDataParam.LicenseParameter != null)
                                     {
@@ -482,7 +486,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertStation.SetValue(c => c.DozvilName, stationDataParam.LicenseParameter.DozvilName);
                                         builderInsertStation.SetValue(c => c.EndDate, stationDataParam.LicenseParameter.EndDate);
                                         builderInsertStation.SetValue(c => c.StartDate, stationDataParam.LicenseParameter.StartDate);
-                                        builderInsertStation.SetValue(c => c.IdPermission, stationDataParam.LicenseParameter.Id);
+                                        builderInsertStation.SetValue(c => c.ClientPermissionCode, stationDataParam.LicenseParameter.Id);
                                     }
                                     if (idSite > -1)
                                     {
@@ -500,8 +504,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         long? idLinkMeasStation = -1;
                                         var builderInsertLinkMeasStation = this._dataLayer.GetBuilder<MD.ILinkMeasStation>().Insert();
-                                        builderInsertLinkMeasStation.SetValue(c => c.StationId, idstationDataParam);
-                                        builderInsertLinkMeasStation.SetValue(c => c.MeasTaskId, ID.Value);
+                                        builderInsertLinkMeasStation.SetValue(c => c.STATION.Id, idstationDataParam);
+                                        builderInsertLinkMeasStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
                                         builderInsertLinkMeasStation.Select(c => c.Id);
                                         var linkMeasStationPK = scope.Executor.Execute<MD.ILinkMeasStation_PK>(builderInsertLinkMeasStation);
                                         idLinkMeasStation = linkMeasStationPK.Id;
@@ -525,7 +529,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             builderInsertSector.SetValue(c => c.Bw, sector.BW);
                                             builderInsertSector.SetValue(c => c.ClassEmission, sector.ClassEmission);
                                             builderInsertSector.SetValue(c => c.Eirp, sector.EIRP);
-                                            builderInsertSector.SetValue(c => c.SectorId, sector.IdSector);
+                                            builderInsertSector.SetValue(c => c.ClientSectorCode, sector.IdSector);
                                             builderInsertSector.SetValue(c => c.STATION.Id, idstationDataParam);
                                             builderInsertSector.Select(c => c.Id);
                                             var sectorPK = scope.Executor.Execute<MD.ISector_PK>(builderInsertSector);
@@ -542,8 +546,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     var builderInsertSectorFreq = this._dataLayer.GetBuilder<MD.ISectorFreq>().Insert();
                                                     builderInsertSectorFreq.SetValue(c => c.ChannelNumber, freq.ChannalNumber);
                                                     builderInsertSectorFreq.SetValue(c => c.Frequency, freq.Frequency);
-                                                    builderInsertSectorFreq.SetValue(c => c.PlanId, freq.IdPlan);
-                                                    builderInsertSectorFreq.SetValue(c => c.IdFreq, freq.Id);
+                                                    builderInsertSectorFreq.SetValue(c => c.ClientPlanCode, freq.IdPlan);
+                                                    builderInsertSectorFreq.SetValue(c => c.ClientFreqCode, freq.Id);
                                                     builderInsertSectorFreq.Select(c => c.Id);
                                                     var sectorFreq_PKPK = scope.Executor.Execute<MD.ISectorFreq_PK>(builderInsertSectorFreq);
                                                     idSectorFreq = sectorFreq_PKPK.Id;
@@ -551,8 +555,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     if ((idSectorFreq != null) && (idSecForMeas != null))
                                                     {
                                                         var builderInsertLinkSectorFreq = this._dataLayer.GetBuilder<MD.ILinkSectorFreq>().Insert();
-                                                        builderInsertLinkSectorFreq.SetValue(c => c.SectorFreqId, idSectorFreq);
-                                                        builderInsertLinkSectorFreq.SetValue(c => c.SectorId, idSecForMeas);
+                                                        builderInsertLinkSectorFreq.SetValue(c => c.SECTOR_FREQ.Id, idSectorFreq);
+                                                        builderInsertLinkSectorFreq.SetValue(c => c.SECTOR.Id, idSecForMeas);
                                                         builderInsertLinkSectorFreq.Select(c => c.Id);
                                                         var linkSectorFreqPK = scope.Executor.Execute<MD.ILinkSectorFreq_PK>(builderInsertLinkSectorFreq);
                                                     }
@@ -580,8 +584,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     if ((sectorMaskElemId != null) && (idSecForMeas != null))
                                                     {
                                                         var builderInsertLinkSectorMaskElement = this._dataLayer.GetBuilder<MD.ILinkSectorMaskElement>().Insert();
-                                                        builderInsertLinkSectorMaskElement.SetValue(c => c.SectorMaskElementId, sectorMaskElemId);
-                                                        builderInsertLinkSectorMaskElement.SetValue(c => c.SectorId, idSecForMeas);
+                                                        builderInsertLinkSectorMaskElement.SetValue(c => c.SECTOR_MASK_ELEM.Id, sectorMaskElemId);
+                                                        builderInsertLinkSectorMaskElement.SetValue(c => c.SECTOR.Id, idSecForMeas);
                                                         builderInsertLinkSectorMaskElement.Select(c => c.Id);
                                                         var linkSectorMaskElement_PK = scope.Executor.Execute<MD.ILinkSectorMaskElement_PK>(builderInsertLinkSectorMaskElement);
                                                     }
@@ -599,6 +603,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 }
                 catch (Exception e)
                 {
+                    ID = null;
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }

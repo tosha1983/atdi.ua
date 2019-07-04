@@ -90,7 +90,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         val.StepMeasTime = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("StepMeasTime")), reader.GetOrdinal("StepMeasTime"));
                         val.TypeSensor = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("TypeSensor")), reader.GetOrdinal("TypeSensor"));
                         val.Id = new SensorIdentifier();
-                        val.Id.Value = reader.GetValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Id")), reader.GetOrdinal("Id"));
+                        val.Id.Value = reader.GetNullableValueAsLong(reader.GetFieldType(reader.GetOrdinal("Id")), reader.GetOrdinal("Id")).Value;
 
 
 

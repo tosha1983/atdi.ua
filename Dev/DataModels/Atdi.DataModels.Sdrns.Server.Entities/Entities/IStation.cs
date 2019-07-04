@@ -16,11 +16,11 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IStation : IStation_PK
     {
-        long? IdStation{ get; set; }
+        long? ClientStationCode { get; set; }
         string GlobalSID { get; set; }
         string Status { get; set; }
         string Standart { get; set; }
-        int? IdPermission { get; set; }
+        int? ClientPermissionCode { get; set; }
         DateTime StartDate { get; set; }
         DateTime EndDate { get; set; }
         DateTime CloseDate { get; set; }

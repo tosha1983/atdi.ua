@@ -45,7 +45,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             .From()
             .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistributionLvl, c => c.LevelsDistributionCount, c => c.SensorId, c => c.StationID, c => c.StationTableName, c => c.Loss_dB, c => c.Freq_kHz)
             .OrderByAsc(c => c.StartFrequency_MHz)
-            .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+            .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, resId);
             //.Where(c => c.Id, ConditionOperator.Equal, 1216364);
             queryExecuter.Fetch(queryEmitting, reader =>
             {
@@ -622,44 +622,27 @@ namespace Atdi.WcfServices.Sdrn.Server
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var referenceLevels = new ReferenceLevels();
             var level = new ReferenceLevels();
-            var taskId = "";
-            long? subMeasTaskId = null;
             long? subMeasTaskStaId = null;
-            long? sensorId = null;
 
-            var queryMeasTaskId = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+
+           var queryMeasTaskId = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
           .From()
-          .Select(c => c.Id, c => c.RESMEAS.MeasTaskId, c => c.RESMEAS.MeasSubTaskId, c => c.RESMEAS.MeasSubTaskStationId, c => c.RESMEAS.SensorId)
-          .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+          .Select(c => c.Id, c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id)
+          .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, resId);
             queryExecuter.Fetch(queryMeasTaskId, readerReferenceLevels =>
             {
                 if (readerReferenceLevels.Read())
                 {
-                    taskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasTaskId);
-                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).HasValue)
-                    {
-                        subMeasTaskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
-                    }
-                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).HasValue)
-                    {
-                        subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
-                    }
-                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).HasValue)
-                    {
-                        sensorId = readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).Value;
-                    }
+                    subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
                 }
                 return true;
             });
-            if (!string.IsNullOrEmpty(taskId) && (subMeasTaskId != null) && (subMeasTaskStaId != null) && (sensorId != null))
+            if (subMeasTaskStaId != null)
             {
                 var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
                .From()
                .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
-               .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
-               .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
-               .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
-               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId);
+               .Where(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id, ConditionOperator.Equal, subMeasTaskStaId);
                 queryExecuter.Fetch(queryLevels, readerLevels =>
                 {
                     while (readerLevels.Read())
@@ -697,45 +680,27 @@ namespace Atdi.WcfServices.Sdrn.Server
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var level = new ReferenceLevels();
-            var taskId = "";
-            long? subMeasTaskId = null;
             long? subMeasTaskStaId = null;
-            long? sensorId = null;
+
 
             var queryMeasTaskId = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
           .From()
-          .Select(c => c.Id, c => c.RESMEAS.MeasTaskId, c => c.RESMEAS.MeasSubTaskId, c => c.RESMEAS.MeasSubTaskStationId, c => c.RESMEAS.SensorId)
-          .Where(c => c.ResMeasId, ConditionOperator.Equal, resId);
+          .Select(c => c.Id, c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id)
+          .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, resId);
             queryExecuter.Fetch(queryMeasTaskId, readerReferenceLevels =>
             {
                 if (readerReferenceLevels.Read())
                 {
-                    taskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasTaskId);
-                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).HasValue)
-                    {
-                        subMeasTaskId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
-                    }
-                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).HasValue)
-                    {
-                        subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
-                    }
-                    if (readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).HasValue)
-                    {
-                        sensorId = readerReferenceLevels.GetValue(c => c.RESMEAS.SensorId).Value;
-                    }
+                    subMeasTaskStaId = readerReferenceLevels.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
                 }
                 return true;
             });
-            if (!string.IsNullOrEmpty(taskId) && (subMeasTaskId != null) && (subMeasTaskStaId != null) && (sensorId != null))
+            if (subMeasTaskStaId != null)
             {
                 var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
                .From()
                .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
-               .Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId)
-               .Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, subMeasTaskId)
-               .Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, subMeasTaskStaId)
-               .Where(c => c.RESMEAS.SensorId, ConditionOperator.Equal, sensorId);
-               //.Where(c => c.RESMEAS.MeasResultSID, ConditionOperator.Equal, "1");
+               .Where(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id, ConditionOperator.Equal, subMeasTaskStaId);
                 queryExecuter.Fetch(queryLevels, readerLevels =>
                 {
                     while (readerLevels.Read())
@@ -786,12 +751,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.DataRank);
                 builderResMeas.Select(c => c.Id);
                 builderResMeas.Select(c => c.MeasResultSID);
-                builderResMeas.Select(c => c.MeasSubTaskId);
-                builderResMeas.Select(c => c.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.MeasTaskId);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
-                builderResMeas.Select(c => c.SensorId);
                 builderResMeas.Select(c => c.StartTime);
                 builderResMeas.Select(c => c.Status);
                 builderResMeas.Select(c => c.StopTime);
@@ -811,32 +776,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.N = readerResMeas.GetValue(c => c.N);
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        if (readerResMeas.GetValue(c => c.MeasTaskId) != null)
-                        {
-                            long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.MeasTaskId), out measTaskId);
-                            levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                        }
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c=>c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+
                         levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.Id);
                         levelmeasurementResults.StationMeasurements = new StationMeasurements();
                         levelmeasurementResults.StationMeasurements.StationId = new SensorIdentifier();
-                        if (readerResMeas.GetValue(c => c.SensorId) != null)
-                        {
-                            levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.SensorId).Value;
-                        }
+                        levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+
                         levelmeasurementResults.Status = readerResMeas.GetValue(c => c.Status);
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MeasSubTaskId).Value;
-                        }
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
                         if (readerResMeas.GetValue(c => c.ScansNumber) != null)
                         {
                             levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
                         }
-
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
-                        }
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.Id);
+                        
                         if (readerResMeas.GetValue(c => c.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
@@ -864,9 +822,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLocSensorMeas.Select(c => c.Id);
                         builderResLocSensorMeas.Select(c => c.Lat);
                         builderResLocSensorMeas.Select(c => c.Lon);
-                        builderResLocSensorMeas.Select(c => c.ResMeasId);
+                        builderResLocSensorMeas.Select(c => c.RES_MEAS.Id);
                         builderResLocSensorMeas.OrderByAsc(c => c.Id);
-                        builderResLocSensorMeas.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLocSensorMeas.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         var locationSensorMeasurement = new LocationSensorMeasurement();
                         queryExecuter.Fetch(builderResLocSensorMeas, readerResLocSensorMeas =>
                         {
@@ -890,7 +848,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -907,7 +865,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -924,7 +882,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -939,10 +897,10 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                         builderLinkResSensoT.Select(c => c.Id);
-                        builderLinkResSensoT.Select(c => c.SensorId);
+                        builderLinkResSensoT.Select(c => c.SENSOR.Id);
                         builderLinkResSensoT.Select(c => c.SENSOR.Name);
                         builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                        builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderLinkResSensoT.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
                         {
@@ -981,90 +939,78 @@ namespace Atdi.WcfServices.Sdrn.Server
                     this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsByIdMethod.Text);
                     var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                     var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
-                    builderResMeas.Select(c => c.RESMEAS.AntVal);
-                    builderResMeas.Select(c => c.RESMEAS.DataRank);
-                    builderResMeas.Select(c => c.RESMEAS.Id);
+                    builderResMeas.Select(c => c.RES_MEAS.AntVal);
+                    builderResMeas.Select(c => c.RES_MEAS.DataRank);
+                    builderResMeas.Select(c => c.RES_MEAS.Id);
                     builderResMeas.Select(c => c.Lon);
                     builderResMeas.Select(c => c.Lat);
-                    builderResMeas.Select(c => c.RESMEAS.MeasResultSID);
-                    builderResMeas.Select(c => c.RESMEAS.MeasSubTaskId);
-                    builderResMeas.Select(c => c.RESMEAS.MeasSubTaskStationId);
-                    builderResMeas.Select(c => c.RESMEAS.MeasTaskId);
-                    builderResMeas.Select(c => c.RESMEAS.N);
-                    builderResMeas.Select(c => c.RESMEAS.ScansNumber);
-                    builderResMeas.Select(c => c.RESMEAS.SensorId);
-                    builderResMeas.Select(c => c.RESMEAS.StartTime);
-                    builderResMeas.Select(c => c.RESMEAS.Status);
-                    builderResMeas.Select(c => c.RESMEAS.StopTime);
-                    builderResMeas.Select(c => c.RESMEAS.Synchronized);
-                    builderResMeas.Select(c => c.RESMEAS.TimeMeas);
-                    builderResMeas.Select(c => c.RESMEAS.TypeMeasurements);
-                    builderResMeas.Select(c => c.RESMEAS.SENSOR.Name);
-                    builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
+                    builderResMeas.Select(c => c.RES_MEAS.MeasResultSID);
+                    builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                    builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                    builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Id);
+                    builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                    builderResMeas.Select(c => c.RES_MEAS.N);
+                    builderResMeas.Select(c => c.RES_MEAS.ScansNumber);
+                    builderResMeas.Select(c => c.RES_MEAS.StartTime);
+                    builderResMeas.Select(c => c.RES_MEAS.Status);
+                    builderResMeas.Select(c => c.RES_MEAS.StopTime);
+                    builderResMeas.Select(c => c.RES_MEAS.Synchronized);
+                    builderResMeas.Select(c => c.RES_MEAS.TimeMeas);
+                    builderResMeas.Select(c => c.RES_MEAS.TypeMeasurements);
+                    builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                    builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
+
                     builderResMeas.OrderByAsc(c => c.Id);
                     if (measResultsId.MeasSdrResultsId > 0)
                     {
-                        builderResMeas.Where(c => c.RESMEAS.Id, ConditionOperator.Equal, measResultsId.MeasSdrResultsId);
+                        builderResMeas.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, measResultsId.MeasSdrResultsId);
                     }
-                    if ((measResultsId.MeasTaskId != null) && (measResultsId.MeasTaskId.Value > 0))
-                    {
-                        builderResMeas.Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, measResultsId.MeasTaskId.Value.ToString());
-                    }
-                    if ((measResultsId.SubMeasTaskId > 0))
-                    {
-                        builderResMeas.Where(c => c.RESMEAS.MeasSubTaskId, ConditionOperator.Equal, measResultsId.SubMeasTaskId);
-                    }
+                   
                     if ((measResultsId.SubMeasTaskStationId > 0))
                     {
-                        builderResMeas.Where(c => c.RESMEAS.MeasSubTaskStationId, ConditionOperator.Equal, measResultsId.SubMeasTaskStationId);
+                        builderResMeas.Where(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id, ConditionOperator.Equal, measResultsId.SubMeasTaskStationId);
                     }
-                    builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                    builderResMeas.Where(c => c.RES_MEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
 
                     queryExecuter.Fetch(builderResMeas, readerResMeas =>
                     {
                         while (readerResMeas.Read())
                         {
 
-                            levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RESMEAS.DataRank);
-                            levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RESMEAS.N).HasValue ? readerResMeas.GetValue(c => c.RESMEAS.N).Value : -1;
+                            levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RES_MEAS.DataRank);
+                            levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RES_MEAS.N).HasValue ? readerResMeas.GetValue(c => c.RES_MEAS.N).Value : -1;
                             levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                             levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                            if (readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId) != null)
-                            {
-                                long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId), out measTaskId);
-                                levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                            }
-                            levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RESMEAS.Id);
+                            
+                            levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                            
+                            levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RES_MEAS.Id);
 
-
-                            levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RESMEAS.Status);
-                            if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId) != null)
+                            levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RES_MEAS.Status);
+                            
+                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                            
+                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                            
+                            if (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas) != null)
                             {
-                                levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                                levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value;
                             }
-                            if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId) != null)
+                            if (readerResMeas.GetValue(c => c.RES_MEAS.StartTime) != null)
                             {
-                                levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                                levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RES_MEAS.StartTime).Value;
                             }
-                            if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
+                            if (readerResMeas.GetValue(c => c.RES_MEAS.StopTime) != null)
                             {
-                                levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
-                            }
-                            if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
-                            {
-                                levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
-                            }
-                            if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
-                            {
-                                levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                                levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RES_MEAS.StopTime).Value;
                             }
                             MeasurementType outResType;
-                            if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
+                            if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RES_MEAS.TypeMeasurements), out outResType))
                             {
                                 levelmeasurementResults.TypeMeasurements = outResType;
                             }
-                            levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.Name);
-                            levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
+                            levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                            levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
 
 
                             levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
@@ -1078,7 +1024,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                                 builderResMeasStation.Select(c => c.Id);
                                 builderResMeasStation.Select(c => c.Status);
-                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                                 builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                                 builderResMeasStation.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1095,7 +1041,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                                 builderResMeasStation.Select(c => c.Id);
                                 builderResMeasStation.Select(c => c.Status);
-                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                                 builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                                 builderResMeasStation.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1111,7 +1057,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                                 builderResMeasStation.Select(c => c.Id);
                                 builderResMeasStation.Select(c => c.Status);
-                                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                                builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                                 builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                                 builderResMeasStation.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1150,75 +1096,71 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsByDateMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
-                builderResMeas.Select(c => c.RESMEAS.AntVal);
-                builderResMeas.Select(c => c.RESMEAS.DataRank);
-                builderResMeas.Select(c => c.RESMEAS.Id);
+                builderResMeas.Select(c => c.RES_MEAS.AntVal);
+                builderResMeas.Select(c => c.RES_MEAS.DataRank);
+                builderResMeas.Select(c => c.RES_MEAS.Id);
                 builderResMeas.Select(c => c.Lon);
                 builderResMeas.Select(c => c.Lat);
-                builderResMeas.Select(c => c.RESMEAS.MeasResultSID);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskId);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.RESMEAS.MeasTaskId);
-                builderResMeas.Select(c => c.RESMEAS.N);
-                builderResMeas.Select(c => c.RESMEAS.ScansNumber);
-                builderResMeas.Select(c => c.RESMEAS.SensorId);
-                builderResMeas.Select(c => c.RESMEAS.StartTime);
-                builderResMeas.Select(c => c.RESMEAS.Status);
-                builderResMeas.Select(c => c.RESMEAS.StopTime);
-                builderResMeas.Select(c => c.RESMEAS.Synchronized);
-                builderResMeas.Select(c => c.RESMEAS.TimeMeas);
-                builderResMeas.Select(c => c.RESMEAS.TypeMeasurements);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.Name);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
+                builderResMeas.Select(c => c.RES_MEAS.MeasResultSID);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.N);
+                builderResMeas.Select(c => c.RES_MEAS.ScansNumber);
+                
+                builderResMeas.Select(c => c.RES_MEAS.StartTime);
+                builderResMeas.Select(c => c.RES_MEAS.Status);
+                builderResMeas.Select(c => c.RES_MEAS.StopTime);
+                builderResMeas.Select(c => c.RES_MEAS.Synchronized);
+                builderResMeas.Select(c => c.RES_MEAS.TimeMeas);
+                builderResMeas.Select(c => c.RES_MEAS.TypeMeasurements);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
                 builderResMeas.OrderByAsc(c => c.Id);
-                builderResMeas.Where(c => c.RESMEAS.TimeMeas, ConditionOperator.GreaterEqual, constraint.Start);
-                builderResMeas.Where(c => c.RESMEAS.TimeMeas, ConditionOperator.LessEqual, constraint.End);
-                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderResMeas.Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.GreaterEqual, constraint.Start);
+                builderResMeas.Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.LessEqual, constraint.End);
+                builderResMeas.Where(c => c.RES_MEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
                     {
                         var levelmeasurementResults = new ShortMeasurementResults();
-                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RESMEAS.DataRank);
-                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RESMEAS.N).HasValue ? readerResMeas.GetValue(c => c.RESMEAS.N).Value : -1;
+                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RES_MEAS.DataRank);
+                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RES_MEAS.N).HasValue ? readerResMeas.GetValue(c => c.RES_MEAS.N).Value : -1;
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId) != null)
-                        {
-                            long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId), out measTaskId);
-                            levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                        }
-                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RESMEAS.Id);
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
 
+                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RES_MEAS.Id);
 
-                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RESMEAS.Status);
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId) != null)
+                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RES_MEAS.Status);
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                        
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StartTime) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RES_MEAS.StartTime).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StopTime) != null)
                         {
-                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
-                        {
-                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
-                        {
-                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RES_MEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
-                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
+                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RES_MEAS.TypeMeasurements), out outResType))
                         {
                             levelmeasurementResults.TypeMeasurements = outResType;
                         }
-                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.Name);
-                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
 
 
                         levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
@@ -1232,7 +1174,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1249,7 +1191,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1265,7 +1207,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1311,16 +1253,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                 builderLinkResSensoT.Select(c => c.Id);
-                builderLinkResSensoT.Select(c => c.SensorId);
+                builderLinkResSensoT.Select(c => c.SENSOR.Id);
                 builderLinkResSensoT.Select(c => c.SENSOR.Name);
                 builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, MeasResultsId);
+                builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, MeasResultsId);
                 builderLinkResSensoT.OrderByAsc(c => c.Id);
                 queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
                 {
                     while (readerLinkResSensor.Read())
                     {
-                        long? sensorId = readerLinkResSensor.GetValue(c => c.SensorId);
+                        long? sensorId = readerLinkResSensor.GetValue(c => c.SENSOR.Id);
                         if (sensorId != null)
                         {
                             if (!listSensorIds.Contains(sensorId))
@@ -1383,10 +1325,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.Id);
                 builderResMeasStation.Select(c => c.IdStation);
                 builderResMeasStation.Select(c => c.MeasGlobalSID);
-                builderResMeasStation.Select(c => c.ResMeasId);
-                builderResMeasStation.Select(c => c.SectorId);
+                builderResMeasStation.Select(c => c.RES_MEAS.Id);
+                builderResMeasStation.Select(c => c.SECTOR.Id);
                 builderResMeasStation.Select(c => c.Standard);
-                builderResMeasStation.Select(c => c.StationId);
+                builderResMeasStation.Select(c => c.STATION.Id);
                 builderResMeasStation.Select(c => c.Status);
                 builderResMeasStation.Where(c => c.Id, ConditionOperator.Equal, StationId);
                 builderResMeasStation.OrderByAsc(c => c.Id);
@@ -1394,17 +1336,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     while (readerResMeasStation.Read())
                     {
-                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SectorId);
-                        if (readerResMeasStation.GetValue(c => c.StationId) != null)
-                        {
-                            resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).Value.ToString();
-                        }
+                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SECTOR.Id);
                         resMeasStatiion.GlobalSID = readerResMeasStation.GetValue(c => c.GlobalSID);
                         resMeasStatiion.MeasGlobalSID = readerResMeasStation.GetValue(c => c.MeasGlobalSID);
                         resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
                         resMeasStatiion.Id = readerResMeasStation.GetValue(c => c.Id);
-                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SectorId);
-                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).HasValue ? readerResMeasStation.GetValue(c => c.StationId).Value.ToString() : "";
+                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SECTOR.Id);
+                        resMeasStatiion.Idstation =  readerResMeasStation.GetValue(c => c.STATION.Id).ToString();
                         resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
 
@@ -1425,7 +1363,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.Id);
                         builderResStGeneral.Select(c => c.MarkerIndex);
                         builderResStGeneral.Select(c => c.OffsetFrequency);
-                        builderResStGeneral.Select(c => c.ResMeasStaId);
+                        builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
                         builderResStGeneral.Select(c => c.SpecrumStartFreq);
                         builderResStGeneral.Select(c => c.SpecrumSteps);
                         builderResStGeneral.Select(c => c.T1);
@@ -1437,7 +1375,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.Rbw);
                         builderResStGeneral.Select(c => c.Vbw);
                         builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
-                        builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
                         {
@@ -1464,7 +1402,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var builderResStMaskElement = this._dataLayer.GetBuilder<MD.IResStMaskElement>().From();
                                 builderResStMaskElement.Select(c => c.Bw);
                                 builderResStMaskElement.Select(c => c.Level);
-                                builderResStMaskElement.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                builderResStMaskElement.Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
                                 builderResStMaskElement.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResStMaskElement, readerResStMaskElement =>
                                 {
@@ -1490,7 +1428,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                .From()
                                .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Bandwidth, c => c.BaseId, c => c.Bsic, c => c.ChannelNumber, c => c.Cid, c => c.Code, c => c.Ctoi, c => c.Eci, c => c.Enodebid, c => c.Freq, c => c.Icio, c => c.InbandPower, c => c.Iscp, c => c.Lac)
                                .Select(c => c.Lat, c => c.Lon, c => c.Mcc, c => c.Mnc, c => c.Nid, c => c.Pci, c => c.Pn, c => c.Power, c => c.Ptotal, c => c.Rnc, c => c.Rscp, c => c.Rsrp, c => c.Rsrq, c => c.Sc, c => c.Sid, c => c.Tac, c => c.TypeCdmaevdo, c => c.Ucid)
-                               .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                               .Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
                                 queryExecuter.Fetch(queryStationSysInfo, readerStationSysInfo =>
                                 {
                                     while (readerStationSysInfo.Read())
@@ -1535,7 +1473,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
                                         .From()
                                         .Select(c => c.Id, c => c.Data, c => c.Type)
-                                        .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                        .Where(c => c.RES_SYS_INFO.Id, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
                                         queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
                                         {
                                             while (readerStationSysInfoBls.Read())
@@ -1570,9 +1508,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStLevelCar.Select(c => c.LevelDbm);
                         builderResStLevelCar.Select(c => c.LevelDbmkvm);
                         builderResStLevelCar.Select(c => c.Lon);
-                        builderResStLevelCar.Select(c => c.ResStationId);
+                        builderResStLevelCar.Select(c => c.RES_MEAS_STATION.Id);
                         builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                        builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStLevelCar.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStLevelCar.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
                         {
@@ -1636,10 +1574,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResRoutes.Select(c => c.Lat);
                 builderResRoutes.Select(c => c.Lon);
                 builderResRoutes.Select(c => c.PointStayType);
-                builderResRoutes.Select(c => c.ResMeasId);
+                builderResRoutes.Select(c => c.RES_MEAS.Id);
                 builderResRoutes.Select(c => c.RouteId);
                 builderResRoutes.Select(c => c.StartTime);
-                builderResRoutes.Where(c => c.ResMeasId, ConditionOperator.Equal, ResId);
+                builderResRoutes.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
                 queryExecuter.Fetch(builderResRoutes, readerResRoutes =>
                 {
                     var route = new Route();
@@ -1701,27 +1639,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.Id);
                 builderResMeasStation.Select(c => c.IdStation);
                 builderResMeasStation.Select(c => c.MeasGlobalSID);
-                builderResMeasStation.Select(c => c.ResMeasId);
-                builderResMeasStation.Select(c => c.SectorId);
+                builderResMeasStation.Select(c => c.RES_MEAS.Id);
+                builderResMeasStation.Select(c => c.SECTOR.Id);
                 builderResMeasStation.Select(c => c.Standard);
-                builderResMeasStation.Select(c => c.StationId);
+                builderResMeasStation.Select(c => c.STATION.Id);
                 builderResMeasStation.Select(c => c.Status);
-                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, ResId);
+                builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
                 builderResMeasStation.OrderByAsc(c => c.Id);
                 queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                 {
                     while (readerResMeasStation.Read())
                     {
                         var resMeasStatiion = new ShortResultsMeasurementsStation();
-                        if (readerResMeasStation.GetValue(c => c.StationId) != null)
-                        {
-                            resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).Value.ToString();
-                        }
+                        
+                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.STATION.Id).ToString();
                         resMeasStatiion.GlobalSID = readerResMeasStation.GetValue(c => c.GlobalSID);
                         resMeasStatiion.MeasGlobalSID = readerResMeasStation.GetValue(c => c.MeasGlobalSID);
                         resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
-                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SectorId);
-                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).HasValue ? readerResMeasStation.GetValue(c => c.StationId).Value.ToString() : "";
+                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SECTOR.Id);
+                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.STATION.Id).ToString();
                         resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
 
@@ -1729,7 +1665,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderStation.Select(c => c.MEAS_TASK.Id);
                         builderStation.Select(c => c.Id);
                         builderStation.Select(c => c.STATION_SITE.Id);
-                        builderStation.Where(c => c.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.StationId));
+                        builderStation.Where(c => c.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.STATION.Id));
                         builderStation.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderStation, readerStation =>
                         {
@@ -1772,7 +1708,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.Id);
                         builderResStGeneral.Select(c => c.MarkerIndex);
                         builderResStGeneral.Select(c => c.OffsetFrequency);
-                        builderResStGeneral.Select(c => c.ResMeasStaId);
+                        builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
                         builderResStGeneral.Select(c => c.SpecrumStartFreq);
                         builderResStGeneral.Select(c => c.SpecrumSteps);
                         builderResStGeneral.Select(c => c.T1);
@@ -1781,7 +1717,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.TimeFinishMeas);
                         builderResStGeneral.Select(c => c.TimeStartMeas);
                         builderResStGeneral.Select(c => c.TraceCount);
-                        builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
                         {
@@ -1824,7 +1760,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStGeneral.Select(c => c.Id);
                 builderResStGeneral.Select(c => c.MarkerIndex);
                 builderResStGeneral.Select(c => c.OffsetFrequency);
-                builderResStGeneral.Select(c => c.ResMeasStaId);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
                 builderResStGeneral.Select(c => c.SpecrumStartFreq);
                 builderResStGeneral.Select(c => c.SpecrumSteps);
                 builderResStGeneral.Select(c => c.T1);
@@ -1833,15 +1769,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStGeneral.Select(c => c.TimeFinishMeas);
                 builderResStGeneral.Select(c => c.TimeStartMeas);
                 builderResStGeneral.Select(c => c.TraceCount);
-                builderResStGeneral.Select(c => c.RESMEASSTA.SectorId);
-                builderResStGeneral.Select(c => c.RESMEASSTA.StationId);
-                builderResStGeneral.Select(c => c.RESMEASSTA.GlobalSID);
-                builderResStGeneral.Select(c => c.RESMEASSTA.MeasGlobalSID);
-                builderResStGeneral.Select(c => c.RESMEASSTA.Status);
-                builderResStGeneral.Select(c => c.RESMEASSTA.Id);
-                builderResStGeneral.Select(c => c.RESMEASSTA.Standard);
-                builderResStGeneral.Select(c => c.RESMEASSTA.ResMeasId);
-                builderResStGeneral.Where(c => c.RESMEASSTA.ResMeasId, ConditionOperator.Equal, ResId);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.SECTOR.Id);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.STATION.Id);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.GlobalSID);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.MeasGlobalSID);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Status);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Standard);
+                builderResStGeneral.Select(c => c.RES_MEAS_STATION.RES_MEAS.Id);
+                builderResStGeneral.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, ResId);
                 builderResStGeneral.OrderByAsc(c => c.Id);
                 queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
                 {
@@ -1849,19 +1785,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         var resMeasStatiion = new ResultsMeasurementsStation();
 
-                        if (listResMeasStatiion.Find(x => x.Id == readerResStGeneral.GetValue(c => c.RESMEASSTA.Id)) == null)
+                        if (listResMeasStatiion.Find(x => x.Id == readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Id)) == null)
                         {
-                            if (readerResStGeneral.GetValue(c => c.RESMEASSTA.StationId) != null)
-                            {
-                                resMeasStatiion.Idstation = readerResStGeneral.GetValue(c => c.RESMEASSTA.StationId).Value.ToString();
-                            }
-                            resMeasStatiion.GlobalSID = readerResStGeneral.GetValue(c => c.RESMEASSTA.GlobalSID);
-                            resMeasStatiion.MeasGlobalSID = readerResStGeneral.GetValue(c => c.RESMEASSTA.MeasGlobalSID);
-                            resMeasStatiion.Status = readerResStGeneral.GetValue(c => c.RESMEASSTA.Status);
-                            resMeasStatiion.Id = readerResStGeneral.GetValue(c => c.RESMEASSTA.Id);
-                            resMeasStatiion.IdSector = readerResStGeneral.GetValue(c => c.RESMEASSTA.SectorId);
-                            resMeasStatiion.Idstation = readerResStGeneral.GetValue(c => c.RESMEASSTA.StationId).HasValue ? readerResStGeneral.GetValue(c => c.RESMEASSTA.StationId).Value.ToString() : "";
-                            resMeasStatiion.Standard = readerResStGeneral.GetValue(c => c.RESMEASSTA.Standard);
+                            resMeasStatiion.Idstation = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.STATION.Id).ToString();
+                            resMeasStatiion.GlobalSID = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.GlobalSID);
+                            resMeasStatiion.MeasGlobalSID = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.MeasGlobalSID);
+                            resMeasStatiion.Status = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Status);
+                            resMeasStatiion.Id = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Id);
+                            resMeasStatiion.IdSector = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.SECTOR.Id);
+                            resMeasStatiion.Idstation = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.STATION.Id).ToString();
+                            resMeasStatiion.Standard = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Standard);
 
 
                             var measurementsParameterGeneral = new MeasurementsParameterGeneral();
@@ -1871,8 +1804,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
                             measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
                             measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                            measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                            measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                            measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                            measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
                             measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
                             measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                             measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
@@ -1910,12 +1843,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.Id);
                 builderResMeasStation.Select(c => c.IdStation);
                 builderResMeasStation.Select(c => c.MeasGlobalSID);
-                builderResMeasStation.Select(c => c.ResMeasId);
-                builderResMeasStation.Select(c => c.SectorId);
+                builderResMeasStation.Select(c => c.RES_MEAS.Id);
+                builderResMeasStation.Select(c => c.SECTOR.Id);
                 builderResMeasStation.Select(c => c.Standard);
-                builderResMeasStation.Select(c => c.StationId);
+                builderResMeasStation.Select(c => c.STATION.Id);
                 builderResMeasStation.Select(c => c.Status);
-                builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, ResId);
+                builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
                 builderResMeasStation.Where(c => c.IdStation, ConditionOperator.Equal, StationId);
                 builderResMeasStation.OrderByAsc(c => c.Id);
                 queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -1923,16 +1856,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                     while (readerResMeasStation.Read())
                     {
                         var resMeasStatiion = new ResultsMeasurementsStation();
-                        if (readerResMeasStation.GetValue(c => c.StationId) != null)
-                        {
-                            resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).Value.ToString();
-                        }
+                        
+                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.STATION.Id).ToString();
                         resMeasStatiion.GlobalSID = readerResMeasStation.GetValue(c => c.GlobalSID);
                         resMeasStatiion.MeasGlobalSID = readerResMeasStation.GetValue(c => c.MeasGlobalSID);
                         resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
                         resMeasStatiion.Id = readerResMeasStation.GetValue(c => c.Id);
-                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SectorId);
-                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).HasValue ? readerResMeasStation.GetValue(c => c.StationId).Value.ToString() : "";
+                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SECTOR.Id);
+                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.STATION.Id).ToString();
                         resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
                         double? rbw = null;
@@ -1949,7 +1880,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.Id);
                         builderResStGeneral.Select(c => c.MarkerIndex);
                         builderResStGeneral.Select(c => c.OffsetFrequency);
-                        builderResStGeneral.Select(c => c.ResMeasStaId);
+                        builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
                         builderResStGeneral.Select(c => c.SpecrumStartFreq);
                         builderResStGeneral.Select(c => c.SpecrumSteps);
                         builderResStGeneral.Select(c => c.T1);
@@ -1961,7 +1892,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStGeneral.Select(c => c.Rbw);
                         builderResStGeneral.Select(c => c.Vbw);
                         builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
-                        builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStGeneral.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
                         {
@@ -1988,7 +1919,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var builderResStMaskElement = this._dataLayer.GetBuilder<MD.IResStMaskElement>().From();
                                 builderResStMaskElement.Select(c => c.Bw);
                                 builderResStMaskElement.Select(c => c.Level);
-                                builderResStMaskElement.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                builderResStMaskElement.Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
                                 builderResStMaskElement.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResStMaskElement, readerResStMaskElement =>
                                 {
@@ -2014,7 +1945,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                .From()
                                .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Bandwidth, c => c.BaseId, c => c.Bsic, c => c.ChannelNumber, c => c.Cid, c => c.Code, c => c.Ctoi, c => c.Eci, c => c.Enodebid, c => c.Freq, c => c.Icio, c => c.InbandPower, c => c.Iscp, c => c.Lac)
                                .Select(c => c.Lat, c => c.Lon, c => c.Mcc, c => c.Mnc, c => c.Nid, c => c.Pci, c => c.Pn, c => c.Power, c => c.Ptotal, c => c.Rnc, c => c.Rscp, c => c.Rsrp, c => c.Rsrq, c => c.Sc, c => c.Sid, c => c.Tac, c => c.TypeCdmaevdo, c => c.Ucid)
-                               .Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                               .Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
                                 queryExecuter.Fetch(queryStationSysInfo, readerStationSysInfo =>
                                 {
                                     while (readerStationSysInfo.Read())
@@ -2059,7 +1990,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
                                         .From()
                                         .Select(c => c.Id, c => c.Data, c => c.Type)
-                                        .Where(c => c.ResSysInfoId, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                        .Where(c => c.RES_SYS_INFO.Id, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
                                         queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
                                         {
                                             while (readerStationSysInfoBls.Read())
@@ -2095,9 +2026,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResStLevelCar.Select(c => c.LevelDbm);
                         builderResStLevelCar.Select(c => c.LevelDbmkvm);
                         builderResStLevelCar.Select(c => c.Lon);
-                        builderResStLevelCar.Select(c => c.ResStationId);
+                        builderResStLevelCar.Select(c => c.RES_MEAS_STATION.Id);
                         builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                        builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStLevelCar.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                         builderResStLevelCar.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
                         {
@@ -2154,12 +2085,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.DataRank);
                 builderResMeas.Select(c => c.Id);
                 builderResMeas.Select(c => c.MeasResultSID);
-                builderResMeas.Select(c => c.MeasSubTaskId);
-                builderResMeas.Select(c => c.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.MeasTaskId);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
-                builderResMeas.Select(c => c.SensorId);
                 builderResMeas.Select(c => c.StartTime);
                 builderResMeas.Select(c => c.Status);
                 builderResMeas.Select(c => c.StopTime);
@@ -2179,27 +2110,21 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.N = readerResMeas.GetValue(c => c.N);
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        if (readerResMeas.GetValue(c => c.MeasTaskId) != null)
-                        {
-                            long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.MeasTaskId), out measTaskId);
-                            levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                        }
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id); 
+                        
                         levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.Id);
                         levelmeasurementResults.StationMeasurements = new StationMeasurements();
                         levelmeasurementResults.StationMeasurements.StationId = new SensorIdentifier();
-                        if (readerResMeas.GetValue(c => c.SensorId) != null)
-                        {
-                            levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.SensorId).Value;
-                        }
+                        
+                        levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                        
                         levelmeasurementResults.Status = readerResMeas.GetValue(c => c.Status);
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MeasSubTaskId).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
-                        }
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                       
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.Id);
+                        
                         if (readerResMeas.GetValue(c => c.ScansNumber) != null)
                         {
                             levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
@@ -2236,7 +2161,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLevels.Select(c => c.PDiffLvl);
                         builderResLevels.Select(c => c.PMaxLvl);
                         builderResLevels.Select(c => c.PMinLvl);
-                        builderResLevels.Select(c => c.ResMeasId);
+                        builderResLevels.Select(c => c.RES_MEAS.Id);
                         builderResLevels.Select(c => c.StddevLev);
                         builderResLevels.Select(c => c.StdDevSpect);
                         builderResLevels.Select(c => c.ValueLvl);
@@ -2245,7 +2170,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLevels.Select(c => c.VMinSpect);
                         builderResLevels.Select(c => c.VMMaxLvl);
                         builderResLevels.Select(c => c.VMMaxSpect);
-                        builderResLevels.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLevels.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResLevels.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResLevels, readerResLevels =>
                         {
@@ -2285,9 +2210,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         var builderResLevMeasOnline = this._dataLayer.GetBuilder<MD.IResLevMeasOnline>().From();
                         builderResLevMeasOnline.Select(c => c.Id);
-                        builderResLevMeasOnline.Select(c => c.ResMeasId);
+                        builderResLevMeasOnline.Select(c => c.RES_MEAS.Id);
                         builderResLevMeasOnline.Select(c => c.Value);
-                        builderResLevMeasOnline.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLevMeasOnline.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResLevMeasOnline.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResLevMeasOnline, readerResLevMeasOnline =>
                         {
@@ -2316,9 +2241,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLocSensorMeas.Select(c => c.Id);
                         builderResLocSensorMeas.Select(c => c.Lat);
                         builderResLocSensorMeas.Select(c => c.Lon);
-                        builderResLocSensorMeas.Select(c => c.ResMeasId);
+                        builderResLocSensorMeas.Select(c => c.RES_MEAS.Id);
                         builderResLocSensorMeas.OrderByAsc(c => c.Id);
-                        builderResLocSensorMeas.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLocSensorMeas.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         var locationSensorMeasurement = new LocationSensorMeasurement();
                         queryExecuter.Fetch(builderResLocSensorMeas, readerResLocSensorMeas =>
                         {
@@ -2343,7 +2268,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -2360,7 +2285,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -2378,7 +2303,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -2393,10 +2318,10 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                             var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                             builderLinkResSensoT.Select(c => c.Id);
-                            builderLinkResSensoT.Select(c => c.SensorId);
+                            builderLinkResSensoT.Select(c => c.SENSOR.Id);
                             builderLinkResSensoT.Select(c => c.SENSOR.Name);
                             builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                            builderLinkResSensoT.Where(c => c.RESMEASSTA.RESMEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                            builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                             builderLinkResSensoT.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
                             {
@@ -2441,12 +2366,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.DataRank);
                 builderResMeas.Select(c => c.Id);
                 builderResMeas.Select(c => c.MeasResultSID);
-                builderResMeas.Select(c => c.MeasSubTaskId);
-                builderResMeas.Select(c => c.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.MeasTaskId);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
-                builderResMeas.Select(c => c.SensorId);
+                
                 builderResMeas.Select(c => c.StartTime);
                 builderResMeas.Select(c => c.Status);
                 builderResMeas.Select(c => c.StopTime);
@@ -2454,7 +2380,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.TimeMeas);
                 builderResMeas.Select(c => c.TypeMeasurements);
                 builderResMeas.OrderByAsc(c => c.Id);
-                builderResMeas.Where(c => c.MeasTaskId, ConditionOperator.Equal, MeasTaskId.ToString());
+                builderResMeas.Where(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, MeasTaskId);
                 builderResMeas.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
@@ -2467,28 +2393,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.N = readerResMeas.GetValue(c => c.N);
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.MeasTaskId), out measTaskId);
-                        levelmeasurementResults.Id.MeasTaskId.Value = MeasTaskId;
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
                         levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.Id);
                         levelmeasurementResults.StationMeasurements = new StationMeasurements();
                         levelmeasurementResults.StationMeasurements.StationId = new SensorIdentifier();
-                        if (readerResMeas.GetValue(c => c.SensorId) != null)
-                        {
-                            levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.SensorId).Value;
-                        }
+                        
+                        levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                        
                         levelmeasurementResults.Status = readerResMeas.GetValue(c => c.Status);
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MeasSubTaskId).Value;
-                        }
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
                         if (readerResMeas.GetValue(c => c.ScansNumber) != null)
                         {
                             levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
-                        }
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.Id);
+                        
                         if (readerResMeas.GetValue(c => c.TimeMeas) != null)
                         {
                             levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.TimeMeas).Value;
@@ -2531,12 +2454,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.DataRank);
                 builderResMeas.Select(c => c.Id);
                 builderResMeas.Select(c => c.MeasResultSID);
-                builderResMeas.Select(c => c.MeasSubTaskId);
-                builderResMeas.Select(c => c.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.MeasTaskId);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
-                builderResMeas.Select(c => c.SensorId);
+                
                 builderResMeas.Select(c => c.StartTime);
                 builderResMeas.Select(c => c.Status);
                 builderResMeas.Select(c => c.StopTime);
@@ -2544,7 +2468,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.TimeMeas);
                 builderResMeas.Select(c => c.TypeMeasurements);
                 builderResMeas.OrderByAsc(c => c.Id);
-                builderResMeas.Where(c => c.MeasTaskId, ConditionOperator.Equal, MeasTaskId.ToString());
+                builderResMeas.Where(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, MeasTaskId);
                 builderResMeas.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
@@ -2557,24 +2481,20 @@ namespace Atdi.WcfServices.Sdrn.Server
                         levelmeasurementResults.N = readerResMeas.GetValue(c => c.N);
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.MeasTaskId), out measTaskId);
-                        levelmeasurementResults.Id.MeasTaskId.Value = MeasTaskId;
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id); 
                         levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.Id);
                         levelmeasurementResults.StationMeasurements = new StationMeasurements();
                         levelmeasurementResults.StationMeasurements.StationId = new SensorIdentifier();
-                        if (readerResMeas.GetValue(c => c.SensorId) != null)
-                        {
-                            levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.SensorId).Value;
-                        }
+                        
+                        levelmeasurementResults.StationMeasurements.StationId.Value = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.SENSOR.Id);
+                        
                         levelmeasurementResults.Status = readerResMeas.GetValue(c => c.Status);
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MeasSubTaskId).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.MeasSubTaskStationId) != null)
-                        {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MeasSubTaskStationId).Value;
-                        }
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.MEAS_SUBTASK_STATION.Id);
+                        
                         if (readerResMeas.GetValue(c => c.ScansNumber) != null)
                         {
                             levelmeasurementResults.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).Value;
@@ -2610,7 +2530,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLevels.Select(c => c.PDiffLvl);
                         builderResLevels.Select(c => c.PMaxLvl);
                         builderResLevels.Select(c => c.PMinLvl);
-                        builderResLevels.Select(c => c.ResMeasId);
+                        builderResLevels.Select(c => c.RES_MEAS.Id);
                         builderResLevels.Select(c => c.StddevLev);
                         builderResLevels.Select(c => c.StdDevSpect);
                         builderResLevels.Select(c => c.ValueLvl);
@@ -2619,7 +2539,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLevels.Select(c => c.VMinSpect);
                         builderResLevels.Select(c => c.VMMaxLvl);
                         builderResLevels.Select(c => c.VMMaxSpect);
-                        builderResLevels.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLevels.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResLevels.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResLevels, readerResLevels =>
                         {
@@ -2659,9 +2579,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         var builderResLevMeasOnline = this._dataLayer.GetBuilder<MD.IResLevMeasOnline>().From();
                         builderResLevMeasOnline.Select(c => c.Id);
-                        builderResLevMeasOnline.Select(c => c.ResMeasId);
+                        builderResLevMeasOnline.Select(c => c.RES_MEAS.Id);
                         builderResLevMeasOnline.Select(c => c.Value);
-                        builderResLevMeasOnline.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLevMeasOnline.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResLevMeasOnline.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResLevMeasOnline, readerResLevMeasOnline =>
                         {
@@ -2692,9 +2612,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLocSensorMeas.Select(c => c.Id);
                         builderResLocSensorMeas.Select(c => c.Lat);
                         builderResLocSensorMeas.Select(c => c.Lon);
-                        builderResLocSensorMeas.Select(c => c.ResMeasId);
+                        builderResLocSensorMeas.Select(c => c.RES_MEAS.Id);
                         builderResLocSensorMeas.OrderByAsc(c => c.Id);
-                        builderResLocSensorMeas.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResLocSensorMeas.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         var locationSensorMeasurement = new LocationSensorMeasurement();
                         queryExecuter.Fetch(builderResLocSensorMeas, readerResLocSensorMeas =>
                         {
@@ -2717,29 +2637,24 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResMeasStation.Select(c => c.Id);
                         builderResMeasStation.Select(c => c.IdStation);
                         builderResMeasStation.Select(c => c.MeasGlobalSID);
-                        builderResMeasStation.Select(c => c.ResMeasId);
-                        builderResMeasStation.Select(c => c.SectorId);
+                        builderResMeasStation.Select(c => c.RES_MEAS.Id);
+                        builderResMeasStation.Select(c => c.SECTOR.Id);
                         builderResMeasStation.Select(c => c.Standard);
-                        builderResMeasStation.Select(c => c.StationId);
+                        builderResMeasStation.Select(c => c.STATION.Id);
                         builderResMeasStation.Select(c => c.Status);
-                        builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResMeasStation.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
                         {
                             while (readerResMeasStation.Read())
                             {
                                 var resMeasStatiion = new ResultsMeasurementsStation();
-                                resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SectorId);
-                                if (readerResMeasStation.GetValue(c => c.StationId) != null)
-                                {
-                                    resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).Value.ToString();
-                                }
+                                resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SECTOR.Id);
+                                resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.STATION.Id).ToString();
                                 resMeasStatiion.GlobalSID = readerResMeasStation.GetValue(c => c.GlobalSID);
                                 resMeasStatiion.MeasGlobalSID = readerResMeasStation.GetValue(c => c.MeasGlobalSID);
                                 resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
                                 resMeasStatiion.Id = readerResMeasStation.GetValue(c => c.Id);
-                                resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.SectorId);
-                                resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.StationId).HasValue ? readerResMeasStation.GetValue(c => c.StationId).Value.ToString() : "";
                                 resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
 
 
@@ -2758,7 +2673,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResStGeneral.Select(c => c.Id);
                                 builderResStGeneral.Select(c => c.MarkerIndex);
                                 builderResStGeneral.Select(c => c.OffsetFrequency);
-                                builderResStGeneral.Select(c => c.ResMeasStaId);
+                                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
                                 builderResStGeneral.Select(c => c.SpecrumStartFreq);
                                 builderResStGeneral.Select(c => c.SpecrumSteps);
                                 builderResStGeneral.Select(c => c.T1);
@@ -2770,7 +2685,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResStGeneral.Select(c => c.Rbw);
                                 builderResStGeneral.Select(c => c.Vbw);
                                 builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
-                                builderResStGeneral.Where(c => c.ResMeasStaId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                                builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                                 builderResStGeneral.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
                                 {
@@ -2797,7 +2712,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var builderResStMaskElement = this._dataLayer.GetBuilder<MD.IResStMaskElement>().From();
                                         builderResStMaskElement.Select(c => c.Bw);
                                         builderResStMaskElement.Select(c => c.Level);
-                                        builderResStMaskElement.Where(c => c.ResStGeneralId, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                        builderResStMaskElement.Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
                                         builderResStMaskElement.OrderByAsc(c => c.Id);
                                         queryExecuter.Fetch(builderResStMaskElement, readerResStMaskElement =>
                                         {
@@ -2830,9 +2745,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderResStLevelCar.Select(c => c.LevelDbm);
                                 builderResStLevelCar.Select(c => c.LevelDbmkvm);
                                 builderResStLevelCar.Select(c => c.Lon);
-                                builderResStLevelCar.Select(c => c.ResStationId);
+                                builderResStLevelCar.Select(c => c.RES_MEAS_STATION.Id);
                                 builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                                builderResStLevelCar.Where(c => c.ResStationId, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                                builderResStLevelCar.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
                                 builderResStLevelCar.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
                                 {
@@ -2894,26 +2809,26 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResLocSensorMeasFast.Select(c => c.Id);
                 builderResLocSensorMeasFast.Select(c => c.Lat);
                 builderResLocSensorMeasFast.Select(c => c.Lon);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.AntVal);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.DataRank);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.Id);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.MeasResultSID);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.MeasSubTaskId);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.MeasSubTaskStationId);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.MeasTaskId);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.N);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.ScansNumber);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.SensorId);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.StartTime);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.Status);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.StopTime);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.Synchronized);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.TimeMeas);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.TypeMeasurements);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.SENSOR.Name);
-                builderResLocSensorMeasFast.Select(c => c.RESMEAS.SENSOR.TechId);
-                builderResLocSensorMeasFast.Select(c => c.ResMeasId);
-                builderResLocSensorMeasFast.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.AntVal);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.DataRank);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.Id);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MeasResultSID);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.N);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.ScansNumber);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.StartTime);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.Status);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.StopTime);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.Synchronized);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.TimeMeas);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.TypeMeasurements);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
+                builderResLocSensorMeasFast.Select(c => c.RES_MEAS.Id);
+                builderResLocSensorMeasFast.Where(c => c.RES_MEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 builderResLocSensorMeasFast.OrderByAsc(c => c.Id);
                 var locationSensorMeasurement = new LocationSensorMeasurement();
                 queryExecuter.Fetch(builderResLocSensorMeasFast, readerResLocSensorMeas =>
@@ -2924,42 +2839,38 @@ namespace Atdi.WcfServices.Sdrn.Server
                         shortMeasurementResultsFast.CurrentLon = readerResLocSensorMeas.GetValue(c => c.Lon);
                         shortMeasurementResultsFast.CurrentLat = readerResLocSensorMeas.GetValue(c => c.Lat);
 
-                        shortMeasurementResultsFast.DataRank = readerResLocSensorMeas.GetValue(c => c.RESMEAS.DataRank);
+                        shortMeasurementResultsFast.DataRank = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.DataRank);
                         shortMeasurementResultsFast.Id = new MeasurementResultsIdentifier();
                         shortMeasurementResultsFast.Id.MeasTaskId = new MeasTaskIdentifier();
-                        long measTaskId = -1; long.TryParse(readerResLocSensorMeas.GetValue(c => c.RESMEAS.MeasTaskId), out measTaskId);
-                        shortMeasurementResultsFast.Id.MeasTaskId.Value = measTaskId;
-                        shortMeasurementResultsFast.Id.MeasSdrResultsId = readerResLocSensorMeas.GetValue(c => c.RESMEAS.Id);
-                        shortMeasurementResultsFast.Status = readerResLocSensorMeas.GetValue(c => c.RESMEAS.Status);
-                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.MeasSubTaskId) != null)
+                        shortMeasurementResultsFast.Id.MeasTaskId.Value = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id); 
+                        shortMeasurementResultsFast.Id.MeasSdrResultsId = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.Id);
+                        shortMeasurementResultsFast.Status = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.Status);
+                        
+                        shortMeasurementResultsFast.Id.SubMeasTaskId = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
+                        shortMeasurementResultsFast.Id.SubMeasTaskStationId = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                        
+                        if (readerResLocSensorMeas.GetValue(c => c.RES_MEAS.TimeMeas) != null)
                         {
-                            shortMeasurementResultsFast.Id.SubMeasTaskId = readerResLocSensorMeas.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                            shortMeasurementResultsFast.TimeMeas = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value;
                         }
-                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId) != null)
+                        if (readerResLocSensorMeas.GetValue(c => c.RES_MEAS.StartTime) != null)
                         {
-                            shortMeasurementResultsFast.Id.SubMeasTaskStationId = readerResLocSensorMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                            shortMeasurementResultsFast.StartTime = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.StartTime).Value;
                         }
-                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
+                        if (readerResLocSensorMeas.GetValue(c => c.RES_MEAS.StopTime) != null)
                         {
-                            shortMeasurementResultsFast.TimeMeas = readerResLocSensorMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
-                        }
-                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.StartTime) != null)
-                        {
-                            shortMeasurementResultsFast.StartTime = readerResLocSensorMeas.GetValue(c => c.RESMEAS.StartTime).Value;
-                        }
-                        if (readerResLocSensorMeas.GetValue(c => c.RESMEAS.StopTime) != null)
-                        {
-                            shortMeasurementResultsFast.StopTime = readerResLocSensorMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            shortMeasurementResultsFast.StopTime = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
-                        if (Enum.TryParse<MeasurementType>(readerResLocSensorMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
+                        if (Enum.TryParse<MeasurementType>(readerResLocSensorMeas.GetValue(c => c.RES_MEAS.TypeMeasurements), out outResType))
                         {
                             shortMeasurementResultsFast.TypeMeasurements = outResType;
                         }
-                        shortMeasurementResultsFast.Number = readerResLocSensorMeas.GetValue(c => c.RESMEAS.N).HasValue ? readerResLocSensorMeas.GetValue(c => c.RESMEAS.N).Value : -1;
+                        shortMeasurementResultsFast.Number = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.N).HasValue ? readerResLocSensorMeas.GetValue(c => c.RES_MEAS.N).Value : -1;
 
-                        shortMeasurementResultsFast.SensorName = readerResLocSensorMeas.GetValue(c => c.RESMEAS.SENSOR.Name);
-                        shortMeasurementResultsFast.SensorTechId = readerResLocSensorMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
+                        shortMeasurementResultsFast.SensorName = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                        shortMeasurementResultsFast.SensorTechId = readerResLocSensorMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
 
                         if ((results.Find(c => c.Id.MeasSdrResultsId == shortMeasurementResultsFast.Id.MeasSdrResultsId)) == null)
                         {
@@ -2985,74 +2896,72 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsByTaskIdMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
-                builderResMeas.Select(c => c.RESMEAS.AntVal);
-                builderResMeas.Select(c => c.RESMEAS.DataRank);
-                builderResMeas.Select(c => c.RESMEAS.Id);
+                builderResMeas.Select(c => c.RES_MEAS.AntVal);
+                builderResMeas.Select(c => c.RES_MEAS.DataRank);
+                builderResMeas.Select(c => c.RES_MEAS.Id);
                 builderResMeas.Select(c => c.Lon);
                 builderResMeas.Select(c => c.Lat);
-                builderResMeas.Select(c => c.RESMEAS.MeasResultSID);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskId);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.RESMEAS.MeasTaskId);
-                builderResMeas.Select(c => c.RESMEAS.N);
-                builderResMeas.Select(c => c.RESMEAS.ScansNumber);
-                builderResMeas.Select(c => c.RESMEAS.SensorId);
-                builderResMeas.Select(c => c.RESMEAS.StartTime);
-                builderResMeas.Select(c => c.RESMEAS.Status);
-                builderResMeas.Select(c => c.RESMEAS.StopTime);
-                builderResMeas.Select(c => c.RESMEAS.Synchronized);
-                builderResMeas.Select(c => c.RESMEAS.TimeMeas);
-                builderResMeas.Select(c => c.RESMEAS.TypeMeasurements);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.Name);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
+                builderResMeas.Select(c => c.RES_MEAS.MeasResultSID);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.N);
+                builderResMeas.Select(c => c.RES_MEAS.ScansNumber);
+                builderResMeas.Select(c => c.RES_MEAS.StartTime);
+                builderResMeas.Select(c => c.RES_MEAS.Status);
+                builderResMeas.Select(c => c.RES_MEAS.StopTime);
+                builderResMeas.Select(c => c.RES_MEAS.Synchronized);
+                builderResMeas.Select(c => c.RES_MEAS.TimeMeas);
+                builderResMeas.Select(c => c.RES_MEAS.TypeMeasurements);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
+
                 builderResMeas.OrderByAsc(c => c.Id);
-                builderResMeas.Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, MeasTaskId.ToString());
-                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderResMeas.Where(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, MeasTaskId);
+                builderResMeas.Where(c => c.RES_MEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
                     {
                         var levelmeasurementResults = new ShortMeasurementResults();
 
-                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RESMEAS.DataRank);
-                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RESMEAS.N).HasValue ? readerResMeas.GetValue(c => c.RESMEAS.N).Value : -1;
+                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RES_MEAS.DataRank);
+                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RES_MEAS.N).HasValue ? readerResMeas.GetValue(c => c.RES_MEAS.N).Value : -1;
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId) != null)
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+
+                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RES_MEAS.Id);
+                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RES_MEAS.Status);
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                        
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas) != null)
                         {
-                            long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId), out measTaskId);
-                            levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
+                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value;
                         }
-                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RESMEAS.Id);
-                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RESMEAS.Status);
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StartTime) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RES_MEAS.StartTime).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StopTime) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
-                        {
-                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
-                        {
-                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
-                        {
-                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RES_MEAS.StopTime).Value;
                         }
 
                         MeasurementType outResType;
-                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
+                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RES_MEAS.TypeMeasurements), out outResType))
                         {
                             levelmeasurementResults.TypeMeasurements = outResType;
                         }
-                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.Name);
-                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
                         levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
                         levelmeasurementResults.CurrentLat = readerResMeas.GetValue(c => c.Lat);
 
@@ -3064,7 +2973,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3081,7 +2990,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3096,7 +3005,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3129,76 +3038,70 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsByTypeAndTaskIdMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
-                builderResMeas.Select(c => c.RESMEAS.AntVal);
-                builderResMeas.Select(c => c.RESMEAS.DataRank);
-                builderResMeas.Select(c => c.RESMEAS.Id);
+                builderResMeas.Select(c => c.RES_MEAS.AntVal);
+                builderResMeas.Select(c => c.RES_MEAS.DataRank);
+                builderResMeas.Select(c => c.RES_MEAS.Id);
                 builderResMeas.Select(c => c.Lon);
                 builderResMeas.Select(c => c.Lat);
-                builderResMeas.Select(c => c.RESMEAS.MeasResultSID);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskId);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.RESMEAS.MeasTaskId);
-                builderResMeas.Select(c => c.RESMEAS.N);
-                builderResMeas.Select(c => c.RESMEAS.ScansNumber);
-                builderResMeas.Select(c => c.RESMEAS.SensorId);
-                builderResMeas.Select(c => c.RESMEAS.StartTime);
-                builderResMeas.Select(c => c.RESMEAS.Status);
-                builderResMeas.Select(c => c.RESMEAS.StopTime);
-                builderResMeas.Select(c => c.RESMEAS.Synchronized);
-                builderResMeas.Select(c => c.RESMEAS.TimeMeas);
-                builderResMeas.Select(c => c.RESMEAS.TypeMeasurements);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.Name);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
+                builderResMeas.Select(c => c.RES_MEAS.MeasResultSID);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.N);
+                builderResMeas.Select(c => c.RES_MEAS.ScansNumber);
+                builderResMeas.Select(c => c.RES_MEAS.StartTime);
+                builderResMeas.Select(c => c.RES_MEAS.Status);
+                builderResMeas.Select(c => c.RES_MEAS.StopTime);
+                builderResMeas.Select(c => c.RES_MEAS.Synchronized);
+                builderResMeas.Select(c => c.RES_MEAS.TimeMeas);
+                builderResMeas.Select(c => c.RES_MEAS.TypeMeasurements);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
                 builderResMeas.OrderByAsc(c => c.Id);
-                builderResMeas.Where(c => c.RESMEAS.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
-                builderResMeas.Where(c => c.RESMEAS.MeasTaskId, ConditionOperator.Equal, taskId.ToString());
-                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderResMeas.Where(c => c.RES_MEAS.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
+                builderResMeas.Where(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, taskId);
+                builderResMeas.Where(c => c.RES_MEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
                     {
                         var levelmeasurementResults = new ShortMeasurementResults();
 
-                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RESMEAS.DataRank);
-                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RESMEAS.N).HasValue ? readerResMeas.GetValue(c => c.RESMEAS.N).Value : -1;
+                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RES_MEAS.DataRank);
+                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RES_MEAS.N).HasValue ? readerResMeas.GetValue(c => c.RES_MEAS.N).Value : -1;
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId) != null)
-                        {
-                            long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId), out measTaskId);
-                            levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                        }
-                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RESMEAS.Id);
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id); 
+                        
+                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RES_MEAS.Id);
 
+                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RES_MEAS.Status);
 
-                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RESMEAS.Status);
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId) != null)
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                        
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StartTime) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RES_MEAS.StartTime).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StopTime) != null)
                         {
-                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
-                        {
-                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
-                        {
-                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RES_MEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
-                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
+                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RES_MEAS.TypeMeasurements), out outResType))
                         {
                             levelmeasurementResults.TypeMeasurements = outResType;
                         }
-                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.Name);
-                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
                         levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
                         levelmeasurementResults.CurrentLat = readerResMeas.GetValue(c => c.Lat);
 
@@ -3210,7 +3113,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3227,7 +3130,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3243,7 +3146,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3275,75 +3178,71 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsSpecialMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
-                builderResMeas.Select(c => c.RESMEAS.AntVal);
-                builderResMeas.Select(c => c.RESMEAS.DataRank);
-                builderResMeas.Select(c => c.RESMEAS.Id);
+                builderResMeas.Select(c => c.RES_MEAS.AntVal);
+                builderResMeas.Select(c => c.RES_MEAS.DataRank);
+                builderResMeas.Select(c => c.RES_MEAS.Id);
                 builderResMeas.Select(c => c.Lon);
                 builderResMeas.Select(c => c.Lat);
-                builderResMeas.Select(c => c.RESMEAS.MeasResultSID);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskId);
-                builderResMeas.Select(c => c.RESMEAS.MeasSubTaskStationId);
-                builderResMeas.Select(c => c.RESMEAS.MeasTaskId);
-                builderResMeas.Select(c => c.RESMEAS.N);
-                builderResMeas.Select(c => c.RESMEAS.ScansNumber);
-                builderResMeas.Select(c => c.RESMEAS.SensorId);
-                builderResMeas.Select(c => c.RESMEAS.StartTime);
-                builderResMeas.Select(c => c.RESMEAS.Status);
-                builderResMeas.Select(c => c.RESMEAS.StopTime);
-                builderResMeas.Select(c => c.RESMEAS.Synchronized);
-                builderResMeas.Select(c => c.RESMEAS.TimeMeas);
-                builderResMeas.Select(c => c.RESMEAS.TypeMeasurements);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.Name);
-                builderResMeas.Select(c => c.RESMEAS.SENSOR.TechId);
+                builderResMeas.Select(c => c.RES_MEAS.MeasResultSID);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Id);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                builderResMeas.Select(c => c.RES_MEAS.N);
+                builderResMeas.Select(c => c.RES_MEAS.ScansNumber);
+                
+                builderResMeas.Select(c => c.RES_MEAS.StartTime);
+                builderResMeas.Select(c => c.RES_MEAS.Status);
+                builderResMeas.Select(c => c.RES_MEAS.StopTime);
+                builderResMeas.Select(c => c.RES_MEAS.Synchronized);
+                builderResMeas.Select(c => c.RES_MEAS.TimeMeas);
+                builderResMeas.Select(c => c.RES_MEAS.TypeMeasurements);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                builderResMeas.Select(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
                 builderResMeas.OrderByAsc(c => c.Id);
-                builderResMeas.Where(c => c.RESMEAS.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
-                builderResMeas.Where(c => c.RESMEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderResMeas.Where(c => c.RES_MEAS.TypeMeasurements, ConditionOperator.Equal, measurementType.ToString());
+                builderResMeas.Where(c => c.RES_MEAS.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                 queryExecuter.Fetch(builderResMeas, readerResMeas =>
                 {
                     while (readerResMeas.Read())
                     {
                         var levelmeasurementResults = new ShortMeasurementResults();
 
-                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RESMEAS.DataRank);
-                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RESMEAS.N).HasValue ? readerResMeas.GetValue(c => c.RESMEAS.N).Value : -1;
+                        levelmeasurementResults.DataRank = readerResMeas.GetValue(c => c.RES_MEAS.DataRank);
+                        levelmeasurementResults.Number = readerResMeas.GetValue(c => c.RES_MEAS.N).HasValue ? readerResMeas.GetValue(c => c.RES_MEAS.N).Value : -1;
                         levelmeasurementResults.Id = new MeasurementResultsIdentifier();
                         levelmeasurementResults.Id.MeasTaskId = new MeasTaskIdentifier();
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId) != null)
-                        {
-                            long measTaskId = -1; long.TryParse(readerResMeas.GetValue(c => c.RESMEAS.MeasTaskId), out measTaskId);
-                            levelmeasurementResults.Id.MeasTaskId.Value = measTaskId;
-                        }
-                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RESMEAS.Id);
+                        
+                        levelmeasurementResults.Id.MeasTaskId.Value = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id); 
+                        
+                        levelmeasurementResults.Id.MeasSdrResultsId = readerResMeas.GetValue(c => c.RES_MEAS.Id);
 
 
-                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RESMEAS.Status);
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId) != null)
+                        levelmeasurementResults.Status = readerResMeas.GetValue(c => c.RES_MEAS.Status);
+                        
+                        levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id);
+                        
+                        levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.Id);
+                        
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskId).Value;
+                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StartTime) != null)
                         {
-                            levelmeasurementResults.Id.SubMeasTaskStationId = readerResMeas.GetValue(c => c.RESMEAS.MeasSubTaskStationId).Value;
+                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RES_MEAS.StartTime).Value;
                         }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.TimeMeas) != null)
+                        if (readerResMeas.GetValue(c => c.RES_MEAS.StopTime) != null)
                         {
-                            levelmeasurementResults.TimeMeas = readerResMeas.GetValue(c => c.RESMEAS.TimeMeas).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StartTime) != null)
-                        {
-                            levelmeasurementResults.StartTime = readerResMeas.GetValue(c => c.RESMEAS.StartTime).Value;
-                        }
-                        if (readerResMeas.GetValue(c => c.RESMEAS.StopTime) != null)
-                        {
-                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RESMEAS.StopTime).Value;
+                            levelmeasurementResults.StopTime = readerResMeas.GetValue(c => c.RES_MEAS.StopTime).Value;
                         }
                         MeasurementType outResType;
-                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RESMEAS.TypeMeasurements), out outResType))
+                        if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.RES_MEAS.TypeMeasurements), out outResType))
                         {
                             levelmeasurementResults.TypeMeasurements = outResType;
                         }
-                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.Name);
-                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RESMEAS.SENSOR.TechId);
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.RES_MEAS.MEAS_SUBTASK_STATION.SENSOR.TechId);
 
 
                         levelmeasurementResults.CurrentLon = readerResMeas.GetValue(c => c.Lon);
@@ -3357,7 +3256,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.Equal, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3373,7 +3272,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.NotEqual, Status.E.ToString());
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
@@ -3390,7 +3289,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
-                            builderResMeasStation.Where(c => c.ResMeasId, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RESMEAS.Id));
+                            builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.RES_MEAS.Id));
                             builderResMeasStation.Where(c => c.Status, ConditionOperator.IsNull);
                             builderResMeasStation.OrderByAsc(c => c.Id);
                             queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>

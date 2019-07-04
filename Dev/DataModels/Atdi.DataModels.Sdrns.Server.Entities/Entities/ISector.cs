@@ -21,7 +21,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? Azimut { get; set; }
         double? Bw { get; set; }
         string ClassEmission { get; set; }
-        long? SectorId { get; set; }
+        long? ClientSectorCode { get; set; }
         IStation STATION { get; set; }
     }
 }

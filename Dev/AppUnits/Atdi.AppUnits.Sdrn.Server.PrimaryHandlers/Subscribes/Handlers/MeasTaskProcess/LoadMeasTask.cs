@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderMeasTask.Select(c => c.DateCreated);
                 builderMeasTask.Select(c => c.ExecutionMode);
                 builderMeasTask.Select(c => c.Id);
-                builderMeasTask.Select(c => c.IdStart);
+                builderMeasTask.Select(c => c.IdentStart);
                 builderMeasTask.Select(c => c.MaxTimeBs);
                 builderMeasTask.Select(c => c.Name);
                 builderMeasTask.Select(c => c.OrderId);
@@ -422,11 +422,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
                                 builderMeasSubTaskSta.Select(c => c.Id);
                                 builderMeasSubTaskSta.Select(c => c.Count);
-                                builderMeasSubTaskSta.Select(c => c.MEAS_SUB_TASK.Id);
+                                builderMeasSubTaskSta.Select(c => c.MEAS_SUBTASK.Id);
                                 builderMeasSubTaskSta.Select(c => c.SENSOR.Id);
                                 builderMeasSubTaskSta.Select(c => c.Status);
                                 builderMeasSubTaskSta.Select(c => c.TimeNextTask);
-                                builderMeasSubTaskSta.Where(c => c.MEAS_SUB_TASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
+                                builderMeasSubTaskSta.Where(c => c.MEAS_SUBTASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderMeasSubTaskSta, readerMeasSubTaskSta =>
                                 {
                                     while (readerMeasSubTaskSta.Read())
@@ -477,8 +477,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderStation.Select(c => c.OWNER_DATA.Id);
                 builderStation.Select(c => c.Standart);
                 builderStation.Select(c => c.StartDate);
-                builderStation.Select(c => c.IdStation);
-                builderStation.Select(c => c.IdPermission);
+                builderStation.Select(c => c.ClientStationCode);
+                builderStation.Select(c => c.ClientPermissionCode);
                 builderStation.Select(c => c.Status);
                 builderStation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, taskId);
                 builderStation.OrderByAsc(c => c.Id);
@@ -487,7 +487,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     while (readerStation.Read())
                     {
                         var measStation = new StationDataForMeasurements();
-                        measStation.IdStation = readerStation.GetValue(c => c.IdStation).HasValue ? readerStation.GetValue(c => c.IdStation).Value : -1;
+                        measStation.IdStation = readerStation.GetValue(c => c.ClientStationCode).HasValue ? readerStation.GetValue(c => c.ClientStationCode).Value : -1;
                         measStation.GlobalSID = readerStation.GetValue(c => c.GlobalSID);
                         measStation.Standart = readerStation.GetValue(c => c.Standart);
                         measStation.Status = readerStation.GetValue(c => c.Status);
@@ -495,7 +495,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         perm.CloseDate = readerStation.GetValue(c => c.CloseDate);
                         perm.DozvilName = readerStation.GetValue(c => c.DozvilName);
                         perm.EndDate = readerStation.GetValue(c => c.EndDate);
-                        perm.Id = readerStation.GetValue(c => c.IdPermission);
+                        perm.Id = readerStation.GetValue(c => c.ClientPermissionCode);
                         perm.StartDate = readerStation.GetValue(c => c.StartDate);
                         measStation.LicenseParameter = perm;
                         measStation.IdSite =  readerStation.GetValue(c => c.STATION_SITE.Id);
@@ -560,7 +560,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderISector.Select(c => c.ClassEmission);
                         builderISector.Select(c => c.Eirp);
                         builderISector.Select(c => c.Id);
-                        builderISector.Select(c => c.SectorId);
+                        builderISector.Select(c => c.ClientSectorCode);
                         builderISector.Select(c => c.STATION.Id);
                         builderISector.Where(c => c.STATION.Id, ConditionOperator.Equal, readerStation.GetValue(c => c.Id));
                         builderISector.OrderByAsc(c => c.Id);
@@ -574,30 +574,29 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 sectM.BW = readerSector.GetValue(c => c.Bw);
                                 sectM.ClassEmission = readerSector.GetValue(c => c.ClassEmission);
                                 sectM.EIRP = readerSector.GetValue(c => c.Eirp);
-                                sectM.IdSector = readerSector.GetValue(c => c.SectorId).HasValue ? readerSector.GetValue(c => c.SectorId).Value : -1;
+                                sectM.IdSector = readerSector.GetValue(c => c.ClientSectorCode).HasValue ? readerSector.GetValue(c => c.ClientSectorCode).Value : -1;
 
 
 
                                 var lFreqICSM = new List<FrequencyForSectorFormICSM>();
                                 var builderLinkSectorFreq = this._dataLayer.GetBuilder<MD.ILinkSectorFreq>().From();
                                 builderLinkSectorFreq.Select(c => c.Id);
-                                builderLinkSectorFreq.Select(c => c.SectorFreqId);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.ChannelNumber);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.Frequency);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.Id);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.PlanId);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.IdFreq);
-                                builderLinkSectorFreq.Where(c => c.SectorId, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.ChannelNumber);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.Frequency);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.Id);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.ClientPlanCode);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.ClientFreqCode);
+                                builderLinkSectorFreq.Where(c => c.SECTOR.Id, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
                                 builderLinkSectorFreq.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderLinkSectorFreq, readerLinkSectorFreq =>
                                 {
                                     while (readerLinkSectorFreq.Read())
                                     {
                                         var freqM = new FrequencyForSectorFormICSM();
-                                        freqM.ChannalNumber = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.ChannelNumber);
-                                        freqM.Frequency = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.Frequency);
-                                        freqM.Id = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.IdFreq);
-                                        freqM.IdPlan = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.PlanId);
+                                        freqM.ChannalNumber = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.ChannelNumber);
+                                        freqM.Frequency = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.Frequency);
+                                        freqM.Id = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.ClientFreqCode);
+                                        freqM.IdPlan = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.ClientPlanCode);
                                         lFreqICSM.Add(freqM);
                                     }
                                     return true;
@@ -608,18 +607,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 var lMask = new List<MaskElements>();
                                 var builderLinkSectorMaskElement = this._dataLayer.GetBuilder<MD.ILinkSectorMaskElement>().From();
                                 builderLinkSectorMaskElement.Select(c => c.Id);
-                                builderLinkSectorMaskElement.Select(c => c.SECTORMASKELEMENT.Bw);
-                                builderLinkSectorMaskElement.Select(c => c.SECTORMASKELEMENT.Id);
-                                builderLinkSectorMaskElement.Select(c => c.SECTORMASKELEMENT.Level);
-                                builderLinkSectorMaskElement.Where(c => c.SectorId, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
+                                builderLinkSectorMaskElement.Select(c => c.SECTOR_MASK_ELEM.Bw);
+                                builderLinkSectorMaskElement.Select(c => c.SECTOR_MASK_ELEM.Id);
+                                builderLinkSectorMaskElement.Select(c => c.SECTOR_MASK_ELEM.Level);
+                                builderLinkSectorMaskElement.Where(c => c.SECTOR.Id, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
                                 builderLinkSectorMaskElement.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderLinkSectorMaskElement, readerLinkSectorMaskElement =>
                                 {
                                     while (readerLinkSectorMaskElement.Read())
                                     {
                                         MaskElements maskElementsM = new MaskElements();
-                                        maskElementsM.BW = readerLinkSectorMaskElement.GetValue(c => c.SECTORMASKELEMENT.Bw);
-                                        maskElementsM.level = readerLinkSectorMaskElement.GetValue(c => c.SECTORMASKELEMENT.Level);
+                                        maskElementsM.BW = readerLinkSectorMaskElement.GetValue(c => c.SECTOR_MASK_ELEM.Bw);
+                                        maskElementsM.level = readerLinkSectorMaskElement.GetValue(c => c.SECTOR_MASK_ELEM.Level);
                                         lMask.Add(maskElementsM);
                                     }
                                     return true;

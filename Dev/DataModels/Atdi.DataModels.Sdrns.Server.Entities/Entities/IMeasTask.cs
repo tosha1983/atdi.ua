@@ -27,7 +27,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? MaxTimeBs { get; set; }
         DateTime? DateCreated { get; set; }
         string CreatedBy { get; set; }
-        string IdStart { get; set; }
+        string IdentStart { get; set; }
         DateTime? PerStart { get; set; }
         DateTime? PerStop { get; set; }
         DateTime? TimeStart { get; set; }
