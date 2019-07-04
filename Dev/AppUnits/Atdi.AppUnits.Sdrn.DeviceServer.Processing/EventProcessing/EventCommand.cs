@@ -75,6 +75,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     if (findTask != null)
                     {
                         isSuccess = false;
+                        findTask.Task.taskParameters.status = StatusTask.A.ToString();
                         return isSuccess;
                     }
 
@@ -123,15 +124,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         {
                             if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
                             {
-                                tskParam.status = StatusTask.A.ToString();
-                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                //tskParam.status = StatusTask.A.ToString();
+                                //this._repositoryTaskParametersByInt.Update(tskParam);
+                                tskParam.status = StatusTask.F.ToString();
                                 action.Invoke();
-                                System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
-                                findTask = contextTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
-                                if (findTask != null)
-                                {
-                                    findTask.Task.taskParameters.status = StatusTask.F.ToString();
-                                }
+                                //System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
+                                
+                                this._repositoryTaskParametersByInt.Update(tskParam);
                             }
                             else
                             {

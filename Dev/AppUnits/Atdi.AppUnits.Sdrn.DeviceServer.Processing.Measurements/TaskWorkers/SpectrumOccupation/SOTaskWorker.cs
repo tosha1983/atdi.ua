@@ -82,6 +82,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         continue;
                     }
 
+                    _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskId.With(context.Task.taskParameters.SDRTaskId));
+
                     //////////////////////////////////////////////
                     // 
                     //  Послать команду DeviceControler MeaseTrace

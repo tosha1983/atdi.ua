@@ -286,8 +286,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
            // throw new NotImplementedException();
         }
 
+        public int GetCountObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
 
-     
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            throw new NotImplementedException();
+        }
+
         public Sensor LoadObject(int? id)
         {
             throw new NotImplementedException();
