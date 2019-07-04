@@ -11,7 +11,7 @@ create table [ICSC].[RES_ROUTES] (
 	[LAT]	[float] null,
 	[LON]	[float] null,
 	[POINT_STAY_TYPE]	[nvarchar](150) null,
-	[RES_MEAS_ID]	[bigint] null,
+	[RES_MEAS_ID]	[bigint] not null,
 	constraint [PK_RES_ROUTES] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

@@ -19,7 +19,7 @@
     <Field Desc="LevelDbmkvm" Title="LevelDbmkvm" Name="LevelDbmkvm" DataType="Double.30.10" SourceName="LEVEL_DBMKVM" SourceType="Column" Required="false"/>
     <Field Desc="TimeOfMeasurements" Title="TimeOfMeasurements" Name="TimeOfMeasurements" DataType="DateTime" SourceName="TIME_OF_MEASUREMENTS" SourceType="Column" Required="false"/>
     <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
-    <Field Name="RES_MEAS_STATION" SourceType="Reference" SourceName="ResMeasStation" Title="Relation ResStLevelCar to ResMeasStation"/>
+    <Field Name="RES_MEAS_STATION" SourceType="Reference" SourceName="ResMeasStation" Required="true" Title="Relation ResStLevelCar to ResMeasStation"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

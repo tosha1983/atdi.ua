@@ -6,15 +6,15 @@ create table [ICSC].[STATION] (
 	[GLOBAL_SID]	[nvarchar](50) null,
 	[STATUS]	[nvarchar](50) null,
 	[STANDARD]	[nvarchar](50) null,
-	[ID_XBS_MEASTASK]	[bigint] null,
-	[ID_STATION]	[bigint] null,
+	[MEAS_TASK]	[bigint] null,
+	[CLIENT_STATION_CODE]	[bigint] null,
 	[START_DATE]	[datetime] null,
 	[END_DATE]	[datetime] null,
 	[CLOSE_DATE]	[datetime] null,
 	[DOZVIL_NAME]	[nvarchar](100) null,
 	[OWNER_DATA_ID]	[bigint] null,
 	[STATION_SITE_ID]	[bigint] null,
-	[ID_PERMISSION]	[bigint] null,
+	[CLIENT_PERMISSION_CODE]	[int] null,
 	constraint [PK_STATION] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

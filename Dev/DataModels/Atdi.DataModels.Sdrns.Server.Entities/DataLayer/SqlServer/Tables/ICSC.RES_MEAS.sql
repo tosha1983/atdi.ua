@@ -3,10 +3,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_MEAS]
 go
 create table [ICSC].[RES_MEAS] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[MEAS_TASK_ID]	[nvarchar](150) null,
-	[MEAS_SUB_TASK_ID]	[bigint] null,
-	[MEAS_SUB_TASK_STATION_ID]	[bigint] null,
-	[SENSOR_ID]	[bigint] null,
+	[MEAS_SUBTASK_STATION_ID]	[bigint] null,
 	[ANTVAL]	[float] null,
 	[TIME_MEAS]	[datetime] null,
 	[DATA_RANK]	[int] null,

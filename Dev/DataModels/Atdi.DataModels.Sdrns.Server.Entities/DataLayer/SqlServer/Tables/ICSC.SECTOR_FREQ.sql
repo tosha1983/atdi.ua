@@ -3,10 +3,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[SECTOR_FR
 go
 create table [ICSC].[SECTOR_FREQ] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[ID_PLAN]	[bigint] null,
+	[CLIENT_PLAN_CODE]	[bigint] null,
 	[CHANNAL_NUMBER]	[bigint] null,
 	[BW]	[numeric](22,8) null,
-	[ID_FREQ]	[bigint] null,
+	[CLIENT_FREQ_CODE]	[bigint] null,
 	constraint [PK_SECTOR_FREQ] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

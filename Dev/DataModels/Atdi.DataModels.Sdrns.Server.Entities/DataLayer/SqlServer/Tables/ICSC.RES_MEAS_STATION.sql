@@ -8,7 +8,7 @@ create table [ICSC].[RES_MEAS_STATION] (
 	[SECTOR_ID]	[bigint] null,
 	[IDSTATION]	[bigint] null,
 	[STATUS]	[nvarchar](250) null,
-	[RES_MEAS_ID]	[bigint] null,
+	[RES_MEAS_ID]	[bigint] not null,
 	[STANDARD]	[nvarchar](50) null,
 	[STATION_ID]	[bigint] null,
 	constraint [PK_RES_MEAS_STATION] primary key clustered ([ID]) on [PRIMARY]  

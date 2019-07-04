@@ -28,7 +28,7 @@
     <Field Desc="LimitSpect" Title="LimitSpect" Name="LimitSpect" DataType="Double.30.10" SourceName="LIMIT_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="OccupancySpect" Title="OccupancySpect" Name="OccupancySpect" DataType="Float.22.8" SourceName="OCCUPANCY_SPECT" SourceType="Column" Required="false"/>
     <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="RES_MEAS_ID" SourceType="Column" Required="false"/>
-    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLevels to ResMeas"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Required="true" Title="Relation ResLevels to ResMeas"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

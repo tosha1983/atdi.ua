@@ -37,7 +37,7 @@ create table [ICSC].[RES_SYS_INFO] (
 	[TAC]	[int] null,
 	[TYPECDMAEVDO]	[nvarchar](250) null,
 	[UCID]	[int] null,
-	[RES_STGENERAL_ID]	[bigint] null,
+	[RES_STGENERAL_ID]	[bigint] not null,
 	constraint [PK_RES_SYS_INFO] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

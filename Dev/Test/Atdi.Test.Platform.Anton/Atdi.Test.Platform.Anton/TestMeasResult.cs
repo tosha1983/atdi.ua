@@ -49,7 +49,7 @@ namespace Atdi.Test.Platform
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.SpectrumOccupation,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),

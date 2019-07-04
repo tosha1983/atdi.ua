@@ -3,7 +3,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_STMAS
 go
 create table [ICSC].[RES_STMASKELM] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[RES_STGENERAL_ID]	[bigint] null,
+	[RES_STGENERAL_ID]	[bigint] not null,
 	[BW]		[float] null,
 	[LEVEL]		[float] null,
 	constraint [PK_RES_STMASKELM] primary key clustered ([ID]) on [PRIMARY]  

@@ -9,7 +9,7 @@ create table [ICSC].[SECTOR] (
 	[BW]	[float] null,
 	[CLASS_EMISSION]	[nvarchar](20) null,
 	[STATION_ID]	[bigint] null,
-	[ID_SECTOR]	[bigint] null,
+	[CLIENT_SECTOR_CODE]	[bigint] null,
 	constraint [PK_SECTOR] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

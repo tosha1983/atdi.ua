@@ -3,7 +3,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[RES_STLEV
 go
 create table [ICSC].[RES_STLEVEL_CAR] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[RES_MEAS_STATION_ID]	[bigint] null,
+	[RES_MEAS_STATION_ID]	[bigint] not null,
 	[ALTITUDE]		[float] null,
 	[DIFFERENCE_TIMESTAMP]		[float] null,
 	[LON]		[float] null,

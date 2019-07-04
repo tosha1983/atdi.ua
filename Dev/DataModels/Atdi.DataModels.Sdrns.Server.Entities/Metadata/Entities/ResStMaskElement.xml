@@ -13,7 +13,7 @@
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="Bw" Title="Bw" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="Level" Title="Level" Name="Level" DataType="Double.30.10" SourceName="LEVEL" SourceType="Column" Required="false"/>
-    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Title="Relation ResStMaskElement to ResStGeneral"/>
+    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Required="true" Title="Relation ResStMaskElement to ResStGeneral"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -5,7 +5,7 @@ create table [ICSC].[RES_SYS_INFO_BLOCKS] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[DATA]	[varbinary](max) null,
 	[TYPE]	[nvarchar](50) null,
-	[RES_SYS_INFO_ID]	[bigint] null,
+	[RES_SYS_INFO_ID]	[bigint] not null,
 	constraint [PK_RES_SYS_INFO_BLOCKS] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

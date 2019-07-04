@@ -45,7 +45,7 @@
     <Field Desc="Tac" Title="Tac" Name="Tac" DataType="Integer.32" SourceName="TAC" SourceType="Column" Required="false"/>
     <Field Desc="TypeCdmaevdo" Title="TypeCdmaevdo" Name="TypeCdmaevdo" DataType="Text.250" SourceName="TYPECDMAEVDO" SourceType="Column" Required="false"/>
     <Field Desc="Ucid" Title="Ucid" Name="Ucid" DataType="Integer.32" SourceName="UCID" SourceType="Column" Required="false"/>
-    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Title="Relation ResSysInfo to ResStGeneral"/>
+    <Field Name="RES_STGENERAL" SourceType="Reference" SourceName="ResStGeneral" Required="true" Title="Relation ResSysInfo to ResStGeneral"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

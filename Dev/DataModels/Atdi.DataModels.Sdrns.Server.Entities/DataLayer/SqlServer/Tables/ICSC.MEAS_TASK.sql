@@ -14,7 +14,7 @@ create table [ICSC].[MEAS_TASK] (
 	[MAX_TIME_BS]	[int] null,
 	[DATE_CREATED]	[datetime] null,
 	[CREATED_BY]	[nvarchar](50) null,
-	[ID_START]	[nvarchar](50) null,
+	[IDENT_START]	[nvarchar](50) null,
 	[PER_START]	[datetime] null,
 	[PER_STOP]	[datetime] null,
 	[TIME_START]	[datetime] null,

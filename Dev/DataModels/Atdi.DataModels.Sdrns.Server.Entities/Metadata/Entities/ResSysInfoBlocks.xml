@@ -13,7 +13,7 @@
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
     <Field Desc="Data" Title="Data" Name="Data" DataType="Text.Bytes" SourceName="DATA" SourceType="Column" Required="false"/>
     <Field Desc="Type" Title="Type" Name="Type" DataType="Text.50" SourceName="TYPE" SourceType="Column" Required="false"/>
-    <Field Name="RES_SYS_INFO" SourceType="Reference" SourceName="ResSysInfo" Title="Relation ResSysInfoBlocks to ResSysInfo"/>
+    <Field Name="RES_SYS_INFO" SourceType="Reference" SourceName="ResSysInfo" Required="true" Title="Relation ResSysInfoBlocks to ResSysInfo"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

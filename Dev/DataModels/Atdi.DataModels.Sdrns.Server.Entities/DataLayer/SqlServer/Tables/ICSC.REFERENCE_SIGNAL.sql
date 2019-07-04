@@ -7,8 +7,8 @@ create table [ICSC].[REFERENCE_SIGNAL] (
 	[BANDWIDTH_KHZ]	[float] null,
 	[LEVELSIGNAL_DBM]	[float] null,
 	[REFERENCE_SITUATION_ID]	[bigint] null,
-	[ICSC_ID]	[bigint] null,
-	[ICSC_TABLE]	[nvarchar](50) null,
+	[ICSM_ID]	[int] null,
+	[ICSM_TABLE]	[nvarchar](50) null,
 	[LOSS_DB]	[varbinary](max) null,
 	[FREQ_KHZ]	[varbinary](max) null,
 	constraint [PK_REFERENCE_SIGNAL] primary key clustered ([ID]) on [PRIMARY]  
