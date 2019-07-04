@@ -42,10 +42,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContextBase.cs" />
+    <Compile Include="DataEngines\IOracleDataEngine.cs" />
+    <Compile Include="DataEngines\ISqlServerDataEngine.cs" />
     <Compile Include="DataEngineType.cs" />
     <Compile Include="DataOrmBase.cs" />
     <Compile Include="EngineCommand.cs" />
     <Compile Include="EngineCommandParameter.cs" />
+    <Compile Include="EngineParameterDirection.cs" />
     <Compile Include="IConstraintSyntax.cs" />
     <Compile Include="IDataContext.cs" />
     <Compile Include="IDataEngine.cs" />
@@ -53,6 +56,11 @@
     <Compile Include="IDataLayer.cs" />
     <Compile Include="IDataLayerConfig.cs" />
     <Compile Include="IDataOrm.cs" />
+    <Compile Include="IDataReader.cs" />
+    <Compile Include="IEngineExecuter.cs" />
+    <Compile Include="IEngineDataReader.cs" />
+    <Compile Include="IEngineExecutionResult.cs" />
+    <Compile Include="IEngineQueryPattern.cs" />
     <Compile Include="IEngineSyntax.cs" />
     <Compile Include="IQueryDeleteStatement.cs" />
     <Compile Include="IQueryExecutor.cs" />
@@ -61,7 +69,14 @@
     <Compile Include="IQuerySelectStatement.cs" />
     <Compile Include="IQueryStatement.cs" />
     <Compile Include="IQueryUpdateStatement.cs" />
+    <Compile Include="IDataLayerScope.cs" />
+    <Compile Include="Patterns\EngineCommandPattern.cs" />
+    <Compile Include="Patterns\InsertPattern.cs" />
+    <Compile Include="Patterns\DeletePattern.cs" />
+    <Compile Include="Patterns\UpdatePattern.cs" />
+    <Compile Include="Patterns\SelectPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransactionIsolationLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
@@ -69,5 +84,6 @@
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

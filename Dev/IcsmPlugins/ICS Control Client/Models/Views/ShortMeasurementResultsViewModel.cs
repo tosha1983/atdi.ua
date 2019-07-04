@@ -12,22 +12,22 @@ namespace XICSM.ICSControlClient.Models.Views
     public class ShortMeasurementResultsViewModel
     {
         [WpfColumn("Meas SDR Results ID", WidthRule = ColumnWidthRule.AutoSize, Width = 60, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int MeasSdrResultsId { get; set; }
+        public long MeasSdrResultsId { get; set; }
 
         [WpfColumn("Number", WidthRule = ColumnWidthRule.AutoSize, Width = 120, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public int Number { get; set; }
 
         [WpfColumn("Meas Task ID", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int MeasTaskId{ get; set; }
+        public long MeasTaskId{ get; set; }
 
         [WpfColumn("Status", WidthRule = ColumnWidthRule.AutoSize, Width = 100, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string Status { get; set; }
 
         [WpfColumn("Sub Meas Task ID", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int SubMeasTaskId { get; set; }
+        public long SubMeasTaskId { get; set; }
 
         [WpfColumn("Sub Meas Task Station ID", WidthRule = ColumnWidthRule.AutoSize, Width = 100, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int SubMeasTaskStationId { get; set; }
+        public long SubMeasTaskStationId { get; set; }
 
         [WpfColumn("Time Meas", WidthRule = ColumnWidthRule.AutoSize, Width = 100, CellStyle = "", HeaderStyle = "")]
         public DateTime? TimeMeas { get; set; }

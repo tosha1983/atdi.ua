@@ -10,7 +10,7 @@ namespace XICSM.ICSControlClient.Models.Views
     {
         public string StationSysInfo { get; set; }
         public string StationId { get; set; }
-        public int? SectorId { get; set; }
+        public long? SectorId { get; set; }
         public string Status { get; set; }
         public string GlobalSID { get; set; }
         public string MeasGlobalSID { get; set; }
@@ -33,7 +33,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public double? T1 { get; set; }
         public double? T2 { get; set; }
         public double? Marker { get; set; }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Standard { get; set; }
         public double? CentralFrequencyMHz { get; set; }
         public double? CentralFrequencyMeas_MHz { get; set; }

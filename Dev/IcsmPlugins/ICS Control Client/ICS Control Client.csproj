@@ -35,18 +35,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atdi.Contracts.WcfServices.Sdrn.Server">
-      <HintPath>..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\bin\Debug\Atdi.Contracts.WcfServices.Sdrn.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.DataModels">
-      <HintPath>..\..\DataModels\Atdi.DataModels\bin\Debug\Atdi.DataModels.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.DataModels.Sdrns">
-      <HintPath>..\..\DataModels\Atdi.DataModels.Sdrns\bin\Debug\Atdi.DataModels.Sdrns.dll</HintPath>
-    </Reference>
-    <Reference Include="Atdi.DataModels.Sdrns.Server">
-      <HintPath>..\..\DataModels\Atdi.DataModels.Sdrns.Server\bin\Debug\Atdi.DataModels.Sdrns.Server.dll</HintPath>
-    </Reference>
     <Reference Include="DatalayerCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ICSM 6.2.70\DatalayerCs.dll</HintPath>
@@ -379,6 +367,22 @@
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
+      <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

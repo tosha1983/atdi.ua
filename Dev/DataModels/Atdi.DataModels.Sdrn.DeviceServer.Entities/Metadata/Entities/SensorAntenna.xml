@@ -6,12 +6,12 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SENSORANTENNA</Name>
+    <Name>SENSOR_ANTENNA</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="true"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID" SourceType="Column" Required="true"/>
     <Field Desc="Code of Antenna" Title="Code of Antenna" Name="Code" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
     <Field Desc="SlewAng, degree" Title="SlewAng, degree" Name="Slewang" DataType="Decimal.22.8" SourceName="SLEWANG" SourceType="Column" Required="false" Unit="Angle.Degree"/>
     <Field Desc="Manufacturer" Title="Manufacturer" Name="Manufacturer" DataType="Text.50" SourceName="MANUFACTURER" SourceType="Column" Required="false"/>

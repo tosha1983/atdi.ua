@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasSubTask
+    [EntityPrimaryKeyAttribute]
+    public interface IMeasSubTask_PK
     {
         long Id { get; set; }
+    }
+    [Entity]
+    public interface IMeasSubTask: IMeasSubTask_PK
+    {
         DateTime? TimeStart { get; set; }
         DateTime? TimeStop { get; set; }
         string Status { get; set; }
         int? Interval { get; set; }
-        long? MeasTaskId { get; set; }
-        IMeasTask MEASTASK { get; set; }
+        IMeasTask MEAS_TASK { get; set; }
     }
 }

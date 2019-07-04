@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                 builderMeasTask.Select(c => c.DateCreated);
                 builderMeasTask.Select(c => c.ExecutionMode);
                 builderMeasTask.Select(c => c.Id);
-                builderMeasTask.Select(c => c.IdStart);
+                builderMeasTask.Select(c => c.IdentStart);
                 builderMeasTask.Select(c => c.MaxTimeBs);
                 builderMeasTask.Select(c => c.Name);
                 builderMeasTask.Select(c => c.OrderId);
@@ -98,10 +98,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
                         builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
                         builderMeasTaskSignaling.Select(c => c.FiltrationTrace);
-                        builderMeasTaskSignaling.Select(c => c.IdMeasTask);
+                        builderMeasTaskSignaling.Select(c => c.MEAS_TASK.Id);
                         builderMeasTaskSignaling.Select(c => c.SignalizationNChenal);
                         builderMeasTaskSignaling.Select(c => c.SignalizationNCount);
-                        builderMeasTaskSignaling.Where(c => c.IdMeasTask, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
                         {
                             var resultMeasTaskSignaling = true;
@@ -121,18 +121,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var listReferenceSituation = new List<ReferenceSituation>();
                         var builderReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().From();
                         builderReferenceSituationRaw.Select(c => c.Id);
-                        builderReferenceSituationRaw.Select(c => c.SensorId);
-                        builderReferenceSituationRaw.Select(c => c.MeasTaskId);
-                        builderReferenceSituationRaw.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderReferenceSituationRaw.Select(c => c.SENSOR.Id);
+                        builderReferenceSituationRaw.Select(c => c.MEAS_TASK.Id);
+                        builderReferenceSituationRaw.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderReferenceSituationRaw, readerReferenceSituationRaw =>
                         {
                             while (readerReferenceSituationRaw.Read())
                             {
                                 var refSituation = new ReferenceSituation();
-                                if (readerReferenceSituationRaw.GetValue(c => c.SensorId).HasValue)
-                                {
-                                    refSituation.SensorId = readerReferenceSituationRaw.GetValue(c => c.SensorId).Value;
-                                }
+
+                                refSituation.SensorId = readerReferenceSituationRaw.GetValue(c => c.SENSOR.Id);
 
                                 var referenceSignals = new List<ReferenceSignal>();
                                 var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
@@ -140,12 +138,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                                 builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
                                 builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
-                                builderReferenceSignalRaw.Select(c => c.RefSituationId);
+                                builderReferenceSignalRaw.Select(c => c.REFERENCE_SITUATION.Id);
                                 builderReferenceSignalRaw.Select(c => c.IcsmId);
                                 builderReferenceSignalRaw.Select(c => c.IcsmTable);
                                 builderReferenceSignalRaw.Select(c => c.Loss_dB);
                                 builderReferenceSignalRaw.Select(c => c.Freq_kHz);
-                                builderReferenceSignalRaw.Where(c => c.RefSituationId, ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
+                                builderReferenceSignalRaw.Where(c => c.REFERENCE_SITUATION.Id, ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
                                 {
                                     while (readerReferenceSignalRaw.Read())
@@ -220,17 +218,17 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var measStations = new List<MeasStation>();
                         var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
                         builderMeasstation.Select(c => c.Id);
-                        builderMeasstation.Select(c => c.StationId);
-                        builderMeasstation.Select(c => c.MeasTaskId);
+                        builderMeasstation.Select(c => c.MEAS_TASK.Id);
+                        builderMeasstation.Select(c => c.ClientStationCode);
                         builderMeasstation.Select(c => c.StationType);
-                        builderMeasstation.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasstation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasstation, readerMeasStation =>
                         {
                             while (readerMeasStation.Read())
                             {
                                 var measStation = new MeasStation();
                                 measStation.StationId = new MeasStationIdentifier();
-                                if (readerMeasStation.GetValue(c => c.StationId) != null) measStation.StationId.Value = readerMeasStation.GetValue(c => c.StationId).Value;
+                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
                                 measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
                                 measStations.Add(measStation);
                             }
@@ -245,7 +243,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderMeasDtParam.Select(c => c.Demod);
                         builderMeasDtParam.Select(c => c.DetectType);
                         builderMeasDtParam.Select(c => c.Ifattenuation);
-                        builderMeasDtParam.Select(c => c.MeasTaskId);
+                        builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
                         builderMeasDtParam.Select(c => c.MeasTime);
                         builderMeasDtParam.Select(c => c.Mode);
                         builderMeasDtParam.Select(c => c.Preamplification);
@@ -253,7 +251,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderMeasDtParam.Select(c => c.Rfattenuation);
                         builderMeasDtParam.Select(c => c.TypeMeasurements);
                         builderMeasDtParam.Select(c => c.Vbw);
-                        builderMeasDtParam.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
                         {
                             while (readerMeasDtParam.Read())
@@ -290,12 +288,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                         var builderMeasFreqParam = this._dataLayer.GetBuilder<MD.IMeasFreqParam>().From();
                         builderMeasFreqParam.Select(c => c.Id);
-                        builderMeasFreqParam.Select(c => c.MeasTaskId);
+                        builderMeasFreqParam.Select(c => c.MEAS_TASK.Id);
                         builderMeasFreqParam.Select(c => c.Mode);
                         builderMeasFreqParam.Select(c => c.Rgl);
                         builderMeasFreqParam.Select(c => c.Rgu);
                         builderMeasFreqParam.Select(c => c.Step);
-                        builderMeasFreqParam.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasFreqParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasFreqParam, readerMeasFreqParam =>
                         {
                             while (readerMeasFreqParam.Read())
@@ -313,8 +311,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 var builderMeasFreq = this._dataLayer.GetBuilder<MD.IMeasFreq>().From();
                                 builderMeasFreq.Select(c => c.Id);
                                 builderMeasFreq.Select(c => c.Freq);
-                                builderMeasFreq.Select(c => c.MeasFreqParamId);
-                                builderMeasFreq.Where(c => c.MeasFreqParamId, ConditionOperator.Equal, readerMeasFreqParam.GetValue(c => c.Id));
+                                builderMeasFreq.Select(c => c.MEAS_FREQ_PARAM.Id);
+                                builderMeasFreq.Where(c => c.MEAS_FREQ_PARAM.Id, ConditionOperator.Equal, readerMeasFreqParam.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderMeasFreq, readerMeasFreq =>
                                 {
                                     while (readerMeasFreq.Read())
@@ -345,8 +343,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderMeasLocationParam.Select(c => c.Lat);
                         builderMeasLocationParam.Select(c => c.Lon);
                         builderMeasLocationParam.Select(c => c.MaxDist);
-                        builderMeasLocationParam.Select(c => c.MeasTaskId);
-                        builderMeasLocationParam.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasLocationParam.Select(c => c.MEAS_TASK.Id);
+                        builderMeasLocationParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasLocationParam, readermeasLocParam =>
                         {
                             while (readermeasLocParam.Read())
@@ -368,12 +366,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
-                        builderMeasOther.Select(c => c.MeasTaskId);
+                        builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.SwNumber);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
                         builderMeasOther.Select(c => c.TypeSpectrumscan);
-                        builderMeasOther.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasOther.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasOther, readerMeasOther =>
                         {
                             while (readerMeasOther.Read())
@@ -404,11 +402,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         var builderMeasSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().From();
                         builderMeasSubTask.Select(c => c.Id);
                         builderMeasSubTask.Select(c => c.Interval);
-                        builderMeasSubTask.Select(c => c.MeasTaskId);
+                        builderMeasSubTask.Select(c => c.MEAS_TASK.Id);
                         builderMeasSubTask.Select(c => c.Status);
                         builderMeasSubTask.Select(c => c.TimeStart);
                         builderMeasSubTask.Select(c => c.TimeStop);
-                        builderMeasSubTask.Where(c => c.MeasTaskId, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                        builderMeasSubTask.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasSubTask, readerMeasSubTask =>
                         {
                             while (readerMeasSubTask.Read())
@@ -421,14 +419,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
                                 if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
                                 var listMeasSubTaskStation = new List<MeasSubTaskStation>();
-                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskSta>().From();
+                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
                                 builderMeasSubTaskSta.Select(c => c.Id);
                                 builderMeasSubTaskSta.Select(c => c.Count);
-                                builderMeasSubTaskSta.Select(c => c.MeasSubTaskId);
-                                builderMeasSubTaskSta.Select(c => c.SensorId);
+                                builderMeasSubTaskSta.Select(c => c.MEAS_SUBTASK.Id);
+                                builderMeasSubTaskSta.Select(c => c.SENSOR.Id);
                                 builderMeasSubTaskSta.Select(c => c.Status);
                                 builderMeasSubTaskSta.Select(c => c.TimeNextTask);
-                                builderMeasSubTaskSta.Where(c => c.MeasSubTaskId, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
+                                builderMeasSubTaskSta.Where(c => c.MEAS_SUBTASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderMeasSubTaskSta, readerMeasSubTaskSta =>
                                 {
                                     while (readerMeasSubTaskSta.Read())
@@ -437,7 +435,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                         measSubTaskStation.Count = readerMeasSubTaskSta.GetValue(c => c.Count);
                                         measSubTaskStation.Id = readerMeasSubTaskSta.GetValue(c => c.Id);
                                         measSubTaskStation.StationId = new SensorIdentifier();
-                                        if (readerMeasSubTaskSta.GetValue(c => c.SensorId) != null) measSubTaskStation.StationId.Value = readerMeasSubTaskSta.GetValue(c => c.SensorId).Value;
+                                        measSubTaskStation.StationId.Value = readerMeasSubTaskSta.GetValue(c => c.SENSOR.Id);
                                         measSubTaskStation.Status = readerMeasSubTaskSta.GetValue(c => c.Status);
                                         measSubTaskStation.TimeNextTask = readerMeasSubTaskSta.GetValue(c => c.TimeNextTask);
                                         listMeasSubTaskStation.Add(measSubTaskStation);
@@ -469,29 +467,27 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderStation = this._dataLayer.GetBuilder<MD.IStation>().From();
-                builderStation.Select(c => c.MeasTaskId);
+                builderStation.Select(c => c.MEAS_TASK.Id);
                 builderStation.Select(c => c.Id);
-                builderStation.Select(c => c.StationSiteId);
+                builderStation.Select(c => c.STATION_SITE.Id);
                 builderStation.Select(c => c.CloseDate);
                 builderStation.Select(c => c.DozvilName);
                 builderStation.Select(c => c.EndDate);
                 builderStation.Select(c => c.GlobalSID);
-                builderStation.Select(c => c.MeasTaskId);
-                builderStation.Select(c => c.OwnerDataId);
+                builderStation.Select(c => c.OWNER_DATA.Id);
                 builderStation.Select(c => c.Standart);
                 builderStation.Select(c => c.StartDate);
-                builderStation.Select(c => c.StationId);
-                builderStation.Select(c => c.StationSiteId);
-                builderStation.Select(c => c.IdPermission);
+                builderStation.Select(c => c.ClientStationCode);
+                builderStation.Select(c => c.ClientPermissionCode);
                 builderStation.Select(c => c.Status);
-                builderStation.Where(c => c.MeasTaskId, ConditionOperator.Equal, taskId);
+                builderStation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, taskId);
                 builderStation.OrderByAsc(c => c.Id);
                 queryExecuter.Fetch(builderStation, readerStation =>
                 {
                     while (readerStation.Read())
                     {
                         var measStation = new StationDataForMeasurements();
-                        measStation.IdStation = readerStation.GetValue(c => c.StationId).HasValue ? readerStation.GetValue(c => c.StationId).Value : -1;
+                        measStation.IdStation = readerStation.GetValue(c => c.ClientStationCode).HasValue ? readerStation.GetValue(c => c.ClientStationCode).Value : -1;
                         measStation.GlobalSID = readerStation.GetValue(c => c.GlobalSID);
                         measStation.Standart = readerStation.GetValue(c => c.Standart);
                         measStation.Status = readerStation.GetValue(c => c.Status);
@@ -499,11 +495,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         perm.CloseDate = readerStation.GetValue(c => c.CloseDate);
                         perm.DozvilName = readerStation.GetValue(c => c.DozvilName);
                         perm.EndDate = readerStation.GetValue(c => c.EndDate);
-                        perm.Id = readerStation.GetValue(c => c.IdPermission);
+                        perm.Id = readerStation.GetValue(c => c.ClientPermissionCode);
                         perm.StartDate = readerStation.GetValue(c => c.StartDate);
                         measStation.LicenseParameter = perm;
-                        measStation.IdSite = readerStation.GetValue(c => c.StationSiteId) != null ? readerStation.GetValue(c => c.StationSiteId).Value : -1;
-                        measStation.IdOwner = readerStation.GetValue(c => c.OwnerDataId) != null ? readerStation.GetValue(c => c.OwnerDataId).Value : -1;
+                        measStation.IdSite =  readerStation.GetValue(c => c.STATION_SITE.Id);
+                        measStation.IdOwner = readerStation.GetValue(c => c.OWNER_DATA.Id);
 
                         var ownerData = new OwnerData();
                         var builderOwnerData = this._dataLayer.GetBuilder<MD.IOwnerData>().From();
@@ -564,9 +560,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         builderISector.Select(c => c.ClassEmission);
                         builderISector.Select(c => c.Eirp);
                         builderISector.Select(c => c.Id);
-                        builderISector.Select(c => c.SectorId);
-                        builderISector.Select(c => c.StationId);
-                        builderISector.Where(c => c.StationId, ConditionOperator.Equal, readerStation.GetValue(c => c.Id));
+                        builderISector.Select(c => c.ClientSectorCode);
+                        builderISector.Select(c => c.STATION.Id);
+                        builderISector.Where(c => c.STATION.Id, ConditionOperator.Equal, readerStation.GetValue(c => c.Id));
                         builderISector.OrderByAsc(c => c.Id);
                         queryExecuter.Fetch(builderISector, readerSector =>
                         {
@@ -578,30 +574,29 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 sectM.BW = readerSector.GetValue(c => c.Bw);
                                 sectM.ClassEmission = readerSector.GetValue(c => c.ClassEmission);
                                 sectM.EIRP = readerSector.GetValue(c => c.Eirp);
-                                sectM.IdSector = readerSector.GetValue(c => c.SectorId).HasValue ? readerSector.GetValue(c => c.SectorId).Value : -1;
+                                sectM.IdSector = readerSector.GetValue(c => c.ClientSectorCode).HasValue ? readerSector.GetValue(c => c.ClientSectorCode).Value : -1;
 
 
 
                                 var lFreqICSM = new List<FrequencyForSectorFormICSM>();
                                 var builderLinkSectorFreq = this._dataLayer.GetBuilder<MD.ILinkSectorFreq>().From();
                                 builderLinkSectorFreq.Select(c => c.Id);
-                                builderLinkSectorFreq.Select(c => c.SectorFreqId);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.ChannelNumber);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.Frequency);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.Id);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.PlanId);
-                                builderLinkSectorFreq.Select(c => c.SECTORFREQ.IdFreq);
-                                builderLinkSectorFreq.Where(c => c.SectorId, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.ChannelNumber);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.Frequency);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.Id);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.ClientPlanCode);
+                                builderLinkSectorFreq.Select(c => c.SECTOR_FREQ.ClientFreqCode);
+                                builderLinkSectorFreq.Where(c => c.SECTOR.Id, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
                                 builderLinkSectorFreq.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderLinkSectorFreq, readerLinkSectorFreq =>
                                 {
                                     while (readerLinkSectorFreq.Read())
                                     {
                                         var freqM = new FrequencyForSectorFormICSM();
-                                        freqM.ChannalNumber = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.ChannelNumber);
-                                        freqM.Frequency = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.Frequency);
-                                        freqM.Id = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.IdFreq);
-                                        freqM.IdPlan = readerLinkSectorFreq.GetValue(x => x.SECTORFREQ.PlanId);
+                                        freqM.ChannalNumber = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.ChannelNumber);
+                                        freqM.Frequency = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.Frequency);
+                                        freqM.Id = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.ClientFreqCode);
+                                        freqM.IdPlan = readerLinkSectorFreq.GetValue(x => x.SECTOR_FREQ.ClientPlanCode);
                                         lFreqICSM.Add(freqM);
                                     }
                                     return true;
@@ -612,18 +607,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 var lMask = new List<MaskElements>();
                                 var builderLinkSectorMaskElement = this._dataLayer.GetBuilder<MD.ILinkSectorMaskElement>().From();
                                 builderLinkSectorMaskElement.Select(c => c.Id);
-                                builderLinkSectorMaskElement.Select(c => c.SECTORMASKELEMENT.Bw);
-                                builderLinkSectorMaskElement.Select(c => c.SECTORMASKELEMENT.Id);
-                                builderLinkSectorMaskElement.Select(c => c.SECTORMASKELEMENT.Level);
-                                builderLinkSectorMaskElement.Where(c => c.SectorId, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
+                                builderLinkSectorMaskElement.Select(c => c.SECTOR_MASK_ELEM.Bw);
+                                builderLinkSectorMaskElement.Select(c => c.SECTOR_MASK_ELEM.Id);
+                                builderLinkSectorMaskElement.Select(c => c.SECTOR_MASK_ELEM.Level);
+                                builderLinkSectorMaskElement.Where(c => c.SECTOR.Id, ConditionOperator.Equal, readerSector.GetValue(c => c.Id));
                                 builderLinkSectorMaskElement.OrderByAsc(c => c.Id);
                                 queryExecuter.Fetch(builderLinkSectorMaskElement, readerLinkSectorMaskElement =>
                                 {
                                     while (readerLinkSectorMaskElement.Read())
                                     {
                                         MaskElements maskElementsM = new MaskElements();
-                                        maskElementsM.BW = readerLinkSectorMaskElement.GetValue(c => c.SECTORMASKELEMENT.Bw);
-                                        maskElementsM.level = readerLinkSectorMaskElement.GetValue(c => c.SECTORMASKELEMENT.Level);
+                                        maskElementsM.BW = readerLinkSectorMaskElement.GetValue(c => c.SECTOR_MASK_ELEM.Bw);
+                                        maskElementsM.level = readerLinkSectorMaskElement.GetValue(c => c.SECTOR_MASK_ELEM.Level);
                                         lMask.Add(maskElementsM);
                                     }
                                     return true;
@@ -646,269 +641,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             }
             return listStationData.ToArray();
         }
-        /*
-        public  List<Atdi.DataModels.Sdrns.Device.MeasTask> CreateeasTaskSDRsApi(MeasTask task, string SensorName, string SdrnServer, string EquipmentTechId, int? MeasTaskId, string Type = "New")
-        {
-            var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
-            List<Atdi.DataModels.Sdrns.Device.MeasTask> ListMTSDR = new List<Atdi.DataModels.Sdrns.Device.MeasTask>();
-            if (task.MeasSubTasks == null) return ListMTSDR;
-
-            for (int f=0; f < task.MeasSubTasks.Length; f++)
-            { 
-                var SubTask = task.MeasSubTasks[f];
-                if (SubTask.MeasSubTaskStations != null)
-                {
-                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
-                    { 
-                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
-                   
-                        if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
-                            ((Type == "Del") && (SubTaskStation.Status == "Z")))
-                        {
-                            Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            //int? IdentValueTaskSDR = saveMeasTask.SaveTaskSDRToDB(SubTask.Id.Value, SubTaskStation.Id, task.Id.Value, SubTaskStation.StationId.Value);
-                            MTSDR.TaskId = MeasTaskId.ToString();//IdentValueTaskSDR.GetValueOrDefault().ToString();
-                            if (task.Id == null) task.Id = new MeasTaskIdentifier();
-                            if (task.MeasOther == null) task.MeasOther = new MeasOther();
-                            if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
-                            if (task.Prio != null) { MTSDR.Priority = task.Prio.GetValueOrDefault(); } else { MTSDR.Priority = 10; }
-                            MTSDR.SensorName = SensorName;
-                            MTSDR.SdrnServer = SdrnServer;
-                            MTSDR.EquipmentTechId = EquipmentTechId;
-                            if (Type == "New")
-                            {
-                                MTSDR.SOParam = new DEV.SpectrumOccupationMeasParam();
-                                if (task.MeasOther.LevelMinOccup != null) { MTSDR.SOParam.LevelMinOccup_dBm = task.MeasOther.LevelMinOccup.GetValueOrDefault(); } else { MTSDR.SOParam.LevelMinOccup_dBm = -70; }
-                                if (task.MeasOther.NChenal != null) { MTSDR.SOParam.MeasurmentNumber = task.MeasOther.NChenal.GetValueOrDefault(); } else { MTSDR.SOParam.MeasurmentNumber = 10; }
-                                switch (task.MeasOther.TypeSpectrumOccupation)
-                                {
-                                    case SpectrumOccupationType.FreqBandwidthOccupation:
-                                        MTSDR.SOParam.Type = DataModels.Sdrns.SpectrumOccupationType.FreqBandOccupancy;
-                                        break;
-                                    case SpectrumOccupationType.FreqChannelOccupation:
-                                        MTSDR.SOParam.Type = DataModels.Sdrns.SpectrumOccupationType.FreqChannelOccupancy;
-                                        break;
-                                    default:
-                                        throw new NotImplementedException($"Type '{task.MeasOther.TypeSpectrumOccupation}' not supported");
-                                }
-                                switch (task.MeasDtParam.TypeMeasurements)
-                                {
-                                    case MeasurementType.MonitoringStations:
-                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.MonitoringStations;
-                                        break;
-                                    case MeasurementType.Level:
-                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.Level;
-                                        break;
-                                    case MeasurementType.SpectrumOccupation:
-                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
-                                        break;
-                                    case MeasurementType.BandwidthMeas:
-                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
-                                        break;
-                                    case MeasurementType.Signaling:
-                                        MTSDR.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
-                                        break;
-                                    default:
-                                        throw new NotImplementedException($"Type '{task.MeasDtParam.TypeMeasurements}' not supported");
-                                }
-                                if (SubTask.Interval != null) { MTSDR.Interval_sec = SubTask.Interval.GetValueOrDefault(); }
-                                MTSDR.DeviceParam = new DEV.DeviceMeasParam();
-                                if (task.MeasDtParam.MeasTime != null) { MTSDR.DeviceParam.MeasTime_sec = task.MeasDtParam.MeasTime.GetValueOrDefault(); } else { MTSDR.DeviceParam.MeasTime_sec = 0.001; }
-
-
-                                switch (task.MeasDtParam.DetectType)
-                                {
-                                    case DetectingType.Avarage:
-                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Average;
-                                        break;
-                                    case DetectingType.MaxPeak:
-                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.MaxPeak;
-                                        break;
-                                    case DetectingType.MinPeak:
-                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.MinPeak;
-                                        break;
-                                    case DetectingType.Peak:
-                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Peak;
-                                        break;
-                                    default:
-                                        throw new NotImplementedException($"Type '{task.MeasDtParam.DetectType}' not supported");
-                                }
-
-                                MTSDR.DeviceParam.Preamplification_dB = task.MeasDtParam.Preamplification;
-                                if (task.MeasDtParam.RBW != null) { MTSDR.DeviceParam.RBW_kHz = task.MeasDtParam.RBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.RBW_kHz= 10; }
-                                MTSDR.DeviceParam.RfAttenuation_dB = (int)task.MeasDtParam.RfAttenuation;
-                                if (task.MeasDtParam.VBW != null) { MTSDR.DeviceParam.VBW_kHz = task.MeasDtParam.VBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.VBW_kHz = 10; }
-                                MTSDR.DeviceParam.RefLevel_dBm = -30;
-
-                                MTSDR.Frequencies = new DEV.MeasuredFrequencies();
-                                if (task.MeasFreqParam != null)
-                                {
-                                    var freqs = task.MeasFreqParam.MeasFreqs;
-                                    if (freqs != null)
-                                    {
-                                        Double[] listFreqs = new double[freqs.Length];
-                                        for (int j = 0; j < freqs.Length; j++)
-                                        {
-                                            listFreqs[j] = freqs[j].Freq;
-                                        }
-                                        MTSDR.Frequencies.Values_MHz = listFreqs;
-                                    }
-
-                                    if (task.MeasFreqParam.Mode == FrequencyMode.FrequencyList)
-                                    {
-                                        MTSDR.Frequencies.Mode = DataModels.Sdrns.FrequencyMode.FrequencyList;
-                                    }
-                                    else if (task.MeasFreqParam.Mode == FrequencyMode.FrequencyRange)
-                                    {
-                                        MTSDR.Frequencies.Mode = DataModels.Sdrns.FrequencyMode.FrequencyRange;
-                                    }
-                                    else if (task.MeasFreqParam.Mode == FrequencyMode.SingleFrequency)
-                                    {
-                                        MTSDR.Frequencies.Mode = DataModels.Sdrns.FrequencyMode.SingleFrequency;
-                                    }
-                                    else
-                                    {
-                                        throw new NotImplementedException($"Type '{MTSDR.Frequencies.Mode}' not supported");
-                                    }
-                                    MTSDR.Frequencies.RgL_MHz = task.MeasFreqParam.RgL;
-                                    MTSDR.Frequencies.RgU_MHz = task.MeasFreqParam.RgU;
-                                    MTSDR.Frequencies.Step_kHz = task.MeasFreqParam.Step;
-                                }
-
-                                double subFreqMaxMin = 0;
-                                if ((MTSDR.Frequencies != null) && (MTSDR.Frequencies.Values_MHz != null) && (MTSDR.Frequencies.Values_MHz.Length > 0))
-                                {
-                                    var minFreq = MTSDR.Frequencies.Values_MHz.Min();
-                                    var maxFreq = MTSDR.Frequencies.Values_MHz.Max();
-                                    subFreqMaxMin = maxFreq - minFreq;
-                                }
-                                if ((subFreqMaxMin >= 0) && (MTSDR.Frequencies.Step_kHz>0))
-                                {
-                                    MTSDR.DeviceParam.ScanBW_kHz = subFreqMaxMin * 1000 + MTSDR.Frequencies.Step_kHz;
-                                }
-
-                                MTSDR.ScanParameters = new DataModels.Sdrns.Device.StandardScanParameter[] { };
-                                MTSDR.StartTime = SubTask.TimeStart;
-                                MTSDR.StopTime = SubTask.TimeStop;
-                                MTSDR.Status = SubTask.Status;
-                                MTSDR.MobEqipmentMeasurements = new DataModels.Sdrns.MeasurementType[3];
-                                MTSDR.MobEqipmentMeasurements[0] = DataModels.Sdrns.MeasurementType.MonitoringStations;
-                                MTSDR.MobEqipmentMeasurements[1] = DataModels.Sdrns.MeasurementType.BandwidthMeas;
-                                MTSDR.MobEqipmentMeasurements[2] = DataModels.Sdrns.MeasurementType.Level;
-                                if (task.MeasOther.SwNumber != null) { MTSDR.ScanPerTaskNumber = task.MeasOther.SwNumber.GetValueOrDefault(); }
-                                if (task.StationsForMeasurements != null)
-                                {
-                                    MTSDR.Stations = new DataModels.Sdrns.Device.MeasuredStation[task.StationsForMeasurements.Count()];
-                                    if (task.MeasDtParam.TypeMeasurements == MeasurementType.MonitoringStations)
-                                    { // 21_02_2018 в данном случае мы передаем станции  исключительно для системы мониторинга станций т.е. один таск на месяц Надо проверить.
-                                        if (task.StationsForMeasurements != null)
-                                        {
-                                            ///MTSDR.StationsForMeasurements = task.StationsForMeasurements;
-                                            // далее сформируем переменную GlobalSID 
-                                            for (int i = 0; i < task.StationsForMeasurements.Count(); i++)
-                                            {
-                                                MTSDR.Stations[i] = new DataModels.Sdrns.Device.MeasuredStation();
-                                                var stationI = MTSDR.Stations[i];
-                                                string CodeOwener = "0";
-                                                stationI.Owner = new DataModels.Sdrns.Device.StationOwner();
-                                                var station = task.StationsForMeasurements[i];
-                                                if (station.Owner != null)
-                                                {
-                                                    var owner = stationI.Owner;
-                                                    owner.Address = station.Owner.Addres;
-                                                    owner.Code = station.Owner.Code;
-                                                    owner.Id = station.Owner.Id;
-                                                    owner.OKPO = station.Owner.OKPO;
-                                                    owner.OwnerName = station.Owner.OwnerName;
-                                                    owner.Zip = station.Owner.Zip;
-
-
-                                                    if (owner.OKPO == "14333937") { CodeOwener = "1"; };
-                                                    if (owner.OKPO == "22859846") { CodeOwener = "6"; };
-                                                    if (owner.OKPO == "21673832") { CodeOwener = "3"; };
-                                                    if (owner.OKPO == "37815221") { CodeOwener = "7"; };
-                                                }
-                                                stationI.GlobalSid = "255 " + CodeOwener + " 00000 " + string.Format("{0:00000}", station.IdStation);
-                                                station.GlobalSID = stationI.GlobalSid;
-
-                                                stationI.OwnerGlobalSid = task.StationsForMeasurements[i].GlobalSID;//работать с таблицей (доп. создасть в БД по GlobalSID и Standard)
-                                                                                                                    //
-                                                stationI.License = new DataModels.Sdrns.Device.StationLicenseInfo();
-                                                if (station.LicenseParameter != null)
-                                                {
-                                                    stationI.License.CloseDate = station.LicenseParameter.CloseDate;
-                                                    stationI.License.EndDate = station.LicenseParameter.EndDate;
-                                                    stationI.License.IcsmId = station.LicenseParameter.Id;
-                                                    stationI.License.Name = station.LicenseParameter.DozvilName;
-                                                    stationI.License.StartDate = station.LicenseParameter.StartDate;
-                                                }
-
-                                                stationI.Site = new DataModels.Sdrns.Device.StationSite();
-                                                if (station.Site != null)
-                                                {
-                                                    stationI.Site.Adress = station.Site.Adress;
-                                                    stationI.Site.Lat = station.Site.Lat;
-                                                    stationI.Site.Lon = station.Site.Lon;
-                                                    stationI.Site.Region = station.Site.Region;
-                                                }
-                                                stationI.Standard = station.Standart;
-                                                stationI.StationId = station.IdStation.ToString();
-                                                stationI.Status = station.Status;
-
-
-                                                if (station.Sectors != null)
-                                                {
-                                                    stationI.Sectors = new DataModels.Sdrns.Device.StationSector[station.Sectors.Length];
-                                                    for (int j = 0; j < station.Sectors.Length; j++)
-                                                    {
-                                                        var sector = station.Sectors[j];
-                                                        stationI.Sectors[j] = new DataModels.Sdrns.Device.StationSector();
-                                                        var statSector = stationI.Sectors[j];
-                                                        statSector.AGL = sector.AGL;
-                                                        statSector.Azimuth = sector.Azimut;
-
-                                                        if (sector.MaskBW != null)
-                                                        {
-                                                            statSector.BWMask = new DataModels.Sdrns.Device.ElementsMask[sector.MaskBW.Length];
-                                                            for (int k = 0; k < sector.MaskBW.Length; k++)
-                                                            {
-                                                                statSector.BWMask[k] = new DataModels.Sdrns.Device.ElementsMask();
-                                                                statSector.BWMask[k].BW_kHz = sector.MaskBW[k].BW;
-                                                                statSector.BWMask[k].Level_dB = sector.MaskBW[k].level;
-                                                            }
-                                                        }
-                                                        statSector.BW_kHz = sector.BW;
-                                                        statSector.ClassEmission = sector.ClassEmission;
-                                                        statSector.EIRP_dBm = sector.EIRP;
-
-                                                        if (sector.Frequencies != null)
-                                                        {
-                                                            statSector.Frequencies = new DataModels.Sdrns.Device.SectorFrequency[sector.Frequencies.Length];
-                                                            for (int k = 0; k < sector.Frequencies.Length; k++)
-                                                            {
-                                                                statSector.Frequencies[k] = new DataModels.Sdrns.Device.SectorFrequency();
-                                                                statSector.Frequencies[k].ChannelNumber = sector.Frequencies[k].ChannalNumber;
-                                                                statSector.Frequencies[k].Frequency_MHz = sector.Frequencies[k].Frequency;
-                                                                statSector.Frequencies[k].Id = sector.Frequencies[k].Id;
-                                                                statSector.Frequencies[k].PlanId = sector.Frequencies[k].IdPlan;
-                                                            }
-                                                        }
-                                                        statSector.SectorId = sector.IdSector.ToString();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            ListMTSDR.Add(MTSDR);
-                        }
-                    }
-                }
-            }
-            return ListMTSDR;
-        }
-        */
+        
     }
 }
 

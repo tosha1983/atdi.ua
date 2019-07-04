@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
 {
-    [Entity]
-    public interface IAntennaPattern
+    [EntityPrimaryKeyAttribute]
+    public interface IAntennaPattern_PK
     {
-        int Id { get; set; }
+        int? Id { get; set; }
+    }
+
+    [Entity]
+    public interface IAntennaPattern : IAntennaPattern_PK
+    {
         int? SensorAntennaId { get; set; }
         double? Freq { get; set; }
         double? Gain { get; set; }

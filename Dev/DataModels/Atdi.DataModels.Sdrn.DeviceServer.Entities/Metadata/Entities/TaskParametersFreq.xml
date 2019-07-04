@@ -6,13 +6,13 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_TASKPARAMFREQ</Name>
+    <Name>TASK_PARAMETERS_FREQ</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
-    <Field Desc="FreqCH" Title="FreqCH" Name="FreqCH" DataType="Decimal.22.8" SourceName="FREQCH" SourceType="Column" Required="false"/>
-    <Field Desc="IdTaskParameters" Title="IdTaskParameters" Name="IdTaskParameters" DataType="Integer.64" SourceName="IDTASKPARAMS" SourceType="Column" Required="true"/>
+    <Field Desc="FreqCH" Title="FreqCH" Name="FreqCH" DataType="Decimal.22.8" SourceName="FREQ_CH" SourceType="Column" Required="false"/>
+    <Field Desc="IdTaskParameters" Title="IdTaskParameters" Name="IdTaskParameters" DataType="Integer.64" SourceName="TASK_PARAMETERS_ID" SourceType="Column" Required="true"/>
     <Field Name="TASKPARAMETERS" SourceType="Reference" SourceName="TaskParameters" Title="Relation TaskParametersFreq to TaskParameters">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">IdTaskParameters</Mapped>

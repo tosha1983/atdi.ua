@@ -1,0 +1,68 @@
+﻿CREATE TABLE ICSC.MEAS_FREQ_PARAM
+(
+  ID            NUMBER(15)                      NOT NULL,
+  "MODE"        NVARCHAR2(50),
+  RGL           NUMBER(22,8),
+  RGU           NUMBER(22,8),
+  STEP          NUMBER(22,8),
+  MEAS_TASK_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_MEASFREQPARAM_PK ON ICSC.MEAS_FREQ_PARAM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.MEAS_FREQ_PARAM ADD (
+  CONSTRAINT XBS_MEASFREQPARAM_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.MEAS_FREQ_PARAM ADD (
+  CONSTRAINT FK_XBS_MEASFREQPARAM_XBS_MEAST 
+ FOREIGN KEY (MEAS_TASK_ID) 
+ REFERENCES ICSC.MEAS_TASK (ID));

@@ -35,34 +35,35 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
-                var cntNewRecords = 0;
                 var status = SdrnMessageHandlingStatus.Unprocessed;
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 try
                 {
                     var entityObject = deliveryObject;
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                    {
+                        scope.BeginTran();
 
-                    queryExecuter.BeginTransaction();
-                    var builderInsertIEntity = this._dataLayer.GetBuilder<MD.IEntity>().Insert();
-                    builderInsertIEntity.SetValue(c => c.ContentType, entityObject.ContentType);
-                    builderInsertIEntity.SetValue(c => c.Description, entityObject.Description);
-                    builderInsertIEntity.SetValue(c => c.HashAlgoritm, entityObject.HashAlgorithm);
-                    builderInsertIEntity.SetValue(c => c.HashCode, entityObject.HashCode);
-                    builderInsertIEntity.SetValue(c => c.Name, entityObject.Name);
-                    builderInsertIEntity.SetValue(c => c.ParentId, entityObject.ParentId);
-                    builderInsertIEntity.SetValue(c => c.ParentType, entityObject.ParentType);
-                    builderInsertIEntity.SetValue(c => c.Id, entityObject.EntityId);
+                        var builderInsertIEntity = this._dataLayer.GetBuilder<MD.IEntity>().Insert();
+                        builderInsertIEntity.SetValue(c => c.ContentType, entityObject.ContentType);
+                        builderInsertIEntity.SetValue(c => c.Description, entityObject.Description);
+                        builderInsertIEntity.SetValue(c => c.HashAlgoritm, entityObject.HashAlgorithm);
+                        builderInsertIEntity.SetValue(c => c.HashCode, entityObject.HashCode);
+                        builderInsertIEntity.SetValue(c => c.Name, entityObject.Name);
+                        builderInsertIEntity.SetValue(c => c.ParentId, entityObject.ParentId);
+                        builderInsertIEntity.SetValue(c => c.ParentType, entityObject.ParentType);
+                        builderInsertIEntity.SetValue(c => c.Id, entityObject.EntityId);
 
-                    cntNewRecords = queryExecuter.Execute(builderInsertIEntity);
+                        scope.Executor.Execute(builderInsertIEntity);
 
-                    queryExecuter.CommitTransaction();
-                    // с этого момента нужно считать что сообщение удачно обработано
-                    status = SdrnMessageHandlingStatus.Confirmed;
-                    //this._eventEmitter.Emit("OnSendEntity", "SendEntityProccesing");
+                        scope.Commit();
+                        
+                        // с этого момента нужно считать что сообщение удачно обработано
+                        status = SdrnMessageHandlingStatus.Confirmed;
+
+                    }
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     status = SdrnMessageHandlingStatus.Error;
                 }
@@ -84,7 +85,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         deviceCommandResult.CustTxt1 = "Error";
                     }
-                    else if (cntNewRecords>0)
+                    else if (status == SdrnMessageHandlingStatus.Confirmed)
                     {
                         deviceCommandResult.CustTxt1 = "Success";
                     }

@@ -1,0 +1,94 @@
+﻿CREATE TABLE ICSC.BEARING
+(
+  ID                    NUMBER(15)              NOT NULL,
+  RES_MEAS_STATION_ID   NUMBER(15),
+  LEVEL_DBM             NUMBER(22,8),
+  LEVEL_DBMKVM          NUMBER(22,8),
+  TIME_OF_MEASUREMENTS  DATE,
+  BW                    NUMBER(22,8),
+  QUALITY               NUMBER(22,8),
+  CENTRAL_FREQUENCY     NUMBER(22,8),
+  BEARING               NUMBER(22,8),
+  AZIMUTH               NUMBER(22,8),
+  ASL                   NUMBER(22,8),
+  LON                   NUMBER(22,8),
+  LAT                   NUMBER(22,8),
+  AGL                   NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE INDEX ICSC.XBS_BEARESMEASSTATIONID_FK ON ICSC.BEARING
+(RES_MEAS_STATION_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_BEARING_PK ON ICSC.BEARING
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.BEARING ADD (
+  CONSTRAINT XBS_BEARING_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.BEARING ADD (
+  CONSTRAINT FK_XBS_BEARING_XBS_RESMEASSTAT 
+ FOREIGN KEY (RES_MEAS_STATION_ID) 
+ REFERENCES ICSC.RES_MEAS_STATION (ID));

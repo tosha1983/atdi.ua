@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IEntity
+    [EntityPrimaryKeyAttribute]
+    public interface IEntity_PK
     {
         string Id { get; set; }
+    }
+
+    [Entity]
+    public interface IEntity: IEntity_PK
+    {
         string Name { get; set; }
         string Description { get; set; }
         string ParentId { get; set; }

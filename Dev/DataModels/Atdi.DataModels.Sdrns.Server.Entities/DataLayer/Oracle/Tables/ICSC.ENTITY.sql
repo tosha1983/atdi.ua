@@ -1,0 +1,65 @@
+﻿CREATE TABLE ICSC.ENTITY
+(
+  ID             NVARCHAR2(250)                 NOT NULL,
+  NAME           NVARCHAR2(250),
+  PARENT_ID      NVARCHAR2(250),
+  PARENT_TYPE    NVARCHAR2(250),
+  CONTENT_TYPE   NVARCHAR2(250),
+  HASH_ALGORITM  NVARCHAR2(250),
+  DESCRIPTION    VARCHAR2(4000 CHAR),
+  HASH_CODE      VARCHAR2(4000 CHAR)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_ENTITY_PK ON ICSC.ENTITY
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.ENTITY ADD (
+  CONSTRAINT XBS_ENTITY_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

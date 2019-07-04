@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResLocSensorMeas
+    [EntityPrimaryKeyAttribute]
+    public interface IResLocSensorMeas_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IResLocSensorMeas : IResLocSensorMeas_PK
+    {
         double? Lon { get; set; }
         double? Lat { get; set; }
         double? Asl { get; set; }
         double? Agl { get; set; }
-        long? ResMeasId { get; set; }
-        IResMeas RESMEAS { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }

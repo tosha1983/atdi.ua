@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,39 +43,94 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldProperties.cs" />
-    <Compile Include="ConditionParser.cs" />
-    <Compile Include="EnitityOrmDataLayer.cs" />
+    <Compile Include="DataLayerScope.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ByteBYTE.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ByteBIT.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\BooleanBIT.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ByteINT08.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\BytesBLOB.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\GuidGUID.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\DateTimeOffsetDATETIMEOFFSET.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\DateTimeDATETIME.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\DoubleDOUBLE.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\FloatFLOAT.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\DecimalDECIMAL.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ShortINT16.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\SignedByteINT08.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\LongINT64.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\IntegerINT32.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\BytesBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeBLOB.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringBLOB.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringTEXT.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringNTEXT.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringVARCHAR.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\StringNVARCHAR.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\BooleanBOOL.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ValueReader.cs" />
+    <Compile Include="DataTypeSystem\DataTypeSystem.cs" />
+    <Compile Include="DataTypeSystem\IValueAdapter.cs" />
+    <Compile Include="DataTypeSystem\IValueDecoder.cs" />
+    <Compile Include="DataTypeSystem\IValueEncoder.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapter.cs" />
+    <Compile Include="Descriptors\EntityPathDescriptor.cs" />
+    <Compile Include="Descriptors\FieldDescriptor.cs" />
+    <Compile Include="Descriptors\FieldReferenceDescriptor.cs" />
+    <Compile Include="Descriptors\FieldValueDescriptor.cs" />
+    <Compile Include="Descriptors\Query\QueryCondition.cs" />
+    <Compile Include="Descriptors\Query\QueryModification.cs" />
+    <Compile Include="Descriptors\Query\QueryRoot.cs" />
+    <Compile Include="Descriptors\Query\QuerySelection.cs" />
+    <Compile Include="Descriptors\Query\QuerySorting.cs" />
+    <Compile Include="Descriptors\DeleteQueryDescriptor.cs" />
+    <Compile Include="Descriptors\UpdateQueryDescriptor.cs" />
+    <Compile Include="Descriptors\InsertQueryDescriptor.cs" />
+    <Compile Include="Descriptors\SelectQueryDescriptor.cs" />
+    <Compile Include="Descriptors\SortableFieldDescriptor.cs" />
+    <Compile Include="OLD\FieldProperties.cs" />
+    <Compile Include="OLD\ConditionParser.cs" />
+    <Compile Include="EntityOrmDataLayer.cs" />
     <Compile Include="EntityOrm.cs" />
     <Compile Include="EntityOrmComponent.cs" />
     <Compile Include="EntityOrmConfig.cs" />
     <Compile Include="ExpressionExtensions.cs" />
-    <Compile Include="EntityOrmQueryBuilder.cs" />
-    <Compile Include="MetaData\AutonumMetadata.cs" />
-    <Compile Include="MetaData\ColumnFieldMetadata.cs" />
-    <Compile Include="MetaData\DataSourceMetadata.cs" />
-    <Compile Include="MetaData\DataTypeMetadata.cs" />
-    <Compile Include="MetaData\Entity.cs" />
-    <Compile Include="MetaData\EntityMetadata.cs" />
-    <Compile Include="MetaData\ExtensionFieldMetadata.cs" />
-    <Compile Include="MetaData\FieldMetadata.cs" />
-    <Compile Include="MetaData\PrimaryKeyFieldMappedMetadata.cs" />
-    <Compile Include="MetaData\PrimaryKeyFieldRefMetadata.cs" />
-    <Compile Include="MetaData\PrimaryKeyMappingMetadata.cs" />
-    <Compile Include="MetaData\PrimaryKeyMetadata.cs" />
-    <Compile Include="MetaData\ReferenceFieldMetadata.cs" />
-    <Compile Include="MetaData\RelationFieldMetadata.cs" />
-    <Compile Include="MetaData\UnitMetadata.cs" />
+    <Compile Include="OLD\EntityOrmQueryBuilder.cs" />
+    <Compile Include="Helpers\EntityDefHelper.cs" />
+    <Compile Include="Metadata\AutonumMetadata.cs" />
+    <Compile Include="Metadata\Fields\ColumnFieldMetadata.cs" />
+    <Compile Include="Metadata\DataSourceMetadata.cs" />
+    <Compile Include="Metadata\DataTypeMetadata.cs" />
+    <Compile Include="Metadata\XmlDefenitions\Entity.cs" />
+    <Compile Include="Metadata\EntityMetadata.cs" />
+    <Compile Include="Metadata\Fields\ExtensionFieldMetadata.cs" />
+    <Compile Include="Metadata\Fields\FieldMetadata.cs" />
+    <Compile Include="Metadata\PrimaryKeyMapping\PrimaryKeyFieldMappedMetadata.cs" />
+    <Compile Include="Metadata\PrimaryKey\PrimaryKeyFieldRefMetadata.cs" />
+    <Compile Include="Metadata\PrimaryKeyMapping\PrimaryKeyMappingMetadata.cs" />
+    <Compile Include="Metadata\PrimaryKey\PrimaryKeyMetadata.cs" />
+    <Compile Include="Metadata\Fields\ReferenceFieldMetadata.cs" />
+    <Compile Include="Metadata\Fields\RelationFieldMetadata.cs" />
+    <Compile Include="Metadata\UnitMetadata.cs" />
+    <Compile Include="PatternBuilderFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryBuilder.cs" />
     <Compile Include="QueryDataReader.cs" />
-    <Compile Include="QueryDeleteStatement.cs" />
+    <Compile Include="Helpers\ConditionHelper.cs" />
+    <Compile Include="QueryPatterns\BuildingContext.cs" />
+    <Compile Include="QueryPatterns\UpdatePatternBuilder.cs" />
+    <Compile Include="QueryPatterns\DeletePatternBuilder.cs" />
+    <Compile Include="QueryPatterns\SelectPatternBuilder.cs" />
+    <Compile Include="QueryPatterns\InsertPatternBuilder.cs" />
+    <Compile Include="QueryPatterns\IPatternBuilder.cs" />
+    <Compile Include="QueryStatements\QueryDeleteStatement.cs" />
     <Compile Include="QueryExecutor.cs" />
-    <Compile Include="QueryInsertStatement.cs" />
-    <Compile Include="Conversion.cs" />
-    <Compile Include="QuerySelectStatement.cs" />
-    <Compile Include="QueryUpdateStatement.cs" />
-    <Compile Include="AliasField.cs" />
+    <Compile Include="QueryStatements\QueryInsertStatement.cs" />
+    <Compile Include="OLD\Conversion.cs" />
+    <Compile Include="QueryStatements\QuerySelectStatement.cs" />
+    <Compile Include="QueryStatements\QueryUpdateStatement.cs" />
+    <Compile Include="OLD\AliasField.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,5 +166,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

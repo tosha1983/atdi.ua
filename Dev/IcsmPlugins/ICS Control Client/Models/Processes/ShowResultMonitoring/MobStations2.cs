@@ -11,7 +11,7 @@ namespace XICSM.ICSControlClient.Models.ShowResultMonitoring
 {
     public class MobStations2 : IRepositoryEntity, IRepositoryReadedEntity
     {
-        public int Id;
+        public long Id;
         public string Name;
 
 

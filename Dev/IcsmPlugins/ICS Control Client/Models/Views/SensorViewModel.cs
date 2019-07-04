@@ -10,7 +10,7 @@ namespace XICSM.ICSControlClient.Models.Views
     public class SensorViewModel
     {
 
-        public int Id;
+        public long Id;
 
         public string Status;
 

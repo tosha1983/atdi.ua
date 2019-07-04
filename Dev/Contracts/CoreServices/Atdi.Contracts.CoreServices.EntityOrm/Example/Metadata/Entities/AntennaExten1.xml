@@ -5,7 +5,7 @@
         Title        = "Antenna exten 1"
         Desc         = "The antenna exten 1"
         Type         = "Extention"
-        ExtendEntity = "Atdi.DataModels.SDRN.Server.Antenna"
+        BaseEntity   = "Atdi.DataModels.SDRN.Server.Antenna"
         >
   <DataSource Type="Database" Object="Table">
     <Name>ANTENNA_EXT1</Name>

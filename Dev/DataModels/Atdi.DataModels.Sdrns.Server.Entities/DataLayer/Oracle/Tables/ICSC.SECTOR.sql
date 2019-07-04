@@ -1,0 +1,106 @@
+﻿CREATE TABLE ICSC.SECTOR
+(
+  ID              NUMBER(15)                    NOT NULL,
+  AGL             NUMBER(22,8),
+  EIRP            NUMBER(22,8),
+  AZIMUTH         NUMBER(22,8),
+  BW              NUMBER(22,8),
+  CLASS_EMISSION  NVARCHAR2(50),
+  STATION_ID      NUMBER(15),
+  ID_SECTOR       NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE INDEX ICSC.XBS_SECTOR_IDSECTOR_FK ON ICSC.SECTOR
+(ID_SECTOR)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.XBS_SECTOR_ID_XBS_STATION_FK ON ICSC.SECTOR
+(STATION_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_SECTOR_PK ON ICSC.SECTOR
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.SECTOR ADD (
+  CONSTRAINT XBS_SECTOR_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.SECTOR ADD (
+  CONSTRAINT FK_XBS_SECTOR_XBS_STATION 
+ FOREIGN KEY (STATION_ID) 
+ REFERENCES ICSC.STATION (ID));

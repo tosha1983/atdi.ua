@@ -23,7 +23,7 @@ namespace XICSM.ICSControlClient.Forms
     {
         private ElementHost _wpfElementHost;
 
-        public MeasResultSignalizationViewForm(int[] stations, string tableName, string title)
+        public MeasResultSignalizationViewForm(long[] stations, string tableName, string title)
         {
             InitializeComponent();
             if (null == System.Windows.Application.Current)

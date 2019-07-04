@@ -32,7 +32,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureSystemInfo
         /// <summary>
         /// Cell ID
         /// </summary>
-        public int CID;
+        public int? CID;
         /// <summary>
         /// Mobile Country Code, все технологии кроме EVDO
         /// </summary>

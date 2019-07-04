@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             this._parameters = new Dictionary<string, EngineCommandParameter>();
         }
 
+        public EngineCommand(IDictionary<string, EngineCommandParameter> parameters)
+        {
+            this._parameters = parameters;
+        }
+
         public string Text { get; set; }
 
 
@@ -28,6 +34,18 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             }
 
             return $"Command: {this.Text}" + Environment.NewLine + $"Parameters: count = {this.Parameters.Count}";
+        }
+
+        public void AddParameter(string name, DataType dataType, object value, EngineParameterDirection direction = EngineParameterDirection.Input)
+        {
+            var parameter = new EngineCommandParameter
+            {
+                Name = name,
+                DataType = dataType,
+                Direction = direction
+            };
+            parameter.SetValue(value);
+            this.Parameters.Add(parameter.Name, parameter);
         }
     }
 }

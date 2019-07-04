@@ -84,7 +84,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
       
-        public static Sensor GetSensorById(int sensorId)
+        public static Sensor GetSensorById(long sensorId)
         {
             var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }));
 
@@ -120,7 +120,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static Route[] GetRoutes(int MeasResultsId)
+        public static Route[] GetRoutes(long MeasResultsId)
         {
             var result = Execute(contract => contract.GetRoutes(MeasResultsId));
 
@@ -130,7 +130,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId)
+        public static SensorPoligonPoint[] GetSensorPoligonPoint(long MeasResultsId)
         {
             var result = Execute(contract => contract.GetSensorPoligonPoint(MeasResultsId));
 
@@ -140,7 +140,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId)
+        public static ResultsMeasurementsStation[] GetResMeasStation(long MeasResultsId, long StationId)
         {
             var result = Execute(contract => contract.GetResMeasStation(MeasResultsId, StationId));
 
@@ -172,7 +172,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static MeasurementResults[] GetMeasResultsHeaderByTaskId(int taskId)
+        public static MeasurementResults[] GetMeasResultsHeaderByTaskId(long taskId)
         {
             var result = Execute(contract => contract.GetMeasResultsHeaderByTaskId(new MeasTaskIdentifier { Value = taskId }));
 
@@ -182,13 +182,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static ResultsMeasurementsStation GetResMeasStationById(int stationId)
+        public static ResultsMeasurementsStation GetResMeasStationById(long stationId)
         {
             var result = Execute(contract => contract.GetResMeasStationById(stationId));
 
             return result;
         }
-        public static ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int resId)
+        public static ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(long resId)
         {
             var result = Execute(contract => contract.GetResMeasStationHeaderByResId(resId));
 
@@ -198,12 +198,12 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static MeasurementResults GetMeasurementResultByResId(int resId, double? StartFrequency_Hz, double? StopFrequency_Hz)
+        public static MeasurementResults GetMeasurementResultByResId(long resId, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
             return Execute(contract => contract.GetMeasurementResultByResId(resId, true, StartFrequency_Hz, StopFrequency_Hz));
         }
 
-        public static Emitting[] GetEmittingsByIcsmId(int[] stations, string tableName)
+        public static Emitting[] GetEmittingsByIcsmId(long[] stations, string tableName)
         {
             var result = Execute(contract => contract.GetEmittingsByIcsmId(stations, tableName));
 
@@ -214,7 +214,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
 
-        public static MeasurementResults GetMeasurementResultByResId(int resId)
+        public static MeasurementResults GetMeasurementResultByResId(long resId)
         {
             var isLoadAllData = false;
             double? start = 0;
@@ -226,13 +226,13 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result1;
         }
 
-        public static MeasTask GetMeasTaskHeaderById(int taskId)
+        public static MeasTask GetMeasTaskHeaderById(long taskId)
         {
             var result = Execute(contract => contract.GetMeasTaskHeader(new MeasTaskIdentifier { Value = taskId }));
 
             return result;
         }
-        public static StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(int taskId)
+        public static StationDataForMeasurements[] GetStationDataForMeasurementsByTaskId(long taskId)
         {
             var result = Execute(contract => contract.GetStationDataForMeasurementsByTaskId(new MeasTaskIdentifier { Value = taskId }));
 
@@ -242,7 +242,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static StationLevelsByTask[] GetStationLevelsByTask(List<int> MeasResultID, int MeasTaskId, int SectorId)
+        public static StationLevelsByTask[] GetStationLevelsByTask(List<long> MeasResultID, int MeasTaskId, int SectorId)
         {
             var parameters = new LevelsByTaskParams()
             {
@@ -268,7 +268,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
-        public static MeasTask GetMeasTaskById(int taskId)
+        public static MeasTask GetMeasTaskById(long taskId)
         {
             return Execute(contract => contract.GetMeasTaskById(taskId));
         }
@@ -276,7 +276,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         #endregion
 
         #region Actions
-        public static int CreateMeasTask(MeasTask task)
+        public static long CreateMeasTask(MeasTask task)
         {
             var result = Execute(contract => contract.CreateMeasTask(task));
 
@@ -286,7 +286,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result.Value;
         }
-        public static void DeleteMeasTaskById(int taskId)
+        public static void DeleteMeasTaskById(long taskId)
         {
             var result = Execute(contract => contract.DeleteMeasTask(new MeasTaskIdentifier { Value = taskId }));
 
@@ -295,7 +295,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Delete the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-        public static void RunMeasTask(int taskId)
+        public static void RunMeasTask(long taskId)
         {
             var result = Execute(contract => contract.RunMeasTask(new MeasTaskIdentifier { Value = taskId }));
 
@@ -304,7 +304,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Run the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-        public static void StopMeasTask(int taskId)
+        public static void StopMeasTask(long taskId)
         {
             var result = Execute(contract => contract.StopMeasTask(new MeasTaskIdentifier { Value = taskId }));
 
@@ -313,7 +313,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show(result.FaultCause ?? "Unknown error", $"Stop the meas task with  Id #{taskId}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-        public static void DeleteEmittingById(int[] emittingId)
+        public static void DeleteEmittingById(long[] emittingId)
         {
             var result = Execute(contract => contract.DeleteEmitting(emittingId));
 
@@ -322,7 +322,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show("Unknown error", "Delete Emittings faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-        public static void AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        public static void AddAssociationStationByEmitting(long[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
         {
             var result = Execute(contract => contract.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName));
             if (!result)

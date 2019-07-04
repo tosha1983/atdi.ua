@@ -13,7 +13,7 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
-    public sealed class TaskParametersByIntRepository : IRepository<TaskParameters, int?>
+    public sealed class TaskParametersByIntRepository : IRepository<TaskParameters, long?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
@@ -238,7 +238,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             }
 
                             var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
                             builderReferenceSignalRaw.Select(c => c.Id);
                             builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                             builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
@@ -267,7 +267,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
                                     List<double> freqs = new List<double>();
                                     List<float> loss = new List<float>();
-                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
                                     builderSignalMaskRaw.Select(c => c.Id);
                                     builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
                                     builderSignalMaskRaw.Select(c => c.Freq_kHz);
@@ -315,7 +315,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return taskParameters;
         }
 
-        public TaskParameters LoadObject(int? id)
+        public TaskParameters LoadObject(long? id)
         {
             TaskParameters taskParameters = null;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
@@ -522,7 +522,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             }
 
                             var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
                             builderReferenceSignalRaw.Select(c => c.Id);
                             builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                             builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
@@ -551,7 +551,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
                                     List<double> freqs = new List<double>();
                                     List<float> loss = new List<float>();
-                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
                                     builderSignalMaskRaw.Select(c => c.Id);
                                     builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
                                     builderSignalMaskRaw.Select(c => c.Freq_kHz);
@@ -599,152 +599,123 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return taskParameters;
         }
 
-        public int? Create(TaskParameters item)
+        public long? Create(TaskParameters item)
         {
-            int? ID = null;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+            long? ID = null;
             if (item != null)
             {
                 try
                 {
-                    queryExecuter.BeginTransaction();
-                    var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Insert();
-                    builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
-                    builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
-                    builderInsertTaskParameters.SetValue(c => c.MeasurementType, item.MeasurementType.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.MinFreq_MHz, item.MinFreq_MHz);
-                    builderInsertTaskParameters.SetValue(c => c.NChenal, item.NChenal);
-                    builderInsertTaskParameters.SetValue(c => c.RBW_Hz, item.RBW_Hz);
-                    builderInsertTaskParameters.SetValue(c => c.ReceivedIQStreemDuration_sec, item.ReceivedIQStreemDuration_sec);
-                    builderInsertTaskParameters.SetValue(c => c.SDRTaskId, item.SDRTaskId);
-                    builderInsertTaskParameters.SetValue(c => c.StartTime, item.StartTime);
-                    builderInsertTaskParameters.SetValue(c => c.Status, item.status);
-                    builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
-                    builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
-                    builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
-                    builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
-                    builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
-                    builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
-                    builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
-                    builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
-                    builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
+                    {
+                        scope.BeginTran();
+                        var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Insert();
+                        builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
+                        builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
+                        builderInsertTaskParameters.SetValue(c => c.MeasurementType, item.MeasurementType.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.MinFreq_MHz, item.MinFreq_MHz);
+                        builderInsertTaskParameters.SetValue(c => c.NChenal, item.NChenal);
+                        builderInsertTaskParameters.SetValue(c => c.RBW_Hz, item.RBW_Hz);
+                        builderInsertTaskParameters.SetValue(c => c.ReceivedIQStreemDuration_sec, item.ReceivedIQStreemDuration_sec);
+                        builderInsertTaskParameters.SetValue(c => c.SDRTaskId, item.SDRTaskId);
+                        builderInsertTaskParameters.SetValue(c => c.StartTime, item.StartTime);
+                        builderInsertTaskParameters.SetValue(c => c.Status, item.status);
+                        builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
+                        builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
+                        builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
+                        builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
+                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
+                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
+                        builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
+                        builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
+                        builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
 
-                    if (item.TypeTechnology != TypeTechnology.Unknown)
-                    {
-                        builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    }
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
-                    builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
-                    builderInsertTaskParameters.Select(c => c.Id);
-                    queryExecuter.ExecuteAndFetch(builderInsertTaskParameters, readerMeasTask =>
-                    {
-                        while (readerMeasTask.Read())
+                        if (item.TypeTechnology != TypeTechnology.Unknown)
                         {
-                            ID = readerMeasTask.GetValue(c => c.Id);
+                            builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
                         }
-                        return true;
-                    });
+                        builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
+                        builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
+                        builderInsertTaskParameters.Select(c => c.Id);
 
-                    if (ID != null)
-                    {
-                        var massFreq = item.ListFreqCH.ToArray();
-                        for (int i = 0; i < massFreq.Length; i++)
+                        var pk_TaskParameters = scope.Executor.Execute<MD.ITaskParameters_PK>(builderInsertTaskParameters);
+                        ID = pk_TaskParameters.Id;
+
+                        if (ID != null)
                         {
-                            int? idTaskParametersFreq = null;
-                            var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
-                            builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
-                            builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
-                            builderInsertTaskParametersFreq.Select(c => c.Id);
-                            queryExecuter.ExecuteAndFetch(builderInsertTaskParametersFreq, readerTaskParametersFreq =>
+                            var massFreq = item.ListFreqCH.ToArray();
+                            for (int i = 0; i < massFreq.Length; i++)
                             {
-                                while (readerTaskParametersFreq.Read())
-                                {
-                                    idTaskParametersFreq = readerTaskParametersFreq.GetValue(c => c.Id);
-                                }
-                                return true;
-                            });
-                        }
+                                var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
+                                builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
+                                builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
+                                builderInsertTaskParametersFreq.Select(c => c.Id);
+
+                                var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
+                            }
 
 
-                        if (item.RefSituation != null)
-                        {
-                            //for (int l = 0; l < item.RefSituation.Length; l++)
-                            var refSituation = item.RefSituation;
+                            if (item.RefSituation != null)
                             {
-                                int valueIdReferenceSituationRaw = -1;
-                                var refSituationReferenceSignal = refSituation; //item.RefSituation[l];
-                                var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
-                                builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
-                                builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
-                                builderInsertReferenceSituationRaw.Select(c => c.Id);
-                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSituationRaw, readerReferenceSituationRaw =>
+                                //for (int l = 0; l < item.RefSituation.Length; l++)
+                                var refSituation = item.RefSituation;
                                 {
-                                    while (readerReferenceSituationRaw.Read())
+                                    long? valueIdReferenceSituationRaw = -1;
+                                    var refSituationReferenceSignal = refSituation; //item.RefSituation[l];
+                                    var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
+                                    builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
+                                    builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
+                                    builderInsertReferenceSituationRaw.Select(c => c.Id);
+                                    var pk_IReferenceSituation = scope.Executor.Execute<MD.IReferenceSituation_PK>(builderInsertReferenceSituationRaw);
+                                    valueIdReferenceSituationRaw = pk_IReferenceSituation.Id;
+
+                                    if (valueIdReferenceSituationRaw > 0)
                                     {
-                                        valueIdReferenceSituationRaw = readerReferenceSituationRaw.GetValue(c => c.Id);
-                                        if (valueIdReferenceSituationRaw > 0)
+                                        for (int j = 0; j < refSituationReferenceSignal.ReferenceSignal.Length; j++)
                                         {
-                                            for (int j = 0; j < refSituationReferenceSignal.ReferenceSignal.Length; j++)
+                                            var situationReferenceSignal = refSituationReferenceSignal.ReferenceSignal[j];
+
+
+                                            var builderInsertReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().Insert();
+                                            builderInsertReferenceSignalRaw.SetValue(c => c.Bandwidth_kHz, situationReferenceSignal.Bandwidth_kHz);
+                                            builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
+                                            builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
+                                            builderInsertReferenceSignalRaw.SetValue(c => c.RefSituationId, valueIdReferenceSituationRaw);
+                                            builderInsertReferenceSignalRaw.Select(c => c.Id);
+                                            var pk_ReferenceSignal = scope.Executor.Execute<MD.IReferenceSignal_PK>(builderInsertReferenceSignalRaw);
+                                            if (pk_ReferenceSignal.Id > 0)
                                             {
-                                                int valueIdReferenceSignal = -1;
-                                                var situationReferenceSignal = refSituationReferenceSignal.ReferenceSignal[j];
-
-
-                                                var builderInsertReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().Insert();
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.Bandwidth_kHz, situationReferenceSignal.Bandwidth_kHz);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
-                                                builderInsertReferenceSignalRaw.SetValue(c => c.RefSituationId, valueIdReferenceSituationRaw);
-                                                builderInsertReferenceSignalRaw.Select(c => c.Id);
-                                                queryExecuter.ExecuteAndFetch(builderInsertReferenceSignalRaw, readerReferenceSignalRaw =>
+                                                var signalMask = situationReferenceSignal.SignalMask;
+                                                if (signalMask != null)
                                                 {
-                                                    while (readerReferenceSignalRaw.Read())
+                                                    for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
                                                     {
-                                                        valueIdReferenceSignal = readerReferenceSignalRaw.GetValue(c => c.Id);
-                                                        if (valueIdReferenceSignal > 0)
-                                                        {
-                                                            var signalMask = situationReferenceSignal.SignalMask;
-                                                            if (signalMask != null)
-                                                            {
-                                                                var lstInsSignalMaskRaw = new IQueryInsertStatement<MD.ISignalMaskRaw>[signalMask.Freq_kHz.Length];
-                                                                for (int k = 0; k < signalMask.Freq_kHz.Length; k++)
-                                                                {
-                                                                    var freq_kH = signalMask.Freq_kHz[k];
-                                                                    var loss_dB = signalMask.Loss_dB[k];
+                                                        var freq_kH = signalMask.Freq_kHz[k];
+                                                        var loss_dB = signalMask.Loss_dB[k];
 
-                                                                    var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().Insert();
-                                                                    builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
-                                                                    builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
-                                                                    builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, valueIdReferenceSignal);
-                                                                    builderInsertSignalMaskRaw.Select(c => c.Id);
-                                                                    lstInsSignalMaskRaw[k] = builderInsertSignalMaskRaw;
-                                                                }
-                                                                queryExecuter.ExecuteAndFetch(lstInsSignalMaskRaw, readerSignalMaskRaw =>
-                                                                {
-                                                                    return true;
-                                                                });
-                                                            }
-                                                        }
+                                                        var builderInsertSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().Insert();
+                                                        builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
+                                                        builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
+                                                        builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, pk_ReferenceSignal.Id);
+                                                        builderInsertSignalMaskRaw.Select(c => c.Id);
+                                                        scope.Executor.Execute(builderInsertSignalMaskRaw);
                                                     }
-                                                    return true;
-                                                });
+                                                }
                                             }
                                         }
                                     }
-                                    return true;
-                                });
+                                }
                             }
                         }
+                        scope.Commit();
                     }
-                    queryExecuter.CommitTransaction();
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
@@ -805,7 +776,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return isSuccessUpdate;
         }
 
-        public bool Delete(int? id)
+        public bool Delete(long? id)
         {
             throw new NotImplementedException();
         }
@@ -815,7 +786,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             //throw new NotImplementedException();
         }
 
-        TaskParameters[] IRepository<TaskParameters, int?>.LoadAllObjects()
+        TaskParameters[] IRepository<TaskParameters, long?>.LoadAllObjects()
         {
             List<TaskParameters> listTaskParameters = new List<TaskParameters>();
             var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
@@ -1022,7 +993,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             }
 
                             var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
                             builderReferenceSignalRaw.Select(c => c.Id);
                             builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                             builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
@@ -1051,7 +1022,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
                                     List<double> freqs = new List<double>();
                                     List<float> loss = new List<float>();
-                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
                                     builderSignalMaskRaw.Select(c => c.Id);
                                     builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
                                     builderSignalMaskRaw.Select(c => c.Freq_kHz);
@@ -1311,7 +1282,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             }
 
                             var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                            var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
                             builderReferenceSignalRaw.Select(c => c.Id);
                             builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                             builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
@@ -1341,7 +1312,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
                                     List<double> freqs = new List<double>();
                                     List<float> loss = new List<float>();
-                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                    var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
                                     builderSignalMaskRaw.Select(c => c.Id);
                                     builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
                                     builderSignalMaskRaw.Select(c => c.Freq_kHz);

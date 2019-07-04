@@ -49,6 +49,7 @@
     <Compile Include="Parameters\Gps\Enums\GpsMode.cs" />
     <Compile Include="Parameters\MesureSystemInfoParameter.cs" />
     <Compile Include="Parameters\MesureSystemInfo\FreqType.cs" />
+    <Compile Include="Parameters\MesureSystemInfo\GSMBands.cs" />
     <Compile Include="Results\Enums\DeviceStatus.cs" />
     <Compile Include="Results\GpsResult.cs" />
     <Compile Include="Results\MesureSystemInfoResult.cs" />

@@ -23,7 +23,7 @@ namespace XICSM.ICSControlClient.Models.StartMeasurementsSO
         public string CustText2;
         public string CustText3;
         public string CustText4;
-        public int MeasTaskId;
+        public long MeasTaskId;
 
         public Plan PlanRef;
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.AppServer;
 
 namespace Atdi.AppUnits.Sdrn.BusController
 {
@@ -41,6 +42,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.Container.Register<BusConnectionFactory>(ServiceLifetime.Singleton);
             this.Container.Register<ISdrnMessagePublisher, SdrnMessagePublisher>(ServiceLifetime.PerThread);
             this.Container.Register<ISdrnMessageDispatcher, SdrnMessageDispatcher>(ServiceLifetime.Singleton);
+
+            this.Container.Register<MessageProcessing, MessageProcessing>(ServiceLifetime.Singleton);
 
             //this.Container.Register<ConsumersRabbitMQConnection>(ServiceLifetime.PerThread);
             //this.Container.Register<PublisherRabbitMQConnection>(ServiceLifetime.PerThread);
@@ -87,6 +90,14 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
             //TODO: Activate all consumers
             dispatcher.Activate();
+
+            var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
+            
+            hostLoader.RegisterTrigger("Running AMQP Measseges Processing", () =>
+            {
+                var messagesProcessing = this.Resolver.Resolve<MessageProcessing>();
+                messagesProcessing.Run();
+            });
         }
 
         protected override void OnDeactivateUnit()

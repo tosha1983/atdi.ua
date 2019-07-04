@@ -48,7 +48,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private SDR.LocationSensorMeasurement _currentSensorLocation;
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
-        private int? _emittingId;
+        private long? _emittingId;
 
         private MP.MapDrawingData _currentMapData;
         private IList _currentStations;
@@ -59,7 +59,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public WpfCommand AssociatedCommand { get; set; }
 
-        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, int? emittingId)
+        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, long? emittingId)
         {
             this._stationData = stationData;
             this._measResult = measResult;
@@ -174,7 +174,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             if (this._emittingId.HasValue && this._currentStation != null)
             {
-                SVC.SdrnsControllerWcfClient.AddAssociationStationByEmitting(new int[] { this._emittingId.Value }, this._currentStation.IcsmId, this._currentStation.IcsmTable);
+                SVC.SdrnsControllerWcfClient.AddAssociationStationByEmitting(new long[] { this._emittingId.Value }, this._currentStation.IcsmId, this._currentStation.IcsmTable);
                 _form.Close();
             }
         }

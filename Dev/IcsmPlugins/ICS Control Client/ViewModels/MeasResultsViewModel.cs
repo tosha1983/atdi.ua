@@ -759,7 +759,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
-                int taskId = this._currentMeasurementResults.MeasTaskId;
+                long taskId = this._currentMeasurementResults.MeasTaskId;
                 string stationId = this._currentResultsMeasurementsStationData.StationId;
 
                 FRM.SaveFileDialog sfd = new FRM.SaveFileDialog()

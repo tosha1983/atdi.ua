@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestEntityRef3"
+  Title       = "Test Abstruct Entity"
+  Desc        = ""
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_ENTITY_REF_3</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+    
+    <Field Name="Ref3PkId1" DataType="Counter.64" SourceName="REF_3_PK_ID_1" SourceType="Column" Desc="" Title="Abs Pk Id 1"/>
+    <Field Name="Ref3PkId2" DataType="Counter.Guid" SourceName="REF_3_PK_ID_2" SourceType="Column" Desc="" Title="Abs Pk Id 2"/>
+    <Field Name="Ref3PkId3" DataType="Counter.DateTimeOffset" SourceName="REF_3_PK_ID_3" SourceType="Column" Desc="" Title="Abs Pk Id 3"/>
+
+    <Field Name="Ref3Field1" DataType="Text.10" SourceName="REF_3_FLD_1" SourceType="Column" Desc="" Title="Abs Field 1"/>
+    <Field Name="Ref3Field2" DataType="Text.10" SourceName="REF_3_FLD_2" SourceType="Column" Desc="" Title="Abs Field 2"/>
+    <Field Name="Ref3Field3" DataType="Text.10" SourceName="REF_3_FLD_3" SourceType="Column" Desc="" Title="Abs Field 3"/>
+
+    <Field Name="REFABSSMP" SourceName="TestEntityAbsSmp" SourceType="Reference" Title="Refernce to AbsSmp" Required="true"/>
+
+    <Field Name="REFPRT0" SourceName="TestEntityAbsSmpProto0" SourceType="Reference" Title="Refernce to AbsSmp" Required="true"/>
+
+    <Field Name="REFPRT1" SourceName="TestEntityAbsSmpProto1" SourceType="Reference" Title="Refernce to AbsSmp" Required="true"/>
+
+    <Field Name="REFPRTEND" SourceName="TestEntityAbsSmpProtoEnd" SourceType="Reference" Title="Refernce to AbsSmp" Required="true"/>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Ref3PkId1"/>
+    <FieldRef Name="Ref3PkId2"/>
+    <FieldRef Name="Ref3PkId3"/>
+  </PrimaryKey>
+</Entity>

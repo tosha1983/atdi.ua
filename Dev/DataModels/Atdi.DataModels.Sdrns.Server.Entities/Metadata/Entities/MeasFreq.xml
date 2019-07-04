@@ -6,18 +6,13 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_MEASFREQ</Name>
+    <Name>MEAS_FREQ</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="Freq" Title="Freq" Name="Freq" DataType="Decimal.22.8" SourceName="FREQ" SourceType="Column" Required="false"/>
-    <Field Desc="MeasFreqParamId" Title="MeasFreqParamId" Name="MeasFreqParamId" DataType="Integer.64" SourceName="ID_XBS_MEASFREQPARAM" SourceType="Column" Required="true"/>
-    <Field Name="MEASFREQPARAM" SourceType="Reference" SourceName="MeasFreqParam" Title="Relation MeasFreq to MeasFreqParam">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasFreqParamId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="Freq" Title="Freq" Name="Freq" DataType="Double.30.10" SourceName="FREQ" SourceType="Column" Required="false"/>
+    <Field Name="MEAS_FREQ_PARAM" SourceName="MeasFreqParam" SourceType="Reference" Required="true" Desc="" Title="Relation MeasFreq to MeasFreqParam"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -15,7 +15,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventContext DataLayerCoreServices = "DataLayer Core Services";
         public static readonly EventContext SqlServerEngine = "SQL Server Engine";
         public static readonly EventContext OracleEngine = "Oracle Engine";
-        public static readonly EventContext LegacyServicesEntity = "EntityOrm Legacy Services";
+        public static readonly EventContext EntityOrm = "EntityOrm";
         public static readonly EventContext BuidJoinRelation = "Build Join Releation";
         public static readonly EventContext BuidJoinExtension= "Build Join Extension";
         public static readonly EventContext BuidJoinReference = "Build Join Reference";
@@ -35,6 +35,9 @@ namespace Atdi.CoreServices.EntityOrm
 
     static class Categories
     {
+        public static readonly EventCategory Creation = "Creation";
+
+
         public static readonly EventCategory CreatingInstance = "Creating instance";
         public static readonly EventCategory FetchingData = "Fetching data";
         public static readonly EventCategory BuildingStatement = "Building SQL query";
@@ -43,12 +46,15 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventCategory ResultHandling = "Handling result";
         public static readonly EventCategory OpeningConnection = "Opening connection";
         public static readonly EventCategory ExecuteQuery = "Execute query";
-        
+
+        public static readonly EventCategory Processing = "Processing";
 
     }
 
     static class Events
     {
+        public static readonly EventText ObjectWasCreated = "The object of {0} was created";
+
         public static readonly EventText CreatedInstanceOfQueryBuilder = "Created instance of the ICSM ORM Query Builder";
         public static readonly EventText CreatedInstanceOfQueryExecutor = "Created instance of the ICSM ORM Query Executor";
         public static readonly EventText UnableToCreateHost = "Unable to create the service host: {0}";
@@ -68,6 +74,8 @@ namespace Atdi.CoreServices.EntityOrm
 
     static class Exceptions
     {
+        public static readonly ExceptionText UndefinedRootPath = "Undefined a config parameter Root Path";
+        public static readonly ExceptionText UndefinedEntitiesPath = "Undefined a config parameter Entities Path";
         public static readonly ExceptionText EngineTypeNotSupported = "The data engine with type '{0}' is not supported";
         public static readonly ExceptionText DataLimitTypeNotSupported = "The data limit with type '{0}' is not supported";
         public static readonly ExceptionText SortDirectionNotSupported = "The sort direction with name '{0}' is not supported";
@@ -101,6 +109,9 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly ExceptionText ErrorLoadEnvironment = "Error load Environment.xml - {0}";
         public static readonly ExceptionText NotFoundAlias = "Not found alias for - '{0}'";
         public static readonly ExceptionText NotFoundDetailInformation = "Not found detail information for '{0}'";
+
+
+        public static readonly ExceptionText FailedToBuildAndExecute = "Failed to build pattern and execute by the query statement type '{0}'";
     }
 
     static class ConfigParameters

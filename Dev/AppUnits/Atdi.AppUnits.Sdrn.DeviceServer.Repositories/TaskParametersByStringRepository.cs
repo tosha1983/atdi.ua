@@ -265,7 +265,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 }
 
                                 var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                                var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignalRaw>().From();
+                                var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
                                 builderReferenceSignalRaw.Select(c => c.Id);
                                 builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
                                 builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
@@ -294,7 +294,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
                                         List<double> freqs = new List<double>();
                                         List<float> loss = new List<float>();
-                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMaskRaw>().From();
+                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
                                         builderSignalMaskRaw.Select(c => c.Id);
                                         builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
                                         builderSignalMaskRaw.Select(c => c.Freq_kHz);

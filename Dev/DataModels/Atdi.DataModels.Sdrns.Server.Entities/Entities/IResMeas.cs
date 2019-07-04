@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResMeas
+    [EntityPrimaryKeyAttribute]
+    public interface IResMeas_PK
     {
         long Id { get; set; }
-        string MeasTaskId { get; set; }
-        long? MeasSubTaskId { get; set; }
-        long? MeasSubTaskStationId { get; set; }
-        long? SensorId { get; set; }
+    }
+
+    [Entity]
+    public interface IResMeas : IResMeas_PK
+    {
         double? AntVal { get; set; }
         DateTime? TimeMeas { get; set; }
         int? DataRank { get; set; }
@@ -26,8 +27,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? StartTime { get; set; }
         DateTime? StopTime { get; set; }
         int? ScansNumber { get; set; }
-        IMeasSubTask MEASSUBTASK { get; set; }
-        IMeasSubTaskSta MEASSUBTASKSTA { get; set; }
-        ISensor SENSOR { get; set; }
+        IMeasSubTaskStation MEAS_SUBTASK_STATION { get; set; }
     }
 }

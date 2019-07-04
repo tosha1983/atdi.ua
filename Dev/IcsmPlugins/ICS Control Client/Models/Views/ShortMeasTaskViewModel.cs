@@ -11,7 +11,7 @@ namespace XICSM.ICSControlClient.Models.Views
     public class ShortMeasTaskViewModel
     {
         [WpfColumn("ID", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [WpfColumn("Order", WidthRule = ColumnWidthRule.AutoSize, Width = 50)]
         public int OrderId { get; set; }
