@@ -103,7 +103,8 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
             var sqlFrom = string.Empty;
             var sqlWhere = string.Empty;
 
-            sqlFrom = context.BuildFromExpression(expression.Target);
+            string sourceAliasName = null;
+            sqlFrom = context.BuildFromExpression(expression.Target, out sourceAliasName);
 
             if (expression.Joins != null && expression.Joins.Length > 0)
             {

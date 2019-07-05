@@ -128,7 +128,9 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 }
             }
 
-            sqlFrom = context.BuildFromExpression(expression.From);
+            string sourceAliasName = null;
+            sqlFrom = context.BuildFromExpression(expression.From, out sourceAliasName);
+
 
             if (expression.Joins != null && expression.Joins.Length > 0)
             {
