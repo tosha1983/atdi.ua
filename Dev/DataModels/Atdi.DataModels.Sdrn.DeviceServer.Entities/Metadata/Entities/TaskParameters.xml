@@ -29,9 +29,9 @@
     <Field Desc="NCount" Title="NCount" Name="NCount" DataType="Integer.32" SourceName="NCOUNT" SourceType="Column" Required="true"/>
     <Field Desc="SweepTime_ms" Title="SweepTime_ms" Name="SweepTime_ms" DataType="Double.30.10" SourceName="SWEEP_TIME" SourceType="Column" Required="true"/>
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.32" SourceName="SENSOR_ID" SourceType="Column" Required="false"/>
-    <Field Desc="CompareTraceJustWithRefLevels" Title="CompareTraceJustWithRefLevels" Name="CompareTraceJustWithRefLevels" DataType="Integer.32" SourceName="COMPARE_TRACE_JUST_WITH_REF_LEVELS" SourceType="Column" Required="false"/>
-    <Field Desc="AutoDivisionEmitting" Title="AutoDivisionEmitting" Name="AutoDivisionEmitting" DataType="Integer.32" SourceName="AUTO_DEVISION_EMITTING" SourceType="Column" Required="false"/>
-    <Field Desc="FiltrationTrace" Title="FiltrationTrace" Name="FiltrationTrace" DataType="Integer.32" SourceName="FILTRATION_TRACE" SourceType="Column" Required="false"/>
+    <Field Desc="CompareTraceJustWithRefLevels" Title="CompareTraceJustWithRefLevels" Name="CompareTraceJustWithRefLevels" DataType="Boolean" SourceName="COMPARE_TRACE_JUST_WITH_REF_LEVELS" SourceType="Column" Required="false"/>
+    <Field Desc="AutoDivisionEmitting" Title="AutoDivisionEmitting" Name="AutoDivisionEmitting" DataType="Boolean" SourceName="AUTO_DEVISION_EMITTING" SourceType="Column" Required="false"/>
+    <Field Desc="FiltrationTrace" Title="FiltrationTrace" Name="FiltrationTrace" DataType="Boolean" SourceName="FILTRATION_TRACE" SourceType="Column" Required="false"/>
     <Field Desc="DifferenceMaxMax" Title="DifferenceMaxMax" Name="DifferenceMaxMax" DataType="Double.30.10" SourceName="DIFF_MINMAX" SourceType="Column" Required="true"/>
     <Field Desc="AllowableExcess_dB" Title="AllowableExcess_dB" Name="AllowableExcess_dB" DataType="Double.30.10" SourceName="ALLOW_EXCESS_DB" SourceType="Column" Required="true"/>
     <Field Desc="PercentForCalcNoise" Title="PercentForCalcNoise" Name="PercentForCalcNoise" DataType="Double.30.10" SourceName="PERCENT_FOR_CALC_NOICE" SourceType="Column" Required="true"/>

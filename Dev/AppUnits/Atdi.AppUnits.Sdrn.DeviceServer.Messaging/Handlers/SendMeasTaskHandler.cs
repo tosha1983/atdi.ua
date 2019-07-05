@@ -134,16 +134,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                             message.Result = MessageHandlingResult.Trash;
                             throw new NotImplementedException("Not supported MeasurementType 'MonitoringStations'");
                         }
-                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
-                        {
-                            message.Result = MessageHandlingResult.Trash;
-                            throw new NotImplementedException("Not supported MeasurementType 'Signaling'");
-                        }
-                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
-                        {
-                            message.Result = MessageHandlingResult.Trash;
-                            throw new NotImplementedException("Not supported MeasurementType 'BandwidthMeas'");
-                        }
                         else
                         {
                             message.Result = MessageHandlingResult.Trash;

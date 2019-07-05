@@ -79,20 +79,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
                     }
 
-                    if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
-                    {
-                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value==1 ? true : false;
-                    }
-
-                    if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
-                    {
-                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
-                    }
-
-                    if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
-                    {
-                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
-                    }
+                    taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
+                    taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
+                    taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
 
                     if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
                     {
@@ -368,21 +357,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
                     }
 
-
-                    if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
-                    {
-                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value == 1 ? true : false;
-                    }
-
-                    if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
-                    {
-                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
-                    }
-
-                    if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
-                    {
-                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
-                    }
+                   
+                    taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
+                    
+                    taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
+                    
+                    taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
+                    
 
                     if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
                     {
@@ -624,10 +605,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
                         builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
                         builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
-                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
-                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels);
+                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting);
                         builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
-                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace);
                         builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
                         builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
                         builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
@@ -752,10 +733,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                         builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
                         builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
-                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
-                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels);
+                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting);
                         builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
-                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace);
                         builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
                         builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
                         builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
@@ -841,20 +822,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
                     }
 
-                    if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
-                    {
-                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value == 1 ? true : false;
-                    }
-
-                    if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
-                    {
-                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
-                    }
-
-                    if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
-                    {
-                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
-                    }
+                    taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
+                    
+                    taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
+                   
+                    taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
+                    
 
                     if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
                     {
@@ -1130,20 +1103,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
                     }
 
-                    if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
-                    {
-                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value == 1 ? true : false;
-                    }
+                    taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
 
-                    if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
-                    {
-                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
-                    }
+                    
+                    taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
+                    
 
-                    if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
-                    {
-                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
-                    }
+                    taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
+                    
 
                     if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
                     {
@@ -1451,7 +1418,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 while (readerMeasTask.Read())
                 {
-                    dic.Add(readerMeasTask.GetValue(c=>c.SDRTaskId), readerMeasTask.GetValue(c=>c.Status));
+                    if (!dic.ContainsKey(readerMeasTask.GetValue(c => c.SDRTaskId)))
+                    {
+                        dic.Add(readerMeasTask.GetValue(c => c.SDRTaskId), readerMeasTask.GetValue(c => c.Status));
+                    }
                 }
                 return true;
             });

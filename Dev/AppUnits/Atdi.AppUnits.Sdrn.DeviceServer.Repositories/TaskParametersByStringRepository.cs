@@ -110,20 +110,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
                         }
 
-                        if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
-                        {
-                            taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value == 1 ? true : false;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
-                        {
-                            taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
-                        {
-                            taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
-                        }
+                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
+                        
+                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
+                        
+                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
+                        
 
                         if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
                         {

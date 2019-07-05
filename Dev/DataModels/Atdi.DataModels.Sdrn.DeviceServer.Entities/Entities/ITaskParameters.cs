@@ -35,10 +35,10 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         int? NCount { get; set; }
         int SensorId { get; set; }
         ITaskParametersFreq[] ListTaskParametersFreq { get; set; }
-        int? CompareTraceJustWithRefLevels { get; set; }
-        int? AutoDivisionEmitting { get; set; }
+        bool CompareTraceJustWithRefLevels { get; set; }
+        bool AutoDivisionEmitting { get; set; }
         double? DifferenceMaxMax { get; set; }
-        int? FiltrationTrace { get; set; }
+        bool FiltrationTrace { get; set; }
         double? AllowableExcess_dB { get; set; }
         double? PercentForCalcNoise { get; set; }
         int? SignalizationNChenal { get; set; }
