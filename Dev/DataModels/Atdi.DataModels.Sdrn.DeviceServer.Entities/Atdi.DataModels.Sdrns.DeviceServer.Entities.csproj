@@ -7,8 +7,8 @@
     <ProjectGuid>{A803197E-12F5-4800-B157-B2EC677BDA33}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrn.DeviceServer.Entities</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrn.DeviceServer.Entities</AssemblyName>
+    <RootNamespace>Atdi.DataModels.Sdrns.DeviceServer.Entities</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrns.DeviceServer.Entities</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -29,6 +29,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -104,6 +107,7 @@
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
     <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\Double.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />

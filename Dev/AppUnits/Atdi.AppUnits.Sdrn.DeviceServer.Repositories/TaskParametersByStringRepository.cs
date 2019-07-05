@@ -43,6 +43,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             //throw new NotImplementedException();
         }
 
+        public int GetCountObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            throw new NotImplementedException();
+        }
+
         public TaskParameters[] LoadAllObjects()
         {
             throw new NotImplementedException();
@@ -249,10 +259,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             while (readerReferenceSituationRaw.Read())
                             {
                                 var refSituation = new DataModels.Sdrns.Device.ReferenceSituation();
-                                if (readerReferenceSituationRaw.GetValue(c => c.SensorId).HasValue)
-                                {
-                                    refSituation.SensorId = readerReferenceSituationRaw.GetValue(c => c.SensorId).Value;
-                                }
+                                
+                                refSituation.SensorId = (int)readerReferenceSituationRaw.GetValue(c => c.SensorId);
 
                                 var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
                                 var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();

@@ -20,20 +20,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ILogger _logger;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITaskStarter _taskStarter;
-        private readonly IRepository<DM.MeasTask,int?> _repositoryMeasTask;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParameters;
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly IRepository<DM.MeasTask, long?> _repositoryMeasTask;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParameters;
+        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
         private readonly ITimeService _timeService;
-        private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
+        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
         private readonly ConfigMessaging _config;
 
         public SendMeasTaskHandler(
            ITimeService timeService,
            IProcessingDispatcher processingDispatcher,
-           IRepository<DM.MeasTask, int?> repositoryMeasTask,
-           IRepository<TaskParameters, int?> repositoryTaskParameters,
-           IRepository<DM.Sensor, int?> repositorySensor,
-           IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
+           IRepository<DM.MeasTask, long?> repositoryMeasTask,
+           IRepository<TaskParameters, long?> repositoryTaskParameters,
+           IRepository<DM.Sensor, long?> repositorySensor,
+           IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
            ITaskStarter taskStarter,
            ConfigMessaging config,
            ILogger logger)

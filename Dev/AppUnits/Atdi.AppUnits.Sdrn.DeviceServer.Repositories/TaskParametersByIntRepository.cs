@@ -640,7 +640,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                         builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                         builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
-                        builderInsertTaskParameters.Select(c => c.Id);
+                        
 
                         var pk_TaskParameters = scope.Executor.Execute<MD.ITaskParameters_PK>(builderInsertTaskParameters);
                         ID = pk_TaskParameters.Id;
@@ -653,7 +653,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
                                 builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
                                 builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
-                                builderInsertTaskParametersFreq.Select(c => c.Id);
+                                
 
                                 var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
                             }
@@ -669,7 +669,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
                                     builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
                                     builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
-                                    builderInsertReferenceSituationRaw.Select(c => c.Id);
+                                    
                                     var pk_IReferenceSituation = scope.Executor.Execute<MD.IReferenceSituation_PK>(builderInsertReferenceSituationRaw);
                                     valueIdReferenceSituationRaw = pk_IReferenceSituation.Id;
 
@@ -685,7 +685,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                             builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
                                             builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
                                             builderInsertReferenceSignalRaw.SetValue(c => c.RefSituationId, valueIdReferenceSituationRaw);
-                                            builderInsertReferenceSignalRaw.Select(c => c.Id);
+                                            
                                             var pk_ReferenceSignal = scope.Executor.Execute<MD.IReferenceSignal_PK>(builderInsertReferenceSignalRaw);
                                             if (pk_ReferenceSignal.Id > 0)
                                             {
@@ -701,7 +701,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                                         builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
                                                         builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
                                                         builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, pk_ReferenceSignal.Id);
-                                                        builderInsertSignalMaskRaw.Select(c => c.Id);
+                                                        
                                                         scope.Executor.Execute(builderInsertSignalMaskRaw);
                                                     }
                                                 }
@@ -725,51 +725,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public bool Update(TaskParameters item)
         {
             bool isSuccessUpdate = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             if (item != null)
             {
                 try
                 {
-                    queryExecuter.BeginTransaction();
-                    var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Update();
-                    builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
-                    builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
-                    builderInsertTaskParameters.SetValue(c => c.MeasurementType, item.MeasurementType.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.MinFreq_MHz, item.MinFreq_MHz);
-                    builderInsertTaskParameters.SetValue(c => c.NChenal, item.NChenal);
-                    builderInsertTaskParameters.SetValue(c => c.RBW_Hz, item.RBW_Hz);
-                    builderInsertTaskParameters.SetValue(c => c.ReceivedIQStreemDuration_sec, item.ReceivedIQStreemDuration_sec);
-                    builderInsertTaskParameters.SetValue(c => c.SDRTaskId, item.SDRTaskId);
-                    builderInsertTaskParameters.SetValue(c => c.StartTime, item.StartTime);
-                    builderInsertTaskParameters.SetValue(c => c.Status, item.status);
-                    builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
-                    builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
-                    builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
-                    builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
-                    builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
-                    builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
-                    builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
-                    builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
-                    builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
-                    builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
-                    builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
-
-                    builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
-                    int cntUpdate = queryExecuter.Execute(builderInsertTaskParameters);
-                    if (cntUpdate > 0)
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        isSuccessUpdate = true;
+                        scope.BeginTran();
+
+                        var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Update();
+                        builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
+                        builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
+                        builderInsertTaskParameters.SetValue(c => c.MeasurementType, item.MeasurementType.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.MinFreq_MHz, item.MinFreq_MHz);
+                        builderInsertTaskParameters.SetValue(c => c.NChenal, item.NChenal);
+                        builderInsertTaskParameters.SetValue(c => c.RBW_Hz, item.RBW_Hz);
+                        builderInsertTaskParameters.SetValue(c => c.ReceivedIQStreemDuration_sec, item.ReceivedIQStreemDuration_sec);
+                        builderInsertTaskParameters.SetValue(c => c.SDRTaskId, item.SDRTaskId);
+                        builderInsertTaskParameters.SetValue(c => c.StartTime, item.StartTime);
+                        builderInsertTaskParameters.SetValue(c => c.Status, item.status);
+                        builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
+                        builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
+                        builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
+                        builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
+                        builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
+                        builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
+                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
+                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
+                        builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
+                        builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
+                        builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
+
+                        builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
+                        int cntUpdate = scope.Executor.Execute(builderInsertTaskParameters);
+                        if (cntUpdate > 0)
+                        {
+                            isSuccessUpdate = true;
+                        }
+                        scope.Commit();
                     }
-                    queryExecuter.CommitTransaction();
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
@@ -1108,7 +1110,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
             builderInsertTaskParameters.Select(c => c.SignalizationNCount);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
-            //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
+            builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
                 while (readerMeasTask.Read())
@@ -1361,6 +1363,100 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
 
             return listTaskParameters.ToArray();
+        }
+
+        public int GetCountObjectsWithRestrict()
+        {
+            int cnt = 0;
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+
+            var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().From();
+            builderInsertTaskParameters.Select(c => c.LevelMinOccup_dBm);
+            builderInsertTaskParameters.Select(c => c.MaxFreq_MHz);
+            builderInsertTaskParameters.Select(c => c.MeasurementType);
+            builderInsertTaskParameters.Select(c => c.MinFreq_MHz);
+            builderInsertTaskParameters.Select(c => c.NChenal);
+            builderInsertTaskParameters.Select(c => c.RBW_Hz);
+            builderInsertTaskParameters.Select(c => c.ReceivedIQStreemDuration_sec);
+            builderInsertTaskParameters.Select(c => c.SDRTaskId);
+            builderInsertTaskParameters.Select(c => c.StartTime);
+            builderInsertTaskParameters.Select(c => c.Status);
+            builderInsertTaskParameters.Select(c => c.NCount);
+            builderInsertTaskParameters.Select(c => c.StepSO_kHz);
+            builderInsertTaskParameters.Select(c => c.StopTime);
+            builderInsertTaskParameters.Select(c => c.TypeTechnology);
+            builderInsertTaskParameters.Select(c => c.Type_of_SO);
+            builderInsertTaskParameters.Select(c => c.VBW_Hz);
+            builderInsertTaskParameters.Select(c => c.SweepTime_ms);
+            builderInsertTaskParameters.Select(c => c.Id);
+            builderInsertTaskParameters.Select(c => c.SensorId);
+            builderInsertTaskParameters.Select(c => c.CompareTraceJustWithRefLevels);
+            builderInsertTaskParameters.Select(c => c.AutoDivisionEmitting);
+            builderInsertTaskParameters.Select(c => c.DifferenceMaxMax);
+            builderInsertTaskParameters.Select(c => c.FiltrationTrace);
+            builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
+            builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+            builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+            builderInsertTaskParameters.Select(c => c.SignalizationNCount);
+            builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
+            builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
+            queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
+            {
+                while (readerMeasTask.Read())
+                {
+                    cnt++;
+                }
+                return true;
+            });
+
+            return cnt;
+        }
+
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+           var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+
+            var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().From();
+            builderInsertTaskParameters.Select(c => c.LevelMinOccup_dBm);
+            builderInsertTaskParameters.Select(c => c.MaxFreq_MHz);
+            builderInsertTaskParameters.Select(c => c.MeasurementType);
+            builderInsertTaskParameters.Select(c => c.MinFreq_MHz);
+            builderInsertTaskParameters.Select(c => c.NChenal);
+            builderInsertTaskParameters.Select(c => c.RBW_Hz);
+            builderInsertTaskParameters.Select(c => c.ReceivedIQStreemDuration_sec);
+            builderInsertTaskParameters.Select(c => c.SDRTaskId);
+            builderInsertTaskParameters.Select(c => c.StartTime);
+            builderInsertTaskParameters.Select(c => c.Status);
+            builderInsertTaskParameters.Select(c => c.NCount);
+            builderInsertTaskParameters.Select(c => c.StepSO_kHz);
+            builderInsertTaskParameters.Select(c => c.StopTime);
+            builderInsertTaskParameters.Select(c => c.TypeTechnology);
+            builderInsertTaskParameters.Select(c => c.Type_of_SO);
+            builderInsertTaskParameters.Select(c => c.VBW_Hz);
+            builderInsertTaskParameters.Select(c => c.SweepTime_ms);
+            builderInsertTaskParameters.Select(c => c.Id);
+            builderInsertTaskParameters.Select(c => c.SensorId);
+            builderInsertTaskParameters.Select(c => c.CompareTraceJustWithRefLevels);
+            builderInsertTaskParameters.Select(c => c.AutoDivisionEmitting);
+            builderInsertTaskParameters.Select(c => c.DifferenceMaxMax);
+            builderInsertTaskParameters.Select(c => c.FiltrationTrace);
+            builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
+            builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
+            builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
+            builderInsertTaskParameters.Select(c => c.SignalizationNCount);
+            builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
+            builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
+            queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
+            {
+                while (readerMeasTask.Read())
+                {
+                    dic.Add(readerMeasTask.GetValue(c=>c.SDRTaskId), readerMeasTask.GetValue(c=>c.Status));
+                }
+                return true;
+            });
+
+            return dic;
         }
     }
 }
