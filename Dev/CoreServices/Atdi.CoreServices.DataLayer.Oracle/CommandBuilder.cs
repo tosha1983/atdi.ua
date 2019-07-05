@@ -481,10 +481,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
             //this.FromWhere(from, joins, where);
             
-            _sql.AppendLine($"WHERE DBMS_ROWID.ROWID_ROW_NUMBER(rowid) in (");
+            _sql.AppendLine($"WHERE DBMS_ROWID.ROWID_ROW_NUMBER({schema}.{source}.rowid) in (");
 
             //_sql.AppendLine($"SELECT {schema}.{source}.rowid FROM {from}");
-            _sql.AppendLine($"SELECT DBMS_ROWID.ROWID_ROW_NUMBER(rowid) FROM {from}");
+            _sql.AppendLine($"SELECT DBMS_ROWID.ROWID_ROW_NUMBER({schema}.{source}.rowid) FROM {from}");
             if (joins != null && joins.Length > 0)
             {
                 for (int i = 0; i < joins.Length; i++)
