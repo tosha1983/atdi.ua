@@ -20,14 +20,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
         private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
-        private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
+        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
 
         public SendCommandHandler(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
-            IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
-            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
+            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
+            IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
             IRepository<TaskParameters, string> repositoryTaskParametersBystring,
             ITaskStarter taskStarter, ILogger logger)
         {

@@ -19,9 +19,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
 
-        public SendSensorUpdatingResultHandler(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger, IRepository<DM.Sensor, int?> repositorySensor)
+        public SendSensorUpdatingResultHandler(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger, IRepository<DM.Sensor, long?> repositorySensor)
         {
             this._processingDispatcher = processingDispatcher;
             this._timeService = timeService;

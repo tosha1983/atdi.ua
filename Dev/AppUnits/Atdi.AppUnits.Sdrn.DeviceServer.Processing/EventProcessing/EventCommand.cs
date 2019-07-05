@@ -21,9 +21,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     {
         private readonly ILogger _logger;
         private readonly ConfigProcessing _config;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
 
-        public EventCommand(ILogger logger,  IRepository<TaskParameters, int?> repositoryTaskParametersByInt,  ConfigProcessing config)
+        public EventCommand(ILogger logger,  IRepository<TaskParameters, long?> repositoryTaskParametersByInt,  ConfigProcessing config)
         {
             this._logger = logger;
             this._config = config;

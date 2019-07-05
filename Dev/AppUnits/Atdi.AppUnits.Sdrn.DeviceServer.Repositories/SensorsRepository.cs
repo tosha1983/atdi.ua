@@ -30,13 +30,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         public long? Create(Sensor item)
         {
-            long? idSensor = -1;
+            int? idSensor = -1;
             try
             {
                 var sensorData = item;
                 using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                 {
-                    scope.BeginTran();
+                    //scope.BeginTran();
 
                     var builderInsertSensor = this._dataLayer.GetBuilder<MD.ISensor>().Insert();
                     builderInsertSensor.SetValue(c => c.Administration, sensorData.Administration);
@@ -57,7 +57,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     builderInsertSensor.SetValue(c => c.ApiVersion, "2.0");
                     builderInsertSensor.SetValue(c => c.TechId, sensorData.Equipment.TechId);
                     builderInsertSensor.Select(c => c.Id);
-                    builderInsertSensor.Select(c => c.Name);
 
                     var pk_Sensor = scope.Executor.Execute<MD.ISensor_PK>(builderInsertSensor);
                     idSensor = pk_Sensor.Id;
@@ -212,7 +211,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             }
                         }
                     }
-                    scope.Commit();
+                    //scope.Commit();
                 }
             }
             catch (Exception e)
@@ -232,8 +231,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
            // throw new NotImplementedException();
         }
 
+        public int GetCountObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
 
-     
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            throw new NotImplementedException();
+        }
+
         public Sensor LoadObject(long? id)
         {
             throw new NotImplementedException();
@@ -247,79 +254,84 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public bool Update(Sensor item)
         {
             bool isSuccess = false;
-            long? idSensor = -1;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+            int? idSensor = -1;
             try
             {
                 var sensorData = item;
-                var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensor>().From();
-                builderSelectSensLocations.Where(c => c.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
-                builderSelectSensLocations.Where(c => c.Name, ConditionOperator.Equal, sensorData.Name);
-                builderSelectSensLocations.Select(c => c.Id);
-                queryExecuter
-                       .Fetch(builderSelectSensLocations, reader =>
-                       {
-                           var result = reader.Read();
-                           if (result)
-                           {
-                               idSensor = reader.GetValue(c => c.Id);
-                           }
-                           return result;
-                       });
 
-                if (idSensor > 0)
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                 {
-                    queryExecuter.BeginTransaction();
 
-                    var builderUpdateSens = this._dataLayer.GetBuilder<MD.ISensor>().Update();
-                    builderUpdateSens.SetValue(c => c.Status, item.Status);
-                    builderUpdateSens.Where(c => c.Id, ConditionOperator.Equal, idSensor);
-                    if (queryExecuter.Execute(builderUpdateSens) > 0)
+                    var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensor>().From();
+                    builderSelectSensLocations.Where(c => c.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
+                    builderSelectSensLocations.Where(c => c.Name, ConditionOperator.Equal, sensorData.Name);
+                    builderSelectSensLocations.Select(c => c.Id);
+                    scope.Executor
+                           .Fetch(builderSelectSensLocations, reader =>
+                           {
+                               var result = reader.Read();
+                               if (result)
+                               {
+                                   idSensor = reader.GetValue(c => c.Id);
+                               }
+                               return result;
+                           });
+
+                    if (idSensor > 0)
                     {
-                        isSuccess = true;
-                    }
 
+                        //scope.BeginTran();
 
-                    if (sensorData.Locations.Length > 0)
-                    {
-
-                        var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
-                        builderUpdateSensLocations.SetValue(c => c.Status, "Z");
-                        builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
-                        if (queryExecuter.Execute(builderUpdateSensLocations) > 0)
+                        var builderUpdateSens = this._dataLayer.GetBuilder<MD.ISensor>().Update();
+                        builderUpdateSens.SetValue(c => c.Status, item.Status);
+                        builderUpdateSens.Where(c => c.Id, ConditionOperator.Equal, idSensor);
+                        if (scope.Executor.Execute(builderUpdateSens) > 0)
                         {
                             isSuccess = true;
                         }
-                    }
 
 
-                    if (sensorData.Locations != null)
-                    {
-                        foreach (var location in sensorData.Locations)
+                        if (sensorData.Locations.Length > 0)
                         {
-                            if (location.Status == "A")
-                            {
-                                var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
-                                builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
-                                builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
-                                builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
-                                builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
-                                builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
-                                builderInsertSensLocations.SetValue(c => c.Status, location.Status);
-                                builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
-                                builderInsertSensLocations.Select(c => c.Id);
-                                queryExecuter
-                                .Execute(builderInsertSensLocations);
 
+                            var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                            builderUpdateSensLocations.SetValue(c => c.Status, "Z");
+                            builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
+                            if (scope.Executor.Execute(builderUpdateSensLocations) > 0)
+                            {
+                                isSuccess = true;
                             }
                         }
+
+
+                        if (sensorData.Locations != null)
+                        {
+                            foreach (var location in sensorData.Locations)
+                            {
+                                if (location.Status == "A")
+                                {
+                                    var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
+                                    builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
+                                    builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
+                                    builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
+                                    builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
+                                    builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
+                                    builderInsertSensLocations.SetValue(c => c.Status, location.Status);
+                                    builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
+                                    builderInsertSensLocations.Select(c => c.Id);
+                                    scope.Executor
+                                    .Execute(builderInsertSensLocations);
+
+                                }
+                            }
+                        }
+                        //scope.Commit();
                     }
                 }
             }
             catch (Exception e)
             {
                 isSuccess = false;
-                queryExecuter.RollbackTransaction();
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;

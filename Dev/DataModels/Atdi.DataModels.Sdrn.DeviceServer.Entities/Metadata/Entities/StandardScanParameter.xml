@@ -12,19 +12,19 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="true"/>
-    <Field Desc="Maximal relative frequency offset, 10^-6" Title="Maximal relative frequency offset, 10^-6" Name="MeasFreqRelative" DataType="Decimal.22.8" SourceName="FREQ_RELATIVE" SourceType="Column" Required="false"/>
-    <Field Desc="X level for bandwidth determination accoring to ITU 433 (Appendix 2), дБ" Title="X level for bandwidth determination accoring to ITU 433 (Appendix 2), дБ" Name="LevelDbm" DataType="Decimal.22.8" SourceName="LEVEL_DBM" SourceType="Column" Required="false"/>
-    <Field Desc="Minimal signal level to start its analyzing, dBm" Title="Minimal signal level to start its analyzing, dBm" Name="DetectLevelDbm" DataType="Decimal.22.8" SourceName="DETECT_LEVEL_DBM" SourceType="Column" Required="false"/>
-    <Field Desc="Maximal allowed bandwidth, kHz" Title="Maximal allowed bandwidth, kHz" Name="MaxPermissBW" DataType="Decimal.22.8" SourceName="MAX_PERMISS_BW" SourceType="Column" Required="false"/>
-    <Field Desc="Radio bandwidth, kHz" Title="Radio bandwidth, kHz" Name="RBW_kHz" DataType="Decimal.22.8" SourceName="RBW" SourceType="Column" Required="false"/>
-    <Field Desc="Video bandwidth, kHz" Title="Video bandwidth, kHz" Name="VBW_kHz" DataType="Decimal.22.8" SourceName="VBW" SourceType="Column" Required="false"/>
-    <Field Desc="Scanning bandwidth, kHz" Title="Scanning bandwidth, kHz" Name="ScanBW_kHz" DataType="Decimal.22.8" SourceName="SCAN_BW" SourceType="Column" Required="false"/>
-    <Field Desc="Measurement time, sec" Title="Measurement time, sec" Name="MeasTime_sec" DataType="Decimal.22.8" SourceName="MEAS_TIME_SEC" SourceType="Column" Required="false"/>
-    <Field Desc="Reference signal level, dBm" Title="Reference signal level, dBm" Name="RefLevel_dBm" DataType="Decimal.22.8" SourceName="REF_LEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="Maximal relative frequency offset, 10^-6" Title="Maximal relative frequency offset, 10^-6" Name="MeasFreqRelative" DataType="Double.30.10" SourceName="FREQ_RELATIVE" SourceType="Column" Required="false"/>
+    <Field Desc="X level for bandwidth determination accoring to ITU 433 (Appendix 2), дБ" Title="X level for bandwidth determination accoring to ITU 433 (Appendix 2), дБ" Name="LevelDbm" DataType="Double.30.10" SourceName="LEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="Minimal signal level to start its analyzing, dBm" Title="Minimal signal level to start its analyzing, dBm" Name="DetectLevelDbm" DataType="Double.30.10" SourceName="DETECT_LEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="Maximal allowed bandwidth, kHz" Title="Maximal allowed bandwidth, kHz" Name="MaxPermissBW" DataType="Double.30.10" SourceName="MAX_PERMISS_BW" SourceType="Column" Required="false"/>
+    <Field Desc="Radio bandwidth, kHz" Title="Radio bandwidth, kHz" Name="RBW_kHz" DataType="Double.30.10" SourceName="RBW" SourceType="Column" Required="false"/>
+    <Field Desc="Video bandwidth, kHz" Title="Video bandwidth, kHz" Name="VBW_kHz" DataType="Double.30.10" SourceName="VBW" SourceType="Column" Required="false"/>
+    <Field Desc="Scanning bandwidth, kHz" Title="Scanning bandwidth, kHz" Name="ScanBW_kHz" DataType="Double.30.10" SourceName="SCAN_BW" SourceType="Column" Required="false"/>
+    <Field Desc="Measurement time, sec" Title="Measurement time, sec" Name="MeasTime_sec" DataType="Double.30.10" SourceName="MEAS_TIME_SEC" SourceType="Column" Required="false"/>
+    <Field Desc="Reference signal level, dBm" Title="Reference signal level, dBm" Name="RefLevel_dBm" DataType="Double.30.10" SourceName="REF_LEVEL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="Detection type" Title="Detection type" Name="DetectType" DataType="Text.50" SourceName="DETECT_TYPE" SourceType="Column" Required="true"/>
-    <Field Desc="Preamplification, dB" Title="Preamplification, dB" Name="Preamplification_dB" DataType="Counter.32" SourceName="PREAMPLIFICATION" SourceType="Column"/>
-    <Field Desc="RF attenuation, dB" Title="RF attenuation, dB" Name="RfAttenuation_dB" DataType="Counter.32" SourceName="RF_ATTENUATION" SourceType="Column"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column"/>
+    <Field Desc="Preamplification, dB" Title="Preamplification, dB" Name="Preamplification_dB" DataType="Integer.32" SourceName="PREAMPLIFICATION" SourceType="Column"/>
+    <Field Desc="RF attenuation, dB" Title="RF attenuation, dB" Name="RfAttenuation_dB" DataType="Integer.32" SourceName="RF_ATTENUATION" SourceType="Column"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.32" SourceName="MEAS_TASK_ID" SourceType="Column"/>
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasStation to MeasTask">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>

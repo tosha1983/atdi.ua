@@ -608,7 +608,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        scope.BeginTran();
+                        //scope.BeginTran();
                         var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Insert();
                         builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
                         builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
@@ -711,7 +711,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 }
                             }
                         }
-                        scope.Commit();
+                        //scope.Commit();
                     }
                 }
                 catch (Exception e)
@@ -725,51 +725,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public bool Update(TaskParameters item)
         {
             bool isSuccessUpdate = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             if (item != null)
             {
                 try
                 {
-                    queryExecuter.BeginTransaction();
-                    var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Update();
-                    builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
-                    builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
-                    builderInsertTaskParameters.SetValue(c => c.MeasurementType, item.MeasurementType.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.MinFreq_MHz, item.MinFreq_MHz);
-                    builderInsertTaskParameters.SetValue(c => c.NChenal, item.NChenal);
-                    builderInsertTaskParameters.SetValue(c => c.RBW_Hz, item.RBW_Hz);
-                    builderInsertTaskParameters.SetValue(c => c.ReceivedIQStreemDuration_sec, item.ReceivedIQStreemDuration_sec);
-                    builderInsertTaskParameters.SetValue(c => c.SDRTaskId, item.SDRTaskId);
-                    builderInsertTaskParameters.SetValue(c => c.StartTime, item.StartTime);
-                    builderInsertTaskParameters.SetValue(c => c.Status, item.status);
-                    builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
-                    builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
-                    builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
-                    builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
-                    builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
-                    builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
-                    builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
-                    builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
-                    builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
-                    builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
-                    builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
-                    builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
-                    builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
-
-                    builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
-                    int cntUpdate = queryExecuter.Execute(builderInsertTaskParameters);
-                    if (cntUpdate > 0)
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        isSuccessUpdate = true;
+                        //scope.BeginTran();
+
+                        var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Update();
+                        builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
+                        builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
+                        builderInsertTaskParameters.SetValue(c => c.MeasurementType, item.MeasurementType.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.MinFreq_MHz, item.MinFreq_MHz);
+                        builderInsertTaskParameters.SetValue(c => c.NChenal, item.NChenal);
+                        builderInsertTaskParameters.SetValue(c => c.RBW_Hz, item.RBW_Hz);
+                        builderInsertTaskParameters.SetValue(c => c.ReceivedIQStreemDuration_sec, item.ReceivedIQStreemDuration_sec);
+                        builderInsertTaskParameters.SetValue(c => c.SDRTaskId, item.SDRTaskId);
+                        builderInsertTaskParameters.SetValue(c => c.StartTime, item.StartTime);
+                        builderInsertTaskParameters.SetValue(c => c.Status, item.status);
+                        builderInsertTaskParameters.SetValue(c => c.NCount, item.NCount);
+                        builderInsertTaskParameters.SetValue(c => c.StepSO_kHz, item.StepSO_kHz);
+                        builderInsertTaskParameters.SetValue(c => c.StopTime, item.StopTime);
+                        builderInsertTaskParameters.SetValue(c => c.TypeTechnology, item.TypeTechnology.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
+                        builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
+                        builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
+                        builderInsertTaskParameters.SetValue(c => c.SensorId, item.SensorId);
+                        builderInsertTaskParameters.SetValue(c => c.CompareTraceJustWithRefLevels, item.CompareTraceJustWithRefLevels == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.AutoDivisionEmitting, item.AutoDivisionEmitting == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.DifferenceMaxMax, item.DifferenceMaxMax);
+                        builderInsertTaskParameters.SetValue(c => c.FiltrationTrace, item.FiltrationTrace == true ? 1 : 0);
+                        builderInsertTaskParameters.SetValue(c => c.AllowableExcess_dB, item.allowableExcess_dB);
+                        builderInsertTaskParameters.SetValue(c => c.PercentForCalcNoise, item.PercentForCalcNoise);
+                        builderInsertTaskParameters.SetValue(c => c.SignalizationNChenal, item.SignalizationNChenal);
+                        builderInsertTaskParameters.SetValue(c => c.SignalizationNCount, item.SignalizationNCount);
+
+                        builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, item.SDRTaskId);
+                        int cntUpdate = scope.Executor.Execute(builderInsertTaskParameters);
+                        if (cntUpdate > 0)
+                        {
+                            isSuccessUpdate = true;
+                        }
+                        //scope.Commit();
                     }
-                    queryExecuter.CommitTransaction();
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }

@@ -37,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        scope.BeginTran();
+                        //scope.BeginTran();
 
                         var builderInsertMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Insert();
                         builderInsertMeasTask.SetValue(c => c.EquipmentTechId, item.EquipmentTechId);
@@ -202,7 +202,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 }
                             }
                         }
-                        scope.Commit();
+                        //scope.Commit();
                     }
                 }
                 catch (Exception e)

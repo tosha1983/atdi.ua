@@ -24,9 +24,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ConfigProcessing _config;
         private readonly IWorkScheduler _workScheduler;
         private readonly IController _controller;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
         private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
-        private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
+        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
         
 
         public QueueEventTaskWorker(
@@ -34,9 +34,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             IWorkScheduler workScheduler,
             ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
-            IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
+            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
             IRepository<TaskParameters, string> repositoryTaskParametersBystring,
-            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
+            IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
             ConfigProcessing config,
             IController controller,
             ITaskStarter taskStarter
