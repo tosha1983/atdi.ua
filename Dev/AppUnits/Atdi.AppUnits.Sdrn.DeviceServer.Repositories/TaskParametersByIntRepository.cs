@@ -608,7 +608,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        //scope.BeginTran();
+                        scope.BeginTran();
                         var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Insert();
                         builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
                         builderInsertTaskParameters.SetValue(c => c.MaxFreq_MHz, item.MaxFreq_MHz);
@@ -640,7 +640,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         builderInsertTaskParameters.SetValue(c => c.Type_of_SO, item.TypeOfSO.ToString());
                         builderInsertTaskParameters.SetValue(c => c.VBW_Hz, item.VBW_Hz);
                         builderInsertTaskParameters.SetValue(c => c.SweepTime_ms, item.SweepTime_s);
-                        builderInsertTaskParameters.Select(c => c.Id);
+                        
 
                         var pk_TaskParameters = scope.Executor.Execute<MD.ITaskParameters_PK>(builderInsertTaskParameters);
                         ID = pk_TaskParameters.Id;
@@ -653,7 +653,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
                                 builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
                                 builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
-                                builderInsertTaskParametersFreq.Select(c => c.Id);
+                                
 
                                 var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
                             }
@@ -669,7 +669,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     var builderInsertReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
                                     builderInsertReferenceSituationRaw.SetValue(c => c.MeasTaskId, ID);
                                     builderInsertReferenceSituationRaw.SetValue(c => c.SensorId, refSituationReferenceSignal.SensorId);
-                                    builderInsertReferenceSituationRaw.Select(c => c.Id);
+                                    
                                     var pk_IReferenceSituation = scope.Executor.Execute<MD.IReferenceSituation_PK>(builderInsertReferenceSituationRaw);
                                     valueIdReferenceSituationRaw = pk_IReferenceSituation.Id;
 
@@ -685,7 +685,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                             builderInsertReferenceSignalRaw.SetValue(c => c.Frequency_MHz, situationReferenceSignal.Frequency_MHz);
                                             builderInsertReferenceSignalRaw.SetValue(c => c.LevelSignal_dBm, situationReferenceSignal.LevelSignal_dBm);
                                             builderInsertReferenceSignalRaw.SetValue(c => c.RefSituationId, valueIdReferenceSituationRaw);
-                                            builderInsertReferenceSignalRaw.Select(c => c.Id);
+                                            
                                             var pk_ReferenceSignal = scope.Executor.Execute<MD.IReferenceSignal_PK>(builderInsertReferenceSignalRaw);
                                             if (pk_ReferenceSignal.Id > 0)
                                             {
@@ -701,7 +701,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                                         builderInsertSignalMaskRaw.SetValue(c => c.Freq_kHz, freq_kH);
                                                         builderInsertSignalMaskRaw.SetValue(c => c.Loss_dB, loss_dB);
                                                         builderInsertSignalMaskRaw.SetValue(c => c.ReferenceSignalId, pk_ReferenceSignal.Id);
-                                                        builderInsertSignalMaskRaw.Select(c => c.Id);
+                                                        
                                                         scope.Executor.Execute(builderInsertSignalMaskRaw);
                                                     }
                                                 }
@@ -711,7 +711,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 }
                             }
                         }
-                        //scope.Commit();
+                        scope.Commit();
                     }
                 }
                 catch (Exception e)
@@ -731,7 +731,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        //scope.BeginTran();
+                        scope.BeginTran();
 
                         var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().Update();
                         builderInsertTaskParameters.SetValue(c => c.LevelMinOccup_dBm, item.LevelMinOccup_dBm);
@@ -767,7 +767,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             isSuccessUpdate = true;
                         }
-                        //scope.Commit();
+                        scope.Commit();
                     }
                 }
                 catch (Exception e)

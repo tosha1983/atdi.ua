@@ -11,7 +11,6 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.32" SourceName="ID" SourceType="Column" Required="true"/>
-    <Field Desc="SensorIdentifierId" Title="SensorIdentifierId" Name="SensorIdentifierId" DataType="Integer.32" SourceName="SENSORIDENTIFIER_ID" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.25" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="Name" Title="Name" Name="Name" DataType="Text.150" SourceName="NAME" SourceType="Column" Required="false"/>
     <Field Desc="Administration" Title="Administration" Name="Administration" DataType="Text.50" SourceName="ADMINISTRATION" SourceType="Column" Required="false"/>

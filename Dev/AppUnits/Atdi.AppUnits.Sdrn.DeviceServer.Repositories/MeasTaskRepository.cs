@@ -37,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        //scope.BeginTran();
+                        scope.BeginTran();
 
                         var builderInsertMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Insert();
                         builderInsertMeasTask.SetValue(c => c.EquipmentTechId, item.EquipmentTechId);
@@ -53,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         builderInsertMeasTask.SetValue(c => c.TaskId, item.TaskId);
                         builderInsertMeasTask.SetValue(c => c.TimeStart, item.StartTime);
                         builderInsertMeasTask.SetValue(c => c.TimeStop, item.StopTime);
-                        builderInsertMeasTask.Select(c => c.Id);
+                        
                         var measTask_PK = scope.Executor.Execute<MD.IMeasTask_PK>(builderInsertMeasTask);
                         ID = measTask_PK.Id;
 
@@ -84,7 +84,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                     builderInsertStandardScanParameter.SetValue(c => c.Standard, itemScanParameters.Standard);
                                     builderInsertStandardScanParameter.SetValue(c => c.LevelDbm, itemScanParameters.XdBLevel_dB);
                                     builderInsertStandardScanParameter.SetValue(c => c.MeasTaskId, ID);
-                                    builderInsertStandardScanParameter.Select(c => c.Id);
+                                    
 
                                     var standardScanParameter_PK = scope.Executor.Execute<MD.IStandardScanParameter_PK>(builderInsertStandardScanParameter);
                                 }
@@ -106,7 +106,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         builderInsertStationLicenseInfo.SetValue(c => c.EndDate, license.EndDate);
                                         builderInsertStationLicenseInfo.SetValue(c => c.Name, license.Name);
                                         builderInsertStationLicenseInfo.SetValue(c => c.StartDate, license.StartDate);
-                                        builderInsertStationLicenseInfo.Select(c => c.Id);
+                                        
 
                                         var stationLicenseInfo_PK = scope.Executor.Execute<MD.IStationLicenseInfo_PK>(builderInsertStationLicenseInfo);
 
@@ -117,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         builderInsertIOwnerData.SetValue(c => c.OKPO, owner.OKPO);
                                         builderInsertIOwnerData.SetValue(c => c.OwnerName, owner.OwnerName);
                                         builderInsertIOwnerData.SetValue(c => c.ZIP, owner.Zip);
-                                        builderInsertIOwnerData.Select(c => c.Id);
+                                        
 
                                         var ownerData_PK = scope.Executor.Execute<MD.IOwnerData_PK>(builderInsertIOwnerData);
 
@@ -128,7 +128,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         builderStationSite.SetValue(c => c.Lat, site.Lat);
                                         builderStationSite.SetValue(c => c.Lon, site.Lon);
                                         builderStationSite.SetValue(c => c.Region, site.Region);
-                                        builderStationSite.Select(c => c.Id);
+                                        
 
                                         var stationSite_PK = scope.Executor.Execute<MD.IStationSite_PK>(builderStationSite);
                                         idStationSite = stationSite_PK.Id;
@@ -144,7 +144,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                         builderInsertMeasStation.SetValue(c => c.LicenceId, stationLicenseInfo_PK.Id);
                                         builderInsertMeasStation.SetValue(c => c.OwnerId, ownerData_PK.Id);
                                         builderInsertMeasStation.SetValue(c => c.SiteId, idStationSite);
-                                        builderInsertMeasStation.Select(c => c.Id);
+                                        
                                         var measStation_PK = scope.Executor.Execute<MD.IMeasStation_PK>(builderInsertMeasStation);
                                         idMeasStation = measStation_PK.Id;
 
@@ -163,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                                 builderInsertISector.SetValue(c => c.Eirp, sectors[j].EIRP_dBm);
                                                 builderInsertISector.SetValue(c => c.SectorId, sectors[j].SectorId);
                                                 builderInsertISector.SetValue(c => c.StationId, idMeasStation);
-                                                builderInsertISector.Select(c => c.Id);
+                                                
                                                 var sector_PK = scope.Executor.Execute<MD.ISector_PK>(builderInsertISector);
                                                 idSector = sector_PK.Id;
 
@@ -177,7 +177,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                                         builderInsertSectorFreq.SetValue(c => c.Frequency, (double?)frequencies[l].Frequency_MHz);
                                                         builderInsertSectorFreq.SetValue(c => c.IdSector, idSector);
                                                         builderInsertSectorFreq.SetValue(c => c.PlanId, frequencies[l].PlanId);
-                                                        builderInsertSectorFreq.Select(c => c.Id);
+                                                        
                                                         scope.Executor.Execute(builderInsertSectorFreq);
                                                     }
                                                 }
@@ -192,7 +192,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                                         builderInsertSectorMaskElement.SetValue(c => c.Bw, bWMask.BW_kHz);
                                                         builderInsertSectorMaskElement.SetValue(c => c.Level, bWMask.Level_dB);
                                                         builderInsertSectorMaskElement.SetValue(c => c.IdSector, idSector);
-                                                        builderInsertSectorMaskElement.Select(c => c.Id);
+                                                        
                                                         scope.Executor.Execute(builderInsertSectorMaskElement);
                                                     }
                                                 }
@@ -202,7 +202,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                                 }
                             }
                         }
-                        //scope.Commit();
+                        scope.Commit();
                     }
                 }
                 catch (Exception e)

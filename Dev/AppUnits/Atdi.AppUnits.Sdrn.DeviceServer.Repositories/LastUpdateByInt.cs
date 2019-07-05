@@ -35,18 +35,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        //scope.BeginTran();
+                        scope.BeginTran();
 
                         var builderInsertILastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Insert();
                         builderInsertILastUpdate.SetValue(c => c.TableName, item.TableName);
                         builderInsertILastUpdate.SetValue(c => c.LastUpdate, item.LastDateTimeUpdate);
                         builderInsertILastUpdate.SetValue(c => c.Status, item.Status);
-                        builderInsertILastUpdate.Select(c => c.Id);
 
                         var lastUpdate = scope.Executor.Execute<MD.ILastUpdate_PK>(builderInsertILastUpdate);
                         ID = lastUpdate.Id;
 
-                        //scope.Commit();
+                        scope.Commit();
                     }
                 }
                 catch (Exception e)
@@ -67,14 +66,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        //scope.BeginTran();
+                        scope.BeginTran();
                         var builderDeleteLastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Delete();
                         builderDeleteLastUpdate.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, id);
                         if (scope.Executor.Execute(builderDeleteLastUpdate) > 0)
                         {
                             isSuccessDelete = true;
                         }
-                        //scope.Commit();
+                        scope.Commit();
                     }
                 }
                 catch (Exception e)
@@ -165,7 +164,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        //scope.BeginTran();
+                        scope.BeginTran();
 
                         var builderDeleteLastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Update();
                         builderDeleteLastUpdate.Where(c => c.TableName, DataModels.DataConstraint.ConditionOperator.Equal, item.TableName);
@@ -175,7 +174,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         {
                             isSuccessUpdate = true;
                         }
-                        //scope.Commit();
+                        
+                        scope.Commit();
                     }
                 }
                 catch (Exception e)
