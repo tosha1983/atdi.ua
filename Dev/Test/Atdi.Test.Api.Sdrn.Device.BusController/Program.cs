@@ -272,10 +272,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 EntityId = entity.EntityId,
                 Content = new byte[250]
             };
-            var count = 1000;
+            var count = 1;
             for (int i = 0; i < count; i++)
             {
                 publisher.Send("RegisterSensor", sensor, $"ID #{i}");
+                Console.ReadLine();
                 publisher.Send("UpdateSensor", sensor, $"ID #{i}");
                 publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
 
