@@ -187,7 +187,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                        .From()
-                       .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
+                       .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                        .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
                 queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                 {
@@ -484,7 +484,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
                            .From()
-                           .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
+                           .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                            .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
                     queryExecuter.Fetch(querySpectrum, readerSpectrum =>
                     {
@@ -1774,7 +1774,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStGeneral.Select(c => c.RES_MEAS_STATION.GlobalSID);
                 builderResStGeneral.Select(c => c.RES_MEAS_STATION.MeasGlobalSID);
                 builderResStGeneral.Select(c => c.RES_MEAS_STATION.Status);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
                 builderResStGeneral.Select(c => c.RES_MEAS_STATION.Standard);
                 builderResStGeneral.Select(c => c.RES_MEAS_STATION.RES_MEAS.Id);
                 builderResStGeneral.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, ResId);

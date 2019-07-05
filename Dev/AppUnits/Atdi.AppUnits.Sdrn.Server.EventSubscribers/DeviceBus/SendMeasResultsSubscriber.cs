@@ -325,11 +325,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                         if (valInsResMeasStation.Id > 0)
                         {
-                            var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
-                            builderInsertLinkResSensor.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation.Id);
-                            builderInsertLinkResSensor.SetValue(c => c.SENSOR.Id, (long)measResult.SensorId);
-                            builderInsertLinkResSensor.Select(c => c.Id);
-                            this._queryExecutor.Execute<MD.ILinkResSensor_PK>(builderInsertLinkResSensor);
+                            if (measResult.SensorId != null)
+                            {
+                                var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
+                                builderInsertLinkResSensor.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation.Id);
+                                builderInsertLinkResSensor.SetValue(c => c.SENSOR.Id, (long)measResult.SensorId);
+                                builderInsertLinkResSensor.Select(c => c.Id);
+                                this._queryExecutor.Execute<MD.ILinkResSensor_PK>(builderInsertLinkResSensor);
+                            }
 
                             var generalResult = station.GeneralResult;
                             if (generalResult != null)
@@ -417,8 +420,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertEmitting.SetValue(c => c.LevelsDistributionCount, levelsDistribution.Count);
                                 builderInsertEmitting.SetValue(c => c.LevelsDistributionLvl, levelsDistribution.Levels);
                             }
-                            builderInsertEmitting.SetValue(c => c.Loss_dB, emitting.SignalMask.Loss_dB);
-                            builderInsertEmitting.SetValue(c => c.Freq_kHz, emitting.SignalMask.Freq_kHz);
+                            if (emitting.SignalMask != null)
+                            {
+                                builderInsertEmitting.SetValue(c => c.Loss_dB, emitting.SignalMask.Loss_dB);
+                                builderInsertEmitting.SetValue(c => c.Freq_kHz, emitting.SignalMask.Freq_kHz);
+                            }
                             var valInsReferenceEmitting = this._queryExecutor.Execute<MD.IEmitting_PK>(builderInsertEmitting);
 
                             if (valInsReferenceEmitting.Id > 0)
