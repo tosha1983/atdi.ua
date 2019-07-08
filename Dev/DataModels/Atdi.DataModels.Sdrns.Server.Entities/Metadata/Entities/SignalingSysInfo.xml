@@ -12,7 +12,7 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="BandWidth_Hz" Title="BandWidth_Hz" Name="BandWidth_Hz" DataType="Double.30.10" SourceName="BANDWIDTH_HZ" SourceType="Column" Required="false"/>
-    <Field Desc="Freq_Hz" Title="Freq_Hz" Name="Freq_Hz" DataType="Double.30.10" SourceName="FREQ_HZ" SourceType="Column" Required="false"/>
+    <Field Desc="Freq_Hz" Title="Freq_Hz" Name="Freq_Hz" DataType="Decimal.22.8" SourceName="FREQ_HZ" SourceType="Column" Required="false"/>
     <Field Desc="Level_dBm" Title="Level_dBm" Name="Level_dBm" DataType="Double.30.10" SourceName="LEVEL_DBM" SourceType="Column" Required="false"/>
     <Field Desc="CID" Title="CID" Name="CID" DataType="Integer.32" SourceName="CID" SourceType="Column" Required="false"/>
     <Field Desc="MCC" Title="MCC" Name="MCC" DataType="Integer.32" SourceName="MCC" SourceType="Column" Required="false"/>
