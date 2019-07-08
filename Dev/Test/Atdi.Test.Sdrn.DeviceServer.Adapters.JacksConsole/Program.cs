@@ -42,12 +42,14 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.JacksConsole
             Console.ReadLine();
             Console.WriteLine("START GSM");
             TSMxD += SetGSM;
-            Console.WriteLine("START UMTS");
-            TSMxD += SetUMTS;
-            Console.WriteLine("START LTE");
-            TSMxD += SetLTE;
-            Console.WriteLine("START CDMAEVDO");
-            TSMxD += SetCDMAEVDO;
+            Console.ReadLine();
+            TSMxD += StopGSM;
+            //Console.WriteLine("START UMTS");
+            //TSMxD += SetUMTS;
+            //Console.WriteLine("START LTE");
+            //TSMxD += SetLTE;
+            //Console.WriteLine("START CDMAEVDO");
+            //TSMxD += SetCDMAEVDO;
             Console.ReadLine();
             Console.WriteLine("stop");
             TSMxD += TSMxDisconnect;
@@ -94,34 +96,48 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.JacksConsole
             }
         }
         static bool ResultOnlyWithGCID = true;
+
+        static DummyExecutionContext GCMcontext;
         private static void SetGSM()
         {
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                GCMcontext = new DummyExecutionContext(logger);
 
-                List<decimal> freq1 = new List<decimal>() { };
-                for (decimal i = 918200000; i <= 959800000; i += 200000)
-                { freq1.Add(i); }
-                for (decimal i = 1805200000; i <= 1879800000; i += 200000)
-                { freq1.Add(i); }
+                //List<decimal> freq1 = new List<decimal>() { };
+                //for (decimal i = 918200000; i <= 959800000; i += 200000)
+                //{ freq1.Add(i); }
+                //for (decimal i = 1805200000; i <= 1879800000; i += 200000)
+                //{ freq1.Add(i); }
 
 
                 var command = new CMD.MesureSystemInfoCommand();
                 //command.Parameter.Freqs_Hz = freq1.ToArray();
                 command.Parameter.Bands = new string[] { CMD.Parameters.MesureSystemInfo.GSMBands.P_GSM900.ToString(), CMD.Parameters.MesureSystemInfo.GSMBands.GSM1800.ToString() };
-                command.Parameter.Att_dB = 0;
-                command.Parameter.PreAmp_dB = 0;
                 command.Parameter.Standart = "GSM";
                 command.Parameter.FreqType = CMD.Parameters.MesureSystemInfo.FreqType.New;
-                command.Parameter.DelayToSendResult = 30;
+                command.Parameter.DelayToSendResult_s = 10;
                 command.Parameter.ResultOnlyWithGCID = ResultOnlyWithGCID;
-                TSMxadapter.MesureSystemInfoHandler(command, context);
+                command.Parameter.PeriodicResult = true;
+                TSMxadapter.MesureSystemInfoHandler(command, GCMcontext);
             }
             finally
             {
                 TSMxD -= SetGSM;
+            }
+        }
+        private static void StopGSM()
+        {
+            try
+            {
+                CancellationTokenSource source = new CancellationTokenSource();
+                source.Cancel();
+                GCMcontext.Token = source.Token;
+            }
+            finally
+            {
+                TSMxD -= StopGSM;
             }
         }
         private static void SetUMTS()
@@ -151,11 +167,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.JacksConsole
 
                 var command = new CMD.MesureSystemInfoCommand();
                 command.Parameter.Freqs_Hz = freq1.ToArray();
-                command.Parameter.Att_dB = 0;
-                command.Parameter.PreAmp_dB = 0;
                 command.Parameter.Standart = "UMTS";
                 command.Parameter.FreqType = CMD.Parameters.MesureSystemInfo.FreqType.New;
-                command.Parameter.DelayToSendResult = 30;
+                command.Parameter.DelayToSendResult_s = 30;
                 command.Parameter.ResultOnlyWithGCID = ResultOnlyWithGCID;
                 TSMxadapter.MesureSystemInfoHandler(command, context);
             }
@@ -186,11 +200,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.JacksConsole
 
                 var command = new CMD.MesureSystemInfoCommand();
                 command.Parameter.Freqs_Hz = freq1.ToArray();
-                command.Parameter.Att_dB = 0;
-                command.Parameter.PreAmp_dB = 0;
                 command.Parameter.Standart = "LTE";
                 command.Parameter.FreqType = CMD.Parameters.MesureSystemInfo.FreqType.New;
-                command.Parameter.DelayToSendResult = 30;
+                command.Parameter.DelayToSendResult_s = 30;
                 command.Parameter.ResultOnlyWithGCID = ResultOnlyWithGCID;
                 TSMxadapter.MesureSystemInfoHandler(command, context);
             }
@@ -249,11 +261,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.JacksConsole
                 var command = new CMD.MesureSystemInfoCommand();
                 command.Parameter.Freqs_Hz = freq1.ToArray();
                 command.Parameter.CDMAEVDOFreqTypes = freqType.ToArray();
-                command.Parameter.Att_dB = 0;
-                command.Parameter.PreAmp_dB = 0;
                 command.Parameter.Standart = "CDMAEVDO";
                 command.Parameter.FreqType = CMD.Parameters.MesureSystemInfo.FreqType.New;
-                command.Parameter.DelayToSendResult = 30;
+                command.Parameter.DelayToSendResult_s = 30;
                 command.Parameter.ResultOnlyWithGCID = ResultOnlyWithGCID;
 
                 TSMxadapter.MesureSystemInfoHandler(command, context);

@@ -118,9 +118,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     {
                         MainConfig = TAC.Main;
                     }
-                    (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(MainConfig);
-                    host.RegisterHandler<COM.MesureSystemInfoCommand, COMR.MesureSystemInfoResult>(MesureSystemInfoHandler, mtdp);
-                    //host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
+                    MesureSysInfoDeviceProperties msidp = GetProperties(MainConfig);
+                    host.RegisterHandler<COM.MesureSystemInfoCommand, COMR.MesureSystemInfoResult>(MesureSystemInfoHandler, msidp);                   
                 }
             }
             #region Exception
@@ -174,8 +173,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 if (IsRuning)
                 {
                     context.Lock();
+                    if (command.Parameter.RFInput == null || command.Parameter.RFInput != 1 || command.Parameter.RFInput != 2)
+                    { command.Parameter.RFInput = 1; }
+                    if (command.Parameter.DelayToSendResult_s == null || command.Parameter.DelayToSendResult_s == double.NaN || command.Parameter.DelayToSendResult_s < 30)
+                    { command.Parameter.DelayToSendResult_s = 30; }
+                    if (command.Parameter.DelayToSendResult_s == null || command.Parameter.DelayToSendResult_s == double.NaN ||command.Parameter.DelayToSendResult_s > 300)
+                    { command.Parameter.DelayToSendResult_s = 300; }
                     if (command.Parameter.Standart.ToLower().Contains("gsm"))
                     {
+                        RFInputGSM = command.Parameter.RFInput;
                         if (Option_GSM == 1)
                         {
                             List<decimal> freqs = new List<decimal>() { };
@@ -252,35 +258,84 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                             GSMBTS.Clear();
                             GetUnifreqsGSM(freqs, bands);
                             GsmConnect();
-                            _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+
+
+                            if (!command.Parameter.PeriodicResult)
                             {
-                                List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
-                                GSMUpdateData = false;
-                                for (int i = 0; i < GSMBTS.Count; i++)
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+                                 {
+                                     List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
+                                     GSMUpdateData = false;
+                                     for (int i = 0; i < GSMBTS.Count; i++)
+                                     {
+                                         if (command.Parameter.ResultOnlyWithGCID)
+                                         {
+                                             if (GSMBTS[i].FullData)
+                                             {
+                                                 res.Add(GSMBTS[i].StationSysInfo);
+                                             }
+                                         }
+                                         else
+                                         {
+                                             res.Add(GSMBTS[i].StationSysInfo);
+                                         }
+                                     }
+                                     COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(0, CommandResultStatus.Final)
+                                     {
+                                         DeviceStatus = COMR.Enums.DeviceStatus.Normal,
+                                         SystemInfo = res.ToArray()
+                                     };
+                                     context.PushResult(msir);
+                                     GsmDisconnect();
+                                     context.Unlock();
+                                     context.Finish();
+
+                                 }), (int)command.Parameter.DelayToSendResult_s * 1000);
+                            }
+                            else
+                            {
+                                long lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
                                 {
-                                    if (command.Parameter.ResultOnlyWithGCID)
+                                    long step = (long)(command.Parameter.DelayToSendResult_s * 10000000);
+                                    ulong resultid = 0;
+                                    while (!context.Token.IsCancellationRequested)
                                     {
-                                        if (GSMBTS[i].FullData)
+                                        Thread.Sleep(10);//чтоб не жрало проц
+                                        if ((Common.WinAPITime.GetTimeStamp() - lastpushrelults) > step)
                                         {
-                                            res.Add(GSMBTS[i].StationSysInfo);
+                                            lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                            List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
+
+                                            for (int i = 0; i < GSMBTS.Count; i++)
+                                            {
+                                                if (command.Parameter.ResultOnlyWithGCID)
+                                                {
+                                                    if (GSMBTS[i].FullData)
+                                                    {
+                                                        res.Add(GSMBTS[i].StationSysInfo);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    res.Add(GSMBTS[i].StationSysInfo);
+                                                }
+                                            }
+                                            COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(resultid, CommandResultStatus.Next)
+                                            {
+                                                DeviceStatus = COMR.Enums.DeviceStatus.Normal,
+                                                SystemInfo = res.ToArray()
+                                            };
+                                            context.PushResult(msir);
+                                            resultid++;
                                         }
                                     }
-                                    else
-                                    {
-                                        res.Add(GSMBTS[i].StationSysInfo);
-                                    }
-                                }
-                                COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(0, CommandResultStatus.Final)
-                                {
-                                    DeviceStatus = COMR.Enums.DeviceStatus.Normal,
-                                    SystemInfo = res.ToArray()
-                                };
-                                context.PushResult(msir);
-                                GsmDisconnect();
-                                context.Unlock();
-                                context.Finish();
-
-                            }), command.Parameter.DelayToSendResult * 1000);
+                                    GSMUpdateData = false;
+                                    GsmDisconnect();
+                                    context.Unlock();
+                                    context.Finish();
+                                }));
+                            }
                         }
                         else
                         {
@@ -289,6 +344,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     }
                     else if (command.Parameter.Standart.ToLower().Contains("umts"))
                     {
+                        RFInputUMTS = command.Parameter.RFInput;
                         if (Option_UMTS == 1)
                         {
                             List<decimal> freqs = new List<decimal>() { };
@@ -316,7 +372,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                             UMTSBTS.Clear();
                             GetUnifreqsUMTS(freqs);
                             UmtsConnect();
-                            _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+
+                            if (!command.Parameter.PeriodicResult)
+                            {
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
                             {
                                 List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
                                 UMTSUpdateData = false;
@@ -344,7 +403,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                 context.Unlock();
                                 context.Finish();
 
-                            }), command.Parameter.DelayToSendResult * 1000);
+                            }), (int)command.Parameter.DelayToSendResult_s * 1000);
+                            }
+
+                            else
+                            {
+                                long lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+                                {
+                                    long step = (long)(command.Parameter.DelayToSendResult_s * 10000000);
+                                    ulong resultid = 0;
+                                    while (!context.Token.IsCancellationRequested)
+                                    {
+                                        Thread.Sleep(10);//чтоб не жрало проц
+                                        if ((Common.WinAPITime.GetTimeStamp() - lastpushrelults) > step)
+                                        {
+                                            lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                            List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
+
+                                            for (int i = 0; i < UMTSBTS.Count; i++)
+                                            {
+                                                if (command.Parameter.ResultOnlyWithGCID)
+                                                {
+                                                    if (UMTSBTS[i].FullData)
+                                                    {
+                                                        res.Add(UMTSBTS[i].StationSysInfo);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    res.Add(UMTSBTS[i].StationSysInfo);
+                                                }
+                                            }
+                                            COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(resultid, CommandResultStatus.Next)
+                                            {
+                                                DeviceStatus = COMR.Enums.DeviceStatus.Normal,
+                                                SystemInfo = res.ToArray()
+                                            };
+                                            context.PushResult(msir);
+                                            resultid++;
+                                        }
+                                    }
+                                    UMTSUpdateData = false;
+                                    UmtsDisconnect();
+                                    context.Unlock();
+                                    context.Finish();
+                                }));
+                            }
                         }
                         else
                         {
@@ -353,6 +458,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     }
                     else if (command.Parameter.Standart.ToLower().Contains("lte"))
                     {
+                        RFInputLTE = command.Parameter.RFInput;
                         if (Option_LTE == 1)
                         {
                             List<decimal> freqs = new List<decimal>() { };
@@ -380,7 +486,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                             LTEBTS.Clear();
                             GetUnifreqsLTE(freqs);
                             LTEConnect();
-                            _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+                            if (!command.Parameter.PeriodicResult)
+                            {
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
                             {
                                 List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
                                 LTEUpdateData = false;
@@ -408,7 +516,52 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                 context.Unlock();
                                 context.Finish();
 
-                            }), command.Parameter.DelayToSendResult * 1000);
+                            }), (int)command.Parameter.DelayToSendResult_s * 1000);
+                            }
+                            else
+                            {
+                                long lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+                                {
+                                    long step = (long)(command.Parameter.DelayToSendResult_s * 10000000);
+                                    ulong resultid = 0;
+                                    while (!context.Token.IsCancellationRequested)
+                                    {
+                                        Thread.Sleep(10);//чтоб не жрало проц
+                                        if ((Common.WinAPITime.GetTimeStamp() - lastpushrelults) > step)
+                                        {
+                                            lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                            List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
+
+                                            for (int i = 0; i < LTEBTS.Count; i++)
+                                            {
+                                                if (command.Parameter.ResultOnlyWithGCID)
+                                                {
+                                                    if (LTEBTS[i].FullData)
+                                                    {
+                                                        res.Add(LTEBTS[i].StationSysInfo);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    res.Add(LTEBTS[i].StationSysInfo);
+                                                }
+                                            }
+                                            COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(resultid, CommandResultStatus.Next)
+                                            {
+                                                DeviceStatus = COMR.Enums.DeviceStatus.Normal,
+                                                SystemInfo = res.ToArray()
+                                            };
+                                            context.PushResult(msir);
+                                            resultid++;
+                                        }
+                                    }
+                                    LTEUpdateData = false;
+                                    LTEDisconnect();
+                                    context.Unlock();
+                                    context.Finish();
+                                }));
+                            }
                         }
                         else
                         {
@@ -417,7 +570,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     }
                     else if (command.Parameter.Standart.ToLower().Contains("cdma") || command.Parameter.Standart.ToLower().Contains("evdo"))
                     {
-
+                        RFInputCDMA = command.Parameter.RFInput;
                         List<LCDMA.Channel> freqs = new List<LCDMA.Channel>() { };
                         if (Option_CDMA == 1)
                         {
@@ -490,7 +643,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                             CDMABTS.Clear();
                             GetUnifreqsCDMA(freqs);
                             CDMAConnect();
-                            _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+                            if (!command.Parameter.PeriodicResult)
+                            {
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
                             {
                                 List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
                                 CDMAUpdateData = false;
@@ -518,9 +673,58 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                 context.Unlock();
                                 context.Finish();
 
-                            }), command.Parameter.DelayToSendResult * 1000);
+                            }), (int)command.Parameter.DelayToSendResult_s * 1000);
+                            }
+                            else
+                            {
+                                long lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                _workScheduler.Run(command.Parameter.Standart, (Action)(() =>
+                                {
+                                    long step = (long)(command.Parameter.DelayToSendResult_s * 10000000);
+                                    ulong resultid = 0;
+                                    while (!context.Token.IsCancellationRequested)
+                                    {
+                                        Thread.Sleep(10);//чтоб не жрало проц
+                                        if ((Common.WinAPITime.GetTimeStamp() - lastpushrelults) > step)
+                                        {
+                                            lastpushrelults = Common.WinAPITime.GetTimeStamp();
+                                            List<COMR.MesureSystemInfo.StationSystemInfo> res = new List<COMR.MesureSystemInfo.StationSystemInfo>() { };
+
+                                            for (int i = 0; i < CDMABTS.Count; i++)
+                                            {
+                                                if (command.Parameter.ResultOnlyWithGCID)
+                                                {
+                                                    if (CDMABTS[i].FullData)
+                                                    {
+                                                        res.Add(CDMABTS[i].StationSysInfo);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    res.Add(CDMABTS[i].StationSysInfo);
+                                                }
+                                            }
+                                            COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(resultid, CommandResultStatus.Next)
+                                            {
+                                                DeviceStatus = COMR.Enums.DeviceStatus.Normal,
+                                                SystemInfo = res.ToArray()
+                                            };
+                                            context.PushResult(msir);
+                                            resultid++;
+                                        }
+                                    }
+                                    CDMAUpdateData = false;
+                                    CDMADisconnect();
+                                    context.Unlock();
+                                    context.Finish();
+                                }));
+                            }
                         }
                     }
+                }
+                else
+                {
+                    throw new Exception("Invalid initialize/connect adapter");
                 }
             }
             catch (Exception e)
@@ -568,42 +772,43 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_GSM;
+        private int Option_GSM;
+
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_UMTS;
+        private int Option_UMTS;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_LTE;
+        private int Option_LTE;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_CDMA;
+        private int Option_CDMA;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_EVDO;
+        private int Option_EVDO;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_TETRA;
+        private int Option_TETRA;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_RFPS;
+        private int Option_RFPS;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        public int Option_ACD;
+        private int Option_ACD;
         #endregion TechOnThisScaner
 
         UserLowLevelErrorMessageHandler.LowLevelErrorHandlerRegistry LowLevelErrorHandlerRegistry;
@@ -622,10 +827,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
         CViComBasicInterface GpsBasicInterface;
         CViComGpsInterfaceDataProcessor GPSListener;
 
-        CViComLoader<CViComGsmInterface> gsmLoader;
+        static CViComLoader<CViComGsmInterface> gsmLoader;
         static CViComGsmInterface gsmInterface;
-        CViComBasicInterface gsmBasicInterface;
-        CViComGsmInterfaceDataProcessor GSMListener;
+        static CViComBasicInterface gsmBasicInterface;
+        static CViComGsmInterfaceDataProcessor GSMListener;
 
         static CViComLoader<CViComWcdmaInterface> wcdmaLoader;
         static CViComWcdmaInterface wcdmaInterface;
@@ -651,10 +856,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
         static SSweepSettings rSSweepSettings = new SSweepSettings();
 
-        public static double DetectionLevelGSM = -100;
-        public static double DetectionLevelUMTS = -100;
-        public static double DetectionLevelLTE = -100;
-        public static double DetectionLevelCDMA = -100;
+        private static double DetectionLevelGSM = -100;
+        private static uint RFInputGSM = 1;
+        private static double DetectionLevelUMTS = -100;
+        private static uint RFInputUMTS = 1;
+        private static double DetectionLevelLTE = -100;
+        private static uint RFInputLTE = 1;
+        private static double DetectionLevelCDMA = -100;
+        private static uint RFInputCDMA = 1;
 
 
         private static List<LGSM.BTSData> GSMBTS;
@@ -691,7 +900,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
             { }
 
             //* CViComReceiverListener interface implementation ************************************
-
             public override void OnConnectProgress(float progressInPct, String message)
             {
                 if (message.Length > 0 && message.ToLower().Contains("connected"))
@@ -702,9 +910,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     StopSn = message.ToLower().IndexOf(":", StartSn);
                     if (StartSn > 0 && StopSn > 0 && StartSn < StopSn)
                     {
-                        string sn = message.Substring(StartSn, StopSn - StartSn);
-                        //if (SerialNumberTemp != sn) SerialNumberTemp = sn;
-                        Debug.WriteLine("connected " + sn);
+                        _SerialNumber = message.Substring(StartSn, StopSn - StartSn);
                     }
                 }
             }
@@ -721,7 +927,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
         {
             public void OnMessage(string text)
             {
-                Debug.WriteLine(String.Format("T {0} {1}", DateTime.Now, text) + "\r\n");//System.Console.WriteLine(text);
+                //Debug.WriteLine(String.Format("T {0} {1}", DateTime.Now, text) + "\r\n");//System.Console.WriteLine(text);
             }
         }
 
@@ -749,7 +955,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
             {
                 // Load
                 gpsLoader = new CViComLoader<CViComGpsInterface>(DeviceType);
-
+                receiverListener = new CReceiverListener();
                 IsRuning = gpsLoader.Connect(IPAddress, out error, receiverListener);
                 if (IsRuning)
                 {
@@ -950,51 +1156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
         }
         #endregion GPS     
-
-        private static uint GetDeviceRFInput(bool type, uint rf, string tech)
-        {
-            uint rfin = 0;
-            if (DeviceType == RohdeSchwarz.ViCom.Net.DeviceType.Tsmw)
-            {
-                //if (type == true)
-                //{
-                //    if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 1) rfin = 1;
-                //    else if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 2) rfin = 2;
-                //    else if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 3) rfin = rf;
-                //    else if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 4)
-                //    {
-                //        if (tech == "GSM") rfin = (uint)App.Sett.TSMxReceiver_Settings.GSM.TSMWRfInput;
-                //        else if (tech == "UMTS") rfin = (uint)App.Sett.TSMxReceiver_Settings.UMTS.TSMWRfInput;
-                //        else if (tech == "LTE") rfin = (uint)App.Sett.TSMxReceiver_Settings.LTE.TSMWRfInput;
-                //        else if (tech == "CDMA") rfin = (uint)App.Sett.TSMxReceiver_Settings.CDMA.TSMWRfInput;
-                //    }
-                //}
-                //else if (type == false)
-                //{
-                //    if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 1) rfin = 2;
-                //    else if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 2) rfin = 1;
-                //    else if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 3) rfin = rf;
-                //}
-            }
-            else if (DeviceType == RohdeSchwarz.ViCom.Net.DeviceType.Tsme)
-            {
-                rfin = 1;
-            }
-            else if (DeviceType == RohdeSchwarz.ViCom.Net.DeviceType.Tsme6)
-            {
-                rfin = 1;
-            }
-
-            if (DeviceType == RohdeSchwarz.ViCom.Net.DeviceType.Unknown)
-            {
-                //.Message = "Выберете модель приемника R&S TSMx";
-            }
-            //if (App.Sett.TSMxReceiver_Settings.TSMWRFInput == 0)
-            //{
-            //    //.Message = "Выберете тип подлючения антенных входов R&S TSMW";
-            //}
-            return rfin;
-        }
+               
 
 
         #region GSM
@@ -1252,7 +1414,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     //RohdeSchwarz.ViCom.Net.SRange<uint> rateLimit = (RohdeSchwarz.ViCom.Net.SRange<uint>)gsmInterface.GetMeasRateLimits();
 
                     var channelSettings = new RohdeSchwarz.ViCom.Net.GSM.SChannelSettings();
-                    channelSettings.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "GSM"); //вроде как канал приемника 1/2
+                    channelSettings.dwFrontEndSelectionMask = RFInputGSM; //вроде как канал приемника 1/2
                     channelSettings.dwMeasRatePer1000Sec = 250000;// 50000;// ((RohdeSchwarz.ViCom.Net.SRange<uint>)gsmInterface.GetMeasRateLimits()).minimum; //rateLimit.maximum; //вроде как скорость сканирования
                     channelSettings.dwCount = (uint)GSMUniFreqSelected.Count();
                     channelSettings.pTableOfFrequencySetting = new RohdeSchwarz.ViCom.Net.GSM.SFrequencySetting[channelSettings.dwCount];
@@ -1306,7 +1468,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
                     RohdeSchwarz.ViCom.Net.GSM.SDemodulationSettings demod = new RohdeSchwarz.ViCom.Net.GSM.SDemodulationSettings();
                     uint dwRequests = (uint)(siblist.Count * GSMUniFreqSelected.Count());
-                    demod.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "GSM");
+                    demod.dwFrontEndSelectionMask = RFInputGSM;
                     demod.lTotalPowerOffsetInDB10 = 100;
 
                     RohdeSchwarz.ViCom.Net.GSM.SDemodRequests MeasurementRequests = new RohdeSchwarz.ViCom.Net.GSM.SDemodRequests();
@@ -1437,7 +1599,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 wcdmaBasicInterface = wcdmaLoader.GetBasicInterface();
 
                 var channelConfig = new RohdeSchwarz.ViCom.Net.WCDMA.SChannelSettings();
-                channelConfig.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "UMTS");
+                channelConfig.dwFrontEndSelectionMask = RFInputUMTS;
                 channelConfig.eMeasurementMode = RohdeSchwarz.ViCom.Net.WCDMA.MeasurementMode.Type.HIGH_DYNAMIC;
                 channelConfig.dwMeasRatePer1000Sec = 40000;// 5000;//((RohdeSchwarz.ViCom.Net.SRange<uint>)wcdmaInterface.GetMeasRateLimits()).defaultValue;//10000;//
                 uint freqs = (uint)UMTSUniFreq.Count(); //UMTSUniFreq
@@ -1462,7 +1624,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
 
                 RohdeSchwarz.ViCom.Net.WCDMA.SDemodulationSettings demod = new RohdeSchwarz.ViCom.Net.WCDMA.SDemodulationSettings();
-                demod.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "UMTS");
+                demod.dwFrontEndSelectionMask = RFInputUMTS;
                 demod.lEcToIoThresholdInDB100 = -1500;// -1500;
                 demod.dwMaxNodeBHoldTimeInSec = RohdeSchwarz.ViCom.Net.WCDMA.SDemodulationSettings.dwMinMaxNodeBHoldTimeInSec;
 
@@ -1725,7 +1887,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 {
                     #region freq set
                     channelSettings.pTableOfFrequencySetting[i] = new RohdeSchwarz.ViCom.Net.LTE.SFrequencySetting();
-                    channelSettings.pTableOfFrequencySetting[i].dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "LTE");
+                    channelSettings.pTableOfFrequencySetting[i].dwFrontEndSelectionMask = RFInputLTE;
                     channelSettings.pTableOfFrequencySetting[i].dCenterFrequencyInHz = (double)LTEUniFreq[i];
                     channelSettings.pTableOfFrequencySetting[i].dwSymbolsPerSlotMask = RohdeSchwarz.ViCom.Net.LTE.SFrequencySetting.dwDefaultSymbolsPerSlot;
                     channelSettings.pTableOfFrequencySetting[i].enFrameStructureType = FrameStructureType.Type.FDD;
@@ -1745,7 +1907,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.wWidebandRsCinrMeasMode = RohdeSchwarz.ViCom.Net.LTE.SFrequencySetting.SWidebandRsCinrSettings.wWIDEBAND_RS_CINR;
                     channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.dwAvgBlockCountPer1000Sec = 1000;// 300;//((RohdeSchwarz.ViCom.Net.SRange<uint>)lteInterface.GetWbMeasRateLimits()).minimum;////////////////////////;
                     channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.wNumberOfRBsInSubband = RohdeSchwarz.ViCom.Net.LTE.SFrequencySetting.SWidebandRsCinrSettings.wMinRBsInSubband;
-                    channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "LTE");
+                    channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.dwFrontEndSelectionMask = RFInputLTE;
                     channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.bForceNoGap = true;
                     channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.bMaxCountOfeNodeBs = 6;
                     channelSettings.pTableOfFrequencySetting[i].WidebandRsCinrSettings.bTransmitAntennaSelectionMask = 15;
@@ -1765,7 +1927,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     // Setup Throughput estimation           
                     channelSettings.pTableOfFrequencySetting[i].MimoSettings.bEnableThroughputEstimation = false;
                     channelSettings.pTableOfFrequencySetting[i].RssiSettings = new RohdeSchwarz.ViCom.Net.LTE.SFrequencySetting.SRssiSettings();
-                    channelSettings.pTableOfFrequencySetting[i].RssiSettings.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "LTE");
+                    channelSettings.pTableOfFrequencySetting[i].RssiSettings.dwFrontEndSelectionMask = RFInputLTE;
                     channelSettings.pTableOfFrequencySetting[i].RssiSettings.wRssiMeasMode = 0;
                     channelSettings.pTableOfFrequencySetting[i].MbmsSettings.wMbmsMeasMode = 0;
                     #endregion
@@ -1787,7 +1949,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 uint dwRequests = (uint)siblist.Count * channelSettings.dwCount;
                 RohdeSchwarz.ViCom.Net.LTE.SDemodulationSettings bchSettings = new RohdeSchwarz.ViCom.Net.LTE.SDemodulationSettings();
                 bchSettings.sSINRThresholdDB100 = 100;// ((RohdeSchwarz.ViCom.Net.SRange<short>)lteInterface.GetDemodThresholdLimits()).minimum;
-                bchSettings.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "LTE"); //dwFE_Mask;
+                bchSettings.dwFrontEndSelectionMask = RFInputLTE; //dwFE_Mask;
 
                 bchSettings.sStartMeasurementRequests.dwCountOfRequests = dwRequests;
                 bchSettings.sStartMeasurementRequests.pDemodRequests = new RohdeSchwarz.ViCom.Net.LTE.SDemodRequests.SDemodRequest[dwRequests];
@@ -2072,7 +2234,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 //CDMAUniFreq
                 uint freqs = (uint)CDMAUniFreq.Count();
                 var settings = new RohdeSchwarz.ViCom.Net.CDMA.SChannelSettings();
-                settings.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "CDMA");
+                settings.dwFrontEndSelectionMask = RFInputCDMA;
                 settings.dwCount = freqs;
                 settings.dwMeasRatePer1000Sec = 1000;//1000;//((RohdeSchwarz.ViCom.Net.SRange<uint>)cdmaInterface.GetMeasRateLimits()).minimum; ;// rateLimit.defaultValue;
 
@@ -2120,7 +2282,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 }
                 RohdeSchwarz.ViCom.Net.CDMA.SDemodulationSettings demod = new RohdeSchwarz.ViCom.Net.CDMA.SDemodulationSettings();
 
-                demod.dwFrontEndSelectionMask = GetDeviceRFInput(true, 1, "CDMA");
+                demod.dwFrontEndSelectionMask = RFInputCDMA;
 
                 uint dwRequests = (uint)(CDMAsiblist.Count * cdmaFreqsCount + EVDOsiblist.Count * evdoFreqsCount);
 
@@ -2665,8 +2827,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 _LastUpdate = DateTime.Now.Ticks;
                 if (GSMIsRuning && GSMUpdateData)
                 {
-                    //App.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    //{
                     try
                     {
                         //BSIC
@@ -2914,7 +3074,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                         _logger.Exception(Contexts.ThisComponent, exp);
                     }
                     #endregion
-                    Console.WriteLine("GSM " + GSMBTS.Count);
                 }
 
 
@@ -3158,7 +3317,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                         _logger.Exception(Contexts.ThisComponent, exp);
                     }
                     #endregion
-                    Console.WriteLine("UMTS " + UMTSBTS.Count);
                 }
             }
         }
@@ -3423,7 +3581,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                         catch { }
                     }
                     #endregion
-                    Console.WriteLine("LTE " + LTEBTS.Count);
                 }
             }
         }
@@ -4285,47 +4442,93 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
             };
         }
 
-        private (MesureTraceDeviceProperties, MesureIQStreamDeviceProperties) GetProperties(CFG.AdapterMainConfig config)
+        private MesureSysInfoDeviceProperties GetProperties(CFG.AdapterMainConfig config)
         {
             RadioPathParameters[] rrps = ConvertRadioPathParameters(config);
-            StandardDeviceProperties sdp = new StandardDeviceProperties()
+            StandardDeviceProperties sdp = null;
+            if (DeviceType == DeviceType.Tsme || DeviceType == DeviceType.Tsme6)
             {
-                //    AttMax_dB = (int)UniqueData.AttMax,
-                //    AttMin_dB = 0,
-                //    FreqMax_Hz = UniqueData.FreqMax,
-                //    FreqMin_Hz = UniqueData.FreqMin,
-                //    PreAmpMax_dB = 1, //типа включен/выключен, сколько по факту усиливает нигде не пишется кроме FSW где их два 15/30 и то два это опция
-                //    PreAmpMin_dB = 0,
-                //    RefLevelMax_dBm = (int)UniqueData.RefLevelMax,
-                //    RefLevelMin_dBm = (int)UniqueData.RefLevelMin,
-                //    EquipmentInfo = new EquipmentInfo()
-                //    {
-                //        AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
-                //        AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
-                //        AntennaName = config.AdapterEquipmentInfo.AntennaName,//"BC600",//В конфиг
-                //        EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().RuS.UI,
-                //        EquipmentName = UniqueData.InstrModel,
-                //        EquipmentFamily = "SpectrumAnalyzer",//SDR/SpecAn/MonRec
-                //        EquipmentCode = UniqueData.SerialNumber,//S/N
-
-                //    },
-                //    RadioPathParameters = rrps
+                sdp = new StandardDeviceProperties()
+                {
+                    AttMax_dB = 0,
+                    AttMin_dB = 0,
+                    FreqMax_Hz = 350000000,
+                    FreqMin_Hz = 4400000000,
+                    PreAmpMax_dB = 0, //типа включен/выключен, сколько по факту усиливает нигде не пишется кроме FSW где их два 15/30 и то два это опция
+                    PreAmpMin_dB = 0,
+                    RefLevelMax_dBm = 0,
+                    RefLevelMin_dBm = 0,
+                    EquipmentInfo = new EquipmentInfo()
+                    {
+                        AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
+                        AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
+                        AntennaName = config.AdapterEquipmentInfo.AntennaName,//"BC600",//В конфиг
+                        EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().RuS.UI,
+                        EquipmentName = DeviceType.ToString().ToUpper(),
+                        EquipmentFamily = "R&S Network Analyzer TSMx",//SDR/SpecAn/MonRec
+                        EquipmentCode = SerialNumber,//S/N
+                    },
+                    RadioPathParameters = rrps
+                };
+            }
+            else if (DeviceType == DeviceType.Tsmw)
+            {
+                sdp = new StandardDeviceProperties()
+                {
+                    AttMax_dB = 0,
+                    AttMin_dB = 0,
+                    FreqMax_Hz = 20000000,
+                    FreqMin_Hz = 6000000000,
+                    PreAmpMax_dB = 0, //типа включен/выключен, сколько по факту усиливает нигде не пишется кроме FSW где их два 15/30 и то два это опция
+                    PreAmpMin_dB = 0,
+                    RefLevelMax_dBm = 0,
+                    RefLevelMin_dBm = 0,
+                    EquipmentInfo = new EquipmentInfo()
+                    {
+                        AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
+                        AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
+                        AntennaName = config.AdapterEquipmentInfo.AntennaName,//"BC600",//В конфиг
+                        EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().RuS.UI,
+                        EquipmentName = DeviceType.ToString().ToUpper(),
+                        EquipmentFamily = "R&S Network Analyzer TSMx",//SDR/SpecAn/MonRec
+                        EquipmentCode = SerialNumber,//S/N
+                    },
+                    RadioPathParameters = rrps
+                };
+            }
+            List<string> tech = new List<string>() { };
+            MesureSysInfoDeviceProperties msidp = new MesureSysInfoDeviceProperties()
+            {
+                StandardDeviceProperties = sdp,
             };
-            //if (UniqueData.PreAmp)
-            //{
-            //    sdp.PreAmpMax_dB = 1;
-            //}
-            //else
-            //{
-            //    sdp.PreAmpMax_dB = 0;
-            //}
+            if (Option_GSM == 1)
+            {
+                tech.Add("GSM");
+            }
+            if (Option_UMTS == 1)
+            {
+                tech.Add("UMTS");
+            }
+            if (Option_LTE == 1)
+            {
+                tech.Add("LTE");
+            }
+            if (Option_CDMA == 1)
+            {
+                tech.Add("CDMA");
+            }
+            if (Option_EVDO == 1)
+            {
+                tech.Add("EVDO");
+            }
+            msidp.AvailableStandards = tech.ToArray();
             MesureTraceDeviceProperties mtdp = new MesureTraceDeviceProperties()
             {
                 //RBWMax_Hz = (double)UniqueData.RBWArr[UniqueData.RBWArr.Length - 1],
                 //RBWMin_Hz = (double)UniqueData.RBWArr[0],
                 //SweepTimeMin_s = (double)UniqueData.SWTMin,
                 //SweepTimeMax_s = (double)UniqueData.SWTMax,
-                //StandardDeviceProperties = sdp,
+                StandardDeviceProperties = sdp,
                 //DeviceId ничего не писать, ID этого экземпляра адаптера
             };
             MesureIQStreamDeviceProperties miqdp = new MesureIQStreamDeviceProperties()
@@ -4337,7 +4540,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
             };
 
 
-            return (mtdp, miqdp);
+            return msidp;
         }
 
         private RadioPathParameters[] ConvertRadioPathParameters(CFG.AdapterMainConfig config)

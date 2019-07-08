@@ -8,5 +8,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
 {
     public class MesureSysInfoDeviceProperties : DevicePropertiesBase
     {
+        public string[] AvailableStandards;
+        public StandardDeviceProperties StandardDeviceProperties;
     }
 }
