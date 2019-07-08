@@ -45,6 +45,8 @@
     <Compile Include="ExceptionProcess\BW\ExceptionProcessBandWidth.cs" />
     <Compile Include="ExceptionProcess\Signalization\ExceptionProcessSignalization.cs" />
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
+    <Compile Include="ExceptionProcess\SysInfo\ExceptionProcessSysInfo.cs" />
+    <Compile Include="ModelParameters\SysInfoResult.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
     <Compile Include="ModelParameters\enum\TypeTechnology.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
     <Compile Include="ModelParameters\LastUpdate.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
+    <Compile Include="Processes\SysInfoProcess.cs" />
     <Compile Include="Processes\DispatchProcess.cs" />
     <Compile Include="Processes\ExampleContext.cs" />
     <Compile Include="Processes\BandWidthProcess.cs" />

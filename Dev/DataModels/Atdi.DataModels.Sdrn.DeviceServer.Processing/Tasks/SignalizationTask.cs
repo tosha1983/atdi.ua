@@ -15,6 +15,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public MesureTraceDeviceProperties mesureTraceDeviceProperties;
         public ReferenceLevels ReferenceLevels;
         public TaskParameters[] taskParametersForBW;
+        public TaskParameters[] taskParametersForSysInfo;
 
         //сырой поток излучений после трейса
         public Emitting[] EmittingsRaw;

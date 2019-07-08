@@ -18,6 +18,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private object _syncContextSOTask = new object();
         private object _syncContextSignalization = new object();
         private object _syncContextBandWidth = new object();
+        private object _syncContextSysInfo = new object();
 
 
         private double _lat;
@@ -27,6 +28,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private List<ITaskContext<SOTask, SpectrumOccupationProcess>> _contextSOTasks;
         private List<ITaskContext<SignalizationTask, SignalizationProcess>> _contextSignalizationTasks;
         private List<ITaskContext<BandWidthTask, BandWidthProcess>> _contextBandWidthTasks;
+        private List<ITaskContext<SysInfoTask, SysInfoProcess>> _contextSysInfoTasks;
 
 
 
@@ -153,7 +155,23 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
+        public List<ITaskContext<SysInfoTask, SysInfoProcess>> contextSysInfoTasks
+        {
+            get
+            {
+                lock (_syncContextSysInfo)
+                    return _contextSysInfoTasks;
+            }
+            set
+            {
+                lock (_syncContextSysInfo)
+                    _contextSysInfoTasks = value;
+            }
+        }
+
         
+
+
 
         public DispatchProcess() : base("Dispatch process")
         {
@@ -161,6 +179,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             contextSOTasks = new List<ITaskContext<SOTask, SpectrumOccupationProcess>>();
             contextSignalizationTasks = new List<ITaskContext<SignalizationTask, SignalizationProcess>>();
             contextBandWidthTasks = new List<ITaskContext<BandWidthTask, BandWidthProcess>>();
+            contextSysInfoTasks = new List<ITaskContext<SysInfoTask, SysInfoProcess>>();
         }
     }
 }
