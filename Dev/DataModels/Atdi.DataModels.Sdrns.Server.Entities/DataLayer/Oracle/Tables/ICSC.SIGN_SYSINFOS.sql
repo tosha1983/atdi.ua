@@ -2,7 +2,7 @@
 (
   ID              NUMBER(15)                    NOT NULL,
   BANDWIDTH_HZ    NUMBER(30,10),
-  FREQ_HZ         NUMBER(30,10),
+  FREQ_HZ         NUMBER(22,8),
   LEVEL_DBM       NUMBER(30,10),
   CID             NUMBER(9),
   MCC             NUMBER(9),
