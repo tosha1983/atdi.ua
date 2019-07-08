@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Environment Name="SDRN.DeviceServer.ORM" Version="1.0.0.1" xmlns="http://schemas.atdi.com/orm/entity.xsd">
   <RootPath>\</RootPath>
-  <Assembly>Atdi.DataModels.Sdrns.DeviceServer.Entities</Assembly>
-  <Namespace>Atdi.DataModels.Sdrns.DeviceServer.Entities</Namespace>
+  <Assembly>Atdi.DataModels.Sdrn.DeviceServer.Entities</Assembly>
+  <Namespace>Atdi.DataModels.Sdrn.DeviceServer.Entities</Namespace>
   <EntitiesPath>Entities</EntitiesPath>
   <DataTypesPath>DataTypes</DataTypesPath>
   <UnitsPath>Units</UnitsPath>

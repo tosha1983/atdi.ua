@@ -3,7 +3,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrns.DeviceServer.Entities;
+using MD = Atdi.DataModels.Sdrn.DeviceServer.Entities;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Modules.Sdrn.DeviceServer;
 using System.Xml;
