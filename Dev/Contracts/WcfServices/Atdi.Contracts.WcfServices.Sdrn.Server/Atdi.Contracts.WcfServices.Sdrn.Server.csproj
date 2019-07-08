@@ -91,6 +91,7 @@
     <Compile Include="OldAPI\Models\Measurements\Signaling\EmittingParameters.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\LevelsDistribution.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\ReferenceLevels.cs" />
+    <Compile Include="OldAPI\Models\Measurements\Signaling\SignalingSysInfo.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\Spectrum.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\WorkTime.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingMeasTask.cs" />
