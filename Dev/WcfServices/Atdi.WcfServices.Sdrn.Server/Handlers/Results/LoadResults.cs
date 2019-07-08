@@ -321,7 +321,71 @@ namespace Atdi.WcfServices.Sdrn.Server
             referenceLevels = GetReferenceLevelsByResId(resId, isLoadAllData, StartFrequency_Hz, StopFrequency_Hz);
         }
 
+        public SignalingSysInfo[] GetSignalingSysInfos(long measResultId, double freq_MHz)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var listSysInfo = new List<SignalingSysInfo>();
+            var querySysInfo = this._dataLayer.GetBuilder<MD.ISignalingSysInfo>().From()
+                .Select(c => c.Id, c => c.BandWidth_Hz, c => c.BSIC, c => c.ChannelNumber, c => c.CID, c => c.CtoI, c => c.Freq_Hz,
+                        c => c.LAC, c => c.Level_dBm, c => c.MCC, c => c.MNC, c => c.Power, c => c.RNC, c => c.Standart)
+                .Where(c => c.EMITTING.RES_MEAS.Id, ConditionOperator.Equal, measResultId)
+                .Where(c => c.EMITTING.StartFrequency_MHz < freq_MHz)
+                .Where(c => c.EMITTING.StopFrequency_MHz > freq_MHz);
+            queryExecuter.Fetch(querySysInfo, reader =>
+            {
+                while (reader.Read())
+                {
+                    var sysInfo = new SignalingSysInfo();
+                    long sysInfoId = reader.GetValue(c => c.Id);
+                    sysInfo.BandWidth_Hz = reader.GetValue(c => c.BandWidth_Hz);
+                    sysInfo.BSIC = reader.GetValue(c => c.BSIC);
+                    sysInfo.ChannelNumber = reader.GetValue(c => c.ChannelNumber);
+                    sysInfo.CID = reader.GetValue(c => c.CID);
+                    sysInfo.CtoI = reader.GetValue(c => c.CtoI);
+                    sysInfo.Freq_Hz = reader.GetValue(c => c.Freq_Hz);
+                    sysInfo.LAC = reader.GetValue(c => c.LAC);
+                    sysInfo.Level_dBm = reader.GetValue(c => c.Level_dBm);
+                    sysInfo.MCC = reader.GetValue(c => c.MCC);
+                    sysInfo.MNC = reader.GetValue(c => c.MNC);
+                    sysInfo.Power = reader.GetValue(c => c.Power);
+                    sysInfo.RNC = reader.GetValue(c => c.RNC);
+                    sysInfo.Standart = reader.GetValue(c => c.Standart);
 
+                    var listWorkTimes = new List<WorkTime>();
+                    var queryWorkTime = this._dataLayer.GetBuilder<MD.ISignalingSysInfoWorkTime>().From()
+                        .Select(c => c.Id, c => c.HitCount, c => c.PersentAvailability, c => c.StartEmitting, c => c.StopEmitting)
+                        .Where(c => c.SIGN_SYSINFOS.Id, ConditionOperator.Equal, sysInfoId);
+
+                    queryExecuter.Fetch(queryWorkTime, readerWorkTime =>
+                    {
+                        while (readerWorkTime.Read())
+                        {
+                            var workTime = new WorkTime();
+
+                            var hitCount = readerWorkTime.GetValue(c => c.HitCount);
+                            var persentAvailability = readerWorkTime.GetValue(c => c.PersentAvailability);
+                            var startEmitting = readerWorkTime.GetValue(c => c.StartEmitting);
+                            var stopEmitting = readerWorkTime.GetValue(c => c.StopEmitting);
+
+                            if (hitCount.HasValue)
+                                workTime.HitCount = hitCount.Value;
+                            if (persentAvailability.HasValue)
+                                workTime.PersentAvailability = persentAvailability.Value;
+                            if (startEmitting.HasValue)
+                                workTime.StartEmitting = startEmitting.Value;
+                            if(stopEmitting.HasValue)
+                                workTime.StopEmitting = stopEmitting.Value;
+                            listWorkTimes.Add(workTime);
+                        }
+                        return true;
+                    });
+                    sysInfo.WorkTimes = listWorkTimes.ToArray();
+                    listSysInfo.Add(sysInfo);
+                }
+                return true;
+            });
+            return listSysInfo.ToArray();
+        }
         public Emitting[] GetEmittingsByIcsmId(long[] ids, string icsmTableName)
         {
             var listIdsEmittings = new List<long>();
