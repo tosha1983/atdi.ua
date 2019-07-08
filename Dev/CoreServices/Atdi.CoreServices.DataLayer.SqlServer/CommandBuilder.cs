@@ -488,9 +488,9 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             _sql.AppendLine($"SET @{idenityParameter.Name} = @@IDENTITY;");
         }
 
-        public void SelectRowcount()
+        public void SetRowcount(EngineCommandParameter parameter)
         {
-            _sql.AppendLine($"SELECT @@ROWCOUNT;");
+            _sql.AppendLine($"SET @{parameter.Name} = ISNULL(@{parameter.Name}, 0) + @@ROWCOUNT ;");
         }
 
         public string BuildComandText()
