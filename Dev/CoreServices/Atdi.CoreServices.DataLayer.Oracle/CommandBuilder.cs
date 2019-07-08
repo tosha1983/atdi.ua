@@ -146,11 +146,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             return _sourceMapper.EnsureAlias(target.Alias);
         }
 
-        public string BuildFromExpression(TargetObject target)
+        public string BuildFromExpression(TargetObject target, out string sourceAliasName)
         {
             if (target is EngineObject fromSource)
             {
                 var sourceAlias = this.EnsureSourceAlias(fromSource);
+                sourceAliasName = sourceAlias;
                 var sqlFrom = this.Builder.CreateSourceObject(fromSource.Schema, fromSource.Name, sourceAlias);
                 return sqlFrom;
             }
@@ -471,7 +472,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             _sql.AppendLine($"VALUES({valuesClause});");
         }
 
-        public void Update(string schema, string source, string[] setClauses, string from, string[][] joins = null, string where = null)
+        public void Update(string schema, string source, string[] setClauses, string from, string[][] joins = null, string where = null, string sourceAliasName = null)
         {
 
             _sql.AppendLine($"UPDATE {schema}.{source} SET");
@@ -479,12 +480,10 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             var valuesClause = "    " + string.Join("," + Environment.NewLine + "    ", setClauses);
             _sql.AppendLine(valuesClause);
 
-            //this.FromWhere(from, joins, where);
-            
-            _sql.AppendLine($"WHERE DBMS_ROWID.ROWID_ROW_NUMBER(rowid) in (");
+            _sql.AppendLine($"WHERE rowid in (");
 
-            //_sql.AppendLine($"SELECT {schema}.{source}.rowid FROM {from}");
-            _sql.AppendLine($"SELECT DBMS_ROWID.ROWID_ROW_NUMBER(rowid) FROM {from}");
+            _sql.AppendLine($"SELECT {sourceAliasName}.rowid FROM {from}");
+
             if (joins != null && joins.Length > 0)
             {
                 for (int i = 0; i < joins.Length; i++)

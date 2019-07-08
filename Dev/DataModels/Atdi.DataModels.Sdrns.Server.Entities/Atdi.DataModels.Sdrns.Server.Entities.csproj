@@ -50,8 +50,10 @@
     <Compile Include="Entities\IReferenceLevels.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
     <Compile Include="Entities\IReferenceSignal.cs" />
+    <Compile Include="Entities\ISignalingSysInfo.cs" />
     <Compile Include="Entities\ISpectrum.cs" />
     <Compile Include="Entities\ITestDataType.cs" />
+    <Compile Include="Entities\ISignalingSysInfoWorkTime.cs" />
     <Compile Include="Entities\IWorkTime.cs" />
     <Compile Include="Entities\IBearing.cs" />
     <Compile Include="Entities\IEntityPart.cs" />
@@ -111,6 +113,8 @@
     <Content Include="DataLayer\Oracle\Functions\ICSC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Jobs\ICSC.CHECKACTIVITY_JOB.sql" />
     <Content Include="DataLayer\Oracle\Procedures\ICSC.CHECKACTIVITY.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.SIGN_SYSINFO_WTIMES.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.SIGN_SYSINFOS.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.AMQP_EVENTS.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.WORK_TIME.sql" />
     <Content Include="DataLayer\Oracle\Views\ICSC.UNIT.sql" />
@@ -298,6 +302,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\SignalingSysInfo.xml" />
     <Content Include="Metadata\Entities\TestEntityRef3.xml" />
     <Content Include="Metadata\Entities\TestEntityRef2.xml" />
     <Content Include="Metadata\Entities\TestEntityRef1.xml" />
@@ -333,6 +338,7 @@
     <Content Include="Metadata\Entities\ReferenceSituation.xml" />
     <Content Include="Metadata\Entities\ReferenceSignal.xml" />
     <Content Include="Metadata\Entities\Spectrum.xml" />
+    <Content Include="Metadata\Entities\SignalingSysInfoWorkTime.xml" />
     <Content Include="Metadata\Entities\WorkTime.xml" />
     <Content Include="Metadata\Entities\LinkMeasStation.xml" />
     <Content Include="Metadata\Entities\LinkResSensor.xml" />

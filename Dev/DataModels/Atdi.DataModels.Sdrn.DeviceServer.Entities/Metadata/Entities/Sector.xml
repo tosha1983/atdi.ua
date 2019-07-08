@@ -12,10 +12,10 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="Sector ID from ICSM" Title="Sector ID from ICSM" Name="SectorId" DataType="Text.100" SourceName="IDSECTOR" SourceType="Column" Required="true"/>
-    <Field Desc="Altitude above ground level, m" Title="Altitude above ground level, m" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
-    <Field Desc="EIRP, dBm" Title="Eirp" Name="EIRP, dBm" DataType="Decimal.22.8" SourceName="EIRP" SourceType="Column" Required="false"/>
-    <Field Desc="Azimuth, degrees" Title="Azimuth, degrees" Name="Azimuth" DataType="Decimal.22.8" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
-    <Field Desc="Bandwidth, kHz" Title="Bandwidth, kHz" Name="Bw" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="Altitude above ground level, m" Title="Altitude above ground level, m" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Desc="EIRP, dBm" Title="Eirp" Name="EIRP, dBm" DataType="Double.30.10" SourceName="EIRP" SourceType="Column" Required="false"/>
+    <Field Desc="Azimuth, degrees" Title="Azimuth, degrees" Name="Azimuth" DataType="Double.30.10" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
+    <Field Desc="Bandwidth, kHz" Title="Bandwidth, kHz" Name="Bw" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="Class of emission" Title="Class of emission" Name="ClassEmission" DataType="Text.20" SourceName="CLASS_EMISSION" SourceType="Column" Required="false"/>
     <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="MEAS_STATION_ID" SourceType="Column" Required="true"/>
 

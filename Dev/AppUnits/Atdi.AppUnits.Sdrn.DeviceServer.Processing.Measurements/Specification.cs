@@ -21,6 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
     static class Events
     {
+        public static readonly EventText StartSOTaskId = "Start SOTask Id = {0}";
         public static readonly EventText StartSOTaskWorker = "Start SOTaskWorker context.Task.Id = {0}";
         public static readonly EventText TaskIsCancled = " Task context.Task.Id = {0} is canceled";
         public static readonly EventText SendMeasureTraceCommandToController = " Send 'MeasureTraceCommand' to controller Id = {0}";

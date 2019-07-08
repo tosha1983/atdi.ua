@@ -3,7 +3,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrns.DeviceServer.Entities;
+using MD = Atdi.DataModels.Sdrn.DeviceServer.Entities;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Modules.Sdrn.DeviceServer;
 using System.Xml;
@@ -41,6 +41,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public void Dispose()
         {
             //throw new NotImplementedException();
+        }
+
+        public int GetCountObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            throw new NotImplementedException();
         }
 
         public TaskParameters[] LoadAllObjects()
@@ -100,20 +110,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
                         }
 
-                        if (readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels) != null)
-                        {
-                            taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels).Value == 1 ? true : false;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.FiltrationTrace) != null)
-                        {
-                            taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace).Value == 1 ? true : false;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.AutoDivisionEmitting) != null)
-                        {
-                            taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting).Value == 1 ? true : false;
-                        }
+                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
+                        
+                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
+                        
+                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
+                        
 
                         if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
                         {
@@ -249,10 +251,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                             while (readerReferenceSituationRaw.Read())
                             {
                                 var refSituation = new DataModels.Sdrns.Device.ReferenceSituation();
-                                if (readerReferenceSituationRaw.GetValue(c => c.SensorId).HasValue)
-                                {
-                                    refSituation.SensorId = readerReferenceSituationRaw.GetValue(c => c.SensorId).Value;
-                                }
+                                
+                                refSituation.SensorId = (int)readerReferenceSituationRaw.GetValue(c => c.SensorId);
 
                                 var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
                                 var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();

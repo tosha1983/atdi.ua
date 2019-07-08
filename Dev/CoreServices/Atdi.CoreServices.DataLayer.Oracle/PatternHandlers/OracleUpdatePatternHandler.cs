@@ -149,8 +149,8 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 var setClause = context.Builder.CreateSetClause(alias, value.Property.Name, context.Builder.CreateParameterExpression(parameter.Name));
                 setClauses[i] = setClause;
             }
-
-            sqlFrom = context.BuildFromExpression(expression.Target);
+            string sourceAliasName = null;
+            sqlFrom = context.BuildFromExpression(expression.Target, out sourceAliasName);
 
             if (expression.Joins != null && expression.Joins.Length > 0)
             {
@@ -167,7 +167,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 sqlWhere = context.BuildConditionExpression(expression.Condition);
             }
 
-            context.Builder.Update(expression.Target.Schema, expression.Target.Name, setClauses, sqlFrom, sqlJoins.ToArray(), sqlWhere);
+            context.Builder.Update(expression.Target.Schema, expression.Target.Name, setClauses, sqlFrom, sqlJoins.ToArray(), sqlWhere, sourceAliasName);
 
             //var parameterRefCursor = context.CreateParameter($"REF0", $"REF0", DataModels.DataType.Undefined, EngineParameterDirection.Output, $"REF0");
             //context.Builder.OpenCursor(expression.Target.Schema, parameterRefCursor.Name, expression.Target.Name, identityFields);

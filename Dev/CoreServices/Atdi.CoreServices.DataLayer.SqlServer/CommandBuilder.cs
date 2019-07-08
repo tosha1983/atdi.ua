@@ -488,6 +488,11 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             _sql.AppendLine($"SET @{idenityParameter.Name} = @@IDENTITY;");
         }
 
+        public void SelectRowcount()
+        {
+            _sql.AppendLine($"SELECT @@ROWCOUNT;");
+        }
+
         public string BuildComandText()
         {
             return _sql.ToString();

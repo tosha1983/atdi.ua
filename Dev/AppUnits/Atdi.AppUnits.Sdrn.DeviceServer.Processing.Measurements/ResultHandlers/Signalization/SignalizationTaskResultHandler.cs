@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITaskStarter _taskStarter;
         private readonly ITimeService _timeService;
         private readonly IWorkScheduler _workScheduler;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
         private readonly ConfigMeasurements _configMeasurements;
 
         public SignalizationTaskResultHandler(ILogger logger,
@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ITaskStarter taskStarter,
             IWorkScheduler workScheduler,
             ConfigMeasurements configMeasurements,
-            IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
+            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
             ITimeService timeService)
         {
             this._logger = logger;

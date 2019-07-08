@@ -23,13 +23,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly IController _controller;
         private ConfigProcessing _configProcessing;
         private readonly IBusGate _busGate;
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
 
         public GPSWorker(
             ConfigProcessing configProcessing,
             IController controller,
             IBusGate busGate,
-            IRepository<DM.Sensor, int?> repositorySensor,
+            IRepository<DM.Sensor, long?> repositorySensor,
             ITimeService timeService, ILogger logger)
         {
             this._logger = logger;

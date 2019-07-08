@@ -201,8 +201,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                         var getNameExpressionTargetEntity = expression.Target.Alias.Substring(0, index);
                         if (getNameExpressionTargetEntity == getNameEntityResult)
                         {
-                            var parameter = contex.CreateParameter($"REF{i}", $"REF{i}", DataModels.DataType.Undefined, EngineParameterDirection.Output, $"REF{i}");
-                            contex.Builder.OpenCursor(expression.Target.Schema, parameter.Name, expression.Target.Name, identityFields);
+                            if (identityFields.Count > 0)
+                            {
+                                var parameter = contex.CreateParameter($"REF{i}", $"REF{i}", DataModels.DataType.Undefined, EngineParameterDirection.Output, $"REF{i}");
+                                contex.Builder.OpenCursor(expression.Target.Schema, parameter.Name, expression.Target.Name, identityFields);
+                            }
                         }
                     }
                 }

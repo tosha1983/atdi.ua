@@ -3,7 +3,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrns.DeviceServer.Entities;
+using MD = Atdi.DataModels.Sdrn.DeviceServer.Entities;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Modules.Sdrn.DeviceServer;
 using System.Xml;
@@ -41,7 +41,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         builderInsertILastUpdate.SetValue(c => c.TableName, item.TableName);
                         builderInsertILastUpdate.SetValue(c => c.LastUpdate, item.LastDateTimeUpdate);
                         builderInsertILastUpdate.SetValue(c => c.Status, item.Status);
-                        builderInsertILastUpdate.Select(c => c.Id);
 
                         var lastUpdate = scope.Executor.Execute<MD.ILastUpdate_PK>(builderInsertILastUpdate);
                         ID = lastUpdate.Id;
@@ -60,23 +59,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public bool Delete(long? id)
         {
             bool isSuccessDelete = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
+            
             if (id != null)
             {
                 try
                 {
-                    queryExecuter.BeginTransaction();
-                    var builderDeleteLastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Delete();
-                    builderDeleteLastUpdate.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, id);
-                    if ( queryExecuter.Execute(builderDeleteLastUpdate)>0)
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        isSuccessDelete = true;
+                        scope.BeginTran();
+                        var builderDeleteLastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Delete();
+                        builderDeleteLastUpdate.Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, id);
+                        if (scope.Executor.Execute(builderDeleteLastUpdate) > 0)
+                        {
+                            isSuccessDelete = true;
+                        }
+                        scope.Commit();
                     }
-                    queryExecuter.CommitTransaction();
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }
@@ -86,6 +87,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public void Dispose()
         {
             //throw new NotImplementedException();
+        }
+
+        public int GetCountObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            throw new NotImplementedException();
         }
 
         public LastUpdate[] LoadAllObjects()
@@ -147,25 +158,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         public bool Update(LastUpdate item)
         {
             bool isSuccessUpdate = false;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             if (item != null)
             {
                 try
                 {
-                    queryExecuter.BeginTransaction();
-                    var builderDeleteLastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Update();
-                    builderDeleteLastUpdate.Where(c => c.TableName, DataModels.DataConstraint.ConditionOperator.Equal, item.TableName);
-                    builderDeleteLastUpdate.SetValue(c => c.LastUpdate, item.LastDateTimeUpdate);
-                    builderDeleteLastUpdate.SetValue(c => c.Status, item.Status);
-                    if (queryExecuter.Execute(builderDeleteLastUpdate) > 0)
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                     {
-                        isSuccessUpdate = true;
+                        scope.BeginTran();
+
+                        var builderDeleteLastUpdate = this._dataLayer.GetBuilder<MD.ILastUpdate>().Update();
+                        builderDeleteLastUpdate.Where(c => c.TableName, DataModels.DataConstraint.ConditionOperator.Equal, item.TableName);
+                        builderDeleteLastUpdate.SetValue(c => c.LastUpdate, item.LastDateTimeUpdate);
+                        builderDeleteLastUpdate.SetValue(c => c.Status, item.Status);
+                        if (scope.Executor.Execute(builderDeleteLastUpdate) > 0)
+                        {
+                            isSuccessUpdate = true;
+                        }
+                        
+                        scope.Commit();
                     }
-                    queryExecuter.CommitTransaction();
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, e);
                 }
             }

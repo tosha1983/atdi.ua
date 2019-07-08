@@ -16,19 +16,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
 {
     class SendRegistrationResultHandler : MessageHandlerBase<DM.SensorRegistrationResult, SendRegistrationResultMessage>
     {
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
+        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
 
 
         public SendRegistrationResultHandler(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
-            IRepository<DM.Sensor, int?> repositorySensor,
+            IRepository<DM.Sensor, long?> repositorySensor,
             ITaskStarter taskStarter,
-            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
+            IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
             ILogger logger)
         {
             this._processingDispatcher = processingDispatcher;

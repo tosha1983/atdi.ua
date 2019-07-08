@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -104,6 +107,7 @@
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
     <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
+    <Content Include="Metadata\DataTypes\Database\Double.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />

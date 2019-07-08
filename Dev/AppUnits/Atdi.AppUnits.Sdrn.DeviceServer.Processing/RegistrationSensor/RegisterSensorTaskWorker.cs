@@ -18,7 +18,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     /// </summary>
     public class RegisterSensorTaskWorker : ITaskWorker<RegisterSensorTask, DispatchProcess, SingletonTaskWorkerLifetime>
     {
-        private readonly IRepository<DM.Sensor, int?> _repositorySensor;
+        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
         private readonly ILogger _logger;
         private readonly IBusGate _busGate;
         private readonly ITimeService _timeService;
@@ -26,16 +26,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly IDeviceServerConfig _deviceServerConfig;
         private readonly ConfigProcessing _config;
         private readonly IController _controller;
-        private readonly IRepository<LastUpdate, int?> _repositoryLastUpdateByInt;
+        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
 
 
-        public RegisterSensorTaskWorker(IRepository<DM.Sensor, int?> repositorySensor,
+        public RegisterSensorTaskWorker(IRepository<DM.Sensor, long?> repositorySensor,
             ILogger logger,
             IBusGate busGate,
             ITimeService timeService,
             ITaskStarter taskStarter,
             ConfigProcessing config,
-            IRepository<LastUpdate, int?> repositoryLastUpdateByInt,
+            IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
             IController controller,
             IDeviceServerConfig deviceServerConfig
             )
@@ -224,7 +224,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                             var loadSensors = this._repositorySensor.LoadAllObjects();
                             //если в БД не обнаружено сведений о сенсоре, тогда:
-                            if ((loadSensors != null) && (loadSensors.Length >= 0))
+                            if ((loadSensors != null) && (loadSensors.Length > 0))
                             {
                                 var sensorCheckConfirmed = loadSensors[0];
                                 if (sensorCheckConfirmed.Status=="A")

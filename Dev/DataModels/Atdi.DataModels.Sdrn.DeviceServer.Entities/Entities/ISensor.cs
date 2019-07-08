@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
     [EntityPrimaryKeyAttribute]
     public interface ISensor_PK
@@ -16,7 +16,6 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
     [Entity]
     public interface ISensor : ISensor_PK
     {
-        int? SensorIdentifierId { get; set; }
         string Status { get; set; }
         string Name { get; set; }
         string Administration { get; set; }
