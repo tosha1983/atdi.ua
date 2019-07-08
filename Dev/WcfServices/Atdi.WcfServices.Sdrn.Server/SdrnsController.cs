@@ -241,9 +241,11 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadResults.GetEmittingsByIcsmId(ids, icsmTableName);
         }
 
-        public SignalingSysInfo[] GetSignalingSysInfos(long measResultId, decimal freq_Hz)
+        public SignalingSysInfo[] GetSignalingSysInfos(long measResultId, double freq_Hz)
         {
-            throw new NotImplementedException();
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetSignalingSysInfos(measResultId, freq_Hz);
+
         }
     }
    

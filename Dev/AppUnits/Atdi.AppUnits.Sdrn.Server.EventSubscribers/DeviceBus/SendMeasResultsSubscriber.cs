@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
-                //var  status = SdrnMessageHandlingStatus.Unprocessed;
+                var status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed = false;
                 var reasonFailure = "";
                 try
@@ -71,33 +71,33 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
                     // формируем объект подтвержденяи о обновлении данных о сенсоре
-                    //var deviceCommandResult = new DeviceCommand
-                    //{
-                    //    EquipmentTechId = sensorTechId,
-                    //    SensorName = sensorName,
-                    //    SdrnServer = this._environment.ServerInstance,
-                    //    Command = "SendMeasResultsConfirmed",
-                    //    CommandId = "SendCommand",
-                    //    CustTxt1 = "Success"
-                    //};
+                    var deviceCommandResult = new DeviceCommand
+                    {
+                        EquipmentTechId = sensorTechId,
+                        SensorName = sensorName,
+                        SdrnServer = this._environment.ServerInstance,
+                        Command = "SendMeasResultsConfirmed",
+                        CommandId = "SendCommand",
+                        CustTxt1 = "Success"
+                    };
 
-                    //if (status == SdrnMessageHandlingStatus.Error)
-                    //{
-                    //    deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
-                    //}
-                    //else if (isSuccessProcessed)
-                    //{
-                    //    deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
-                    //}
-                    //else
-                    //{
-                    //    deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
-                    //}
-                    //var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
-                    //envelop.SensorName = sensorName;
-                    //envelop.SensorTechId = sensorTechId;
-                    //envelop.DeliveryObject = deviceCommandResult;
-                    //_messagePublisher.Send(envelop);
+                    if (status == SdrnMessageHandlingStatus.Error)
+                    {
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
+                    }
+                    else if (isSuccessProcessed)
+                    {
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
+                    }
+                    else
+                    {
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
+                    }
+                    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
+                    envelop.SensorName = sensorName;
+                    envelop.SensorTechId = sensorTechId;
+                    envelop.DeliveryObject = deviceCommandResult;
+                    _messagePublisher.Send(envelop);
                 }
 
             }
@@ -415,6 +415,20 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         bool validationResult = true;
                         var refLevels = measResult.RefLevels;
+
+                        List<float> listLevels = new List<float>();
+                        foreach (float levels in refLevels.levels)
+                        {
+                            if (levels >= -200 && levels <= 50)
+                                listLevels.Add(levels);
+                            else
+                                WriteLog("Incorrect value level", "IReferenceLevels");
+                        }
+                        if (listLevels.Count > 0)
+                            refLevels.levels = listLevels.ToArray();
+                        else
+                            validationResult = false;
+
                         if (refLevels.StartFrequency_Hz < 9000 || refLevels.StartFrequency_Hz > 400000000000)
                         {
                             validationResult = false;
@@ -440,25 +454,65 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         foreach (Emitting emitting in measResult.Emittings)
                         {
+                            bool validationResult = true;
+                            if (!(emitting.StartFrequency_MHz >= 0.009 && emitting.StartFrequency_MHz <= 400000))
+                            {
+                                WriteLog("Incorrect value StartFrequency_MHz", "IEmitting");
+                                validationResult = false;
+                            }
+                            if (!(emitting.StopFrequency_MHz >= 0.009 && emitting.StopFrequency_MHz <= 400000))
+                            {
+                                WriteLog("Incorrect value StopFrequency_MHz", "IEmitting");
+                                validationResult = false;
+                            }
+                            if (emitting.StartFrequency_MHz > emitting.StopFrequency_MHz)
+                            {
+                                WriteLog("StartFrequency_MHz must be less than StopFrequency_MHz", "IEmitting");
+                                validationResult = false;
+                            }
+                            if (!validationResult)
+                                continue;
+
                             var builderInsertEmitting = this._dataLayer.GetBuilder<MD.IEmitting>().Insert();
-                            builderInsertEmitting.SetValue(c => c.CurentPower_dBm, emitting.CurentPower_dBm);
-                            builderInsertEmitting.SetValue(c => c.MeanDeviationFromReference, emitting.MeanDeviationFromReference);
-                            builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emitting.ReferenceLevel_dBm);
+                            if (emitting.CurentPower_dBm >= -200 && emitting.CurentPower_dBm <= 50)
+                                builderInsertEmitting.SetValue(c => c.CurentPower_dBm, emitting.CurentPower_dBm);
+                            if (emitting.MeanDeviationFromReference >= 0 && emitting.MeanDeviationFromReference <= 1)
+                                builderInsertEmitting.SetValue(c => c.MeanDeviationFromReference, emitting.MeanDeviationFromReference);
+                            if (emitting.ReferenceLevel_dBm >= -200 && emitting.ReferenceLevel_dBm <= 50)
+                                builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emitting.ReferenceLevel_dBm);
+                            if (emitting.TriggerDeviationFromReference >= 0 && emitting.TriggerDeviationFromReference <= 1)
+                                builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emitting.TriggerDeviationFromReference);
                             builderInsertEmitting.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
                             builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
                             if (emitting.EmittingParameters != null)
                             {
-                                builderInsertEmitting.SetValue(c => c.RollOffFactor, emitting.EmittingParameters.RollOffFactor);
-                                builderInsertEmitting.SetValue(c => c.StandardBW, emitting.EmittingParameters.StandardBW);
+                                if (emitting.EmittingParameters.StandardBW >= 0 && emitting.EmittingParameters.StandardBW <= 1000000)
+                                {
+                                    if (emitting.EmittingParameters.RollOffFactor >= 0 && emitting.EmittingParameters.RollOffFactor <= 2.5)
+                                        builderInsertEmitting.SetValue(c => c.RollOffFactor, emitting.EmittingParameters.RollOffFactor);
+                                    builderInsertEmitting.SetValue(c => c.StandardBW, emitting.EmittingParameters.StandardBW);
+                                }
                             }
                             builderInsertEmitting.SetValue(c => c.StartFrequency_MHz, emitting.StartFrequency_MHz);
                             builderInsertEmitting.SetValue(c => c.StopFrequency_MHz, emitting.StopFrequency_MHz);
-                            builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emitting.TriggerDeviationFromReference);
                             var levelsDistribution = emitting.LevelsDistribution;
                             if (levelsDistribution != null)
                             {
-                                builderInsertEmitting.SetValue(c => c.LevelsDistributionCount, levelsDistribution.Count);
-                                builderInsertEmitting.SetValue(c => c.LevelsDistributionLvl, levelsDistribution.Levels);
+                                List<int> listLevels = new List<int>();
+                                List<int> listCounts = new List<int>();
+                                for (int i = 0; i < levelsDistribution.Count.Length; i++)
+                                {
+                                    if(levelsDistribution.Count[i] >= 0 && levelsDistribution.Count[i] <= Int32.MaxValue && levelsDistribution.Levels[i] >= -200 && levelsDistribution.Levels[i] <= 100)
+                                    {
+                                        listLevels.Add(levelsDistribution.Levels[i]);
+                                        listCounts.Add(levelsDistribution.Count[i]);
+                                    }
+                                }
+                                if (listLevels.Count > 0 && listCounts.Count > 0)
+                                {
+                                    builderInsertEmitting.SetValue(c => c.LevelsDistributionCount, listCounts.ToArray());
+                                    builderInsertEmitting.SetValue(c => c.LevelsDistributionLvl, listLevels.ToArray());
+                                }
                             }
                             if (emitting.SignalMask != null)
                             {
@@ -469,14 +523,29 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                             if (valInsReferenceEmitting.Id > 0)
                             {
-                                var workTimes = emitting.WorkTimes;
-                                if (workTimes != null)
+                                if (emitting.WorkTimes != null)
                                 {
-                                    foreach (WorkTime workTime in workTimes)
+                                    foreach (WorkTime workTime in emitting.WorkTimes)
                                     {
+                                        bool validationTimeResult = true;
+                                        if (workTime.StartEmitting > workTime.StopEmitting)
+                                        {
+                                            WriteLog("StartEmitting must be less than StopEmitting", "IWorkTime");
+                                            validationTimeResult = false;
+                                        }
+                                        if (!(workTime.PersentAvailability >= 0 && workTime.PersentAvailability <= 100))
+                                        {
+                                            WriteLog("Incorrect value PersentAvailability", "IWorkTime");
+                                            validationTimeResult = false;
+                                        }
+
+                                        if (!validationTimeResult)
+                                            continue;
+
                                         var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Insert();
                                         builderInsertIWorkTime.SetValue(c => c.EmittingId, valInsReferenceEmitting.Id);
-                                        builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
+                                        if (workTime.HitCount >= 0 && workTime.HitCount <=  Int32.MaxValue)
+                                            builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
                                         builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
                                         builderInsertIWorkTime.SetValue(c => c.StartEmitting, workTime.StartEmitting);
                                         builderInsertIWorkTime.SetValue(c => c.StopEmitting, workTime.StopEmitting);
@@ -486,20 +555,123 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 var spectrum = emitting.Spectrum;
                                 if (spectrum != null)
                                 {
+                                    bool validationSpectrumResult = true;
+
+                                    List<float> listLevelsdBmB = new List<float>();
+                                    foreach (float levelsdBmB in spectrum.Levels_dBm)
+                                    {
+                                        if (levelsdBmB >= -200 && levelsdBmB <= 50)
+                                            listLevelsdBmB.Add(levelsdBmB);
+                                        else
+                                            WriteLog("Incorrect value level", "ISpectrum");
+                                    }
+
+                                    if (listLevelsdBmB.Count > 0)
+                                        spectrum.Levels_dBm = listLevelsdBmB.ToArray();
+                                    else
+                                        validationSpectrumResult = false;
+
+                                    if (!(spectrum.SpectrumStartFreq_MHz  >= 0.009 && spectrum.SpectrumStartFreq_MHz <= 400000))
+                                    {
+                                        WriteLog("Incorrect value SpectrumStartFreq_MHz", "ISpectrumRaw");
+                                        validationSpectrumResult = false;
+                                    }
+                                    if (!(spectrum.SpectrumSteps_kHz >= 0.001 && spectrum.SpectrumSteps_kHz <= 1000000))
+                                    {
+                                        WriteLog("Incorrect value SpectrumSteps_kHz", "ISpectrumRaw");
+                                        validationSpectrumResult = false;
+                                    }
+
+                                    if (!(spectrum.T1 <= spectrum.MarkerIndex && spectrum.MarkerIndex <= spectrum.T2))
+                                        WriteLog("Incorrect value MarkerIndex", "ISpectrumRaw");
+                                    if (!(spectrum.T1 >= 0 && spectrum.T1 <= spectrum.T2))
+                                    {
+                                        WriteLog("Incorrect value T1", "ISpectrumRaw");
+                                        validationSpectrumResult = false;
+                                    }
+                                    if (!(spectrum.T2 >= spectrum.T1 && spectrum.T2 <= spectrum.Levels_dBm.Length))
+                                    {
+                                        WriteLog("Incorrect value T2", "ISpectrumRaw");
+                                        validationSpectrumResult = false;
+                                    }
+
+                                    if (!validationSpectrumResult)
+                                        continue;
+
                                     var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
                                     builderInsertISpectrum.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
                                     builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations == true ? 1 : 0);
                                     builderInsertISpectrum.SetValue(c => c.Contravention, spectrum.Contravention == true ? 1 : 0);
-                                    builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
+                                    if (spectrum.Bandwidth_kHz >= 0 && spectrum.Bandwidth_kHz <= 1000000)
+                                        builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
+                                    else
+                                        WriteLog("Incorrect value Bandwidth_kHz", "ISpectrum");
                                     builderInsertISpectrum.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
-                                    builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
+                                    if (spectrum.SignalLevel_dBm >= -200 && spectrum.SignalLevel_dBm <= 50)
+                                        builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
+                                    else
+                                        WriteLog("Incorrect value SignalLevel_dBm", "ISpectrum");
                                     builderInsertISpectrum.SetValue(c => c.SpectrumStartFreq_MHz, spectrum.SpectrumStartFreq_MHz);
                                     builderInsertISpectrum.SetValue(c => c.SpectrumSteps_kHz, spectrum.SpectrumSteps_kHz);
                                     builderInsertISpectrum.SetValue(c => c.T1, spectrum.T1);
                                     builderInsertISpectrum.SetValue(c => c.T2, spectrum.T2);
-                                    builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                    if (spectrum.TraceCount >= 0 && spectrum.TraceCount <= 10000)
+                                        builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                    else
+                                        WriteLog("Incorrect value TraceCount", "ISpectrum");
                                     builderInsertISpectrum.SetValue(c => c.Levels_dBm, spectrum.Levels_dBm);
                                     this._queryExecutor.Execute<MD.ISpectrum_PK>(builderInsertISpectrum);
+                                }
+                            }
+                            if (emitting.SysInfos != null)
+                            {
+                                foreach (SignalingSysInfo sysInfo in emitting.SysInfos)
+                                {
+                                    var builderInsertSysInfo = this._dataLayer.GetBuilder<MD.ISignalingSysInfo>().Insert();
+                                    builderInsertSysInfo.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
+                                    builderInsertSysInfo.SetValue(c => c.BandWidth_Hz, sysInfo.BandWidth_Hz);
+                                    builderInsertSysInfo.SetValue(c => c.BSIC, sysInfo.BSIC);
+                                    builderInsertSysInfo.SetValue(c => c.ChannelNumber, sysInfo.ChannelNumber);
+                                    builderInsertSysInfo.SetValue(c => c.CID, sysInfo.CID);
+                                    builderInsertSysInfo.SetValue(c => c.CtoI, sysInfo.CtoI);
+                                    builderInsertSysInfo.SetValue(c => c.Freq_Hz, sysInfo.Freq_Hz);
+                                    builderInsertSysInfo.SetValue(c => c.LAC, sysInfo.LAC);
+                                    builderInsertSysInfo.SetValue(c => c.Level_dBm, sysInfo.Level_dBm);
+                                    builderInsertSysInfo.SetValue(c => c.MCC, sysInfo.MCC);
+                                    builderInsertSysInfo.SetValue(c => c.MNC, sysInfo.MNC);
+                                    builderInsertSysInfo.SetValue(c => c.Power, sysInfo.Power);
+                                    builderInsertSysInfo.SetValue(c => c.RNC, sysInfo.RNC);
+                                    builderInsertSysInfo.SetValue(c => c.Standard, sysInfo.Standart);
+                                    var valInsSysInfo = this._queryExecutor.Execute<MD.ISignalingSysInfo_PK>(builderInsertSysInfo);
+                                    if (valInsSysInfo.Id > 0 && sysInfo.WorkTimes != null)
+                                    {
+                                        foreach (WorkTime workTime in sysInfo.WorkTimes)
+                                        {
+                                            bool validationTimeResult = true;
+                                            if (workTime.StartEmitting > workTime.StopEmitting)
+                                            {
+                                                WriteLog("StartEmitting must be less than StopEmitting", "ISignalingSysInfoWorkTime");
+                                                validationTimeResult = false;
+                                            }
+                                            if (!(workTime.PersentAvailability >= 0 && workTime.PersentAvailability <= 100))
+                                            {
+                                                WriteLog("Incorrect value PersentAvailability", "ISignalingSysInfoWorkTime");
+                                                validationTimeResult = false;
+                                            }
+
+                                            if (!validationTimeResult)
+                                                continue;
+
+                                            var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.ISignalingSysInfoWorkTime>().Insert();
+                                            builderInsertIWorkTime.SetValue(c => c.SIGNSYSINFO.Id, valInsSysInfo.Id);
+                                            if (workTime.HitCount >= 0 && workTime.HitCount <= Int32.MaxValue)
+                                                builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
+                                            builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
+                                            builderInsertIWorkTime.SetValue(c => c.StartEmitting, workTime.StartEmitting);
+                                            builderInsertIWorkTime.SetValue(c => c.StopEmitting, workTime.StopEmitting);
+                                            this._queryExecutor.Execute(builderInsertIWorkTime);
+                                        }
+                                    }
                                 }
                             }
                         }

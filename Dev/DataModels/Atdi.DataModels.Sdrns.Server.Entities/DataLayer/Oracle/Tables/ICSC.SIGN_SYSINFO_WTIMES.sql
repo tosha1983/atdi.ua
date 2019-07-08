@@ -1,11 +1,11 @@
 ﻿CREATE TABLE ICSC.SIGN_SYSINFO_WTIMES
 (
   ID                 NUMBER(15)                 NOT NULL,
-  START_EMIT         DATE,
-  STOP_EMIT          DATE,
-  HIT_COUNT          NUMBER(9),
-  PERCENT_AVAILABLE  NUMBER(22,8),
-  SIGN_SYSINFOS_ID   NUMBER(15)
+  START_EMIT         DATE                       NOT NULL,
+  STOP_EMIT          DATE                       NOT NULL,
+  HIT_COUNT          NUMBER(9)                  NOT NULL,
+  PERCENT_AVAILABLE  NUMBER(22,8)               NOT NULL,
+  SIGN_SYSINFOS_ID   NUMBER(15)                 NOT NULL
 )
 TABLESPACE USERS
 PCTUSED    0

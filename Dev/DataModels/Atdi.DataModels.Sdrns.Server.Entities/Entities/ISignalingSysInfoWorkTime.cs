@@ -16,10 +16,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface ISignalingSysInfoWorkTime : ISignalingSysInfoWorkTime_PK
     {
-        DateTime? StartEmitting { get; set; }
-        DateTime? StopEmitting { get; set; }
-        int? HitCount { get; set; }
-        float? PersentAvailability { get; set; }
-        ISignalingSysInfo SIGN_SYSINFOS { get; set; }
+        DateTime StartEmitting { get; set; }
+        DateTime StopEmitting { get; set; }
+        int HitCount { get; set; }
+        float PersentAvailability { get; set; }
+        ISignalingSysInfo SIGNSYSINFO { get; set; }
     }
 }
