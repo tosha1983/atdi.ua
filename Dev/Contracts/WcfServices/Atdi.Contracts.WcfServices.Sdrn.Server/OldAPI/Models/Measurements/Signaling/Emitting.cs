@@ -24,6 +24,5 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public string SensorTechId;
         public String AssociatedStationTableName;
         public long AssociatedStationID;
-        public SignalingSysInfo[] SysInfos;
     }
 }

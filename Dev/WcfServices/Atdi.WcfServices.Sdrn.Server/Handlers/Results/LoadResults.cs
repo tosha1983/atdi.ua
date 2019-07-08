@@ -165,14 +165,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                     while (readerTime.Read())
                     {
                         var workTime = new WorkTime();
-                        if (readerTime.GetValue(c => c.StartEmitting).HasValue)
-                            workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting).Value;
-                        if (readerTime.GetValue(c => c.StopEmitting).HasValue)
-                            workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting).Value;
-                        if (readerTime.GetValue(c => c.HitCount).HasValue)
-                            workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
-                        if (readerTime.GetValue(c => c.PersentAvailability).HasValue)
-                            workTime.PersentAvailability = readerTime.GetValue(c => c.PersentAvailability).Value;
+                            workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting);
+                            workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting);
+                            workTime.HitCount = readerTime.GetValue(c => c.HitCount);
+                            workTime.PersentAvailability = readerTime.GetValue(c => c.PersentAvailability);
 
                         listWorkTimes.Add(new KeyValuePair<long, WorkTime>(readerTime.GetValue(c => c.EMITTING.Id), workTime));
                     }
@@ -526,14 +522,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         while (readerTime.Read())
                         {
                             var workTime = new WorkTime();
-                            if (readerTime.GetValue(c => c.StartEmitting).HasValue)
-                                workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting).Value;
-                            if (readerTime.GetValue(c => c.StopEmitting).HasValue)
-                                workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting).Value;
-                            if (readerTime.GetValue(c => c.HitCount).HasValue)
-                                workTime.HitCount = readerTime.GetValue(c => c.HitCount).Value;
-                            if (readerTime.GetValue(c => c.PersentAvailability).HasValue)
-                                workTime.PersentAvailability = readerTime.GetValue(c => c.PersentAvailability).Value;
+                            workTime.StartEmitting = readerTime.GetValue(c => c.StartEmitting);
+                            workTime.StopEmitting = readerTime.GetValue(c => c.StopEmitting);
+                            workTime.HitCount = readerTime.GetValue(c => c.HitCount);
+                            workTime.PersentAvailability = readerTime.GetValue(c => c.PersentAvailability);
 
                             listWorkTimes.Add(new KeyValuePair<long, WorkTime>(readerTime.GetValue(c => c.EMITTING.Id), workTime));
                         }
