@@ -163,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                     builderInsertSensor.SetValue(c => c.DateFrom, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1));
                                                     builderInsertSensor.SetValue(c => c.DateTo, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59));
                                                     builderInsertSensor.SetValue(c => c.Status, "A");
-                                                    builderInsertSensor.Select(c => c.Id);
+                                                    
                                                     scope.Executor
                                                     .Execute(builderInsertSensor);
 

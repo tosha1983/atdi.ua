@@ -177,7 +177,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderInsertMeasTask.SetValue(c => c.TimeStop, value.MeasTimeParamList.TimeStop);
                             builderInsertMeasTask.SetValue(c => c.PerInterval, value.MeasTimeParamList.PerInterval);
                         }
-                        builderInsertMeasTask.Select(c => c.Id);
+                        
                         var measTaskPK = scope.Executor.Execute<MD.IMeasTask_PK>(builderInsertMeasTask);
                         ID = measTaskPK.Id;
                         value.Id.Value = ID.Value;
@@ -218,7 +218,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     builderInsertMeasTaskSignaling.SetValue(c => c.SignalizationNCount, value.SignalingMeasTaskParameters.SignalizationNCount);
                                 }
                                 builderInsertMeasTaskSignaling.SetValue(c => c.MEAS_TASK.Id, ID);
-                                builderInsertMeasTaskSignaling.Select(c => c.Id);
+                                
 
 
                                 var measTaskSignalingPK = scope.Executor.Execute<MD.IMeasTaskSignaling_PK>(builderInsertMeasTaskSignaling);
@@ -234,7 +234,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var builderInsertReferenceSituation = this._dataLayer.GetBuilder<MD.IReferenceSituation>().Insert();
                                         builderInsertReferenceSituation.SetValue(c => c.MEAS_TASK.Id, ID);
                                         builderInsertReferenceSituation.SetValue(c => c.SENSOR.Id, refSituationReferenceSignal.SensorId);
-                                        builderInsertReferenceSituation.Select(c => c.Id);
+                                        
 
                                         var referenceSituationRawPK = scope.Executor.Execute<MD.IReferenceSituation_PK>(builderInsertReferenceSituation);
                                         valueIdReferenceSituation = referenceSituationRawPK.Id;
@@ -266,7 +266,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                         builderInsertReferenceSignal.SetValue(c => c.Freq_kHz, signalMask.Freq_kHz);
                                                     }
                                                 }
-                                                builderInsertReferenceSignal.Select(c => c.Id);
+                                                
                                                 var referenceSignalRawPK = scope.Executor.Execute<MD.IReferenceSignal_PK>(builderInsertReferenceSignal);
                                                 valueIdReferenceSignal = referenceSignalRawPK.Id;
                                             }
@@ -290,7 +290,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderInsertMeasDtParam.SetValue(c => c.TypeMeasurements, value.MeasDtParam.TypeMeasurements.ToString());
                                 builderInsertMeasDtParam.SetValue(c => c.Vbw, value.MeasDtParam.VBW);
                                 builderInsertMeasDtParam.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                builderInsertMeasDtParam.Select(c => c.Id);
+                                
                                 var measDtParamPK = scope.Executor.Execute<MD.IMeasDtParam_PK>(builderInsertMeasDtParam);
                                 valueIdMeasDtParam = measDtParamPK.Id;
                             }
@@ -311,7 +311,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertMeasLocationParam.SetValue(c => c.Lon, locParam.Lon);
                                         builderInsertMeasLocationParam.SetValue(c => c.MaxDist, locParam.MaxDist);
                                         builderInsertMeasLocationParam.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        builderInsertMeasLocationParam.Select(c => c.Id);
+                                        
                                         var measLocationParam_PK = scope.Executor.Execute<MD.IMeasLocationParam_PK>(builderInsertMeasLocationParam);
                                         valueIdMeasLocationParam = measLocationParam_PK.Id;
                                         locParam.Id.Value = valueIdMeasLocationParam;
@@ -329,7 +329,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderInsertMeasOther.SetValue(c => c.TypeSpectrumOccupation, measOther.TypeSpectrumOccupation.ToString());
                                 builderInsertMeasOther.SetValue(c => c.TypeSpectrumscan, measOther.TypeSpectrumScan.ToString());
                                 builderInsertMeasOther.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                builderInsertMeasOther.Select(c => c.Id);
+                                
 
                                 var measOtherPK = scope.Executor.Execute<MD.IMeasOther_PK>(builderInsertMeasOther);
                                 valueIdMeasOther = measOtherPK.Id;
@@ -350,7 +350,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertMeasSubTask.SetValue(c => c.TimeStart, measSubTask.TimeStart);
                                         builderInsertMeasSubTask.SetValue(c => c.TimeStop, measSubTask.TimeStop);
                                         builderInsertMeasSubTask.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        builderInsertMeasSubTask.Select(c => c.Id);
+                                        
 
 
                                         var measSubTaskPK = scope.Executor.Execute<MD.IMeasSubTask_PK>(builderInsertMeasSubTask);
@@ -373,7 +373,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                 }
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.MEAS_SUBTASK.Id, valueIdmeasSubTask);
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskStation.TimeNextTask);
-                                                builderInsertMeasSubTaskSta.Select(c => c.Id);
+                                                
                                                 var insertMeasSubTaskStaPK = scope.Executor.Execute<MD.IMeasSubTaskStation_PK>(builderInsertMeasSubTaskSta);
                                                 valueIdmeasSubTaskSta = insertMeasSubTaskStaPK.Id;
                                                 subTaskStation.Id = valueIdmeasSubTaskSta;
@@ -397,7 +397,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertMeasFreqParam.SetValue(c => c.Rgu, freq_param.RgU);
                                         builderInsertMeasFreqParam.SetValue(c => c.Step, freq_param.Step);
                                         builderInsertMeasFreqParam.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        builderInsertMeasFreqParam.Select(c => c.Id);
+                                        
                                         var measFreqParamPK = scope.Executor.Execute<MD.IMeasFreqParam_PK>(builderInsertMeasFreqParam);
                                         idMeasFreqParam = measFreqParamPK.Id;
                                     }
@@ -411,7 +411,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             var builderInsertResMeasFreq = this._dataLayer.GetBuilder<MD.IMeasFreq>().Insert();
                                             builderInsertResMeasFreq.SetValue(c => c.Freq, freq_param.MeasFreqs[i].Freq);
                                             builderInsertResMeasFreq.SetValue(c => c.MEAS_FREQ_PARAM.Id, idMeasFreqParam);
-                                            builderInsertResMeasFreq.Select(c => c.Id);
+                                            
                                             var measFreqPK = scope.Executor.Execute<MD.IMeasFreq_PK>(builderInsertResMeasFreq);
                                         }
                                     }
@@ -430,7 +430,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertMeasStation.SetValue(c => c.StationType, value.Stations[i].StationType);
                                         builderInsertMeasStation.SetValue(c => c.ClientStationCode, value.Stations[i].StationId.Value);
                                         builderInsertMeasStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        builderInsertMeasStation.Select(c => c.Id);
+                                        
 
 
                                         var measStation_PK = scope.Executor.Execute<MD.IMeasStation_PK>(builderInsertMeasStation);
@@ -457,7 +457,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertOwnerData.SetValue(c => c.OKPO, stationDataParam.Owner.OKPO);
                                         builderInsertOwnerData.SetValue(c => c.OwnerName, stationDataParam.Owner.OwnerName);
                                         builderInsertOwnerData.SetValue(c => c.ZIP, stationDataParam.Owner.Zip);
-                                        builderInsertOwnerData.Select(c => c.Id);
+                                        
                                         var ownerDataPK = scope.Executor.Execute<MD.IOwnerData_PK>(builderInsertOwnerData);
                                         idOwnerdata = ownerDataPK.Id;
                                     }
@@ -469,7 +469,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertStationSite.SetValue(c => c.Lat, stationDataParam.Site.Lat);
                                         builderInsertStationSite.SetValue(c => c.Lon, stationDataParam.Site.Lon);
                                         builderInsertStationSite.SetValue(c => c.Region, stationDataParam.Site.Region);
-                                        builderInsertStationSite.Select(c => c.Id);
+                                        
                                         var stationSitePK = scope.Executor.Execute<MD.IStationSite_PK>(builderInsertStationSite);
                                         idSite = stationSitePK.Id;
                                     }
@@ -496,7 +496,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         builderInsertStation.SetValue(c => c.OWNER_DATA.Id, idOwnerdata);
                                     }
-                                    builderInsertStation.Select(c => c.Id);
+                                    
                                     var stationPK = scope.Executor.Execute<MD.IStation_PK>(builderInsertStation);
                                     idstationDataParam = stationPK.Id;
 
@@ -506,7 +506,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var builderInsertLinkMeasStation = this._dataLayer.GetBuilder<MD.ILinkMeasStation>().Insert();
                                         builderInsertLinkMeasStation.SetValue(c => c.STATION.Id, idstationDataParam);
                                         builderInsertLinkMeasStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        builderInsertLinkMeasStation.Select(c => c.Id);
+                                        
                                         var linkMeasStationPK = scope.Executor.Execute<MD.ILinkMeasStation_PK>(builderInsertLinkMeasStation);
                                         idLinkMeasStation = linkMeasStationPK.Id;
                                     }
@@ -531,7 +531,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             builderInsertSector.SetValue(c => c.Eirp, sector.EIRP);
                                             builderInsertSector.SetValue(c => c.ClientSectorCode, sector.IdSector);
                                             builderInsertSector.SetValue(c => c.STATION.Id, idstationDataParam);
-                                            builderInsertSector.Select(c => c.Id);
+                                            
                                             var sectorPK = scope.Executor.Execute<MD.ISector_PK>(builderInsertSector);
                                             idSecForMeas = sectorPK.Id;
 
@@ -548,7 +548,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     builderInsertSectorFreq.SetValue(c => c.Frequency, freq.Frequency);
                                                     builderInsertSectorFreq.SetValue(c => c.ClientPlanCode, freq.IdPlan);
                                                     builderInsertSectorFreq.SetValue(c => c.ClientFreqCode, freq.Id);
-                                                    builderInsertSectorFreq.Select(c => c.Id);
+                                                    
                                                     var sectorFreq_PKPK = scope.Executor.Execute<MD.ISectorFreq_PK>(builderInsertSectorFreq);
                                                     idSectorFreq = sectorFreq_PKPK.Id;
 
@@ -557,7 +557,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                         var builderInsertLinkSectorFreq = this._dataLayer.GetBuilder<MD.ILinkSectorFreq>().Insert();
                                                         builderInsertLinkSectorFreq.SetValue(c => c.SECTOR_FREQ.Id, idSectorFreq);
                                                         builderInsertLinkSectorFreq.SetValue(c => c.SECTOR.Id, idSecForMeas);
-                                                        builderInsertLinkSectorFreq.Select(c => c.Id);
+                                                        
                                                         var linkSectorFreqPK = scope.Executor.Execute<MD.ILinkSectorFreq_PK>(builderInsertLinkSectorFreq);
                                                     }
                                                 }
@@ -575,7 +575,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     var builderInsertSectorMaskElement = this._dataLayer.GetBuilder<MD.ISectorMaskElement>().Insert();
                                                     builderInsertSectorMaskElement.SetValue(c => c.Level, maskBw.level);
                                                     builderInsertSectorMaskElement.SetValue(c => c.Bw, maskBw.BW);
-                                                    builderInsertSectorMaskElement.Select(c => c.Id);
+                                                    
 
                                                     var sectorMaskElementPK = scope.Executor.Execute<MD.ISectorMaskElement_PK>(builderInsertSectorMaskElement);
                                                     sectorMaskElemId = sectorMaskElementPK.Id;
@@ -586,7 +586,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                         var builderInsertLinkSectorMaskElement = this._dataLayer.GetBuilder<MD.ILinkSectorMaskElement>().Insert();
                                                         builderInsertLinkSectorMaskElement.SetValue(c => c.SECTOR_MASK_ELEM.Id, sectorMaskElemId);
                                                         builderInsertLinkSectorMaskElement.SetValue(c => c.SECTOR.Id, idSecForMeas);
-                                                        builderInsertLinkSectorMaskElement.Select(c => c.Id);
+                                                        
                                                         var linkSectorMaskElement_PK = scope.Executor.Execute<MD.ILinkSectorMaskElement_PK>(builderInsertLinkSectorMaskElement);
                                                     }
                                                 }

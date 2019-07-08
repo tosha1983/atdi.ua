@@ -320,7 +320,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertResMeasStation.SetValue(c => c.STATION.Id, Idstation);
                         if (int.TryParse(station.SectorId, out int IdSector))
                             builderInsertResMeasStation.SetValue(c => c.SECTOR.Id, IdSector);
-                        builderInsertResMeasStation.Select(c => c.Id);
+                        
                         var valInsResMeasStation = this._queryExecutor.Execute<MD.IResMeasStation_PK>(builderInsertResMeasStation);
 
                         if (valInsResMeasStation.Id > 0)
@@ -330,7 +330,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
                                 builderInsertLinkResSensor.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation.Id);
                                 builderInsertLinkResSensor.SetValue(c => c.SENSOR.Id, (long)measResult.SensorId);
-                                builderInsertLinkResSensor.Select(c => c.Id);
+                                
                                 this._queryExecutor.Execute<MD.ILinkResSensor_PK>(builderInsertLinkResSensor);
                             }
 
@@ -511,7 +511,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
             builderInsertResStGeneral.SetValue(c => c.LevelsSpectrumdBm, station.GeneralResult.LevelsSpectrum_dBm);
             builderInsertResStGeneral.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
-            builderInsertResStGeneral.Select(c => c.Id);
+            
             var IDResGeneral = this._queryExecutor.Execute<MD.IResStGeneral_PK>(builderInsertResStGeneral);
             return IDResGeneral.Id;
         }
@@ -707,7 +707,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertLog.SetValue(c => c.Lcount, 1);
                 builderInsertLog.SetValue(c => c.Info, msg);
                 builderInsertLog.SetValue(c => c.Event, "");
-                builderInsertLog.Select(c => c.Id);
+                
                 scope.Executor.Execute(builderInsertLog);
             }
         }
