@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
-                //var  status = SdrnMessageHandlingStatus.Unprocessed;
+                var status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed = false;
                 var reasonFailure = "";
                 try
@@ -71,33 +71,33 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     // независимо упали мы по ошибке мы обязаны отправить ответ клиенту
                     // формируем объект подтвержденяи о обновлении данных о сенсоре
-                    //var deviceCommandResult = new DeviceCommand
-                    //{
-                    //    EquipmentTechId = sensorTechId,
-                    //    SensorName = sensorName,
-                    //    SdrnServer = this._environment.ServerInstance,
-                    //    Command = "SendMeasResultsConfirmed",
-                    //    CommandId = "SendCommand",
-                    //    CustTxt1 = "Success"
-                    //};
+                    var deviceCommandResult = new DeviceCommand
+                    {
+                        EquipmentTechId = sensorTechId,
+                        SensorName = sensorName,
+                        SdrnServer = this._environment.ServerInstance,
+                        Command = "SendMeasResultsConfirmed",
+                        CommandId = "SendCommand",
+                        CustTxt1 = "Success"
+                    };
 
-                    //if (status == SdrnMessageHandlingStatus.Error)
-                    //{
-                    //    deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
-                    //}
-                    //else if (isSuccessProcessed)
-                    //{
-                    //    deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
-                    //}
-                    //else
-                    //{
-                    //    deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
-                    //}
-                    //var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
-                    //envelop.SensorName = sensorName;
-                    //envelop.SensorTechId = sensorTechId;
-                    //envelop.DeliveryObject = deviceCommandResult;
-                    //_messagePublisher.Send(envelop);
+                    if (status == SdrnMessageHandlingStatus.Error)
+                    {
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
+                    }
+                    else if (isSuccessProcessed)
+                    {
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Success\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
+                    }
+                    else
+                    {
+                        deviceCommandResult.CustTxt1 = "{ " + string.Format("{0}: {1}, {2}: {3}, {4}: {5}, {6}: {7} ", "\"Status\"", "\"Fault\"", "\"ResultId\"", "\"" + deliveryObject.ResultId + "\"", "\"Message\"", "\"" + reasonFailure + "\"", "\"DateCreated\"", "\"" + DateTime.Now.ToString("dd.MM.yyyyTHH:mm:ss") + "\"") + " }";
+                    }
+                    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendCommandMessage, DeviceCommand>();
+                    envelop.SensorName = sensorName;
+                    envelop.SensorTechId = sensorTechId;
+                    envelop.DeliveryObject = deviceCommandResult;
+                    _messagePublisher.Send(envelop);
                 }
 
             }
@@ -641,7 +641,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertSysInfo.SetValue(c => c.MNC, sysInfo.MNC);
                                     builderInsertSysInfo.SetValue(c => c.Power, sysInfo.Power);
                                     builderInsertSysInfo.SetValue(c => c.RNC, sysInfo.RNC);
-                                    builderInsertSysInfo.SetValue(c => c.Standart, sysInfo.Standart);
+                                    builderInsertSysInfo.SetValue(c => c.Standard, sysInfo.Standart);
                                     var valInsSysInfo = this._queryExecutor.Execute<MD.ISignalingSysInfo_PK>(builderInsertSysInfo);
                                     if (valInsSysInfo.Id > 0 && sysInfo.WorkTimes != null)
                                     {
@@ -663,7 +663,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 continue;
 
                                             var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.ISignalingSysInfoWorkTime>().Insert();
-                                            builderInsertIWorkTime.SetValue(c => c.SIGN_SYSINFOS.Id, valInsSysInfo.Id);
+                                            builderInsertIWorkTime.SetValue(c => c.SIGNSYSINFO.Id, valInsSysInfo.Id);
                                             if (workTime.HitCount >= 0 && workTime.HitCount <= Int32.MaxValue)
                                                 builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
                                             builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
