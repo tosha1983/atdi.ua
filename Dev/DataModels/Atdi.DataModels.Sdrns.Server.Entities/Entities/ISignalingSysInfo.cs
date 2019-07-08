@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     public interface ISignalingSysInfo : ISignalingSysInfo_PK
     {
         decimal Freq_Hz { get; set; }
-        string Standart { get; set; }
+        string Standard { get; set; }
         double? BandWidth_Hz { get; set; }
         double? Level_dBm { get; set; }
         int? CID { get; set; }
