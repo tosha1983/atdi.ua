@@ -240,7 +240,11 @@ namespace Atdi.WcfServices.Sdrn.Server
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetEmittingsByIcsmId(ids, icsmTableName);
         }
-        
+
+        public SignalingSysInfo[] GetSignalingSysInfos(long measResultId, decimal freq_Hz)
+        {
+            throw new NotImplementedException();
+        }
     }
    
 
