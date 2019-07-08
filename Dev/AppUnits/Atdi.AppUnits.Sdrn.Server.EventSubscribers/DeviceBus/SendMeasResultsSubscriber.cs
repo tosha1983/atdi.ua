@@ -155,12 +155,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         bool validationResult = true;
                         foreach (var freqSample in measResult.FrequencySamples)
                         {
-                            if (freqSample.Occupation_Pt < 0 && freqSample.Occupation_Pt >= 100)
+                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt >= 100)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Occupation_Pt", "IFreqSample");
                             }
-                            if (freqSample.Freq_MHz < 0 && freqSample.Freq_MHz >= 400000)
+                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz >= 400000)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Freq_MHz", "IFreqSample");
@@ -361,6 +361,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             try
             {
+                if (string.IsNullOrEmpty(measResult.ResultId))
+                {
+                    WriteLog("Undefined value ResultId", "IResMeas");
+                    return false;
+                }
+                else if (measResult.ResultId.Length > 50)
+                    measResult.ResultId.SubString(50);
+
+                if (string.IsNullOrEmpty(measResult.TaskId))
+                {
+                    WriteLog("Undefined value TaskId", "IResMeas");
+                    return false;
+                }
+                else if (measResult.TaskId.Length > 200)
+                    measResult.TaskId.SubString(200);
+
+                if (measResult.Status.Length > 5)
+                    measResult.Status = "";
+
+                if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
+                    WriteLog("Incorrect value ScansNumber", "IResMeas");
+
+                if (measResult.StartTime > measResult.StopTime)
+                    WriteLog("StartTime must be less than StopTime", "IResMeas");
+
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
 
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
@@ -375,17 +400,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 var valInsResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 if (valInsResMeas.Id > 0)
                 {
-                    var builderInsertResLocSensorMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Insert();
-                    builderInsertResLocSensorMeas.SetValue(c => c.Agl, measResult.Location.AGL);
-                    builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
-                    builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
-                    builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
-                    builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
-                    this._queryExecutor.Execute(builderInsertResLocSensorMeas);
+                    if (this.ValidateGeoLocation(measResult.Location, "IResMeas"))
+                    {
+                        var builderInsertResLocSensorMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Insert();
+                        builderInsertResLocSensorMeas.SetValue(c => c.Agl, measResult.Location.AGL);
+                        builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
+                        builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
+                        builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
+                        builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
+                        this._queryExecutor.Execute(builderInsertResLocSensorMeas);
+                    }
 
                     if (measResult.RefLevels != null)
                     {
+                        bool validationResult = true;
                         var refLevels = measResult.RefLevels;
+                        if (refLevels.StartFrequency_Hz < 9000 || refLevels.StartFrequency_Hz > 400000000000)
+                        {
+                            validationResult = false;
+                            WriteLog("Incorrect value StartFrequency_Hz", "IReferenceLevels");
+                        }
+                        if (refLevels.StepFrequency_Hz < 1 || refLevels.StepFrequency_Hz > 1000000000)
+                        {
+                            validationResult = false;
+                            WriteLog("Incorrect value StepFrequency_Hz", "IReferenceLevels");
+                        }
                         var builderInsertReferenceLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>().Insert();
                         builderInsertReferenceLevels.SetValue(c => c.StartFrequency_Hz, refLevels.StartFrequency_Hz);
                         builderInsertReferenceLevels.SetValue(c => c.StepFrequency_Hz, refLevels.StepFrequency_Hz);
@@ -394,7 +433,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertReferenceLevels.SetValue(c => c.RefLevels, refLevels.levels);
                         }
                         builderInsertReferenceLevels.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
-                        this._queryExecutor.Execute<MD.IReferenceLevels_PK>(builderInsertReferenceLevels);
+                        if (validationResult)
+                            this._queryExecutor.Execute<MD.IReferenceLevels_PK>(builderInsertReferenceLevels);
                     }
                     if (measResult.Emittings != null)
                     {
