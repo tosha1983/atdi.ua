@@ -5,12 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface ISensorPolygon
+    [EntityPrimaryKeyAttribute]
+    public interface ISensorPolygon_PK
     {
-        int Id { get; set; }
+        int? Id { get; set; }
+    }
+
+    [Entity]
+    public interface ISensorPolygon : ISensorPolygon_PK
+    {
         int? SensorId { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }

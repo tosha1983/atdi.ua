@@ -15,7 +15,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class LevelsByTaskParams
     {
         [DataMember]
-        public List<int> MeasResultID;
+        public List<long> MeasResultID;
         [DataMember]
         public int MeasTaskId;
         [DataMember]

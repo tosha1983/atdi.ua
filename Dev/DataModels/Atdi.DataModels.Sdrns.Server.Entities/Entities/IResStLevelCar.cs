@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResStLevelCar
+    [EntityPrimaryKeyAttribute]
+    public interface IResStLevelCar_PK
     {
         long Id { get; set; }
-        long? ResStationId { get; set; }
-        double? Bw { get; set; }
+    }
+
+    [Entity]
+    public interface IResStLevelCar : IResStLevelCar_PK
+    {
         double? Altitude { get; set; }
-        decimal? CentralFrequency { get; set; }
         double? DifferenceTimeStamp { get; set; }
         double? Lon { get; set; }
         double? Lat { get; set; }
@@ -22,6 +24,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? LevelDbmkvm { get; set; }
         DateTime? TimeOfMeasurements { get; set; }
         double? Agl { get; set; }
-        IResMeasStation RESSTATION { get; set; }
+        IResMeasStation RES_MEAS_STATION { get; set; }
     }
 }

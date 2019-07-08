@@ -5,12 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface IStandardScanParameter
+    [EntityPrimaryKeyAttribute]
+    public interface IStandardScanParameter_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface IStandardScanParameter : IStandardScanParameter_PK
+    {
         string Standard { get; set; }
         double? MeasFreqRelative { get; set; }
         double? LevelDbm { get; set; }
@@ -24,7 +29,7 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         string DetectType { get; set; }
         int? Preamplification_dB { get; set; }
         int? RfAttenuation_dB { get; set; }
-        int? MeasTaskId { get; set; }
+        long? MeasTaskId { get; set; }
         IMeasTask MEASTASK { get; set; }
     }
 }

@@ -90,6 +90,14 @@
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
       <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
+      <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Oracle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.SqlServer\Atdi.CoreServices.DataLayer.SqlServer.csproj">
+      <Project>{a65dc15a-e0da-4d33-adbb-b1bcc0758873}</Project>
+      <Name>Atdi.CoreServices.DataLayer.SqlServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
       <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
       <Name>Atdi.CoreServices.DataLayer</Name>
@@ -110,9 +118,9 @@
       <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrn.DeviceServer.Entities.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrns.DeviceServer.Entities.csproj">
       <Project>{a803197e-12f5-4800-b157-b2ec677bda33}</Project>
-      <Name>Atdi.DataModels.Sdrn.DeviceServer.Entities</Name>
+      <Name>Atdi.DataModels.Sdrns.DeviceServer.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Processing\Atdi.DataModels.Sdrn.DeviceServer.Processing.csproj">
       <Project>{32f80815-0ded-41aa-8e2d-00478f4e2dd6}</Project>

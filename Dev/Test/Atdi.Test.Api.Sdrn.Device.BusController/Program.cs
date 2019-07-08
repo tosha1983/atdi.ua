@@ -15,7 +15,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
     {
         static void Main(string[] args)
         {
-            Test1();
+            while(true)
+            {
+                Test1();
+            }
+            
         }
 
         static void Test()
@@ -268,10 +272,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 EntityId = entity.EntityId,
                 Content = new byte[250]
             };
-
-            for (int i = 0; i < 10; i++)
+            var count = 1;
+            for (int i = 0; i < count; i++)
             {
                 publisher.Send("RegisterSensor", sensor, $"ID #{i}");
+                Console.ReadLine();
                 publisher.Send("UpdateSensor", sensor, $"ID #{i}");
                 publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
 
@@ -280,6 +285,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
                 publisher.Send("SendEntity", entity, $"#{i}");
                 publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
+
+                Console.WriteLine(i);
             }
 
 

@@ -10,6 +10,8 @@ namespace Atdi.DataModels.EntityOrm
     public interface IRepository<T,I> : IDisposable
         where T : class
     {
+        int GetCountObjectsWithRestrict(); // получение количества объектов с ограничениями
+        Dictionary<string, string> GetDictionaryStatusObjects();
         T[] LoadObjectsWithRestrict(); // получение объектов с ограничениями
         T[] LoadAllObjects(); // получение всех объектов
         T LoadObject(I id); // получение одного объекта по id

@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IReferenceLevels
+    [EntityPrimaryKeyAttribute]
+    public interface IReferenceLevels_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IReferenceLevels : IReferenceLevels_PK
+    {
         double? StartFrequency_Hz { get; set; }
         double? StepFrequency_Hz { get; set; }
-        //byte[] ReferenceLevels { get; set; }
         float[] RefLevels { get; set; }
-        long? ResMeasId { get; set; }
-        IResMeas RESMEAS { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }

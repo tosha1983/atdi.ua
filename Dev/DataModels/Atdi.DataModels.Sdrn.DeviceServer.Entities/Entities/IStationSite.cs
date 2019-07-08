@@ -5,12 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface IStationSite
+    [EntityPrimaryKeyAttribute]
+    public interface IStationSite_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+
+    }
+
+    [Entity]
+    public interface IStationSite : IStationSite_PK
+    {
         double? Lon { get; set; }
         double Lat { get; set; }
         string Address { get; set; }

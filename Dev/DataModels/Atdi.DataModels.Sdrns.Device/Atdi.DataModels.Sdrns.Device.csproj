@@ -80,6 +80,7 @@
     <Compile Include="Results\Signaling\ReferenceLevels.cs" />
     <Compile Include="Results\Signaling\SignalMask.cs" />
     <Compile Include="Results\Signaling\Spectrum.cs" />
+    <Compile Include="Results\Signaling\SignalingSysInfo.cs" />
     <Compile Include="Results\Signaling\WorkTime.cs" />
     <Compile Include="Results\StationMeasResult.cs" />
     <Compile Include="Sensors\SensorDescriptor.cs" />

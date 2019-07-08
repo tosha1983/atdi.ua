@@ -5,12 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface ILastUpdate
+    [EntityPrimaryKeyAttribute]
+    public interface ILastUpdate_PK
     {
-        int? Id { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface ILastUpdate : ILastUpdate_PK
+    {
         string TableName { get; set; }
         DateTime? LastUpdate { get; set; }
         string Status { get; set; }

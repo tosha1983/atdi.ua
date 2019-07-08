@@ -51,7 +51,7 @@ namespace XICSM.ICSControlClient.ViewModels
     }
     public class MeasTaskSignalizationViewModel : WpfViewModelBase
     {
-        private int _taskId;
+        private long _taskId;
 
         #region Current Objects
         private MeasTaskViewModel _currentMeasTask;
@@ -69,7 +69,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand RefreshShortTasksCommand { get; set; }
         #endregion
 
-        public MeasTaskSignalizationViewModel(int taskId)
+        public MeasTaskSignalizationViewModel(long taskId)
         {
             this.RunMeasTaskCommand = new WpfCommand(this.OnRunMeasTaskCommand);
             this.StopMeasTaskCommand = new WpfCommand(this.OnStopMeasTaskCommand);

@@ -1,0 +1,74 @@
+﻿CREATE TABLE ICSC.MEAS_DT_PARAM
+(
+  ID                 NUMBER(15)                 NOT NULL,
+  TYPE_MEASUREMENTS  NVARCHAR2(50),
+  DETECT_TYPE        NVARCHAR2(50),
+  RF_ATTENUATION     NUMBER(22,8),
+  IF_ATTENUATION     NUMBER(22,8),
+  MEAS_TIME          NUMBER(22,8),
+  DEMOD              NVARCHAR2(50),
+  PREAMPLIFICATION   NUMBER(9),
+  "MODE"             NVARCHAR2(50),
+  RBW                NUMBER(22,8),
+  VBW                NUMBER(22,8),
+  MEAS_TASK_ID       NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_MEASDTPARAM_PK ON ICSC.MEAS_DT_PARAM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.MEAS_DT_PARAM ADD (
+  CONSTRAINT XBS_MEASDTPARAM_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.MEAS_DT_PARAM ADD (
+  CONSTRAINT FK_XBS_MEASDTPARAM_XBS_MEASTAS 
+ FOREIGN KEY (MEAS_TASK_ID) 
+ REFERENCES ICSC.MEAS_TASK (ID));

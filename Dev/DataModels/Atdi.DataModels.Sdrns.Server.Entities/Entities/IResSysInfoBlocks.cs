@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IResSysInfoBlocks
+    [EntityPrimaryKeyAttribute]
+    public interface IResSysInfoBlocks_PK
     {
         long Id { get; set; }
+    }
+    [Entity]
+    public interface IResSysInfoBlocks : IResSysInfoBlocks_PK
+    {
         string Data { get; set; }
-        //byte[]  BinData { get; set; }
         string Type { get; set; }
-        long? ResSysInfoId { get; set; }
-        IResSysInfo RESSYSINFO { get; set; }
+        IResSysInfo RES_SYS_INFO { get; set; }
     }
 }

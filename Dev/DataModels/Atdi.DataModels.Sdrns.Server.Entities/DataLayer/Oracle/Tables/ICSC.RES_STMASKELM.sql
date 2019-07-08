@@ -1,0 +1,84 @@
+﻿CREATE TABLE ICSC.RES_STMASKELM
+(
+  ID                NUMBER(15)                  NOT NULL,
+  RES_STGENERAL_ID  NUMBER(15),
+  BW                NUMBER(22,8),
+  "LEVEL"           NUMBER(22,8)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE INDEX ICSC.XBS_RESSTGENERALIDMASKELM ON ICSC.RES_STMASKELM
+(RES_STGENERAL_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_RESSTMASKELM_PK ON ICSC.RES_STMASKELM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.RES_STMASKELM ADD (
+  CONSTRAINT XBS_RESSTMASKELM_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.RES_STMASKELM ADD (
+  CONSTRAINT FK_XBS_RESSTMASKELM_XBS_RESSTG 
+ FOREIGN KEY (RES_STGENERAL_ID) 
+ REFERENCES ICSC.RES_STGENERAL (ID));

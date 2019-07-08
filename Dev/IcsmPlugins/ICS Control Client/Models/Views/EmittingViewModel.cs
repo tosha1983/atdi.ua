@@ -10,7 +10,7 @@ namespace XICSM.ICSControlClient.Models.Views
 {
     public class EmittingViewModel
     {
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         [WpfColumn("StartFrequency_MHz", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public double StartFrequency_MHz { get; set; }
@@ -61,7 +61,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public int SumHitCount { get; set; }
 
         [WpfColumn("IcsmID", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int IcsmID { get; set; }
+        public long IcsmID { get; set; }
 
         [WpfColumn("IcsmTable", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string IcsmTable { get; set; }

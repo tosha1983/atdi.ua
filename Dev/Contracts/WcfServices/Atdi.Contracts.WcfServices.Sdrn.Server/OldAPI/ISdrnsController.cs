@@ -176,7 +176,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId);
+        ShortResultsMeasurementsStation[] GetShortMeasResStation(long MeasResultsId);
         /// <summary>
         /// 
         /// </summary>
@@ -184,7 +184,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        Route[] GetRoutes(int MeasResultsId);
+        Route[] GetRoutes(long MeasResultsId);
         /// <summary>
         /// 
         /// </summary>
@@ -192,7 +192,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId);
+        SensorPoligonPoint[] GetSensorPoligonPoint(long MeasResultsId);
 
         /// <summary>
         /// 
@@ -201,7 +201,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="StationId"></param>
         /// <returns></returns>
         [OperationContract]
-        ResultsMeasurementsStation[] GetResMeasStation(int MeasResultsId, int StationId);
+        ResultsMeasurementsStation[] GetResMeasStation(long MeasResultsId, long StationId);
 
         /// <summary>
         /// 
@@ -237,7 +237,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="StationId"></param>
         /// <returns></returns>
         [OperationContract]
-        ResultsMeasurementsStation GetResMeasStationById(int StationId);
+        ResultsMeasurementsStation GetResMeasStationById(long StationId);
 
         /// <summary>
         /// 
@@ -246,7 +246,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="StationId"></param>
         /// <returns></returns>
         [OperationContract]
-        ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int ResId);
+        ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(long ResId);
 
         /// <summary>
         /// 
@@ -255,7 +255,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
+        MeasurementResults GetMeasurementResultByResId(long ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
         /// <summary>
         /// 
@@ -273,7 +273,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        MeasTask GetMeasTaskById(int id);
+        MeasTask GetMeasTaskById(long id);
 
         /// <summary>
         /// 
@@ -300,7 +300,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="otherArgs"></param>
         /// <returns></returns>
         [OperationContract]
-        ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId);
+        ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, long taskId);
 
         /// <summary>
         /// 
@@ -310,7 +310,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="StopFrequency_Hz"></param>
         /// <returns></returns>
         [OperationContract]
-        ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
+        ReferenceLevels GetReferenceLevelsByResultId(long resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz);
 
         /// <summary>
         /// Delete emittings
@@ -318,7 +318,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="id"></param>
         /// <returns></returns>
         [OperationContract]
-        bool DeleteEmitting(int[] emittingsId);
+        bool DeleteEmitting(long[] emittingsId);
 
         /// <summary>
         /// Add association station by emitting
@@ -328,7 +328,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="AssociatedStationTableName"></param>
         /// <returns></returns>
         [OperationContract]
-        bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName);
+        bool AddAssociationStationByEmitting(long[] emittingsId, long AssociatedStationID, string AssociatedStationTableName);
 
         /// <summary>
         /// Get Emittings by IcsmId identifiers
@@ -337,7 +337,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <param name="icsmTableName"></param>
         /// <returns></returns>
         [OperationContract]
-        Emitting[] GetEmittingsByIcsmId(int[] ids, string icsmTableName);
+        Emitting[] GetEmittingsByIcsmId(long[] ids, string icsmTableName);
 
+
+        [OperationContract]
+
+        SignalingSysInfo[] GetSignalingSysInfos(long measResultId, decimal freq_Hz);
     }
 }

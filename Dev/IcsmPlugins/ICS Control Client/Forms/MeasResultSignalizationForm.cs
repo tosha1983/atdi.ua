@@ -18,9 +18,9 @@ namespace XICSM.ICSControlClient.Forms
 {
     public partial class MeasResultSignalizationForm : Form
     {
-        private int _resultId;
+        private long _resultId;
         private ElementHost _wpfElementHost;
-        public MeasResultSignalizationForm(int resultId)
+        public MeasResultSignalizationForm(long resultId)
         {
             _resultId = resultId;
             InitializeComponent();

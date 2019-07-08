@@ -24,7 +24,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             this._logger = logger;
         }
 
-        public bool AddAssociationStationByEmitting(int[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        public bool AddAssociationStationByEmitting(long[] emittingsId, long AssociatedStationID, string AssociatedStationTableName)
         {
             var saveResDb = new SaveResults(_dataLayer, _logger);
             return saveResDb.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName);
@@ -36,7 +36,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return createMeasTaskHandler.Handle(task);
         }
 
-        public bool DeleteEmitting(int[] emittingsId)
+        public bool DeleteEmitting(long[] emittingsId)
         {
             var saveResDb = new SaveResults(_dataLayer, _logger);
             return saveResDb.DeleteEmitting(emittingsId);
@@ -78,43 +78,43 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadMeasTask.GetMeasTaskHeader(taskId);
         }
 
-        public MeasTask GetMeasTaskById(int id)
+        public MeasTask GetMeasTaskById(long id)
         {
             var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
             return loadMeasTask.GetMeasTaskById(id);
         }
 
-        public MeasurementResults GetMeasurementResultByResId(int ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
+        public MeasurementResults GetMeasurementResultByResId(long ResId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetMeasurementResultByResId(ResId, isLoadAllData, StartFrequency_Hz, StopFrequency_Hz);
         }
 
-        public ReferenceLevels GetReferenceLevelsByResultId(int resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
+        public ReferenceLevels GetReferenceLevelsByResultId(long resId, bool isLoadAllData, double? StartFrequency_Hz, double? StopFrequency_Hz)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetReferenceLevelsByResultId(resId, isLoadAllData, StartFrequency_Hz, StopFrequency_Hz);
         }
 
-        public ResultsMeasurementsStation[] GetResMeasStation(int ResId, int StationId)
+        public ResultsMeasurementsStation[] GetResMeasStation(long ResId, long StationId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetResMeasStation(ResId, StationId);
         }
 
-        public ResultsMeasurementsStation GetResMeasStationById(int StationId)
+        public ResultsMeasurementsStation GetResMeasStationById(long StationId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.ReadResultResMeasStation(StationId);
         }
 
-        public ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(int ResId)
+        public ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(long ResId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetResMeasStationHeaderByResId(ResId);
         }
 
-        public Route[] GetRoutes(int MeasResultsId)
+        public Route[] GetRoutes(long MeasResultsId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetRoutes(MeasResultsId);
@@ -126,7 +126,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadSensor.LoadObjectSensor(sensorId.Value);
         }
 
-        public SensorPoligonPoint[] GetSensorPoligonPoint(int MeasResultsId)
+        public SensorPoligonPoint[] GetSensorPoligonPoint(long MeasResultsId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetSensorPoligonPoint(MeasResultsId);
@@ -139,7 +139,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadSensor.LoadObjectSensor(condition);
         }
 
-        public ShortResultsMeasurementsStation[] GetShortMeasResStation(int MeasResultsId)
+        public ShortResultsMeasurementsStation[] GetShortMeasResStation(long MeasResultsId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetShortMeasResStation(MeasResultsId);
@@ -169,7 +169,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadResults.GetShortMeasResultsByTaskId(taskId.Value);
         }
 
-        public ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, int taskId)
+        public ShortMeasurementResults[] GetShortMeasResultsByTypeAndTaskId(MeasurementType measurementType, long taskId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetShortMeasResultsByTypeAndTaskId(measurementType, taskId);
@@ -235,12 +235,16 @@ namespace Atdi.WcfServices.Sdrn.Server
             return measTaskProcess.StopMeasTask(taskId);
         }
 
-        public Emitting[] GetEmittingsByIcsmId(int[] ids, string icsmTableName)
+        public Emitting[] GetEmittingsByIcsmId(long[] ids, string icsmTableName)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetEmittingsByIcsmId(ids, icsmTableName);
         }
-        
+
+        public SignalingSysInfo[] GetSignalingSysInfos(long measResultId, decimal freq_Hz)
+        {
+            throw new NotImplementedException();
+        }
     }
    
 

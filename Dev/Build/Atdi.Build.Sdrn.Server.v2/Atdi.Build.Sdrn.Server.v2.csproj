@@ -104,6 +104,14 @@
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
+      <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Oracle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.SqlServer\Atdi.CoreServices.DataLayer.SqlServer.csproj">
+      <Project>{a65dc15a-e0da-4d33-adbb-b1bcc0758873}</Project>
+      <Name>Atdi.CoreServices.DataLayer.SqlServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer\Atdi.CoreServices.DataLayer.csproj">
       <Project>{edda5ccc-25b7-4b50-a8d7-ccb617727497}</Project>
       <Name>Atdi.CoreServices.DataLayer</Name>

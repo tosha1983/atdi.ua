@@ -7,13 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ISectorFreq
+    [EntityPrimaryKeyAttribute]
+    public interface ISectorFreq_PK
     {
         long Id { get; set; }
-        long? PlanId { get; set; }
+    }
+
+    [Entity]
+    public interface ISectorFreq : ISectorFreq_PK
+    {
+        long? ClientPlanCode { get; set; }
         long? ChannelNumber { get; set; }
-        long? IdFreq { get; set; }
+        long? ClientFreqCode { get; set; }
         decimal? Frequency { get; set; }
     }
 }

@@ -123,6 +123,16 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+
+      <xs:element name="StoreContentType" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="en:StoreContentType">
+             
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       
       <xs:element name="SourceVarType" minOccurs="1" maxOccurs="1">
         <xs:complexType>
@@ -180,8 +190,8 @@
 
     <xs:attribute name="Type" type="en:EntityType" use ="optional" default="Normal" />
     <xs:attribute name="BaseEntity" type="xs:string" use ="optional" />
-    <xs:attribute name="Inheritance" type="en:InheritanceType" use="optional"  />
-    <xs:attribute name="ExtendEntity" type="xs:string" use ="optional" />
+    <!--<xs:attribute name="Inheritance" type="en:InheritanceType" use="optional" default="None"  />-->
+    <!--<xs:attribute name="ExtendEntity" type="xs:string" use ="optional" />-->
     
   </xs:complexType>
 
@@ -224,10 +234,36 @@
     
   </xs:complexType>
 
+  
   <xs:complexType name="RelationConditionDef">
     <xs:choice minOccurs="1">
       <xs:element name="Or" type="ConditionExpressionDef"></xs:element>
       <xs:element name="And" type="ConditionExpressionDef"></xs:element>
+      <xs:element name="Equal" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="NotEqual" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="GreaterEqual" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="GreaterThan" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="LessEqual" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="LessThan" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+      <xs:element name="IsNull" type="OneOperandOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="IsNotNull" type="OneOperandOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+      <xs:element name="Like" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="BeginWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="EndWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="Contains" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+      <xs:element name="NotLike" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="NotBeginWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="NotEndWith" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="NotContains" type="TwoOperandsOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+      <xs:element name="In" type="InOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="NotIn" type="InOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+
+      <xs:element name="Between" type="BetweenOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      <xs:element name="NotBetween" type="BetweenOperationDef" minOccurs="0" maxOccurs="unbounded"></xs:element>
     </xs:choice>
     <xs:attribute name="JoinType" type="en:RelationConditionJoinType" use ="required" />
   </xs:complexType>
@@ -384,6 +420,10 @@
       <xs:enumeration value="Normal" />
       <xs:enumeration value="Extention" />
       <xs:enumeration value="Predefined" />
+      <xs:enumeration value="Prototype" />
+      <xs:enumeration value="Role" />
+      <xs:enumeration value="Simple" />
+      <xs:enumeration value="Abstruct" />
     </xs:restriction>
   </xs:simpleType>
 
@@ -395,13 +435,14 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="InheritanceType">
+  <!--<xs:simpleType name="InheritanceType">
     <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
       <xs:enumeration value="Prototype" />
       <xs:enumeration value="Role" />
       <xs:enumeration value="Simple" />
     </xs:restriction>
-  </xs:simpleType>
+  </xs:simpleType>-->
 
   <xs:simpleType name="PrimaryKeyMappedMatchWith">
     <xs:restriction base="xs:string">
@@ -411,6 +452,14 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="StoreContentType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Binary" />
+      <xs:enumeration value="Json" />
+      <xs:enumeration value="Xml" />
+    </xs:restriction>
+  </xs:simpleType>
+  
   <xs:simpleType name="CodeVarType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="String" />
@@ -428,6 +477,7 @@
       <xs:enumeration value="Time" />
       <xs:enumeration value="Date" />
       <xs:enumeration value="Char" />
+      <xs:enumeration value="Chars" />
       <xs:enumeration value="Long" />
       <xs:enumeration value="Short" />
       <xs:enumeration value="SignedByte" />
@@ -440,6 +490,7 @@
 
       <xs:enumeration value="Xml" />
       <xs:enumeration value="Json" />
+      
     </xs:restriction>
   </xs:simpleType>
 
@@ -453,10 +504,12 @@
       <xs:enumeration value="INT64" />
 
       <xs:enumeration value="NCHAR" />
+      <xs:enumeration value="NCHARS" />
       <xs:enumeration value="NVARCHAR" />
       <xs:enumeration value="NTEXT" />
       
       <xs:enumeration value="CHAR" />
+      <xs:enumeration value="CHARS" />
       <xs:enumeration value="VARCHAR" />
       <xs:enumeration value="TEXT" />
 
@@ -479,6 +532,7 @@
       <xs:enumeration value="GUID" />
       <xs:enumeration value="XML" />
       <xs:enumeration value="JSON" />
+      
     </xs:restriction>
   </xs:simpleType>
 

@@ -38,30 +38,30 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
                 var status = SdrnMessageHandlingStatus.Unprocessed;
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                int valIns = 0;
                 try
                 {
                     var entityObject = deliveryObject;
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                    {
+                        scope.BeginTran();
 
-                    queryExecuter.BeginTransaction();
-                    var builderInsertIEntityPart = this._dataLayer.GetBuilder<MD.IEntityPart>().Insert();
-                    builderInsertIEntityPart.SetValue(c => c.Content, entityObject.Content);
-                    builderInsertIEntityPart.SetValue(c => c.EntityId, entityObject.EntityId);
-                    builderInsertIEntityPart.SetValue(c => c.Eof, entityObject.EOF);
-                    builderInsertIEntityPart.SetValue(c => c.PartIndex, entityObject.PartIndex);
+                        var builderInsertIEntityPart = this._dataLayer.GetBuilder<MD.IEntityPart>().Insert();
+                        builderInsertIEntityPart.SetValue(c => c.Content, entityObject.Content);
+                        builderInsertIEntityPart.SetValue(c => c.ENTITY.Id, entityObject.EntityId);
+                        builderInsertIEntityPart.SetValue(c => c.Eof, entityObject.EOF);
+                        builderInsertIEntityPart.SetValue(c => c.PartIndex, entityObject.PartIndex);
 
-                    valIns = queryExecuter
-                        .Execute(builderInsertIEntityPart);
+                        scope.Executor
+                            .Execute(builderInsertIEntityPart);
 
-                    queryExecuter.CommitTransaction();
-                    // с этого момента нужно считать что сообщение удачно обработано
-                    status = SdrnMessageHandlingStatus.Confirmed;
-                    //this._eventEmitter.Emit("OnSendEntityPart", "SendEntityPartProccesing");
+                        scope.Commit();
+                        
+                        // с этого момента нужно считать что сообщение удачно обработано
+                        status = SdrnMessageHandlingStatus.Confirmed;
+                    }
                 }
                 catch (Exception e)
                 {
-                    queryExecuter.RollbackTransaction();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     status = SdrnMessageHandlingStatus.Error;
                 }
@@ -83,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         deviceCommandResult.CustTxt1 = "Error";
                     }
-                    else if (valIns > 0)
+                    else if (status == SdrnMessageHandlingStatus.Confirmed)
                     {
                         deviceCommandResult.CustTxt1 = "Success";
                     }

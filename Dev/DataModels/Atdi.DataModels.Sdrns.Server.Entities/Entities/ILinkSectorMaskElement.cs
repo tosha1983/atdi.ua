@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface ILinkSectorMaskElement
+    [EntityPrimaryKeyAttribute]
+    public interface ILinkSectorMaskElement_PK
     {
         long Id { get; set; }
-        long? SectorMaskElementId { get; set; }
-        long? SectorId { get; set; }
-        ISectorMaskElement SECTORMASKELEMENT { get; set; }
+    }
+
+    [Entity]
+    public interface ILinkSectorMaskElement: ILinkSectorMaskElement_PK
+    {
+        ISectorMaskElement SECTOR_MASK_ELEM { get; set; }
         ISector SECTOR { get; set; }
     }
 }

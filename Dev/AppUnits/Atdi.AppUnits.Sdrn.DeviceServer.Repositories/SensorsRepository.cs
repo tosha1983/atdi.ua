@@ -3,7 +3,7 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrns.DeviceServer.Entities;
+using MD = Atdi.DataModels.Sdrn.DeviceServer.Entities;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Modules.Sdrn.DeviceServer;
 using System.Xml;
@@ -16,7 +16,7 @@ using Atdi.DataModels.DataConstraint;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 { 
-    public sealed class SensorsRepository : IRepository<Sensor,int?>
+    public sealed class SensorsRepository : IRepository<Sensor, long?>
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
@@ -28,255 +28,188 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             this._logger = logger;
         }
 
-        public int? Create(Sensor item)
+        public long? Create(Sensor item)
         {
             int? idSensor = -1;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             try
             {
                 var sensorData = item;
-                queryExecuter.BeginTransaction();
-               
-                var builderInsertSensor = this._dataLayer.GetBuilder<MD.ISensor>().Insert();
-                builderInsertSensor.SetValue(c => c.Administration, sensorData.Administration);
-                builderInsertSensor.SetValue(c => c.BiuseDate, sensorData.BiuseDate);
-                builderInsertSensor.SetValue(c => c.CreatedBy, sensorData.CreatedBy);
-                builderInsertSensor.SetValue(c => c.CustData1, sensorData.CustDate1);
-                builderInsertSensor.SetValue(c => c.CustNbr1, sensorData.CustNbr1);
-                builderInsertSensor.SetValue(c => c.CustTxt1, sensorData.CustTxt1);
-                builderInsertSensor.SetValue(c => c.DateCreated, sensorData.Created);
-                builderInsertSensor.SetValue(c => c.EouseDate, sensorData.EouseDate);
-                builderInsertSensor.SetValue(c => c.Name, sensorData.Name);
-                builderInsertSensor.SetValue(c => c.NetworkId, sensorData.NetworkId);
-                builderInsertSensor.SetValue(c => c.Remark, sensorData.Remark);
-                builderInsertSensor.SetValue(c => c.RxLoss, sensorData.RxLoss);
-                builderInsertSensor.SetValue(c => c.Status, sensorData.Status);
-                builderInsertSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
-                builderInsertSensor.SetValue(c => c.TypeSensor, sensorData.Type);
-                builderInsertSensor.SetValue(c => c.ApiVersion, "2.0");
-                builderInsertSensor.SetValue(c => c.TechId, sensorData.Equipment.TechId);
-                builderInsertSensor.Select(c => c.Id);
-                builderInsertSensor.Select(c => c.Name);
-
-                queryExecuter.ExecuteAndFetch(builderInsertSensor, reader =>
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                 {
-                    var result = reader.Read();
-                    if (result)
+                    scope.BeginTran();
+
+                    var builderInsertSensor = this._dataLayer.GetBuilder<MD.ISensor>().Insert();
+                    builderInsertSensor.SetValue(c => c.Administration, sensorData.Administration);
+                    builderInsertSensor.SetValue(c => c.BiuseDate, sensorData.BiuseDate);
+                    builderInsertSensor.SetValue(c => c.CreatedBy, sensorData.CreatedBy);
+                    builderInsertSensor.SetValue(c => c.CustData1, sensorData.CustDate1);
+                    builderInsertSensor.SetValue(c => c.CustNbr1, sensorData.CustNbr1);
+                    builderInsertSensor.SetValue(c => c.CustTxt1, sensorData.CustTxt1);
+                    builderInsertSensor.SetValue(c => c.DateCreated, sensorData.Created);
+                    builderInsertSensor.SetValue(c => c.EouseDate, sensorData.EouseDate);
+                    builderInsertSensor.SetValue(c => c.Name, sensorData.Name);
+                    builderInsertSensor.SetValue(c => c.NetworkId, sensorData.NetworkId);
+                    builderInsertSensor.SetValue(c => c.Remark, sensorData.Remark);
+                    builderInsertSensor.SetValue(c => c.RxLoss, sensorData.RxLoss);
+                    builderInsertSensor.SetValue(c => c.Status, sensorData.Status);
+                    builderInsertSensor.SetValue(c => c.StepMeasTime, sensorData.StepMeasTime);
+                    builderInsertSensor.SetValue(c => c.TypeSensor, sensorData.Type);
+                    builderInsertSensor.SetValue(c => c.ApiVersion, "2.0");
+                    builderInsertSensor.SetValue(c => c.TechId, sensorData.Equipment.TechId);
+
+                    var pk_Sensor = scope.Executor.Execute<MD.ISensor_PK>(builderInsertSensor);
+                    idSensor = pk_Sensor.Id;
+
+                    if (idSensor > -1)
                     {
-                        idSensor = reader.GetValue(c => c.Id);
-                    }
-                    return result;
-                });
-
-                if (idSensor > -1)
-                {
-                    var builderUpdateSensor = this._dataLayer.GetBuilder<MD.ISensor>().Update();
-                    builderUpdateSensor.SetValue(t => t.SensorIdentifierId, idSensor);
-                    builderUpdateSensor.Where(t => t.Id, ConditionOperator.Equal, idSensor);
-                    queryExecuter
-                   .Execute(builderUpdateSensor);
-
-
-                    if (sensorData.Antenna != null)
-                    {
-                        int idSensorAntenna = -1;
-                        var builderInsertAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().Insert();
-                        builderInsertAntenna.SetValue(c => c.AddLoss, sensorData.Antenna.AddLoss);
-                        builderInsertAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
-                        builderInsertAntenna.SetValue(c => c.AntDir, sensorData.Antenna.Direction.ToString());
-                        builderInsertAntenna.SetValue(c => c.Category, sensorData.Antenna.Category);
-                        builderInsertAntenna.SetValue(c => c.Code, sensorData.Antenna.Code);
-                        builderInsertAntenna.SetValue(c => c.CustData1, sensorData.Antenna.CustDate1);
-                        builderInsertAntenna.SetValue(c => c.CustNbr1, sensorData.Antenna.CustNbr1);
-                        builderInsertAntenna.SetValue(c => c.CustTxt1, sensorData.Antenna.CustTxt1);
-                        builderInsertAntenna.SetValue(c => c.GainMax, sensorData.Antenna.GainMax);
-                        builderInsertAntenna.SetValue(c => c.GainType, sensorData.Antenna.GainType);
-                        builderInsertAntenna.SetValue(c => c.HbeamWidth, sensorData.Antenna.HBeamwidth);
-                        builderInsertAntenna.SetValue(c => c.LowerFreq, sensorData.Antenna.LowerFreq_MHz);
-                        builderInsertAntenna.SetValue(c => c.Manufacturer, sensorData.Antenna.Manufacturer);
-                        builderInsertAntenna.SetValue(c => c.Name, sensorData.Antenna.Name);
-                        builderInsertAntenna.SetValue(c => c.Polarization, sensorData.Antenna.Polarization.ToString());
-                        builderInsertAntenna.SetValue(c => c.Remark, sensorData.Antenna.Remark);
-                        builderInsertAntenna.SetValue(c => c.Slewang, sensorData.Antenna.SlewAng);
-                        builderInsertAntenna.SetValue(c => c.TechId, sensorData.Antenna.TechId);
-                        builderInsertAntenna.SetValue(c => c.UpperFreq, sensorData.Antenna.UpperFreq_MHz);
-                        builderInsertAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
-                        builderInsertAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
-                        builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
-                        builderInsertAntenna.SetValue(c => c.SensorId, idSensor);
-                        builderInsertAntenna.Select(c => c.Id);
-                        queryExecuter
-                        .ExecuteAndFetch(builderInsertAntenna, reader =>
+                        if (sensorData.Antenna != null)
                         {
-                            var result = reader.Read();
-                            if (result)
-                            {
-                                idSensorAntenna = reader.GetValue(c => c.Id);
-                            }
-                            return result;
-                        });
+                            var builderInsertAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().Insert();
+                            builderInsertAntenna.SetValue(c => c.AddLoss, sensorData.Antenna.AddLoss);
+                            builderInsertAntenna.SetValue(c => c.AntClass, sensorData.Antenna.Class);
+                            builderInsertAntenna.SetValue(c => c.AntDir, sensorData.Antenna.Direction.ToString());
+                            builderInsertAntenna.SetValue(c => c.Category, sensorData.Antenna.Category);
+                            builderInsertAntenna.SetValue(c => c.Code, sensorData.Antenna.Code);
+                            builderInsertAntenna.SetValue(c => c.CustData1, sensorData.Antenna.CustDate1);
+                            builderInsertAntenna.SetValue(c => c.CustNbr1, sensorData.Antenna.CustNbr1);
+                            builderInsertAntenna.SetValue(c => c.CustTxt1, sensorData.Antenna.CustTxt1);
+                            builderInsertAntenna.SetValue(c => c.GainMax, sensorData.Antenna.GainMax);
+                            builderInsertAntenna.SetValue(c => c.GainType, sensorData.Antenna.GainType);
+                            builderInsertAntenna.SetValue(c => c.HbeamWidth, sensorData.Antenna.HBeamwidth);
+                            builderInsertAntenna.SetValue(c => c.LowerFreq, sensorData.Antenna.LowerFreq_MHz);
+                            builderInsertAntenna.SetValue(c => c.Manufacturer, sensorData.Antenna.Manufacturer);
+                            builderInsertAntenna.SetValue(c => c.Name, sensorData.Antenna.Name);
+                            builderInsertAntenna.SetValue(c => c.Polarization, sensorData.Antenna.Polarization.ToString());
+                            builderInsertAntenna.SetValue(c => c.Remark, sensorData.Antenna.Remark);
+                            builderInsertAntenna.SetValue(c => c.Slewang, sensorData.Antenna.SlewAng);
+                            builderInsertAntenna.SetValue(c => c.TechId, sensorData.Antenna.TechId);
+                            builderInsertAntenna.SetValue(c => c.UpperFreq, sensorData.Antenna.UpperFreq_MHz);
+                            builderInsertAntenna.SetValue(c => c.UseType, sensorData.Antenna.UseType);
+                            builderInsertAntenna.SetValue(c => c.VbeamWidth, sensorData.Antenna.VBeamwidth);
+                            builderInsertAntenna.SetValue(c => c.Xpd, sensorData.Antenna.XPD);
+                            builderInsertAntenna.SetValue(c => c.SensorId, idSensor);
+
+                            var pk_SensorAntenna = scope.Executor
+                            .Execute<MD.ISensorAntenna_PK>(builderInsertAntenna);
 
 
-                        if (idSensorAntenna > -1)
-                        {
-                            if (sensorData.Antenna.Patterns != null)
+                            if (pk_SensorAntenna.Id > -1)
                             {
-                                int idSensorAntennaPattern = -1;
-                                foreach (AntennaPattern patt in sensorData.Antenna.Patterns)
+                                if (sensorData.Antenna.Patterns != null)
                                 {
-                                    var builderInsertAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Insert();
-                                    builderInsertAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
-                                    builderInsertAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
-                                    builderInsertAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
-                                    builderInsertAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
-                                    builderInsertAntennaPattern.SetValue(c => c.Gain, patt.Gain);
-                                    builderInsertAntennaPattern.SetValue(c => c.SensorAntennaId, idSensorAntenna);
-                                    builderInsertAntennaPattern.Select(c => c.Id);
-                                    queryExecuter
-                                    .ExecuteAndFetch(builderInsertAntennaPattern, reader =>
+                                    long? idSensorAntennaPattern = -1;
+                                    foreach (AntennaPattern patt in sensorData.Antenna.Patterns)
                                     {
-                                        var result = reader.Read();
-                                        if (result)
-                                        {
-                                            idSensorAntennaPattern = reader.GetValue(c => c.Id);
-                                        }
-                                        return result;
-                                    });
+                                        var builderInsertAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>().Insert();
+                                        builderInsertAntennaPattern.SetValue(c => c.DiagA, patt.DiagA);
+                                        builderInsertAntennaPattern.SetValue(c => c.DiagH, patt.DiagH);
+                                        builderInsertAntennaPattern.SetValue(c => c.DiagV, patt.DiagV);
+                                        builderInsertAntennaPattern.SetValue(c => c.Freq, patt.Freq_MHz);
+                                        builderInsertAntennaPattern.SetValue(c => c.Gain, patt.Gain);
+                                        builderInsertAntennaPattern.SetValue(c => c.SensorAntennaId, pk_SensorAntenna.Id);
+
+                                        var pk_sensorAntennaPattern = scope.Executor
+                                        .Execute<MD.IAntennaPattern_PK>(builderInsertAntennaPattern);
+                                        idSensorAntennaPattern = pk_sensorAntennaPattern.Id;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (sensorData.Equipment != null)
+                        {
+                            var builderInsertEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>().Insert();
+                            builderInsertEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
+                            builderInsertEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
+                            builderInsertEquipment.SetValue(c => c.CustData1, sensorData.Equipment.CustDate1);
+                            builderInsertEquipment.SetValue(c => c.CustNbr1, sensorData.Equipment.CustNbr1);
+                            builderInsertEquipment.SetValue(c => c.CustTxt1, sensorData.Equipment.CustTxt1);
+                            builderInsertEquipment.SetValue(c => c.EquipClass, sensorData.Equipment.Class);
+                            builderInsertEquipment.SetValue(c => c.Family, sensorData.Equipment.Family);
+                            builderInsertEquipment.SetValue(c => c.FftPointMax, sensorData.Equipment.FFTPointMax);
+                            builderInsertEquipment.SetValue(c => c.LowerFreq, sensorData.Equipment.LowerFreq_MHz);
+                            builderInsertEquipment.SetValue(c => c.Manufacturer, sensorData.Equipment.Manufacturer);
+                            builderInsertEquipment.SetValue(c => c.Mobility, sensorData.Equipment.Mobility);
+                            builderInsertEquipment.SetValue(c => c.Name, sensorData.Equipment.Name);
+                            builderInsertEquipment.SetValue(c => c.OperationMode, sensorData.Equipment.OperationMode);
+                            builderInsertEquipment.SetValue(c => c.RbwMax, sensorData.Equipment.RBWMax_kHz);
+                            builderInsertEquipment.SetValue(c => c.RbwMin, sensorData.Equipment.RBWMin_kHz);
+                            builderInsertEquipment.SetValue(c => c.RefLevelDbm, sensorData.Equipment.MaxRefLevel_dBm);
+                            builderInsertEquipment.SetValue(c => c.Remark, sensorData.Equipment.Remark);
+                            builderInsertEquipment.SetValue(c => c.TechId, sensorData.Equipment.TechId);
+                            builderInsertEquipment.SetValue(c => c.TuningStep, sensorData.Equipment.TuningStep_Hz);
+                            builderInsertEquipment.SetValue(c => c.Type, sensorData.Equipment.Type);
+                            builderInsertEquipment.SetValue(c => c.UpperFreq, sensorData.Equipment.UpperFreq_MHz);
+                            builderInsertEquipment.SetValue(c => c.UserType, sensorData.Equipment.UseType);
+                            builderInsertEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
+                            builderInsertEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
+                            builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
+                            builderInsertEquipment.SetValue(c => c.SensorId, idSensor);
+
+                            var pk_idSensorEquipment = scope.Executor
+                                   .Execute<MD.ISensorEquipment_PK>(builderInsertEquipment);
+
+                            if (sensorData.Equipment.Sensitivities != null)
+                            {
+                                foreach (EquipmentSensitivity senseqps in sensorData.Equipment.Sensitivities)
+                                {
+                                    var builderInsertSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Insert();
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.Freq, senseqps.Freq_MHz);
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
+                                    builderInsertSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, pk_idSensorEquipment.Id);
+
+                                    var pk_sensorEquipmentSensitivities = scope.Executor
+                                    .Execute<MD.ISensorSensitivites_PK>(builderInsertSensorEquipmentSensitivities);
+                                }
+                            }
+                            if (sensorData.Polygon != null)
+                            {
+                                SensorPolygon sensPolygon = sensorData.Polygon;
+                                foreach (Atdi.DataModels.Sdrns.GeoPoint geo in sensPolygon.Points)
+                                {
+                                    var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
+                                    builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
+                                    builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
+                                    builderInsertSensorPolygons.SetValue(c => c.SensorId, idSensor);
+                                    
+                                    scope.Executor
+                                    .Execute(builderInsertSensorPolygons);
+                                }
+                            }
+
+                            if (sensorData.Locations != null)
+                            {
+                                foreach (var location in sensorData.Locations)
+                                {
+                                    var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
+                                    builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
+                                    builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
+                                    builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
+                                    builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
+                                    builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
+                                    builderInsertSensLocations.SetValue(c => c.Status, location.Status);
+                                    builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
+                                    
+                                    scope.Executor
+                                    .Execute(builderInsertSensLocations);
                                 }
                             }
                         }
                     }
-
-                    if (sensorData.Equipment != null)
-                    {
-                        int idSensorEquipment = -1;
-                        var builderInsertEquipment = this._dataLayer.GetBuilder<MD.ISensorEquipment>().Insert();
-                        builderInsertEquipment.SetValue(c => c.Category, sensorData.Equipment.Category);
-                        builderInsertEquipment.SetValue(c => c.Code, sensorData.Equipment.Code);
-                        builderInsertEquipment.SetValue(c => c.CustData1, sensorData.Equipment.CustDate1);
-                        builderInsertEquipment.SetValue(c => c.CustNbr1, sensorData.Equipment.CustNbr1);
-                        builderInsertEquipment.SetValue(c => c.CustTxt1, sensorData.Equipment.CustTxt1);
-                        builderInsertEquipment.SetValue(c => c.EquipClass, sensorData.Equipment.Class);
-                        builderInsertEquipment.SetValue(c => c.Family, sensorData.Equipment.Family);
-                        builderInsertEquipment.SetValue(c => c.FftPointMax, sensorData.Equipment.FFTPointMax);
-                        builderInsertEquipment.SetValue(c => c.LowerFreq, sensorData.Equipment.LowerFreq_MHz);
-                        builderInsertEquipment.SetValue(c => c.Manufacturer, sensorData.Equipment.Manufacturer);
-                        builderInsertEquipment.SetValue(c => c.Mobility, sensorData.Equipment.Mobility);
-                        builderInsertEquipment.SetValue(c => c.Name, sensorData.Equipment.Name);
-                        builderInsertEquipment.SetValue(c => c.OperationMode, sensorData.Equipment.OperationMode);
-                        builderInsertEquipment.SetValue(c => c.RbwMax, sensorData.Equipment.RBWMax_kHz);
-                        builderInsertEquipment.SetValue(c => c.RbwMin, sensorData.Equipment.RBWMin_kHz);
-                        builderInsertEquipment.SetValue(c => c.RefLevelDbm, sensorData.Equipment.MaxRefLevel_dBm);
-                        builderInsertEquipment.SetValue(c => c.Remark, sensorData.Equipment.Remark);
-                        builderInsertEquipment.SetValue(c => c.TechId, sensorData.Equipment.TechId);
-                        builderInsertEquipment.SetValue(c => c.TuningStep, sensorData.Equipment.TuningStep_Hz);
-                        builderInsertEquipment.SetValue(c => c.Type, sensorData.Equipment.Type);
-                        builderInsertEquipment.SetValue(c => c.UpperFreq, sensorData.Equipment.UpperFreq_MHz);
-                        builderInsertEquipment.SetValue(c => c.UserType, sensorData.Equipment.UseType);
-                        builderInsertEquipment.SetValue(c => c.VbwMax, sensorData.Equipment.VBWMax_kHz);
-                        builderInsertEquipment.SetValue(c => c.VbwMin, sensorData.Equipment.VBWMin_kHz);
-                        builderInsertEquipment.SetValue(c => c.Version, sensorData.Equipment.Version);
-                        builderInsertEquipment.SetValue(c => c.SensorId, idSensor);
-                        builderInsertEquipment.Select(c => c.Id);
-                        queryExecuter
-                               .ExecuteAndFetch(builderInsertEquipment, reader =>
-                               {
-                                   var result = reader.Read();
-                                   if (result)
-                                   {
-                                       idSensorEquipment = reader.GetValue(c => c.Id);
-                                   }
-                                   return result;
-                               });
-
-                        if (sensorData.Equipment.Sensitivities != null)
-                        {
-                            foreach (EquipmentSensitivity senseqps in sensorData.Equipment.Sensitivities)
-                            {
-                                int idSensorEquipmentSensitivities = -1;
-                                var builderInsertSensorEquipmentSensitivities = this._dataLayer.GetBuilder<MD.ISensorSensitivites>().Insert();
-                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.AddLoss, senseqps.AddLoss);
-                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.Freq, senseqps.Freq_MHz);
-                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.FreqStability, senseqps.FreqStability);
-                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.Ktbf, senseqps.KTBF_dBm);
-                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.Noisef, senseqps.NoiseF);
-                                builderInsertSensorEquipmentSensitivities.SetValue(c => c.SensorEquipId, idSensorEquipment);
-                                builderInsertSensorEquipmentSensitivities.Select(c => c.Id);
-                                queryExecuter
-                                .ExecuteAndFetch(builderInsertSensorEquipmentSensitivities, reader =>
-                                {
-                                    var result = reader.Read();
-                                    if (result)
-                                    {
-                                        idSensorEquipmentSensitivities = reader.GetValue(c => c.Id);
-                                    }
-                                    return result;
-                                });
-                            }
-                        }
-                        if (sensorData.Polygon != null)
-                        {
-                            SensorPolygon sensPolygon = sensorData.Polygon;
-                            int idsensPolygon = -1;
-                            foreach (Atdi.DataModels.Sdrns.GeoPoint geo in sensPolygon.Points)
-                            {
-                                var builderInsertSensorPolygons = this._dataLayer.GetBuilder<MD.ISensorPolygon>().Insert();
-                                builderInsertSensorPolygons.SetValue(c => c.Lat, geo.Lat);
-                                builderInsertSensorPolygons.SetValue(c => c.Lon, geo.Lon);
-                                builderInsertSensorPolygons.SetValue(c => c.SensorId, idSensor);
-                                builderInsertSensorPolygons.Select(c => c.Id);
-                                queryExecuter
-                                .ExecuteAndFetch(builderInsertSensorPolygons, reader =>
-                                {
-                                    var result = reader.Read();
-                                    if (result)
-                                    {
-                                        idsensPolygon = reader.GetValue(c => c.Id);
-                                    }
-                                    return result;
-                                });
-                            }
-                        }
-
-                        if (sensorData.Locations != null)
-                        {
-                            int idsensLocations = -1;
-                            foreach (var location in sensorData.Locations)
-                            {
-                                var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
-                                builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
-                                builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
-                                builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
-                                builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
-                                builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
-                                builderInsertSensLocations.SetValue(c => c.Status, location.Status);
-                                builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
-                                builderInsertSensLocations.Select(c => c.Id);
-                                queryExecuter
-                                .ExecuteAndFetch(builderInsertSensLocations, reader =>
-                                {
-                                    var result = reader.Read();
-                                    if (result)
-                                    {
-                                        idsensLocations = reader.GetValue(c => c.Id);
-                                    }
-                                    return result;
-                                });
-                            }
-                        }
-                    }
+                    scope.Commit();
                 }
-                queryExecuter.CommitTransaction();
             }
             catch (Exception e)
             {
-                queryExecuter.RollbackTransaction();
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return idSensor;
         }
 
-        public bool Delete(int? id)
+        public bool Delete(long? id)
         {
             throw new NotImplementedException();
         }
@@ -286,9 +219,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
            // throw new NotImplementedException();
         }
 
+        public int GetCountObjectsWithRestrict()
+        {
+            throw new NotImplementedException();
+        }
 
-     
-        public Sensor LoadObject(int? id)
+        public Dictionary<string, string> GetDictionaryStatusObjects()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Sensor LoadObject(long? id)
         {
             throw new NotImplementedException();
         }
@@ -302,89 +243,89 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         {
             bool isSuccess = false;
             int? idSensor = -1;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
             try
             {
                 var sensorData = item;
-                var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensor>().From();
-                builderSelectSensLocations.Where(c => c.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
-                builderSelectSensLocations.Where(c => c.Name, ConditionOperator.Equal, sensorData.Name);
-                builderSelectSensLocations.Select(c => c.Id);
-                queryExecuter
-                       .Fetch(builderSelectSensLocations, reader =>
-                       {
-                           var result = reader.Read();
-                           if (result)
-                           {
-                               idSensor = reader.GetValue(c => c.Id);
-                           }
-                           return result;
-                       });
 
-                if (idSensor > 0)
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDeviceDataContext>())
                 {
-                    queryExecuter.BeginTransaction();
 
-                    var builderUpdateSens = this._dataLayer.GetBuilder<MD.ISensor>().Update();
-                    builderUpdateSens.SetValue(c => c.Status, item.Status);
-                    builderUpdateSens.Where(c => c.Id, ConditionOperator.Equal, idSensor);
-                    if (queryExecuter.Execute(builderUpdateSens) > 0)
+                    var builderSelectSensLocations = this._dataLayer.GetBuilder<MD.ISensor>().From();
+                    builderSelectSensLocations.Where(c => c.TechId, ConditionOperator.Equal, sensorData.Equipment.TechId);
+                    builderSelectSensLocations.Where(c => c.Name, ConditionOperator.Equal, sensorData.Name);
+                    builderSelectSensLocations.Select(c => c.Id);
+                    scope.Executor
+                           .Fetch(builderSelectSensLocations, reader =>
+                           {
+                               var result = reader.Read();
+                               if (result)
+                               {
+                                   idSensor = reader.GetValue(c => c.Id);
+                               }
+                               return result;
+                           });
+
+                    if (idSensor > 0)
                     {
-                        isSuccess = true;
-                    }
 
+                        scope.BeginTran();
 
-                    if (sensorData.Locations.Length > 0)
-                    {
-
-                        var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
-                        builderUpdateSensLocations.SetValue(c => c.Status, "Z");
-                        builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
-                        if (queryExecuter.Execute(builderUpdateSensLocations) > 0)
+                        var builderUpdateSens = this._dataLayer.GetBuilder<MD.ISensor>().Update();
+                        builderUpdateSens.SetValue(c => c.Status, item.Status);
+                        builderUpdateSens.Where(c => c.Id, ConditionOperator.Equal, idSensor);
+                        if (scope.Executor.Execute(builderUpdateSens) > 0)
                         {
                             isSuccess = true;
                         }
-                    }
 
 
-                    if (sensorData.Locations != null)
-                    {
-                        foreach (var location in sensorData.Locations)
+                        if (sensorData.Locations.Length > 0)
                         {
-                            if (location.Status == "A")
-                            {
-                                var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
-                                builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
-                                builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
-                                builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
-                                builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
-                                builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
-                                builderInsertSensLocations.SetValue(c => c.Status, location.Status);
-                                builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
-                                builderInsertSensLocations.Select(c => c.Id);
-                                queryExecuter
-                                .ExecuteAndFetch(builderInsertSensLocations, reader =>
-                                {
-                                    isSuccess = true;
-                                    return true;
-                                });
 
+                            var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                            builderUpdateSensLocations.SetValue(c => c.Status, "Z");
+                            builderUpdateSensLocations.Where(c => c.SensorId, ConditionOperator.Equal, idSensor);
+                            if (scope.Executor.Execute(builderUpdateSensLocations) > 0)
+                            {
+                                isSuccess = true;
                             }
                         }
+
+
+                        if (sensorData.Locations != null)
+                        {
+                            foreach (var location in sensorData.Locations)
+                            {
+                                if (location.Status == "A")
+                                {
+                                    var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
+                                    builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
+                                    builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
+                                    builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
+                                    builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
+                                    builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
+                                    builderInsertSensLocations.SetValue(c => c.Status, location.Status);
+                                    builderInsertSensLocations.SetValue(c => c.SensorId, idSensor);
+
+                                    scope.Executor
+                                    .Execute(builderInsertSensLocations);
+
+                                }
+                            }
+                        }
+                        scope.Commit();
                     }
-                    queryExecuter.CommitTransaction();
                 }
             }
             catch (Exception e)
             {
                 isSuccess = false;
-                queryExecuter.RollbackTransaction();
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }
 
-        Sensor[] IRepository<Sensor,int?>.LoadAllObjects()
+        Sensor[] IRepository<Sensor,long?>.LoadAllObjects()
         {
             var listSensors = new List<Sensor>();
             Sensor val = null;

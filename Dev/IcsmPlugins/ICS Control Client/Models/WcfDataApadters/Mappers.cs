@@ -186,7 +186,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 TypeMeasurements = source.TypeMeasurements,
                 LowFreq = source.FrequenciesMeasurements == null ? (double?)null : (source.FrequenciesMeasurements.Length == 0 ? 0 : source.FrequenciesMeasurements.Min(f => f.Freq)),
                 UpFreq = source.FrequenciesMeasurements == null ? (double?)null : (source.FrequenciesMeasurements.Length == 0 ? 0 : source.FrequenciesMeasurements.Max(f => f.Freq)),
-                MeasDeviceId = source.StationMeasurements == null ? (int?)null : source.StationMeasurements.StationId.Value,
+                MeasDeviceId = source.StationMeasurements == null ? (long?)null : source.StationMeasurements.StationId.Value,
                 StationsNumber = source.ResultsMeasStation == null ? (int?)null : source.ResultsMeasStation.Length,
                 PointsNumber = source.MeasurementsResults == null ? (int?)null : source.MeasurementsResults.Length,
                 SensorName = source.SensorName,

@@ -82,7 +82,7 @@
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
-      <Project>{61E920B8-8945-420C-A8C8-BC9A7CBF6F70}</Project>
+      <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
       <Name>Atdi.DataModels.Api.EventSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
@@ -126,6 +126,5 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

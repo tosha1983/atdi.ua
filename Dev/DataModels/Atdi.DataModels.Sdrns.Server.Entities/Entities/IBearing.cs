@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IBearing
+    [EntityPrimaryKeyAttribute]
+    public interface IBearing_PK
     {
         long Id { get; set; }
-        long? ResMeasStaId { get; set; }
+    }
+
+    [Entity]
+    public interface IBearing: IBearing_PK
+    {
         double? Lon { get; set; }
         double? Lat { get; set; }
         double? Asl { get; set; }
@@ -24,6 +28,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double CentralFrequency_MHz { get; set; }
         double Bearing { get; set; }
         double? AntennaAzimut { get; set; }
-        IResMeasStation RESMEASSTA { get; set; }
+        IResMeasStation RES_MEAS_STATION { get; set; }
     }
 }

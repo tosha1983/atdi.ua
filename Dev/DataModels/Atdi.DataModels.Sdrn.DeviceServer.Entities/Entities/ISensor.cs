@@ -5,13 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface ISensor
+    [EntityPrimaryKeyAttribute]
+    public interface ISensor_PK
     {
-        int Id { get; set; }
-        int? SensorIdentifierId { get; set; }
+        int? Id { get; set; }
+    }
+
+    [Entity]
+    public interface ISensor : ISensor_PK
+    {
         string Status { get; set; }
         string Name { get; set; }
         string Administration { get; set; }

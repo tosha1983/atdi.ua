@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atdi.DataModels.DataConstraint;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
     public interface IValuePrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata
     {
-        object Value { get; }
+        ValueOperand Value { get; }
     }
 
     public interface IFieldPrimaryKeyFieldMappedMetadata : IPrimaryKeyFieldMappedMetadata

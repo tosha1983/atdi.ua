@@ -90,7 +90,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         val.StepMeasTime = reader.GetNullableValueAsDouble(reader.GetFieldType(reader.GetOrdinal("StepMeasTime")), reader.GetOrdinal("StepMeasTime"));
                         val.TypeSensor = reader.GetNullableValueAsString(reader.GetFieldType(reader.GetOrdinal("TypeSensor")), reader.GetOrdinal("TypeSensor"));
                         val.Id = new SensorIdentifier();
-                        val.Id.Value = reader.GetValueAsInt32(reader.GetFieldType(reader.GetOrdinal("Id")), reader.GetOrdinal("Id"));
+                        val.Id.Value = reader.GetNullableValueAsLong(reader.GetFieldType(reader.GetOrdinal("Id")), reader.GetOrdinal("Id")).Value;
 
 
 
@@ -113,14 +113,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectSensorAntenna.Select(c => c.Name);
                         builderSelectSensorAntenna.Select(c => c.Polarization);
                         builderSelectSensorAntenna.Select(c => c.Remark);
-                        builderSelectSensorAntenna.Select(c => c.SensorId);
+                        builderSelectSensorAntenna.Select(c => c.SENSOR.Id);
                         builderSelectSensorAntenna.Select(c => c.Slewang);
                         builderSelectSensorAntenna.Select(c => c.TechId);
                         builderSelectSensorAntenna.Select(c => c.UpperFreq);
                         builderSelectSensorAntenna.Select(c => c.UseType);
                         builderSelectSensorAntenna.Select(c => c.VbeamWidth);
                         builderSelectSensorAntenna.Select(c => c.Xpd);
-                        builderSelectSensorAntenna.Where(c => c.SensorId, ConditionOperator.Equal, val.Id.Value);
+                        builderSelectSensorAntenna.Where(c => c.SENSOR.Id, ConditionOperator.Equal, val.Id.Value);
 
                         queryExecuter.Fetch(builderSelectSensorAntenna, readerSensorAntenna =>
                         {
@@ -167,7 +167,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderSelectAntennaPattern.Select(c => c.DiagV);
                                 builderSelectAntennaPattern.Select(c => c.Freq);
                                 builderSelectAntennaPattern.Select(c => c.Gain);
-                                builderSelectAntennaPattern.Where(c => c.SensorAntennaId, ConditionOperator.Equal, readerSensorAntenna.GetValue(c => c.Id));
+                                builderSelectAntennaPattern.Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.Equal, readerSensorAntenna.GetValue(c => c.Id));
 
                                 queryExecuter.Fetch(builderSelectAntennaPattern, readerIAntennaPattern =>
                                 {
@@ -210,7 +210,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectEquipment.Select(c => c.RbwMin);
                         builderSelectEquipment.Select(c => c.RefLevelDbm);
                         builderSelectEquipment.Select(c => c.Remark);
-                        builderSelectEquipment.Select(c => c.SensorId);
+                        builderSelectEquipment.Select(c => c.SENSOR.Id);
                         builderSelectEquipment.Select(c => c.TechId);
                         builderSelectEquipment.Select(c => c.TuningStep);
                         builderSelectEquipment.Select(c => c.Type);
@@ -219,7 +219,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectEquipment.Select(c => c.VbwMax);
                         builderSelectEquipment.Select(c => c.VbwMin);
                         builderSelectEquipment.Select(c => c.Version);
-                        builderSelectEquipment.Where(c => c.SensorId, ConditionOperator.Equal, val.Id.Value);
+                        builderSelectEquipment.Where(c => c.SENSOR.Id, ConditionOperator.Equal, val.Id.Value);
                         queryExecuter.Fetch(builderSelectEquipment, readerEquipment =>
                         {
                             while (readerEquipment.Read())
@@ -261,8 +261,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderSelectSensorSensitivites.Select(c => c.Id);
                                 builderSelectSensorSensitivites.Select(c => c.Ktbf);
                                 builderSelectSensorSensitivites.Select(c => c.Noisef);
-                                builderSelectSensorSensitivites.Select(c => c.SensorEquipId);
-                                builderSelectSensorSensitivites.Where(c => c.SensorEquipId, ConditionOperator.Equal, readerEquipment.GetValue(c => c.Id));
+                                builderSelectSensorSensitivites.Select(c => c.SENSOR_EQUIP.Id);
+                                builderSelectSensorSensitivites.Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.Equal, readerEquipment.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderSelectSensorSensitivites, readerSensorSensitivites =>
                                 {
                                     while (readerSensorSensitivites.Read())
@@ -294,7 +294,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectsensorLocation.Select(c => c.Lon);
                         builderSelectsensorLocation.Select(c => c.Status);
 
-                        builderSelectsensorLocation.Where(c => c.SensorId, ConditionOperator.Equal, val.Id.Value);
+                        builderSelectsensorLocation.Where(c => c.SENSOR.Id, ConditionOperator.Equal, val.Id.Value);
                         builderSelectsensorLocation.Where(c => c.Status, ConditionOperator.Equal, Status.A.ToString());
                         queryExecuter.Fetch(builderSelectsensorLocation, readersensorLocation =>
                         {
@@ -320,7 +320,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectSensorPolygonPoint.Select(c => c.Id);
                         builderSelectSensorPolygonPoint.Select(c => c.Lat);
                         builderSelectSensorPolygonPoint.Select(c => c.Lon);
-                        builderSelectSensorPolygonPoint.Where(c => c.SensorId, ConditionOperator.Equal, val.Id.Value);
+                        builderSelectSensorPolygonPoint.Where(c => c.SENSOR.Id, ConditionOperator.Equal, val.Id.Value);
 
                         queryExecuter.Fetch(builderSelectSensorPolygonPoint, readersensorPolygonPoint =>
                         {
@@ -429,14 +429,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectSensorAntenna.Select(c => c.Name);
                         builderSelectSensorAntenna.Select(c => c.Polarization);
                         builderSelectSensorAntenna.Select(c => c.Remark);
-                        builderSelectSensorAntenna.Select(c => c.SensorId);
+                        builderSelectSensorAntenna.Select(c => c.SENSOR.Id);
                         builderSelectSensorAntenna.Select(c => c.Slewang);
                         builderSelectSensorAntenna.Select(c => c.TechId);
                         builderSelectSensorAntenna.Select(c => c.UpperFreq);
                         builderSelectSensorAntenna.Select(c => c.UseType);
                         builderSelectSensorAntenna.Select(c => c.VbeamWidth);
                         builderSelectSensorAntenna.Select(c => c.Xpd);
-                        builderSelectSensorAntenna.Where(c => c.SensorId, ConditionOperator.Equal, id);
+                        builderSelectSensorAntenna.Where(c => c.SENSOR.Id, ConditionOperator.Equal, id);
 
                         queryExecuter.Fetch(builderSelectSensorAntenna, readerSensorAntenna =>
                         {
@@ -483,7 +483,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderSelectAntennaPattern.Select(c => c.DiagV);
                                 builderSelectAntennaPattern.Select(c => c.Freq);
                                 builderSelectAntennaPattern.Select(c => c.Gain);
-                                builderSelectAntennaPattern.Where(c => c.SensorAntennaId, ConditionOperator.Equal, readerSensorAntenna.GetValue(c => c.Id));
+                                builderSelectAntennaPattern.Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.Equal, readerSensorAntenna.GetValue(c => c.Id));
 
                                 queryExecuter.Fetch(builderSelectAntennaPattern, readerIAntennaPattern =>
                                 {
@@ -525,7 +525,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectEquipment.Select(c => c.RbwMin);
                         builderSelectEquipment.Select(c => c.RefLevelDbm);
                         builderSelectEquipment.Select(c => c.Remark);
-                        builderSelectEquipment.Select(c => c.SensorId);
+                        builderSelectEquipment.Select(c => c.SENSOR.Id);
                         builderSelectEquipment.Select(c => c.TechId);
                         builderSelectEquipment.Select(c => c.TuningStep);
                         builderSelectEquipment.Select(c => c.Type);
@@ -534,7 +534,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectEquipment.Select(c => c.VbwMax);
                         builderSelectEquipment.Select(c => c.VbwMin);
                         builderSelectEquipment.Select(c => c.Version);
-                        builderSelectEquipment.Where(c => c.SensorId, ConditionOperator.Equal, id);
+                        builderSelectEquipment.Where(c => c.SENSOR.Id, ConditionOperator.Equal, id);
                         queryExecuter.Fetch(builderSelectEquipment, readerEquipment =>
                         {
                             while (readerEquipment.Read())
@@ -576,8 +576,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderSelectSensorSensitivites.Select(c => c.Id);
                                 builderSelectSensorSensitivites.Select(c => c.Ktbf);
                                 builderSelectSensorSensitivites.Select(c => c.Noisef);
-                                builderSelectSensorSensitivites.Select(c => c.SensorEquipId);
-                                builderSelectSensorSensitivites.Where(c => c.SensorEquipId, ConditionOperator.Equal, readerEquipment.GetValue(c => c.Id));
+                                builderSelectSensorSensitivites.Select(c => c.SENSOR_EQUIP.Id);
+                                builderSelectSensorSensitivites.Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.Equal, readerEquipment.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderSelectSensorSensitivites, readerSensorSensitivites =>
                                 {
                                     while (readerSensorSensitivites.Read())
@@ -609,7 +609,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectsensorLocation.Select(c => c.Lon);
                         builderSelectsensorLocation.Select(c => c.Status);
 
-                        builderSelectsensorLocation.Where(c => c.SensorId, ConditionOperator.Equal, id);
+                        builderSelectsensorLocation.Where(c => c.SENSOR.Id, ConditionOperator.Equal, id);
                         builderSelectsensorLocation.Where(c => c.Status, ConditionOperator.Equal, Status.A.ToString());
                         queryExecuter.Fetch(builderSelectsensorLocation, readersensorLocation =>
                         {
@@ -635,7 +635,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectSensorPolygonPoint.Select(c => c.Id);
                         builderSelectSensorPolygonPoint.Select(c => c.Lat);
                         builderSelectSensorPolygonPoint.Select(c => c.Lon);
-                        builderSelectSensorPolygonPoint.Where(c => c.SensorId, ConditionOperator.Equal, id);
+                        builderSelectSensorPolygonPoint.Where(c => c.SENSOR.Id, ConditionOperator.Equal, id);
 
                         queryExecuter.Fetch(builderSelectSensorPolygonPoint, readersensorPolygonPoint =>
                         {
@@ -702,7 +702,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectSensorAntenna.Select(c => c.GainMax);
                         builderSelectSensorAntenna.Select(c => c.Manufacturer);
                         builderSelectSensorAntenna.Select(c => c.Name);
-                        builderSelectSensorAntenna.Where(c => c.SensorId, ConditionOperator.Equal, id);
+                        builderSelectSensorAntenna.Where(c => c.SENSOR.Id, ConditionOperator.Equal, id);
 
                         queryExecuter.Fetch(builderSelectSensorAntenna, readerSensorAntenna =>
                         {
@@ -722,7 +722,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectEquipment.Select(c => c.Manufacturer);
                         builderSelectEquipment.Select(c => c.Code);
                         builderSelectEquipment.Select(c => c.LowerFreq);
-                        builderSelectEquipment.Where(c => c.SensorId, ConditionOperator.Equal, id);
+                        builderSelectEquipment.Where(c => c.SENSOR.Id, ConditionOperator.Equal, id);
                         queryExecuter.Fetch(builderSelectEquipment, readerEquipment =>
                         {
                             while (readerEquipment.Read())
@@ -788,7 +788,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectSensorAntenna.Select(c => c.GainMax);
                         builderSelectSensorAntenna.Select(c => c.Manufacturer);
                         builderSelectSensorAntenna.Select(c => c.Name);
-                        builderSelectSensorAntenna.Where(c => c.SensorId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                        builderSelectSensorAntenna.Where(c => c.SENSOR.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
 
                         queryExecuter.Fetch(builderSelectSensorAntenna, readerSensorAntenna =>
                         {
@@ -808,7 +808,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderSelectEquipment.Select(c => c.Manufacturer);
                         builderSelectEquipment.Select(c => c.LowerFreq);
                         builderSelectEquipment.Select(c => c.Code);
-                        builderSelectEquipment.Where(c => c.SensorId, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                        builderSelectEquipment.Where(c => c.SENSOR.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderSelectEquipment, readerEquipment =>
                         {
                             while (readerEquipment.Read())

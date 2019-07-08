@@ -38,63 +38,63 @@ namespace Atdi.Test.Api.Sdrn.Device.WcfService
 
                 var measTasksBusServiceEndpointName = "MeasTasksBus" + endpointSuffix;
 
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     SendMeasResultsSimple(measTasksBusServiceEndpointName);
                 }
                 
                 return;
 
-                var sensor = CreateSensorData();
+                //    var sensor = CreateSensorData();
 
-                var regInfo = RegisterSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
+                //    var regInfo = RegisterSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
 
-                if (regInfo != null)
-                {
-                    Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");
-                }
+                //    if (regInfo != null)
+                //    {
+                //        Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");
+                //    }
 
-                var updInfo = UpdateSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
+                //    var updInfo = UpdateSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
 
-                if (updInfo != null)
-                {
-                    Console.WriteLine($"Sensor '{updInfo.SensorName}' was updated: status = '{updInfo.Status}', Tech ID = '{updInfo.EquipmentTechId}'");
-                }
+                //    if (updInfo != null)
+                //    {
+                //        Console.WriteLine($"Sensor '{updInfo.SensorName}' was updated: status = '{updInfo.Status}', Tech ID = '{updInfo.EquipmentTechId}'");
+                //    }
 
-                var sensorDescriptor = new SensorDescriptor
-                {
-                    SdrnServer = sdrnServer,
-                    SensorName = sensor.Name,
-                    EquipmentTechId = sensor.Equipment?.TechId
-                };
+                //    var sensorDescriptor = new SensorDescriptor
+                //    {
+                //        SdrnServer = sdrnServer,
+                //        SensorName = sensor.Name,
+                //        EquipmentTechId = sensor.Equipment?.TechId
+                //    };
 
-                while (true)
-                {
-                    var command = GetNextCommand(measTasksBusServiceEndpointName, sensorDescriptor);
-                    if (command != null)
-                    {
-                        HandleCommand(measTasksBusServiceEndpointName, sensorDescriptor, command);
-                    }
+                //    while (true)
+                //    {
+                //        var command = GetNextCommand(measTasksBusServiceEndpointName, sensorDescriptor);
+                //        if (command != null)
+                //        {
+                //            HandleCommand(measTasksBusServiceEndpointName, sensorDescriptor, command);
+                //        }
 
-                    var task = GetNextMeasTask(measTasksBusServiceEndpointName, sensorDescriptor);
-                    if (task != null)
-                    {
-                        HandleMeasTask(measTasksBusServiceEndpointName, sensorDescriptor, task);
-                    }
+                //        var task = GetNextMeasTask(measTasksBusServiceEndpointName, sensorDescriptor);
+                //        if (task != null)
+                //        {
+                //            HandleMeasTask(measTasksBusServiceEndpointName, sensorDescriptor, task);
+                //        }
 
-                    var entity = GetNextEntity(measTasksBusServiceEndpointName, sensorDescriptor);
-                    if (entity != null)
-                    {
-                        HandleEntity(measTasksBusServiceEndpointName, sensorDescriptor, entity);
-                    }
-                    var entityPart = GetNextEntityPart(measTasksBusServiceEndpointName, sensorDescriptor);
-                    if (entityPart != null)
-                    {
-                        HandleEntityPart(measTasksBusServiceEndpointName, sensorDescriptor, entityPart);
-                    }
+                //        var entity = GetNextEntity(measTasksBusServiceEndpointName, sensorDescriptor);
+                //        if (entity != null)
+                //        {
+                //            HandleEntity(measTasksBusServiceEndpointName, sensorDescriptor, entity);
+                //        }
+                //        var entityPart = GetNextEntityPart(measTasksBusServiceEndpointName, sensorDescriptor);
+                //        if (entityPart != null)
+                //        {
+                //            HandleEntityPart(measTasksBusServiceEndpointName, sensorDescriptor, entityPart);
+                //        }
 
-                    System.Threading.Thread.Sleep(SensorWorkSleepTime);
-                }
+                //        System.Threading.Thread.Sleep(SensorWorkSleepTime);
+                //    }
             }
             catch (Exception e)
             {

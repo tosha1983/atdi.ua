@@ -14,7 +14,7 @@ namespace XICSM.ICSControlClient.Models.CreateMeasTask
         public string Status;
         public DateTime StartDate;
         public DateTime StopDate;
-        public int MeasTaskId;
+        public long MeasTaskId;
         public string MeasTaskName;
         public string SensorName ;
         public string SensorEquipTechId;

@@ -5,12 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface IStationLicenseInfo
+    [EntityPrimaryKeyAttribute]
+    public interface IStationLicenseInfo_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface IStationLicenseInfo : IStationLicenseInfo_PK
+    {
         int? IcsmId { get; set; }
         string Name { get; set; }
         DateTime? StartDate { get; set; }

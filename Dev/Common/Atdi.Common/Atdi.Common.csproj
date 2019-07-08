@@ -43,8 +43,10 @@
   <ItemGroup>
     <Compile Include="BreakDownElemBlocks.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\SerializationExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="WinAPITime.cs" />
     <Compile Include="OSInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

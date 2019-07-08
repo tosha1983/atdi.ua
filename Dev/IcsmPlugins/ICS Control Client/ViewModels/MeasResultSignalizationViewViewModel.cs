@@ -28,7 +28,7 @@ namespace XICSM.ICSControlClient.ViewModels
    
     public class MeasResultSignalizationViewViewModel : WpfViewModelBase
     {
-        private int[] _stations;
+        private long[] _stations;
         private readonly string _tableName;
 
         #region Current Objects
@@ -62,7 +62,7 @@ namespace XICSM.ICSControlClient.ViewModels
         //public WpfCommand DeleteEmissionCommand { get; set; }
         #endregion
 
-        public MeasResultSignalizationViewViewModel(int[] stations, string tableName, MeasResultSignalizationViewForm form)
+        public MeasResultSignalizationViewViewModel(long[] stations, string tableName, MeasResultSignalizationViewForm form)
         {
             this._dataStore = DataStore.GetStore();
             this._dataStore.OnBeginInvoke += _dataStore_OnBeginInvoke;

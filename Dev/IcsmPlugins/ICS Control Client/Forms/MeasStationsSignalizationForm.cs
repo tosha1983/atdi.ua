@@ -22,9 +22,9 @@ namespace XICSM.ICSControlClient.Forms
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
         private bool _buttonAssociatedVisible;
-        private int? _emittingId;
+        private long? _emittingId;
         private ElementHost _wpfElementHost;
-        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, int? emittingId, string captionAdd)
+        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, long? emittingId, string captionAdd)
         {
             this._stationData = stationData;
             this._measResult = measResult;

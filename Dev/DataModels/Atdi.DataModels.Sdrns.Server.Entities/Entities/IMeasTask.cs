@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasTask
+    [EntityPrimaryKeyAttribute]
+    public interface IMeasTask_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IMeasTask: IMeasTask_PK
+    {
         string Status { get; set; }
         int? OrderId { get; set; }
         string Type { get; set; }
@@ -22,7 +27,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? MaxTimeBs { get; set; }
         DateTime? DateCreated { get; set; }
         string CreatedBy { get; set; }
-        string IdStart { get; set; }
+        string IdentStart { get; set; }
         DateTime? PerStart { get; set; }
         DateTime? PerStop { get; set; }
         DateTime? TimeStart { get; set; }

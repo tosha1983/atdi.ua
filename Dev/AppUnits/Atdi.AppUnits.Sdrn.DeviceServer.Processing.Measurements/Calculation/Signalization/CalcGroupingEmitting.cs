@@ -423,18 +423,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 // обединение уровней
-                if (TypeJoinSpectrum != 0)
-                {
-                    if ((MasterEmitting.SpectrumIsDetailed) && (AttachableEmitting.SpectrumIsDetailed))
-                    { // если оба детальные 
-                        bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
-                    }
-                    else if (((!MasterEmitting.SpectrumIsDetailed) && (!AttachableEmitting.SpectrumIsDetailed))&&
-                        ((MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations)))
-                    { // если оба не детальны
-                        bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
-                    }
-                }
+                // код не достежим
+                //if (TypeJoinSpectrum != 0)
+                //{
+                //    if ((MasterEmitting.SpectrumIsDetailed) && (AttachableEmitting.SpectrumIsDetailed))
+                //    { // если оба детальные 
+                //        bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
+                //    }
+                //    else if (((!MasterEmitting.SpectrumIsDetailed) && (!AttachableEmitting.SpectrumIsDetailed))&&
+                //        ((MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations)))
+                //    { // если оба не детальны
+                //        bool joinCorr = JoinSpectrum(ref MasterEmitting.Spectrum, AttachableEmitting.Spectrum, TypeJoinSpectrum, NoiseLevel_dBm);
+                //    }
+                //}
             }
             catch (Exception ex)
             {

@@ -5,12 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface ITaskParameters
+    [EntityPrimaryKeyAttribute]
+    public interface ITaskParameters_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface ITaskParameters : ITaskParameters_PK
+    {
         string SDRTaskId { get; set; }
         string MeasurementType { get; set; }
         double? MinFreq_MHz { get; set; }
@@ -30,10 +35,10 @@ namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
         int? NCount { get; set; }
         int SensorId { get; set; }
         ITaskParametersFreq[] ListTaskParametersFreq { get; set; }
-        int? CompareTraceJustWithRefLevels { get; set; }
-        int? AutoDivisionEmitting { get; set; }
+        bool CompareTraceJustWithRefLevels { get; set; }
+        bool AutoDivisionEmitting { get; set; }
         double? DifferenceMaxMax { get; set; }
-        int? FiltrationTrace { get; set; }
+        bool FiltrationTrace { get; set; }
         double? AllowableExcess_dB { get; set; }
         double? PercentForCalcNoise { get; set; }
         int? SignalizationNChenal { get; set; }

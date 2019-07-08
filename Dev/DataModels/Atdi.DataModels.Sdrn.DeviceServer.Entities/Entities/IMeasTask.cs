@@ -5,12 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrns.DeviceServer.Entities
+namespace Atdi.DataModels.Sdrn.DeviceServer.Entities
 {
-    [Entity]
-    public interface IMeasTask
+    [EntityPrimaryKeyAttribute]
+    public interface IMeasTask_PK
     {
-        int Id { get; set; }
+        long? Id { get; set; }
+    }
+
+    [Entity]
+    public interface IMeasTask : IMeasTask_PK
+    {
         string Status { get; set; }
         string TaskId { get; set; }
         string SdrnServer { get; set; }

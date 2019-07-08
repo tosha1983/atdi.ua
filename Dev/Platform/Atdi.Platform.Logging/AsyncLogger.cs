@@ -9,6 +9,29 @@ namespace Atdi.Platform.Logging
 {
     public sealed class AsyncLogger : ILogger, IEventsProducer
     {
+        private class ConsumerDescriptor
+        {
+            private readonly IEventsConsumer _consumer;
+            private Task _task;
+            public ConsumerDescriptor(IEventsConsumer consumer)
+            {
+                this._consumer = consumer;
+                this._task = Task.Run(() => {; });
+            }
+
+            public void Push(IEvent[] events)
+            {
+                _task = _task.ContinueWith(t =>
+                {
+                    try
+                    {
+                        _consumer.Push(events);
+                    }
+                    catch (Exception){ }
+                });
+            }
+        }
+
         private bool _loggerDisposed = false;
 
         private readonly ILogConfig _config;
@@ -18,9 +41,10 @@ namespace Atdi.Platform.Logging
         private readonly int _eventsCapacity;
         private readonly int _taskCapacity;
 
-        private readonly Dictionary<IEventsConsumer, IEventsConsumer> _consumers;
+        private readonly Dictionary<IEventsConsumer, ConsumerDescriptor> _consumers;
         private readonly Task _eventsHandlerTask;
 
+        
 
         public AsyncLogger(ILogConfig config, IEventDataConvertor dataConvertor)
         {
@@ -36,9 +60,10 @@ namespace Atdi.Platform.Logging
 
             this._taskCapacity = this._eventsCapacity * 3;
             this._events = new BlockingCollection<IEvent>(_eventsCapacity);
-            this._consumers = new Dictionary<IEventsConsumer, IEventsConsumer>();
+            this._consumers = new Dictionary<IEventsConsumer, ConsumerDescriptor>();
             this._eventsHandlerTask = new Task(this.EventsHandler);
             this._eventsHandlerTask.Start();
+            
         }
 
         private void EventsHandler()
@@ -64,10 +89,10 @@ namespace Atdi.Platform.Logging
                 var cancel = false;
                 while (!cancel)
                 {
-                    if (this._events.TryTake(out IEvent entry))
+                    if (this._events.TryTake(out IEvent entry, 1000))
                     {
                         tookEntries.Add(entry);
-                        cancel = tookEntries.Count >= _taskCapacity;
+                        cancel = tookEntries.Count >= 1000; // _taskCapacity;
                     }
                     else
                     {
@@ -77,23 +102,22 @@ namespace Atdi.Platform.Logging
 
                 if (tookEntries.Count > 0 && this._consumers != null && this._consumers.Count > 0)
                 {
-                    var sortedEntries = tookEntries.OrderBy(e => e.Time.Ticks).ToArray();
-                    try
+                    var evt = new CriticalEvent()
                     {
-                        foreach (var consumer in this._consumers.Values)
-                        {
-                            try
-                            {
-                                consumer.Push(sortedEntries);
-                            }
-                            catch (Exception) { }
-                        }
-                    }
-                    catch (Exception) {
+                        Category = "Internal",
+                        Context = "Logger",
+                        ManagedThread = System.Threading.Thread.CurrentThread.ManagedThreadId,
+                        Text = $"Took Entries {tookEntries.Count} ----------------------------------------------------------------------------",
 
+                    };
+                    tookEntries.Add(evt);
+                    var sortedEntries = tookEntries.OrderBy(e => e.Time.Ticks).ToArray();
+
+                    foreach (var consumer in this._consumers.Values)
+                    {
+                        consumer.Push(sortedEntries);
                     }
                 }
-
             }
         }
 
@@ -165,7 +189,8 @@ namespace Atdi.Platform.Logging
 
         public void AddConsumer(IEventsConsumer consumer)
         {
-            _consumers[consumer] = consumer;
+            var descriptor = new ConsumerDescriptor(consumer);
+            _consumers[consumer] = descriptor;
         }
 
         #endregion

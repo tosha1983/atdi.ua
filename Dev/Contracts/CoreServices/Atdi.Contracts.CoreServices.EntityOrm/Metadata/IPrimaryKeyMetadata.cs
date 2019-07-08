@@ -8,6 +8,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 {
     public interface IPrimaryKeyMetadata
     {
+        IEntityMetadata Entity { get; }
+
         bool? Clustered { get; }
 
         IReadOnlyDictionary<string, IPrimaryKeyFieldRefMetadata> FieldRefs { get; }

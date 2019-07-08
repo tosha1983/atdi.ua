@@ -10,9 +10,9 @@ namespace XICSM.ICSControlClient.Models.Views
 {
     public class MeasTaskDetailStationViewModel
     {
-        public int StationId { get; set; }
+        public long StationId { get; set; }
 
-        public int OwnerId { get; set; }
+        public long OwnerId { get; set; }
 
         public string OwnerName { get; set; }
 

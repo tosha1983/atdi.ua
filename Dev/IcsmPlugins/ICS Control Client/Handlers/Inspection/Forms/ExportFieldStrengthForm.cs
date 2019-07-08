@@ -17,7 +17,7 @@ namespace XICSM.ICSControlClient.Forms
     public partial class ExportFieldStrengthForm : Form
     {
         public SDR.ShortMeasurementResults[] _shortMeasResults;
-        public List<int> _measResultIds = new List<int>();
+        public List<long> _measResultIds = new List<long>();
 
         public ExportFieldStrengthForm()
         {

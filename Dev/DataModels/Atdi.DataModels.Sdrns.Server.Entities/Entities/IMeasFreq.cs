@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
-    [Entity]
-    public interface IMeasFreq
+    [EntityPrimaryKeyAttribute]
+    public interface IMeasFreq_PK
     {
         long Id { get; set; }
+    }
+
+    [Entity]
+    public interface IMeasFreq: IMeasFreq_PK
+    {
         double? Freq { get; set; }
-        long? MeasFreqParamId { get; set; }
-        IMeasFreqParam MEASFREQPARAM { get; set; }
+        IMeasFreqParam MEAS_FREQ_PARAM { get; set; }
     }
 }

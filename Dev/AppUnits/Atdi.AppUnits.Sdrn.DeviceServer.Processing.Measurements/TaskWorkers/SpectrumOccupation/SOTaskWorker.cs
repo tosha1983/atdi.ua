@@ -24,7 +24,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<TaskParameters, int?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
 
 
         public SOTaskWorker(ITimeService timeService,
@@ -32,7 +32,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ITaskStarter taskStarter,
             ILogger logger,
             IBusGate busGate,
-            IRepository<TaskParameters, int?> repositoryTaskParametersByInt,
+            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
             IController controller)
         {
             this._processingDispatcher = processingDispatcher;
@@ -81,6 +81,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                         continue;
                     }
+
+                    _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskId.With(context.Task.taskParameters.SDRTaskId));
 
                     //////////////////////////////////////////////
                     // 
@@ -327,7 +329,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     var sleepTime = maximumDurationMeas - (DateTime.Now - currTime).TotalMilliseconds ;
-                    if (sleepTime >= 0)
+                    if (sleepTime > 0)
                     {
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
                         Thread.Sleep((int)sleepTime);

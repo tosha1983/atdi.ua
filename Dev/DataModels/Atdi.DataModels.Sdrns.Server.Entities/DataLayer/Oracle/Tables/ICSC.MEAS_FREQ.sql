@@ -1,0 +1,65 @@
+﻿CREATE TABLE ICSC.MEAS_FREQ
+(
+  ID                  NUMBER(15)                NOT NULL,
+  FREQ                NUMBER(22,8),
+  MEAS_FREQ_PARAM_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.XBS_MEASFREQ_PK ON ICSC.MEAS_FREQ
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.MEAS_FREQ ADD (
+  CONSTRAINT XBS_MEASFREQ_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.MEAS_FREQ ADD (
+  CONSTRAINT FK_XBS_MEASFREQ_XBS_MEASFREQPA 
+ FOREIGN KEY (MEAS_FREQ_PARAM_ID) 
+ REFERENCES ICSC.MEAS_FREQ_PARAM (ID));
