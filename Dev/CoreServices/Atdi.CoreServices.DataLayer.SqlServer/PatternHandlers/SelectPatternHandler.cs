@@ -12,6 +12,20 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
 {
     class SelectPatternHandler : LoggedObject, IQueryPatternHandler
     {
+        private class SelectBuildingContex : BuildingContex
+        {
+            private EngineCommandParameter _rowCountParameter;
+
+            public EngineCommandParameter RowCountParameter => _rowCountParameter;
+            public void EnsureRowCountParameter()
+            {
+                if (this._rowCountParameter == null)
+                {
+                    _rowCountParameter = this.CreateParameter("COMMON", "ROWCOUNT", DataType.Integer, EngineParameterDirection.Output);
+                }
+            }
+        }
+
         public SelectPatternHandler(ILogger logger) : base(logger)
         {
         }
@@ -20,7 +34,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         {
             var pattern = queryPattern as PS.SelectPattern;
 
-            var context = new BuildingContex();
+            var context = new SelectBuildingContex();
 
             this.BuildIteration(pattern, context);
 
@@ -29,9 +43,9 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
             switch (pattern.Result.Kind)
             {
                 case EngineExecutionResultKind.RowsAffected:
-                    var rowCount = executer.ExecuteScalar(command);
+                    executer.ExecuteNonQuery(command);
                     pattern.AsResult<EngineExecutionRowsAffectedResult>()
-                        .RowsAffected = (int)rowCount;
+                        .RowsAffected = (int)context.RowCountParameter.Value;
                     return;
                 case EngineExecutionResultKind.Scalar:
                     // возврат одного значения - первого поля запроса
@@ -76,20 +90,24 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         /// </summary>
         /// <param name="pattern"></param>
         /// <param name="contex"></param>
-        private void BuildIteration(PS.SelectPattern pattern, BuildingContex context)
+        private void BuildIteration(PS.SelectPattern pattern, SelectBuildingContex context)
         {
             for (int i = 0; i < pattern.Expressions.Length; i++)
             {
                 this.BuildExpression(pattern.Expressions[i], context);
+                // коечто нужно добавть дл яподсчета кол-ва вычитанных запросом строк
+                if (pattern.Result.Kind == EngineExecutionResultKind.RowsAffected)
+                {
+                    // генерируем парамтер кол-ва
+                    context.EnsureRowCountParameter();
+                    context.Builder.SetRowcount(context.RowCountParameter);
+                }
             }
 
-            if (pattern.Result.Kind == EngineExecutionResultKind.RowsAffected)
-            {
-                context.Builder.SelectRowcount();
-            }
+            
         }
 
-        private void BuildExpression(PS.SelectExpression expression, BuildingContex context)
+        private void BuildExpression(PS.SelectExpression expression, SelectBuildingContex context)
         {
             var sqlColumns = new List<string>();
             var sqlJoins = new List<string[]>();
@@ -147,7 +165,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
 
         }
 
-        private string BuildLimitExpression(PS.SelectExpression expression, BuildingContex context)
+        private string BuildLimitExpression(PS.SelectExpression expression, SelectBuildingContex context)
         {
             string sqlLimit;
             switch (expression.Limit.Type)
@@ -165,7 +183,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
             return sqlLimit;
         }
 
-        private string[] BuildOrderByExpression(PS.SortExpression[] expressions, BuildingContex context)
+        private string[] BuildOrderByExpression(PS.SortExpression[] expressions, SelectBuildingContex context)
         {
             var result = new string[expressions.Length];
             for (int i = 0; i < expressions.Length; i++)
