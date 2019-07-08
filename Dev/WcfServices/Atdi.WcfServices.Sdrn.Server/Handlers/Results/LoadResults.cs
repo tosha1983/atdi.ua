@@ -323,7 +323,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listSysInfo = new List<SignalingSysInfo>();
             var querySysInfo = this._dataLayer.GetBuilder<MD.ISignalingSysInfo>().From()
                 .Select(c => c.Id, c => c.BandWidth_Hz, c => c.BSIC, c => c.ChannelNumber, c => c.CID, c => c.CtoI, c => c.Freq_Hz,
-                        c => c.LAC, c => c.Level_dBm, c => c.MCC, c => c.MNC, c => c.Power, c => c.RNC, c => c.Standart)
+                        c => c.LAC, c => c.Level_dBm, c => c.MCC, c => c.MNC, c => c.Power, c => c.RNC, c => c.Standard)
                 .Where(c => c.EMITTING.RES_MEAS.Id, ConditionOperator.Equal, measResultId)
                 .Where(c => c.EMITTING.StartFrequency_MHz < freq_MHz)
                 .Where(c => c.EMITTING.StopFrequency_MHz > freq_MHz);
@@ -345,32 +345,22 @@ namespace Atdi.WcfServices.Sdrn.Server
                     sysInfo.MNC = reader.GetValue(c => c.MNC);
                     sysInfo.Power = reader.GetValue(c => c.Power);
                     sysInfo.RNC = reader.GetValue(c => c.RNC);
-                    sysInfo.Standart = reader.GetValue(c => c.Standart);
+                    sysInfo.Standart = reader.GetValue(c => c.Standard);
 
                     var listWorkTimes = new List<WorkTime>();
                     var queryWorkTime = this._dataLayer.GetBuilder<MD.ISignalingSysInfoWorkTime>().From()
                         .Select(c => c.Id, c => c.HitCount, c => c.PersentAvailability, c => c.StartEmitting, c => c.StopEmitting)
-                        .Where(c => c.SIGN_SYSINFOS.Id, ConditionOperator.Equal, sysInfoId);
+                        .Where(c => c.SYSINFO.Id, ConditionOperator.Equal, sysInfoId);
 
                     queryExecuter.Fetch(queryWorkTime, readerWorkTime =>
                     {
                         while (readerWorkTime.Read())
                         {
                             var workTime = new WorkTime();
-
-                            var hitCount = readerWorkTime.GetValue(c => c.HitCount);
-                            var persentAvailability = readerWorkTime.GetValue(c => c.PersentAvailability);
-                            var startEmitting = readerWorkTime.GetValue(c => c.StartEmitting);
-                            var stopEmitting = readerWorkTime.GetValue(c => c.StopEmitting);
-
-                            if (hitCount.HasValue)
-                                workTime.HitCount = hitCount.Value;
-                            if (persentAvailability.HasValue)
-                                workTime.PersentAvailability = persentAvailability.Value;
-                            if (startEmitting.HasValue)
-                                workTime.StartEmitting = startEmitting.Value;
-                            if(stopEmitting.HasValue)
-                                workTime.StopEmitting = stopEmitting.Value;
+                            workTime.HitCount = readerWorkTime.GetValue(c => c.HitCount);
+                            workTime.PersentAvailability = readerWorkTime.GetValue(c => c.PersentAvailability);
+                            workTime.StartEmitting = readerWorkTime.GetValue(c => c.StartEmitting);
+                            workTime.StopEmitting = readerWorkTime.GetValue(c => c.StopEmitting);
                             listWorkTimes.Add(workTime);
                         }
                         return true;

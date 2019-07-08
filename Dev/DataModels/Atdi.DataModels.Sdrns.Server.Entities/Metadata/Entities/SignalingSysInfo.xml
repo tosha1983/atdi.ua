@@ -22,7 +22,7 @@
     <Field Desc="ChannelNumber" Title="ChannelNumber" Name="ChannelNumber" DataType="Integer.32" SourceName="CHANNEL_NUMBER" SourceType="Column" Required="false"/>
     <Field Desc="LAC" Title="LAC" Name="LAC" DataType="Integer.32" SourceName="LAC" SourceType="Column" Required="false"/>
     <Field Desc="RNC" Title="RNC" Name="RNC" DataType="Integer.32" SourceName="RNC" SourceType="Column" Required="false"/>
-    <Field Desc="Ctoi" Title="Ctoi" Name="Ctoi" DataType="Double.30.10" SourceName="CTOI" SourceType="Column" Required="false"/>
+    <Field Desc="CtoI" Title="CtoI" Name="CtoI" DataType="Double.30.10" SourceName="CTOI" SourceType="Column" Required="false"/>
     <Field Desc="Power" Title="Power" Name="Power" DataType="Double.30.10" SourceName="POWER" SourceType="Column" Required="false"/>
     <Field Name="EMITTING" SourceType="Reference" SourceName="Emitting"  Required="true" Desc="" Title="Relation SignalingSysInfo to Emitting"/>
   </Fields>

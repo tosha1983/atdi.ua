@@ -6,7 +6,7 @@ create table [ICSC].[SIGN_SYSINFO_WTIMES] (
 	[START_EMIT] [datetime] not null,
 	[STOP_EMIT] [datetime] not null,
 	[HIT_COUNT] [int] not null,
-	[PERCENT_AVAILABLE] [real] null,
+	[PERCENT_AVAILABLE] [real] not null,
 	[SYSINFO_ID] [bigint] not null,
 	constraint [PK_SIGN_SYSINFO_WTIMES] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

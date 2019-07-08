@@ -20,6 +20,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime StopEmitting { get; set; }
         int HitCount { get; set; }
         float PersentAvailability { get; set; }
-        ISignalingSysInfo SIGNSYSINFO { get; set; }
+        ISignalingSysInfo SYSINFO { get; set; }
     }
 }

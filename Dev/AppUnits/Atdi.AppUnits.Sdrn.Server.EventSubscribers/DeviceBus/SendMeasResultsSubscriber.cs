@@ -571,7 +571,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     else
                                         validationSpectrumResult = false;
 
-                                    if (!(spectrum.SpectrumStartFreq_MHz  >= 0.009 && spectrum.SpectrumStartFreq_MHz <= 400000))
+                                    if (!(spectrum.SpectrumStartFreq_MHz >= 0.009 && spectrum.SpectrumStartFreq_MHz <= 400000))
                                     {
                                         WriteLog("Incorrect value SpectrumStartFreq_MHz", "ISpectrumRaw");
                                         validationSpectrumResult = false;
@@ -595,32 +595,33 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                         validationSpectrumResult = false;
                                     }
 
-                                    if (!validationSpectrumResult)
-                                        continue;
+                                    if (validationSpectrumResult)
+                                    {
 
-                                    var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
-                                    builderInsertISpectrum.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
-                                    builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations == true ? 1 : 0);
-                                    builderInsertISpectrum.SetValue(c => c.Contravention, spectrum.Contravention == true ? 1 : 0);
-                                    if (spectrum.Bandwidth_kHz >= 0 && spectrum.Bandwidth_kHz <= 1000000)
-                                        builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
-                                    else
-                                        WriteLog("Incorrect value Bandwidth_kHz", "ISpectrum");
-                                    builderInsertISpectrum.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
-                                    if (spectrum.SignalLevel_dBm >= -200 && spectrum.SignalLevel_dBm <= 50)
-                                        builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
-                                    else
-                                        WriteLog("Incorrect value SignalLevel_dBm", "ISpectrum");
-                                    builderInsertISpectrum.SetValue(c => c.SpectrumStartFreq_MHz, spectrum.SpectrumStartFreq_MHz);
-                                    builderInsertISpectrum.SetValue(c => c.SpectrumSteps_kHz, spectrum.SpectrumSteps_kHz);
-                                    builderInsertISpectrum.SetValue(c => c.T1, spectrum.T1);
-                                    builderInsertISpectrum.SetValue(c => c.T2, spectrum.T2);
-                                    if (spectrum.TraceCount >= 0 && spectrum.TraceCount <= 10000)
-                                        builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
-                                    else
-                                        WriteLog("Incorrect value TraceCount", "ISpectrum");
-                                    builderInsertISpectrum.SetValue(c => c.Levels_dBm, spectrum.Levels_dBm);
-                                    this._queryExecutor.Execute<MD.ISpectrum_PK>(builderInsertISpectrum);
+                                        var builderInsertISpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>().Insert();
+                                        builderInsertISpectrum.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
+                                        builderInsertISpectrum.SetValue(c => c.CorrectnessEstimations, spectrum.СorrectnessEstimations == true ? 1 : 0);
+                                        builderInsertISpectrum.SetValue(c => c.Contravention, spectrum.Contravention == true ? 1 : 0);
+                                        if (spectrum.Bandwidth_kHz >= 0 && spectrum.Bandwidth_kHz <= 1000000)
+                                            builderInsertISpectrum.SetValue(c => c.Bandwidth_kHz, spectrum.Bandwidth_kHz);
+                                        else
+                                            WriteLog("Incorrect value Bandwidth_kHz", "ISpectrum");
+                                        builderInsertISpectrum.SetValue(c => c.MarkerIndex, spectrum.MarkerIndex);
+                                        if (spectrum.SignalLevel_dBm >= -200 && spectrum.SignalLevel_dBm <= 50)
+                                            builderInsertISpectrum.SetValue(c => c.SignalLevel_dBm, spectrum.SignalLevel_dBm);
+                                        else
+                                            WriteLog("Incorrect value SignalLevel_dBm", "ISpectrum");
+                                        builderInsertISpectrum.SetValue(c => c.SpectrumStartFreq_MHz, spectrum.SpectrumStartFreq_MHz);
+                                        builderInsertISpectrum.SetValue(c => c.SpectrumSteps_kHz, spectrum.SpectrumSteps_kHz);
+                                        builderInsertISpectrum.SetValue(c => c.T1, spectrum.T1);
+                                        builderInsertISpectrum.SetValue(c => c.T2, spectrum.T2);
+                                        if (spectrum.TraceCount >= 0 && spectrum.TraceCount <= 10000)
+                                            builderInsertISpectrum.SetValue(c => c.TraceCount, spectrum.TraceCount);
+                                        else
+                                            WriteLog("Incorrect value TraceCount", "ISpectrum");
+                                        builderInsertISpectrum.SetValue(c => c.Levels_dBm, spectrum.Levels_dBm);
+                                        this._queryExecutor.Execute<MD.ISpectrum_PK>(builderInsertISpectrum);
+                                    }
                                 }
                             }
                             if (emitting.SysInfos != null)
@@ -641,7 +642,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertSysInfo.SetValue(c => c.MNC, sysInfo.MNC);
                                     builderInsertSysInfo.SetValue(c => c.Power, sysInfo.Power);
                                     builderInsertSysInfo.SetValue(c => c.RNC, sysInfo.RNC);
-                                    builderInsertSysInfo.SetValue(c => c.Standard, sysInfo.Standart);
+                                    builderInsertSysInfo.SetValue(c => c.Standard, sysInfo.Standard);
                                     var valInsSysInfo = this._queryExecutor.Execute<MD.ISignalingSysInfo_PK>(builderInsertSysInfo);
                                     if (valInsSysInfo.Id > 0 && sysInfo.WorkTimes != null)
                                     {
@@ -663,7 +664,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 continue;
 
                                             var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.ISignalingSysInfoWorkTime>().Insert();
-                                            builderInsertIWorkTime.SetValue(c => c.SIGNSYSINFO.Id, valInsSysInfo.Id);
+                                            builderInsertIWorkTime.SetValue(c => c.SYSINFO.Id, valInsSysInfo.Id);
                                             if (workTime.HitCount >= 0 && workTime.HitCount <= Int32.MaxValue)
                                                 builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
                                             builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
