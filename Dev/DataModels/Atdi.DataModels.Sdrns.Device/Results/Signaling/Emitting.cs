@@ -26,5 +26,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public int? SensorId;
         public DateTime LastDetaileMeas; // Время последнего детального измерения
         public bool SpectrumIsDetailed; // Флаг было ли произведено детальное измерение Если было произведено детальное измерение следовательно оно в приоретете.
+
+        public SignalingSysInfo[] SysInfos;
     }
 }

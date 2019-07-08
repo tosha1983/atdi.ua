@@ -29,8 +29,9 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
             switch (pattern.Result.Kind)
             {
                 case EngineExecutionResultKind.RowsAffected:
+                    var rowCount = executer.ExecuteScalar(command);
                     pattern.AsResult<EngineExecutionRowsAffectedResult>()
-                        .RowsAffected = executer.ExecuteNonQuery(command);
+                        .RowsAffected = (int)rowCount;
                     return;
                 case EngineExecutionResultKind.Scalar:
                     // возврат одного значения - первого поля запроса
@@ -80,6 +81,11 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
             for (int i = 0; i < pattern.Expressions.Length; i++)
             {
                 this.BuildExpression(pattern.Expressions[i], context);
+            }
+
+            if (pattern.Result.Kind == EngineExecutionResultKind.RowsAffected)
+            {
+                context.Builder.SelectRowcount();
             }
         }
 

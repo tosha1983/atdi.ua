@@ -339,5 +339,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
         Emitting[] GetEmittingsByIcsmId(long[] ids, string icsmTableName);
 
+
+
+
     }
 }

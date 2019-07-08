@@ -112,7 +112,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             this.ValidateTransaction();
             try
             {
-                this._transaction.Rollback();
+                this._transaction.Commit();
                 this._transaction = null;
             }
             catch (Exception e)
