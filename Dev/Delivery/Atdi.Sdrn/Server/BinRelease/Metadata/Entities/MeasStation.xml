@@ -6,24 +6,14 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_MEASSTATION</Name>
+    <Name>MEAS_STATION</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="STATIONID" SourceType="Column" Required="true"/>
-    <Field Desc="StationType" Title="StationType" Name="StationType" DataType="Text.50" SourceName="STATIONTYPE" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
-    <Field Name="STATION" SourceType="Reference" SourceName="Station" Title="Relation MeasLocationParam to Station">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">StationId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasLocationParam to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="ClientStationCode" Title="ClientStationCode" Name="ClientStationCode" DataType="Integer.64" SourceName="CLIENT_STATION_CODE" SourceType="Column" Required="true"/>
+    <Field Desc="StationType" Title="StationType" Name="StationType" DataType="Text.50" SourceName="STATION_TYPE" SourceType="Column" Required="false"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasStation to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

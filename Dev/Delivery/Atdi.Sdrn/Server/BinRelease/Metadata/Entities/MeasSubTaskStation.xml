@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "MeasSubTaskStation"
+  Title       = "MeasSubTaskStation"
+  Desc        = "The MeasSubTaskStation"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>MEAS_SUBTASK_STATION</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
+    <Field Desc="Count" Title="Count" Name="Count" DataType="Integer.32" SourceName="COUNT" SourceType="Column" Required="false"/>
+    <Field Desc="TimeNextTask" Title="TimeNextTask" Name="TimeNextTask" DataType="DateTime" SourceName="TIME_NEXT_TASK" SourceType="Column" Required="false"/>
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation MeasSubTaskStation to Sensor"/>
+    <Field Name="MEAS_SUBTASK" SourceName="MeasSubTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasSubTaskStation to MeasSubTask"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
