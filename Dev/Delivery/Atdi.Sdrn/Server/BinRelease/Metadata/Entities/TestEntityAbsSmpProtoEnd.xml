@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestEntityAbsSmpProtoEnd"
+  Title       = "Test Simple Entity"
+  Desc        = ""
+  Type        = "Prototype"
+  BaseEntity  = "TestEntityAbsSmpProto1"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_ENTITY_ABS_SMP_PROTO_END</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="ProtoEndField1" DataType="Text.10" SourceName="PRT_END_FLD_1" SourceType="Column" Desc="" Title="Smp Field 1"/>
+    <Field Name="ProtoEndField2" DataType="Text.10" SourceName="PRT_END_FLD_2" SourceType="Column" Desc="" Title="Smp Field 2"/>
+    <Field Name="ProtoEndField3" DataType="Text.10" SourceName="PRT_END_FLD_3" SourceType="Column" Desc="" Title="Smp Field 3"/>
+
+
+    <Field Name="PRTEND_EXT1" SourceName="TestEntityAbsSmpProtoEndExt1" SourceType="Extension" Title="Extension 1" Required="true"/>
+    <Field Name="PRTEND_EXT2" SourceName="TestEntityAbsSmpProtoEndExt2" SourceType="Extension" Title="Extension 2" Required="false"/>
+    
+  </Fields>
+
+</Entity>
+<!--
+   [Entity]
+    public interface ITestRefRoot
+    {
+        long Id { get; set; }
+
+        ITestRefBook BOOK1 { get; set; }
+
+        ITestRefBook BOOK2 { get; set; }
+
+        long SecondBookId { get; set; }
+
+    }
+-->
+<!--
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [CORE].[TEST_REF_ROOT](
+	[ID]			       [bigint] IDENTITY(1,1) NOT NULL,
+	[BOOK1_ID]		   [bigint] NOT NULL,
+	[BOOK2_REF_2_ID] [bigint] NOT NULL,
+ CONSTRAINT [PK_TEST_REF_ROOT] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+-->

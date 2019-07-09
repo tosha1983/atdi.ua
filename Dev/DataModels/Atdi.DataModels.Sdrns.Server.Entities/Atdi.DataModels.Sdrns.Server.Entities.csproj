@@ -113,6 +113,7 @@
     <Content Include="DataLayer\Oracle\Functions\ICSC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Jobs\ICSC.CHECKACTIVITY_JOB.sql" />
     <Content Include="DataLayer\Oracle\Procedures\ICSC.CHECKACTIVITY.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CreateAllTables.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.SIGN_SYSINFO_WTIMES.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.SIGN_SYSINFO.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.AMQP_EVENTS.sql" />

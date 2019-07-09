@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestEntityAbsSmp"
+  Title       = "Test Simple Entity"
+  Desc        = ""
+  Type        = "Simple"
+  BaseEntity  = "TestEntityAbs"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_ENTITY_ABS_SMP</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="SmpField1" DataType="Text.10" SourceName="SMP_FLD_1" SourceType="Column" Desc="" Title="Smp Field 1"/>
+    <Field Name="SmpField2" DataType="Text.10" SourceName="SMP_FLD_2" SourceType="Column" Desc="" Title="Smp Field 2"/>
+    <Field Name="SmpField3" DataType="Text.10" SourceName="SMP_FLD_3" SourceType="Column" Desc="" Title="Smp Field 3"/>
+
+    <Field Name="SMP_EXT1" SourceName="TestEntityAbsSmpExt1" SourceType="Extension" Title="Extension 1" Required="true"/>
+    <Field Name="SMP_EXT2" SourceName="TestEntityAbsSmpExt2" SourceType="Extension" Title="Extension 2" Required="false"/>
+
+    <Field Name="REFTO1R" SourceName="TestEntityRef1" SourceType="Reference" Title="Refernce to 2" Required="true"/>
+    <Field Name="REFTO1N" SourceName="TestEntityRef1" SourceType="Reference" Title="Refernce to 2" Required="false"/>
+  </Fields>
+
+</Entity>

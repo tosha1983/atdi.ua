@@ -118,7 +118,7 @@
       <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrns.DeviceServer.Entities.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrn.DeviceServer.Entities.csproj">
       <Project>{a803197e-12f5-4800-b157-b2ec677bda33}</Project>
       <Name>Atdi.DataModels.Sdrns.DeviceServer.Entities</Name>
     </ProjectReference>

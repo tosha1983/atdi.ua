@@ -175,12 +175,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.StopTime = currTime;
                             measResult.Location = new DataModels.Sdrns.GeoLocation();
                             measResult.Measured = currTime;
-                        //////////////////////////////////////////////
-                        // 
-                        //  Здесь получаем данные с GPS приемника
-                        //  
-                        //////////////////////////////////////////////
-                        var parentProcess = context.Process.Parent;
+                            //////////////////////////////////////////////
+                            // 
+                            //  Здесь получаем данные с GPS приемника
+                            //  
+                            //////////////////////////////////////////////
+                            bool isParentProcess = false;
+                            var parentProcess = context.Process.Parent;
                             if (parentProcess != null)
                             {
                                 if (parentProcess is DispatchProcess)
@@ -194,6 +195,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                             measResult.Location.ASL = dispatchProcessParent.Asl;
                                             measResult.Location.Lon = dispatchProcessParent.Lon;
                                             measResult.Location.Lat = dispatchProcessParent.Lat;
+                                            isParentProcess = true;
                                         }
                                         else
                                         {
@@ -215,10 +217,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
                             measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
-                        //Отправка результатов в шину 
-                        var publisher = this._busGate.CreatePublisher("main");
-                            publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
-                            publisher.Dispose();
+                            //Отправка результатов в шину 
+                            if (isParentProcess == false)
+                            {
+                                var publisher = this._busGate.CreatePublisher("main");
+                                publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
+                                publisher.Dispose();
+                            }
                             context.Task.MeasBWResults = null;
                         }
                     });

@@ -6,29 +6,24 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_BEARING</Name>
+    <Name>BEARING</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="ResMeasStaId" Title="ResMeasStaId" Name="ResMeasStaId" DataType="Integer.64" SourceName="RESMEASSTATIONID" SourceType="Column" Required="false"/>
-    <Field Desc="Level_dBm" Title="Level_dBm" Name="Level_dBm" DataType="Decimal.22.8" SourceName="LEVELDBM" SourceType="Column" Required="false"/>
-    <Field Desc="Level_dBmkVm" Title="Level_dBmkVm" Name="Level_dBmkVm" DataType="Decimal.22.8" SourceName="LEVELDBMKVM" SourceType="Column" Required="false"/>
-    <Field Desc="MeasurementTime" Title="MeasurementTime" Name="MeasurementTime" DataType="DateTime" SourceName="TIMEOFMEASUREMENTS" SourceType="Column" Required="false"/>
-    <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Decimal.22.8" SourceName="BW" SourceType="Column" Required="false"/>
-    <Field Desc="Quality" Title="Quality" Name="Quality" DataType="Decimal.22.8" SourceName="QUALITY" SourceType="Column" Required="false"/>
-    <Field Desc="CentralFrequency_MHz" Title="CentralFrequency_MHz" Name="CentralFrequency_MHz" DataType="Decimal.22.8" SourceName="CENTRALFREQUENCY" SourceType="Column" Required="false"/>
-    <Field Desc="Bearing" Title="Bearing" Name="Bearing" DataType="Decimal.22.8" SourceName="BEARING" SourceType="Column" Required="false"/>
-    <Field Desc="AntennaAzimut" Title="AntennaAzimut" Name="AntennaAzimut" DataType="Decimal.22.8" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
-    <Field Desc="Asl" Title="Asl" Name="Asl" DataType="Decimal.22.8" SourceName="ASL" SourceType="Column" Required="false"/>
-    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
-    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
-    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Decimal.22.8" SourceName="AGL" SourceType="Column" Required="false"/>
-    <Field Name="RESMEASSTA" SourceType="Reference" SourceName="ResMeasSta" Title="Relation Bearing to ResMeasSta">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasStaId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="Level_dBm" Title="Level_dBm" Name="Level_dBm" DataType="Double.30.10" SourceName="LEVEL_DBM" SourceType="Column" Required="false"/>
+    <Field Desc="Level_dBmkVm" Title="Level_dBmkVm" Name="Level_dBmkVm" DataType="Double.30.10" SourceName="LEVEL_DBMKVM" SourceType="Column" Required="false"/>
+    <Field Desc="MeasurementTime" Title="MeasurementTime" Name="MeasurementTime" DataType="DateTime" SourceName="TIME_OF_MEASUREMENTS" SourceType="Column" Required="false"/>
+    <Field Desc="Bandwidth_kHz" Title="Bandwidth_kHz" Name="Bandwidth_kHz" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="Quality" Title="Quality" Name="Quality" DataType="Double.30.10" SourceName="QUALITY" SourceType="Column" Required="false"/>
+    <Field Desc="CentralFrequency_MHz" Title="CentralFrequency_MHz" Name="CentralFrequency_MHz" DataType="Double.30.10" SourceName="CENTRAL_FREQUENCY" SourceType="Column" Required="false"/>
+    <Field Desc="Bearing" Title="Bearing" Name="Bearing" DataType="Double.30.10" SourceName="BEARING" SourceType="Column" Required="false"/>
+    <Field Desc="AntennaAzimut" Title="AntennaAzimut" Name="AntennaAzimut" DataType="Double.30.10" SourceName="AZIMUTH" SourceType="Column" Required="false"/>
+    <Field Desc="Asl" Title="Asl" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Agl" Title="Agl" Name="Agl" DataType="Double.30.10" SourceName="AGL" SourceType="Column" Required="false"/>
+    <Field Name="RES_MEAS_STATION" SourceType="Reference" SourceName="ResMeasStation" Title="Relation Bearing to ResMeasStation"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
