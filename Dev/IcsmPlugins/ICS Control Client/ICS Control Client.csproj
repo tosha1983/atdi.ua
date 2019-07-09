@@ -120,6 +120,12 @@
     <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SignalizationSysInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SignalizationSysInfoForm.Designer.cs">
+      <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\WaitForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -238,6 +244,7 @@
     <Compile Include="Models\Views\ShortMeasurementResultsViewModel.cs" />
     <Compile Include="Models\Views\ShortResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\ShortSensorViewModel.cs" />
+    <Compile Include="Models\Views\SignSysInfoViewModel.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
@@ -250,6 +257,7 @@
     <Compile Include="Models\WcfDataApadters\ShortMeasurementResultsDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ShortResultsMeasurementsStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortSensorDataAdatper.cs" />
+    <Compile Include="Models\WcfDataApadters\SignSysInfoDataAdapter.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Handlers\PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -269,6 +277,7 @@
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
+    <Compile Include="ViewModels\SignalizationSysInfoViewModel.cs" />
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
     <Compile Include="WpfControls\Charts\ChartGridStyle.cs" />
@@ -310,6 +319,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SignalizationSysInfoForm.resx">
+      <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\WaitForm.resx">
       <DependentUpon>WaitForm.cs</DependentUpon>

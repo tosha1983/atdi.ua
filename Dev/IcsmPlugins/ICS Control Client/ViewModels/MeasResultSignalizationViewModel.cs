@@ -96,7 +96,6 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
             this.AddAssociationStationCommand = new WpfCommand(this.OnAddAssociationStationCommand);
             this.DeleteEmissionCommand = new WpfCommand(this.OnDeleteEmissionCommand);
-
             Task.Run(() => this.ReloadMeasResult());
 
             
@@ -242,6 +241,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     this.OnDetailForRefLevelCommand();
                 if (value.Name == "ViewStation")
                     this.OnViewStationCommand();
+                if (value.Name == "ViewSysInfo")
+                    this.OnViewSysInfoCommand();
+
             }
         }
 
@@ -708,6 +710,21 @@ namespace XICSM.ICSControlClient.ViewModels
                 MessageBox.Show(e.ToString());
             }
         }
+        private void OnViewSysInfoCommand()
+        {
+            try
+            {
+                var freq = _mouseClickPoint.X;
+                string caption = ", Frequency - " + Math.Round(freq, 6).ToString() + ", MHz";
+                var measTaskForm = new FM.SignalizationSysInfoForm(this._resultId, freq, caption);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
         private string GetCurrentRBWValue()
         {
             if (_currentMeasResult.RefLevels == null)
@@ -896,7 +913,8 @@ namespace XICSM.ICSControlClient.ViewModels
             var menuItems = new List<CS.ChartMenuItem>()
             {
                 new CS.ChartMenuItem() { Header = "Detailed for RefLevel on that Frequency", Name = "DetailForRefLevel" },
-                new CS.ChartMenuItem() { Header = "View Station in ICSM", Name = "ViewStation" }
+                new CS.ChartMenuItem() { Header = "View Station in ICSM", Name = "ViewStation" },
+                new CS.ChartMenuItem() { Header = "View SysInfo", Name = "ViewSysInfo" }
             };
             option.PointsArray = pointsList.ToArray();
             option.LinesArray = linesList.ToArray();

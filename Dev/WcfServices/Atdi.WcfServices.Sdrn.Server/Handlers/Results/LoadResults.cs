@@ -325,8 +325,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 .Select(c => c.Id, c => c.BandWidth_Hz, c => c.BSIC, c => c.ChannelNumber, c => c.CID, c => c.CtoI, c => c.Freq_Hz,
                         c => c.LAC, c => c.Level_dBm, c => c.MCC, c => c.MNC, c => c.Power, c => c.RNC, c => c.Standard)
                 .Where(c => c.EMITTING.RES_MEAS.Id, ConditionOperator.Equal, measResultId)
-                .Where(c => c.EMITTING.StartFrequency_MHz < freq_MHz)
-                .Where(c => c.EMITTING.StopFrequency_MHz > freq_MHz);
+                .Where(c => c.EMITTING.StartFrequency_MHz, ConditionOperator.LessThan, freq_MHz)
+                .Where(c => c.EMITTING.StopFrequency_MHz, ConditionOperator.GreaterThan, freq_MHz);
             queryExecuter.Fetch(querySysInfo, reader =>
             {
                 while (reader.Read())
