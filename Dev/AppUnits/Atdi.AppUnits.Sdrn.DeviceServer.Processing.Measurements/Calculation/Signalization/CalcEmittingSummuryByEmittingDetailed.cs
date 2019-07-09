@@ -18,6 +18,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         //Константа 
         private const double PersentForJoinDetailEmToSummEm = 20;
 
+        // заготовка для SysInfo
+        public static bool GetEmittingDetailedForSysInfo(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
+        {
+            return false;
+        }
 
         public static bool GetEmittingDetailed(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
         {

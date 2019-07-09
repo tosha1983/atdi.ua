@@ -28,7 +28,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public double NoiseLevel_dBm = -100; //константа пока
         public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
         public Func<TaskParameters, MesureTraceParameter> actionConvertBW = null;
-       
+        public Func<TaskParameters, MesureSystemInfoParameter> actionConvertSysInfo = null;
+
 
         //public int CountCallSignaling = 0;
         //public int CountGetResultBWPositive = 0;

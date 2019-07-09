@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     public class MeasurementTaskBase : TaskBase
     {
         public MesureTraceParameter mesureTraceParameter;
+        public MesureSystemInfoParameter mesureSystemInfoParameter;
         public TaskParameters taskParameters;
 
         public int CountSendResults = 0;

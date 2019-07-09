@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingsSummury"></param>
         /// <param name="taskParameters"></param>
         /// <returns></returns>
-        public static bool GetSysInfo(Emitting[] EmittingsSummury, out TaskParameters[] taskParameters)
+        public static bool NeedGetSysInfo(Emitting[] EmittingsSummury, out TaskParameters[] taskParameters)
         {
             taskParameters = null;
             return false;

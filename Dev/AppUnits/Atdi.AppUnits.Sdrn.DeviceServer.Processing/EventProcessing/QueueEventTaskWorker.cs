@@ -125,6 +125,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 signalTask.taskParameters = context.Task.taskParameters;
                                 signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
                                 signalTask.actionConvertBW = ConvertTaskParametersToMesureTraceParameterForBandWidth.ConvertForBW;
+                                signalTask.actionConvertSysInfo = ConvertTaskParametersToMesureSystemInfoParameterForSysInfo.ConvertForMesureSystemInfoParameter;
                                 var deviceProperties = this._controller.GetDevicesProperties();
                                 var listTraceDeviceProperties = deviceProperties.Values.ToArray();
                                 for (int i = 0; i < listTraceDeviceProperties.Length; i++)

@@ -13,32 +13,28 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    public class SysInfoTaskResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, SysInfoTask, SysInfoProcess>
+    public class SysInfoTaskResultHandler : IResultHandler<MesureSystemInfoCommand, MesureSystemInfoResult, SysInfoTask, SysInfoProcess>
     {
-        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SysInfoTask, SysInfoProcess> taskContext)
+        public void Handle(MesureSystemInfoCommand command, MesureSystemInfoResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SysInfoTask, SysInfoProcess> taskContext)
         {
             if (result != null)
             {
                 try
                 {
-                   
-                    SysInfoResult measSysInfoResults = null;
+                    taskContext.Task.sysInfoResult = new SysInfoResult();
                     var parentProcess = taskContext.Descriptor.Parent;
                     if (parentProcess != null)
                     {
                         if ((parentProcess is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
                         {
-                            // здесь преобразование
-                            //measSysInfoResults = result
+                            if ((result.SystemInfo != null) && (result.SystemInfo.Length > 0))
+                            {
+                                taskContext.Task.sysInfoResult = CommonConvertors.ConvertToSysInfoResult(result);
+                            }
                         }
-                       
                     }
-
-                    taskContext.Task.sysInfoResult = new SysInfoResult();
-                        
-
+                 
                     // Отправка результата в родительский процесс (если он есть)
-
                     if (parentProcess != null)
                     {
                         ///если родительский контекст - сигнализация, то отправить результат 

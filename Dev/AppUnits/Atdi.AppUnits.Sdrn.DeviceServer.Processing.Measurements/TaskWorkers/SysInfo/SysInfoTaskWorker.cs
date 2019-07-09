@@ -68,8 +68,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //
                 //////////////////////////////////////////////
                 var datenow = DateTime.Now;
-                //context.Task.CountCallBW++;
-                var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
+               
+                var deviceCommand = new MesureSystemInfoCommand(context.Task.mesureSystemInfoParameter);
                 if (context.Task.durationForMeasBW_ms > 0)
                 {
                     deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
@@ -80,13 +80,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 deviceCommand.Delay = 0;
                 deviceCommand.Options = CommandOption.StartImmediately;
-                //_logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, "Check time start" + Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
 
                 if (parentProc != null)
                 {
                     if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
                     {
-                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        this._controller.SendCommand<MesureSystemInfoResult>(context, deviceCommand,
                         (
                         ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
                         ) =>
@@ -94,26 +93,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             parentProc.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
                         });
                     }
-                    else
-                    {
-                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
-                        (
-                            ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                        ) =>
-                        {
-                            taskContext.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
-                        });
-                    }
-                }
-                else
-                {
-                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
-                    (
-                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) =>
-                    {
-                        taskContext.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
-                    });
                 }
 
 
@@ -129,7 +108,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
                     if (isDown == false) // таймут - результатов нет
                     {
-                        //context.Task.CountGetResultBWNegative++;
                         var error = new ExceptionProcessSysInfo();
                         if (context.WaitEvent<ExceptionProcessSysInfo>(out error, 1) == true)
                         {
@@ -145,84 +123,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         // есть результат
                         //context.Task.CountGetResultBWPositive++;
-                    }
-
-                    DateTime currTime = DateTime.Now;
-                    var action = new Action(() =>
-                    {
-                    //реакция на принятые результаты измерения
-                    if (outResultData != null)
-                        {
-                            
-                            DM.MeasResults measResult = new DM.MeasResults();
-                            context.Task.CountSendResults++;
-                            
-                            measResult.ResultId = string.Format("{0}|{1}", context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
-                            measResult.Status = "N";
-
-                            
-
-                            measResult.StartTime = context.Task.LastTimeSend.Value;
-                            measResult.StopTime = currTime;
-                            measResult.Location = new DataModels.Sdrns.GeoLocation();
-                            measResult.Measured = currTime;
-                        //////////////////////////////////////////////
-                        // 
-                        //  Здесь получаем данные с GPS приемника
-                        //  
-                        //////////////////////////////////////////////
-                        var parentProcess = context.Process.Parent;
-                            if (parentProcess != null)
-                            {
-                                if (parentProcess is DispatchProcess)
-                                {
-                                    DispatchProcess dispatchProcessParent = null;
-                                    try
-                                    {
-                                        dispatchProcessParent = (parentProcess as DispatchProcess);
-                                        if (dispatchProcessParent != null)
-                                        {
-                                            measResult.Location.ASL = dispatchProcessParent.Asl;
-                                            measResult.Location.Lon = dispatchProcessParent.Lon;
-                                            measResult.Location.Lat = dispatchProcessParent.Lat;
-                                        }
-                                        else
-                                        {
-                                            _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
-                                    }
-                                }
-                                else
-                                {
-                                    _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
-                                }
-                            }
-                            else
-                            {
-                                _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
-                            }
-                            measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
-                        //Отправка результатов в шину 
-                        var publisher = this._busGate.CreatePublisher("main");
-                            publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
-                            publisher.Dispose();
-                            context.Task.sysInfoResult = null;
-                        }
-                    });
-
-
-                    //////////////////////////////////////////////
-                    // 
-                    //  Принять решение о полноте результатов
-                    //  
-                    //////////////////////////////////////////////
-                    if (outResultData != null)
-                    {
-                        action.Invoke();
                     }
 
                 }

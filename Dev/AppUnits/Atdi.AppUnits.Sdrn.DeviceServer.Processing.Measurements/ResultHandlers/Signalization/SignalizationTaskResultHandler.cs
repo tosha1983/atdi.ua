@@ -109,7 +109,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Обработка результатов SysInfo если они есть
                 if ((listMeasSysInfoResult != null) && (listMeasSysInfoResult.Count > 0))
                 {
-                    ///Здесь некоторая обработка SysInfo
+                    //здесь нужно дописать функцию GetEmittingDetailedForSysInfo
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailedForSysInfo(ref taskContext.Task.EmittingsSummary, listMeasBandwidthResult, taskContext.Task.ReferenceLevels, this._logger);
+                    if (isSuccess == false)
+                    {
+                        //обработка  ошибка
+                        _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.GetEmittingDetailedNull);
+                    }
                 }
 
                 //Обработка результатов BW если они есть
@@ -144,7 +150,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Нужно ли исследование по SysInfo?
                 if (this._configMeasurements.EnableSysInfoTask == true)
                 {
-                    if (CalcNeedResearchSysInfo.GetSysInfo(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForSysInfo))
+                    if (CalcNeedResearchSysInfo.NeedGetSysInfo(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForSysInfo))
                     {
                         // вызов функции по отправке BandWidthTask в контроллер
                         SendCommandSysInfo(taskContext);
@@ -231,7 +237,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     sysInfoTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
                     sysInfoTask.LastTimeSend = DateTime.Now;
                     sysInfoTask.taskParameters = taskParametersForSysInfo;
-                    sysInfoTask.mesureTraceParameter = taskContext.Task.actionConvertBW.Invoke(sysInfoTask.taskParameters);
+                    sysInfoTask.mesureSystemInfoParameter = taskContext.Task.actionConvertSysInfo.Invoke(sysInfoTask.taskParameters);
                     _taskStarter.Run(sysInfoTask, sysInfoProcess, taskContext);
                 }
             }
