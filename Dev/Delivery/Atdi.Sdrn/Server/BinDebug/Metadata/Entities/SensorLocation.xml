@@ -6,24 +6,19 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SENSORLOCATION</Name>
+    <Name>SENSOR_LOCATION</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="true"/>
-    <Field Desc="DateFrom" Title="DateFrom" Name="DateFrom" DataType="DateTime" SourceName="DATAFROM" SourceType="Column" Required="false"/>
-    <Field Desc="DateTo" Title="DateTo" Name="DateTo" DataType="DateTime" SourceName="DATATO" SourceType="Column" Required="false"/>
-    <Field Desc="DateCreated" Title="DateCreated" Name="DateCreated" DataType="DateTime" SourceName="DATACREATED" SourceType="Column" Required="false"/>
+    <Field Desc="DateFrom" Title="DateFrom" Name="DateFrom" DataType="DateTime" SourceName="DATA_FROM" SourceType="Column" Required="false"/>
+    <Field Desc="DateTo" Title="DateTo" Name="DateTo" DataType="DateTime" SourceName="DATA_TO" SourceType="Column" Required="false"/>
+    <Field Desc="DateCreated" Title="DateCreated" Name="DateCreated" DataType="DateTime" SourceName="DATA_CREATED" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.25" SourceName="STATUS" SourceType="Column" Required="false"/>
-    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Decimal.22.8" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
-    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Decimal.22.8" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
-    <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Decimal.22.8" SourceName="ASL" SourceType="Column" Required="false"/>
-    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation SensorEquipment to Sensor">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Desc="Altitude above sea level, m" Title="Altitude above sea level, m" Name="Asl" DataType="Double.30.10" SourceName="ASL" SourceType="Column" Required="false"/>
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SensorEquipment to Sensor"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

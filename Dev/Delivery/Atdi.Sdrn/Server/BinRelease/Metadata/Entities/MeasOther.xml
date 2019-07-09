@@ -6,22 +6,17 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_MEASOTHER</Name>
+    <Name>MEAS_OTHER</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="SwNumber" Title="SwNumber" Name="SwNumber" DataType="Integer.32" SourceName="SWNUMBER" SourceType="Column" Required="true"/>
-    <Field Desc="TypeSpectrumscan" Title="TypeSpectrumscan" Name="TypeSpectrumscan" DataType="Text.50" SourceName="TYPESPECTRUMSCAN" SourceType="Column" Required="false"/>
-    <Field Desc="TypeSpectrumOccupation" Title="TypeSpectrumOccupation" Name="TypeSpectrumOccupation" DataType="Text.50" SourceName="TYPESPECTRUMOCCUPATION" SourceType="Column" Required="false"/>
-    <Field Desc="LevelMinOccup" Title="LevelMinOccup" Name="LevelMinOccup" DataType="Decimal.22.8" SourceName="LEVELMINOCCUP" SourceType="Column" Required="false"/>
+    <Field Desc="SwNumber" Title="SwNumber" Name="SwNumber" DataType="Integer.32" SourceName="SW_NUMBER" SourceType="Column" Required="true"/>
+    <Field Desc="TypeSpectrumscan" Title="TypeSpectrumscan" Name="TypeSpectrumscan" DataType="Text.50" SourceName="TYPE_SPECTRUM_SCAN" SourceType="Column" Required="false"/>
+    <Field Desc="TypeSpectrumOccupation" Title="TypeSpectrumOccupation" Name="TypeSpectrumOccupation" DataType="Text.50" SourceName="TYPE_SPECTRUM_OCCUPATION" SourceType="Column" Required="false"/>
+    <Field Desc="LevelMinOccup" Title="LevelMinOccup" Name="LevelMinOccup" DataType="Double.30.10" SourceName="LEVEL_MIN_OCCUP" SourceType="Column" Required="false"/>
     <Field Desc="Nchenal" Title="Nchenal" Name="Nchenal" DataType="Integer.32" SourceName="NCHENAL" SourceType="Column" Required="true"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasOther to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasOther to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

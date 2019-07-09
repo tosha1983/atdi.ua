@@ -11,7 +11,7 @@ namespace Atdi.Test.Platform
     {
         public MeasResults BuildTestMeasResults()
         {
-            var c = 1;
+            var c = 20;
             var emottingsCount = c;
             var frequenciesCount = c;
             var frequencySamplesCount = c;
@@ -49,7 +49,7 @@ namespace Atdi.Test.Platform
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Signaling,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),
@@ -400,7 +400,8 @@ namespace Atdi.Test.Platform
                         new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
                         new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
                         new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now }
-                    }
+                    },
+                    SysInfos = BuildTestSignalingSysInfo(count)
                 };
             }
             return result;
@@ -444,6 +445,37 @@ namespace Atdi.Test.Platform
             for (int i = 0; i < count; i++)
             {
                 result[i] = (float)r.NextDouble();
+            }
+            return result;
+        }
+        static SignalingSysInfo[] BuildTestSignalingSysInfo(int count)
+        {
+            var r = new Random();
+            var result = new SignalingSysInfo[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = new SignalingSysInfo
+                {
+                    BandWidth_Hz = r.NextDouble(),
+                    BSIC = r.Next(),
+                    ChannelNumber = r.Next(),
+                    CID = r.Next(),
+                    CtoI = r.NextDouble(),
+                    Freq_Hz = (decimal)r.NextDouble(),
+                    LAC = r.Next(),
+                    Level_dBm = r.NextDouble(),
+                    MCC = r.Next(),
+                    MNC = r.Next(),
+                    Power = r.NextDouble(),
+                    RNC = r.Next(),
+                    Standard = "111",
+                    WorkTimes = new WorkTime[]
+                    {
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now }
+                    }
+                };
             }
             return result;
         }

@@ -6,38 +6,23 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_STATION</Name>
+    <Name>STATION</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.50" SourceName="GLOBALSID" SourceType="Column" Required="false"/>
+    <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.50" SourceName="GLOBAL_SID" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
-    <Field Desc="Standart" Title="Standart" Name="Standart" DataType="Text.50" SourceName="STANDART" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
-    <Field Desc="StationId" Title="StationId" Name="StationId" DataType="Integer.64" SourceName="ID_STATION" SourceType="Column" Required="true"/>
-    <Field Desc="StartDate" Title="StartDate" Name="StartDate" DataType="DateTime" SourceName="STARTDATE" SourceType="Column" Required="false"/>
-    <Field Desc="EndDate" Title="EndDate" Name="EndDate" DataType="DateTime" SourceName="ENDDATE" SourceType="Column" Required="false"/>
-    <Field Desc="CloseDate" Title="CloseDate" Name="CloseDate" DataType="DateTime" SourceName="CLOSEDATE" SourceType="Column" Required="false"/>
-    <Field Desc="DozvilName" Title="DozvilName" Name="DozvilName" DataType="Text.100" SourceName="DOZVILNAME" SourceType="Column" Required="false"/>
-    <Field Desc="OwnerDataId" Title="OwnerDataId" Name="OwnerDataId" DataType="Integer.64" SourceName="ID_XBS_OWNERDATA" SourceType="Column" Required="true"/>
-    <Field Desc="StationSiteId" Title="StationSiteId" Name="StationSiteId" DataType="Integer.64" SourceName="ID_XBS_STATIONSITE" SourceType="Column" Required="true"/>
-    <Field Desc="IdPermission" Title="IdPermission" Name="IdPermission" DataType="Integer.64" SourceName="ID_PERMISSION" SourceType="Column" Required="true"/>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasLocationParam to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="STATIONSITE" SourceType="Reference" SourceName="StationSite" Title="Relation Station to StationSite">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">StationSiteId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="OWNERDATA" SourceType="Reference" SourceName="OwnerData" Title="Relation Station to OwnerData">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">OwnerDataId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="Standart" Title="Standart" Name="Standart" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
+    <Field Desc="StartDate" Title="StartDate" Name="StartDate" DataType="DateTime" SourceName="START_DATE" SourceType="Column" Required="false"/>
+    <Field Desc="EndDate" Title="EndDate" Name="EndDate" DataType="DateTime" SourceName="END_DATE" SourceType="Column" Required="false"/>
+    <Field Desc="CloseDate" Title="CloseDate" Name="CloseDate" DataType="DateTime" SourceName="CLOSE_DATE" SourceType="Column" Required="false"/>
+    <Field Desc="DozvilName" Title="DozvilName" Name="DozvilName" DataType="Text.100" SourceName="DOZVIL_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="ClientStationCode" Title="ClientStationCode" Name="ClientStationCode" DataType="Integer.64" SourceName="CLIENT_STATION_CODE" SourceType="Column" Required="true"/>
+    <Field Desc="ClientPermissionCode" Title="ClientPermissionCode" Name="ClientPermissionCode" DataType="Integer.32" SourceName="CLIENT_PERMISSION_CODE" SourceType="Column" Required="true"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasLocationParam to MeasTask"/>
+    <Field Name="STATION_SITE" SourceName="StationSite" SourceType="Reference" Required="true" Desc="" Title="Relation Station to StationSite"/>
+    <Field Name="OWNER_DATA" SourceName="OwnerData" SourceType="Reference" Required="true" Desc="" Title="Relation Station to OwnerData"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

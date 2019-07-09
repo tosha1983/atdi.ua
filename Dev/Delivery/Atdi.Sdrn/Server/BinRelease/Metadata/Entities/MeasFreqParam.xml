@@ -6,21 +6,16 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_MEASFREQPARAM</Name>
+    <Name>MEAS_FREQ_PARAM</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
     <Field Desc="Mode" Title="Mode" Name="Mode" DataType="Text.50" SourceName="MODE" SourceType="Column" Required="false"/>
-    <Field Desc="Step" Title="Step" Name="Step" DataType="Decimal.22.8" SourceName="STEP" SourceType="Column" Required="false"/>
-    <Field Desc="Rgl" Title="Rgl" Name="Rgl" DataType="Decimal.22.8" SourceName="RGL" SourceType="Column" Required="false"/>
-    <Field Desc="Rgu" Title="Rgu" Name="Rgu" DataType="Decimal.22.8" SourceName="RGU" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
-    <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasFreqParam to MeasTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="Step" Title="Step" Name="Step" DataType="Double.30.10" SourceName="STEP" SourceType="Column" Required="false"/>
+    <Field Desc="Rgl" Title="Rgl" Name="Rgl" DataType="Double.30.10" SourceName="RGL" SourceType="Column" Required="false"/>
+    <Field Desc="Rgu" Title="Rgu" Name="Rgu" DataType="Double.30.10" SourceName="RGU" SourceType="Column" Required="false"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasFreqParam to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

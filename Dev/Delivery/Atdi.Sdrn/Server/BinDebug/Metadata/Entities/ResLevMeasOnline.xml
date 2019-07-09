@@ -6,18 +6,13 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_RESLEVMEASONLINE</Name>
+    <Name>RES_LEV_MEAS_ONLINE</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="Value" Title="Value" Name="Value" DataType="Decimal.22.8" SourceName="VALUE" SourceType="Column" Required="false"/>
-    <Field Desc="ResMeasId" Title="ResMeasId" Name="ResMeasId" DataType="Integer.64" SourceName="XBSRESMEASID" SourceType="Column" Required="false"/>
-    <Field Name="RESMEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ResLevMeasOnline to ResMeas">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">ResMeasId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="Value" Title="Value" Name="Value" DataType="Double.30.10" SourceName="VALUE" SourceType="Column" Required="false"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Required="true" Title="Relation ResLevMeasOnline to ResMeas"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

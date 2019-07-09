@@ -6,41 +6,23 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_RESMEAS</Name>
+    <Name>RES_MEAS</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Text.150" SourceName="MEASTASKID" SourceType="Column" Required="false"/>
-    <Field Desc="MeasSubTaskId" Title="MeasSubTaskId" Name="MeasSubTaskId" DataType="Integer.64" SourceName="SUBMEASTASKID" SourceType="Column" Required="false"/>
-    <Field Desc="MeasSubTaskStationId" Title="MeasSubTaskStationId" Name="MeasSubTaskStationId" DataType="Integer.64" SourceName="SUBMEASTASKSTATIONID" SourceType="Column" Required="false"/>
-    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="false"/>
-    <Field Desc="AntVal" Title="AntVal" Name="AntVal" DataType="Decimal.22.8" SourceName="ANTVAL" SourceType="Column" Required="false"/>
-    <Field Desc="TimeMeas" Title="TimeMeas" Name="TimeMeas" DataType="DateTime" SourceName="TIMEMEAS" SourceType="Column" Required="false"/>
-    <Field Desc="DataRank" Title="DataRank" Name="DataRank" DataType="Integer.32" SourceName="DATARANK" SourceType="Column" Required="false"/>
+    <Field Desc="AntVal" Title="AntVal" Name="AntVal" DataType="Double.30.10" SourceName="ANTVAL" SourceType="Column" Required="false"/>
+    <Field Desc="TimeMeas" Title="TimeMeas" Name="TimeMeas" DataType="DateTime" SourceName="TIME_MEAS" SourceType="Column" Required="false"/>
+    <Field Desc="DataRank" Title="DataRank" Name="DataRank" DataType="Integer.32" SourceName="DATA_RANK" SourceType="Column" Required="false"/>
     <Field Desc="N" Title="N" Name="N" DataType="Integer.32" SourceName="N" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
-    <Field Desc="MeasResultSID" Title="TypeMeasurements" Name="MeasResultSID" DataType="Text.50" SourceName="MEASSDRRESULTSID" SourceType="Column" Required="false"/>
-    <Field Desc="TypeMeasurements" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.450" SourceName="TYPEMEASUREMENTS" SourceType="Column" Required="false"/>
+    <Field Desc="MeasResultSID" Title="TypeMeasurements" Name="MeasResultSID" DataType="Text.50" SourceName="MEAS_SDR_RESULT_SID" SourceType="Column" Required="false"/>
+    <Field Desc="TypeMeasurements" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.450" SourceName="TYPE_MEASUREMENTS" SourceType="Column" Required="false"/>
     <Field Desc="Synchronized" Title="Synchronized" Name="Synchronized" DataType="Boolean" SourceName="SYNCHRONIZED" SourceType="Column" Required="true"/>
-    <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="STARTTIME" SourceType="Column" Required="false"/>
-    <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOPTIME" SourceType="Column" Required="false"/>
-    <Field Desc="ScansNumber" Title="ScansNumber" Name="ScansNumber" DataType="Integer.32" SourceName="SCANSNUMBER" SourceType="Column" Required="false"/>
-    <Field Name="MEASSUBTASK" SourceType="Reference" SourceName="MeasSubTask" Title="Relation ResMeas to MeasSubTask">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="MEASSUBTASKSTA" SourceType="Reference" SourceName="MeasSubTaskSta" Title="Relation ResMeas to MeasSubTaskSta">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">MeasSubTaskStationId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
-    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation ResMeas to Sensor">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="START_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOP_TIME" SourceType="Column" Required="false"/>
+    <Field Desc="ScansNumber" Title="ScansNumber" Name="ScansNumber" DataType="Integer.32" SourceName="SCANS_NUMBER" SourceType="Column" Required="false"/>
+    <Field Name="MEAS_SUBTASK_STATION" SourceType="Reference" SourceName="MeasSubTaskStation" Title="Relation ResMeas to MeasSubTaskStation"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

@@ -53,6 +53,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 var licenseProductKey = GetParameter(doc, "License.ProductKey");
 
                 var rabbitMQHost = GetParameter(doc, "RabbitMQ.Host");
+                var rabbitMQPort = GetParameter(doc, "RabbitMQ.Port");
                 var rabbitMQVirtualHost = GetParameter(doc, "RabbitMQ.VirtualHost");
                 var rabbitMQUser = GetParameter(doc, "RabbitMQ.User");
                 var rabbitMQPassword = GetParameter(doc, "RabbitMQ.Password");
@@ -61,6 +62,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 var sdrnMessagesExchange = GetParameter(doc, "SDRN.MessagesExchange");
                 var sdrnServerQueueNamePart = GetParameter(doc, "SDRN.ServerQueueNamePart");
                 var sdrnDeviceQueueNamePart = GetParameter(doc, "SDRN.DeviceQueueNamePart");
+
+                var inboxPath = GetParameter(doc, "Messages.InboxFolder");
+                var outboxPath = GetParameter(doc, "Messages.OutboxFolder");
 
                 txtLicenseFileName.Text = licenseFileName;
                 try
@@ -77,6 +81,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 
 
                 txtRabbitMQHost.Text = rabbitMQHost;
+                txtRabbitMQPort.Text = rabbitMQPort;
                 txtRabbitMQVirtualHost.Text = rabbitMQVirtualHost;
                 txtRabbitMQUser.Text = rabbitMQUser;
 
@@ -91,6 +96,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 txtSdrnMessagesExchange.Text = sdrnMessagesExchange;
                 txtSdrnServerQueueNamePart.Text = sdrnServerQueueNamePart;
                 txtSdrnDeviceQueueNamePart.Text = sdrnDeviceQueueNamePart;
+
+                txtInboxPath.Text = inboxPath;
+                txtOutboxPath.Text = outboxPath;
 
                 txtWcfBindings.Text = wcfBindings;
             }
@@ -145,6 +153,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             var licenseProductKey = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, SharedSecret);
 
             var rabbitMQHost = txtRabbitMQHost.Text;
+            var rabbitMQPort = txtRabbitMQPort.Text;
             var rabbitMQVirtualHost = txtRabbitMQVirtualHost.Text;
             var rabbitMQUser = txtRabbitMQUser.Text;
             var rabbitMQPassword = Encryptor.EncryptStringAES(txtRabbitMQPassword.Text, SharedSecret);
@@ -153,6 +162,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             var sdrnMessagesExchange = txtSdrnMessagesExchange.Text;
             var sdrnServerQueueNamePart = txtSdrnServerQueueNamePart.Text;
             var sdrnDeviceQueueNamePart = txtSdrnDeviceQueueNamePart.Text;
+
+            var inboxPath = txtInboxPath.Text;
+            var outboxPath = txtOutboxPath.Text;
 
             var wcfBindings = txtWcfBindings.Text;
 
@@ -168,6 +180,7 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             SetParameter(doc, "License.ProductKey", licenseProductKey);
 
             SetParameter(doc, "RabbitMQ.Host", rabbitMQHost);
+            SetParameter(doc, "RabbitMQ.Port", rabbitMQPort);
             SetParameter(doc, "RabbitMQ.VirtualHost", rabbitMQVirtualHost);
             SetParameter(doc, "RabbitMQ.User", rabbitMQUser);
             SetParameter(doc, "RabbitMQ.Password", rabbitMQPassword);
@@ -176,6 +189,9 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             SetParameter(doc, "SDRN.MessagesExchange", sdrnMessagesExchange);
             SetParameter(doc, "SDRN.ServerQueueNamePart", sdrnServerQueueNamePart);
             SetParameter(doc, "SDRN.DeviceQueueNamePart", sdrnDeviceQueueNamePart);
+
+            SetParameter(doc, "Messages.OutboxFolder", outboxPath);
+            SetParameter(doc, "Messages.InboxFolder", inboxPath);
 
             doc.Save(fileName);
         }

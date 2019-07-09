@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestEntityAbsSmpProtoEndExt2"
+  Title       = "Test Simple Entity"
+  Desc        = ""
+  Type        = "Extention"
+  BaseEntity  = "TestEntityAbsSmpProtoEnd"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_ENTITY_ABS_SMP_PROTO_END_EXT2</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+
+    <Field Name="Ext2ProtoEndField1" DataType="Text.10" SourceName="EXT2_PRT_END_FLD_1" SourceType="Column" Desc="" Title="Smp Field 1"/>
+    <Field Name="Ext2ProtoEndField2" DataType="Text.10" SourceName="EXT2_PRT_END_FLD_2" SourceType="Column" Desc="" Title="Smp Field 2"/>
+    <Field Name="Ext2ProtoEndField3" DataType="Text.10" SourceName="EXT2_PRT_END_FLD_3" SourceType="Column" Desc="" Title="Smp Field 3"/>
+
+
+  </Fields>
+
+</Entity>

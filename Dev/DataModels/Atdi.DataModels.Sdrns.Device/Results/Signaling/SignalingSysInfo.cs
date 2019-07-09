@@ -22,7 +22,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// <summary>
         /// только GSM/UMTS/CDMA/EVDO/LTE/TETRA
         /// </summary>
-        public string Standart;
+        public string Standard;
 
         /// <summary>
         /// Полоса сигнала
