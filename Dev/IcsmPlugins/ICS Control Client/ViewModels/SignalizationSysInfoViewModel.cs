@@ -9,16 +9,6 @@ using XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Models.WcfDataApadters;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
-using CS = XICSM.ICSControlClient.WpfControls.Charts;
-using MP = XICSM.ICSControlClient.WpfControls.Maps;
-using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
-using System.Windows;
-using FRM = System.Windows.Forms;
-using FM = XICSM.ICSControlClient.Forms;
-using ICSM;
-using System.Windows.Controls;
-using INP = System.Windows.Input;
-using System.Collections;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -29,13 +19,13 @@ namespace XICSM.ICSControlClient.ViewModels
         private SignSysInfoViewModel _currentSysInfo;
         private SignSysInfoDataAdapter _sysInfos;
         private EmittingWorkTimeDataAdapter _sysInfoWorkTimes;
-
         public SignSysInfoDataAdapter SysInfos => this._sysInfos;
         public EmittingWorkTimeDataAdapter SysInfoWorkTimes => this._sysInfoWorkTimes;
-
         public SignalizationSysInfoViewModel(long measResultId, double freq_MHz)
         {
             this._measResultId = measResultId;
+            this._sysInfos = new SignSysInfoDataAdapter();
+            this._sysInfoWorkTimes = new EmittingWorkTimeDataAdapter();
             this._freq_MHz = freq_MHz;
             this.ReloadData();
         }
