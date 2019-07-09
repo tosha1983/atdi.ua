@@ -6,34 +6,34 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_SENSORANTENNA</Name>
+    <Name>SENSOR_ANTENNA</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>
-    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSORID" SourceType="Column" Required="true"/>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.32" SourceName="ID" SourceType="Column"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.32" SourceName="SENSOR_ID" SourceType="Column" Required="true"/>
     <Field Desc="Code of Antenna" Title="Code of Antenna" Name="Code" DataType="Text.50" SourceName="CODE" SourceType="Column" Required="false"/>
-    <Field Desc="SlewAng, degree" Title="SlewAng, degree" Name="Slewang" DataType="Decimal.22.8" SourceName="SLEWANG" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Desc="SlewAng, degree" Title="SlewAng, degree" Name="Slewang" DataType="Double.30.10" SourceName="SLEWANG" SourceType="Column" Required="false" Unit="Angle.Degree"/>
     <Field Desc="Manufacturer" Title="Manufacturer" Name="Manufacturer" DataType="Text.50" SourceName="MANUFACTURER" SourceType="Column" Required="false"/>
     <Field Desc="Name of antenna" Title="Name of antenna" Name="Name" DataType="Text.50" SourceName="NAME" SourceType="Column" Required="false"/>
     <Field Desc="Technical ID" Title="Technical ID" Name="TechId" DataType="Text.150" SourceName="TECHID" SourceType="Column" Required="false"/>
     <Field Desc="Directional of antenna D - directional, ND - not directional" Title="Directional of antenna D - directional, ND - not directional" Name="AntDir" DataType="Text.50" SourceName="ANTDIR" SourceType="Column" Required="false"/>
-    <Field Desc="Horizontal Beamwidth, degree" Title="Horizontal Beamwidth, degree" Name="HbeamWidth" DataType="Decimal.22.8" SourceName="HBEAMWIDTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
-    <Field Desc="Vertical Beamwidth, degree" Title="Vertical Beamwidth, degree" Name="VbeamWidth" DataType="Decimal.22.8" SourceName="VBEAMWIDTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Desc="Horizontal Beamwidth, degree" Title="Horizontal Beamwidth, degree" Name="HbeamWidth" DataType="Double.30.10" SourceName="HBEAMWIDTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
+    <Field Desc="Vertical Beamwidth, degree" Title="Vertical Beamwidth, degree" Name="VbeamWidth" DataType="Double.30.10" SourceName="VBEAMWIDTH" SourceType="Column" Required="false" Unit="Angle.Degree"/>
     <Field Desc="Polarization V, H, M" Title="Polarization V, H, M" Name="Polarization" DataType="Text.50" SourceName="POLARIZATION" SourceType="Column" Required="false"/>
     <Field Desc="UseType" Title="UseType" Name="UseType" DataType="Text.50" SourceName="USETYPE" SourceType="Column" Required="false"/>
     <Field Desc="Category" Title="Category" Name="Category" DataType="Text.50" SourceName="CATEGORY" SourceType="Column" Required="false"/>
     <Field Desc="Type of Gain D - dipole, V -vertical, I - isotropic" Title="Type of Gain D - dipole, V -vertical, I - isotropic" Name="GainType" DataType="Text.50" SourceName="GAINTYPE" SourceType="Column" Required="false"/>
-    <Field Desc="Maximum gain of antenna, dB" Title="Maximum gain of antenna, dB" Name="GainMax" DataType="Decimal.22.8" SourceName="GAINMAX" SourceType="Column" Required="false" Unit="Power.dB"/>
-    <Field Desc="Lower Frequency, MHz" Title="Lower Frequency, MHz" Name="LowerFreq" DataType="Decimal.22.8" SourceName="LOWERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
-    <Field Desc="Upper Frequency, MHz" Title="Upper Frequency, MHz" Name="UpperFreq" DataType="Decimal.22.8" SourceName="UPPERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
-    <Field Desc="Additional loss, dB" Title="Additional loss, dB" Name="AddLoss" DataType="Decimal.22.8" SourceName="ADDLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
-    <Field Desc="XPD, dB" Title="XPD, dB" Name="Xpd" DataType="Decimal.22.8" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Desc="Maximum gain of antenna, dB" Title="Maximum gain of antenna, dB" Name="GainMax" DataType="Double.30.10" SourceName="GAINMAX" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Desc="Lower Frequency, MHz" Title="Lower Frequency, MHz" Name="LowerFreq" DataType="Double.30.10" SourceName="LOWERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="Upper Frequency, MHz" Title="Upper Frequency, MHz" Name="UpperFreq" DataType="Double.30.10" SourceName="UPPERFREQ" SourceType="Column" Required="false" Unit="Frequency.MHz"/>
+    <Field Desc="Additional loss, dB" Title="Additional loss, dB" Name="AddLoss" DataType="Double.30.10" SourceName="ADDLOSS" SourceType="Column" Required="false" Unit="Power.dB"/>
+    <Field Desc="XPD, dB" Title="XPD, dB" Name="Xpd" DataType="Double.30.10" SourceName="XPD" SourceType="Column" Required="false" Unit="Power.dB"/>
     <Field Desc="Class of antenna" Title="Class of antenna" Name="AntClass" DataType="Text.50" SourceName="ANTCLASS" SourceType="Column" Required="false"/>
     <Field Desc="Remark" Title="Remark" Name="Remark" DataType="Text.250" SourceName="REMARK" SourceType="Column" Required="false"/>
     <Field Desc="CustTxt1" Title="CustTxt1" Name="CustTxt1" DataType="Text.250" SourceName="CUSTTXT1" SourceType="Column" Required="false"/>
     <Field Desc="CustData1" Title="CustData1" Name="CustData1" DataType="DateTime" SourceName="CUSTDATA1" SourceType="Column" Required="false"/>
-    <Field Desc="CustNbr1" Title="CustNbr1" Name="CustNbr1" DataType="Decimal.22.8" SourceName="CUSTNBR1" SourceType="Column" Required="false"/>
+    <Field Desc="CustNbr1" Title="CustNbr1" Name="CustNbr1" DataType="Double.30.10" SourceName="CUSTNBR1" SourceType="Column" Required="false"/>
     <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation SensorAntenna to Sensor">
       <PrimaryKeyMapping>
         <Mapped KeyFieldName="Id" MatchWith="Field">SensorId</Mapped>
