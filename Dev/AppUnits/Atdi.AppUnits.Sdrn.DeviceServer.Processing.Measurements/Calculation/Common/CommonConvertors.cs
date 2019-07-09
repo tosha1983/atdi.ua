@@ -71,7 +71,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     signalingSysInfo.MNC = systemInfo.MNC;
                     signalingSysInfo.Power = systemInfo.Power;
                     signalingSysInfo.RNC = systemInfo.RNC;
-                    signalingSysInfo.Standart = systemInfo.Standart;
+                    signalingSysInfo.Standard = systemInfo.Standart;
                     measSysInfoResults.signalingSysInfo[i] = signalingSysInfo;
                 }
             }
