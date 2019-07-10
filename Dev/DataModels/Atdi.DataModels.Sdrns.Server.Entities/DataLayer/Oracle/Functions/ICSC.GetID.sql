@@ -1,4 +1,5 @@
-﻿CREATE OR REPLACE FUNCTION ICSC.GetID (inttable_name IN varchar2 )
+﻿CREATE OR REPLACE FUNCTION ICSC.GetID (inttable_name IN varchar2 --??????? ??? ????????? ??????????????
+                                           )
 return number
 is
 n number(15);
@@ -97,13 +98,13 @@ into n
 from dual;
 end if;
 
-if inttable_name ='MEAS_SUB_TASK' then
+if inttable_name ='MEAS_SUBTASK' then
 select ICSC.MEAS_SUB_TASK_ID_SEQ.nextval
 into n
 from dual;
 end if;
 
-if inttable_name ='MEAS_SUB_TASK_STATION' then
+if inttable_name ='MEAS_SUBTASK_STATION' then
 select ICSC.MEAS_SUB_TASK_STATION_ID_SEQ.nextval
 into n
 from dual;
@@ -257,7 +258,7 @@ end if;
 
 
 
-if inttable_name ='LOGS' then
+if inttable_name ='VALIDATION_LOGS' then
 select ICSC.LOGS_ID_SEQ.nextval
 into n
 from dual;
@@ -322,6 +323,18 @@ into n
 from dual;
 end if;
 
+if inttable_name ='SIGN_SYSINFO' then
+select ICSC.SIGN_SYSINFO_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='SIGN_SYSINFO_WTIMES' then
+select ICSC.SIGN_SYSINFO_WTIMES_ID_SEQ.nextval
+into n
+from dual;
+end if;
 
 
 return(n);
