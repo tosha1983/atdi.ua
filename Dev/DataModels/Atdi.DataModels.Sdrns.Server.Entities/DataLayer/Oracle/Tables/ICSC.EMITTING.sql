@@ -1,14 +1,14 @@
 ﻿CREATE TABLE ICSC.EMITTING
 (
   ID                         NUMBER(15)         NOT NULL,
-  STARTFREQ_MHZ              NUMBER(22,8),
-  STOPFREQ_MHZ               NUMBER(22,8),
-  CURRPOWER_DBM              NUMBER(22,8),
-  REFLEVEL_DBM               NUMBER(22,8),
-  MEANDEVFROM_REF            NUMBER(22,8),
-  TRIGGERDEVFROM_REF         NUMBER(22,8),
-  ROLL_OFF_ACTOR             NUMBER(22,8),
-  STANDARD_BW                NUMBER(22,8),
+  STARTFREQ_MHZ              NUMBER(30,10),
+  STOPFREQ_MHZ               NUMBER(30,10),
+  CURRPOWER_DBM              NUMBER(30,10),
+  REFLEVEL_DBM               NUMBER(30,10),
+  MEANDEVFROM_REF            NUMBER(30,10),
+  TRIGGERDEVFROM_REF         NUMBER(30,10),
+  ROLL_OFF_ACTOR             NUMBER(30,10),
+  STANDARD_BW                NUMBER(30,10),
   RES_MEAS_ID                NUMBER(15),
   SENSOR_ID                  NUMBER(15),
   STATION_ID                 NUMBER(15),
@@ -33,7 +33,7 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
-LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS 
+LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -50,7 +50,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -58,7 +58,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (LOSS_DB) STORE AS 
+  LOB (LOSS_DB) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -75,7 +75,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -83,7 +83,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (FREQ_KHZ) STORE AS 
+  LOB (FREQ_KHZ) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -100,7 +100,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -108,7 +108,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (LEVELS_DISTRIBUTION_LVL) STORE AS 
+  LOB (LEVELS_DISTRIBUTION_LVL) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -125,7 +125,7 @@ LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -138,7 +138,7 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE UNIQUE INDEX ICSC.XBS_EMITTING_PK ON ICSC.EMITTING
+CREATE UNIQUE INDEX ICSC.EMITTING_ID_PK ON ICSC.EMITTING
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -156,7 +156,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.XBS_EMITTING_XBSRESMEASID_FK ON ICSC.EMITTING
+CREATE INDEX ICSC.EMITTING_RES_MEAS_ID_FK ON ICSC.EMITTING
 (RES_MEAS_ID)
 LOGGING
 TABLESPACE USERS
@@ -175,23 +175,6 @@ NOPARALLEL;
 
 
 ALTER TABLE ICSC.EMITTING ADD (
-  CONSTRAINT XBS_EMITTING_PK
+  CONSTRAINT EMITTING_PK
  PRIMARY KEY
- (ID)
-    USING INDEX 
-    TABLESPACE USERS
-    PCTFREE    10
-    INITRANS   2
-    MAXTRANS   255
-    STORAGE    (
-                INITIAL          64K
-                NEXT             1M
-                MINEXTENTS       1
-                MAXEXTENTS       UNLIMITED
-                PCTINCREASE      0
-               ));
-
-ALTER TABLE ICSC.EMITTING ADD (
-  CONSTRAINT FK_XBS_EMITTING_XBS_RESMEAS 
- FOREIGN KEY (RES_MEAS_ID) 
- REFERENCES ICSC.RES_MEAS (ID));
+ (ID));

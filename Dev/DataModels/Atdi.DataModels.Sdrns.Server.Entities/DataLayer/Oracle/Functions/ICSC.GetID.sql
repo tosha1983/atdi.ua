@@ -1,5 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION ICSC.GetID (inttable_name IN varchar2 --??????? ??? ????????? ??????????????
-                                           )
+﻿CREATE OR REPLACE FUNCTION ICSC.GetID (inttable_name IN varchar2)
 return number
 is
 n number(15);
@@ -259,7 +258,7 @@ end if;
 
 
 if inttable_name ='VALIDATION_LOGS' then
-select ICSC.LOGS_ID_SEQ.nextval
+select ICSC.VALIDATION_LOGS_ID_SEQ.nextval
 into n
 from dual;
 end if;
