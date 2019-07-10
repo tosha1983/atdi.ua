@@ -110,7 +110,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 if ((listMeasSysInfoResult != null) && (listMeasSysInfoResult.Count > 0))
                 {
                     //здесь нужно дописать функцию GetEmittingDetailedForSysInfo
-                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailedForSysInfo(ref taskContext.Task.EmittingsSummary, listMeasBandwidthResult, taskContext.Task.ReferenceLevels, this._logger);
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailedForSysInfo(ref taskContext.Task.EmittingsSummary, listMeasSysInfoResult, taskContext.Task.ReferenceLevels, this._logger);
                     if (isSuccess == false)
                     {
                         //обработка  ошибка
