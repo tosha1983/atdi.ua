@@ -26,31 +26,56 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             for (int i = 0; listSysinfoResult.Count>i; i++)
             {
                 var SysInfo = listSysinfoResult[i];
-                double Min_penalty = 9999;
-                int CountInEmittingSummary = 0;
+
                 for (int k = 0; SysInfo.signalingSysInfo.Length > k; k++)
                 {
                     var oneSysInfo = SysInfo.signalingSysInfo[k];
                     double BWRes = 0;
                     if (oneSysInfo.BandWidth_Hz != null) {BWRes = oneSysInfo.BandWidth_Hz.Value; }
                     // далее цыкл для определения излучения которое больше всего подходит
+                    double Min_penalty = 9999;
+                    int CountInEmittingSummary = 0;
                     for (int j = 0; emittingSummary.Length > j; j++)
                     {
                         var emiting = emittingSummary[j];
-                        double StartFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T1 * emiting.Spectrum.SpectrumSteps_kHz / 1000;
-                        double StopFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T2 * emiting.Spectrum.SpectrumSteps_kHz / 1000;
-                        double CentralFreq = (StartFreq + StopFreq) / 2;
-                        double StartFreqD = (double)oneSysInfo.Freq_Hz - BWRes;
-                        double StopFreqD = (double)oneSysInfo.Freq_Hz + BWRes;
-                        double CentralFreqD = (StartFreqD + StopFreqD) / 2;
-                        double BW = StopFreq - StartFreq;
-                        if (!((StartFreq > StopFreqD) || (StartFreqD > StopFreq)))
+                        double StartFreq;
+                        double StopFreq;
+                        if (emiting.Spectrum.СorrectnessEstimations == true)
                         {
-                            double CurPenalty = Math.Abs(BWRes - BW) / BW + Math.Abs(CentralFreq - CentralFreqD) / BW;
+                            if (emiting.Spectrum.T1 != 0)
+                            {
+                                StartFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T1 * emiting.Spectrum.SpectrumSteps_kHz / 1000;
+                            }
+                            else
+                            {
+                                StartFreq = emiting.StartFrequency_MHz;
+                            }
+                            if (emiting.Spectrum.T2 != 0)
+                            {
+                                StopFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T2 * emiting.Spectrum.SpectrumSteps_kHz / 1000;
+                            }
+                            else
+                            {
+                                StopFreq = emiting.StopFrequency_MHz;
+                            }
+                        }
+                        else
+                        {
+                            StartFreq = emiting.StartFrequency_MHz;
+                            StopFreq = emiting.StopFrequency_MHz;
+                        }
+                        double CentralFreq = (StartFreq + StopFreq) / 2;
+                        double StartFreqD = ((double)oneSysInfo.Freq_Hz - BWRes/2)/1000000;
+                        double StopFreqD = ((double)oneSysInfo.Freq_Hz + BWRes/2)/ 1000000;
+                        double CentralFreqD = (StartFreqD + StopFreqD) / 2;
+                        double BW = 1000000*(StopFreq - StartFreq);
+                        if ((StartFreq < StopFreqD) && (StartFreqD < StopFreq))
+                        {
+                            double CurPenalty = Math.Abs(BWRes - BW) / BW + Math.Abs(CentralFreq - CentralFreqD) / (BW/1000000);
                             if (CurPenalty < Min_penalty) { Min_penalty = CurPenalty; CountInEmittingSummary = j; }
                         }
                     }
-                    if (Min_penalty < PersentForJoinDetailEmToSummEm / 100)
+                    if (Min_penalty < PersentForJoinDetailEmToSummEm*3 / 100)
                     {
                         // присоединяемся к существующему емитингу
                         bool r = JoinSysInfoToEmitting(ref emittingSummary[CountInEmittingSummary], oneSysInfo);
@@ -227,23 +252,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 if (x.StopEmitting > y.StopEmitting)
                                 {
-                                    return -1;
+                                    return 1;
                                 }
                             }
                             else
                             {
                                 if (x.StartEmitting > y.StartEmitting)
                                 {
-                                    return -1;
+                                    return 1;
                                 }
                             }
-                            return 1;
+                            return -1;
                         });
                         // Укрупняем список
                         for (int i = 0; WorkTimeList.Count - 1 > i; i++)
                         {
                             TimeSpan diff =  WorkTimeList[i + 1].StartEmitting - WorkTimeList[i].StopEmitting;
-                            if (diff.Seconds > 60)
+                            if (diff.TotalSeconds < 60)
                             {
                                 // маленькое временное растояние следовательно производим укрупнение
                                 WorkTimeList[i].StopEmitting = WorkTimeList[i + 1].StopEmitting;

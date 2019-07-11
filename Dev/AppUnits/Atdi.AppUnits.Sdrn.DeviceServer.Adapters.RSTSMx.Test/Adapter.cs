@@ -126,30 +126,47 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.Test
                 if (IsRuning)
                 {
                     context.Lock();
+                    decimal[] Freq_Hz = new decimal[12] {2112800000, 2117600000, 2122400000, 2127400000, 2132400000, 2137400000,
+                2142400000, 2147400000, 2152400000, 2157400000, 2162400000, 2167200000};
+                    COMRMSI.StationSystemInfo[] stationSystemInfos = new COMRMSI.StationSystemInfo[1000];
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        System.Threading.Thread.Sleep(30);
+                        System.Random random = new Random();
+                        int val_index = random.Next(0, 12);
+                        int random_CID = random.Next(0, 100);
+                        //if (val_index==11)
+                       // {
+
+                        //}
+                        stationSystemInfos[i] = new COMRMSI.StationSystemInfo()
+                        {
+                            Freq_Hz = Freq_Hz[val_index],
+                            BandWidth_Hz = 5000000,
+                            CID = random_CID,
+                            /*
+                            CodePower = 435,
+                            CtoI = 5,
+                            ECI = 4,
+                            Power = 4,
+                            LAC = 4,
+                            RNC = 1,
+                            BaseId = 1,
+                            BSIC = 2,
+                            ChannelNumber = 45,
+                            */
+                            Standart = "UMTS",
+                            Time = DateTime.Now.Ticks
+                        };
+                    }
+
                     COMR.MesureSystemInfoResult msir = new COMR.MesureSystemInfoResult(0, CommandResultStatus.Next)
                     {
                         DeviceStatus = COMR.Enums.DeviceStatus.Normal,
-                        SystemInfo = new COMRMSI.StationSystemInfo[1]
-                        {
-                            new COMRMSI.StationSystemInfo()
-                            {
-                                 Freq_Hz = 414,
-                                  BandWidth_Hz =12,
-                                   BaseId =1,
-                                    BSIC =2,
-                                     ChannelNumber=45,
-                                      CID =4,
-                                       CodePower=435,
-                                        CtoI = 5,
-                                         ECI = 4,
-                                          Power = 4,
-                                           LAC = 4,
-                                           RNC = 1,
-                                            Standart = "GSM"
-                            }
-                        }
-
+                        SystemInfo = stationSystemInfos
                     };
+
+                
                     context.PushResult(msir);
                     context.Unlock();
                     context.Finish();

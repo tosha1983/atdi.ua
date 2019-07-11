@@ -71,7 +71,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     var mesureSystemInfoParameter = context.Task.mesureSystemInfoParameters[i];
                     var deviceCommand = new MesureSystemInfoCommand(mesureSystemInfoParameter);
-                    deviceCommand.Delay = 0;
+                    //deviceCommand.Delay = 10000;
                     deviceCommand.Options = CommandOption.StartImmediately;
 
                     if (parentProc != null)

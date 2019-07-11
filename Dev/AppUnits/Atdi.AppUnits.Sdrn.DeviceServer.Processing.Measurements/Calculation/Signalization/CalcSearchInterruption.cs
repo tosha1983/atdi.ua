@@ -18,7 +18,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static int NumberPointForChangeExcess = 10; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
         private static double allowableExcess_dB = 10;
         private static double DiffLevelForCalcBW = 25;
-        private static double windowBW = 1.5;
+        private static double windowBW = 1.05;
         private static double nDbLevel_dB = 15;
         private static int NumberIgnoredPoints = 1;
         private static double MinExcessNoseLevel_dB = 5;
@@ -241,6 +241,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 if (start < 0) { start = 0; }
                                 if (stop >= levels.Length) { stop = levels.Length - 1; }
                             }
+                            else
+                            {
+                                emitting.StartFrequency_MHz = trace.Freq_Hz[start] / 1000000.0;
+                                emitting.StopFrequency_MHz = trace.Freq_Hz[stop] / 1000000.0;
+                            }
+
                             emitting.Spectrum.Levels_dBm = new float[stop - start];
                             Array.Copy(levels, start, emitting.Spectrum.Levels_dBm, 0, stop - start);
                             emitting.Spectrum.SpectrumStartFreq_MHz = trace.Freq_Hz[start] / 1000000.0;
