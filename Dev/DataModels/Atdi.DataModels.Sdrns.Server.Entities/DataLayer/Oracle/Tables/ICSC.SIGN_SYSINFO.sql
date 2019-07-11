@@ -22,6 +22,10 @@ PCTFREE    10
 INITRANS   1
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
@@ -58,6 +62,10 @@ PCTFREE    10
 INITRANS   2
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
@@ -67,4 +75,16 @@ NOPARALLEL;
 ALTER TABLE ICSC.SIGN_SYSINFO ADD (
   CONSTRAINT SIGN_SYSINFOS_PK
  PRIMARY KEY
- (ID));
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

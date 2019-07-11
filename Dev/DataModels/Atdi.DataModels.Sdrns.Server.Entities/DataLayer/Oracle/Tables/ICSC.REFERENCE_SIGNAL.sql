@@ -1,12 +1,12 @@
 ﻿CREATE TABLE ICSC.REFERENCE_SIGNAL
 (
   ID                      NUMBER(15)            NOT NULL,
-  FREQ_MHZ                NUMBER(22,8),
-  BANDWIDTH_KHZ           NUMBER(22,8),
-  LEVELSIGNAL_DBM         NUMBER(22,8),
+  FREQ_MHZ                NUMBER(30,10),
+  BANDWIDTH_KHZ           NUMBER(30,10),
+  LEVELSIGNAL_DBM         NUMBER(30,10),
   REFERENCE_SITUATION_ID  NUMBER(15),
-  ICSC_ID                 NUMBER(15),
-  ICSC_TABLE              NVARCHAR2(50),
+  ICSM_ID                 NUMBER(9),
+  ICSM_TABLE              NVARCHAR2(50),
   LOSS_DB                 BLOB,
   FREQ_KHZ                BLOB
 )
@@ -25,7 +25,7 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
-LOB (LOSS_DB) STORE AS 
+LOB (LOSS_DB) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -42,7 +42,7 @@ LOB (LOSS_DB) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -50,7 +50,7 @@ LOB (LOSS_DB) STORE AS
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (FREQ_KHZ) STORE AS 
+  LOB (FREQ_KHZ) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -67,7 +67,7 @@ LOB (LOSS_DB) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -80,7 +80,7 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE UNIQUE INDEX ICSC.XBS_REFSIGNAL_PK ON ICSC.REFERENCE_SIGNAL
+CREATE UNIQUE INDEX ICSC.REFERENCE_SIGNAL_PK ON ICSC.REFERENCE_SIGNAL
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -99,23 +99,6 @@ NOPARALLEL;
 
 
 ALTER TABLE ICSC.REFERENCE_SIGNAL ADD (
-  CONSTRAINT XBS_REFSIGNAL_PK
+  CONSTRAINT REFSIGNAL_PK
  PRIMARY KEY
- (ID)
-    USING INDEX 
-    TABLESPACE USERS
-    PCTFREE    10
-    INITRANS   2
-    MAXTRANS   255
-    STORAGE    (
-                INITIAL          64K
-                NEXT             1M
-                MINEXTENTS       1
-                MAXEXTENTS       UNLIMITED
-                PCTINCREASE      0
-               ));
-
-ALTER TABLE ICSC.REFERENCE_SIGNAL ADD (
-  CONSTRAINT FK_XBS_REFSIGNAL_XBS_REFSITUAT 
- FOREIGN KEY (REFERENCE_SITUATION_ID) 
- REFERENCES ICSC.REFERENCE_SITUATION (ID));
+ (ID));

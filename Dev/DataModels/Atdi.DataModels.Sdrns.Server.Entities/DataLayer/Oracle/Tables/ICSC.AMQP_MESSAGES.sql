@@ -24,7 +24,7 @@
   BODY_CONTENT_TYPE      NVARCHAR2(250),
   BODY_CONTENT_ENCODING  NVARCHAR2(250),
   BODY_CONTENT           BLOB,
-  STATUS_NOTE            CHAR(1 BYTE)
+  STATUS_NOTE            NCLOB
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -41,7 +41,7 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
-LOB (BODY_CONTENT) STORE AS 
+LOB (STATUS_NOTE) STORE AS 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -66,12 +66,37 @@ LOB (BODY_CONTENT) STORE AS
                     BUFFER_POOL      DEFAULT
                    )
       )
+  LOB (BODY_CONTENT) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
 MONITORING;
 
 
-CREATE UNIQUE INDEX ICSC.XBS_AMQP_MESSAGES_ID_PK ON ICSC.AMQP_MESSAGES
+CREATE UNIQUE INDEX ICSC.AMQP_MESSAGES_ID_PK ON ICSC.AMQP_MESSAGES
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -92,4 +117,16 @@ NOPARALLEL;
 ALTER TABLE ICSC.AMQP_MESSAGES ADD (
   CONSTRAINT AMQP_MESSAGES_ID_PK
  PRIMARY KEY
- (ID));
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
