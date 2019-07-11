@@ -133,6 +133,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.Test
                         {
                             new COMRMSI.StationSystemInfo()
                             {
+                                 Freq_Hz = 414,
                                   BandWidth_Hz =12,
                                    BaseId =1,
                                     BSIC =2,
@@ -142,7 +143,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.Test
                                         CtoI = 5,
                                          ECI = 4,
                                           Power = 4,
-                                           LAC = 4
+                                           LAC = 4,
+                                           RNC = 1,
+                                            Standart = "GSM"
                             }
                         }
 

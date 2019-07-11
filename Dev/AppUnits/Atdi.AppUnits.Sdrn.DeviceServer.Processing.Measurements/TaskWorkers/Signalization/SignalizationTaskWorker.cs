@@ -345,7 +345,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 TaskId = outResultData.TaskId
                             };
 
-                            
+
 
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
