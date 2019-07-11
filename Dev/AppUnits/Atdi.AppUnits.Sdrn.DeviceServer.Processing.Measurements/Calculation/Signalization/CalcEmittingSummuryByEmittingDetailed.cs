@@ -186,12 +186,76 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             return true;
         }
         private static bool JoinSysInfoToEmitting(ref Emitting emitting, SignalingSysInfo sysInfoResult)
-        {
-            // проверка на наличие такогоже излучения 
-
-
-
-
+        { // Не тестированно 
+            if (sysInfoResult == null) { return false; }
+            // проверка на наличие такогоже излучения
+            if (emitting.SysInfos != null)
+            {
+                bool ExistSysInfo = false;
+                int indexSysInfo = 0;
+                for (int i = 0; emitting.SysInfos.Length>i;  i++)
+                {
+                    if ((emitting.SysInfos[i].CID != null) &&(emitting.SysInfos[i].CID.Value == sysInfoResult.CID))
+                    { indexSysInfo = i; ExistSysInfo = true; break; }
+                }
+                if (ExistSysInfo)
+                {
+                    // Такой елемент уже есть нужно откоректировать время.
+                    var WorkTime = emitting.SysInfos[indexSysInfo].WorkTimes;
+                    // Проверка на попадение в существующий диапазон времен
+                    bool hit = false; 
+                    for (int i = 0; WorkTime.Length >i; i++)
+                    {
+                        if ((sysInfoResult.WorkTimes[0].StartEmitting >= WorkTime[i].StartEmitting) && (sysInfoResult.WorkTimes[0].StartEmitting <= WorkTime[i].StopEmitting))
+                        {
+                            hit = true;
+                            break;
+                        }
+                    }
+                    if (!hit)
+                    {
+                        // вводим новое время и сортируем массив
+                        var WorkTimeList = WorkTime.ToList();
+                        WorkTimeList.Add(sysInfoResult.WorkTimes[0]);
+                        WorkTimeList.Sort(delegate (WorkTime x, WorkTime y)
+                        {
+                            if (x.StartEmitting == y.StartEmitting)
+                            {
+                                if (x.StopEmitting > y.StopEmitting)
+                                {
+                                    return -1;
+                                }
+                            }
+                            else
+                            {
+                                if (x.StartEmitting > y.StartEmitting)
+                                {
+                                    return -1;
+                                }
+                            }
+                            return 1;
+                        });
+                        // Укрупняем список
+                        for (int i = 0; WorkTimeList.Count - 1 > i; i++)
+                        {
+ 
+                        }
+                    }
+                }
+                else
+                {
+                    var SysInfoAll = emitting.SysInfos.ToList();
+                    SysInfoAll.Add(sysInfoResult);
+                    emitting.SysInfos = SysInfoAll.ToArray();
+                    // добавляем сис инфор как новый елемент масива 
+                }
+            }
+            else
+            {
+                //вобще ничего нет создаем новое
+                emitting.SysInfos = new SignalingSysInfo[1];
+                emitting.SysInfos[0] = sysInfoResult;
+            }
             return true;
         }
     }
