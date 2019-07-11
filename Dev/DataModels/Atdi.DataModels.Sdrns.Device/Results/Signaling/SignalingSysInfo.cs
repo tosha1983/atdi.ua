@@ -10,78 +10,92 @@ namespace Atdi.DataModels.Sdrns.Device
     /// <summary>
     /// Presents system information for signaling
     /// </summary>
-    //[DataContract(Namespace = Specification.Namespace)]
+    [DataContract(Namespace = Specification.Namespace)]
     [Serializable]
     public class SignalingSysInfo
     {
         /// <summary>
         /// All Tech
         /// </summary>
-        public decimal Freq_Hz;
+
+        [DataMember]
+        public decimal Freq_Hz { get; set; }
 
         /// <summary>
         /// только GSM/UMTS/CDMA/EVDO/LTE/TETRA
         /// </summary>
-        public string Standard;
+        [DataMember]
+        public string Standard { get; set; }
 
         /// <summary>
         /// Полоса сигнала
         /// </summary>
-        public double? BandWidth_Hz;
+        [DataMember]
+        public double? BandWidth_Hz { get; set; }
 
         /// <summary>
         /// Уровень сигнала во время Time
         /// </summary>
-        public double? Level_dBm;
+        [DataMember]
+        public double? Level_dBm { get; set; }
 
         /// <summary>
         /// Cell ID
         /// </summary>
-        public int? CID;
+        [DataMember]
+        public int? CID { get; set; }
 
         /// <summary>
         /// Mobile Country Code, все технологии кроме EVDO
         /// </summary>
-        public int? MCC;
+        [DataMember]
+        public int? MCC { get; set; }
 
         /// <summary>
         /// Mobile Network Code, все технологии кроме EVDO
         /// </summary>
-        public int? MNC;
+        public int? MNC { get; set; }
 
         /// <summary>
         /// текушее время в тиках из TimeService когда обновился уровень сигнала Level_dBm
         /// </summary>
-        public WorkTime[] WorkTimes;
+        [DataMember]
+        public WorkTime[] WorkTimes { get; set; }
 
         /// <summary>
         /// Только GSM
         /// </summary>
-        public int? BSIC;
+        [DataMember]
+        public int? BSIC { get; set; }
 
         /// <summary>
         /// Номер канала
         /// </summary>
-        public int? ChannelNumber;
+        [DataMember]
+        public int? ChannelNumber { get; set; }
 
         /// <summary>
         /// GSM/UMTS
         /// </summary>
-        public int? LAC;
+        [DataMember]
+        public int? LAC { get; set; }
 
         /// <summary>
         /// UMTS
         /// </summary>
-        public int? RNC;
+        [DataMember]
+        public int? RNC { get; set; }
 
         /// <summary>
         /// CtoI C/I GSM отношение сигнал/шум
         /// </summary>
-        public double? CtoI;
+        [DataMember]
+        public double? CtoI { get; set; }
 
         /// <summary>
         /// Мощность излучаемая передатчик
         /// </summary>
-        public double? Power;
+        [DataMember]
+        public double? Power { get; set; }
     }
 }   
