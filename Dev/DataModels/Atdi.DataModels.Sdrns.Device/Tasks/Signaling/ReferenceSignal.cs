@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
-    public struct ReferenceSignal
+    [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
+    public class ReferenceSignal
     {
-        public double Frequency_MHz;
-        public double Bandwidth_kHz;
-        public double LevelSignal_dBm;
-        public SignalMask SignalMask;
-        public int IcsmId;
-        public string IcsmTable;
+        [DataMember]
+        public double Frequency_MHz { get; set; }
+        [DataMember]
+        public double Bandwidth_kHz { get; set; }
+        [DataMember]
+        public double LevelSignal_dBm { get; set; }
+        [DataMember]
+        public SignalMask SignalMask { get; set; }
+        [DataMember]
+        public int IcsmId { get; set; }
+        [DataMember]
+        public string IcsmTable { get; set; }
     }
 }

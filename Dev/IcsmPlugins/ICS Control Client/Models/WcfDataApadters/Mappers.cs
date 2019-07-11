@@ -50,7 +50,31 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 TypeSensor = source.TypeSensor
             };
         }
+        public static VM.SignSysInfoViewModel Map(SDR.SignalingSysInfo source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
 
+            return new VM.SignSysInfoViewModel
+            {
+                BandWidth_Hz = source.BandWidth_Hz,
+                BSIC = source.BSIC,
+                ChannelNumber = source.ChannelNumber,
+                CID = source.CID,
+                CtoI = source.CtoI,
+                Freq_Hz = source.Freq_Hz,
+                LAC = source.LAC,
+                Level_dBm = source.Level_dBm,
+                MCC = source.MCC,
+                MNC = source.MNC,
+                Power = source.Power,
+                RNC = source.RNC,
+                Standart = source.Standart,
+                WorkTimes = source.WorkTimes
+            };
+        }
         public static VM.MeasTaskDetailStationViewModel Map(SDR.StationDataForMeasurements source)
         {
             if (source == null)

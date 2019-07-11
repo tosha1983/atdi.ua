@@ -69,26 +69,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     while (true)
                     {
-                        var error = new ExceptionProcessBandWidth();
-                        if (taskContext.WaitEvent<ExceptionProcessBandWidth>(out error, 1) == true)
-                        {
-                            //if (error._ex!=null)
-                            //{
-                            //if (error._ex.Message!= "MeasBWResults is Null")
-                            //{
-                            //taskContext.Task.CountGetResultBWN++;
-                            //}
-                            //}
-                            //taskContext.Task.CountGetResultBWNegative++;
-                        }
-
                         BWResult outMeasBandwidthResultData = null;
                         bool isDown = taskContext.WaitEvent<BWResult>(out outMeasBandwidthResultData, 1);
                         if (isDown == true)
                         {
                             if (outMeasBandwidthResultData != null)
                             {
-                                //taskContext.Task.CountGetResultBWPositive++;
                                 listMeasBandwidthResult.Add(outMeasBandwidthResultData);
                             }
                         }
@@ -98,6 +84,40 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
+
+                var listMeasSysInfoResult = new List<SysInfoResult>();
+                if (this._configMeasurements.EnableSysInfoTask == true)
+                {
+                    while (true)
+                    {
+                        SysInfoResult outMeasSysInfoResultData = null;
+                        bool isDown = taskContext.WaitEvent<SysInfoResult>(out outMeasSysInfoResultData, 1);
+                        if (isDown == true)
+                        {
+                            if (outMeasSysInfoResultData != null)
+                            {
+                                listMeasSysInfoResult.Add(outMeasSysInfoResultData);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                //Обработка результатов SysInfo если они есть
+                if ((listMeasSysInfoResult != null) && (listMeasSysInfoResult.Count > 0))
+                {
+                    //здесь нужно дописать функцию GetEmittingDetailedForSysInfo
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailedForSysInfo(ref taskContext.Task.EmittingsSummary, listMeasSysInfoResult, taskContext.Task.ReferenceLevels, this._logger);
+                    if (isSuccess == false)
+                    {
+                        //обработка  ошибка
+                        _logger.Warning(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Events.GetEmittingDetailedNull);
+                    }
+                }
+
                 //Обработка результатов BW если они есть
                 if ((listMeasBandwidthResult != null) && (listMeasBandwidthResult.Count > 0))
                 {
@@ -127,6 +147,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         SendCommandBW(taskContext);
                     }
                 }
+                //Нужно ли исследование по SysInfo?
+                if (this._configMeasurements.EnableSysInfoTask == true)
+                {
+                    if (CalcNeedResearchSysInfo.NeedGetSysInfo(taskContext.Task.CounterCallSignaling))
+                    {
+                        // вызов функции по отправке BandWidthTask в контроллер
+                        SendCommandSysInfo(taskContext);
+                    }
+                }
                 // Отправка результата в Task Handler
                 if (taskContext.Task.EmittingsSummary != null)
                 {
@@ -144,6 +173,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 taskContext.Task.CountMeasurementDone++;
+                taskContext.Task.CounterCallSignaling++;
                 taskContext.Finish();
             }
             catch (Exception ex)
@@ -185,6 +215,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     bandWidtTask.mesureTraceParameter = taskContext.Task.actionConvertBW.Invoke(bandWidtTask.taskParameters);
                     _taskStarter.Run(bandWidtTask, bandWidthProcess, taskContext);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Запуск задач типа SysInfo
+        /// </summary>
+        /// <param name="taskContext"></param>
+        private void SendCommandSysInfo(DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
+        {
+            if (taskContext.Task.taskParameters!=null)
+            {
+                var sysInfoProcess = _processingDispatcher.Start<SysInfoProcess>(taskContext.Process);
+                var sysInfoTask = new SysInfoTask();
+                sysInfoTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
+                sysInfoTask.durationForSendResultSysInfo = taskContext.Task.durationForSendResultSysInfo; // файл конфигурации (с него надо брать)
+                sysInfoTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
+                sysInfoTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;
+                sysInfoTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
+                sysInfoTask.LastTimeSend = DateTime.Now;
+                sysInfoTask.taskParameters = taskContext.Task.taskParameters;
+                sysInfoTask.mesureSystemInfoParameters = taskContext.Task.actionConvertSysInfo.Invoke(sysInfoTask.taskParameters);
+                _taskStarter.Run(sysInfoTask, sysInfoProcess, taskContext);
             }
         }
     }

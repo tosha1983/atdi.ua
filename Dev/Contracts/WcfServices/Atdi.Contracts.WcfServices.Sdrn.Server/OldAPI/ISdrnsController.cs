@@ -342,6 +342,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
 
         [OperationContract]
 
-        SignalingSysInfo[] GetSignalingSysInfos(long measResultId, decimal freq_Hz);
+        SignalingSysInfo[] GetSignalingSysInfos(long measResultId, double freq_MHz);
     }
 }

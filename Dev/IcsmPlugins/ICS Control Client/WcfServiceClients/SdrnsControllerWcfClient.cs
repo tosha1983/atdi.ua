@@ -213,6 +213,15 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             }
             return result;
         }
+        public static SignalingSysInfo[] GetSignalingSysInfos(long measResultId, double freq_MHz)
+        {
+            var result = Execute(contract => contract.GetSignalingSysInfos(measResultId, freq_MHz));
+            if (result == null)
+            {
+                return new SignalingSysInfo[] { };
+            }
+            return result;
+        }
 
         public static MeasurementResults GetMeasurementResultByResId(long resId)
         {

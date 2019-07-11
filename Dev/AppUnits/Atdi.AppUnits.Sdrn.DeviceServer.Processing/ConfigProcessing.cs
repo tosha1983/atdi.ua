@@ -33,9 +33,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public int durationForSendResultBandWidth { get; set; }
 
         /// <summary>
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения BandWidth
+        /// </summary>
+        public int durationForSendResultSysInfo { get; set; }
+
+        /// <summary>
         /// Максимальное время в миллисекундах, выделяемое для выполнения одного измерения типа BandWidth
         /// </summary>
         public int durationForMeasBW_ms { get; set; }
+
 
         /// <summary>
         /// 

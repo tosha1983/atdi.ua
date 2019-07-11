@@ -101,6 +101,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     signalTask.taskParameters = taskParameters;
                                     signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
                                     signalTask.actionConvertBW = ConvertTaskParametersToMesureTraceParameterForBandWidth.ConvertForBW;
+                                    signalTask.actionConvertSysInfo = ConvertTaskParametersToMesureSystemInfoParameterForSysInfo.ConvertForMesureSystemInfoParameter;
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
                                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));

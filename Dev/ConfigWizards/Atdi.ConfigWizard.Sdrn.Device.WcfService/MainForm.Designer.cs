@@ -36,6 +36,8 @@
             this.txtLicenseFileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtRabbitMQVirtualHost = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.txtRabbitMQPassword = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtRabbitMQUser = new System.Windows.Forms.TextBox();
@@ -55,8 +57,12 @@
             this.txtWcfBindings = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.txtRabbitMQVirtualHost = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.txtOutboxPath = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtInboxPath = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txtRabbitMQPort = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -73,7 +79,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(397, 122);
+            this.groupBox1.Size = new System.Drawing.Size(397, 111);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "  License  ";
@@ -128,6 +134,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtRabbitMQPort);
+            this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Controls.Add(this.txtRabbitMQVirtualHost);
             this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.txtRabbitMQPassword);
@@ -136,16 +144,32 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.txtRabbitMQHost);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(12, 140);
+            this.groupBox2.Location = new System.Drawing.Point(12, 128);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(397, 130);
+            this.groupBox2.Size = new System.Drawing.Size(397, 128);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "  Rabbit MQ Server  ";
             // 
+            // txtRabbitMQVirtualHost
+            // 
+            this.txtRabbitMQVirtualHost.Location = new System.Drawing.Point(77, 45);
+            this.txtRabbitMQVirtualHost.Name = "txtRabbitMQVirtualHost";
+            this.txtRabbitMQVirtualHost.Size = new System.Drawing.Size(303, 20);
+            this.txtRabbitMQVirtualHost.TabIndex = 13;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 48);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(61, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "Virtual Host";
+            // 
             // txtRabbitMQPassword
             // 
-            this.txtRabbitMQPassword.Location = new System.Drawing.Point(77, 98);
+            this.txtRabbitMQPassword.Location = new System.Drawing.Point(77, 97);
             this.txtRabbitMQPassword.Name = "txtRabbitMQPassword";
             this.txtRabbitMQPassword.Size = new System.Drawing.Size(303, 20);
             this.txtRabbitMQPassword.TabIndex = 11;
@@ -154,7 +178,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 101);
+            this.label4.Location = new System.Drawing.Point(6, 100);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 13);
             this.label4.TabIndex = 10;
@@ -162,7 +186,7 @@
             // 
             // txtRabbitMQUser
             // 
-            this.txtRabbitMQUser.Location = new System.Drawing.Point(77, 72);
+            this.txtRabbitMQUser.Location = new System.Drawing.Point(77, 71);
             this.txtRabbitMQUser.Name = "txtRabbitMQUser";
             this.txtRabbitMQUser.Size = new System.Drawing.Size(303, 20);
             this.txtRabbitMQUser.TabIndex = 9;
@@ -170,7 +194,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 75);
+            this.label5.Location = new System.Drawing.Point(6, 74);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 13);
             this.label5.TabIndex = 8;
@@ -180,7 +204,7 @@
             // 
             this.txtRabbitMQHost.Location = new System.Drawing.Point(77, 19);
             this.txtRabbitMQHost.Name = "txtRabbitMQHost";
-            this.txtRabbitMQHost.Size = new System.Drawing.Size(303, 20);
+            this.txtRabbitMQHost.Size = new System.Drawing.Size(174, 20);
             this.txtRabbitMQHost.TabIndex = 7;
             // 
             // label6
@@ -194,6 +218,10 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.txtOutboxPath);
+            this.groupBox3.Controls.Add(this.label12);
+            this.groupBox3.Controls.Add(this.txtInboxPath);
+            this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.txtSdrnDeviceQueueNamePart);
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.txtSdrnServerQueueNamePart);
@@ -202,9 +230,9 @@
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.txtSdrnServerInstance);
             this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Location = new System.Drawing.Point(12, 307);
+            this.groupBox3.Location = new System.Drawing.Point(12, 262);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(397, 137);
+            this.groupBox3.Size = new System.Drawing.Size(397, 178);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "  SDRN Bus Settings  ";
@@ -276,20 +304,20 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.txtWcfBindings);
-            this.groupBox4.Location = new System.Drawing.Point(12, 450);
+            this.groupBox4.Location = new System.Drawing.Point(12, 446);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(507, 122);
+            this.groupBox4.Size = new System.Drawing.Size(507, 139);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "  WCF Service Bindings  ";
             // 
             // txtWcfBindings
             // 
-            this.txtWcfBindings.Location = new System.Drawing.Point(9, 25);
+            this.txtWcfBindings.Location = new System.Drawing.Point(6, 19);
             this.txtWcfBindings.Multiline = true;
             this.txtWcfBindings.Name = "txtWcfBindings";
             this.txtWcfBindings.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtWcfBindings.Size = new System.Drawing.Size(492, 78);
+            this.txtWcfBindings.Size = new System.Drawing.Size(495, 114);
             this.txtWcfBindings.TabIndex = 1;
             // 
             // button1
@@ -314,21 +342,53 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // txtRabbitMQVirtualHost
+            // txtOutboxPath
             // 
-            this.txtRabbitMQVirtualHost.Location = new System.Drawing.Point(77, 46);
-            this.txtRabbitMQVirtualHost.Name = "txtRabbitMQVirtualHost";
-            this.txtRabbitMQVirtualHost.Size = new System.Drawing.Size(303, 20);
-            this.txtRabbitMQVirtualHost.TabIndex = 13;
+            this.txtOutboxPath.Location = new System.Drawing.Point(98, 149);
+            this.txtOutboxPath.Name = "txtOutboxPath";
+            this.txtOutboxPath.Size = new System.Drawing.Size(282, 20);
+            this.txtOutboxPath.TabIndex = 17;
             // 
-            // label11
+            // label12
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 49);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(59, 13);
-            this.label11.TabIndex = 12;
-            this.label11.Text = "Virtual host";
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 152);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(94, 13);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "Outbox folder path";
+            // 
+            // txtInboxPath
+            // 
+            this.txtInboxPath.Location = new System.Drawing.Point(98, 123);
+            this.txtInboxPath.Name = "txtInboxPath";
+            this.txtInboxPath.Size = new System.Drawing.Size(282, 20);
+            this.txtInboxPath.TabIndex = 15;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 126);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(86, 13);
+            this.label13.TabIndex = 14;
+            this.label13.Text = "Inbox folder path";
+            // 
+            // txtRabbitMQPort
+            // 
+            this.txtRabbitMQPort.Location = new System.Drawing.Point(289, 19);
+            this.txtRabbitMQPort.Name = "txtRabbitMQPort";
+            this.txtRabbitMQPort.Size = new System.Drawing.Size(91, 20);
+            this.txtRabbitMQPort.TabIndex = 15;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(257, 22);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(26, 13);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Port";
             // 
             // MainForm
             // 
@@ -336,7 +396,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button2;
-            this.ClientSize = new System.Drawing.Size(531, 584);
+            this.ClientSize = new System.Drawing.Size(531, 592);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox4);
@@ -392,6 +452,12 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox txtRabbitMQVirtualHost;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txtOutboxPath;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox txtInboxPath;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtRabbitMQPort;
+        private System.Windows.Forms.Label label14;
     }
 }
 

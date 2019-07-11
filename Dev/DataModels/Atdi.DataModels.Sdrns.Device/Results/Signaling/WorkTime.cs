@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Atdi.DataModels.Sdrns.Device
 {
+    [DataContract(Namespace = Specification.Namespace)]
     [Serializable]
     public class WorkTime
     {
-        public DateTime StartEmitting;
-        public DateTime StopEmitting;
-        public int HitCount;
-        public float PersentAvailability;
-        public int ScanCount;
-        public int TempCount;
+        [DataMember]
+        public DateTime StartEmitting { get; set; }
+        [DataMember]
+        public DateTime StopEmitting { get; set; }
+        [DataMember]
+        public int HitCount { get; set; }
+        [DataMember]
+        public float PersentAvailability { get; set; }
+        [DataMember]
+        public int ScanCount { get; set; }
+        [DataMember]
+        public int TempCount { get; set; }
     }
 }

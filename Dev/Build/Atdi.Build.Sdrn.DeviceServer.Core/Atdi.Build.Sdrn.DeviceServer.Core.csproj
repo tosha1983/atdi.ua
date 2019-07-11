@@ -33,6 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=2.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -118,7 +130,7 @@
       <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
       <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrns.DeviceServer.Entities.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Atdi.DataModels.Sdrn.DeviceServer.Entities.csproj">
       <Project>{a803197e-12f5-4800-b157-b2ec677bda33}</Project>
       <Name>Atdi.DataModels.Sdrns.DeviceServer.Entities</Name>
     </ProjectReference>
@@ -230,9 +242,18 @@ copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppSe
 copy "$(TargetDir)\Castle.Facilities.WcfIntegration.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\RabbitMQ.Client.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Newtonsoft.Json.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+
+
 copy "$(TargetDir)\System.Net.Http.Formatting.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\System.Web.Http.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\System.Web.Http.SelfHost.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+
+
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+
 
 
 namespace Atdi.DataModels.Sdrns.Device
@@ -10,12 +12,16 @@ namespace Atdi.DataModels.Sdrns.Device
     /// <summary>
     /// Represent triggers levels adopted to trace of Devise (SDR)
     /// </summary>
+    [DataContract(Namespace = Specification.Namespace)]
     [Serializable]
     public class ReferenceLevels
     {
-        public double StartFrequency_Hz;
-        public double StepFrequency_Hz;
-        public float[] levels;
+        [DataMember]
+        public double StartFrequency_Hz { get; set; }
+        [DataMember]
+        public double StepFrequency_Hz { get; set; }
+        [DataMember]
+        public float[] levels { get; set; }
         /// <summary>
         /// Create triggers levels from set of signals
         /// </summary>

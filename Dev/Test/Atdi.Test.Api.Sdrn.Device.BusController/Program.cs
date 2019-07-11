@@ -278,9 +278,12 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 publisher.Send("RegisterSensor", sensor, $"ID #{i}");
                 Console.ReadLine();
                 publisher.Send("UpdateSensor", sensor, $"ID #{i}");
+                Console.ReadLine();
                 publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
+                Console.ReadLine();
 
                 publisher.Send("SendMeasResults", measResult, $"ID #{i}");
+                Console.ReadLine();
 
 
                 publisher.Send("SendEntity", entity, $"#{i}");

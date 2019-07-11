@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeviceServer.Processing;
+using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureSystemInfo;
+using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
+using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
@@ -38,6 +41,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Конвертор из StationSystemInfo[] -> SysInfoResult[]
+        /// </summary>
+        /// <param name="stationSystemInfos"></param>
+        /// <returns></returns>
+        public static SysInfoResult ConvertToSysInfoResult(MesureSystemInfoResult mesureSystemInfoResult )
+        {
+            var measSysInfoResults = new SysInfoResult();
+            if ((mesureSystemInfoResult.SystemInfo != null) && (mesureSystemInfoResult.SystemInfo.Length > 0))
+            {
+                measSysInfoResults.signalingSysInfo = new SignalingSysInfo[mesureSystemInfoResult.SystemInfo.Length];
+                for (int i = 0; i < mesureSystemInfoResult.SystemInfo.Length; i++)
+                {
+                    var systemInfo = mesureSystemInfoResult.SystemInfo[i];
+                    measSysInfoResults.signalingSysInfo[i] = new SignalingSysInfo();
+                    var signalingSysInfo = measSysInfoResults.signalingSysInfo[i];
+                    signalingSysInfo.BandWidth_Hz = systemInfo.BandWidth_Hz;
+                    signalingSysInfo.BSIC = systemInfo.BSIC;
+                    signalingSysInfo.ChannelNumber = systemInfo.ChannelNumber;
+                    signalingSysInfo.CID = systemInfo.CID;
+                    signalingSysInfo.CtoI = systemInfo.CtoI;
+                    signalingSysInfo.Freq_Hz = systemInfo.Freq_Hz;
+                    signalingSysInfo.LAC = systemInfo.LAC;
+                    signalingSysInfo.Level_dBm = systemInfo.Level_dBm;
+                    signalingSysInfo.MCC = systemInfo.MCC;
+                    signalingSysInfo.MNC = systemInfo.MNC;
+                    signalingSysInfo.Power = systemInfo.Power;
+                    signalingSysInfo.RNC = systemInfo.RNC;
+                    signalingSysInfo.Standard = systemInfo.Standart;
+                    signalingSysInfo.WorkTimes = new WorkTime[1];
+                    signalingSysInfo.WorkTimes[0] = new WorkTime();
+                    signalingSysInfo.WorkTimes[0].StartEmitting = new DateTime(systemInfo.Time);
+                    signalingSysInfo.WorkTimes[0].StopEmitting = new DateTime(systemInfo.Time);
+                    measSysInfoResults.signalingSysInfo[i] = signalingSysInfo;
+                }
+            }
+            return measSysInfoResults;
         }
     }
 }

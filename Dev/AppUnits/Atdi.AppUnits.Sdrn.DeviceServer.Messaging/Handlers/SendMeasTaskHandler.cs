@@ -102,7 +102,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                             message.Result = MessageHandlingResult.Confirmed;
 
                         }
-                        if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
+                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
                         {
 
                             var taskParameters = message.Data.Convert(_config);
@@ -113,7 +113,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                             message.Result = MessageHandlingResult.Confirmed;
 
                         }
-                        if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
+                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
                         {
 
                             var taskParameters = message.Data.Convert(_config);

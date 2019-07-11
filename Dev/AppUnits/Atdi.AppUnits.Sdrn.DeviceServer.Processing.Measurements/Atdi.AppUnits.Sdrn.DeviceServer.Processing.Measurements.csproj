@@ -48,6 +48,7 @@
     <Compile Include="Calculation\Common\SmoothTrace.cs" />
     <Compile Include="Calculation\Common\CommonCalcPowFromTrace.cs" />
     <Compile Include="Calculation\Common\CommonConvertors.cs" />
+    <Compile Include="Calculation\Signalization\CalcNeedResearchSysInfo.cs" />
     <Compile Include="Calculation\Signalization\CopyHelper.cs" />
     <Compile Include="Calculation\Signalization\EmissionCounting.cs" />
     <Compile Include="Calculation\Signalization\CalcEmittingSummuryByEmittingDetailed.cs" />
@@ -67,11 +68,13 @@
     <Compile Include="ResultHandlers\BandWidth\BandWidthTaskResultHandler.cs" />
     <Compile Include="ResultHandlers\Signalization\SignalizationTaskResultHandler.cs" />
     <Compile Include="ResultHandlers\SpectrumOccupation\SOTaskResultHandler.cs" />
+    <Compile Include="ResultHandlers\SysInfo\SysInfoTaskResultHandler.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="SpectrumOccupation\ConvertSemplFreqToFrequencySample.cs" />
     <Compile Include="TaskWorkers\BandWidth\BandWidthTaskWorker.cs" />
     <Compile Include="TaskWorkers\Signalization\SignalizationTaskWorker.cs" />
     <Compile Include="TaskWorkers\SpectrumOccupation\SOTaskWorker.cs" />
+    <Compile Include="TaskWorkers\SysInfo\SysInfoTaskWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
