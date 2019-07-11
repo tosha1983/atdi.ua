@@ -72,6 +72,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     signalingSysInfo.Power = systemInfo.Power;
                     signalingSysInfo.RNC = systemInfo.RNC;
                     signalingSysInfo.Standard = systemInfo.Standart;
+                    signalingSysInfo.WorkTimes = new WorkTime[1];
+                    signalingSysInfo.WorkTimes[0] = new WorkTime();
+                    signalingSysInfo.WorkTimes[0].StartEmitting = new DateTime(systemInfo.Time);
+                    signalingSysInfo.WorkTimes[0].StopEmitting = new DateTime(systemInfo.Time);
                     measSysInfoResults.signalingSysInfo[i] = signalingSysInfo;
                 }
             }
