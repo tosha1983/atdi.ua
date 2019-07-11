@@ -353,6 +353,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             publisher.Dispose();
                             context.Task.MeasResults = null;
                             context.Task.LastTimeSend = currTime;
+                            context.Task.CounterCallSignaling = 0;
                         }
                     });
 

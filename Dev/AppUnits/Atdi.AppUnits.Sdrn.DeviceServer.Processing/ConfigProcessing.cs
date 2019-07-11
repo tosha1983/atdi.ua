@@ -42,7 +42,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         public int durationForMeasBW_ms { get; set; }
 
-       
 
         /// <summary>
         /// 
