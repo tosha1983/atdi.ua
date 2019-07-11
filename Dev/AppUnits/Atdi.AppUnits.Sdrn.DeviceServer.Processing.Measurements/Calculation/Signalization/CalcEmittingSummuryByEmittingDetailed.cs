@@ -19,9 +19,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private const double PersentForJoinDetailEmToSummEm = 20;
 
         // заготовка для SysInfo
-        public static bool GetEmittingDetailedForSysInfo(ref Emitting[] emittingSummary, List<SysInfoResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
+        public static bool GetEmittingDetailedForSysInfo(ref Emitting[] emittingSummary, List<SysInfoResult> listSysinfoResult, ReferenceLevels referenceLevels, ILogger logger)
         {
-            return false;
+            // List<SysInfoResult> listSysinfoResult - почему на входе список?
+            // обновляем emittingSummary результатами новых измерений 
+            for (int i = 0; listSysinfoResult.Count>i; i++)
+            {
+                var SysInfo = listSysinfoResult[i];
+                double Min_penalty = 9999;
+                int CountInEmittingSummary = 0;
+                for (int k = 0; SysInfo.signalingSysInfo.Length > k; k++)
+                {
+                    var oneSysInfo = SysInfo.signalingSysInfo[k];
+                    double BWRes = 0;
+                    if (oneSysInfo.BandWidth_Hz != null) {BWRes = oneSysInfo.BandWidth_Hz.Value; }
+                    // далее цыкл для определения излучения которое больше всего подходит
+                    for (int j = 0; emittingSummary.Length > j; j++)
+                    {
+                        var emiting = emittingSummary[j];
+                        double StartFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T1 * emiting.Spectrum.SpectrumSteps_kHz / 1000;
+                        double StopFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T2 * emiting.Spectrum.SpectrumSteps_kHz / 1000;
+                        double CentralFreq = (StartFreq + StopFreq) / 2;
+                        double StartFreqD = (double)oneSysInfo.Freq_Hz - BWRes;
+                        double StopFreqD = (double)oneSysInfo.Freq_Hz + BWRes;
+                        double CentralFreqD = (StartFreqD + StopFreqD) / 2;
+                        double BW = StopFreq - StartFreq;
+                        if (!((StartFreq > StopFreqD) || (StartFreqD > StopFreq)))
+                        {
+                            double CurPenalty = Math.Abs(BWRes - BW) / BW + Math.Abs(CentralFreq - CentralFreqD) / BW;
+                            if (CurPenalty < Min_penalty) { Min_penalty = CurPenalty; CountInEmittingSummary = j; }
+                        }
+                    }
+                    if (Min_penalty < PersentForJoinDetailEmToSummEm / 100)
+                    {
+                        // присоединяемся к существующему емитингу
+                        bool r = JoinSysInfoToEmitting(ref emittingSummary[CountInEmittingSummary], oneSysInfo);
+                    }
+                }
+            }
+            return true;
         }
 
         public static bool GetEmittingDetailed(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
@@ -147,6 +183,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.WorkTimes[emitting.WorkTimes.Length - 1].TempCount = 0;
                 emitting.WorkTimes[emitting.WorkTimes.Length - 1].PersentAvailability = 100 * emitting.WorkTimes[emitting.WorkTimes.Length - 1].HitCount / emitting.WorkTimes[emitting.WorkTimes.Length - 1].ScanCount;
             }
+            return true;
+        }
+        private static bool JoinSysInfoToEmitting(ref Emitting emitting, SignalingSysInfo sysInfoResult)
+        {
+            // проверка на наличие такогоже излучения 
+
+
+
+
             return true;
         }
     }
