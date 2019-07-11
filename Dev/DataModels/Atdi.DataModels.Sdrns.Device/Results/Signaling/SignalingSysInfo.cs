@@ -54,6 +54,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// <summary>
         /// Mobile Network Code, все технологии кроме EVDO
         /// </summary>
+        [DataMember]
         public int? MNC { get; set; }
 
         /// <summary>
