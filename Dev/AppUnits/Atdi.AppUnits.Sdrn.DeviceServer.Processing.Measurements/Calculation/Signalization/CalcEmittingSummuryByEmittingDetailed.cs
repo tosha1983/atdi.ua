@@ -224,7 +224,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 int indexSysInfo = 0;
                 for (int i = 0; emitting.SysInfos.Length>i;  i++)
                 {
-                    if ((emitting.SysInfos[i].CID != null) &&(emitting.SysInfos[i].CID.Value == sysInfoResult.CID))
+                    if ((emitting.SysInfos[i].CID != null) &&(emitting.SysInfos[i].CID.Value == sysInfoResult.CID) && (Math.Abs(emitting.SysInfos[i].Freq_Hz - sysInfoResult.Freq_Hz)<10))
                     { indexSysInfo = i; ExistSysInfo = true; break; }
                 }
                 if (ExistSysInfo)
