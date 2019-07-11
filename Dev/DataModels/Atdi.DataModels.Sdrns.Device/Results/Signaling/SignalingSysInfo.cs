@@ -10,7 +10,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// <summary>
     /// Presents system information for signaling
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
+    //[DataContract(Namespace = Specification.Namespace)]
     [Serializable]
     public class SignalingSysInfo
     {
