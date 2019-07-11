@@ -137,7 +137,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             emitting.WorkTimes[0].TempCount = 0;
             emitting.WorkTimes[0].PersentAvailability = 100;
 
-            bool chackSpecter = CalcSignalization.CheckContravention(ref emitting.Spectrum, referenceLevels);
+            Spectrum spectrum = emitting.Spectrum;
+            bool chackSpecter = CalcSignalization.CheckContravention(ref spectrum, referenceLevels);
+            emitting.Spectrum = spectrum;
             CalcSignalization.FillEmittingForStorage(emitting, logger);
             return emitting;
         }
@@ -170,7 +172,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.Spectrum.T2 = BWResult.T2;
                 emitting.Spectrum.TraceCount = BWResult.TraceCount;
                 emitting.Spectrum.СorrectnessEstimations = BWResult.СorrectnessEstimations;
-                bool chackSpecter = CalcSignalization.CheckContravention(ref emitting.Spectrum, referenceLevels);
+                Spectrum spectrum = emitting.Spectrum;
+                bool chackSpecter = CalcSignalization.CheckContravention(ref spectrum, referenceLevels);
+                emitting.Spectrum = spectrum;
             }
             emitting.LastDetaileMeas = BWResult.TimeMeas;
             int indexLevel = (int)Math.Floor(emitting.CurentPower_dBm) - emitting.LevelsDistribution.Levels[0];

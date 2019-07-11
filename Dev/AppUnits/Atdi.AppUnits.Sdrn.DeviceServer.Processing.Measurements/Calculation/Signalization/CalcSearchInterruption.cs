@@ -289,7 +289,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.WorkTimes[0].PersentAvailability = 100;
                 emitting.WorkTimes[0].ScanCount = 0;
                 emitting.WorkTimes[0].TempCount= 0;
-                bool checkcontr = CalcSignalization.CheckContravention(ref emitting.Spectrum, refLevel);
+
+                Spectrum spectrum = emitting.Spectrum;
+                bool checkcontr = CalcSignalization.CheckContravention(ref spectrum, refLevel);
+                emitting.Spectrum = spectrum;
                 //emitting.WorkTimes[0].PersentAvailability = 100;
                 emittings.Add(emitting);
             }
