@@ -238,7 +238,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         // Укрупняем список
                         for (int i = 0; WorkTimeList.Count - 1 > i; i++)
                         {
- 
+                            TimeSpan diff =  WorkTimeList[i + 1].StartEmitting - WorkTimeList[i].StopEmitting;
+                            if (diff.Seconds > 60)
+                            {
+                                // маленькое временное растояние следовательно производим укрупнение
+                                WorkTimeList[i].StopEmitting = WorkTimeList[i + 1].StopEmitting;
+                                WorkTimeList.RemoveAt(i + 1);
+                                i = i - 1;
+                            }
+
                         }
                     }
                 }
