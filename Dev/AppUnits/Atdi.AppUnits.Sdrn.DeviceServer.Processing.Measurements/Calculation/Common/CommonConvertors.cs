@@ -75,8 +75,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     signalingSysInfo.Standard = systemInfo.Standart;
                     signalingSysInfo.WorkTimes = new WorkTime[1];
                     signalingSysInfo.WorkTimes[0] = new WorkTime();
-                    signalingSysInfo.WorkTimes[0].StartEmitting = new DateTime(systemInfo.Time + TicksBefore1970, DateTimeKind.Local);
-                    signalingSysInfo.WorkTimes[0].StopEmitting = new DateTime(systemInfo.Time + TicksBefore1970, DateTimeKind.Local);
+                    signalingSysInfo.WorkTimes[0].StartEmitting = new DateTime(systemInfo.Time + TicksBefore1970).ToLocalTime();
+                    signalingSysInfo.WorkTimes[0].StopEmitting = new DateTime(systemInfo.Time + TicksBefore1970).ToLocalTime();
                     measSysInfoResults.signalingSysInfo[i] = signalingSysInfo;
                 }
             }
