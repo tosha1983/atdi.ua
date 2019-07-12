@@ -115,6 +115,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         [ComponentConfigProperty("LatDelta.double")]
         public double LatDelta { get; set; }
 
+        /// <summary>
+        /// Погрешность для ASL
+        /// </summary>
+        [ComponentConfigProperty("AslDelta.double")]
+        public double AslDelta { get; set; }
+
 
         /// <summary>
         /// Периодичность в миллисекундах  отправки сообщений о координатах сенсора в SDRNS
