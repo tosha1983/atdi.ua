@@ -110,7 +110,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 if ((listMeasSysInfoResult != null) && (listMeasSysInfoResult.Count > 0))
                 {
                     //здесь нужно дописать функцию GetEmittingDetailedForSysInfo
-                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailedForSysInfo(ref taskContext.Task.EmittingsSummary, listMeasBandwidthResult, taskContext.Task.ReferenceLevels, this._logger);
+                    bool isSuccess = CalcEmittingSummuryByEmittingDetailed.GetEmittingDetailedForSysInfo(ref taskContext.Task.EmittingsSummary, listMeasSysInfoResult, taskContext.Task.ReferenceLevels, this._logger);
                     if (isSuccess == false)
                     {
                         //обработка  ошибка
@@ -150,7 +150,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Нужно ли исследование по SysInfo?
                 if (this._configMeasurements.EnableSysInfoTask == true)
                 {
-                    if (CalcNeedResearchSysInfo.NeedGetSysInfo(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForSysInfo))
+                    if (CalcNeedResearchSysInfo.NeedGetSysInfo(taskContext.Task.CounterCallSignaling))
                     {
                         // вызов функции по отправке BandWidthTask в контроллер
                         SendCommandSysInfo(taskContext);
@@ -173,6 +173,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 taskContext.Task.CountMeasurementDone++;
+                taskContext.Task.CounterCallSignaling++;
                 taskContext.Finish();
             }
             catch (Exception ex)
@@ -223,23 +224,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="taskContext"></param>
         private void SendCommandSysInfo(DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
         {
-            if (taskContext.Task.taskParametersForSysInfo != null)
+            if (taskContext.Task.taskParameters!=null)
             {
-                for (int i = 0; i < taskContext.Task.taskParametersForSysInfo.Length; i++)
-                {
-                    var taskParametersForSysInfo = taskContext.Task.taskParametersForSysInfo[i];
-                    var sysInfoProcess = _processingDispatcher.Start<SysInfoProcess>(taskContext.Process);
-                    var sysInfoTask = new SysInfoTask();
-                    sysInfoTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
-                    sysInfoTask.durationForSendResultSysInfo = taskContext.Task.durationForSendResultSysInfo; // файл конфигурации (с него надо брать)
-                    sysInfoTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
-                    sysInfoTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;
-                    sysInfoTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
-                    sysInfoTask.LastTimeSend = DateTime.Now;
-                    sysInfoTask.taskParameters = taskParametersForSysInfo;
-                    sysInfoTask.mesureSystemInfoParameter = taskContext.Task.actionConvertSysInfo.Invoke(sysInfoTask.taskParameters);
-                    _taskStarter.Run(sysInfoTask, sysInfoProcess, taskContext);
-                }
+                var sysInfoProcess = _processingDispatcher.Start<SysInfoProcess>(taskContext.Process);
+                var sysInfoTask = new SysInfoTask();
+                sysInfoTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
+                sysInfoTask.durationForSendResultSysInfo = taskContext.Task.durationForSendResultSysInfo; // файл конфигурации (с него надо брать)
+                sysInfoTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
+                sysInfoTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;
+                sysInfoTask.KoeffWaitingDevice = taskContext.Task.KoeffWaitingDevice;
+                sysInfoTask.LastTimeSend = DateTime.Now;
+                sysInfoTask.taskParameters = taskContext.Task.taskParameters;
+                sysInfoTask.mesureSystemInfoParameters = taskContext.Task.actionConvertSysInfo.Invoke(sysInfoTask.taskParameters);
+                _taskStarter.Run(sysInfoTask, sysInfoProcess, taskContext);
             }
         }
     }

@@ -2890,7 +2890,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                         if (GSMBTS[i].FreqIndex == pr.dwFrequencyIndex && pr.dwIndicatorOfSCHInfo == GSMBTS[i].IndSCHInfo)
                                         {
                                             GSMBTS[i].Power = pr.sPowerInDBm100 * 0.01;
-                                            GSMBTS[i].LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970;// LocalTime;
+                                            GSMBTS[i].LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;// LocalTime;
 
                                             GSMBTS[i].GetStationInfo();
 
@@ -2931,7 +2931,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                             BSIC = -1,
                                             IndSCHInfo = pr.dwIndicatorOfSCHInfo,
                                             TimeOfSlotInSec = pr.dTimeOfSlotInSec - pData.u64DeviceTimeInNs / 1000000000,
-                                            LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970
+                                            LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970
                                         };
                                         dt.GetStationInfo();
                                         GSMBTS.Add(dt);
@@ -3117,10 +3117,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                         if (UMTSBTS[i].FreqIndex == pData.dwChannelIndex && UMTSBTS[i].SC == cpichResult.ExtendedSC.wSC / 16 /*&& WCDMABTSfromDev[i].UCID == cpichResult.pBchCellIdentification.dwCI.ToString()*/)
                                         {
                                             UMTSBTS[i].RSCP = cpichResult.sRSCPInDBm100 * 0.01;
-                                            UMTSBTS[i].LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970;
+                                            UMTSBTS[i].LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;
                                             UMTSBTS[i].GetStationInfo();
                                             if (UMTSBTS[i].RSCP > DetectionLevelUMTS)/////////////////////////////////////////////////////////////////////
-                                            { UMTSBTS[i].LastDetectionLevelUpdete = _timeService.GetGnssTime().Ticks; }
+                                            { UMTSBTS[i].LastDetectionLevelUpdete = _timeService.GetGnssUtcTime().Ticks; }
                                             //UMTSBTS[i].DeleteFromMeasMon = (UMTSBTS[i].RSCP < DetectionLevelUMTS - LevelDifferenceToRemove);
 
                                             UMTSBTS[i].ISCP = cpichResult.sISCPInDBm100 * 0.01;
@@ -3209,7 +3209,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                             double CodePower = -1000;
                                             if (cpichResult.psCodePowerInDBm100 != null) CodePower = (double)cpichResult.psCodePowerInDBm100 * 0.01;
                                             double IcIo = Math.Round(cpichResult.sRSCPInDBm100 * 0.01 - cpichResult.sInbandPowerInDBm100 * 0.01, 2);
-                                            long LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970;
+                                            long LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;
 
                                             LUMTS.BTSData dt = new LUMTS.BTSData()
                                             {
@@ -3358,7 +3358,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                     if (signalres.sRefSignal.sPBCHbasedRSRPinDBm100 != short.MaxValue)
                                     {
                                         LTEBTS[i].RSRP = signalres.sRefSignal.sPBCHbasedRSRPinDBm100 * 0.01;
-                                        LTEBTS[i].LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970;
+                                        LTEBTS[i].LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;
                                         LTEBTS[i].GetStationInfo();
                                         //if (LTEBTS[i].RSRP > DetectionLevelLTE)/////////////////////////////////////////////////////////////////////
                                         //{ LTEBTS[i].LastDetectionLevelUpdete = MainWindow.gps.LocalTime.Ticks; }
@@ -3400,7 +3400,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                     if (signalres.sRefSignal.sPBCHbasedRSRPinDBm100 != short.MaxValue)
                                     {
                                         ltebts.RSRP = signalres.sRefSignal.sPBCHbasedRSRPinDBm100 * 0.01;
-                                        ltebts.LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970;
+                                        ltebts.LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;
                                     }
                                     if (signalres.sRefSignal.sPBCHbasedRSRQinDB100 != short.MaxValue)
                                         ltebts.RSRQ = signalres.sRefSignal.sPBCHbasedRSRQinDB100 * 0.01;
@@ -3627,7 +3627,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                             CDMABTS[i].PTotal = fpichResult.sInbandPowerInDBm100 * 0.01;
                                             CDMABTS[i].RSCP = fpichResult.sRSCPInDBm100 * 0.01;
                                             CDMABTS[i].IcIo = 0 - Math.Round(fpichResult.sInbandPowerInDBm100 * 0.01 - fpichResult.sRSCPInDBm100 * 0.01, 2);
-                                            CDMABTS[i].LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970;
+                                            CDMABTS[i].LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;
                                             CDMABTS[i].GetStationInfo();
                                             //if (CDMABTS[i].RSCP > DetectionLevelCDMA)/////////////////////////////////////////////////////////////////////
                                             //{ CDMABTS[i].LastDetectionLevelUpdete = MainWindow.gps.LocalTime.Ticks; }
@@ -3663,7 +3663,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                             PTotal = fpichResult.sInbandPowerInDBm100 * 0.01,
                                             RSCP = fpichResult.sRSCPInDBm100 * 0.01,
                                             IcIo = 0 - Math.Round(fpichResult.sInbandPowerInDBm100 * 0.01 - fpichResult.sRSCPInDBm100 * 0.01, 2),
-                                            LastLevelUpdete = _timeService.GetGnssTime().Ticks - TicksBefore1970
+                                            LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970
                                         };
                                         dt.GetStationInfo();
                                         CDMABTS.Add(dt);

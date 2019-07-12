@@ -50,7 +50,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             try
             {
-                _logger.Verbouse(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.StartSysInfoTaskWorker.With(context.Task.Id));
+                _logger.Verbouse(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.StartSysInfoTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -60,71 +60,65 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
 
-
                 var parentProc = context.Descriptor.Parent;
                 //////////////////////////////////////////////
                 // 
                 // Отправка команды в контроллер 
                 //
                 //////////////////////////////////////////////
-                var datenow = DateTime.Now;
-               
-                var deviceCommand = new MesureSystemInfoCommand(context.Task.mesureSystemInfoParameter);
-                if (context.Task.durationForMeasBW_ms > 0)
-                {
-                    deviceCommand.Timeout = context.Task.durationForMeasBW_ms;
-                }
-                else
-                {
-                    deviceCommand.Timeout = 200;
-                }
-                deviceCommand.Delay = 0;
-                deviceCommand.Options = CommandOption.StartImmediately;
 
-                if (parentProc != null)
+                for (int i = 0; i < context.Task.mesureSystemInfoParameters.Length; i++)
                 {
-                    if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
+                    var mesureSystemInfoParameter = context.Task.mesureSystemInfoParameters[i];
+                    var deviceCommand = new MesureSystemInfoCommand(mesureSystemInfoParameter);
+                    //deviceCommand.Delay = 10000;
+                    deviceCommand.Options = CommandOption.StartImmediately;
+
+                    if (parentProc != null)
                     {
-                        this._controller.SendCommand<MesureSystemInfoResult>(context, deviceCommand,
-                        (
-                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                        ) =>
+                        if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
                         {
-                            parentProc.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
-                        });
-                    }
-                }
-
-
-                //////////////////////////////////////////////
-                // 
-                // Получение очередного  результат от Result Handler
-                //
-                //////////////////////////////////////////////
-                ///
-                if (parentProc == null)
-                {
-                    SysInfoResult outResultData = null;
-                    bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
-                    if (isDown == false) // таймут - результатов нет
-                    {
-                        var error = new ExceptionProcessSysInfo();
-                        if (context.WaitEvent<ExceptionProcessSysInfo>(out error, 1) == true)
-                        {
-                            if (error._ex != null)
+                            this._controller.SendCommand<MesureSystemInfoResult>(context, deviceCommand,
+                            (
+                            ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                            ) =>
                             {
-                                /// реакция на ошибку выполнения команды
-                                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
-                                context.Cancel();
-                            }
+                                parentProc.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
+                            });
                         }
                     }
-                    else
-                    {
-                        // есть результат
-                        //context.Task.CountGetResultBWPositive++;
-                    }
 
+
+                    //////////////////////////////////////////////
+                    // 
+                    // Получение очередного  результат от Result Handler
+                    //
+                    //////////////////////////////////////////////
+                    ///
+                    if (parentProc == null)
+                    {
+                        SysInfoResult outResultData = null;
+                        bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
+                        if (isDown == false) // таймут - результатов нет
+                        {
+                            var error = new ExceptionProcessSysInfo();
+                            if (context.WaitEvent<ExceptionProcessSysInfo>(out error, 1) == true)
+                            {
+                                if (error._ex != null)
+                                {
+                                    /// реакция на ошибку выполнения команды
+                                    _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
+                                    context.Cancel();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // есть результат
+                            //context.Task.CountGetResultBWPositive++;
+                        }
+
+                    }
                 }
                 //////////////////////////////////////////////
                 // 

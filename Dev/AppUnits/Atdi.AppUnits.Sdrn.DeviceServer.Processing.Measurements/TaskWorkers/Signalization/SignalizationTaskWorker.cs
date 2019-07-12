@@ -51,7 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
 
-                _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.Id));
+                _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -75,7 +75,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (context.Task.taskParameters.status == StatusTask.Z.ToString())
                     {
                         context.Cancel();
-                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                         break;
                     }
                     else if (context.Task.taskParameters.status == StatusTask.F.ToString())
@@ -140,7 +140,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (context.Task.taskParameters.status == StatusTask.Z.ToString())
                         {
                             context.Cancel();
-                            _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id));
+                            _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                             break;
                         }
                         else if (context.Task.taskParameters.status == StatusTask.F.ToString())
@@ -171,7 +171,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
                                         if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
                                         {
-                                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
+                                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
                                             context.Cancel();
                                             return;
                                         }
@@ -182,7 +182,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                         }
                                         break;
                                     case CommandFailureReason.Exception:
-                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.Id), error._ex.StackTrace);
+                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
                                         context.Cancel();
                                         return;
                                     default:
@@ -345,7 +345,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 TaskId = outResultData.TaskId
                             };
 
-                            
+
 
                             //Отправка результатов в шину 
                             var publisher = this._busGate.CreatePublisher("main");
@@ -353,6 +353,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             publisher.Dispose();
                             context.Task.MeasResults = null;
                             context.Task.LastTimeSend = currTime;
+                            context.Task.CounterCallSignaling = 0;
                         }
                     });
 

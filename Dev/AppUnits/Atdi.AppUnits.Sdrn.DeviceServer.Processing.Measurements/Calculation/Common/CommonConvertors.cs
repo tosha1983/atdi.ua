@@ -12,6 +12,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     static class CommonConvertors
     {
+        const long TicksBefore1970 = 621355968000000000;
         /// <summary>
         ///Вычисление задержки выполнения потока результатом является количество vмилисекунд на которое необходимо приостановить поток
         /// </summary>
@@ -72,6 +73,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     signalingSysInfo.Power = systemInfo.Power;
                     signalingSysInfo.RNC = systemInfo.RNC;
                     signalingSysInfo.Standard = systemInfo.Standart;
+                    signalingSysInfo.WorkTimes = new WorkTime[1];
+                    signalingSysInfo.WorkTimes[0] = new WorkTime();
+                    signalingSysInfo.WorkTimes[0].StartEmitting = new DateTime(systemInfo.Time + TicksBefore1970).ToLocalTime();
+                    signalingSysInfo.WorkTimes[0].StopEmitting = new DateTime(systemInfo.Time + TicksBefore1970).ToLocalTime();
                     measSysInfoResults.signalingSysInfo[i] = signalingSysInfo;
                 }
             }

@@ -12,10 +12,10 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     {
         public MeasResults MeasResults; //  результат измерения
         public DateTime? LastTimeSend = null;
+        public int CounterCallSignaling = 0;
         public MesureTraceDeviceProperties mesureTraceDeviceProperties;
         public ReferenceLevels ReferenceLevels;
         public TaskParameters[] taskParametersForBW;
-        public TaskParameters[] taskParametersForSysInfo;
 
         //сырой поток излучений после трейса
         public Emitting[] EmittingsRaw;
@@ -28,7 +28,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public double NoiseLevel_dBm = -100; //константа пока
         public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
         public Func<TaskParameters, MesureTraceParameter> actionConvertBW = null;
-        public Func<TaskParameters, MesureSystemInfoParameter> actionConvertSysInfo = null;
+        public Func<TaskParameters, MesureSystemInfoParameter[]> actionConvertSysInfo = null;
 
 
         //public int CountCallSignaling = 0;
