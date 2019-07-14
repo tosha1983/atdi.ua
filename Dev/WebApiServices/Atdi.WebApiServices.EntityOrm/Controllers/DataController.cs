@@ -145,7 +145,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
             {
                 return BadRequest(messaage);
             }
-            if (this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out messaage))
+            if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out messaage))
             {
                 return BadRequest(messaage);
             }
