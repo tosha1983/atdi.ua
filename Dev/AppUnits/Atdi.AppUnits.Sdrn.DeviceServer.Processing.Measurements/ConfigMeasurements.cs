@@ -12,5 +12,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// 
         /// </summary>
         public bool EnableBandWidthTask { get; set; }
+        public bool EnableSysInfoTask { get; set; }
     }
 }

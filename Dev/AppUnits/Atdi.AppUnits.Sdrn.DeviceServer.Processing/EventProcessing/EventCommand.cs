@@ -75,7 +75,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     if (findTask != null)
                     {
                         isSuccess = false;
-                        findTask.Task.taskParameters.status = StatusTask.A.ToString();
                         return isSuccess;
                     }
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{A803197E-12F5-4800-B157-B2EC677BDA33}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrns.DeviceServer.Entities</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrns.DeviceServer.Entities</AssemblyName>
+    <RootNamespace>Atdi.DataModels.Sdrn.DeviceServer.Entities</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrn.DeviceServer.Entities</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -30,9 +30,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,9 +43,9 @@
   <ItemGroup>
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\ILastUpdate.cs" />
-    <Compile Include="Entities\IReferenceSignal.cs" />
+    <Compile Include="Entities\IReferenceSignalRaw.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
-    <Compile Include="Entities\ISignalMask.cs" />
+    <Compile Include="Entities\ISignalMaskRaw.cs" />
     <Compile Include="Entities\ITaskParametersFreq.cs" />
     <Compile Include="Entities\ITaskParameters.cs" />
     <Compile Include="Entities\IMeasStation.cs" />
@@ -79,35 +76,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DataLayer\SqlServer\Tables\dbo.TASK_PARAMETERS.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.TASK_PARAMETERS_FREQ.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.STATION_SITE.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SIGNAL_MASK.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SENSOR_POLYGON.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SENSOR_LOCATION.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SENSOR_EQUIPMENT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SENSOR_EQUIP_SENSITIVITES.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SENSOR_ANTENNA.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SENSOR.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SECTOR_MASK_ELEMENT.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SECTOR_FREQ.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SECTOR.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.SCAN_PARAMETER.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.REFERENCE_SITUATION.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.REFERENCE_SIGNAL.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.OWNER_DATA.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.MEAS_TASK.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.MEAS_STATION.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.LICENCE_INFO.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.LAST_UPDATE.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\dbo.ANTENNA_PATTERN.sql" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
     <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
-    <Content Include="Metadata\DataTypes\Database\Double.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
@@ -127,9 +101,9 @@
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\AntennaPattern.xml" />
     <Content Include="Metadata\Entities\LastUpdate.xml" />
-    <Content Include="Metadata\Entities\ReferenceSignal.xml" />
+    <Content Include="Metadata\Entities\ReferenceSignalRaw.xml" />
     <Content Include="Metadata\Entities\ReferenceSituation.xml" />
-    <Content Include="Metadata\Entities\SignalMask.xml" />
+    <Content Include="Metadata\Entities\SignalMaskRaw.xml" />
     <Content Include="Metadata\Entities\TaskParametersFreq.xml" />
     <Content Include="Metadata\Entities\TaskParameters.xml" />
     <Content Include="Metadata\Entities\MeasStation.xml" />
@@ -158,10 +132,6 @@
     <Content Include="Metadata\Units\Longitude.DEC.xml" />
     <Content Include="Metadata\Units\Power.dB.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DataLayer\Oracle\Functions\" />
-    <Folder Include="DataLayer\Oracle\Tables\" />
-    <Folder Include="DataLayer\SqlServer\Functions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

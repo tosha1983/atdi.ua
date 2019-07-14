@@ -104,7 +104,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         {
                             var sensorCurr = sensors[0];
                             var listSensorLocations = sensorCurr.Locations.ToList();
-                            var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - context.Process.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - context.Process.Lat) <= this._configProcessing.LatDelta && t.Status != "Z");
+                            var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - context.Process.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - context.Process.Lat) <= this._configProcessing.LatDelta && Math.Abs(t.ASL.Value - context.Process.Asl) <= this._configProcessing.AslDelta && t.Status != "Z");
                             if (lSensorLocations.Count == 0)
                             {
                                 lSensorLocations.OrderByDescending(x => x.Created);

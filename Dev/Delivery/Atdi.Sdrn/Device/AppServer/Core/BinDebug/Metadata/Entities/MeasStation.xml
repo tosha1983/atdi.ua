@@ -6,20 +6,20 @@
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>XBS_MEASSTATION</Name>
+    <Name>MEAS_STATION</Name>
     <Schema>dbo</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="Station identifier" Title="Station identifier" Name="StationId" DataType="Text.50" SourceName="STATIONID" SourceType="Column" Required="true"/>
-    <Field Desc="Global SID" Title="Global SID" Name="GlobalSid" DataType="Text.100" SourceName="GLOBALSID" SourceType="Column" Required="false"/>
-    <Field Desc="Owner global SID" Title="Owner global SID" Name="OwnerGlobalSid" DataType="Text.100" SourceName="OWNERGLOBALSID" SourceType="Column" Required="false"/>
+    <Field Desc="Station identifier" Title="Station identifier" Name="StationId" DataType="Text.50" SourceName="STATION_ID" SourceType="Column" Required="true"/>
+    <Field Desc="Global SID" Title="Global SID" Name="GlobalSid" DataType="Text.100" SourceName="GLOBAL_SID" SourceType="Column" Required="false"/>
+    <Field Desc="Owner global SID" Title="Owner global SID" Name="OwnerGlobalSid" DataType="Text.100" SourceName="OWNER_GLOBAL_SID" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.20" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
-    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="ID_XBS_MEASTASK" SourceType="Column" Required="true"/>
-    <Field Desc="Station owner id" Title="Station owner id" Name="OwnerId" DataType="Integer.64" SourceName="ID_OWNER" SourceType="Column" Required="false"/>
-    <Field Desc="Station site id" Title="Station site id" Name="SiteId" DataType="Integer.64" SourceName="ID_SITE" SourceType="Column" Required="false"/>
-    <Field Desc="Station license id" Title="Station license id" Name="LicenceId" DataType="Integer.64" SourceName="ID_LICENCE" SourceType="Column" Required="false"/>
+    <Field Desc="MeasTaskId" Title="MeasTaskId" Name="MeasTaskId" DataType="Integer.64" SourceName="MEAS_TASK_ID" SourceType="Column" Required="true"/>
+    <Field Desc="Station owner id" Title="Station owner id" Name="OwnerId" DataType="Integer.64" SourceName="OWNER_DATA_ID" SourceType="Column" Required="false"/>
+    <Field Desc="Station site id" Title="Station site id" Name="SiteId" DataType="Integer.64" SourceName="STATION_SITE_ID" SourceType="Column" Required="false"/>
+    <Field Desc="Station license id" Title="Station license id" Name="LicenceId" DataType="Integer.64" SourceName="LICENCE_INFO_ID" SourceType="Column" Required="false"/>
 
     <Field Name="MEASTASK" SourceType="Reference" SourceName="MeasTask" Title="Relation MeasStation to MeasTask">
       <PrimaryKeyMapping>

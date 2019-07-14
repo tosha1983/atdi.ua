@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
     public class MeasurementTaskBase : TaskBase
     {
         public MesureTraceParameter mesureTraceParameter;
+        public MesureSystemInfoParameter[] mesureSystemInfoParameters = null;
         public TaskParameters taskParameters;
 
         public int CountSendResults = 0;
@@ -22,5 +23,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public long durationForSendResultBandWidth;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
         public long durationForSendResultSO;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
         public long durationForMeasBW_ms; // в миллисекундах из файла конфигурации - максимальное время, выделяемое для выполнения измерения BW
+        public long durationForSendResultSysInfo;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
     }
 }
