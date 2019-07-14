@@ -42,6 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\IDataRecordRequest.cs" />
+    <Compile Include="Api\IDataSetRequest.cs" />
+    <Compile Include="Api\IDataTypeMetadata.cs" />
+    <Compile Include="Api\IEntitiesNode.cs" />
+    <Compile Include="Api\IEntityFieldMetadata.cs" />
+    <Compile Include="Api\IEntityMetadata.cs" />
+    <Compile Include="Api\IEntityOrmConfig.cs" />
+    <Compile Include="Api\IEntityRequest.cs" />
+    <Compile Include="Api\IFieldValueRequest.cs" />
+    <Compile Include="Api\IRequestResult.cs" />
+    <Compile Include="Api\IUnitMetadata.cs" />
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

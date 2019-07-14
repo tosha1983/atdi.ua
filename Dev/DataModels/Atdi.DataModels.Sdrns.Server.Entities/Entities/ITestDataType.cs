@@ -293,6 +293,48 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     }
 
     [EntityPrimaryKey]
+    public interface ITestDataTypeSql_PK
+    {
+        long AsLong { get; set; }
+    }
+
+    [Entity]
+    public interface ITestDataTypeSql : ITestDataTypeSql_PK
+    {
+        float? AsFloat { get; set; }
+
+        double? AsDouble { get; set; }
+
+        decimal? AsDecimal { get; set; }
+
+        DateTime? AsDateTime { get; set; }
+
+        DateTimeOffset? AsDateTomeOffset { get; set; }
+
+        Guid? AsGuid { get; set; }
+
+        DateTime? AsDate { get; set; }
+
+        TimeSpan? AsTime { get; set; }
+
+        int? AsInteger { get; set; }
+
+        short? AsShort { get; set; }
+
+        byte? AsByte { get; set; }
+
+        byte[] AsBytes { get; set; }
+
+        string AsString { get; set; }
+
+        char? AsChar { get; set; }
+
+        char[] AsChars { get; set; }
+
+    }
+
+
+    [EntityPrimaryKey]
     public interface ITestRefRoot_PK
     {
         long Id { get; set; }

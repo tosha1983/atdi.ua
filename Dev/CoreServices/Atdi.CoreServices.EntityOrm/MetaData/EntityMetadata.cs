@@ -19,6 +19,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public string Name { get; set; }
 
+        public string Namespace { get; set; }
+
         public string Title { get; set; }
 
         public string Desc { get; set; }

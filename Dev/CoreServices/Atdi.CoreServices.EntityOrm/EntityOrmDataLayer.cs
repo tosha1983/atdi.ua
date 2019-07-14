@@ -37,11 +37,18 @@ namespace Atdi.CoreServices.EntityOrm
             }
         }
 
-        public IDataLayerScope<TContext> CreateScope<TContext>() 
+        public IDataLayerScope CreateScope<TContext>() 
             where TContext : IDataContext, new()
         {
             var dataEngine = this._dataLayer.GetDataEngine<TContext>();
-            var scope = new DataLayerScope<TContext>(dataEngine, this._builderFactory, this.Logger);
+            var scope = new DataLayerScope(dataEngine, this._builderFactory, this.Logger);
+            return scope;
+        }
+
+        public IDataLayerScope CreateScope(IDataContext dataContext)
+        {
+            var dataEngine = this._dataLayer.GetDataEngine(dataContext);
+            var scope = new DataLayerScope(dataEngine, this._builderFactory, this.Logger);
             return scope;
         }
 

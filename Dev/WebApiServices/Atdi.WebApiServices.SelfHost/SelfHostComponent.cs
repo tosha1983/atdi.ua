@@ -48,6 +48,7 @@ namespace Atdi.WebApiServices.SelfHost
             var routersConfig = resolver.Resolve<RoutesConfig>();
             routersConfig.Apply(this._config.Routes);
 
+            this._config.MapHttpAttributeRoutes();
             this._config.Routes.MapHttpRoute(
                 name: "DefaultApiRoute",
                 routeTemplate: "api/{controller}/{action}",
