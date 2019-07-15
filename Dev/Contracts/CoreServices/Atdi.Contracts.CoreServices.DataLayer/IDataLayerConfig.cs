@@ -10,5 +10,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         IDataEngineConfig GetEngineConfig<TContext>()
             where TContext : IDataContext, new();
+
+        IDataEngineConfig GetEngineConfig(IDataContext dataContext);
     }
 }

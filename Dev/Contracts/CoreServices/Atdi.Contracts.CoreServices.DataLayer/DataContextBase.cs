@@ -14,4 +14,11 @@ namespace Atdi.Contracts.CoreServices.DataLayer
         }
         public string Name { get; private set; }
     }
+    public sealed class SimpleDataContext : DataContextBase
+    {
+        public SimpleDataContext(string name) 
+            : base(name)
+        {
+        }
+    }
 }

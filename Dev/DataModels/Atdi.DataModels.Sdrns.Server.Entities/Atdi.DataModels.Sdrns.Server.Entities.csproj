@@ -275,11 +275,17 @@
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_MESSAGES.sql" />
     <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
+    <Content Include="Metadata\DataTypes\Database\Char.xml" />
+    <Content Include="Metadata\DataTypes\Database\Byte.xml" />
     <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.DateTimeOffset.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.Guid.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.Guid.xml" />
+    <Content Include="Metadata\DataTypes\Database\Date.xml" />
+    <Content Include="Metadata\DataTypes\Database\Chars.250.xml" />
+    <Content Include="Metadata\DataTypes\Database\Time.xml" />
     <Content Include="Metadata\DataTypes\Database\DateTimeOffset.xml" />
     <Content Include="Metadata\DataTypes\Database\Float.22.8.xml" />
     <Content Include="Metadata\DataTypes\Database\Double.30.10.xml" />
@@ -306,6 +312,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\Entities\SignalingSysInfo.xml" />
+    <Content Include="Metadata\Entities\TestDataTypeSql.xml" />
     <Content Include="Metadata\Entities\TestEntityRef3.xml" />
     <Content Include="Metadata\Entities\TestEntityRef2.xml" />
     <Content Include="Metadata\Entities\TestEntityRef1.xml" />

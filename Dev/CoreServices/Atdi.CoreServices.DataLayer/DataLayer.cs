@@ -25,11 +25,22 @@ namespace Atdi.CoreServices.DataLayer
         public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()
         {
             var engineConfig = this._config.GetEngineConfig<TContext>();
+            return EnsureEngine(engineConfig);
+        }
 
+        public IDataEngine GetDataEngine(IDataContext dataContext)
+        {
+            var engineConfig = this._config.GetEngineConfig(dataContext);
+            return EnsureEngine(engineConfig);
+
+        }
+
+        private IDataEngine EnsureEngine(IDataEngineConfig engineConfig)
+        {
             switch (engineConfig.Type)
             {
                 case DataEngineType.SqlServer:
-                    var sqlEngine =  this._servicesResolver.Resolve<ISqlServerDataEngine>();
+                    var sqlEngine = this._servicesResolver.Resolve<ISqlServerDataEngine>();
                     sqlEngine.SetConfig(engineConfig);
                     return sqlEngine;
                 case DataEngineType.Oracle:
@@ -39,8 +50,6 @@ namespace Atdi.CoreServices.DataLayer
                 default:
                     throw new InvalidOperationException(Exceptions.EngineTypeNotSupported.With(engineConfig.Type));
             }
-
         }
-
     }
 }

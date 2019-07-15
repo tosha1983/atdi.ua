@@ -23,5 +23,10 @@ namespace Atdi.DataModels.DataConstraint
 
         [DataMember]
         public Condition[] Conditions { get; set; }
+
+        public override string ToString()
+        {
+            return $"Type = '{Type}', Operator = '{Operator}', Conditions = {Conditions?.Length}";
+        }
     }
 }

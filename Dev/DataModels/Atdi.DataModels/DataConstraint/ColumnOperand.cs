@@ -20,5 +20,10 @@ namespace Atdi.DataModels.DataConstraint
 
         [DataMember]
         public string ColumnName { get; set; }
+
+        public override string ToString()
+        {
+            return $"Type = '{Type}', Column = '{ColumnName}'";
+        }
     }
 }
