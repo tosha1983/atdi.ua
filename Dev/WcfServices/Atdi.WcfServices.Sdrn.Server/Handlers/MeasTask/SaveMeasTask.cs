@@ -47,7 +47,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderSelectMeasTask.Select(c => c.MEAS_SUBTASK.Id);
                     builderSelectMeasTask.Select(c => c.Id);
                     builderSelectMeasTask.Where(c => c.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
-                    builderSelectMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
                     scope.Executor.Fetch(builderSelectMeasTask, reader =>
                     {
                         while (reader.Read())
