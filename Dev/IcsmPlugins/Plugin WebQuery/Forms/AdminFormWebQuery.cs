@@ -161,7 +161,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
             if (DA == System.Windows.Forms.DialogResult.Yes){
                 {
                     var rsWebQuery = new IMRecordset(ICSMTbl.WebQuery, IMRecordset.Mode.ReadWrite);
-                    rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMN");
+                    rsWebQuery.Select("ID,NAME,QUERY,COMMENTS,IDENTUSER,CODE,TASKFORCEGROUP,VIEWCOLUMNS,ADDCOLUMNS,EDITCOLUMNS,TABLECOLUMNS");
                     if (_lst.DataList == null) rsWebQuery.SetWhere("ID", IMRecordset.Operation.Eq, _lst.TableId);
                     else rsWebQuery.AddSelectionFrom(_lst.DataList, IMRecordset.WhereCopyOptions.SelectedLines);
                     try {
