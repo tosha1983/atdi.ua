@@ -53,7 +53,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
             //===============================================
             // VIEWS
             //===============================================
-            CreateViewForAccess(s, "XV_WEB_BS", "WebQuery_BS_3_View", plugin3, "MOB_STATION2", "WebQuery_BS_3");
+            CreateViewForAccess(s, "XV_WEB_BS", "WebQuery_BS_View", plugin3, "MOB_STATION2", "WebQuery_BS");
             {
                 //s.DeclareField("ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("LICENCE", "VARCHAR(200)", null, null, null);
@@ -91,6 +91,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("SECTOR_NUMBER", "VARCHAR(1)", null, null, null);
                 s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
                 s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
+                s.DeclareField("IDENT_REZ", "VARCHAR(100)", null, null, null);
                 s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
                 s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
             }
@@ -118,6 +119,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("EQ_FREQ_RANGE", "VARCHAR(164)", null, null, null);
                 s.DeclareField("DUPLEX", "NUMBER(15,6)", null, null, null);
                 s.DeclareField("BW", "NUMBER(15,5)", null, null, null);
+                s.DeclareField("STEP", "NUMBER(22,8)", null, null, null);
                 s.DeclareField("MODULATION", "VARCHAR(4000)", null, null, null);
                 s.DeclareField("ADDRESS", "VARCHAR(4000)", null, null, null);
                 s.DeclareField("POS_ID", "NUMBER(9,0)", null, null, null);
@@ -183,6 +185,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("DES_EMISSION", "VARCHAR(9)", null, null, null);
                 s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
                 s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
+                s.DeclareField("IDENT_REZ", "VARCHAR(10)", null, null, null);
                 s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
                 s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
             }
