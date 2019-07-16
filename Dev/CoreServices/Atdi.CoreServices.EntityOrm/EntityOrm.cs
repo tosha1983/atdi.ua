@@ -1769,7 +1769,8 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return null;
             }
-            var pkTypeName = $"{_config.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
+            //var pkTypeName = $"{_config.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
+            var pkTypeName = $"{entity.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
             var pkType = Type.GetType(pkTypeName);
             if (pkType == null)
             {

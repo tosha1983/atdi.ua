@@ -97,6 +97,7 @@
     <Compile Include="Entities\ISensorSensitivites.cs" />
     <Compile Include="Entities\IStation.cs" />
     <Compile Include="Entities\IStationSite.cs" />
+    <Compile Include="Entities\Monitoring\ILogEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +274,14 @@
     <Content Include="DataLayer\SqlServer\Tables\ICSC.WORK_TIME.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_EVENTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_MESSAGES.sql" />
+    <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Time.TIME.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\DateTimeOffset.DATETIMEOFFSET.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Integer.INT32.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Guid.GUID.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\String.NTEXT.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
     <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
     <Content Include="Metadata\DataTypes\Database\Char.xml" />
@@ -311,6 +320,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
     <Content Include="Metadata\Entities\SignalingSysInfo.xml" />
     <Content Include="Metadata\Entities\TestDataTypeSql.xml" />
     <Content Include="Metadata\Entities\TestEntityRef3.xml" />

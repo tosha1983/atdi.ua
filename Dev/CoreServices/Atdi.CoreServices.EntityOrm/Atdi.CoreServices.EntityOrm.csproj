@@ -49,7 +49,9 @@
     <Compile Include="DataTypeSystem\ValueAdapters\BooleanBIT.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\ByteINT08.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\BytesBLOB.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeCLRTYPE.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\ClrTypeBYTES.cs" />
+    <Compile Include="DataTypeSystem\ValueAdapters\TimeTIME.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\GuidGUID.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\DateTimeOffsetDATETIMEOFFSET.cs" />
     <Compile Include="DataTypeSystem\ValueAdapters\DateTimeDATETIME.cs" />

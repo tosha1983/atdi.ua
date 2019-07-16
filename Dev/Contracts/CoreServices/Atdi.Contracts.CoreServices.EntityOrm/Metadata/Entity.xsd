@@ -394,6 +394,7 @@
       <xs:enumeration value="Xml" />
       <xs:enumeration value="Csv" />
       <xs:enumeration value="Excel" />
+      <xs:enumeration value="ClrObject" />
     </xs:restriction>
   </xs:simpleType>
 
@@ -402,6 +403,7 @@
       <xs:enumeration value="Table" />
       <xs:enumeration value="Query" />
       <xs:enumeration value="File" />
+      <xs:enumeration value="Service" />
     </xs:restriction>
   </xs:simpleType>
   
@@ -532,6 +534,7 @@
       <xs:enumeration value="GUID" />
       <xs:enumeration value="XML" />
       <xs:enumeration value="JSON" />
+      <xs:enumeration value="CLRTYPE" />
       
     </xs:restriction>
   </xs:simpleType>

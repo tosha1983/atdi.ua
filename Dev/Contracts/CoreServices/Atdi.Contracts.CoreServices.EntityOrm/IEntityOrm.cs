@@ -30,8 +30,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
         public static IEntityMetadata GetEntityMetadata<TModel>(this IEntityOrm entityOrm)
         {
             var modelTypeName = typeof(TModel).Name;
+            var ns = typeof(TModel).Namespace;
             var entityName = (modelTypeName[0] == 'I' ? modelTypeName.Substring(1, modelTypeName.Length - 1) : modelTypeName);
-            return entityOrm.GetEntityMetadata(entityName);
+            return entityOrm.GetEntityMetadata(ns + "." + entityName);
         }
     }
 }

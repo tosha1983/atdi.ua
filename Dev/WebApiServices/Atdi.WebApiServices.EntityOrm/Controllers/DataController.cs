@@ -95,7 +95,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
                         Fields = fields
                     };
                     var records = new List<object[]>();
-
+                    long count = 0;
                     while (reader.Read())
                     {
                         var record = new object[fields.Length];
@@ -104,9 +104,11 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
                             var field = fields[i];
                             record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
                         }
-                        records.Add(record); 
+                        records.Add(record);
+                        ++count;
                     }
                     result.Records = records.ToArray();
+                    result.Count = count;
                     return (IHttpActionResult)Ok(result);
                 });
             }
