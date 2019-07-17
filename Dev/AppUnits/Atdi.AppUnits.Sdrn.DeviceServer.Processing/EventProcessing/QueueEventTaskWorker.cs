@@ -268,7 +268,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
 
                         //if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) || (cntActiveTaskParameters > 0)))
-                        if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) /*|| (cntActiveTaskParameters > 0)*/) || ((isModifiedCount == true) && (isChangedStatus == false)))
+                        //if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) /*|| (cntActiveTaskParameters > 0)*/) || ((isModifiedCount == true) && (isChangedStatus == false)))
                         if (((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null))
                         {
                             var taskParams = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict();
@@ -341,9 +341,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     };
                                     this._repositoryLastUpdateByInt.Create(lastUpdate);
                                 }
-
-                                cntActiveTaskParameters = 0;
                             }
+                            cntActiveTaskParameters = 0;
                         }
                     }
                 }

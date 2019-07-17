@@ -629,16 +629,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         if (ID != null)
                         {
                             var massFreq = item.ListFreqCH.ToArray();
-                            for (int i = 0; i < massFreq.Length; i++)
+                            if (massFreq.Length > 0)
                             {
-                                var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
-                                builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
-                                builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
-                                
-
-                                var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
+                                for (int i = 0; i < massFreq.Length; i++)
+                                {
+                                    var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
+                                    builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
+                                    builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
+                                    var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
+                                }
                             }
-
 
                             if (item.RefSituation != null)
                             {
