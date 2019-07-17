@@ -61,7 +61,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 // Отправка команды в контроллер GPS
                 //
                 //////////////////////////////////////////////
+                var gpsParameter = new GpsParameter();
+                gpsParameter.GpsMode = GpsMode.Start;
+                var gpsDevice = new GpsCommand(gpsParameter);
 
+                this._controller.SendCommand<GpsResult>(context, gpsDevice,
+                (
+                      ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                ) =>
+                {
+                    taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
+                });
 
                 while (true)
                 {
@@ -79,18 +89,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     //
                     //////////////////////////////////////////////
                     System.Threading.Thread.Sleep(this._configProcessing.PeriodSendCoordinatesToSDRNS);
-                    var gpsParameter = new GpsParameter();
-                    gpsParameter.GpsMode = GpsMode.Start;
-                    var gpsDevice = new GpsCommand(gpsParameter);
-
-                    this._controller.SendCommand<GpsResult>(context, gpsDevice,
-                    (
-                          ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) =>
-                    {
-                        taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
-                    });
-
+                    
                     GpsResult gpsResult = null;
                     bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
                     if (isWait)
@@ -126,8 +125,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     Lat = context.Process.Lat,
                                     Status = "A",
                                     Created = DateTime.Now,
-                                    From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
-                                    To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
+                                    From = DateTime.Now,
+                                    To = DateTime.Now
+                                    //From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
+                                    //To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
                                 };
 
                                 sensorLocation[mass.Length] = location;
