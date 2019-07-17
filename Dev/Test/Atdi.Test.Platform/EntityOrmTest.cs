@@ -2,6 +2,7 @@
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.Sdrns.Server.Entities;
+using Atdi.DataModels.Sdrns.Server.Entities.Monitoring;
 using Atdi.Platform.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,59 @@ namespace Atdi.Test.Platform
             //{
             //    Test_InsertPatterns(dataLayer);
             //}
-
+            //Test_AssembliesContext(dataLayer);
+            Test_InsertPatterns(dataLayer);
             //Test_SelectPatterns(dataLayer);
             //Test_UpdatePatterns(dataLayer);
-            Test_DeletePatterns(dataLayer);
+            //Test_DeletePatterns(dataLayer);
 
             //Test_ReferenceFields(dataLayer);
             //Test_Boolean(builder, executor);
         }
 
+        private static void Test_AssembliesContext(IDataLayer<EntityDataOrm> dataLayer)
+        {
+            var logQuery = dataLayer.GetBuilder<ILogEvent>()
+                .From()
+                .Select(c => c.Id, c => c.LevelCode, c => c.LevelName, c => c.Text)
+                ;
+
+            using (var scope = dataLayer.CreateScope(new SimpleDataContext("Platform")))
+            {
+                try
+                {
+                    var result = scope.Executor.ExecuteAndFetch(logQuery, reader => 
+                    {
+                        while(reader.Read())
+                        {
+                            try
+                            {
+                                var id = reader.GetValue(c => c.Id);
+                                var levelCode = reader.GetValue(c => c.LevelCode);
+                                var levelName = reader.GetValue(c => c.LevelName);
+                                var text = reader.GetValue(c => c.Text);
+                                Console.WriteLine($"Id = '{id}'; LevelCode = '{levelCode}'; LevelName = '{levelName}'; Text = '{text}';");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                Console.ReadLine();
+                            }
+                            
+                        }
+                        Console.ReadLine();
+                        return true;
+                    });
+                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.ReadLine();
+                }
+            }
+
+        }
         private static void Test_DeletePatterns(IDataLayer<EntityDataOrm> dataLayer)
         {
             var delete = dataLayer.GetBuilder<ITestEntityAbsSmpProtoEndExt1>()

@@ -9,6 +9,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     public enum DataEngineType
     {
         SqlServer,
-        Oracle
+        Oracle,
+        Assemblies
     }
 }

@@ -47,6 +47,10 @@ namespace Atdi.CoreServices.DataLayer
                     var oracleEngine = this._servicesResolver.Resolve<IOracleDataEngine>();
                     oracleEngine.SetConfig(engineConfig);
                     return oracleEngine;
+                case DataEngineType.Assemblies:
+                    var assembliesEngine = this._servicesResolver.Resolve<IAssembliesDataEngine>();
+                    assembliesEngine.SetConfig(engineConfig);
+                    return assembliesEngine;
                 default:
                     throw new InvalidOperationException(Exceptions.EngineTypeNotSupported.With(engineConfig.Type));
             }

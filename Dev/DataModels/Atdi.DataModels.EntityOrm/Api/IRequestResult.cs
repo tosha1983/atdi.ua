@@ -38,6 +38,8 @@ namespace Atdi.DataModels.EntityOrm.Api
         IFieldDescriptor[] Fields { get; set; }
 
         object[] Records { get; set; }
+
+        long Count { get; set; }
     }
 
 }

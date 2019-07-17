@@ -96,6 +96,10 @@
       <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
       <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Monitoring\Atdi.Contracts.CoreServices.Monitoring.csproj">
+      <Project>{703dd550-8626-431f-a0cc-d5e78ac924cc}</Project>
+      <Name>Atdi.Contracts.CoreServices.Monitoring</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Server\Atdi.Contracts.Sdrn.Server.csproj">
       <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
       <Name>Atdi.Contracts.Sdrn.Server</Name>
@@ -103,6 +107,10 @@
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Assemblies\Atdi.CoreServices.DataLayer.Assemblies.csproj">
+      <Project>{2c09f776-b3b4-48ad-b221-d8b899a679b2}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Assemblies</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
       <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
@@ -119,6 +127,10 @@
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.EntityOrm\Atdi.CoreServices.EntityOrm.csproj">
       <Project>{0284cba5-d336-4a39-8519-3f2c48d433d7}</Project>
       <Name>Atdi.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.Monitoring\Atdi.CoreServices.Monitoring.csproj">
+      <Project>{29acbf42-27bb-49f0-aa01-6f013bef6e8c}</Project>
+      <Name>Atdi.CoreServices.Monitoring</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
       <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
