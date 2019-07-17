@@ -42,7 +42,21 @@ namespace Atdi.CoreServices.DataLayer
         public IDataEngineConfig GetEngineConfig<TContext>() where TContext : IDataContext, new()
         {
             var dataContext = new TContext();
-            return this._dataEngineConfigs[dataContext.Name];
+            return this.GetEngineConfig(dataContext);
+        }
+
+        public IDataEngineConfig GetEngineConfig(IDataContext dataContext)
+        {
+            if (dataContext == null)
+            {
+                throw new ArgumentNullException(nameof(dataContext));
+            }
+
+            if (!_dataEngineConfigs.TryGetValue(dataContext.Name, out IDataEngineConfig config))
+            {
+                throw new InvalidOperationException($"Not found an engine config by context with name '{dataContext.Name}'");
+            }
+            return config;
         }
     }
 }

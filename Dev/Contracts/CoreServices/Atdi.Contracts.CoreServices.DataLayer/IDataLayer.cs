@@ -11,7 +11,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         IDataEngine GetDataEngine<TContext>()
             where TContext : IDataContext, new();
-           
+
+        IDataEngine GetDataEngine(IDataContext dataContext);
+
     }
 
     public interface IDataLayer<TDataOrm> //: IDataLayer
@@ -24,8 +26,10 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQueryBuilder<TModel> GetBuilder<TModel>();
 
-        IDataLayerScope<TContext> CreateScope<TContext>()
+        IDataLayerScope CreateScope<TContext>()
              where TContext : IDataContext, new();
+
+        IDataLayerScope CreateScope(IDataContext dataContext);
     }
 
     

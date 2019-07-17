@@ -189,4 +189,18 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         Enum GetValue(Expression<Func<TModel, Enum>> columnExpression);
     }
+
+    public static class DataReaderExtension
+    {
+        public static object GetValue(this IDataReader reader, DataType varType, string path)
+        {
+            var ordinal = reader.GetOrdinal(path);
+            if (reader.IsDBNull(ordinal))
+            {
+                return null;
+            }
+            var type = reader.GetFieldType(ordinal);
+            return reader.GetValueAsObject(varType, type, ordinal);
+        }
+    }
 }

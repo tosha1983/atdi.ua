@@ -15,6 +15,11 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         string Name { get; }
 
         /// <summary>
+        /// Простарнство имен в которо мрасположена сущность
+        /// </summary>
+        string Namespace { get; }
+
+        /// <summary>
         /// Имя сущности
         /// </summary>
         string QualifiedName { get; }

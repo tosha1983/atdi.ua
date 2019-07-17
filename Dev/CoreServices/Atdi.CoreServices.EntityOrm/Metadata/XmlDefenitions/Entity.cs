@@ -118,6 +118,9 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         Excel,
+
+        /// <remarks/>
+        ClrObject
     }
 
     /// <remarks/>
@@ -151,6 +154,9 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         File,
+
+        /// <remarks/>
+        Service
     }
     
     /// <remarks/>
@@ -992,6 +998,9 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         JSON,
+
+        /// <remarks/>
+        CLRTYPE
     }
     
     /// <remarks/>

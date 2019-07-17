@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    internal sealed class DataLayerScope<TContext> : LoggedObject, IDataLayerScope<TContext>
-        where TContext : IDataContext, new()
+    internal sealed class DataLayerScope : LoggedObject, IDataLayerScope
     {
         private readonly IDataEngine _dataEngine;
         private QueryExecutor _queryExecutor;

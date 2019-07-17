@@ -515,7 +515,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         Table,
         View,
         Function,
-        StoredProc
+        StoredProc,
+        Service
     }
     /// <summary>
     /// Целевой объект к которому можно применить операцию выборки, изменения, вставки, удаления, это может быть:
@@ -587,6 +588,15 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
         public EngineTablePrimaryKey PrimaryKey { get; set; }
     }
 
+    public class EngineService : EngineObject
+    {
+        public EngineService()
+            : base(TargetObjectKind.Service)
+        {
+        }
+
+        public EngineTablePrimaryKey PrimaryKey { get; set; }
+    }
 
     /// <summary>
     /// Объект хранилища как вью

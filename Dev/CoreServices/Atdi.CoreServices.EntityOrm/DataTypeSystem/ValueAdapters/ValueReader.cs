@@ -202,6 +202,11 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(byte);
             }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return (byte)valAsEnum;
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
@@ -288,6 +293,11 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 }
 
                 return default(sbyte);
+            }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return (sbyte)valAsEnum;
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
@@ -376,6 +386,11 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(sbyte);
             }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return (short)valAsEnum;
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
 
@@ -463,6 +478,11 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
                 }
 
                 return default(int);
+            }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return (int)valAsEnum;
             }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
@@ -812,8 +832,99 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
                 return default(long);
             }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return (long)valAsEnum;
+            }
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TimeSpan ReadAsTIME(IEngineDataReader dataReader, int ordinal)
+        {
+            var fieldDbType = dataReader.GetFieldType(ordinal);
+            return ReadAsTIME(dataReader, ordinal, fieldDbType);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TimeSpan ReadAsTIME(IEngineDataReader dataReader, int ordinal, Type fieldDbType)
+        {
+            if (fieldDbType == typeof(TimeSpan) || fieldDbType == typeof(TimeSpan?))
+            {
+                return dataReader.GetTimeSpan(ordinal);
+            }
+            if (fieldDbType == typeof(string))
+            {
+                return TimeSpan.Parse(dataReader.GetString(ordinal));
+            }
+            //if (fieldDbType == typeof(bool))
+            //{
+            //    return Convert.ToInt64(dataReader.GetBoolean(ordinal));
+            //}
+            //if (fieldDbType == typeof(byte))
+            //{
+            //    return Convert.ToInt64(dataReader.GetByte(ordinal));
+            //}
+            //if (fieldDbType == typeof(sbyte))
+            //{
+            //    return Convert.ToInt64(dataReader.GetByte(ordinal));
+            //}
+
+            //if (fieldDbType == typeof(double))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetDouble(ordinal));
+            //}
+            //if (fieldDbType == typeof(float))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetFloat(ordinal));
+            //}
+            //if (fieldDbType == typeof(int))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetInt32(ordinal));
+            //}
+            //if (fieldDbType == typeof(uint))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetUInt32(ordinal));
+            //}
+            //if (fieldDbType == typeof(decimal))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetDecimal(ordinal));
+            //}
+            //if (fieldDbType == typeof(char))
+            //{
+            //    return Convert.ToInt64(dataReader.GetChar(ordinal));
+            //}
+            //if (fieldDbType == typeof(char[]))
+            //{
+            //    var blob = dataReader.GetChars(ordinal);
+            //    if (blob.Length > 0)
+            //    {
+            //        return Convert.ToByte(blob[0]);
+            //    }
+            //    return default(byte);
+            //}
+            //if (fieldDbType == typeof(short))
+            //{
+            //    return Convert.ToInt64(dataReader.GetInt16(ordinal));
+            //}
+            //if (fieldDbType == typeof(ushort))
+            //{
+            //    return Convert.ToInt64(dataReader.GetInt16(ordinal));
+            //}
+            //if (fieldDbType == typeof(long))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetInt64(ordinal));
+            //}
+            //if (fieldDbType == typeof(ulong))
+            //{
+            //    return Convert.ToDateTime(dataReader.GetUInt64(ordinal));
+            //}
+            //if (fieldDbType == typeof(byte[]))
+            //{
+            //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
+            //}
+            throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime ReadAsDATETIME(IEngineDataReader dataReader, int ordinal)
@@ -1097,6 +1208,16 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             {
                 return Convert.ToString(dataReader.GetUInt64(ordinal));
             }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return valAsEnum.ToString();
+            }
+            if (fieldDbType.IsValueType)
+            {
+                var valAsValueType = dataReader.GetValue(ordinal);
+                return valAsValueType.ToString();
+            }
             //if (fieldDbType == typeof(byte[]))
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
@@ -1178,6 +1299,16 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             if (fieldDbType == typeof(ulong))
             {
                 return Convert.ToString(dataReader.GetUInt64(ordinal));
+            }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return valAsEnum.ToString();
+            }
+            if (fieldDbType.IsValueType)
+            {
+                var valAsValueType = dataReader.GetValue(ordinal);
+                return valAsValueType.ToString();
             }
             //if (fieldDbType == typeof(byte[]))
             //{
@@ -1261,6 +1392,16 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             {
                 return Convert.ToString(dataReader.GetUInt64(ordinal));
             }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return valAsEnum.ToString();
+            }
+            if (fieldDbType.IsValueType)
+            {
+                var valAsValueType = dataReader.GetValue(ordinal);
+                return valAsValueType.ToString();
+            }
             //if (fieldDbType == typeof(byte[]))
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
@@ -1343,6 +1484,16 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
             {
                 return Convert.ToString(dataReader.GetUInt64(ordinal));
             }
+            if (fieldDbType.IsEnum)
+            {
+                var valAsEnum = dataReader.GetValue(ordinal);
+                return valAsEnum.ToString();
+            }
+            if (fieldDbType.IsValueType)
+            {
+                var valAsValueType = dataReader.GetValue(ordinal);
+                return valAsValueType.ToString();
+            }
             //if (fieldDbType == typeof(byte[]))
             //{
             //    return Encoding.UTF8.GetString(ReadAsBLOB(dataReader, ordinal, fieldDbType));
@@ -1374,5 +1525,23 @@ namespace Atdi.CoreServices.EntityOrm.ValueAdapters
 
             throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
         }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object ReadAsCLRTYPE(IEngineDataReader dataReader, int ordinal)
+        {
+            return dataReader.GetValue(ordinal);
+        }
+
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public static object ReadAsCLRTYPE(IEngineDataReader dataReader, int ordinal, Type fieldDbType)
+        //{
+        //    if (fieldDbType == typeof(byte[]))
+        //    {
+        //        return dataReader.GetBytes(ordinal);
+        //    }
+
+        //    throw new InvalidOperationException(Exceptions.ColumnValueTypeNotSupported.With(fieldDbType, dataReader.GetPath(ordinal)));
+        //}
     }
 }

@@ -1036,6 +1036,7 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 Name = entityPath.Name,
                 QualifiedName = entityPath.QualifiedName,
+                Namespace = (entityPath.Name.Length == entityPath.QualifiedName.Length) ? entityPath.QualifiedName : entityPath.QualifiedName.Substring(0, entityPath.QualifiedName.Length - entityPath.Name.Length - 1),
                 Title = entityDef.Title,
                 Desc = entityDef.Desc,
                 Type = entityDef.Type.CopyTo<EntityType>()
@@ -1768,7 +1769,8 @@ namespace Atdi.CoreServices.EntityOrm
             {
                 return null;
             }
-            var pkTypeName = $"{_config.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
+            //var pkTypeName = $"{_config.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
+            var pkTypeName = $"{entity.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
             var pkType = Type.GetType(pkTypeName);
             if (pkType == null)
             {
