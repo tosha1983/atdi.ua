@@ -263,6 +263,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.CoreServices.Monitorin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.CoreServices.DataLayer.Assemblies", "CoreServices\Atdi.CoreServices.DataLayer.Assemblies\Atdi.CoreServices.DataLayer.Assemblies.csproj", "{2C09F776-B3B4-48AD-B221-D8B899A679B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 SDRN UI Clients", "06 SDRN UI Clients", "{BFCCFD04-4700-45D6-8040-820AFAFBBFD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Tools.Sdrn.Monitoring", "Tools\Atdi.Tools.Sdrn.Monitoring\Atdi.Tools.Sdrn.Monitoring.csproj", "{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1341,6 +1345,18 @@ Global
 		{2C09F776-B3B4-48AD-B221-D8B899A679B2}.Release|x64.Build.0 = Release|Any CPU
 		{2C09F776-B3B4-48AD-B221-D8B899A679B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{2C09F776-B3B4-48AD-B221-D8B899A679B2}.Release|x86.Build.0 = Release|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Debug|x64.Build.0 = Debug|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Debug|x86.Build.0 = Debug|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Release|x64.ActiveCfg = Release|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Release|x64.Build.0 = Release|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Release|x86.ActiveCfg = Release|Any CPU
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1468,6 +1484,7 @@ Global
 		{703DD550-8626-431F-A0CC-D5E78AC924CC} = {AE89A43F-4AA5-4186-98E6-5E591C332854}
 		{29ACBF42-27BB-49F0-AA01-6F013BEF6E8C} = {9DDD8EBC-B951-4041-A15F-E77A3CCE9819}
 		{2C09F776-B3B4-48AD-B221-D8B899A679B2} = {9DDD8EBC-B951-4041-A15F-E77A3CCE9819}
+		{4A0AEE5E-CA52-4FAF-8BF1-5068EBC2042A} = {BFCCFD04-4700-45D6-8040-820AFAFBBFD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
