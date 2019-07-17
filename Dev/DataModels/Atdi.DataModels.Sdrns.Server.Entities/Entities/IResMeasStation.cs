@@ -18,11 +18,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         string GlobalSID { get; set; }
         string MeasGlobalSID { get; set; }
-        long? IdStation { get; set; }
         string Status { get; set; }
         string Standard { get; set; }
-        ISector SECTOR { get; set; }
         IResMeas RES_MEAS { get; set; }
-        IStation STATION { get; set; }
+        int? ClientSectorCode { get; set; }
+        int? ClientStationCode { get; set; }
     }
 }

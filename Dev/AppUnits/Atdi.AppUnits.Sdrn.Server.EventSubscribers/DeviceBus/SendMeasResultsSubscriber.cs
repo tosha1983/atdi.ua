@@ -317,9 +317,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
                         builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                         if (int.TryParse(station.StationId, out int Idstation))
-                            builderInsertResMeasStation.SetValue(c => c.STATION.Id, Idstation);
+                            builderInsertResMeasStation.SetValue(c => c.ClientStationCode, Idstation);
                         if (int.TryParse(station.SectorId, out int IdSector))
-                            builderInsertResMeasStation.SetValue(c => c.SECTOR.Id, IdSector);
+                            builderInsertResMeasStation.SetValue(c => c.ClientSectorCode, IdSector);
                         
                         var valInsResMeasStation = this._queryExecutor.Execute<MD.IResMeasStation_PK>(builderInsertResMeasStation);
 
