@@ -155,12 +155,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         bool validationResult = true;
                         foreach (var freqSample in measResult.FrequencySamples)
                         {
-                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt >= 100)
+                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt > 100)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Occupation_Pt", "IFreqSample");
                             }
-                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz >= 400000)
+                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz > 400000)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Freq_MHz", "IFreqSample");
