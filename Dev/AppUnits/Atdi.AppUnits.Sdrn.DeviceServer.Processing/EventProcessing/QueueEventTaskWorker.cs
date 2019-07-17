@@ -188,7 +188,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         }
 
                         cntActiveTaskParameters = this._repositoryTaskParametersByInt.GetCountObjectsWithRestrict();
-                        if (taskParamsAll.Count > 0)
+                        if (taskParamsAll.Count == 0)
+                        {
+                            taskParamsAll = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict().ToList();
+                        }
+                        else  if (taskParamsAll.Count > 0)
                         {
                             if (cntActiveTaskParameters != taskParamsAll.Count)
                             {
