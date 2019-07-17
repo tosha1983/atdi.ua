@@ -187,17 +187,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         }
 
                         cntActiveTaskParameters = this._repositoryTaskParametersByInt.GetCountObjectsWithRestrict();
-
-                        var dictionaryStatusObjects = this._repositoryTaskParametersByInt.GetDictionaryStatusObjects();
                         if (taskParamsAll.Count > 0)
                         {
-                            if ((taskParamsAll.Count != dictionaryStatusObjects.Count) || (cntActiveTaskParameters!= taskParamsAll.Count) || (cntActiveTaskParameters != dictionaryStatusObjects.Count))
+                            if (cntActiveTaskParameters!= taskParamsAll.Count)
                             {
                                 isModifiedCount = true;
                                 lastUpdateTaskParameter.Status = "N";
                                 this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
                             }
 
+                            var dictionaryStatusObjects = this._repositoryTaskParametersByInt.GetDictionaryStatusObjects();
                             for (int i = 0; i < dictionaryStatusObjects.Count; i++)
                             {
                                 if (taskParamsAll.Find(x => x.SDRTaskId == dictionaryStatusObjects.ElementAt(i).Key && x.status == dictionaryStatusObjects.ElementAt(i).Value) == null)
@@ -207,13 +206,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     {
                                         isChangedStatus = true;
                                         
-                                        lastUpdateTaskParameter.Status = StatusTask.C.ToString();
+                                        lastUpdateTaskParameter.Status = StatusTask.N.ToString();
                                         this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
 
                                         tskFnd.status = dictionaryStatusObjects.ElementAt(i).Value;
                                         var tskParam = tskFnd;
                                         context.Task.taskParameters = tskParam;
-                                        if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()))
+                                        if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
                                         {
                                             if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                                             {
@@ -264,12 +263,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 }
                             }
                         }
-                        
+
 
 
 
                         //if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) || (cntActiveTaskParameters > 0)))
                         if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) /*|| (cntActiveTaskParameters > 0)*/) || ((isModifiedCount == true) && (isChangedStatus == false)))
+                        if (((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null))
                         {
                             var taskParams = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict();
                             taskParamsAll = taskParams.ToList();
