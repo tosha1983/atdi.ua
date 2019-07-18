@@ -80,6 +80,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else if (context.Task.taskParameters.status == StatusTask.F.ToString())
                     {
+                        if (DateTime.Now > context.Task.taskParameters.StopTime)
+                        {
+                            context.Cancel();
+                            _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
+                            break;
+                        }
                         Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                         continue;
                     }
@@ -145,6 +151,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                         else if (context.Task.taskParameters.status == StatusTask.F.ToString())
                         {
+                            if (DateTime.Now > context.Task.taskParameters.StopTime)
+                            {
+                                context.Cancel();
+                                _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
+                                break;
+                            }
                             Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                             continue;
                         }

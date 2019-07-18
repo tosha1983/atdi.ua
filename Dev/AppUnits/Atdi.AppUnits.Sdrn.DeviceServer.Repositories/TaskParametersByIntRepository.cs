@@ -629,16 +629,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                         if (ID != null)
                         {
                             var massFreq = item.ListFreqCH.ToArray();
-                            for (int i = 0; i < massFreq.Length; i++)
+                            if (massFreq.Length > 0)
                             {
-                                var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
-                                builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
-                                builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
-                                
-
-                                var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
+                                for (int i = 0; i < massFreq.Length; i++)
+                                {
+                                    var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().Insert();
+                                    builderInsertTaskParametersFreq.SetValue(c => c.FreqCH, massFreq[i]);
+                                    builderInsertTaskParametersFreq.SetValue(c => c.IdTaskParameters, ID);
+                                    var pk_TaskParametersFreq = scope.Executor.Execute<MD.ITaskParametersFreq_PK>(builderInsertTaskParametersFreq);
+                                }
                             }
-
 
                             if (item.RefSituation != null)
                             {
@@ -1084,6 +1084,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
             builderInsertTaskParameters.Select(c => c.SignalizationNCount);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
+            builderInsertTaskParameters.Where(c => c.StopTime, DataModels.DataConstraint.ConditionOperator.GreaterEqual, DateTime.Now);
+            //builderInsertTaskParameters.Where(c => c.StopTime, DataModels.DataConstraint.ConditionOperator.LessEqual, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23,59,59));
             //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
@@ -1373,6 +1375,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
             builderInsertTaskParameters.Select(c => c.SignalizationNCount);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
+            builderInsertTaskParameters.Where(c => c.StopTime, DataModels.DataConstraint.ConditionOperator.GreaterEqual, DateTime.Now);
+            //builderInsertTaskParameters.Where(c => c.StopTime, DataModels.DataConstraint.ConditionOperator.LessEqual, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59));
             //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {
@@ -1424,6 +1428,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
             builderInsertTaskParameters.Select(c => c.SignalizationNCount);
             builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.C.ToString());
+            builderInsertTaskParameters.Where(c => c.StopTime, DataModels.DataConstraint.ConditionOperator.GreaterEqual, DateTime.Now);
+            //builderInsertTaskParameters.Where(c => c.StopTime, DataModels.DataConstraint.ConditionOperator.LessEqual, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59));
             //builderInsertTaskParameters.Where(c => c.Status, DataModels.DataConstraint.ConditionOperator.NotEqual, StatusTask.Z.ToString());
             queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
             {

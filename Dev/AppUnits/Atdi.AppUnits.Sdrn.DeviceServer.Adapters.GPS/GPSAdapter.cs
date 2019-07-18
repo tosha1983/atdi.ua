@@ -228,6 +228,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
             catch (Exception ex)
             {
+                _executionContextGps.Finish();
                 this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.LogEventError.ToString(), ex.Message));
             }
         }
