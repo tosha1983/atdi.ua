@@ -16,6 +16,14 @@ namespace Atdi.Platform.AppComponent
         string Assembly { get; }
 
         object this[string paramName] { get; }
+
+        IComponentConfigParameter[] Parameters { get; }
+    }
+
+    public interface IComponentConfigParameter
+    {
+        string Name { get; }
+        string Value { get; }
     }
 
     public static class ComponentConfigExtensions
