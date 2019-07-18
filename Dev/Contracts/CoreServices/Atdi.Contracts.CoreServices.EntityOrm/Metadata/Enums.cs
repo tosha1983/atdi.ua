@@ -12,7 +12,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         Json,
         Xml,
         Csv,
-        Excel
+        Excel,
+        ClrObject
     }
 
     public enum StoreContentType
@@ -27,7 +28,8 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         Table = 0,
         Query,
         View,
-        File
+        File,
+        Service
     }
 
     public enum FieldSourceType
@@ -151,6 +153,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         XML,
         JSON,
         CHARS,
-        NCHARS
+        NCHARS,
+        CLRTYPE
     }
 }

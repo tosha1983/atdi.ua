@@ -51,6 +51,16 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                             };
                             _objects.Add(alias, view);
                             return view;
+                        case DataSourceObject.Service:
+                            var service = new PS.EngineService
+                            {
+                                Alias = alias,
+                                Name = dataSource.Name,
+                                Schema = dataSource.Schema
+                            };
+                            service.PrimaryKey = this.BuildTargetPrimaryKey(service, entity);
+                            _objects.Add(alias, service);
+                            return service;
                         case DataSourceObject.Query:
                         case DataSourceObject.File:
                         default:
@@ -60,7 +70,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 return engineObject;
             }
 
-            private PS.EngineTablePrimaryKey BuildTargetPrimaryKey(PS.EngineTable owner, IEntityMetadata entity)
+            private PS.EngineTablePrimaryKey BuildTargetPrimaryKey(PS.TargetObject owner, IEntityMetadata entity)
             {
                 var pkFields = new List<PS.PrimaryKeyField>();
                 var entityPrimaryKey = entity.DefinePrimaryKey();
@@ -143,6 +153,15 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                         Schema = dataSource.Schema
                     };
                     return view;
+                case DataSourceObject.Service:
+                    var service = new PS.EngineService
+                    {
+                        Alias = this.GenerateAlias(entity),
+                        Name = dataSource.Name,
+                        Schema = dataSource.Schema
+                    };
+                    service.PrimaryKey = this.BuildTargetPrimaryKey(service, entity);
+                    return service;
                 case DataSourceObject.Query:
                 case DataSourceObject.File:
                 default:
@@ -150,7 +169,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             }
         }
 
-        private PS.EngineTablePrimaryKey BuildTargetPrimaryKey(PS.EngineTable owner, IEntityMetadata entity)
+        private PS.EngineTablePrimaryKey BuildTargetPrimaryKey(PS.TargetObject owner, IEntityMetadata entity)
         {
             var primaryKey = new PS.EngineTablePrimaryKey()
             {

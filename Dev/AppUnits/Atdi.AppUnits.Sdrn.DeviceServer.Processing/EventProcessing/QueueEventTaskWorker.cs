@@ -61,6 +61,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 _logger.Verbouse(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartQueueEventTaskWorker.With(context.Task.Id));
                 var activeSensor = context.Process.activeSensor;
 
+                List<string> SetValueSdrTaskId = new List<string>();
                 bool isFirstStart = false;
                 var taskParamsAll = new List<TaskParameters>();
                 var cntActiveTaskParameters = this._repositoryTaskParametersByInt.GetCountObjectsWithRestrict();
@@ -187,33 +188,46 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         }
 
                         cntActiveTaskParameters = this._repositoryTaskParametersByInt.GetCountObjectsWithRestrict();
-
-                        var dictionaryStatusObjects = this._repositoryTaskParametersByInt.GetDictionaryStatusObjects();
-                        if (taskParamsAll.Count > 0)
+                        if (taskParamsAll.Count == 0)
                         {
-                            if ((taskParamsAll.Count != dictionaryStatusObjects.Count) || (cntActiveTaskParameters!= taskParamsAll.Count) || (cntActiveTaskParameters != dictionaryStatusObjects.Count))
+                            taskParamsAll = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict().ToList();
+                        }
+                        else  if (taskParamsAll.Count > 0)
+                        {
+                            if (cntActiveTaskParameters != taskParamsAll.Count)
                             {
                                 isModifiedCount = true;
                                 lastUpdateTaskParameter.Status = "N";
                                 this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
                             }
 
+                            var dictionaryStatusObjects = this._repositoryTaskParametersByInt.GetDictionaryStatusObjects();
                             for (int i = 0; i < dictionaryStatusObjects.Count; i++)
                             {
+                                if (taskParamsAll.Find(x => x.SDRTaskId == dictionaryStatusObjects.ElementAt(i).Key) == null)
+                                {
+                                    var taskParametersLoaded = this._repositoryTaskParametersByString.LoadObject(dictionaryStatusObjects.ElementAt(i).Key);
+                                    if (taskParametersLoaded != null)
+                                    {
+                                        taskParamsAll.RemoveAll(z => z.SDRTaskId == dictionaryStatusObjects.ElementAt(i).Key);
+                                        taskParamsAll.Add(taskParametersLoaded);
+                                    }
+                                }
+
                                 if (taskParamsAll.Find(x => x.SDRTaskId == dictionaryStatusObjects.ElementAt(i).Key && x.status == dictionaryStatusObjects.ElementAt(i).Value) == null)
                                 {
                                     var tskFnd = taskParamsAll.Find(x => x.SDRTaskId == dictionaryStatusObjects.ElementAt(i).Key);
                                     if (tskFnd != null)
                                     {
                                         isChangedStatus = true;
-                                        
+
                                         lastUpdateTaskParameter.Status = StatusTask.C.ToString();
                                         this._repositoryLastUpdateByInt.Update(lastUpdateTaskParameter);
 
                                         tskFnd.status = dictionaryStatusObjects.ElementAt(i).Value;
                                         var tskParam = tskFnd;
                                         context.Task.taskParameters = tskParam;
-                                        if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()))
+                                        if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
                                         {
                                             if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                                             {
@@ -259,17 +273,87 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                                                 throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                                             }
+
+                                            if (tskParam.status == StatusTask.Z.ToString())
+                                            {
+                                                SetValueSdrTaskId.Remove(tskParam.SDRTaskId);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+
+
+                                    var tskParam = taskParamsAll.Find(x => x.SDRTaskId == dictionaryStatusObjects.ElementAt(i).Key);
+                                    if (tskParam != null)
+                                    {
+                                        if (!SetValueSdrTaskId.Contains(tskParam.SDRTaskId))
+                                        {
+                                            context.Task.taskParameters = tskParam;
+                                            if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()))
+                                            {
+                                                if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
+                                                {
+                                                    var eventCommand = new EventCommand<SOTask, SpectrumOccupationProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
+                                                    var listDeferredTasksTemp = new List<TaskParameters>();
+                                                    var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSOTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
+                                                    if (listDeferredTasksTemp.Count > 0)
+                                                    {
+                                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                                        {
+                                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                                        }
+                                                    }
+                                                    SetValueSdrTaskId.Add(tskParam.SDRTaskId);
+                                                }
+                                                else if (tskParam.MeasurementType == MeasType.Signaling)
+                                                {
+                                                    var eventCommand = new EventCommand<SignalizationTask, SignalizationProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
+                                                    var listDeferredTasksTemp = new List<TaskParameters>();
+                                                    var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSignalizationTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
+                                                    if (listDeferredTasksTemp.Count > 0)
+                                                    {
+                                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                                        {
+                                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                                        }
+                                                    }
+                                                    SetValueSdrTaskId.Add(tskParam.SDRTaskId);
+                                                }
+                                                else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
+                                                {
+                                                    var eventCommand = new EventCommand<BandWidthTask, BandWidthProcess>(this._logger, this._repositoryTaskParametersByInt, this._config);
+                                                    var listDeferredTasksTemp = new List<TaskParameters>();
+                                                    var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextBandWidthTasks, action, ref listDeferredTasksTemp, cntActiveTaskParameters);
+                                                    if (listDeferredTasksTemp.Count > 0)
+                                                    {
+                                                        if (!context.Process.listDeferredTasks.Contains(tskParam))
+                                                        {
+                                                            context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                                        }
+                                                    }
+                                                    SetValueSdrTaskId.Add(tskParam.SDRTaskId);
+                                                }
+                                                else
+                                                {
+                                                    _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
+                                                    throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+
+
+
                         
-
-
-
                         //if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) || (cntActiveTaskParameters > 0)))
-                        if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) /*|| (cntActiveTaskParameters > 0)*/) || ((isModifiedCount == true) && (isChangedStatus == false)))
+                        //if ((((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null) /*|| (cntActiveTaskParameters > 0)*/) || ((isModifiedCount == true) && (isChangedStatus == false)))
+                        /*
+                        if (((lastUpdateTaskParameter != null) && (lastUpdateTaskParameter.Status == StatusTask.N.ToString())) || (lastUpdateTaskParameter == null))
                         {
                             var taskParams = this._repositoryTaskParametersByInt.LoadObjectsWithRestrict();
                             taskParamsAll = taskParams.ToList();
@@ -341,10 +425,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     };
                                     this._repositoryLastUpdateByInt.Create(lastUpdate);
                                 }
-
-                                cntActiveTaskParameters = 0;
                             }
+                            cntActiveTaskParameters = 0;
                         }
+                        */
                     }
                 }
 

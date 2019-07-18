@@ -98,9 +98,17 @@
       <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
       <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Monitoring\Atdi.Contracts.CoreServices.Monitoring.csproj">
+      <Project>{703dd550-8626-431f-a0cc-d5e78ac924cc}</Project>
+      <Name>Atdi.Contracts.CoreServices.Monitoring</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
       <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
       <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Assemblies\Atdi.CoreServices.DataLayer.Assemblies.csproj">
+      <Project>{2c09f776-b3b4-48ad-b221-d8b899a679b2}</Project>
+      <Name>Atdi.CoreServices.DataLayer.Assemblies</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.DataLayer.Oracle\Atdi.CoreServices.DataLayer.Oracle.csproj">
       <Project>{73f74f27-6f16-4a46-81fc-f959ea6f1ad7}</Project>
@@ -117,6 +125,10 @@
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.EntityOrm\Atdi.CoreServices.EntityOrm.csproj">
       <Project>{0284cba5-d336-4a39-8519-3f2c48d433d7}</Project>
       <Name>Atdi.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.Monitoring\Atdi.CoreServices.Monitoring.csproj">
+      <Project>{29acbf42-27bb-49f0-aa01-6f013bef6e8c}</Project>
+      <Name>Atdi.CoreServices.Monitoring</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
@@ -209,6 +221,14 @@
     <ProjectReference Include="..\..\Tools\Atdi.Tools.LicenseAnalyzer\Atdi.Tools.LicenseAnalyzer.csproj">
       <Project>{7a762e12-0f04-4b0b-a8a4-d888ccd74b28}</Project>
       <Name>Atdi.Tools.LicenseAnalyzer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.EntityOrm\Atdi.WebApiServices.EntityOrm.csproj">
+      <Project>{676516b5-694d-4edd-a23f-b82816c00f49}</Project>
+      <Name>Atdi.WebApiServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.Sdrn.DeviceServer\Atdi.WebApiServices.Sdrn.DeviceServer.csproj">
+      <Project>{4c012bf1-a7e8-4aa4-ae64-a8b9d0a92d32}</Project>
+      <Name>Atdi.WebApiServices.Sdrn.DeviceServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WebApiServices\Atdi.WebApiServices.SelfHost\Atdi.WebApiServices.SelfHost.csproj">
       <Project>{ca3f294b-9c66-433f-84b3-d27ce3ab40f1}</Project>

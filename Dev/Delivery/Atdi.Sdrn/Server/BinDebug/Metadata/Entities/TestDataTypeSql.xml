@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "TestDataTypeSql"
+  Title       = "Test Data Type"
+  Desc        = "The entity of the different data types testing"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>TEST_DATATYPES_SQL</Name>
+    <Schema>CORE</Schema>
+  </DataSource>
+  <Fields>
+    
+    <Field Name="AsLong"     DataType="Integer.64"   SourceName="val_as_bigint"  SourceType="Column" Required="true"  Desc="" Title=""/>
+    <Field Name="AsFloat"    DataType="Float.22.8"   SourceName="val_as_real"    SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsDouble"   DataType="Double.30.10" SourceName="val_as_float"   SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsDecimal"  DataType="Decimal.22.8" SourceName="val_as_decimal" SourceType="Column" Required="false" Desc="" Title=""/>
+    
+    <Field Name="AsDateTime" DataType="DateTime" SourceName="val_as_datetime"  SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsDateTomeOffset"  DataType="DateTimeOffset"   SourceName="val_as_datetimeoffset"   SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsGuid"     DataType="Code.Guid"    SourceName="val_as_uniqueidentifier"  SourceType="Column" Required="false" Desc="" Title=""/>
+    
+    
+    <Field Name="AsDate"    DataType="Date"         SourceName="val_as_date"   SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsTime"    DataType="Time"         SourceName="val_as_time"  SourceType="Column" Required="false" Desc="" Title=""/>
+    
+    <Field Name="AsInteger" DataType="Integer.32"   SourceName="val_as_int"   SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsShort"   DataType="Integer.16"   SourceName="val_as_smallint"  SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsByte"    DataType="Byte"         SourceName="val_as_tinyint"   SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsBytes"   DataType="Bytes.MAX"    SourceName="val_as_varbinary_250"  SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsString"  DataType="Text.MAX"     SourceName="val_as_nvarchar_250"   SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsChar"    DataType="Char"         SourceName="val_as_nchar_1"  SourceType="Column" Required="false" Desc="" Title=""/>
+    <Field Name="AsChars"   DataType="Chars.250"    SourceName="val_as_nchar_250"  SourceType="Column" Required="false" Desc="" Title=""/>
+    
+    
+
+  </Fields>
+
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="AsLong"/>
+  </PrimaryKey>
+</Entity>

@@ -43,5 +43,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
         public API.IFieldDescriptor[] Fields { get; set; }
 
         public object[] Records { get; set; }
+
+        public long Count { get; set; }
     }
 }

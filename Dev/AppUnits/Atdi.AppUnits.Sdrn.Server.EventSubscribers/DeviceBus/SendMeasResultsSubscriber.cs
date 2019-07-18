@@ -155,12 +155,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         bool validationResult = true;
                         foreach (var freqSample in measResult.FrequencySamples)
                         {
-                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt >= 100)
+                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt > 100)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Occupation_Pt", "IFreqSample");
                             }
-                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz >= 400000)
+                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz > 400000)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Freq_MHz", "IFreqSample");
@@ -317,9 +317,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
                         builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                         if (int.TryParse(station.StationId, out int Idstation))
-                            builderInsertResMeasStation.SetValue(c => c.STATION.Id, Idstation);
+                            builderInsertResMeasStation.SetValue(c => c.ClientStationCode, Idstation);
                         if (int.TryParse(station.SectorId, out int IdSector))
-                            builderInsertResMeasStation.SetValue(c => c.SECTOR.Id, IdSector);
+                            builderInsertResMeasStation.SetValue(c => c.ClientSectorCode, IdSector);
                         
                         var valInsResMeasStation = this._queryExecutor.Execute<MD.IResMeasStation_PK>(builderInsertResMeasStation);
 
