@@ -221,7 +221,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 else if (measResult.TaskId.Length > 200)
                     measResult.TaskId.SubString(200);
 
-                if (measResult.Status.Length > 5)
+                if ((measResult.Status!=null) && (measResult.Status.Length > 5))
                     measResult.Status = "";
 
                 if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
@@ -232,11 +232,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     WriteLog("Undefined values StationResults[]", "IResMeas");
                     return false;
                 }
-                if (measResult.Routes == null || measResult.Routes.Length == 0)
-                {
-                    WriteLog("Undefined values Routes[]", "IResMeas");
-                    return false;
-                }
+                //if (measResult.Routes == null || measResult.Routes.Length == 0)
+                //{
+                    //WriteLog("Undefined values Routes[]", "IResMeas");
+                    //return false;
+                //}
 
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
