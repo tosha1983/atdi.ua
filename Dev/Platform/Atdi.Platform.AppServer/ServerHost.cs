@@ -367,7 +367,17 @@ namespace Atdi.Platform.AppServer
                 {
                     if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
                     {
-                        descriptor.Component.Activate();
+                        try
+                        {
+                            descriptor.Component.Activate();
+                        }
+                        catch (Exception e)
+                        {
+                            this.Logger.Exception(Contexts.AppServerHost, Categories.Starting, e);
+                            this.Logger.Error(Contexts.AppServerHost, Categories.Starting, $"Can not activate the component '{descriptor.Component.Name}'");
+                            //throw;
+                        }
+                        
                     }
                 }
 
