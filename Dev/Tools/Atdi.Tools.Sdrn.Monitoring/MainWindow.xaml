@@ -7,6 +7,30 @@
         mc:Ignorable="d"
         Title="SDRN Servers Monitoring" Height="450" Width="800" WindowState="Maximized">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TreeView x:Name="mainTree" Grid.Column="0" Grid.Row="0" Margin="5" SelectedItemChanged="mainTree_SelectedItemChange"/>
+        <GridSplitter Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+        <TreeView x:Name="configTree" Grid.Column="2" Grid.Row="0" Margin="5" Visibility="Hidden"/>
+        <DataGrid x:Name="gridLogEvents" IsReadOnly="True" Grid.Column="2" Grid.Row="0" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" Visibility="Hidden" ItemsSource="{Binding MeasTaskDetailStations}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Path=StationId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
+                <DataGridTextColumn Header="GlobalSID" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Owner" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Adress" Binding="{Binding Path=SiteAdress}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Lon" Binding="{Binding Path=SiteLon}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Lat" Binding="{Binding Path=SiteLat}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Region" Binding="{Binding Path=SiteRegion}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Permission" Binding="{Binding Path=LicenseDozvilName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
