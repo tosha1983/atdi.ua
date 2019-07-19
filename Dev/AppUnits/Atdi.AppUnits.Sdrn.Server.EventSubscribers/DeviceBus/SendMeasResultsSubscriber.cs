@@ -126,10 +126,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     measResult.Status = "";
                 }
-                else if (measResult.Status == null)
-                {
-                    measResult.Status = "N";
-                }
+                
 
                 if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
                     WriteLog("Incorrect value SwNumber", "IResMeas");
@@ -150,7 +147,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 var pk = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 valInsResMeas = pk.Id;
 
@@ -231,10 +228,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     measResult.Status = "";
                 }
-                else if (measResult.Status == null)
-                {
-                    measResult.Status = "N";
-                }
+                
 
                 if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
                     WriteLog("Incorrect value SwNumber", "IResMeas");
@@ -257,7 +251,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 var idResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
@@ -394,10 +388,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     measResult.Status = "";
                 }
-                else if (measResult.Status == null)
-                {
-                    measResult.Status = "N";
-                }
+                
 
                 if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
                     WriteLog("Incorrect value ScansNumber", "IResMeas");
@@ -415,7 +406,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 var valInsResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 if (valInsResMeas.Id > 0)
                 {
