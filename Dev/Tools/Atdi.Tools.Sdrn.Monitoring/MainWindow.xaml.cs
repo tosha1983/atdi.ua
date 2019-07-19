@@ -40,16 +40,6 @@ namespace Atdi.Tools.Sdrn.Monitoring
             }
             InitializeComponent();
 
-            //System.Windows.MessageBox.Show("!");
-
-            // тут нужно пройтись по каждому ендпоинту, изучить его возможности и сформировать дереов
-            //  в корне вывести  Key и Адрес в следующем формате"Endpoint1(http://localhost:15030/appserver/v1)"
-            // потом для каждой точки, проверить вызовы
-            //  - 1  api/Host/Info - это чтение конфигурации  сервера , если есть ответ создать ноду с именем Config - на ее клик выводить коно с тексовым описанием конфигурации - форма и на ней слошной этит бокс
-            //  - 2. проверим api/SdrnServer/Config - если есть ответ - добавить ноду с кепшеном SDRN Srever (InsanceName) - InsanceName взять из вернутого объекта . Также добавить под ноды описывающие остальную информацию - номер лицензии,ю дата оончания
-            //  - 3. проверим наличие api/orm/Config, если ест ьответ  создать ноду ORM в ее детализацию вывести ноды с полученнго объекта
-            //  - 4. проверит наличие сущности api/orm/metadata/entity/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/LogEvent - если есть ответ , то добавляем ноду Log Events при клик ена которую открывать окнос таблицей лога
-
             foreach (var endpointUrl in endpointUrls)
             {
                 var twEndPointItem = new TreeViewItem();
@@ -81,7 +71,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseDateStop: " + config.LicenseDateStop.ToString(), IsExpanded = true });
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "ServerRoles: " + config.ServerRoles, IsExpanded = true });
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServerInstance: " + config.MasterServerInstance, IsExpanded = true });
-                        twConfigItem.Header = "SDRN Serever (" + config.ServerInstance + ")";
+                        twConfigItem.Header = "SDRN Server (" + config.ServerInstance + ")";
                         twEndPointItem.Items.Add(twConfigItem);
                     }
                     // 3.
@@ -97,7 +87,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseNumber: " + config.LicenseNumber, IsExpanded = true });
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseStartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseDateStop: " + config.LicenseDateStop, IsExpanded = true });
-                        twConfigItem.Header = "SDRN Device Serever (" + config.ServerInstance + ")";
+                        twConfigItem.Header = "SDRN Device Server (" + config.ServerInstance + ")";
                         twEndPointItem.Items.Add(twConfigItem);
                     }
                     // 4.
@@ -121,7 +111,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             }
                             twConfigItem.Items.Add(twConfigSensorItem);
                         }
-                        twConfigItem.Header = "SDRN Device WCF Serever (" + config.Instance + ")";
+                        twConfigItem.Header = "SDRN Device WCF Service (" + config.Instance + ")";
                         twEndPointItem.Items.Add(twConfigItem);
                     }
                     // 5.
@@ -207,12 +197,57 @@ namespace Atdi.Tools.Sdrn.Monitoring
         }
         private void ShowLogEvents(string endpointKey)
         {
+            using (var wc = new HttpClient())
+            {
+                var logeventData = new List<LogEvent>();
+                var response = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/LogEvent?select=Id,Time,Thread,LevelCode,LevelName,Context,Category,Text,Source,Duration").Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+                    foreach (var field in log.Fields)
+                        dicFields[field.Path] = field.Index;
+
+                    foreach (object[] record in log.Records)
+                    {
+                        //logeventData.Add(new LogEvent
+                        //{
+                        //    Id = (Guid)record[dicFields["Id"]],
+                        //    Time = (DateTime)record[dicFields["Time"]],
+                        //    Thread = (int)record[dicFields["Thread"]],
+                        //    LevelCode = (int)record[dicFields["LevelCode"]],
+                        //    LevelName = (string)record[dicFields["LevelName"]],
+                        //    Context = (string)record[dicFields["Context"]],
+                        //    Category = (string)record[dicFields["Category"]],
+                        //    Text = (string)record[dicFields["Text"]],
+                        //    Source = (string)record[dicFields["Source"]],
+                        //    Duration = (TimeSpan?)record[dicFields["Duration"]]
+                        //});
+
+                        var logeventDataRecord = new LogEvent();
+
+                        Guid.TryParse((string)record[dicFields["Id"]], out Guid Id);
+                        TimeSpan.TryParse((string)record[dicFields["Duration"]], out TimeSpan Duration);
 
 
+                        logeventDataRecord.Id = Id;
+                        logeventDataRecord.Time = (DateTime)record[dicFields["Time"]];
+                        logeventDataRecord.Thread = Convert.ToInt32(record[dicFields["Thread"]]);
+                        logeventDataRecord.LevelCode = Convert.ToInt32(record[dicFields["LevelCode"]]);
+                        logeventDataRecord.LevelName = (string)record[dicFields["LevelName"]];
+                        logeventDataRecord.Context = (string)record[dicFields["Context"]];
+                        logeventDataRecord.Category = (string)record[dicFields["Category"]];
+                        logeventDataRecord.Text = (string)record[dicFields["Text"]];
+                        logeventDataRecord.Source = (string)record[dicFields["Source"]];
+                        logeventDataRecord.Duration = Duration;
+                        logeventData.Add(logeventDataRecord);
 
 
-
-
+                    }
+                    gridLogEvents.ItemsSource = logeventData;
+                }
+            }
             gridLogEvents.Visibility = Visibility.Visible;
         }
     }
@@ -248,15 +283,19 @@ namespace Atdi.Tools.Sdrn.Monitoring
         public DateTime LicenseStartDate { get; set; }
         public Dictionary<string, string> AllowedSensors { get; set; } 
     }
+    public class LogEvent
+    {
+        public Guid Id { get; set; }
+        public DateTime Time { get; set; }
+        public int Thread { get; set; }
+        public int LevelCode { get; set; }
+        public string LevelName { get; set; }
+        public string Context { get; set; }
+        public string Category { get; set; }
+        public string Text { get; set; }
+        public string Source { get; set; }
+        public TimeSpan? Duration { get; set; }
+        public IReadOnlyDictionary<string, string> Data { get; set; }
+        public object Exception { get; set; }
+    }
 }
-
-
-//    //var json = wc.DownloadString(endpointUrl.Value + "/api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select=Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm");
-//var json = wc.DownloadString("http://localhost:15030/appserver/v1/api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select=Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm,ReferenceLevel_dBm,MeanDeviationFromReference,TriggerDeviationFromReference,RollOffFactor,StandardBW,LevelsDistributionLvl,LevelsDistributionCount,SensorId,StationID,StationTableName,Loss_dB,Freq_kHz");
-//var json = wc.DownloadString("http://localhost:15030/appserver/v1/api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select=Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm");
-
-//var json = wc.DownloadString("http://localhost:15030/appserver/v1/api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select=Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm");
-
-
-//var emitting = JsonConvert.DeserializeObject<DataSetResult>(json);
-//MessageBox.Show("!");

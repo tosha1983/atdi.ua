@@ -28,7 +28,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
     public class DataSetResult : RequestResult
     {
         public FieldDescriptor[] Fields { get; set; }
-        public object[] Records { get; set; }
+        public object[][] Records { get; set; }
     }
     public class DataTypeMetadata
     {
