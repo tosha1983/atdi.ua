@@ -163,11 +163,15 @@ namespace Atdi.Test.Platform
     }
     class SdrnServerEnvironmentFake : ISdrnServerEnvironment
     {
+        public DateTime LicenseStopDate => throw new NotImplementedException();
+
+        public DateTime LicenseStartDate => throw new NotImplementedException();
+
         string ISdrnServerEnvironment.ServerInstance => throw new NotImplementedException();
 
         string ISdrnServerEnvironment.LicenseNumber => throw new NotImplementedException();
 
-        DateTime ISdrnServerEnvironment.LicenseDateStop => throw new NotImplementedException();
+        //DateTime ISdrnServerEnvironment.LicenseDateStop => throw new NotImplementedException();
 
         ServerRole ISdrnServerEnvironment.ServerRoles => throw new NotImplementedException();
 

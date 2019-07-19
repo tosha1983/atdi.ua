@@ -13,7 +13,7 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
         static void Main(string[] args)
         {
             Console.WriteLine($"Press any key to start SDRN Device App Server (AK) ...");
-            Console.ReadLine();
+            //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
             {

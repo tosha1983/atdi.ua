@@ -30,6 +30,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
         public Dictionary<string, string> endpointUrls = new Dictionary<string, string>();
         public MainWindow()
         {
+            System.Threading.Thread.Sleep(1000 * 60);
             foreach (var keySetting in ConfigurationManager.AppSettings.Keys)
             {
                 var key = keySetting.ToString();
@@ -76,12 +77,13 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         var twConfigItem = new TreeViewItem();
                         twConfigItem.IsExpanded = true;
                         var config = JsonConvert.DeserializeObject<SdrnServerConfigRequestResult>(responseSdrnConfig.Content.ReadAsStringAsync().Result);
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "ServerInstance: " + config.ServerInstance, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseNumber: " + config.LicenseNumber, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseDateStop: " + config.LicenseDateStop.ToString(), IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "ServerRoles: " + config.ServerRoles, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServerInstance: " + config.MasterServerInstance, IsExpanded = true });
-                        twConfigItem.Header = "SDRN Serever (" + config.ServerInstance + ")";
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.ServerInstance, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "Server Roles: " + config.ServerRoles, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServer Instance: " + config.MasterServerInstance, IsExpanded = true });
+                        twConfigItem.Header = "SDRN Server (" + config.ServerInstance + ")";
                         twEndPointItem.Items.Add(twConfigItem);
                     }
                     // 3.
@@ -91,13 +93,14 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         var twConfigItem = new TreeViewItem();
                         twConfigItem.IsExpanded = true;
                         var config = JsonConvert.DeserializeObject<DeviceServerConfigRequestResult>(responseSdrnDeviceConfig.Content.ReadAsStringAsync().Result);
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "ServerInstance: " + config.ServerInstance, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "SensorName: " + config.SensorName, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "SensorTechId: " + config.SensorTechId, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseNumber: " + config.LicenseNumber, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseStartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseDateStop: " + config.LicenseDateStop, IsExpanded = true });
-                        twConfigItem.Header = "SDRN Device Serever (" + config.ServerInstance + ")";
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.SensorName + " : " + config.SensorTechId, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor Name: " + config.SensorName, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor TechId: " + config.SensorTechId, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License DateStop: " + config.LicenseStopDate, IsExpanded = true });
+                        twConfigItem.Header = "SDRN Device Server (" + config.SensorName + " : " + config.SensorTechId + ")";
                         twEndPointItem.Items.Add(twConfigItem);
                     }
                     // 4.
@@ -108,10 +111,10 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         twConfigItem.IsExpanded = true;
                         var config = JsonConvert.DeserializeObject<DeviceWcfServerConfigRequestResult>(responseSdrnDeviceWcfConfig.Content.ReadAsStringAsync().Result);
                         twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.Instance, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServerInstance: " + config.SdrnServerInstance, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseNumber: " + config.LicenseNumber, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseStartDate: " + config.LicenseStartDate, IsExpanded = true });
-                        twConfigItem.Items.Add(new TreeViewItem() { Header = "LicenseStopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate, IsExpanded = true });
+                        twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true });
                         if (config.AllowedSensors.Count > 0)
                         {
                             var twConfigSensorItem = new TreeViewItem() { Header = "AllowedSensors:", IsExpanded = true };
@@ -121,7 +124,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             }
                             twConfigItem.Items.Add(twConfigSensorItem);
                         }
-                        twConfigItem.Header = "SDRN Device WCF Serever (" + config.Instance + ")";
+                        twConfigItem.Header = "SDRN Device WCF Service (" + config.Instance + ")";
                         twEndPointItem.Items.Add(twConfigItem);
                     }
                     // 5.
@@ -129,7 +132,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                     if (responseOrm.StatusCode == HttpStatusCode.OK)
                     {
                         var twOrmItem = new TreeViewItem();
-                        twOrmItem.Header = "Orm";
+                        twOrmItem.Header = "ORM";
                         twOrmItem.IsExpanded = true;
                         var config = JsonConvert.DeserializeObject<OrmConfigRequestResult>(responseOrm.Content.ReadAsStringAsync().Result);
                         twOrmItem.Items.Add(new TreeViewItem() { Header = "Name: " + config.Name, IsExpanded = true });
@@ -226,17 +229,18 @@ namespace Atdi.Tools.Sdrn.Monitoring
     {
         public string ServerInstance { get; set; }
         public string LicenseNumber { get; set; }
-        public string LicenseDateStop { get; set; }
+        public DateTime LicenseStartDate { get; set; }
+        public DateTime LicenseStopDate { get; set; }
         public string ServerRoles { get; set; }
         public string MasterServerInstance { get; set; }
     }
     public class DeviceServerConfigRequestResult
     {
-        public string ServerInstance { get; set; }
+        public string SdrnServerInstance { get; set; }
         public string SensorName { get; set; }
         public string SensorTechId { get; set; }
         public string LicenseNumber { get; set; } 
-        public DateTime LicenseDateStop { get; set; } 
+        public DateTime LicenseStopDate { get; set; } 
         public DateTime LicenseStartDate { get; set; }
     }
     public class DeviceWcfServerConfigRequestResult
