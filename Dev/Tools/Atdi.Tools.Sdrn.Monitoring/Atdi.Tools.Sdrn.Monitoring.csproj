@@ -66,8 +66,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ExceptionData.cs" />
     <Compile Include="HostInfo.cs" />
-    <Compile Include="RequestResult.cs" />
+    <Compile Include="RequestResults\LogEventResult.cs" />
+    <Compile Include="RequestResults\RequestResult.cs" />
+    <Compile Include="RequestResults\DeviceServerConfigRequestResult.cs" />
+    <Compile Include="RequestResults\DeviceWcfServerConfigRequestResult.cs" />
+    <Compile Include="RequestResults\OrmConfigRequestResult.cs" />
+    <Compile Include="RequestResults\SdrnServerConfigRequestResult.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
