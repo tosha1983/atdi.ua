@@ -12,7 +12,7 @@ namespace Atdi.AppServer.Sdrn.AggregationServer
         static void Main(string[] args)
         {
             Console.WriteLine($"Press any key to start SDRN Aggregation Server (AK) ...");
-            Console.ReadLine();
+            //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
             {

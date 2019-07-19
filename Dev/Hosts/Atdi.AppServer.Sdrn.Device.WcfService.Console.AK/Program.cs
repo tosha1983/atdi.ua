@@ -12,7 +12,7 @@ namespace Atdi.AppServer.Sdrn.Device.WcfService
         static void Main(string[] args)
         {
             Console.WriteLine($"Press any key to start SDRN Device WCF Service App Server Host (AK config) ...");
-            Console.ReadLine();
+           // Console.ReadLine();
             using (var host = PlatformConfigurator.BuildHost())
             {
                 try
