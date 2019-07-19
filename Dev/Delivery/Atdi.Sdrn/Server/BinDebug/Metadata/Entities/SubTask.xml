@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Entity
-  Name        = "MeasSubTask"
-  Title       = "MeasSubTask"
-  Desc        = "The meas subtask"
+  Name        = "SubTask"
+  Title       = "SubTask"
+  Desc        = "The subtask"
   Type        = "Normal"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
-    <Name>MEAS_SUBTASK</Name>
+    <Name>SUBTASK</Name>
     <Schema>ICSC</Schema>
   </DataSource>
   <Fields>
@@ -15,7 +15,7 @@
     <Field Desc="TimeStop" Title="TimeStop" Name="TimeStop" DataType="DateTime" SourceName="TIME_STOP" SourceType="Column" Required="false"/>
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.50" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="Interval" Title="Interval" Name="Interval" DataType="Integer.32" SourceName="INTERVAL" SourceType="Column" Required="true"/>
-    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasSubTask to MeasTask"/>
+    <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation SubTask to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

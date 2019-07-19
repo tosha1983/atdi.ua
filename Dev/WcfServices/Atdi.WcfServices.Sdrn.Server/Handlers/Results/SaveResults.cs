@@ -38,9 +38,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         var builderUpdateResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Update();
                         if (measResultsId.MeasSdrResultsId > 0) builderUpdateResMeas.Where(c => c.Id, ConditionOperator.Equal, measResultsId.MeasSdrResultsId);
-                        if (measResultsId.SubMeasTaskStationId > 0) builderUpdateResMeas.Where(c => c.MEAS_SUBTASK_STATION.Id, ConditionOperator.Equal, measResultsId.SubMeasTaskStationId);
-                        if (measResultsId.MeasTaskId.Value > 0) builderUpdateResMeas.Where(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measResultsId.MeasTaskId.Value);
-                        if (measResultsId.SubMeasTaskId > 0) builderUpdateResMeas.Where(c => c.MEAS_SUBTASK_STATION.MEAS_SUBTASK.Id, ConditionOperator.Equal, measResultsId.SubMeasTaskId);
+                        if (measResultsId.SubMeasTaskStationId > 0) builderUpdateResMeas.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, measResultsId.SubMeasTaskStationId);
+                        if (measResultsId.MeasTaskId.Value > 0) builderUpdateResMeas.Where(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measResultsId.MeasTaskId.Value);
+                        if (measResultsId.SubMeasTaskId > 0) builderUpdateResMeas.Where(c => c.SUBTASK_SENSOR.SUBTASK.Id, ConditionOperator.Equal, measResultsId.SubMeasTaskId);
                         builderUpdateResMeas.SetValue(c => c.Status, status);
                         if (scope.Executor.Execute(builderUpdateResMeas) > 0)
                         {

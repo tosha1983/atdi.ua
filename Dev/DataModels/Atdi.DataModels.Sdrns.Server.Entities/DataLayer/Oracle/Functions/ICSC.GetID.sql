@@ -97,14 +97,14 @@ into n
 from dual;
 end if;
 
-if inttable_name ='MEAS_SUBTASK' then
-select ICSC.MEAS_SUB_TASK_ID_SEQ.nextval
+if inttable_name ='SUBTASK' then
+select ICSC.SUB_TASK_ID_SEQ.nextval
 into n
 from dual;
 end if;
 
-if inttable_name ='MEAS_SUBTASK_STATION' then
-select ICSC.MEAS_SUB_TASK_STATION_ID_SEQ.nextval
+if inttable_name ='SUBTASK_SENSOR' then
+select ICSC.SUBTASK_SENSOR_ID_SEQ.nextval
 into n
 from dual;
 end if;
