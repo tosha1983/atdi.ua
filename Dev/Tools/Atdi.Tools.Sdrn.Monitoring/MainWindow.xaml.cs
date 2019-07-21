@@ -66,7 +66,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                                 twEndPointItem.Items.Add(twConfigItem);
                             }
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             twEndPointItem.Header = twEndPointItem.Header + " - unavailable";
                             twEndPointItem.Foreground = Brushes.Gray;
@@ -103,7 +103,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor TechId: " + config.SensorTechId, IsExpanded = true });
                             twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
                             twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License DateStop: " + config.LicenseStopDate, IsExpanded = true });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate, IsExpanded = true });
                             twConfigItem.Header = "SDRN Device Server (" + config.SensorName + " : " + config.SensorTechId + ")";
                             twEndPointItem.Items.Add(twConfigItem);
                         }

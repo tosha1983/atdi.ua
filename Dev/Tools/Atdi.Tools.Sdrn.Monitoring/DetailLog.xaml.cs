@@ -28,22 +28,19 @@ namespace Atdi.Tools.Sdrn.Monitoring
         }
         private void BuildLog()
         {
+            mainTree.Items.Add(new TreeViewItem() { Header = "Type: " + _log.Type });
+            mainTree.Items.Add(new TreeViewItem() { Header = "Source: " + _log.Source });
+            mainTree.Items.Add(new TreeViewItem() { Header = "StackTrace" + _log.StackTrace });
+            mainTree.Items.Add(new TreeViewItem() { Header = "TargetSite: " + _log.TargetSite });
+            mainTree.Items.Add(new TreeViewItem() { Header = "Message: " + _log.Message });
             var item = _log.Inner;
-
             if (item != null)
             {
-                mainTree.Items.Add(new TreeViewItem() { Header = "Type: " + _log.Type });
-                mainTree.Items.Add(new TreeViewItem() { Header = "Source: " + _log.Source });
-                mainTree.Items.Add(new TreeViewItem() { Header = "StackTrace" + _log.StackTrace });
-                mainTree.Items.Add(new TreeViewItem() { Header = "TargetSite: " + _log.TargetSite });
-                mainTree.Items.Add(new TreeViewItem() { Header = "Message: " + _log.Message });
-
-                Dictionary<int, TreeViewItem> dic = new Dictionary<int, TreeViewItem>();
-                var twItem = new TreeViewItem();
-                twItem.Header = "Inner:";
-                twItem.IsExpanded = true;
-                int i = 0;
+                var twItem = new TreeViewItem() { Header = "Inner:", IsExpanded = true };
                 mainTree.Items.Add(twItem);
+
+                var dic = new Dictionary<int, TreeViewItem>();
+                int i = 0;
                 dic[i] = twItem;
 
                 while (item != null)
@@ -55,12 +52,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
                     dic[i].Items.Add(new TreeViewItem() { Header = "Message: " + item.Message });
                     if (item.Inner != null)
                     {
-                        dic[++i] = new TreeViewItem();
-                        dic[i].Header = "Inner:";
-                        dic[i].IsExpanded = true;
+                        dic[++i] = new TreeViewItem() { Header = "Inner:", IsExpanded = true};
                         dic[i - 1].Items.Add(dic[i]);
                     }
-                    
                     item = item.Inner;
                 }
             }
