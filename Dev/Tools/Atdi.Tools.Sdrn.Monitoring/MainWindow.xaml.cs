@@ -249,27 +249,11 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         logeventDataRecord.Text = (string)record[dicFields["Text"]];
                         logeventDataRecord.Source = (string)record[dicFields["Source"]];
                         logeventDataRecord.Duration = Duration;
-
-                        //JsonSerializer serializer = new JsonSerializer();
-                        //ExceptionData p = (ExceptionData)serializer.Deserialize(new JTokenReader(o), typeof(ExceptionData));
-
-                        
-
-
-
-
-                        //if (record[dicFields["Exception"]] != null)
-                        //{
-                        //    var a = record[dicFields["Exception"]];
-                        //    var c = a as JObject;
-                        //    var e = c.ToObject<ExceptionData>();
-
-                        //    var b = JsonConvert.DeserializeObject<ExceptionData>(a.ToString());
-
-                        //    //var c = b;
-                        //}
-
-                        //logeventDataRecord.Exception = b as ExceptionData;
+                        if (record[dicFields["Exception"]] != null)
+                        {
+                            var exceptionJObject = record[dicFields["Exception"]] as JObject;
+                            logeventDataRecord.Exception = exceptionJObject.ToObject<ExceptionData>();
+                        }
                         logeventData.Add(logeventDataRecord);
                     }
                     gridLogEvents.ItemsSource = logeventData;
@@ -280,8 +264,16 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
         private void gridLogEvents_DblClick(object sender, MouseButtonEventArgs e)
         {
-            //var currentItem = gridLogEvents.CurrentItem as LogEventResult;
-            //MessageBox.Show(currentItem.Id.ToString());
+            var currentItem = gridLogEvents.CurrentItem as LogEventResult;
+            if (currentItem.Exception != null)
+            {
+                var dlgForm = new DetailLog(currentItem.Exception);
+                dlgForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No data found!");
+            }
         }
     }
 }

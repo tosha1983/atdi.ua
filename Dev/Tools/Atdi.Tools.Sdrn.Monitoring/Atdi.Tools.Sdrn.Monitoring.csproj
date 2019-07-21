@@ -66,6 +66,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DetailLog.xaml.cs">
+      <DependentUpon>DetailLog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExceptionData.cs" />
     <Compile Include="HostInfo.cs" />
     <Compile Include="RequestResults\LogEventResult.cs" />
@@ -74,6 +77,10 @@
     <Compile Include="RequestResults\DeviceWcfServerConfigRequestResult.cs" />
     <Compile Include="RequestResults\OrmConfigRequestResult.cs" />
     <Compile Include="RequestResults\SdrnServerConfigRequestResult.cs" />
+    <Page Include="DetailLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

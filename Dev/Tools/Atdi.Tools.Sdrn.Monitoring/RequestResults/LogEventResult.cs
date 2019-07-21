@@ -19,6 +19,6 @@ namespace Atdi.Tools.Sdrn.Monitoring
         public string Source { get; set; }
         public TimeSpan? Duration { get; set; }
         public IReadOnlyDictionary<string, string> Data { get; set; }
-        public object Exception { get; set; }
+        public ExceptionData Exception { get; set; }
     }
 }
