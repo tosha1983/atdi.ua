@@ -12,7 +12,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
         public string LicenseNumber { get; set; }
         public DateTime LicenseStartDate { get; set; }
         public DateTime LicenseStopDate { get; set; }
-        public string ServerRoles { get; set; }
+        public int ServerRoles { get; set; }
         public string MasterServerInstance { get; set; }
     }
 }

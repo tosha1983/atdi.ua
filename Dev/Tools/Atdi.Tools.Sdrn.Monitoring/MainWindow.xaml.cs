@@ -48,6 +48,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                     var twEndPointItem = new TreeViewItem();
                     twEndPointItem.Header = endpointUrl.Key + "(" + endpointUrl.Value + ")";
                     twEndPointItem.Tag = endpointUrl.Key;
+                    twEndPointItem.FontWeight = FontWeights.Bold;
                     twEndPointItem.IsExpanded = true;
 
                     using (var wc = new HttpClient())
@@ -62,7 +63,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                                 twConfigItem.Header = "Config";
                                 twConfigItem.Tag = TAG_CONFIG;
                                 twConfigItem.IsExpanded = true;
-                                twConfigItem.Foreground = Brushes.Blue;
+                                twConfigItem.Foreground = Brushes.Green;
                                 twEndPointItem.Items.Add(twConfigItem);
                             }
                         }
@@ -81,12 +82,12 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             var twConfigItem = new TreeViewItem();
                             twConfigItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<SdrnServerConfigRequestResult>(responseSdrnConfig.Content.ReadAsStringAsync().Result);
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.ServerInstance, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Server Roles: " + config.ServerRoles, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServer Instance: " + config.MasterServerInstance, IsExpanded = true });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.ServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Server Roles: " + DecodeServerRoles(config.ServerRoles), IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServer Instance: " + config.MasterServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
                             twConfigItem.Header = "SDRN Server (" + config.ServerInstance + ")";
                             twEndPointItem.Items.Add(twConfigItem);
                         }
@@ -97,13 +98,13 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             var twConfigItem = new TreeViewItem();
                             twConfigItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<DeviceServerConfigRequestResult>(responseSdrnDeviceConfig.Content.ReadAsStringAsync().Result);
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.SensorName + " : " + config.SensorTechId, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor Name: " + config.SensorName, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor TechId: " + config.SensorTechId, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate, IsExpanded = true });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.SensorName + " : " + config.SensorTechId, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor Name: " + config.SensorName, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor TechId: " + config.SensorTechId, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate, IsExpanded = true, FontWeight = FontWeights.Normal });
                             twConfigItem.Header = "SDRN Device Server (" + config.SensorName + " : " + config.SensorTechId + ")";
                             twEndPointItem.Items.Add(twConfigItem);
                         }
@@ -114,17 +115,17 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             var twConfigItem = new TreeViewItem();
                             twConfigItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<DeviceWcfServerConfigRequestResult>(responseSdrnDeviceWcfConfig.Content.ReadAsStringAsync().Result);
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.Instance, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate, IsExpanded = true });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.Instance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
                             if (config.AllowedSensors.Count > 0)
                             {
                                 var twConfigSensorItem = new TreeViewItem() { Header = "AllowedSensors:", IsExpanded = true };
                                 foreach (var sensor in config.AllowedSensors)
                                 {
-                                    twConfigSensorItem.Items.Add(new TreeViewItem() { Header = sensor.Key + ": " + sensor.Value, IsExpanded = true });
+                                    twConfigSensorItem.Items.Add(new TreeViewItem() { Header = sensor.Key + ": " + sensor.Value, IsExpanded = true, FontWeight = FontWeights.Normal });
                                 }
                                 twConfigItem.Items.Add(twConfigSensorItem);
                             }
@@ -139,9 +140,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             twOrmItem.Header = "ORM";
                             twOrmItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<OrmConfigRequestResult>(responseOrm.Content.ReadAsStringAsync().Result);
-                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Name: " + config.Name, IsExpanded = true });
-                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Version: " + config.Version, IsExpanded = true });
-                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Namespace: " + config.Namespace, IsExpanded = true });
+                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Name: " + config.Name, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Version: " + config.Version, IsExpanded = true, FontWeight = FontWeights.Normal });
+                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Namespace: " + config.Namespace, IsExpanded = true, FontWeight = FontWeights.Normal });
                             twEndPointItem.Items.Add(twOrmItem);
                         }
                         // 6.
@@ -165,6 +166,25 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 MessageBox.Show(e.Message);
             }
         }
+
+        private string DecodeServerRoles(int serverRoles)
+        {
+            var roles = new List<string>();
+            if ((serverRoles & 1) == 1)
+            {
+                roles.Add("SDRN Server");
+            }
+            if ((serverRoles & 2) == 2)
+            {
+                roles.Add("Master");
+            }
+            if ((serverRoles & 4) == 4)
+            {
+                roles.Add("Aggregation");
+            }
+            return string.Join(", ", roles.ToArray());
+        }
+
         private void mainTree_SelectedItemChange(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TreeViewItem)
