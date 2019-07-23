@@ -7,6 +7,30 @@
         mc:Ignorable="d"
         Title="SDRN Servers Monitoring" Height="450" Width="800" WindowState="Maximized">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TreeView x:Name="mainTree" Grid.Column="0" Grid.Row="0" Margin="5" SelectedItemChanged="mainTree_SelectedItemChange"/>
+        <GridSplitter Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+        <TreeView x:Name="configTree" Grid.Column="2" Grid.Row="0" Margin="5" Visibility="Hidden"/>
+        <DataGrid x:Name="gridLogEvents" IsReadOnly="True" Grid.Column="2" Grid.Row="0" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" Visibility="Hidden" MouseDoubleClick="gridLogEvents_DblClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Time" Binding="{Binding Path=Time}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Thread" Binding="{Binding Path=Thread}"></DataGridTextColumn>
+                <DataGridTextColumn Header="LevelCode" Binding="{Binding Path=LevelCode}"></DataGridTextColumn>
+                <DataGridTextColumn Header="LevelName" Binding="{Binding Path=LevelName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Context" Binding="{Binding Path=Context}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Category" Binding="{Binding Path=Category}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Text" Binding="{Binding Path=Text}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Source" Binding="{Binding Path=Source}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Duration" Binding="{Binding Path=Duration}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

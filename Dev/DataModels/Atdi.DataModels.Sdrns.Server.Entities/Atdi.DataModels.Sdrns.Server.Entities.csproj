@@ -70,8 +70,8 @@
     <Compile Include="Entities\IMeasLocationParam.cs" />
     <Compile Include="Entities\IMeasOther.cs" />
     <Compile Include="Entities\IMeasStation.cs" />
-    <Compile Include="Entities\IMeasSubTask.cs" />
-    <Compile Include="Entities\IMeasSubTaskStation.cs" />
+    <Compile Include="Entities\ISubTask.cs" />
+    <Compile Include="Entities\ISubTaskSensor.cs" />
     <Compile Include="Entities\IMeasTask.cs" />
     <Compile Include="Entities\IOwnerData.cs" />
     <Compile Include="Entities\IResLevels.cs" />
@@ -152,8 +152,8 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.OWNER_DATA.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_TASK_SIGNAL.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_TASK.sql" />
-    <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_SUB_TASK_STATION.sql" />
-    <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_SUBTASK.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.SUBTASK_SENSOR.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.SUBTASK.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_STATION.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_OTHER.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_LOCATION_PARAM.sql" />
@@ -190,8 +190,8 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_LOCATION_PARAM_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_OTHER_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_STATION_ID_SEQ.sql" />
-    <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_SUB_TASK_ID_SEQ.sql" />
-    <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_SUB_TASK_STATION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.SUB_TASK_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.SUBTASK_SENSOR_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_TASK_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_TASK_SIGNAL_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.OWNER_DATA_ID_SEQ.sql" />
@@ -383,7 +383,7 @@
     <Content Include="Metadata\Entities\MeasFreqParam.xml" />
     <Content Include="Metadata\Entities\MeasOther.xml" />
     <Content Include="Metadata\Entities\MeasStation.xml" />
-    <Content Include="Metadata\Entities\MeasSubTaskStation.xml" />
+    <Content Include="Metadata\Entities\SubTaskSensor.xml" />
     <Content Include="Metadata\Entities\Sector.xml" />
     <Content Include="Metadata\Entities\SectorFreq.xml" />
     <Content Include="Metadata\Entities\Sensor.xml" />
@@ -397,7 +397,7 @@
     <Content Include="Metadata\Entities\StationSite.xml" />
     <Content Include="Metadata\Entities\MeasTask.xml" />
     <Content Include="Metadata\Entities\OwnerData.xml" />
-    <Content Include="Metadata\Entities\MeasSubTask.xml" />
+    <Content Include="Metadata\Entities\SubTask.xml" />
     <Content Include="Metadata\Environment.xml" />
     <Content Include="Metadata\Units\Angle.Degree.xml" />
     <Content Include="Metadata\Units\Frequency.Hz.xml" />

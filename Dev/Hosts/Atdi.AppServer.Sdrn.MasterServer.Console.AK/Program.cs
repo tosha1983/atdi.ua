@@ -12,7 +12,7 @@ namespace Atdi.AppServer.Sdrn.MasterServer
         static void Main(string[] args)
         {
             Console.WriteLine($"Press any key to start SDRN Master Server (AK) ...");
-            Console.ReadLine();
+            //Console.ReadLine();
 
             using (var host = PlatformConfigurator.BuildHost())
             {

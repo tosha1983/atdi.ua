@@ -399,7 +399,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
 
                         var listmeasSubTask = new List<MeasSubTask>();
-                        var builderMeasSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().From();
+                        var builderMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().From();
                         builderMeasSubTask.Select(c => c.Id);
                         builderMeasSubTask.Select(c => c.Interval);
                         builderMeasSubTask.Select(c => c.MEAS_TASK.Id);
@@ -419,14 +419,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
                                 if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
                                 var listMeasSubTaskStation = new List<MeasSubTaskStation>();
-                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
+                                var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
                                 builderMeasSubTaskSta.Select(c => c.Id);
                                 builderMeasSubTaskSta.Select(c => c.Count);
-                                builderMeasSubTaskSta.Select(c => c.MEAS_SUBTASK.Id);
+                                builderMeasSubTaskSta.Select(c => c.SUBTASK.Id);
                                 builderMeasSubTaskSta.Select(c => c.SENSOR.Id);
                                 builderMeasSubTaskSta.Select(c => c.Status);
                                 builderMeasSubTaskSta.Select(c => c.TimeNextTask);
-                                builderMeasSubTaskSta.Where(c => c.MEAS_SUBTASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
+                                builderMeasSubTaskSta.Where(c => c.SUBTASK.Id, ConditionOperator.Equal, readerMeasSubTask.GetValue(c => c.Id));
                                 queryExecuter.Fetch(builderMeasSubTaskSta, readerMeasSubTaskSta =>
                                 {
                                     while (readerMeasSubTaskSta.Read())

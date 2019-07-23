@@ -27,6 +27,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         DateTime? StartTime { get; set; }
         DateTime? StopTime { get; set; }
         int? ScansNumber { get; set; }
-        IMeasSubTaskStation MEAS_SUBTASK_STATION { get; set; }
+        ISubTaskSensor SUBTASK_SENSOR { get; set; }
     }
 }

@@ -20,7 +20,10 @@ namespace Atdi.Contracts.Sdrn.Server
 
         string LicenseNumber { get; }
 
-        DateTime LicenseDateStop { get; }
+        DateTime LicenseStopDate { get; }
+
+        DateTime LicenseStartDate { get; }
+
 
         ServerRole ServerRoles { get; }
 

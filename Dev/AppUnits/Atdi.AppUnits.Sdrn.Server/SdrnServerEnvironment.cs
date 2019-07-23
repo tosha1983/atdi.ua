@@ -25,8 +25,8 @@ namespace Atdi.AppUnits.Sdrn.Server
 
             this.ServerInstance = licenseData.Instance;
             this.LicenseNumber = licenseData.LicenseNumber;
-            this.LicenseDateStop = licenseData.StopDate;
-
+            this.LicenseStopDate = licenseData.StopDate;
+            this.LicenseStartDate = licenseData.StartDate;
             this.ServerRoles = ServerRole.SdrnServer;
         }
 
@@ -91,7 +91,8 @@ namespace Atdi.AppUnits.Sdrn.Server
 
         public string LicenseNumber { get; set; }
 
-        public DateTime LicenseDateStop { get; set; }
+        public DateTime LicenseStopDate { get; set; }
+        public DateTime LicenseStartDate { get; set; }
 
         public ServerRole ServerRoles { get; set; }
 
