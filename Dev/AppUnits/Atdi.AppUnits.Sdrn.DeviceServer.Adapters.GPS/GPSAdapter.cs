@@ -219,7 +219,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 {
                                     _executionContextGps.PushResult(resultMember);
                                     // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
-                                    _executionContextGps.Finish();
+                                    //_executionContextGps.Finish();
                                 }
                             }
                         }
@@ -228,7 +228,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
             catch (Exception ex)
             {
-                _executionContextGps.Finish();
+                //_executionContextGps.Finish();
                 this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.LogEventError.ToString(), ex.Message));
             }
         }
