@@ -26,9 +26,16 @@ namespace Atdi.Tools.Sdrn.Monitoring
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string TAG_CONFIG = "Config";
-        public const string TAG_LOG_EVENTS = "LogEvents";
+        const string TAG_CONFIG = "Config";
+        const string TAG_LOG_EVENTS = "LogEvents";
+        const string TAG_STATISTICS = "Statistics";
+        Dictionary<string, TreeViewItem> statEntryTreeDic = new Dictionary<string, TreeViewItem>();
+        Dictionary<string, TreeViewItem> statCounterTreeDic = new Dictionary<string, TreeViewItem>();
+        List<StatisticEntryRecord> statEntrysList = new List<StatisticEntryRecord>();
+        List<StatisticCounterRecord> statCurrCounterList = new List<StatisticCounterRecord>();
+        List<StatisticCounterRecord> statCounterList = new List<StatisticCounterRecord>();
         public Dictionary<string, string> endpointUrls = new Dictionary<string, string>();
+
         public MainWindow()
         {
             try
@@ -155,11 +162,17 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             twLogItem.IsExpanded = true;
                             twLogItem.Foreground = Brushes.Blue;
                             twEndPointItem.Items.Add(twLogItem);
+
+                            var twStatisticItem = new TreeViewItem();
+                            twStatisticItem.Header = "Statistics";
+                            twStatisticItem.Tag = TAG_STATISTICS;
+                            twStatisticItem.IsExpanded = true;
+                            twStatisticItem.Foreground = Brushes.Blue;
+                            twEndPointItem.Items.Add(twStatisticItem);
                         }
                     }
                     mainTree.Items.Add(twEndPointItem);
                 }
-
             }
             catch (Exception e)
             {
@@ -187,23 +200,33 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
         private void mainTree_SelectedItemChange(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is TreeViewItem)
+            try
             {
-                this.HideAllElements();
-                TreeViewItem item = e.NewValue as TreeViewItem;
-                if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
+                if (e.NewValue is TreeViewItem)
                 {
-                    if (item.Tag.ToString() == TAG_CONFIG)
-                        this.ShowConfig((item.Parent as TreeViewItem).Tag.ToString());
-                    if (item.Tag.ToString() == TAG_LOG_EVENTS)
-                        this.ShowLogEvents((item.Parent as TreeViewItem).Tag.ToString());
+                    this.HideAllElements();
+                    TreeViewItem item = e.NewValue as TreeViewItem;
+                    if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
+                    {
+                        if (item.Tag.ToString() == TAG_CONFIG)
+                            this.ShowConfig((item.Parent as TreeViewItem).Tag.ToString());
+                        if (item.Tag.ToString() == TAG_LOG_EVENTS)
+                            this.ShowLogEvents((item.Parent as TreeViewItem).Tag.ToString());
+                        if (item.Tag.ToString() == TAG_STATISTICS)
+                            this.ShowStatistics((item.Parent as TreeViewItem).Tag.ToString());
+                    }
                 }
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show(er.Message);
             }
         }
         private void HideAllElements()
         {
             configTree.Visibility = Visibility.Hidden;
             gridLogEvents.Visibility = Visibility.Hidden;
+            groupStatistics.Visibility = Visibility.Hidden;
         }
         private void ShowConfig(string endpointKey)
         {
@@ -281,6 +304,183 @@ namespace Atdi.Tools.Sdrn.Monitoring
             }
             gridLogEvents.Visibility = Visibility.Visible;
         }
+        private void ShowStatistics(string endpointKey)
+        {
+            statEntryTreeDic.Clear();
+            statCounterTreeDic.Clear();
+            statEntryKeysTree.Items.Clear();
+            statCounterKeysTree.Items.Clear();
+
+            using (var wc = new HttpClient())
+            {
+                var response1 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticEntryKey?select=Name,Type").Result;
+                if (response1.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var data = JsonConvert.DeserializeObject<DataSetResult>(response1.Content.ReadAsStringAsync().Result);
+
+                    foreach (var field in data.Fields)
+                        dicFields[field.Path] = field.Index;
+
+                    foreach (object[] record in data.Records)
+                    {
+                        var entryKey = new StatisticEntryKey();
+                        entryKey.Name = (string)record[dicFields["Name"]];
+
+                        //if (record[dicFields["Type"]] != null)
+                        //{
+                        //    var typeJObject = record[dicFields["Type"]] as JObject;
+                        //    entryKey.Type = typeJObject.ToObject<Type>();
+                        //}
+
+                        this.BuildNodeEntryKeys(entryKey.Name);
+                    }
+                }
+
+                statEntrysList.Clear();
+                var response3 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticEntryRecord?select=Name,Data").Result;
+                if (response3.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var data = JsonConvert.DeserializeObject<DataSetResult>(response3.Content.ReadAsStringAsync().Result);
+
+                    foreach (var field in data.Fields)
+                        dicFields[field.Path] = field.Index;
+
+                    foreach (object[] record in data.Records)
+                    {
+                        var statRecord = new StatisticEntryRecord();
+                        statRecord.Name = (string)record[dicFields["Name"]];
+                        statRecord.Data = record[dicFields["Data"]]?.ToString();
+                        statEntrysList.Add(statRecord);
+                    }
+                    gridEntryRecords.ItemsSource = statEntrysList;
+                }
+
+                this.RefreshStatistics(endpointKey);
+            }
+            groupStatistics.Visibility = Visibility.Visible;
+        }
+        private void RefreshStatistics(string endpointKey)
+        {
+            using (var wc = new HttpClient())
+            {
+                statCounterKeysTree.Items.Clear();
+                statCounterTreeDic.Clear();
+                var response2 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticCounterKey?select=Name,Type,Scale").Result;
+                if (response2.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var data = JsonConvert.DeserializeObject<DataSetResult>(response2.Content.ReadAsStringAsync().Result);
+
+                    foreach (var field in data.Fields)
+                        dicFields[field.Path] = field.Index;
+
+                    foreach (object[] record in data.Records)
+                    {
+                        var counterKey = new StatisticCounterKey();
+                        counterKey.Name = (string)record[dicFields["Name"]];
+                        counterKey.Scale = (float)Convert.ToDouble(record[dicFields["Scale"]]);
+
+                        //if (record[dicFields["Type"]] != null)
+                        //{
+                        //    var typeJObject = record[dicFields["Type"]] as JObject;
+                        //    entryKey.Type = typeJObject.ToObject<Type>();
+                        //}
+
+                        this.BuildNodeCounterKeys(counterKey.Name);
+                    }
+                }
+
+                statCurrCounterList.Clear();
+                var response4 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticCurrentCounter?select=Name,Time,Data").Result;
+                if (response4.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var data = JsonConvert.DeserializeObject<DataSetResult>(response4.Content.ReadAsStringAsync().Result);
+
+                    foreach (var field in data.Fields)
+                        dicFields[field.Path] = field.Index;
+
+                    foreach (object[] record in data.Records)
+                    {
+                        var statRecord = new StatisticCounterRecord();
+                        statRecord.Name = (string)record[dicFields["Name"]];
+                        statRecord.Data = Convert.ToInt64(record[dicFields["Data"]]);
+                        statRecord.Time = (DateTime)record[dicFields["Time"]];
+                        statCurrCounterList.Add(statRecord);
+                    }
+                    gridCurrentCounter.ItemsSource = statCurrCounterList;
+                }
+
+                statCounterList.Clear();
+                var response5 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticCounterRecord?select=Name,Time,Data").Result;
+                if (response5.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var data = JsonConvert.DeserializeObject<DataSetResult>(response5.Content.ReadAsStringAsync().Result);
+
+                    foreach (var field in data.Fields)
+                        dicFields[field.Path] = field.Index;
+
+                    foreach (object[] record in data.Records)
+                    {
+                        var statRecord = new StatisticCounterRecord();
+                        statRecord.Name = (string)record[dicFields["Name"]];
+                        statRecord.Data = Convert.ToInt64(record[dicFields["Data"]]);
+                        statRecord.Time = (DateTime)record[dicFields["Time"]];
+                        statCounterList.Add(statRecord);
+                    }
+                    gridCounterRecords.ItemsSource = statCounterList;
+                }
+            }
+        }
+        private void BuildNodeEntryKeys(string node)
+        {
+            var nodes = node.Split('.');
+            string path = "";
+            string parentpath = "";
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                path = path + (i == 0 ? "" : ".") + nodes[i];
+                if (!statEntryTreeDic.ContainsKey(path))
+                {
+                    var treeItem = new TreeViewItem() { Header = nodes[i], Tag = path, IsExpanded = true };
+
+                    if (string.IsNullOrEmpty(parentpath))
+                        statEntryKeysTree.Items.Add(treeItem);
+                    else
+                        statEntryTreeDic[parentpath].Items.Add(treeItem);
+
+                    statEntryTreeDic[path] = treeItem;
+                }
+                parentpath = parentpath + (i == 0 ? "" : ".") + nodes[i];
+            }
+        }
+        private void BuildNodeCounterKeys(string node)
+        {
+            var nodes = node.Split('.');
+            string path = "";
+            string parentpath = "";
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                path = path + (i == 0 ? "" : ".") + nodes[i];
+                if (!statCounterTreeDic.ContainsKey(path))
+                {
+                    var treeItem = new TreeViewItem() { Header = nodes[i], Tag = path, IsExpanded = true };
+
+                    if (string.IsNullOrEmpty(parentpath))
+                        statCounterKeysTree.Items.Add(treeItem);
+                    else
+                        statCounterTreeDic[parentpath].Items.Add(treeItem);
+
+                    statCounterTreeDic[path] = treeItem;
+                }
+                parentpath = parentpath + (i == 0 ? "" : ".") + nodes[i];
+            }
+        }
 
         private void gridLogEvents_DblClick(object sender, MouseButtonEventArgs e)
         {
@@ -294,6 +494,35 @@ namespace Atdi.Tools.Sdrn.Monitoring
             {
                 MessageBox.Show("No data found!");
             }
+        }
+        private void statEntryKeysTree_SelectedItemChange(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is TreeViewItem)
+            {
+                TreeViewItem item = e.NewValue as TreeViewItem;
+                if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
+                {
+                    gridEntryRecords.ItemsSource = statEntrysList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                }
+            }
+        }
+        private void statCounterKeysTree_SelectedItemChange(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is TreeViewItem)
+            {
+                TreeViewItem item = e.NewValue as TreeViewItem;
+                if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
+                {
+                    gridCurrentCounter.ItemsSource = statCurrCounterList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                    gridCounterRecords.ItemsSource = statCounterList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                }
+            }
+        }
+        private void cmdRefreshStat_Click(object sender, RoutedEventArgs e)
+        {
+            var item = mainTree.SelectedItem as TreeViewItem;
+            if (!string.IsNullOrEmpty((item.Parent as TreeViewItem).Tag.ToString()))
+                this.RefreshStatistics((item.Parent as TreeViewItem).Tag.ToString());
         }
     }
 }

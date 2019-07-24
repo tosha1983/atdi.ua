@@ -32,5 +32,74 @@
                 <DataGridTextColumn Header="Duration" Binding="{Binding Path=Duration}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <GroupBox x:Name="groupStatistics" Header="Statistics"  Margin="0, 5, 5, 5" Grid.Column="2" Grid.Row="0" Visibility="Hidden">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TreeView x:Name="statEntryKeysTree" Grid.Column="0" Grid.Row="0" Margin="5" SelectedItemChanged="statEntryKeysTree_SelectedItemChange"/>
+                    <GridSplitter Grid.Row="0" Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                    <DataGrid x:Name="gridEntryRecords" IsReadOnly="True" Grid.Column="2" Grid.Row="0" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Data" Binding="{Binding Path=Data}"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
+                <Grid Grid.Column="0" Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="cmdRefreshStat" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" Margin="5" Content="Refresh" Width="75" Height="25" Click="cmdRefreshStat_Click"/>
+                    <TreeView x:Name="statCounterKeysTree" Grid.Column="0" Grid.Row="0" Margin="5,35,0,0" SelectedItemChanged="statCounterKeysTree_SelectedItemChange"/>
+                    <GridSplitter Grid.Row="0" Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                    <Grid Grid.Column="2" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <DataGrid x:Name="gridCurrentCounter" IsReadOnly="True" Grid.Column="0" Grid.Row="0" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Path=Time}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Data" Binding="{Binding Path=Data}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
+                        <DataGrid x:Name="gridCounterRecords" IsReadOnly="True" Grid.Column="0" Grid.Row="2" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Path=Time}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Data" Binding="{Binding Path=Data}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>
