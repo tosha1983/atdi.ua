@@ -109,7 +109,7 @@ namespace Atdi.CoreServices.Monitoring.Statistics
             }
             catch (Exception e)
             {
-
+                //this.Logger.Exception(Contexts.EntityOrm, Categories.Processing, e, this);
             }
         }
 
