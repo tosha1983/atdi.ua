@@ -364,7 +364,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
             }
             catch (Exception e)
             {
-                message = e.Message;
+                message = e.ToString();
                 condition = null;
                 return false;
             }
@@ -380,7 +380,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
             }
             catch (Exception e)
             {
-                message = e.Message;
+                message = e.ToString();
                 entity = null;
                 return false;
             }

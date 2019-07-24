@@ -13,5 +13,11 @@ namespace Atdi.CoreServices.Monitoring
     {
         [ComponentConfigProperty("LogEvent.BufferSize")]
         public int? LogEventBufferSize { get; set; }
+
+        [ComponentConfigProperty("Collector.BufferSize")]
+        public int? CollectorBufferSize { get; set; }
+
+        [ComponentConfigProperty("Collector.Timeout")]
+        public int? CollectorTimeout { get; set; }
     }
 }

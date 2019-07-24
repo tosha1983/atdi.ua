@@ -181,7 +181,7 @@
   <xs:complexType name="EntityDef">
     <xs:all>
       <xs:element name="DataSource" type="en:DataSourceDef" minOccurs="1" maxOccurs="1"></xs:element>
-      <xs:element name="Fields" type="en:FieldsDef" minOccurs="1" maxOccurs="1"></xs:element>
+      <xs:element name="Fields" type="en:FieldsDef" minOccurs="0" maxOccurs="1"></xs:element>
       <xs:element name="PrimaryKey" type="en:PrimaryKeyDef" minOccurs="0" maxOccurs="1"></xs:element>
     </xs:all>
     <xs:attribute name="Name" type="xs:string" use ="required" />

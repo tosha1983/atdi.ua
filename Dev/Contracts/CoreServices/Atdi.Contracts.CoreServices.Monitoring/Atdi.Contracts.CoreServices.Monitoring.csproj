@@ -42,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILogEventSite.cs" />
+    <Compile Include="IStatisticCounterKeys.cs" />
+    <Compile Include="IStatisticCounters.cs" />
+    <Compile Include="IStatisticCurrentCounters.cs" />
+    <Compile Include="IStatisticEntries.cs" />
+    <Compile Include="IStatisticEntryKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -45,6 +45,14 @@
     <Compile Include="AppComponentConfig.cs" />
     <Compile Include="LogEventSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatisticCurrentCounters.cs" />
+    <Compile Include="StatisticCounters.cs" />
+    <Compile Include="StatisticCounterKeys.cs" />
+    <Compile Include="StatisticEntryKeys.cs" />
+    <Compile Include="StatisticEntries.cs" />
+    <Compile Include="Statistics\CounterRecord.cs" />
+    <Compile Include="Statistics\EntryRecord.cs" />
+    <Compile Include="Statistics\StatisticCollector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Monitoring\Atdi.Contracts.CoreServices.Monitoring.csproj">
