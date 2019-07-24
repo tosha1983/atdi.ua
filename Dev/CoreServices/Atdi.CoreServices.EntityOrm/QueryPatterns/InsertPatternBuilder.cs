@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using Atdi.Platform;
 
 namespace Atdi.CoreServices.EntityOrm.QueryPatterns
 {
@@ -23,17 +24,25 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             }
         }
 
+        private static readonly IStatisticCounterKey CounterKey = STS.DefineCounterKey("ORM.Entity.Patterns.Insert");
+
         private readonly IEntityOrm _entityOrm;
         private readonly DataTypeSystem _dataTypeSystem;
+        private readonly IStatistics _statistics;
+        private readonly IStatisticCounter _counter;
 
-        public InsertPatternBuilder(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, ILogger logger) : base(logger)
+        public InsertPatternBuilder(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, IStatistics statistics, ILogger logger) : base(logger)
         {
             this._entityOrm = entityOrm;
             this._dataTypeSystem = dataTypeSystem;
+            this._statistics = statistics;
+            this._counter = _statistics.Counter(CounterKey);
         }
 
         public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
         {
+            _counter?.Increment();
+
             var statement = executionContex.Statement as QueryInsertStatement;
 
             // построение запроса согласно патерна

@@ -276,6 +276,8 @@
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_MESSAGES.sql" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Float.FLOAT.xml" />
+    <Content Include="Metadata\DataTypes\ClrObject\Long.INT64.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\Time.TIME.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\DateTimeOffset.DATETIMEOFFSET.xml" />
@@ -320,6 +322,12 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\Monitoring\StatisticCounterKey.xml" />
+    <Content Include="Metadata\Entities\Monitoring\StatisticCounter.xml" />
+    <Content Include="Metadata\Entities\Monitoring\StatisticCurrentCounter.xml" />
+    <Content Include="Metadata\Entities\Monitoring\StatisticEntryKey.xml" />
+    <Content Include="Metadata\Entities\Monitoring\StatisticEntryRecord.xml" />
+    <Content Include="Metadata\Entities\Monitoring\StatisticCounterRecord.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
     <Content Include="Metadata\Entities\SignalingSysInfo.xml" />
     <Content Include="Metadata\Entities\TestDataTypeSql.xml" />

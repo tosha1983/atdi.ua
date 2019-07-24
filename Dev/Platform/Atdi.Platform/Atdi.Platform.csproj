@@ -102,6 +102,16 @@
     <Compile Include="Logging\LogEvent\TraceEventType.cs" />
     <Compile Include="Logging\LoggedObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statistics\IStatisticCounter.cs" />
+    <Compile Include="Statistics\IStatisticCounterKey.cs" />
+    <Compile Include="Statistics\IStatisticEntry.cs" />
+    <Compile Include="Statistics\IStatisticEntryKey.cs" />
+    <Compile Include="Statistics\IStatistics.cs" />
+    <Compile Include="Statistics\StatisticCounter.cs" />
+    <Compile Include="Statistics\StatisticCounterKey.cs" />
+    <Compile Include="Statistics\StatisticEntry.cs" />
+    <Compile Include="Statistics\StatisticEntryKey.cs" />
+    <Compile Include="Statistics\Statistics.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

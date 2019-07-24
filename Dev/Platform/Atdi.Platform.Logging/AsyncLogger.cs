@@ -33,7 +33,7 @@ namespace Atdi.Platform.Logging
         }
 
         private bool _loggerDisposed = false;
-
+        private readonly IStatistics _statistics;
         private readonly ILogConfig _config;
         private readonly IEventDataConvertor _dataConvertor;
         private readonly BlockingCollection<IEvent> _events;
@@ -44,11 +44,16 @@ namespace Atdi.Platform.Logging
         private readonly Dictionary<IEventsConsumer, ConsumerDescriptor> _consumers;
         private readonly Task _eventsHandlerTask;
 
-        
+        private static readonly IStatisticCounterKey ConsumerCountCounter = STS.DefineCounterKey("Logger.Consumers.Count");
+        private static readonly IStatisticCounterKey EventCountCounter = STS.DefineCounterKey("Logger.Events.Count");
+        private static readonly IStatisticCounterKey EventErrorsCounter = STS.DefineCounterKey("Logger.Events.Errors");
+        private static readonly IStatisticCounterKey EventExceptionsCounter = STS.DefineCounterKey("Logger.Events.Exceptions");
+        private static readonly IStatisticCounterKey EventCriticalsCounter = STS.DefineCounterKey("Logger.Events.Criticals");
+        private static readonly IStatisticCounterKey EventWarnsCounter = STS.DefineCounterKey("Logger.Events.Warns");
 
-        public AsyncLogger(ILogConfig config, IEventDataConvertor dataConvertor)
+        public AsyncLogger(IStatistics statistics, ILogConfig config, IEventDataConvertor dataConvertor)
         {
-            
+            this._statistics = statistics;
             this._config = config;
             this._dataConvertor = dataConvertor;
 
@@ -125,6 +130,8 @@ namespace Atdi.Platform.Logging
         {
             try
             {
+                _statistics.Increment(EventCountCounter);
+
                 // Try quickly adding
                 if (!this._events.TryAdd(@event))
                 {
@@ -191,6 +198,8 @@ namespace Atdi.Platform.Logging
         {
             var descriptor = new ConsumerDescriptor(consumer);
             _consumers[consumer] = descriptor;
+
+            _statistics.Increment(ConsumerCountCounter);
         }
 
         #endregion
@@ -279,6 +288,7 @@ namespace Atdi.Platform.Logging
                 @event.Data = ConvertEventData(data);
             }
             this.WriteEvent(@event);
+            _statistics.Increment(EventErrorsCounter);
         }
 
         public void Exception(EventContext context, EventCategory category, EventText eventText, Exception e, string source, IReadOnlyDictionary<string, object> data)
@@ -302,6 +312,7 @@ namespace Atdi.Platform.Logging
                 @event.Data = ConvertEventData(data);
             }
             this.WriteEvent(@event);
+            _statistics.Increment(EventExceptionsCounter);
         }
 
         public void Info(EventContext context, EventCategory category, EventText eventText)
@@ -389,7 +400,9 @@ namespace Atdi.Platform.Logging
                 Text = eventText
             };
 
+
             this.WriteEvent(@event);
+            _statistics.Increment(EventWarnsCounter);
         }
 
         #endregion
