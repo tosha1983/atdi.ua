@@ -44,12 +44,12 @@ namespace Atdi.Platform.Logging
         private readonly Dictionary<IEventsConsumer, ConsumerDescriptor> _consumers;
         private readonly Task _eventsHandlerTask;
 
-        private readonly IStatisticCounterKey ConsumerCountCounter = STS.DefineCounterKey("Logger.Consumers.Count");
-        private readonly IStatisticCounterKey EventCountCounter = STS.DefineCounterKey("Logger.Events.Count");
-        private readonly IStatisticCounterKey EventErrorsCounter = STS.DefineCounterKey("Logger.Events.Errors");
-        private readonly IStatisticCounterKey EventExceptionsCounter = STS.DefineCounterKey("Logger.Events.Exceptions");
-        private readonly IStatisticCounterKey EventCriticalsCounter = STS.DefineCounterKey("Logger.Events.Criticals");
-        private readonly IStatisticCounterKey EventWarnsCounter = STS.DefineCounterKey("Logger.Events.Warns");
+        private static readonly IStatisticCounterKey ConsumerCountCounter = STS.DefineCounterKey("Logger.Consumers.Count");
+        private static readonly IStatisticCounterKey EventCountCounter = STS.DefineCounterKey("Logger.Events.Count");
+        private static readonly IStatisticCounterKey EventErrorsCounter = STS.DefineCounterKey("Logger.Events.Errors");
+        private static readonly IStatisticCounterKey EventExceptionsCounter = STS.DefineCounterKey("Logger.Events.Exceptions");
+        private static readonly IStatisticCounterKey EventCriticalsCounter = STS.DefineCounterKey("Logger.Events.Criticals");
+        private static readonly IStatisticCounterKey EventWarnsCounter = STS.DefineCounterKey("Logger.Events.Warns");
 
         public AsyncLogger(IStatistics statistics, ILogConfig config, IEventDataConvertor dataConvertor)
         {

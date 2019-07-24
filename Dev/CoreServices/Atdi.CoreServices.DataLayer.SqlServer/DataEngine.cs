@@ -1,5 +1,6 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.DataLayer.DataEngines;
+using Atdi.Platform;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
     internal sealed class DataEngine : LoggedObject, ISqlServerDataEngine
     {
         private readonly QueryPatternFactory _patternFactory;
+        private readonly IStatistics _statistics;
 
-        public DataEngine(QueryPatternFactory patternFactory, EngineSyntax engineSyntax, ILogger logger) : base(logger)
+        public DataEngine(QueryPatternFactory patternFactory, EngineSyntax engineSyntax, IStatistics statistics, ILogger logger) : base(logger)
         {
             this._patternFactory = patternFactory;
             this.Syntax = engineSyntax;
+            this._statistics = statistics;
             logger.Verbouse(Contexts.SqlServerEngine, Categories.Creation, Events.ObjectWasCreated.With("DataEngine"));
         }
 
@@ -28,7 +31,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
         {
             try
             {
-                var executer = new EngineExecuter(this._patternFactory, this.Config, this.Logger);
+                var executer = new EngineExecuter(this._patternFactory, this.Config, this._statistics, this.Logger);
                 return executer;
             }
             catch (Exception e)
