@@ -87,7 +87,7 @@ namespace Atdi.Platform
 
         public static class Counter
         {
-
+            public static readonly IStatisticCounterKey Count = STS.DefineCounterKey("Some.Counter");
         }
     }
 }
