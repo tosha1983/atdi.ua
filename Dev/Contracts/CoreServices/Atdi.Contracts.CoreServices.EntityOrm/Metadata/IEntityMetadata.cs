@@ -15,6 +15,11 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
         string Name { get; }
 
         /// <summary>
+        /// Простарнство имен в которо мрасположена сущность
+        /// </summary>
+        string Namespace { get; }
+
+        /// <summary>
         /// Имя сущности
         /// </summary>
         string QualifiedName { get; }
@@ -171,7 +176,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
             if (entityMetadata.UsesBaseEntityPrimaryKey())
             {
-                return entityMetadata.BaseEntity.DefinePrimaryKey();
+                return entityMetadata.BaseEntity?.DefinePrimaryKey();
             }
 
             return null;

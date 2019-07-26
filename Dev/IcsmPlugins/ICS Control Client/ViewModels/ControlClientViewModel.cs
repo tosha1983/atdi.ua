@@ -498,7 +498,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadShortMeasTasks()
         {
             var sdrTasks = SVC.SdrnsControllerWcfClient.GetShortMeasTasks();
-            this._shortMeasTasks.Source = sdrTasks;
+            this._shortMeasTasks.Source = sdrTasks.OrderByDescending(c => c.Id.Value).ToArray();
         }
 
         private void ReloadShortMeasResults(ShortMeasTaskViewModel shortMeasTask)

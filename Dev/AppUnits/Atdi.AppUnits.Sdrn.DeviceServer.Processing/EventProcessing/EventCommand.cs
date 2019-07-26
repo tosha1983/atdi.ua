@@ -52,6 +52,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
                         {
                             action.Invoke();
+                            tskParam.status = StatusTask.A.ToString();
+                            this._repositoryTaskParametersByInt.Update(tskParam);
                         }
                         else
                         {
@@ -62,6 +64,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     else if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
                     {
                         action.Invoke();
+                        tskParam.status = StatusTask.A.ToString();
+                        this._repositoryTaskParametersByInt.Update(tskParam);
                     }
                     else
                     {
@@ -92,6 +96,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             if (timeSpan.TotalMinutes < this._config.MaxDurationBeforeStartTimeTask)
                             {
                                 action.Invoke();
+                                tskParam.status = StatusTask.A.ToString();
+                                this._repositoryTaskParametersByInt.Update(tskParam);
                             }
                             else
                             {
@@ -102,6 +108,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         else if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
                         {
                             action.Invoke();
+                            tskParam.status = StatusTask.A.ToString();
+                            this._repositoryTaskParametersByInt.Update(tskParam);
                         }
                         else
                         {

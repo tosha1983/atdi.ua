@@ -10,6 +10,12 @@ namespace Atdi.Platform.AppServer
 {
     class ComponentConfig : IComponentConfig
     {
+        private class Parameter : IComponentConfigParameter
+        {
+            public string Name { get; set; }
+
+            public string Value { get; set; }
+        }
         private readonly AppServerComponentConfigElement _config;
 
         public ComponentConfig(AppServerComponentConfigElement config)
@@ -46,5 +52,23 @@ namespace Atdi.Platform.AppServer
         public string Type => this._config.TypeProperty;
 
         public string Assembly => this._config.AssemblyProperty;
+
+        public IComponentConfigParameter[] Parameters
+        {
+            get
+            {
+                var result = new Parameter[this._config.ParametersSection.Count];
+                int i = 0;
+                foreach (ParameterConfigElement parameter in this._config.ParametersSection)
+                {
+                    result[i++] = new Parameter
+                    {
+                        Name = parameter.NameProperty,
+                        Value = parameter.ValueProperty
+                    };
+                }
+                return result;
+            }
+        }
     }
 }

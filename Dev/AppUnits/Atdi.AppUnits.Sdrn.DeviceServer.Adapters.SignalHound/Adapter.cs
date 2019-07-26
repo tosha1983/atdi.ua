@@ -869,12 +869,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     DeviceStatus = COMR.Enums.DeviceStatus.StartReset
                 };
                 context.PushResult(result);
-                //отключим SignalHound по USB 
-                DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
-                Thread.Sleep(3000);//надо подождать пока система все сделает
-                //подключим SignalHound по USB 
-                DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
-                Thread.Sleep(3000);//надо подождать пока система все сделает
+
+                try
+                {
+                    //отключим SignalHound по USB 
+                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
+                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                }
+                catch (Exception exp)
+                {
+                    _logger.Exception(Contexts.ThisComponent, exp);
+                }
+
+                try
+                {
+                    //подключим SignalHound по USB 
+                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
+                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                }
+                catch (Exception exp)
+                {
+                    _logger.Exception(Contexts.ThisComponent, exp);
+                }
 
                 try
                 {
@@ -914,6 +930,38 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             //Приближенно при этих ошибках необходимо переподключить устройство, возможно еще какие-то есть
             if (status == EN.Status.DeviceConnectionErr || status == EN.Status.DeviceInvalidErr)
             {
+                try
+                {
+                    //отключим SignalHound по USB 
+                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
+                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                }
+                catch (Exception exp)
+                {
+                    _logger.Exception(Contexts.ThisComponent, exp);
+                }
+
+                try
+                {
+                    //подключим SignalHound по USB 
+                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
+                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                }
+                catch (Exception exp)
+                {
+                    _logger.Exception(Contexts.ThisComponent, exp);
+                }
+
+                try
+                {
+                    Connect(_adapterConfig.SerialNumber);
+                }
+                catch (Exception exp)
+                {
+                    _logger.Exception(Contexts.ThisComponent, exp);
+                }
+
+
                 //var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.DeviceResetStarted);
                 //context.PushResult(result2);
                 //DeviceReset.SignalHoundBB60StatePrepared("16319373", false);

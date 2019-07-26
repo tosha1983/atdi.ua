@@ -86,15 +86,55 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                         sensorId = int.Parse(word[3]);
                                         if (!string.IsNullOrEmpty(taskId))
                                         {
-                                            var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
-                                            .Update()
-                                            .Where(c => c.Id, ConditionOperator.Equal, int.Parse(taskId))
-                                            .SetValue(c => c.Status, deliveryObject.Status);
-                                            var updated = scope.Executor
-                                            .Execute(queryMeasTask) == 1;
-                                            if (updated == true)
+                                            if (subTaskStationId > -1)
                                             {
-                                                scope.Commit();
+                                                var querySubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                                                    .Update()
+                                                    .Where(c => c.Id, ConditionOperator.Equal, subTaskStationId)
+                                                    .SetValue(c => c.Status, deliveryObject.Status);
+                                                var updated = scope.Executor
+                                                .Execute(querySubTaskSensor) == 1;
+                                                if (updated == true)
+                                                {
+                                                    scope.Commit();
+                                                }
+
+
+                                                int cntCompleteTask = 0;
+                                                int cntAllTask = 0;
+                                                var querySubTaskSensorSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                                               .From()
+                                               .Select(c => c.Id)
+                                               .Select(c => c.Status)
+                                               .Select(c => c.SUBTASK.MEAS_TASK.Id)
+                                               .Where(c => c.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, int.Parse(taskId));
+                                                scope.Executor
+                                               .Fetch(querySubTaskSensorSelect, reader =>
+                                               {
+                                                   while (reader.Read())
+                                                   {
+                                                       if (reader.GetValue(c => c.Status) == "C")
+                                                       {
+                                                           cntCompleteTask++;
+                                                       }
+                                                       cntAllTask++;
+                                                   }
+                                                   return true;
+                                               });
+
+                                                if (cntAllTask == cntCompleteTask)
+                                                {
+                                                    var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
+                                                    .Update()
+                                                    .Where(c => c.Id, ConditionOperator.Equal, int.Parse(taskId))
+                                                    .SetValue(c => c.Status, deliveryObject.Status);
+                                                    var updatedMeasTask = scope.Executor
+                                                    .Execute(queryMeasTask) == 1;
+                                                    if (updatedMeasTask == true)
+                                                    {
+                                                        scope.Commit();
+                                                    }
+                                                }
                                             }
                                         }
                                     }

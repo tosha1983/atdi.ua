@@ -122,8 +122,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 else if (measResult.TaskId.Length > 200)
                     measResult.TaskId.SubString(200);
 
-                if (measResult.Status.Length > 5)
+                if ((measResult.Status != null) && (measResult.Status.Length > 5))
+                {
                     measResult.Status = "";
+                }
+                
 
                 if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
                     WriteLog("Incorrect value SwNumber", "IResMeas");
@@ -144,7 +147,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 var pk = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 valInsResMeas = pk.Id;
 
@@ -155,12 +158,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         bool validationResult = true;
                         foreach (var freqSample in measResult.FrequencySamples)
                         {
-                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt >= 100)
+                            if (freqSample.Occupation_Pt < 0 || freqSample.Occupation_Pt > 100)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Occupation_Pt", "IFreqSample");
                             }
-                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz >= 400000)
+                            if (freqSample.Freq_MHz < 0 || freqSample.Freq_MHz > 400000)
                             {
                                 validationResult = false;
                                 WriteLog("Incorrect value Freq_MHz", "IFreqSample");
@@ -221,8 +224,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 else if (measResult.TaskId.Length > 200)
                     measResult.TaskId.SubString(200);
 
-                if (measResult.Status.Length > 5)
+                if ((measResult.Status != null) && (measResult.Status.Length > 5))
+                {
                     measResult.Status = "";
+                }
+                
 
                 if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
                     WriteLog("Incorrect value SwNumber", "IResMeas");
@@ -232,11 +238,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     WriteLog("Undefined values StationResults[]", "IResMeas");
                     return false;
                 }
-                if (measResult.Routes == null || measResult.Routes.Length == 0)
-                {
-                    WriteLog("Undefined values Routes[]", "IResMeas");
-                    return false;
-                }
+                //if (measResult.Routes == null || measResult.Routes.Length == 0)
+                //{
+                    //WriteLog("Undefined values Routes[]", "IResMeas");
+                    //return false;
+                //}
 
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
@@ -245,7 +251,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 var idResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
@@ -317,9 +323,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
                         builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                         if (int.TryParse(station.StationId, out int Idstation))
-                            builderInsertResMeasStation.SetValue(c => c.STATION.Id, Idstation);
+                            builderInsertResMeasStation.SetValue(c => c.ClientStationCode, Idstation);
                         if (int.TryParse(station.SectorId, out int IdSector))
-                            builderInsertResMeasStation.SetValue(c => c.SECTOR.Id, IdSector);
+                            builderInsertResMeasStation.SetValue(c => c.ClientSectorCode, IdSector);
                         
                         var valInsResMeasStation = this._queryExecutor.Execute<MD.IResMeasStation_PK>(builderInsertResMeasStation);
 
@@ -377,8 +383,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 else if (measResult.TaskId.Length > 200)
                     measResult.TaskId.SubString(200);
 
-                if (measResult.Status.Length > 5)
+                
+                if ((measResult.Status != null) && (measResult.Status.Length > 5))
+                {
                     measResult.Status = "";
+                }
+                
 
                 if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
                     WriteLog("Incorrect value ScansNumber", "IResMeas");
@@ -396,7 +406,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 builderInsertIResMeas.SetValue(c => c.ScansNumber, measResult.ScansNumber);
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                builderInsertIResMeas.SetValue(c => c.MEAS_SUBTASK_STATION.Id, subMeasTaskStaId);
+                builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 var valInsResMeas = this._queryExecutor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                 if (valInsResMeas.Id > 0)
                 {
@@ -699,23 +709,28 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 var bandwidthResult = generalResult.BandwidthResult;
                 if (bandwidthResult.MarkerIndex.HasValue && bandwidthResult.T1.HasValue && bandwidthResult.T2.HasValue)
                 {
-                    if (!(bandwidthResult.T1.Value >= 0 && bandwidthResult.T1.Value <= bandwidthResult.MarkerIndex.Value
-                        && bandwidthResult.T2.Value >= bandwidthResult.MarkerIndex.Value && bandwidthResult.T2.Value <= 100000
-                        && bandwidthResult.MarkerIndex.Value >= bandwidthResult.T1.Value && bandwidthResult.MarkerIndex.Value <= bandwidthResult.T2.Value))
+                    if (bandwidthResult.T1.Value >= 0 && bandwidthResult.T1.Value <= bandwidthResult.MarkerIndex.Value
+                        && bandwidthResult.T2.Value >= bandwidthResult.MarkerIndex.Value && bandwidthResult.T2.Value <= 100000)
                     {
-                        if (bandwidthResult.Bandwidth_kHz.HasValue && bandwidthResult.Bandwidth_kHz >= 1 && bandwidthResult.Bandwidth_kHz <= 100000)
-                            builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
                         builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
                         builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
                         builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
-                        if (bandwidthResult.TraceCount >= 1 && bandwidthResult.TraceCount <= 100000)
-                        {
-                            WriteLog("Incorrect value TraceCount", "IResStGeneral");
-                        }
-                        builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
-                        builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
+
+                    }
+                    else
+                    {
+                        WriteLog("Incorrect values T1, T2 or M", "IResStGeneral");
                     }
                 }
+                if (bandwidthResult.Bandwidth_kHz.HasValue && bandwidthResult.Bandwidth_kHz >= 1 && bandwidthResult.Bandwidth_kHz <= 100000)
+                    builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
+                else WriteLog("Incorrect value of Bandwidth", "IResStGeneral");
+                if (bandwidthResult.TraceCount >= 1 && bandwidthResult.TraceCount <= 100000)
+                {
+                    WriteLog("Incorrect value TraceCount", "IResStGeneral");
+                }
+                builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
+                builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
             }
             builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
             builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, generalResult.SpectrumStartFreq_MHz);
@@ -802,6 +817,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertmaskElem.SetValue(c => c.RES_STGENERAL.Id, IDResGeneral);
                         this._queryExecutor.Execute(builderInsertmaskElem);
                     }
+                    else WriteLog($"Incorrect value Level_dB: {maskElem.Level_dB} or BW_kHz: {maskElem.BW_kHz}", "InsertResStMaskElement");
                 }
             }
         }
@@ -812,7 +828,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 foreach (LevelMeasResult car in station.LevelResults)
                 {
                     if (car.Level_dBm.HasValue && car.Level_dBm >= -150 && car.Level_dBm <= 20
-                        && car.Level_dBmkVm.HasValue && car.Level_dBmkVm >= -10 && car.Level_dBmkVm <= 140)
+                        &&
+                        ((car.Level_dBmkVm.HasValue && car.Level_dBmkVm >= -10 && car.Level_dBmkVm <= 140) || (!car.Level_dBmkVm.HasValue)))
                     {
                         var builderInsertResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().Insert();
                         if (car.Location != null && this.ValidateGeoLocation<GeoLocation>(car.Location, "IResStLevelCar"))
@@ -823,7 +840,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertResStLevelCar.SetValue(c => c.Lat, car.Location.Lat);
                         }
                         if (car.DifferenceTimeStamp_ns.HasValue && (car.DifferenceTimeStamp_ns < 0 && car.DifferenceTimeStamp_ns > 999999999))
-                            WriteLog("Incorrect value DifferenceTimeStamp_ns", "IResStLevelCar");
+                            WriteLog($"Incorrect value DifferenceTimeStamp_ns: {car.DifferenceTimeStamp_ns}", "IResStLevelCar");
                         builderInsertResStLevelCar.SetValue(c => c.DifferenceTimeStamp, car.DifferenceTimeStamp_ns);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbm, car.Level_dBm);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbmkvm, car.Level_dBmkVm);
@@ -831,6 +848,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResStLevelCar.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
                         this._queryExecutor.Execute(builderInsertResStLevelCar);
                     }
+                    else WriteLog($"Incorrect value of Level_dBmkVm: {car.Level_dBmkVm} or Level_dBmkVm: {car.Level_dBmkVm}", "IResStLevelCar");
                 }
             }
         }
@@ -868,21 +886,21 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             bool result = true;
             if (!(location.Lon >= -180 && location.Lon <= 180))
             {
-                WriteLog("Incorrect value Lon", tableName);
+                WriteLog($"Incorrect value Lon {location.Lon}", tableName);
                 return false;
             }
             if (!(location.Lat >= -90 && location.Lat <= 90))
             {
-                WriteLog("Incorrect value Lat", tableName);
+                WriteLog($"Incorrect value Lat {location.Lat}", tableName);
                 return false;
             }
             if (location.ASL < -1000 || location.ASL > 9000)
             {
-                WriteLog("Incorrect value Asl", tableName);
+                WriteLog($"Incorrect value Asl {location.ASL}", tableName);
             }
             if (location.AGL < -100 || location.AGL > 500)
             {
-                WriteLog("Incorrect value Agl", tableName);
+                WriteLog($"Incorrect value Agl {location.AGL}", tableName);
             }
             return result;
         }

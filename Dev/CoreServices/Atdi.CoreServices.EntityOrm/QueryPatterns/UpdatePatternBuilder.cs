@@ -1,6 +1,7 @@
 ﻿using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.CoreServices.EntityOrm.Metadata;
+using Atdi.Platform;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,18 +23,24 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             {
             }
         }
-
+        private static readonly IStatisticCounterKey CounterKey = STS.DefineCounterKey("ORM.Entity.Patterns.Update");
         private readonly IEntityOrm _entityOrm;
         private readonly DataTypeSystem _dataTypeSystem;
+        private readonly IStatistics _statistics;
+        private readonly IStatisticCounter _counter;
 
-        public UpdatePatternBuilder(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, ILogger logger) : base(logger)
+        public UpdatePatternBuilder(IEntityOrm entityOrm, DataTypeSystem dataTypeSystem, IStatistics statistics, ILogger logger) : base(logger)
         {
             this._entityOrm = entityOrm;
             this._dataTypeSystem = dataTypeSystem;
+            this._statistics = statistics;
+            this._counter = _statistics.Counter(CounterKey);
         }
 
         public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
         {
+            _counter?.Increment();
+
             var statement = executionContex.Statement as QueryUpdateStatement;
 
             // построение запроса согласно патерна

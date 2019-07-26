@@ -1,0 +1,51 @@
+﻿CREATE TABLE ICSC.SUBTASK_SENSOR
+(
+  ID              NUMBER(15)                    NOT NULL,
+  STATUS          NVARCHAR2(50),
+  COUNT           NUMBER(9),
+  TIME_NEXT_TASK  DATE,
+  SENSOR_ID       NUMBER(15),
+  SUBTASK_ID      NUMBER(15)                    NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_SUB_TASK_STA_ID_PK ON ICSC.SUBTASK_SENSOR
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.SUBTASK_SENSOR ADD (
+  CONSTRAINT MEASSUBTASKSTA_PK
+ PRIMARY KEY
+ (ID));

@@ -43,7 +43,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
                 builderResStLevelCar.Select(c => c.RES_MEAS_STATION.RES_MEAS.Id);
-                builderResStLevelCar.Select(c => c.RES_MEAS_STATION.SECTOR.Id);
+                builderResStLevelCar.Select(c => c.RES_MEAS_STATION.ClientSectorCode);
                 builderResStLevelCar.Select(c => c.Agl);
                 builderResStLevelCar.Select(c => c.Altitude);
                 builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
@@ -54,18 +54,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResStLevelCar.Select(c => c.Lon);
                 builderResStLevelCar.Select(c => c.RES_MEAS_STATION.Id);
                 builderResStLevelCar.Select(c => c.TimeOfMeasurements);
-                builderResStLevelCar.Select(c => c.RES_MEAS_STATION.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id);
+                builderResStLevelCar.Select(c => c.RES_MEAS_STATION.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 if ((paramsStationLevelsByTask.MeasResultID != null) && (paramsStationLevelsByTask.MeasResultID.Count>0))
                 {
                     builderResStLevelCar.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.In, MeasResultIDConvert);
                 }
                 if (paramsStationLevelsByTask.MeasTaskId>0)
                 {
-                    builderResStLevelCar.Where(c => c.RES_MEAS_STATION.RES_MEAS.MEAS_SUBTASK_STATION.MEAS_SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, paramsStationLevelsByTask.MeasTaskId);
+                    builderResStLevelCar.Where(c => c.RES_MEAS_STATION.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, paramsStationLevelsByTask.MeasTaskId);
                 }
                 if (paramsStationLevelsByTask.SectorId > 0)
                 {
-                    builderResStLevelCar.Where(c => c.RES_MEAS_STATION.SECTOR.Id, ConditionOperator.Equal, paramsStationLevelsByTask.SectorId);
+                    builderResStLevelCar.Where(c => c.RES_MEAS_STATION.ClientSectorCode, ConditionOperator.Equal, paramsStationLevelsByTask.SectorId);
                 }
                 queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
                 {

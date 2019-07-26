@@ -12,6 +12,7 @@ using RabbitMQ.Client;
 using MMB = Atdi.Modules.Sdrn.MessageBus;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.Platform.DependencyInjection;
+using Atdi.Contracts.WcfServices.Sdrn.Device;
 
 namespace Atdi.WcfServices.Sdrn.Device
 {
@@ -60,6 +61,10 @@ namespace Atdi.WcfServices.Sdrn.Device
                 var verResult = LicenseVerifier.Verify(verificationData, licenseBody);
 
                 this._serverDescriptor = new SdrnServerDescriptor(this.Config, verResult.Instance);
+                var serviceEnvironment = new ServiceEnvironment(this._serverDescriptor, verResult);
+
+                this.Container.RegisterInstance(this._serverDescriptor, ServiceLifetime.Singleton);
+                this.Container.RegisterInstance<IServiceEnvironment>(serviceEnvironment, ServiceLifetime.Singleton);
             }
             catch(Exception e)
             {
@@ -72,12 +77,11 @@ namespace Atdi.WcfServices.Sdrn.Device
                 UseEncryption = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseEncryption"),
                 UseCompression = this.Config.GetParameterAsBoolean("SDRN.MessageConvertor.UseCompression")
             };
+
             var typeResolver = MMB.MessageObjectTypeResolver.CreateForApi20();
             var messageConvertor = new MMB.MessageConverter(convertorSettings, typeResolver);
             this.Container.RegisterInstance(messageConvertor, ServiceLifetime.Singleton);
 
-            this.Container.RegisterInstance(this._serverDescriptor, ServiceLifetime.Singleton);
-           
             this.Container.Register<BusPublisher>(ServiceLifetime.Singleton);
             this.Container.Register<BusConsumers>(ServiceLifetime.Singleton);
             this.Container.Register<MessagesBus>(ServiceLifetime.PerThread);

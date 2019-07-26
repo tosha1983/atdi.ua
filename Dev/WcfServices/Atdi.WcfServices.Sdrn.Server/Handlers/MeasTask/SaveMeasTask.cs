@@ -36,91 +36,26 @@ namespace Atdi.WcfServices.Sdrn.Server
         public bool SetStatusTasksInDB(MeasTask measTask, string status)
         {
             bool isSuccess = true;
-            //var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             try
             {
                 using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                 {
                     scope.BeginTran();
 
-                    var builderSelectMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
+                    var builderSelectMeasTask = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                    builderSelectMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Id);
+                    builderSelectMeasTask.Select(c => c.SUBTASK.Id);
                     builderSelectMeasTask.Select(c => c.Id);
-                    builderSelectMeasTask.Where(c => c.Id, ConditionOperator.Equal, measTask.Id.Value);
-                    builderSelectMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                    builderSelectMeasTask.Where(c => c.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
                     scope.Executor.Fetch(builderSelectMeasTask, reader =>
                     {
                         while (reader.Read())
                         {
-                            var builderSelectMeasSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().From();
-                            builderSelectMeasSubTask.Select(c => c.Id);
-                            builderSelectMeasSubTask.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
-                            scope.Executor.Fetch(builderSelectMeasSubTask, readereasSubTask =>
-                            {
-                                while (readereasSubTask.Read())
-                                {
-                                    var id = readereasSubTask.GetValue(c => c.Id);
-                                    if (measTask.MeasSubTasks != null)
-                                    {
-                                        var msSubTask = measTask.MeasSubTasks.ToList().Find(t => t.Id.Value == id);
-                                        if (msSubTask != null)
-                                        {
-                                            var builderSelectMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().From();
-                                            builderSelectMeasSubTaskSta.Select(c => c.Id);
-                                            builderSelectMeasSubTaskSta.Where(c => c.MEAS_SUBTASK.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
-                                            builderSelectMeasSubTaskSta.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
-                                            scope.Executor.Fetch(builderSelectMeasSubTaskSta, readereasSubTaskSta =>
-                                            {
-                                                while (readereasSubTaskSta.Read())
-                                                {
-                                                    var msSubTaskSta = msSubTask.MeasSubTaskStations.ToList().Find(t => t.Id == readereasSubTaskSta.GetValue(c => c.Id));
-                                                    if (msSubTaskSta != null)
-                                                    {
-                                                        if (msSubTaskSta.TimeNextTask.GetValueOrDefault().Subtract(DateTime.Now).TotalSeconds < 0)
-                                                        {
-                                                            var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().Update();
-                                                            builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, readereasSubTaskSta.GetValue(c => c.Id));
-                                                            builderUpdateMeasSubTaskStaSave.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
-                                                            builderUpdateMeasSubTaskStaSave.SetValue(c => c.Status, status);
-                                                            if (scope.Executor.Execute(builderUpdateMeasSubTaskStaSave) > 0)
-                                                            {
-                                                                isSuccess = true;
-                                                            }
-                                                            else
-                                                            {
-                                                                isSuccess = false;
-                                                            }
-                                                           
-                                                        }
-                                                    }
-                                                }
-                                                return true;
-                                            });
 
-
-                                            var builderUpdateSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Update();
-                                            builderUpdateSubTask.Where(c => c.Id, ConditionOperator.Equal, readereasSubTask.GetValue(c => c.Id));
-                                            builderUpdateSubTask.SetValue(c => c.Status, status);
-                                            if (scope.Executor.Execute(builderUpdateSubTask) > 0)
-                                            {
-                                                isSuccess = true;
-                                            }
-                                            else
-                                            {
-                                                isSuccess = false;
-                                            }
-
-                                        }
-                                    }
-
-                                }
-                                return true;
-                            });
-
-
-                            var builderUpdateTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
-                            builderUpdateTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
-                            builderUpdateTask.SetValue(c => c.Status, status);
-                            if (scope.Executor.Execute(builderUpdateTask) > 0)
+                            var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().Update();
+                            builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                            builderUpdateMeasSubTaskStaSave.SetValue(c => c.Status, status);
+                            if (scope.Executor.Execute(builderUpdateMeasSubTaskStaSave) > 0)
                             {
                                 isSuccess = true;
                             }
@@ -129,6 +64,30 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 isSuccess = false;
                             }
 
+                            var builderSelectMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().Update();
+                            builderSelectMeasSubTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SUBTASK.Id));
+                            builderSelectMeasSubTask.SetValue(c => c.Status, status);
+                            if (scope.Executor.Execute(builderSelectMeasSubTask) > 0)
+                            {
+                                isSuccess = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                            }
+
+                            var builderMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
+                            builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SUBTASK.MEAS_TASK.Id));
+                            builderMeasTask.SetValue(c => c.Status, status);
+                            if (scope.Executor.Execute(builderMeasTask) > 0)
+                            {
+                                isSuccess = true;
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                            }
+                            
                         }
                         return true;
                     });
@@ -344,7 +303,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     if (measSubTask.Id != null)
                                     {
                                         long valueIdmeasSubTask = -1;
-                                        var builderInsertMeasSubTask = this._dataLayer.GetBuilder<MD.IMeasSubTask>().Insert();
+                                        var builderInsertMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().Insert();
                                         builderInsertMeasSubTask.SetValue(c => c.Interval, measSubTask.Interval);
                                         builderInsertMeasSubTask.SetValue(c => c.Status, measSubTask.Status);
                                         builderInsertMeasSubTask.SetValue(c => c.TimeStart, measSubTask.TimeStart);
@@ -353,7 +312,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         
 
 
-                                        var measSubTaskPK = scope.Executor.Execute<MD.IMeasSubTask_PK>(builderInsertMeasSubTask);
+                                        var measSubTaskPK = scope.Executor.Execute<MD.ISubTask_PK>(builderInsertMeasSubTask);
                                         valueIdmeasSubTask = measSubTaskPK.Id;
                                         measSubTask.Id.Value = valueIdmeasSubTask;
 
@@ -364,17 +323,17 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             {
                                                 var subTaskStation = measSubTask.MeasSubTaskStations[v];
                                                 long valueIdmeasSubTaskSta = -1;
-                                                var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.IMeasSubTaskStation>().Insert();
+                                                var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().Insert();
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskStation.Count);
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskStation.Status);
                                                 if (subTaskStation.StationId != null)
                                                 {
                                                     builderInsertMeasSubTaskSta.SetValue(c => c.SENSOR.Id, subTaskStation.StationId.Value);
                                                 }
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.MEAS_SUBTASK.Id, valueIdmeasSubTask);
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.SUBTASK.Id, valueIdmeasSubTask);
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskStation.TimeNextTask);
                                                 
-                                                var insertMeasSubTaskStaPK = scope.Executor.Execute<MD.IMeasSubTaskStation_PK>(builderInsertMeasSubTaskSta);
+                                                var insertMeasSubTaskStaPK = scope.Executor.Execute<MD.ISubTaskSensor_PK>(builderInsertMeasSubTaskSta);
                                                 valueIdmeasSubTaskSta = insertMeasSubTaskStaPK.Id;
                                                 subTaskStation.Id = valueIdmeasSubTaskSta;
                                             }

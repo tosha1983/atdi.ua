@@ -605,7 +605,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 case TwoOperandOperator.LessThan:
                     return $"{leftOperand} < {rightOperand}";
                 case TwoOperandOperator.NotEqual:
-                    return $"{leftOperand} <> {rightOperand}";
+                    return $" ({leftOperand} <> {rightOperand}) OR ({leftOperand} IS  NULL)";
                 case TwoOperandOperator.Like:
                     return $"{leftOperand} LIKE {rightOperand}";
                 case TwoOperandOperator.NotLike:

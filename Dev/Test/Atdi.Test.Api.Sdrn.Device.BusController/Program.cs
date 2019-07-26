@@ -222,7 +222,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         static void Test1()
         {
             Console.WriteLine($"Press [Enter] to start testing ...");
-            Console.ReadLine();
+             Console.ReadLine();
 
             var gateFactory = BusGateFactory.Create();
             var gate = CreateGate(gateFactory);

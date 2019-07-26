@@ -1,18 +1,18 @@
 ﻿CREATE TABLE ICSC.RES_MEAS
 (
-  ID                       NUMBER(15)           NOT NULL,
-  MEAS_SUBTASK_STATION_ID  NUMBER(15),
-  ANTVAL                   NUMBER(30,10),
-  TIME_MEAS                DATE,
-  DATA_RANK                NUMBER(9),
-  N                        NUMBER(9),
-  STATUS                   NVARCHAR2(50),
-  TYPE_MEASUREMENTS        NVARCHAR2(50),
-  MEAS_SDR_RESULT_SID      NVARCHAR2(450),
-  SYNCHRONIZED             NUMBER(1)            DEFAULT 0,
-  START_TIME               DATE,
-  STOP_TIME                DATE,
-  SCANS_NUMBER             NUMBER(10)
+  ID                   NUMBER(15)               NOT NULL,
+  SUBTASK_SENSOR_ID    NUMBER(15),
+  ANTVAL               NUMBER(30,10),
+  TIME_MEAS            DATE,
+  DATA_RANK            NUMBER(9),
+  N                    NUMBER(9),
+  STATUS               NVARCHAR2(50),
+  TYPE_MEASUREMENTS    NVARCHAR2(50),
+  MEAS_SDR_RESULT_SID  NVARCHAR2(450),
+  SYNCHRONIZED         NUMBER(1)                DEFAULT 0,
+  START_TIME           DATE,
+  STOP_TIME            DATE,
+  SCANS_NUMBER         NUMBER(10)
 )
 TABLESPACE USERS
 PCTUSED    0

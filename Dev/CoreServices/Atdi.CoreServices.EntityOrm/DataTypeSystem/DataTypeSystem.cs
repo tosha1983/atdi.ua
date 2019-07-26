@@ -37,6 +37,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._adapterTypes[(int)DataType.String][(int)DataSourceVarType.TEXT] = typeof(ValueAdapters.StringTEXT);
             this._adapterTypes[(int)DataType.Integer][(int)DataSourceVarType.INT32] = typeof(ValueAdapters.IntegerINT32);
             this._adapterTypes[(int)DataType.Long][(int)DataSourceVarType.INT64] = typeof(ValueAdapters.LongINT64);
+            this._adapterTypes[(int)DataType.Time][(int)DataSourceVarType.TIME] = typeof(ValueAdapters.TimeTIME);
             this._adapterTypes[(int)DataType.DateTime][(int)DataSourceVarType.DATETIME] = typeof(ValueAdapters.DateTimeDATETIME);
             this._adapterTypes[(int)DataType.DateTimeOffset][(int)DataSourceVarType.DATETIMEOFFSET] = typeof(ValueAdapters.DateTimeOffsetDATETIMEOFFSET);
             this._adapterTypes[(int)DataType.Guid][(int)DataSourceVarType.GUID] = typeof(ValueAdapters.GuidGUID);
@@ -52,6 +53,7 @@ namespace Atdi.CoreServices.EntityOrm
 
             this._adapterTypes[(int)DataType.ClrType][(int)DataSourceVarType.BLOB] = typeof(ValueAdapters.ClrTypeBLOB);
             this._adapterTypes[(int)DataType.ClrType][(int)DataSourceVarType.BYTES] = typeof(ValueAdapters.ClrTypeBYTES);
+            this._adapterTypes[(int)DataType.ClrType][(int)DataSourceVarType.CLRTYPE] = typeof(ValueAdapters.ClrTypeCLRTYPE);
         }
 
         private static Type[][] BuildAdapterTypes()
@@ -186,6 +188,8 @@ namespace Atdi.CoreServices.EntityOrm
                     return DataType.Xml;
                 case DataSourceVarType.JSON:
                     return DataType.Json;
+                case DataSourceVarType.CLRTYPE:
+                    return DataType.ClrType;
                 case DataSourceVarType.UNDEFINED:
                 default:
                     throw new InvalidOperationException($"Unsupported Source Var Type '{sourceVarType}'");

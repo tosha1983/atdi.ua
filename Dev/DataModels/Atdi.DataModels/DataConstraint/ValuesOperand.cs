@@ -332,6 +332,173 @@ namespace Atdi.DataModels.DataConstraint
             throw new InvalidOperationException($"Value type not supported '{type}')");
         }
 
+        public static ValuesOperand CreateBy(params object[] values)
+        {
+            var type = values[0].GetType();
+            if (type == typeof(string))
+            {
+                return new StringValuesOperand
+                {
+                    Values = values.Select(o => (string)o).ToArray()
+                };
+            }
+            if (type == typeof(int) || type == typeof(int?))
+            {
+                return new IntegerValuesOperand
+                {
+                    Values = values.Select(o => (int?)o).ToArray()
+                };
+            }
+            if (type == typeof(bool) || type == typeof(bool?))
+            {
+                return new BooleanValuesOperand
+                {
+                    Values = values.Select(o => (bool?)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
+            {
+                return new DateTimeValuesOperand
+                {
+                    Values = values.Select(o => (DateTime?)o).ToArray()
+                };
+            }
+            if (type == typeof(float) || type == typeof(float?))
+            {
+                return new FloatValuesOperand
+                {
+                    Values = values.Select(o => (float?)o).ToArray()
+                };
+            }
+            if (type == typeof(double) || type == typeof(double?))
+            {
+                return new DoubleValuesOperand
+                {
+                    Values = values.Select(o => (double?)o).ToArray()
+                };
+            }
+            if (type == typeof(decimal) || type == typeof(decimal?))
+            {
+                return new DecimalValuesOperand
+                {
+                    Values = values.Select(o => (decimal?)o).ToArray()
+                };
+            }
+            if (type == typeof(byte) || type == typeof(byte?))
+            {
+                return new ByteValuesOperand
+                {
+                    Values = values.Select(o => (byte?)o).ToArray()
+                };
+            }
+            if (type == typeof(byte[]))
+            {
+                return new BytesValuesOperand
+                {
+                    Values = values.Select(o => (byte[])o).ToArray()
+                };
+            }
+            if (type == typeof(Guid) || type == typeof(Guid?))
+            {
+                return new GuidValuesOperand
+                {
+                    Values = values.Select(o => (Guid?)o).ToArray()
+                };
+            }
+            if (type == typeof(char) || type == typeof(char?))
+            {
+                return new CharValuesOperand
+                {
+                    Values = values.Select(o => (char?)o).ToArray()
+                };
+            }
+            if (type == typeof(short) || type == typeof(short?))
+            {
+                return new ShortValuesOperand
+                {
+                    Values = values.Select(o => (short?)o).ToArray()
+                };
+            }
+            if (type == typeof(UInt16) || type == typeof(UInt16?))
+            {
+                return new UnsignedShortValuesOperand
+                {
+                    Values = values.Select(o => (UInt16?)o).ToArray()
+                };
+            }
+            if (type == typeof(UInt32) || type == typeof(UInt32?))
+            {
+                return new UnsignedIntegerValuesOperand
+                {
+                    Values = values.Select(o => (UInt32?)o).ToArray()
+                };
+            }
+            if (type == typeof(long) || type == typeof(long?))
+            {
+                return new LongValuesOperand
+                {
+                    Values = values.Select(o => (long?)o).ToArray()
+                };
+            }
+            if (type == typeof(UInt64) || type == typeof(UInt64?))
+            {
+                return new UnsignedLongValuesOperand
+                {
+                    Values = values.Select(o => (UInt64?)o).ToArray()
+                };
+            }
+            if (type == typeof(sbyte) || type == typeof(sbyte?))
+            {
+                return new SignedByteValuesOperand
+                {
+                    Values = values.Select(o => (sbyte?)o).ToArray()
+                };
+            }
+            if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+            {
+                return new TimeValuesOperand
+                {
+                    Values = values.Select(o => (TimeSpan?)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
+            {
+                return new DateValuesOperand
+                {
+                    Values = values.Select(o => (DateTime?)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                return new DateTimeOffsetValuesOperand
+                {
+                    Values = values.Select(o => (DateTimeOffset?)o).ToArray()
+                };
+            }
+            if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
+            {
+                return new DateTimeOffsetValuesOperand
+                {
+                    Values = values.Select(o => (DateTimeOffset?)o).ToArray()
+                };
+            }
+            if (type == typeof(Enum))
+            {
+                return new ClrEnumValuesOperand
+                {
+                    Values = values.Select(o => (Enum)o).ToArray()
+                };
+            }
+            if (type == typeof(Object))
+            {
+                return new ClrTypeValuesOperand
+                {
+                    Values = values.Select(o => (Object)o).ToArray()
+                };
+            }
+
+            throw new InvalidOperationException($"Value type not supported '{type}')");
+        }
         public object GetValues()
         {
             switch (this.DataType)

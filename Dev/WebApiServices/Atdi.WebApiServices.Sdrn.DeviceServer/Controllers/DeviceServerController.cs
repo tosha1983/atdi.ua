@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace Atdi.WebApiServices.Sdrn.DeviceServer.Controllers
 {
+    [RoutePrefix("api/SdrnDeviceServer")]
     public class DeviceServerController : WebApiController
     {
         private readonly IDeviceServerConfig _deviceServerConfig;
@@ -19,6 +20,7 @@ namespace Atdi.WebApiServices.Sdrn.DeviceServer.Controllers
         }
 
         [HttpGet]
+        [Route("config")]
         public IDeviceServerConfig Config()
         {
             return this._deviceServerConfig;
