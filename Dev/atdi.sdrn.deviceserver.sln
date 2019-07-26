@@ -175,6 +175,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrn.Device
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.Test", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.Test\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.Test.csproj", "{4283DF1B-838F-4FCE-964F-4627D6350793}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSReceiver", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSReceiver\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSReceiver.csproj", "{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -957,6 +959,18 @@ Global
 		{4283DF1B-838F-4FCE-964F-4627D6350793}.Release|x64.Build.0 = Release|Any CPU
 		{4283DF1B-838F-4FCE-964F-4627D6350793}.Release|x86.ActiveCfg = Release|Any CPU
 		{4283DF1B-838F-4FCE-964F-4627D6350793}.Release|x86.Build.0 = Release|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Debug|x86.Build.0 = Debug|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Release|x64.Build.0 = Release|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Release|x86.ActiveCfg = Release|Any CPU
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1045,6 +1059,7 @@ Global
 		{A65DC15A-E0DA-4D33-ADBB-B1BCC0758873} = {04D085DB-BB60-4C7F-923F-050CCD2FBAD3}
 		{A803197E-12F5-4800-B157-B2EC677BDA33} = {A7B201AE-3748-4946-BFC8-4F86AC1FE72C}
 		{4283DF1B-838F-4FCE-964F-4627D6350793} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
+		{860B3EC0-9A8A-40CF-BDEF-BB98D56F84FE} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
