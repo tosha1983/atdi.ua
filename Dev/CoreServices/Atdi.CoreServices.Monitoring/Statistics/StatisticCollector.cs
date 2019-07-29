@@ -57,7 +57,7 @@ namespace Atdi.CoreServices.Monitoring.Statistics
         {
             this._thread = new Thread(this.Process)
             {
-                Name = $"Statistic.Collection",
+                Name = $"ATDI.Platform.StatisticCollector",
                 Priority = ThreadPriority.Lowest
             };
 
@@ -107,7 +107,7 @@ namespace Atdi.CoreServices.Monitoring.Statistics
                     // this is normal process
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //this.Logger.Exception(Contexts.EntityOrm, Categories.Processing, e, this);
             }

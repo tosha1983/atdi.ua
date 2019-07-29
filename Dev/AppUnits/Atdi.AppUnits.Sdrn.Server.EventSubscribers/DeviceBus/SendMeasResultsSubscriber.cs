@@ -18,6 +18,8 @@ using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.Common;
+using Atdi.Platform;
+using Atdi.Platform.Caching;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -26,22 +28,57 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
+        private readonly IStatistics _statistics;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IEventEmitter _eventEmitter;
         private readonly IQueryExecutor _queryExecutor;
-        public SendMeasResultsSubscriber(IEventEmitter eventEmitter, ISdrnMessagePublisher messagePublisher, IMessagesSite messagesSite, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger) : base(messagesSite, logger)
+        private readonly IDataCache<string, int> _taskIdentityCache;
+
+        private readonly IStatisticCounter _messageProcessingHitsCounter;
+        private readonly IStatisticCounter _sendMeasResultsErrorsCounter;
+        private readonly IStatisticCounter _sendMeasResultsHitsCounter;
+        private readonly IStatisticCounter _monitoringStationsCounter;
+        private readonly IStatisticCounter _signalingCounter;
+        private readonly IStatisticCounter _spectrumOccupationCounter;
+
+        public SendMeasResultsSubscriber(
+            IEventEmitter eventEmitter, 
+            ISdrnMessagePublisher messagePublisher, 
+            IMessagesSite messagesSite, 
+            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnServerEnvironment environment, 
+            IStatistics statistics,
+            IDataCacheSite cacheSite,
+            ILogger logger) 
+            : base(messagesSite, logger)
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
+            this._statistics = statistics;
             this._eventEmitter = eventEmitter;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
+            this._taskIdentityCache = cacheSite.Ensure(DataCaches.MeasTaskIdentity);
+
+            if (this._statistics != null)
+            {
+                this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
+                this._sendMeasResultsErrorsCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsErrors);
+                this._sendMeasResultsHitsCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsHits);
+                this._monitoringStationsCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsMonitoringStations);
+                this._signalingCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsSignaling);
+                this._spectrumOccupationCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsSpectrumOccupation);
+            }
+
         }
 
         protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
+                this._messageProcessingHitsCounter?.Increment();
+                this._sendMeasResultsHitsCounter?.Increment();
+
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed = false;
                 var reasonFailure = "";
@@ -49,20 +86,24 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     if (deliveryObject.Measurement == MeasurementType.SpectrumOccupation)
                     {
+                        this._spectrumOccupationCounter?.Increment();
                         isSuccessProcessed = SaveMeasResultSpectrumOccupation(deliveryObject);
                     }
                     if (deliveryObject.Measurement == MeasurementType.MonitoringStations)
                     {
+                        this._monitoringStationsCounter?.Increment();
                         isSuccessProcessed = SaveMeasResultMonitoringStations(deliveryObject);
                     }
                     if (deliveryObject.Measurement == MeasurementType.Signaling)
                     {
+                        this._signalingCounter?.Increment();
                         isSuccessProcessed = SaveMeasResultSignaling(deliveryObject);
                     }
                     isSuccessProcessed = true;
                 }
                 catch (Exception e)
                 {
+                    this._sendMeasResultsErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     //status = SdrnMessageHandlingStatus.Error;
                     reasonFailure = e.StackTrace;
