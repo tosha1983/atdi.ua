@@ -25,6 +25,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly ISdrnServerEnvironment _environment;
         private readonly IStatistics _statistics;
         private readonly ISdrnMessagePublisher _messagePublisher;
+        private readonly IMessagesSite _messagesSite;
 
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _registerSensorHitsCounter;
@@ -39,6 +40,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             ILogger logger) 
             : base(messagesSite, logger)
         {
+            this._messagesSite = messagesSite;
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
@@ -303,8 +305,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     }
                     else if (sensorExistsInDb)
                     {
-                        registrationResult.Status = "Reject";
-                        registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}", deliveryObject.Name, deliveryObject.Equipment.TechId);
+                        var updateSensorSubscriber = new UpdateSensorSubscriber(this._messagePublisher, this._messagesSite, this._dataLayer, this._environment, this._logger);
+                        updateSensorSubscriber.UpdateSensor(deliveryObject);
+                        //registrationResult.Status = "Reject";
+                        registrationResult.Status = "Success";
+                        registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}. Sensor information updated.", deliveryObject.Name, deliveryObject.Equipment.TechId);
                     }
                     else if (sensorRegistration)
                     {
