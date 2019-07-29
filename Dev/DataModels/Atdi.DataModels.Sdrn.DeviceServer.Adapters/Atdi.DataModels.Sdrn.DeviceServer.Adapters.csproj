@@ -49,6 +49,7 @@
     <Compile Include="Enums\LevelUnit.cs" />
     <Compile Include="Enums\TraceType.cs" />
     <Compile Include="InstrManufacrures.cs" />
+    <Compile Include="LocalRSReceiverInfo.cs" />
     <Compile Include="LocalSpectrumAnalyzerInfo.cs" />
     <Compile Include="MesureGpsLocationExampleAdapterResult.cs" />
     <Compile Include="ParamWithId.cs" />
