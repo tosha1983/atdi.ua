@@ -150,7 +150,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
                                                     {
                                                         var SubTaskStation = SubTask.MeasSubTaskStations[g];
-                                                        measTaskIds = string.Format("{0}|{1}|{2}|{3}", IdTsk.Value, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
+                                                        measTaskIds = string.Format("{0}", SubTaskStation.Id);
                                                         if (actionType != MeasTaskMode.New.ToString())
                                                         {
                                                             var masTaskEvent = new OnMeasTaskEvent()
@@ -205,6 +205,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             catch (Exception e)
             {
+                idTask = null;
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
