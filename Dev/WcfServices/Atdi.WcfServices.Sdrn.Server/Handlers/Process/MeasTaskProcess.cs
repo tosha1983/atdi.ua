@@ -150,7 +150,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
                                                     {
                                                         var SubTaskStation = SubTask.MeasSubTaskStations[g];
-                                                        measTaskIds = string.Format("{0}_{1}_", measTask.MeasDtParam.TypeMeasurements.ToString(),SubTaskStation.Id);
+                                                        measTaskIds = string.Format("{0}_SDRN.SubTaskSensorId.{1}_", measTask.MeasDtParam.TypeMeasurements.ToString(),SubTaskStation.Id);
                                                         if (actionType != MeasTaskMode.New.ToString())
                                                         {
                                                             var masTaskEvent = new OnMeasTaskEvent()
