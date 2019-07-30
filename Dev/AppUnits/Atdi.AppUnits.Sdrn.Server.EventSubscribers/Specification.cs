@@ -24,6 +24,21 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers
             public static readonly IStatisticCounterKey SendMeasResultsMonitoringStations = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.MonitoringStations");
             public static readonly IStatisticCounterKey SendMeasResultsSignaling = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.Signaling");
             public static readonly IStatisticCounterKey SendMeasResultsErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.Errors");
+
+            public static readonly IStatisticCounterKey RegisterSensorHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.RegisterSensor.Hits");
+            public static readonly IStatisticCounterKey RegisterSensorErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.RegisterSensor.Errors");
+
+            public static readonly IStatisticCounterKey UpdateSensorHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.UpdateSensor.Hits");
+            public static readonly IStatisticCounterKey UpdateSensorErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.UpdateSensor.Errors");
+
+            public static readonly IStatisticCounterKey SendCommandResultHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendCommandResult.Hits");
+            public static readonly IStatisticCounterKey SendCommandResultErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendCommandResult.Errors");
+
+            public static readonly IStatisticCounterKey SendEntityHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendEntity.Hits");
+            public static readonly IStatisticCounterKey SendEntityErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendEntity.Errors");
+
+            public static readonly IStatisticCounterKey SendEntityPartHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendEntityPart.Hits");
+            public static readonly IStatisticCounterKey SendEntityPartErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendEntityPart.Errors");
         }
         
 

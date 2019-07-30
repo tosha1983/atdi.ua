@@ -57,7 +57,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             }
 
                             Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            MTSDR.TaskId = string.Format("{0}|{1}|{2}|{3}", MeasTaskId, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
+                            MTSDR.TaskId = SubTaskStation.Id.ToString();
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
                             if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }

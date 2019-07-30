@@ -14,6 +14,7 @@ using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -23,17 +24,39 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
-        public SendCommandResultSubscriber(ISdrnMessagePublisher messagePublisher, IMessagesSite messagesSite, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger) : base(messagesSite, logger)
+        private readonly IStatistics _statistics;
+        private readonly IStatisticCounter _messageProcessingHitsCounter;
+        private readonly IStatisticCounter _sendCommandResultHitsCounter;
+        private readonly IStatisticCounter _sendCommandResultErrorsCounter;
+
+        public SendCommandResultSubscriber(
+            ISdrnMessagePublisher messagePublisher, 
+            IMessagesSite messagesSite, 
+            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnServerEnvironment environment,
+            IStatistics statistics,
+            ILogger logger) 
+            : base(messagesSite, logger)
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
+            this._statistics = statistics;
+            if (this._statistics != null)
+            {
+                this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
+                this._sendCommandResultHitsCounter = _statistics.Counter(Monitoring.Counters.SendCommandResultHits);
+                this._sendCommandResultErrorsCounter = _statistics.Counter(Monitoring.Counters.SendCommandResultErrors);
+            }
         }
 
-        protected override void Handle(string sensorName, string sensorTechId, DM.DeviceCommandResult deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.DeviceCommandResult deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
+                this._messageProcessingHitsCounter?.Increment();
+                this._sendCommandResultHitsCounter?.Increment();
+
                 //var status = SdrnMessageHandlingStatus.Unprocessed;
                 var sensorExistsInDb = false;
                 try
@@ -71,69 +94,76 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 //status = SdrnMessageHandlingStatus.Confirmed;
                                 break;
                             case "UpdateStatusMeasTask":
-                                string taskId = "";
-                                int subTaskId = -1;
-                                int subTaskStationId = -1;
-                                int sensorId = -1;
+                                long subTaskStationId = -1;
+                                long taskIds = -1;
                                 if (deliveryObject.CustTxt1 != null)
                                 {
-                                    string[] word = deliveryObject.CustTxt1.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                                    if ((word != null) && (word.Length == 4))
+                                    if (long.TryParse(deliveryObject.CustTxt1, out subTaskStationId))
                                     {
-                                        taskId = word[0];
-                                        subTaskId = int.Parse(word[1]);
-                                        subTaskStationId = int.Parse(word[2]);
-                                        sensorId = int.Parse(word[3]);
-                                        if (!string.IsNullOrEmpty(taskId))
+                                        if (subTaskStationId > -1)
                                         {
-                                            if (subTaskStationId > -1)
+                                            var querySubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                                                .Update()
+                                                .Where(c => c.Id, ConditionOperator.Equal, subTaskStationId)
+                                                .SetValue(c => c.Status, deliveryObject.Status);
+                                            var updated = scope.Executor
+                                            .Execute(querySubTaskSensor) == 1;
+                                            if (updated == true)
                                             {
-                                                var querySubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
-                                                    .Update()
-                                                    .Where(c => c.Id, ConditionOperator.Equal, subTaskStationId)
-                                                    .SetValue(c => c.Status, deliveryObject.Status);
-                                                var updated = scope.Executor
-                                                .Execute(querySubTaskSensor) == 1;
-                                                if (updated == true)
+                                                scope.Commit();
+                                            }
+
+                                           var queryMeasTaskSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                                         .From()
+                                         .Select(c => c.Id)
+                                         .Select(c => c.Status)
+                                         .Select(c => c.SUBTASK.MEAS_TASK.Id)
+                                         .Where(c => c.Id, ConditionOperator.Equal, subTaskStationId);
+                                            scope.Executor
+                                           .Fetch(queryMeasTaskSelect, reader =>
+                                           {
+                                               while (reader.Read())
+                                               {
+                                                   taskIds = reader.GetValue(c => c.SUBTASK.MEAS_TASK.Id);
+                                                   break;
+                                               }
+                                               return true;
+                                           });
+
+
+                                            int cntCompleteTask = 0;
+                                            int cntAllTask = 0;
+                                            var querySubTaskSensorSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                                           .From()
+                                           .Select(c => c.Id)
+                                           .Select(c => c.Status)
+                                           .Select(c => c.SUBTASK.MEAS_TASK.Id)
+                                           .Where(c => c.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, taskIds);
+                                            scope.Executor
+                                           .Fetch(querySubTaskSensorSelect, reader =>
+                                           {
+                                               while (reader.Read())
+                                               {
+                                                   if (reader.GetValue(c => c.Status) == "C")
+                                                   {
+                                                       cntCompleteTask++;
+                                                   }
+                                                   cntAllTask++;
+                                               }
+                                               return true;
+                                           });
+
+                                            if (cntAllTask == cntCompleteTask)
+                                            {
+                                                var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
+                                                .Update()
+                                                .Where(c => c.Id, ConditionOperator.Equal, taskIds)
+                                                .SetValue(c => c.Status, deliveryObject.Status);
+                                                var updatedMeasTask = scope.Executor
+                                                .Execute(queryMeasTask) == 1;
+                                                if (updatedMeasTask == true)
                                                 {
                                                     scope.Commit();
-                                                }
-
-
-                                                int cntCompleteTask = 0;
-                                                int cntAllTask = 0;
-                                                var querySubTaskSensorSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
-                                               .From()
-                                               .Select(c => c.Id)
-                                               .Select(c => c.Status)
-                                               .Select(c => c.SUBTASK.MEAS_TASK.Id)
-                                               .Where(c => c.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, int.Parse(taskId));
-                                                scope.Executor
-                                               .Fetch(querySubTaskSensorSelect, reader =>
-                                               {
-                                                   while (reader.Read())
-                                                   {
-                                                       if (reader.GetValue(c => c.Status) == "C")
-                                                       {
-                                                           cntCompleteTask++;
-                                                       }
-                                                       cntAllTask++;
-                                                   }
-                                                   return true;
-                                               });
-
-                                                if (cntAllTask == cntCompleteTask)
-                                                {
-                                                    var queryMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>()
-                                                    .Update()
-                                                    .Where(c => c.Id, ConditionOperator.Equal, int.Parse(taskId))
-                                                    .SetValue(c => c.Status, deliveryObject.Status);
-                                                    var updatedMeasTask = scope.Executor
-                                                    .Execute(queryMeasTask) == 1;
-                                                    if (updatedMeasTask == true)
-                                                    {
-                                                        scope.Commit();
-                                                    }
                                                 }
                                             }
                                         }
@@ -223,7 +253,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
                 catch (Exception e)
                 {
-
+                    this._sendCommandResultErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     //status = SdrnMessageHandlingStatus.Error;
                 }

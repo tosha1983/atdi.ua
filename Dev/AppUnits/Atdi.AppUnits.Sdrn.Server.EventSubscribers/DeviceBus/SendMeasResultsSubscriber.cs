@@ -72,7 +72,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
         }
 
-        protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
