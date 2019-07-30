@@ -6,6 +6,7 @@ using Atdi.Platform.Logging;
 using System;
 using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
+using Atdi.DataModels.EntityOrm;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
@@ -18,6 +19,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ITimeService _timeService;
         private readonly ConfigProcessing _config;
         private readonly IWorkScheduler _workScheduler;
+        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
 
 
         public DeferredTaskWorker(ILogger logger,
@@ -25,7 +27,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             ITaskStarter taskStarter,
             IWorkScheduler workScheduler,
             ConfigProcessing config,
-            ITimeService timeService)
+            ITimeService timeService,
+            IRepository<TaskParameters, long?> repositoryTaskParametersByInt)
         {
             this._logger = logger;
             this._processingDispatcher = processingDispatcher;
@@ -33,6 +36,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._timeService = timeService;
             this._config = config;
             this._workScheduler = workScheduler;
+            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
         }
         /// <summary>
         /// Обработка отложенных задач
@@ -79,6 +83,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         soTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                         soTask.LastTimeSend = DateTime.Now;
                                         soTask.taskParameters = taskParameters;
+                                        soTask.taskParameters.status = StatusTask.A.ToString();
+                                        this._repositoryTaskParametersByInt.Update(soTask.taskParameters);
                                         soTask.mesureTraceParameter = soTask.taskParameters.ConvertForSO();
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
                                         _taskStarter.RunParallel(soTask, process, context);
@@ -99,6 +105,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     signalTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     signalTask.LastTimeSend = DateTime.Now;
                                     signalTask.taskParameters = taskParameters;
+                                    signalTask.taskParameters.status = StatusTask.A.ToString();
+                                    this._repositoryTaskParametersByInt.Update(signalTask.taskParameters);
                                     signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
                                     signalTask.actionConvertBW = ConvertTaskParametersToMesureTraceParameterForBandWidth.ConvertForBW;
                                     signalTask.actionConvertSysInfo = ConvertTaskParametersToMesureSystemInfoParameterForSysInfo.ConvertForMesureSystemInfoParameter;
@@ -125,6 +133,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     bandWidtTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
                                     bandWidtTask.LastTimeSend = DateTime.Now;
                                     bandWidtTask.taskParameters = taskParameters;
+                                    bandWidtTask.taskParameters.status = StatusTask.A.ToString();
+                                    this._repositoryTaskParametersByInt.Update(bandWidtTask.taskParameters);
                                     bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
                                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);

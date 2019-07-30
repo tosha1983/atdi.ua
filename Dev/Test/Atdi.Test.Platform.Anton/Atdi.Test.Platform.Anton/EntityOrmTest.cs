@@ -241,7 +241,7 @@ namespace Atdi.Test.Platform
         private static void Test_Subscribes(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
    
-            var subscriber = new SB.SendMeasResultsSubscriber(new EventEmitterFake(), new SdrnMessagePublisherFake(), new MessagesSiteFake(), dataLayer, new SdrnServerEnvironmentFake(), logger);
+            var subscriber = new SB.SendMeasResultsSubscriber(new EventEmitterFake(), new SdrnMessagePublisherFake(), new MessagesSiteFake(), dataLayer, new SdrnServerEnvironmentFake(), null, null, logger);
             var event1 = new DevicesBusEvent
             {
                 BusMessageId = 1

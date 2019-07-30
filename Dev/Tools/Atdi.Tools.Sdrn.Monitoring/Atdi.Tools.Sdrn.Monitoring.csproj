@@ -71,12 +71,16 @@
     </Compile>
     <Compile Include="ExceptionData.cs" />
     <Compile Include="HostInfo.cs" />
+    <Compile Include="RequestResults\StatisticEntryRecord.cs" />
+    <Compile Include="RequestResults\StatisticCounterKey.cs" />
     <Compile Include="RequestResults\LogEventResult.cs" />
     <Compile Include="RequestResults\RequestResult.cs" />
     <Compile Include="RequestResults\DeviceServerConfigRequestResult.cs" />
     <Compile Include="RequestResults\DeviceWcfServerConfigRequestResult.cs" />
     <Compile Include="RequestResults\OrmConfigRequestResult.cs" />
     <Compile Include="RequestResults\SdrnServerConfigRequestResult.cs" />
+    <Compile Include="RequestResults\StatisticEntryKey.cs" />
+    <Compile Include="RequestResults\StatisticCounterRecord.cs" />
     <Page Include="DetailLog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

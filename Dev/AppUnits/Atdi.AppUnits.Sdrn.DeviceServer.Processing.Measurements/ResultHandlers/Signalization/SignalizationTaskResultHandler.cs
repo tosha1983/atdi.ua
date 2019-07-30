@@ -157,7 +157,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 // Отправка результата в Task Handler
-                if (taskContext.Task.EmittingsSummary != null)
+                if ((taskContext.Task.EmittingsSummary != null) && (taskContext.Task.EmittingsSummary.Length>0))
                 {
                     var allEmitting = new List<Emitting>();
                     allEmitting.AddRange(taskContext.Task.EmittingsSummary);

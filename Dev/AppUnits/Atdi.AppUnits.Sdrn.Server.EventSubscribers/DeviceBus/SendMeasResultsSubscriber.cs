@@ -18,6 +18,8 @@ using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.Common;
+using Atdi.Platform;
+using Atdi.Platform.Caching;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -26,22 +28,57 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
+        private readonly IStatistics _statistics;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IEventEmitter _eventEmitter;
         private readonly IQueryExecutor _queryExecutor;
-        public SendMeasResultsSubscriber(IEventEmitter eventEmitter, ISdrnMessagePublisher messagePublisher, IMessagesSite messagesSite, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger) : base(messagesSite, logger)
+        private readonly IDataCache<string, int> _taskIdentityCache;
+
+        private readonly IStatisticCounter _messageProcessingHitsCounter;
+        private readonly IStatisticCounter _sendMeasResultsErrorsCounter;
+        private readonly IStatisticCounter _sendMeasResultsHitsCounter;
+        private readonly IStatisticCounter _monitoringStationsCounter;
+        private readonly IStatisticCounter _signalingCounter;
+        private readonly IStatisticCounter _spectrumOccupationCounter;
+
+        public SendMeasResultsSubscriber(
+            IEventEmitter eventEmitter, 
+            ISdrnMessagePublisher messagePublisher, 
+            IMessagesSite messagesSite, 
+            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnServerEnvironment environment, 
+            IStatistics statistics,
+            IDataCacheSite cacheSite,
+            ILogger logger) 
+            : base(messagesSite, logger)
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
+            this._statistics = statistics;
             this._eventEmitter = eventEmitter;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
+            this._taskIdentityCache = cacheSite.Ensure(DataCaches.MeasTaskIdentity);
+
+            if (this._statistics != null)
+            {
+                this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
+                this._sendMeasResultsErrorsCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsErrors);
+                this._sendMeasResultsHitsCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsHits);
+                this._monitoringStationsCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsMonitoringStations);
+                this._signalingCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsSignaling);
+                this._spectrumOccupationCounter = _statistics.Counter(Monitoring.Counters.SendMeasResultsSpectrumOccupation);
+            }
+
         }
 
-        protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
+                this._messageProcessingHitsCounter?.Increment();
+                this._sendMeasResultsHitsCounter?.Increment();
+
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed = false;
                 var reasonFailure = "";
@@ -49,20 +86,24 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     if (deliveryObject.Measurement == MeasurementType.SpectrumOccupation)
                     {
+                        this._spectrumOccupationCounter?.Increment();
                         isSuccessProcessed = SaveMeasResultSpectrumOccupation(deliveryObject);
                     }
                     if (deliveryObject.Measurement == MeasurementType.MonitoringStations)
                     {
+                        this._monitoringStationsCounter?.Increment();
                         isSuccessProcessed = SaveMeasResultMonitoringStations(deliveryObject);
                     }
                     if (deliveryObject.Measurement == MeasurementType.Signaling)
                     {
+                        this._signalingCounter?.Increment();
                         isSuccessProcessed = SaveMeasResultSignaling(deliveryObject);
                     }
                     isSuccessProcessed = true;
                 }
                 catch (Exception e)
                 {
+                    this._sendMeasResultsErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     //status = SdrnMessageHandlingStatus.Error;
                     reasonFailure = e.StackTrace;
@@ -140,7 +181,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
                 long valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId); /// resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
@@ -709,23 +750,28 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 var bandwidthResult = generalResult.BandwidthResult;
                 if (bandwidthResult.MarkerIndex.HasValue && bandwidthResult.T1.HasValue && bandwidthResult.T2.HasValue)
                 {
-                    if (!(bandwidthResult.T1.Value >= 0 && bandwidthResult.T1.Value <= bandwidthResult.MarkerIndex.Value
-                        && bandwidthResult.T2.Value >= bandwidthResult.MarkerIndex.Value && bandwidthResult.T2.Value <= 100000
-                        && bandwidthResult.MarkerIndex.Value >= bandwidthResult.T1.Value && bandwidthResult.MarkerIndex.Value <= bandwidthResult.T2.Value))
+                    if (bandwidthResult.T1.Value >= 0 && bandwidthResult.T1.Value <= bandwidthResult.MarkerIndex.Value
+                        && bandwidthResult.T2.Value >= bandwidthResult.MarkerIndex.Value && bandwidthResult.T2.Value <= 100000)
                     {
-                        if (bandwidthResult.Bandwidth_kHz.HasValue && bandwidthResult.Bandwidth_kHz >= 1 && bandwidthResult.Bandwidth_kHz <= 100000)
-                            builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
                         builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
                         builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
                         builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
-                        if (bandwidthResult.TraceCount >= 1 && bandwidthResult.TraceCount <= 100000)
-                        {
-                            WriteLog("Incorrect value TraceCount", "IResStGeneral");
-                        }
-                        builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
-                        builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
+
+                    }
+                    else
+                    {
+                        WriteLog("Incorrect values T1, T2 or M", "IResStGeneral");
                     }
                 }
+                if (bandwidthResult.Bandwidth_kHz.HasValue && bandwidthResult.Bandwidth_kHz >= 1 && bandwidthResult.Bandwidth_kHz <= 100000)
+                    builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
+                else WriteLog("Incorrect value of Bandwidth", "IResStGeneral");
+                if (bandwidthResult.TraceCount >= 1 && bandwidthResult.TraceCount <= 100000)
+                {
+                    WriteLog("Incorrect value TraceCount", "IResStGeneral");
+                }
+                builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
+                builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
             }
             builderInsertResStGeneral.SetValue(c => c.OffsetFrequency, generalResult.OffsetFrequency_mk);
             builderInsertResStGeneral.SetValue(c => c.SpecrumStartFreq, generalResult.SpectrumStartFreq_MHz);
@@ -812,6 +858,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertmaskElem.SetValue(c => c.RES_STGENERAL.Id, IDResGeneral);
                         this._queryExecutor.Execute(builderInsertmaskElem);
                     }
+                    else WriteLog($"Incorrect value Level_dB: {maskElem.Level_dB} or BW_kHz: {maskElem.BW_kHz}", "InsertResStMaskElement");
                 }
             }
         }
@@ -822,7 +869,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 foreach (LevelMeasResult car in station.LevelResults)
                 {
                     if (car.Level_dBm.HasValue && car.Level_dBm >= -150 && car.Level_dBm <= 20
-                        && car.Level_dBmkVm.HasValue && car.Level_dBmkVm >= -10 && car.Level_dBmkVm <= 140)
+                        &&
+                        ((car.Level_dBmkVm.HasValue && car.Level_dBmkVm >= -10 && car.Level_dBmkVm <= 140) || (!car.Level_dBmkVm.HasValue)))
                     {
                         var builderInsertResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().Insert();
                         if (car.Location != null && this.ValidateGeoLocation<GeoLocation>(car.Location, "IResStLevelCar"))
@@ -833,7 +881,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertResStLevelCar.SetValue(c => c.Lat, car.Location.Lat);
                         }
                         if (car.DifferenceTimeStamp_ns.HasValue && (car.DifferenceTimeStamp_ns < 0 && car.DifferenceTimeStamp_ns > 999999999))
-                            WriteLog("Incorrect value DifferenceTimeStamp_ns", "IResStLevelCar");
+                            WriteLog($"Incorrect value DifferenceTimeStamp_ns: {car.DifferenceTimeStamp_ns}", "IResStLevelCar");
                         builderInsertResStLevelCar.SetValue(c => c.DifferenceTimeStamp, car.DifferenceTimeStamp_ns);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbm, car.Level_dBm);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbmkvm, car.Level_dBmkVm);
@@ -841,6 +889,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResStLevelCar.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
                         this._queryExecutor.Execute(builderInsertResStLevelCar);
                     }
+                    else WriteLog($"Incorrect value of Level_dBmkVm: {car.Level_dBmkVm} or Level_dBmkVm: {car.Level_dBmkVm}", "IResStLevelCar");
                 }
             }
         }
@@ -878,21 +927,21 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             bool result = true;
             if (!(location.Lon >= -180 && location.Lon <= 180))
             {
-                WriteLog("Incorrect value Lon", tableName);
+                WriteLog($"Incorrect value Lon {location.Lon}", tableName);
                 return false;
             }
             if (!(location.Lat >= -90 && location.Lat <= 90))
             {
-                WriteLog("Incorrect value Lat", tableName);
+                WriteLog($"Incorrect value Lat {location.Lat}", tableName);
                 return false;
             }
             if (location.ASL < -1000 || location.ASL > 9000)
             {
-                WriteLog("Incorrect value Asl", tableName);
+                WriteLog($"Incorrect value Asl {location.ASL}", tableName);
             }
             if (location.AGL < -100 || location.AGL > 500)
             {
-                WriteLog("Incorrect value Agl", tableName);
+                WriteLog($"Incorrect value Agl {location.AGL}", tableName);
             }
             return result;
         }

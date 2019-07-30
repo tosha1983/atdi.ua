@@ -25,5 +25,7 @@ namespace Atdi.DataModels.Sdrns.Device
         public int? SignalizationNCount { get; set; }
         [DataMember]
         public int? SignalizationNChenal { get; set; }
+        [DataMember]
+        public SignalingMeasTaskSpecialParameters SpecialParameters { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -22,13 +23,34 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
+        private readonly IStatistics _statistics;
         private readonly ISdrnMessagePublisher _messagePublisher;
+        private readonly IMessagesSite _messagesSite;
 
-        public RegisterSensorSubscriber(ISdrnMessagePublisher messagePublisher, IMessagesSite messagesSite, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger) : base(messagesSite, logger)
+        private readonly IStatisticCounter _messageProcessingHitsCounter;
+        private readonly IStatisticCounter _registerSensorHitsCounter;
+        private readonly IStatisticCounter _registerSensorErrorsCounter;
+
+        public RegisterSensorSubscriber(
+            ISdrnMessagePublisher messagePublisher, 
+            IMessagesSite messagesSite, 
+            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnServerEnvironment environment,
+            IStatistics statistics,
+            ILogger logger) 
+            : base(messagesSite, logger)
         {
+            this._messagesSite = messagesSite;
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
+            this._statistics = statistics;
+            if (this._statistics != null)
+            {
+                this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
+                this._registerSensorHitsCounter = _statistics.Counter(Monitoring.Counters.RegisterSensorHits);
+                this._registerSensorErrorsCounter = _statistics.Counter(Monitoring.Counters.RegisterSensorErrors);
+            }
         }
 
 
@@ -227,10 +249,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             return resultValue;
         }
     
-        protected override void Handle(string sensorName, string sensorTechId, DM.Sensor deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.Sensor deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
+                this._messageProcessingHitsCounter?.Increment();
+                this._registerSensorHitsCounter?.Increment();
+
                 SdrnMessageHandlingStatus sdrnMessageHandlingStatus = SdrnMessageHandlingStatus.Unprocessed;
                 var sensorRegistration = false;
                 var sensorExistsInDb = false;
@@ -258,6 +283,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
                 catch (Exception e)
                 {
+                    this._registerSensorErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     sdrnMessageHandlingStatus = SdrnMessageHandlingStatus.Error;
                 }
@@ -279,8 +305,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     }
                     else if (sensorExistsInDb)
                     {
-                        registrationResult.Status = "Reject";
-                        registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}", deliveryObject.Name, deliveryObject.Equipment.TechId);
+                        var updateSensorSubscriber = new UpdateSensorSubscriber(this._messagePublisher, this._messagesSite, this._dataLayer, this._environment, this._logger);
+                        updateSensorSubscriber.UpdateSensor(deliveryObject);
+                        //registrationResult.Status = "Reject";
+                        registrationResult.Status = "Success";
+                        registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}. Sensor information updated.", deliveryObject.Name, deliveryObject.Equipment.TechId);
                     }
                     else if (sensorRegistration)
                     {

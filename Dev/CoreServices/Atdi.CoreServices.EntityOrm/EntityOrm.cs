@@ -1044,7 +1044,11 @@ namespace Atdi.CoreServices.EntityOrm
 
             entityMetadata.DataSource = this.BuildDataSourceMetadata(entityDef.DataSource);
 
-            this.BuildFieldsMetadata(entityMetadata, entityDef);
+            if (entityDef.Fields != null)
+            {
+                this.BuildFieldsMetadata(entityMetadata, entityDef);
+            }
+            
 
             entityMetadata.PrimaryKey = this.BuildPrimaryKeyMetadata(entityMetadata, entityDef);
 
@@ -1297,25 +1301,29 @@ namespace Atdi.CoreServices.EntityOrm
         private void PadFieldsMetadata(EntityMetadata entityMetadata, Metadata.EntityDef entityDef)
         {
             //  Для всех полей ссылок определить сущности и допрелелить мапинг ключа и условия соединенния
-            for (int i = 0; i < entityDef.Fields.Length; i++)
+            if (entityDef.Fields != null)
             {
-                var fieldDef = entityDef.Fields[i];
-                var field = entityMetadata.Fields[fieldDef.Name];
-                switch (field.SourceType)
+                for (int i = 0; i < entityDef.Fields.Length; i++)
                 {
-                    case FieldSourceType.Reference:
-                        this.PadFieldMetadataAsReference(field as ReferenceFieldMetadata, fieldDef);
-                        break;
-                    case FieldSourceType.Extension:
-                        this.PadFieldMetadataAsExtension(field as ExtensionFieldMetadata, fieldDef);
-                        break;
-                    case FieldSourceType.Relation:
-                        this.PadFieldMetadataAsRelation(field as RelationFieldMetadata, fieldDef);
-                        break;
-                    default:
-                        break;
+                    var fieldDef = entityDef.Fields[i];
+                    var field = entityMetadata.Fields[fieldDef.Name];
+                    switch (field.SourceType)
+                    {
+                        case FieldSourceType.Reference:
+                            this.PadFieldMetadataAsReference(field as ReferenceFieldMetadata, fieldDef);
+                            break;
+                        case FieldSourceType.Extension:
+                            this.PadFieldMetadataAsExtension(field as ExtensionFieldMetadata, fieldDef);
+                            break;
+                        case FieldSourceType.Relation:
+                            this.PadFieldMetadataAsRelation(field as RelationFieldMetadata, fieldDef);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+            
 
             // кипируем в свою структуру все поля базового класса в случаи типа Simple или Role
             if (entityMetadata.Type == EntityType.Simple 

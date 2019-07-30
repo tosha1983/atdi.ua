@@ -14,6 +14,7 @@ using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -24,11 +25,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
-        public UpdateSensorSubscriber(ISdrnMessagePublisher messagePublisher, IMessagesSite messagesSite, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger) : base(messagesSite, logger)
+        private readonly IStatistics _statistics;
+
+        private readonly IStatisticCounter _messageProcessingHitsCounter;
+        private readonly IStatisticCounter _updateSensorHitsCounter;
+        private readonly IStatisticCounter _updateSensorErrorsCounter;
+
+        public UpdateSensorSubscriber(
+            ISdrnMessagePublisher messagePublisher, 
+            IMessagesSite messagesSite, 
+            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnServerEnvironment environment,
+            IStatistics statistics,
+            ILogger logger) 
+            : base(messagesSite, logger)
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
+            this._statistics = statistics;
+            if (this._statistics != null)
+            {
+                this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
+                this._updateSensorHitsCounter = _statistics.Counter(Monitoring.Counters.UpdateSensorHits);
+                this._updateSensorErrorsCounter = _statistics.Counter(Monitoring.Counters.UpdateSensorErrors);
+            }
         }
 
         public bool UpdateSensor(DM.Sensor sensor)
@@ -484,10 +505,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             return resultValue;
         }
 
-        protected override void Handle(string sensorName, string sensorTechId, DM.Sensor deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.Sensor deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
+                this._messageProcessingHitsCounter?.Increment();
+                this._updateSensorHitsCounter?.Increment();
+
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 var sensorUpdate = false;
                 var sensorExistsInDb = false;
@@ -517,6 +541,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
                 catch (Exception e)
                 {
+                    this._updateSensorErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     status = SdrnMessageHandlingStatus.Error;
                 }
