@@ -1392,6 +1392,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.RES_MEAS.Id);
                 builderResMeasStation.Select(c => c.ClientSectorCode);
                 builderResMeasStation.Select(c => c.Standard);
+                builderResMeasStation.Select(c => c.Frequency);
                 builderResMeasStation.Select(c => c.ClientStationCode);
                 builderResMeasStation.Select(c => c.Status);
                 builderResMeasStation.Where(c => c.Id, ConditionOperator.Equal, StationId);
@@ -1411,9 +1412,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? rbw = null;
                         double? vbw = null;
                         double? bw = null;
-                        double? centralFrequency = null;
-
-
+                        double? centralFrequency =  readerResMeasStation.GetValue(c => c.Frequency);
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -1456,7 +1455,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                 vbw = readerResStGeneral.GetValue(c => c.Vbw);
                                 bw = readerResStGeneral.GetValue(c => c.BW);
-                                centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+
+                                //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -1903,6 +1903,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.ClientSectorCode);
                 builderResMeasStation.Select(c => c.Standard);
                 builderResMeasStation.Select(c => c.ClientStationCode);
+                builderResMeasStation.Select(c => c.Frequency);
                 builderResMeasStation.Select(c => c.Status);
                 builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
                 builderResMeasStation.Where(c => c.ClientStationCode, ConditionOperator.Equal, (int)StationId);
@@ -1924,7 +1925,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? rbw = null;
                         double? vbw = null;
                         double? bw = null;
-                        double? centralFrequency = null;
+                        //double? centralFrequency = null;
+                        double? centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -1967,7 +1969,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                 vbw = readerResStGeneral.GetValue(c => c.Vbw);
                                 bw = readerResStGeneral.GetValue(c => c.BW);
-                                centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
+                                //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -2705,6 +2707,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResMeasStation.Select(c => c.ClientSectorCode);
                         builderResMeasStation.Select(c => c.Standard);
                         builderResMeasStation.Select(c => c.ClientStationCode);
+                        builderResMeasStation.Select(c => c.Frequency);
                         builderResMeasStation.Select(c => c.Status);
                         builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResMeasStation.OrderByAsc(c => c.Id);
@@ -2726,7 +2729,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 double? rbw = null;
                                 double? vbw = null;
                                 double? bw = null;
-                                double? centralFrequency = null;
+                                double? centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
                                 var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -2769,7 +2772,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                         vbw = readerResStGeneral.GetValue(c => c.Vbw);
                                         bw = readerResStGeneral.GetValue(c => c.BW);
-                                        centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+                                        //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
 
 
                                         var listMaskElements = new List<MaskElements>();
