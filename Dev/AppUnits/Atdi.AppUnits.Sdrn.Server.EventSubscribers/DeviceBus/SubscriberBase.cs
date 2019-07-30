@@ -30,7 +30,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     try
                     {
                         scope.Status = MessageProcessingStatus.Processing;
-                        this.Handle(scope.SensorName, scope.SensorTechId, scope.Delivery);
+                        this.Handle(scope.SensorName, scope.SensorTechId, scope.Delivery, @event.BusMessageId);
                         scope.Status = MessageProcessingStatus.Processed;
                     }
                     catch (Exception e)
@@ -55,6 +55,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 _logger.Exception(Contexts.ThisComponent, Categories.EventProcessing, e, (object)this);
             }
         }
-        protected abstract void Handle(string sensorName, string sensorTechId, TDeliveryObject deliveryObject);
+        protected abstract void Handle(string sensorName, string sensorTechId, TDeliveryObject deliveryObject, long messageId);
     }
 }

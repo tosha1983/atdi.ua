@@ -72,7 +72,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
         }
 
-        protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.MeasResults deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
@@ -181,7 +181,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId);
                 long valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                builderInsertIResMeas.SetValue(c => c.MeasResultSID, resultId.ToString());
+                builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId); /// resultId.ToString());
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
                 builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
