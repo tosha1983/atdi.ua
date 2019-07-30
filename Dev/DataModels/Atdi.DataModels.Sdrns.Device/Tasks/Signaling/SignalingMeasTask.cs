@@ -13,19 +13,31 @@ namespace Atdi.DataModels.Sdrns.Device
     {
         [DataMember]
         public bool? CompareTraceJustWithRefLevels { get; set; }
-        [DataMember]
-        public bool? AutoDivisionEmitting { get; set; }
-        [DataMember]
-        public double? DifferenceMaxMax { get; set; }
+
+
         [DataMember]
         public bool? FiltrationTrace { get; set; }
         [DataMember]
-        public double? allowableExcess_dB { get; set; }
+        public double? allowableExcess_dB { get; set; }// при формировании реферативного спектра допустимое превышение над шумом
         [DataMember]
-        public int? SignalizationNCount { get; set; }
+        public int? SignalizationNCount { get; set; } // максимальное количество измерений сигнализации в день. 
         [DataMember]
-        public int? SignalizationNChenal { get; set; }
+        public int? SignalizationNChenal { get; set; } //Количество точек в канале при сканировании.
+
+
         [DataMember]
-        public SignalingMeasTaskSpecialParameters SpecialParameters { get; set; }
+        public bool? AnalyzeByChannel { get; set; } // true значит надо анализировать согласно существующим частото каналам  по умолчанию false
+        [DataMember]
+        public bool? AnalyzeSysInfoEmission { get; set; } // true значит надо выполнять вложенное вокфлоу по SysInfo по умолчанию false 
+        [DataMember]
+        public bool? DetailedMeasurementsBWEmission { get; set; } // true значит надо выполнять вложенное вокфлоу по BW по умолчанию false 
+        [DataMember]
+        public string Standard { get; set; } // ожидаемій стандарт сигналов (GSM or LTE or UMTS) по умолчанию null
+        [DataMember]
+        public double? triggerLevel_dBm_Hz { get; set; } // уровень шума на входе приемника по умолчанию измерение автошума = -999 используется в  namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements строка 61 (в хендлере)
+        [DataMember]
+        public SignalingInterruptionParameters InterruptionParameters { get; set; }
+        [DataMember]
+        public SignalingGroupingParameters GroupingParameters { get; set; }
     }
 }
