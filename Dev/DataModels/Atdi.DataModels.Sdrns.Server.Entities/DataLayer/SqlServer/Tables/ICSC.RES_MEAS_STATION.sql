@@ -5,12 +5,11 @@ create table [ICSC].[RES_MEAS_STATION] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[GLOBAL_SID]	[nvarchar](250) null,
 	[MEAS_GLOBAL_SID]	[nvarchar](250) null,
-	[SECTOR_ID]	[bigint] null,
-	[IDSTATION]	[bigint] null,
 	[STATUS]	[nvarchar](250) null,
 	[RES_MEAS_ID]	[bigint] not null,
 	[STANDARD]	[nvarchar](50) null,
-	[STATION_ID]	[bigint] null,
+	[ClientSectorCode] [int] null,
+	[ClientStationCode] [int] null,
 	constraint [PK_RES_MEAS_STATION] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

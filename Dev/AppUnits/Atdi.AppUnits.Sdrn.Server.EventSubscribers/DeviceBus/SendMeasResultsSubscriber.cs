@@ -40,6 +40,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IStatisticCounter _monitoringStationsCounter;
         private readonly IStatisticCounter _signalingCounter;
         private readonly IStatisticCounter _spectrumOccupationCounter;
+        private long _messageId;
+        private long _resMeasId = 0;
 
         public SendMeasResultsSubscriber(
             IEventEmitter eventEmitter, 
@@ -78,6 +80,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             {
                 this._messageProcessingHitsCounter?.Increment();
                 this._sendMeasResultsHitsCounter?.Increment();
+                this._messageId = messageId;
 
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed = false;
@@ -174,7 +177,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     measResult.Status = "";
                 }
-                
 
                 if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
                     WriteLog("Incorrect value SwNumber", "IResMeas", scope);
@@ -186,7 +188,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     WriteLog("StartTime must be less than StopTime", "IResMeas", scope);
 
                 GetIds(measResult.ResultId, measResult.TaskId, out int subMeasTaskId, out int subMeasTaskStaId, out int sensorId, out int resultId, scope);
-                long valInsResMeas = 0;
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
@@ -197,9 +198,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
                 builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 var pk = scope.Executor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
-                valInsResMeas = pk.Id;
+                _resMeasId = pk.Id;
 
-                if (valInsResMeas > 0)
+                if (_resMeasId > 0)
                 {
                     if (measResult.FrequencySamples != null)
                     {
@@ -227,7 +228,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertResLevels.SetValue(c => c.ValueSpect, freqSample.Level_dBmkVm);
                             builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
                             builderInsertResLevels.SetValue(c => c.FreqMeas, freqSample.Freq_MHz);
-                            builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, valInsResMeas);
+                            builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                             if (validationResult)
                                 scope.Executor.Execute(builderInsertResLevels);
                         }
@@ -239,7 +240,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
                         builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
                         builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
-                        builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, valInsResMeas);
+                        builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                         scope.Executor.Execute(builderInsertResLocSensorMeas);
                     }
                 }
@@ -303,6 +304,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
                 builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
                 var idResMeas = scope.Executor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
+                _resMeasId = idResMeas.Id;
 
                 if (measResult.Routes != null)
                 {
@@ -327,7 +329,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertroutePoints.SetValue(c => c.StartTime, routePoint.StartTime);
                                 builderInsertroutePoints.SetValue(c => c.RouteId, route.RouteId);
                                 builderInsertroutePoints.SetValue(c => c.PointStayType, routePoint.PointStayType.ToString());
-                                builderInsertroutePoints.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
+                                builderInsertroutePoints.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                                 scope.Executor.Execute(builderInsertroutePoints);
                             }
                         }
@@ -368,7 +370,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
                         builderInsertResMeasStation.SetValue(c => c.MeasGlobalSID, station.RealGlobalSid);
                         builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
-                        builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, idResMeas.Id);
+                        builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                         builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                         if (int.TryParse(station.StationId, out int Idstation))
                             builderInsertResMeasStation.SetValue(c => c.ClientStationCode, Idstation);
@@ -456,7 +458,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
                 builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subMeasTaskStaId);
                 var valInsResMeas = scope.Executor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
-                if (valInsResMeas.Id > 0)
+                _resMeasId = valInsResMeas.Id;
+                if (_resMeasId > 0)
                 {
                     if (this.ValidateGeoLocation(measResult.Location, "IResMeas", scope))
                     {
@@ -465,7 +468,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
                         builderInsertResLocSensorMeas.SetValue(c => c.Lon, measResult.Location.Lon);
                         builderInsertResLocSensorMeas.SetValue(c => c.Lat, measResult.Location.Lat);
-                        builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
+                        builderInsertResLocSensorMeas.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                         scope.Executor.Execute(builderInsertResLocSensorMeas);
                     }
 
@@ -504,7 +507,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         {
                             builderInsertReferenceLevels.SetValue(c => c.RefLevels, refLevels.levels);
                         }
-                        builderInsertReferenceLevels.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
+                        builderInsertReferenceLevels.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                         if (validationResult)
                             scope.Executor.Execute<MD.IReferenceLevels_PK>(builderInsertReferenceLevels);
                     }
@@ -540,7 +543,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emitting.ReferenceLevel_dBm);
                             if (emitting.TriggerDeviationFromReference >= 0 && emitting.TriggerDeviationFromReference <= 1)
                                 builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emitting.TriggerDeviationFromReference);
-                            builderInsertEmitting.SetValue(c => c.RES_MEAS.Id, valInsResMeas.Id);
+                            builderInsertEmitting.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                             builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
                             if (emitting.EmittingParameters != null)
                             {
@@ -981,6 +984,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             builderInsertLog.SetValue(c => c.TableName, tableName);
             builderInsertLog.SetValue(c => c.When, DateTime.Now);
             builderInsertLog.SetValue(c => c.Info, msg);
+            builderInsertLog.SetValue(c => c.MESSAGE.Id, this._messageId);
+            builderInsertLog.SetValue(c => c.RES_MEAS.Id, _resMeasId);
             scope.Executor.Execute(builderInsertLog);
         }
     }
