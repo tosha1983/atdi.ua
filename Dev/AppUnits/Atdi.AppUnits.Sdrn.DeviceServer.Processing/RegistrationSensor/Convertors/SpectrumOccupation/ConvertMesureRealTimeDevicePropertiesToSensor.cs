@@ -16,7 +16,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         {
             var sensor = new Sensor();
             sensor.Name = sensorName;
-
+            sensor.Equipment = new SensorEquipment();
+            sensor.Equipment.TechId = sensorTechId;
             return sensor;
         }
     }

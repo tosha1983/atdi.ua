@@ -61,7 +61,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск задач по событиям, которые приходят с шины, время до выполнения, которых меньше 20 мин
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    _taskStarter.RunParallel(new QueueEventTask(), dispatchProcess);
+                    _taskStarter.RunParallel(new EventTask(), dispatchProcess);
 
                     ////////////////////////////////////////////////////////////////////////
                     // 
@@ -87,8 +87,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск задачи по отправке уведомлений об активности сенсора
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    _taskStarter.RunParallel(new ActiveSensorTask(), dispatchProcess);
+                    //_taskStarter.RunParallel(new ActiveSensorTask(), dispatchProcess);
 
+
+                    ////////////////////////////////////////////////////////////////////////
+                    // 
+                    //
+                    // запуск задачи по отправке результатов измерений в шину
+                    //
+                    ////////////////////////////////////////////////////////////////////////
+                    _taskStarter.RunParallel(new SendResult(), dispatchProcess);
 
                 }
                 else

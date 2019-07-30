@@ -7,6 +7,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
+    [Serializable]
     public class SysInfoResult
     {
         public SignalingSysInfo[] signalingSysInfo { get; set; }

@@ -18,6 +18,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         string GlobalSID { get; set; }
         string MeasGlobalSID { get; set; }
+
+        double Frequency { get; set; }
+
         string Status { get; set; }
         string Standard { get; set; }
         IResMeas RES_MEAS { get; set; }
