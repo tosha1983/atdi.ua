@@ -106,6 +106,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return taskParameters;
         }
 
+        public void RemoveOldObjects()
+        {
+            try
+            {
+                var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
+                var taskParameters = loadMessages.GetAllMessages();
+                if ((taskParameters != null) && (taskParameters.Length > 0))
+                {
+                    for (int i = 0; i < taskParameters.Length; i++)
+                    {
+                        if ((taskParameters[i].status == "C") || (taskParameters[i].status == "Z") || (taskParameters[i].StopTime < DateTime.Now))
+                        {
+                            var additionalParameters = taskParameters[i].MeasurementType.ToString() + "_" + taskParameters[i].SDRTaskId + "_";
+                            var fileName = loadMessages.GetFileName(additionalParameters);
+                            var messagesBus = new SaveMessages(_fileCounter, fileName, this._logger, this._configRepositories.FolderTaskParameters);
+                            messagesBus.DeleteObject(fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+        }
 
         public TaskParameters[] LoadObjectsWithRestrict(ref List<string> listRunTask)
         {

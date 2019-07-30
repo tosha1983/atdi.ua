@@ -29,6 +29,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
         }
 
 
+
         public DM.DeviceCommand LoadObject(string additionalParameters)
         {
             DM.DeviceCommand taskParameters = null;
@@ -80,6 +81,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
+        }
+
+        public void RemoveOldObjects()
+        {
+            throw new NotImplementedException();
         }
 
         public bool Delete(string id)

@@ -10,6 +10,7 @@ namespace Atdi.DataModels.EntityOrm
     public interface IRepository<T,I> : IDisposable
         where T : class
     {
+        void RemoveOldObjects();
         T[] LoadObjectsWithRestrict(ref List<string> listRunTask); // получение объектов с ограничениями
         T[] LoadAllObjects(); // получение всех объектов
         T LoadObject(I id); // получение одного объекта по id

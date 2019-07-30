@@ -29,6 +29,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         }
 
+        public void RemoveOldObjects()
+        {
+            throw new NotImplementedException();
+        }
 
         public DM.MeasResults LoadObject(string additionalParameters)
         {

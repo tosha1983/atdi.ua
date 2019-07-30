@@ -123,8 +123,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //
                 //////////////////////////////////////////////
                 ///
-                if (parentProc == null)
+                if ((parentProc == null) || ((parentProc!=null) && ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == false)))
                 {
+                    
                     BWResult outResultData = null;
                     bool isDown = context.WaitEvent<BWResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
                     if (isDown == false) // таймут - результатов нет
