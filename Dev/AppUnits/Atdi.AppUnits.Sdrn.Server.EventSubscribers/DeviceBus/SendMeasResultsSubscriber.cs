@@ -358,14 +358,32 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         station.SectorId = station.SectorId.SubString(50);
                         station.Status = station.Status.SubString(5);
                         station.Standard = station.Standard.SubString(10);
+
+                        if (station.GeneralResult == null)
+                        {
+                            ///TODO: Записать влог и игнорироват запись - перейти на следующую
+                        }
+
+
                         if (!station.GeneralResult.RBW_kHz.HasValue || station.GeneralResult.RBW_kHz.Value < 0.001 || station.GeneralResult.RBW_kHz.Value > 100000)
                             station.GeneralResult.RBW_kHz = null;
                         if (!station.GeneralResult.VBW_kHz.HasValue || station.GeneralResult.VBW_kHz.Value < 0.001 || station.GeneralResult.VBW_kHz.Value > 100000)
                             station.GeneralResult.VBW_kHz = null;
-                        if (!station.GeneralResult.CentralFrequency_MHz.HasValue || station.GeneralResult.CentralFrequency_MHz.Value < 0.001 || station.GeneralResult.CentralFrequency_MHz.Value > 400000)
+
+                        if (!station.GeneralResult.CentralFrequency_MHz.HasValue 
+                            || station.GeneralResult.CentralFrequency_MHz.Value < 0.001 || station.GeneralResult.CentralFrequency_MHz.Value > 400000)
                             station.GeneralResult.CentralFrequency_MHz = null;
-                        if (!station.GeneralResult.CentralFrequencyMeas_MHz.HasValue || station.GeneralResult.CentralFrequencyMeas_MHz.Value < 0.001 || station.GeneralResult.CentralFrequencyMeas_MHz.Value > 400000)
+                        if (!station.GeneralResult.CentralFrequencyMeas_MHz.HasValue 
+                            || station.GeneralResult.CentralFrequencyMeas_MHz.Value < 0.001 || station.GeneralResult.CentralFrequencyMeas_MHz.Value > 400000)
                             station.GeneralResult.CentralFrequencyMeas_MHz = null;
+
+                        ///TODO: Записать влог и игнорироват запись - перейти на следующую
+                        var stationFrequency = station.GeneralResult.CentralFrequency_MHz ?? station.GeneralResult.CentralFrequencyMeas_MHz;
+                        if (stationFrequency == null)
+                        {
+                            ///TODO: Записать влог и игнорироват запись - перейти на следующую
+                        }
+
                         if (!station.GeneralResult.SpectrumStartFreq_MHz.HasValue || station.GeneralResult.SpectrumStartFreq_MHz.Value < 0.001m || station.GeneralResult.SpectrumStartFreq_MHz.Value > 400000
                            || !station.GeneralResult.SpectrumSteps_kHz.HasValue || station.GeneralResult.SpectrumSteps_kHz.Value < 0.001m || station.GeneralResult.SpectrumSteps_kHz.Value > 100000)
                         {
@@ -379,10 +397,12 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             WriteLog("MeasStartTime must be less than MeasFinishTime", "IResStGeneralRaw", scope);
                         }
 
+                        /// TODO: тут принимаем решение о создагнии или не создании записи о станции
                         var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
                         builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
                         builderInsertResMeasStation.SetValue(c => c.MeasGlobalSID, station.RealGlobalSid);
                         builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
+                        builderInsertResMeasStation.SetValue(c => c.Frequency, stationFrequency);
                         builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, _resMeasId);
                         builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
                         if (int.TryParse(station.StationId, out int Idstation))
@@ -411,10 +431,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 {
                                     InsertResSysInfo(station, IDResGeneral, scope);
                                     InsertResStMaskElement(station, IDResGeneral, scope);
-                                    InsertResStLevelCar(station, valInsResMeasStation.Id, scope);
-                                    InsertBearing(valInsResMeasStation.Id, station, scope);
                                 }
                             }
+
+                            InsertResStLevelCar(station, valInsResMeasStation.Id, scope);
+                            InsertBearing(valInsResMeasStation.Id, station, scope);
                         }
                     }
                 }
@@ -762,6 +783,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         }
         private long InsertResStGeneral(StationMeasResult station, long valInsResMeasStation, GeneralMeasResult generalResult, IDataLayerScope scope)
         {
+            if (generalResult.LevelsSpectrum_dBm == null || generalResult.LevelsSpectrum_dBm.Length == 0)
+            {
+                return default(long);
+            }
+
             var builderInsertResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().Insert();
             builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
             builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
