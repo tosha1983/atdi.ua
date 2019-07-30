@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents parameters of sensor measurement equipment depending on frequency
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-
+    [Serializable]
     public class EquipmentSensitivity
     {
         /// <summary>

@@ -25,7 +25,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
 
 
         public SysInfoTaskWorker(ITimeService timeService,
@@ -33,7 +32,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ITaskStarter taskStarter,
             ILogger logger,
             IBusGate busGate,
-            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
             IController controller)
         {
             this._processingDispatcher = processingDispatcher;
@@ -42,7 +40,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._logger = logger;
             this._busGate = busGate;
             this._controller = controller;
-            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
         }
 
 

@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Measurement device parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class DeviceMeasParam
     {
         /// <summary>

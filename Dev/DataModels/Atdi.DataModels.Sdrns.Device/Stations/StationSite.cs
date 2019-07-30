@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Parameters of the station site
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class StationSite : GeoPoint
     {
         /// <summary>

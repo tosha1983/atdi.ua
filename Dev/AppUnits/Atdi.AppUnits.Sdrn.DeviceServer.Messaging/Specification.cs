@@ -53,6 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         public static readonly string UnknownErrorsInSendMeasTaskHandler = "Unknown errors in 'SendMeasTaskHandler'";
         public static readonly string UnknownErrorsInSendCommandHandler = "Unknown errors in 'SendCommandHandler'";
         public static readonly string UnknownErrorsInSendRegistrationResultHandler = "Unknown errors in 'SendRegistrationResultHandler'";
+        public static readonly string UnknownErrorsInSendUpdatingResultHandler = "Unknown errors in 'SendUpdatingResultHandler'";
         public static readonly string DeviceServerCanNotBeStarted = "The DeviceServer can not be started, because there is no information about the registered object in the database";
 
 

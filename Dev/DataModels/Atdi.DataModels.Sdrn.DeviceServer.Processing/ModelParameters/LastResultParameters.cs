@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
+    [Serializable]
     public class LastResultParameters
     {
         public int NN { get; set; }
