@@ -48,6 +48,7 @@
     <Compile Include="Calculation\Common\SmoothTrace.cs" />
     <Compile Include="Calculation\Common\CommonCalcPowFromTrace.cs" />
     <Compile Include="Calculation\Common\CommonConvertors.cs" />
+    <Compile Include="Calculation\Common\СorrelationСoefficient.cs" />
     <Compile Include="Calculation\Signalization\CalcNeedResearchSysInfo.cs" />
     <Compile Include="Calculation\Signalization\CopyHelper.cs" />
     <Compile Include="Calculation\Signalization\EmissionCounting.cs" />

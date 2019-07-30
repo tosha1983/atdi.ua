@@ -119,7 +119,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                         MainConfig = TAC.Main;
                     }
                     MesureSysInfoDeviceProperties msidp = GetProperties(MainConfig);
-                    host.RegisterHandler<COM.MesureSystemInfoCommand, COMR.MesureSystemInfoResult>(MesureSystemInfoHandler, msidp);                   
+                    host.RegisterHandler<COM.MesureSystemInfoCommand, COMR.MesureSystemInfoResult>(MesureSystemInfoHandler, msidp);
                 }
             }
             #region Exception
@@ -173,11 +173,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 if (IsRuning)
                 {
                     context.Lock();
-                    if (command.Parameter.RFInput == null || command.Parameter.RFInput != 1 || command.Parameter.RFInput != 2)
+                    if (command.Parameter.RFInput != 1 || command.Parameter.RFInput != 2)
                     { command.Parameter.RFInput = 1; }
-                    if (command.Parameter.DelayToSendResult_s == null || command.Parameter.DelayToSendResult_s == double.NaN || command.Parameter.DelayToSendResult_s < 30)
+                    if (command.Parameter.DelayToSendResult_s == double.NaN || command.Parameter.DelayToSendResult_s < 30)
                     { command.Parameter.DelayToSendResult_s = 30; }
-                    if (command.Parameter.DelayToSendResult_s == null || command.Parameter.DelayToSendResult_s == double.NaN ||command.Parameter.DelayToSendResult_s > 300)
+                    if (command.Parameter.DelayToSendResult_s == double.NaN || command.Parameter.DelayToSendResult_s > 300)
                     { command.Parameter.DelayToSendResult_s = 300; }
                     if (command.Parameter.Standart.ToLower().Contains("gsm"))
                     {
@@ -721,6 +721,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                             }
                         }
                     }
+                    else if (command.Parameter.Standart.ToLower().Contains("tetra"))
+                    {
+                        if (Option_TETRA == 1)
+                        {
+                            throw new Exception(command.Parameter.Standart + " option unavailable");
+                        }
+                        else
+                        {
+                            throw new Exception(command.Parameter.Standart + " option unavailable");
+                        }
+                    }
+                    else if (command.Parameter.Standart.ToLower().Contains("acd"))
+                    {
+                        if (Option_ACD == 1)
+                        {
+                            throw new Exception(command.Parameter.Standart + " option unavailable");
+                        }
+                        else
+                        {
+                            throw new Exception(command.Parameter.Standart + " option unavailable");
+                        }
+                    }
                 }
                 else
                 {
@@ -772,55 +794,47 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_GSM;
+        private static int Option_GSM;
 
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_UMTS;
+        private static int Option_UMTS;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_LTE;
+        private static int Option_LTE;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_CDMA;
+        private static int Option_CDMA;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_EVDO;
+        private static int Option_EVDO;
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_TETRA;
+        private static int Option_TETRA;
+
+        
 
         /// <summary>
         /// 0: не подключались и незнаем 1: доступна 2: нет
         /// </summary>
-        private int Option_RFPS;
-
-        /// <summary>
-        /// 0: не подключались и незнаем 1: доступна 2: нет
-        /// </summary>
-        private int Option_ACD;
+        private static int Option_ACD;
         #endregion TechOnThisScaner
 
-        UserLowLevelErrorMessageHandler.LowLevelErrorHandlerRegistry LowLevelErrorHandlerRegistry;
-        LowLevelErrorHandlerImplementation MyLowLevelErrorHandlerImplementation;
         MessageTracer rMessageTracer = new MessageTracer();
         CViComError error;
         CReceiverListener receiverListener;
         SConnectedReceiverTable myReceivers;
         public static List<SConnectedReceiverTable.SReceiver.SDeviceOption> option { get; set; }
-
-        RohdeSchwarz.ViCom.Net.CViComBasicInterface BasicInterface;
-
 
         CViComLoader<CViComGpsInterface> gpsLoader;
         CViComGpsInterface GpsInterface;
@@ -848,21 +862,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
         static CViComLteInterfaceDataProcessor LteListener;
 
 
-        static CViComLoader<CViComAcdInterface> acdLoader;
-        static CViComAcdInterface acdInterface;
-        static CViComBasicInterface acdBasicInterface;
-        static CViComAcdInterfaceDataProcessor ACDListener;
-
-
         static SSweepSettings rSSweepSettings = new SSweepSettings();
 
-        private static double DetectionLevelGSM = -100;
         private static uint RFInputGSM = 1;
-        private static double DetectionLevelUMTS = -100;
         private static uint RFInputUMTS = 1;
-        private static double DetectionLevelLTE = -100;
         private static uint RFInputLTE = 1;
-        private static double DetectionLevelCDMA = -100;
         private static uint RFInputCDMA = 1;
 
 
@@ -973,7 +977,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                     Option_CDMA = 0;
                     Option_EVDO = 0;
                     Option_TETRA = 0;
-                    Option_RFPS = 0;
+                    //Option_RFPS = 0;
 
                     bool K0 = false;
                     foreach (SConnectedReceiverTable.SReceiver.SDeviceOption op in option)
@@ -988,7 +992,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                             Option_CDMA = 1;
                             Option_EVDO = 1;
                             Option_TETRA = 1;
-                            Option_RFPS = 1;
+                            //Option_RFPS = 1;
                         }
                     }
                     if (!K0)//нету демо опции на жире проверим все, как оказалось не все K0 это на жире...
@@ -1000,7 +1004,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                         Option_CDMA = 2;
                         Option_EVDO = 2;
                         Option_TETRA = 2;
-                        Option_RFPS = 2;
+                        //Option_RFPS = 2;
                         if (DeviceType == DeviceType.Tsme || DeviceType == DeviceType.Tsme6)
                         {
                             #region
@@ -1028,7 +1032,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                 }
                                 else if (op.boActiveOption && op.pcOptionType.Contains("-K27"))//RF Power Scan
                                 {
-                                    Option_RFPS = 1;
+                                    //Option_RFPS = 1;
                                 }
                                 else if (op.boActiveOption && op.pcOptionType.Contains("-K29"))//LTE
                                 {
@@ -1056,7 +1060,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                 }
                                 else if (op.boActiveOption && (op.pcOptionType.Contains("-K27") || op.pcOptionType.Contains("-K127")))//RF Power Scan
                                 {
-                                    Option_RFPS = 1;
+                                    //Option_RFPS = 1;
                                 }
                                 else if (op.boActiveOption && (op.pcOptionType.Contains("-K29") || op.pcOptionType.Contains("-K129")))//LTE
                                 {
@@ -1156,7 +1160,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
         }
         #endregion GPS     
-               
+
 
 
         #region GSM
@@ -1579,7 +1583,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
             }
             catch (Exception e)
             {
-
+                _logger.Exception(Contexts.ThisComponent, e);
             }
         }
         #endregion GSM
@@ -2894,10 +2898,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
 
                                             GSMBTS[i].GetStationInfo();
 
-                                            if (GSMBTS[i].Power > DetectionLevelGSM)/////////////////////////////////////////////////////////////////////
-                                            { GSMBTS[i].LastDetectionLevelUpdete = GSMBTS[i].LastLevelUpdete; }
-                                            // GSMBTS[i].DeleteFromMeasMon = (GSMBTS[i].Power < DetectionLevelGSM - LevelDifferenceToRemove);
-
                                             bool freqLevelMax = true;
                                             for (int l = 0; l < GSMBTS.Count; l++)
                                             {
@@ -3119,9 +3119,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                                             UMTSBTS[i].RSCP = cpichResult.sRSCPInDBm100 * 0.01;
                                             UMTSBTS[i].LastLevelUpdete = _timeService.GetGnssUtcTime().Ticks - TicksBefore1970;
                                             UMTSBTS[i].GetStationInfo();
-                                            if (UMTSBTS[i].RSCP > DetectionLevelUMTS)/////////////////////////////////////////////////////////////////////
-                                            { UMTSBTS[i].LastDetectionLevelUpdete = _timeService.GetGnssUtcTime().Ticks; }
-                                            //UMTSBTS[i].DeleteFromMeasMon = (UMTSBTS[i].RSCP < DetectionLevelUMTS - LevelDifferenceToRemove);
 
                                             UMTSBTS[i].ISCP = cpichResult.sISCPInDBm100 * 0.01;
                                             UMTSBTS[i].InbandPower = cpichResult.sInbandPowerInDBm100 * 0.01;
@@ -3712,89 +3709,82 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                         #region Sib
                         if (pData.pDemodResult != null)
                         {
-                            try
+                            RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderRequest dec = new RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderRequest()
                             {
-                                RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderRequest dec = new RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderRequest()
-                                {
-                                    dwBitCount = pData.pDemodResult.dwBitCount,
-                                    PduSpec = pData.pDemodResult.PduSpec,
-                                    pbBitStream = pData.pDemodResult.pbBitStream
-                                };
-                                RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderResult dr = new RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderResult();
-                                dr = cdmaInterface.RetrieveTextForPDU(dec, SDefs.dwDefaultTimeOutInMs);
+                                dwBitCount = pData.pDemodResult.dwBitCount,
+                                PduSpec = pData.pDemodResult.PduSpec,
+                                pbBitStream = pData.pDemodResult.pbBitStream
+                            };
+                            RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderResult dr = new RohdeSchwarz.ViCom.Net.CDMA.SL3DecoderResult();
+                            dr = cdmaInterface.RetrieveTextForPDU(dec, SDefs.dwDefaultTimeOutInMs);
 
-                                for (int i = 0; i < CDMABTS.Count; i++)
+                            for (int i = 0; i < CDMABTS.Count; i++)
+                            {
+                                if (pData.dwChannelIndex == CDMABTS[i].FreqIndex && pData.pDemodResult.wFirstBtsId == CDMABTS[i].Indicator)
                                 {
-                                    if (pData.dwChannelIndex == CDMABTS[i].FreqIndex && pData.pDemodResult.wFirstBtsId == CDMABTS[i].Indicator)
+                                    #region save sib data
+                                    List<COMRMSI.SystemInformationBlock> ibs = new List<COMRMSI.SystemInformationBlock>() { };
+                                    bool fib = false;
+                                    if (CDMABTS[i].SysInfoBlocks != null)
                                     {
-                                        #region save sib data
-                                        List<COMRMSI.SystemInformationBlock> ibs = new List<COMRMSI.SystemInformationBlock>() { };
-                                        bool fib = false;
-                                        if (CDMABTS[i].SysInfoBlocks != null)
+                                        ibs = new List<COMRMSI.SystemInformationBlock>(CDMABTS[i].SysInfoBlocks);
+                                        for (int ib = 0; ib < ibs.Count(); ib++)
                                         {
-                                            ibs = new List<COMRMSI.SystemInformationBlock>(CDMABTS[i].SysInfoBlocks);
-                                            for (int ib = 0; ib < ibs.Count(); ib++)
+                                            if (ibs[ib].Type == pData.pDemodResult.PduSpec.ePDU.ToString())
                                             {
-                                                if (ibs[ib].Type == pData.pDemodResult.PduSpec.ePDU.ToString())
-                                                {
-                                                    fib = true;
-                                                    ibs[ib].DataString = dr.pcPduText;
-                                                }
+                                                fib = true;
+                                                ibs[ib].DataString = dr.pcPduText;
                                             }
                                         }
-                                        if (fib == false)
-                                        {
-                                            COMRMSI.SystemInformationBlock sib = new COMRMSI.SystemInformationBlock()
-                                            {
-                                                DataString = dr.pcPduText,
-                                                Type = pData.pDemodResult.PduSpec.ePDU.ToString()
-                                            };
-                                            ibs.Add(sib);
-                                            CDMABTS[i].SysInfoBlocks = ibs.ToArray();
-                                        }
-                                        #endregion save sib data
-                                        #region parse
-                                        if (dr.ePDU == RohdeSchwarz.ViCom.Net.CDMA.Pdu.Type.EVDO_SECTOR_PARAMETERS)
-                                        {
-                                            int[] data = ParseEVDO_SECTOR_PARAMETERS(dr.pcPduText);
-                                            CDMABTS[i].SID = data[0];
-                                            CDMABTS[i].NID = 0;
-                                            CDMABTS[i].BaseID = data[1];
-
-                                            bool FullData = CDMABTS[i].BaseID != -1 && CDMABTS[i].SID != -1 && CDMABTS[i].NID != -1;
-                                            if (FullData)
-                                            {
-                                                string GCID = CDMABTS[i].NID.ToString() + " " + CDMABTS[i].SID.ToString() + " " +
-                                                    string.Format("{0:00000}", CDMABTS[i].PN) + " " + string.Format("{0:000000}", CDMABTS[i].BaseID);
-                                                CDMABTS[i].GCID = GCID;
-                                            }
-                                            CDMABTS[i].FullData = FullData;
-                                        }
-                                        if (dr.ePDU == RohdeSchwarz.ViCom.Net.CDMA.Pdu.Type.SYS_PARAMS)
-                                        {
-                                            decimal[] data = ParseCDMA_SYS_PARAMS(dr.pcPduText);
-                                            CDMABTS[i].BaseID = (int)data[0];
-                                            if (CDMABTS[i].BaseID != -1 && CDMABTS[i].SID != -1 && CDMABTS[i].NID != -1)
-                                            {
-                                                CDMABTS[i].GCID = CDMABTS[i].NID.ToString() + " " + CDMABTS[i].SID.ToString() + " " +
-                                                      string.Format("{0:00000}", CDMABTS[i].PN) + " " + string.Format("{0:000000}", CDMABTS[i].BaseID);
-                                                CDMABTS[i].FullData = true;
-                                            }
-                                        }
-                                        if (dr.ePDU == RohdeSchwarz.ViCom.Net.CDMA.Pdu.Type.EXT_SYS_PARAMS)
-                                        {
-                                            decimal[] data = ParseCDMA_EXT_SYS_PARAMS(dr.pcPduText);
-                                            CDMABTS[i].MCC = (int)data[0];
-                                            CDMABTS[i].MNC = (int)data[1];
-                                        }
-                                        #endregion
-                                        CDMABTS[i].GetStationInfo();
                                     }
-                                }
-                            }
-                            catch (Exception e)
-                            {
+                                    if (fib == false)
+                                    {
+                                        COMRMSI.SystemInformationBlock sib = new COMRMSI.SystemInformationBlock()
+                                        {
+                                            DataString = dr.pcPduText,
+                                            Type = pData.pDemodResult.PduSpec.ePDU.ToString()
+                                        };
+                                        ibs.Add(sib);
+                                        CDMABTS[i].SysInfoBlocks = ibs.ToArray();
+                                    }
+                                    #endregion save sib data
+                                    #region parse
+                                    if (dr.ePDU == RohdeSchwarz.ViCom.Net.CDMA.Pdu.Type.EVDO_SECTOR_PARAMETERS)
+                                    {
+                                        int[] data = ParseEVDO_SECTOR_PARAMETERS(dr.pcPduText);
+                                        CDMABTS[i].SID = data[0];
+                                        CDMABTS[i].NID = 0;
+                                        CDMABTS[i].BaseID = data[1];
 
+                                        bool FullData = CDMABTS[i].BaseID != -1 && CDMABTS[i].SID != -1 && CDMABTS[i].NID != -1;
+                                        if (FullData)
+                                        {
+                                            string GCID = CDMABTS[i].NID.ToString() + " " + CDMABTS[i].SID.ToString() + " " +
+                                                string.Format("{0:00000}", CDMABTS[i].PN) + " " + string.Format("{0:000000}", CDMABTS[i].BaseID);
+                                            CDMABTS[i].GCID = GCID;
+                                        }
+                                        CDMABTS[i].FullData = FullData;
+                                    }
+                                    if (dr.ePDU == RohdeSchwarz.ViCom.Net.CDMA.Pdu.Type.SYS_PARAMS)
+                                    {
+                                        decimal[] data = ParseCDMA_SYS_PARAMS(dr.pcPduText);
+                                        CDMABTS[i].BaseID = (int)data[0];
+                                        if (CDMABTS[i].BaseID != -1 && CDMABTS[i].SID != -1 && CDMABTS[i].NID != -1)
+                                        {
+                                            CDMABTS[i].GCID = CDMABTS[i].NID.ToString() + " " + CDMABTS[i].SID.ToString() + " " +
+                                                  string.Format("{0:00000}", CDMABTS[i].PN) + " " + string.Format("{0:000000}", CDMABTS[i].BaseID);
+                                            CDMABTS[i].FullData = true;
+                                        }
+                                    }
+                                    if (dr.ePDU == RohdeSchwarz.ViCom.Net.CDMA.Pdu.Type.EXT_SYS_PARAMS)
+                                    {
+                                        decimal[] data = ParseCDMA_EXT_SYS_PARAMS(dr.pcPduText);
+                                        CDMABTS[i].MCC = (int)data[0];
+                                        CDMABTS[i].MNC = (int)data[1];
+                                    }
+                                    #endregion
+                                    CDMABTS[i].GetStationInfo();
+                                }
                             }
                         }
                         #endregion

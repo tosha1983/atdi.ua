@@ -53,6 +53,15 @@
     <Compile Include="AppComponent\IComponent.cs" />
     <Compile Include="AppServer\IServerConfig.cs" />
     <Compile Include="AppServer\IServerHostLoader.cs" />
+    <Compile Include="Caching\DataCache.cs" />
+    <Compile Include="Caching\DataCacheDescriptor.cs" />
+    <Compile Include="Caching\DataCacheEntry.cs" />
+    <Compile Include="Caching\DataCacheOptions.cs" />
+    <Compile Include="Caching\DataCacheSite.cs" />
+    <Compile Include="Caching\DataCacheDefiner.cs" />
+    <Compile Include="Caching\IDataCache.cs" />
+    <Compile Include="Caching\IDataCacheDescriptor.cs" />
+    <Compile Include="Caching\IDataCacheSite.cs" />
     <Compile Include="Cryptography\Encryptor.cs" />
     <Compile Include="DefaultResourceResolver.cs" />
     <Compile Include="DependencyInjection\BaseOnMode.cs" />
