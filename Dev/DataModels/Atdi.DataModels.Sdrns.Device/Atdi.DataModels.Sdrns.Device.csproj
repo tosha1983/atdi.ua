@@ -108,6 +108,7 @@
     <Compile Include="Results\StationSysInfoBlock.cs" />
     <Compile Include="Tasks\DeviceMeasParam.cs" />
     <Compile Include="Tasks\LocationMeasParam.cs" />
+    <Compile Include="Tasks\Signaling\SignalingMeasTaskSpecialParameters.cs" />
     <Compile Include="Tasks\Signaling\SignalingMeasTask.cs" />
     <Compile Include="Tasks\Signaling\ReferenceSituation.cs" />
     <Compile Include="Tasks\Signaling\ReferenceSignal.cs" />
