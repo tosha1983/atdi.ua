@@ -30,19 +30,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             return duration;
         }
 
-        public static string GetTaskId(string value)
-        {
-            var result = "";
-            if (value != null)
-            {
-                var words = value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                if ((words != null) && (words.Length > 0))
-                {
-                    result = words[0];
-                }
-            }
-            return result;
-        }
 
         /// <summary>
         /// Конвертор из StationSystemInfo[] -> SysInfoResult[]

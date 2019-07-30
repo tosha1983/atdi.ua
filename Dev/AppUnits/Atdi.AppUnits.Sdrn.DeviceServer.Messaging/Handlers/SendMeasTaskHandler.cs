@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.EntityOrm;
 using Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor;
+using Atdi.DataModels.Sdrn.DeviceServer;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
@@ -20,20 +21,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ILogger _logger;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITaskStarter _taskStarter;
-        private readonly IRepository<DM.MeasTask, long?> _repositoryMeasTask;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParameters;
-        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
+        private readonly IRepository<TaskParameters, string> _repositoryTaskParameters;
         private readonly ITimeService _timeService;
-        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
         private readonly ConfigMessaging _config;
+        private readonly IRepository<DM.DeviceCommand, string> _repositoryDeviceCommand;
+
 
         public SendMeasTaskHandler(
            ITimeService timeService,
            IProcessingDispatcher processingDispatcher,
-           IRepository<DM.MeasTask, long?> repositoryMeasTask,
-           IRepository<TaskParameters, long?> repositoryTaskParameters,
-           IRepository<DM.Sensor, long?> repositorySensor,
-           IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
+           IRepository<TaskParameters, string> repositoryTaskParameters,
+           IRepository<DM.DeviceCommand, string> repositoryDeviceCommand,
            ITaskStarter taskStarter,
            ConfigMessaging config,
            ILogger logger)
@@ -41,12 +39,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             this._processingDispatcher = processingDispatcher;
             this._taskStarter = taskStarter;
             this._logger = logger;
-            this._repositoryMeasTask = repositoryMeasTask;
             this._repositoryTaskParameters = repositoryTaskParameters;
-            this._repositorySensor = repositorySensor;
             this._timeService = timeService;
-            this._repositoryLastUpdateByInt = repositoryLastUpdateByInt;
             this._config = config;
+            this._repositoryDeviceCommand = repositoryDeviceCommand;
         }
 
 
@@ -57,88 +53,43 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             {
                 if ((message.Data != null) && (message.Data.SdrnServer != null) && (message.Data.SensorName != null) && (message.Data.EquipmentTechId != null))
                 {
-                    DM.Sensor sensor = null;
-                    var sensors = this._repositorySensor.LoadAllObjects();
-                    if ((sensors!=null) && (sensors.Length>0))
+                    if ((message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
+                        || (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
+                        || (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas))
                     {
-                        sensor = sensors[0];
+
+                        var taskParameters = message.Data.Convert(_config);
+                        var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
+
+                        this._repositoryDeviceCommand.Create(new DM.DeviceCommand()
+                        {
+                            Command = "CreateMeasTask",
+                            CustDate1 = DateTime.Now,
+                            CustTxt1 = message.Data.Measurement.ToString()+"_"+message.Data.TaskId+"_",
+                            EquipmentTechId = message.Data.EquipmentTechId,
+                            SdrnServer = message.Data.SdrnServer,
+                            SensorName = message.Data.SensorName
+                        });
+
+                        this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
+
+                        message.Result = MessageHandlingResult.Confirmed;
+
                     }
-                    // здесь предварительная проверка(валидация) таска на возможность физической обработки
-                    if (Validation(message.Data, sensor)) // пока заглушка
+                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
                     {
-                        var lastUpdate = new LastUpdate()
-                        {
-                            TableName = "XBS_TASKPARAMETERS",
-                            LastDateTimeUpdate = DateTime.Now,
-                            Status = "N"
-                        };
-                        var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
-                        if ((allTablesLastUpdated != null) && (allTablesLastUpdated.Length > 0))
-                        {
-                            var listAlTables = allTablesLastUpdated.ToList();
-                            var findTableProperties = listAlTables.Find(z => z.TableName == "XBS_TASKPARAMETERS");
-                            if (findTableProperties != null)
-                            {
-                                this._repositoryLastUpdateByInt.Update(lastUpdate);
-                            }
-                            else
-                            {
-                                this._repositoryLastUpdateByInt.Create(lastUpdate);
-                            }
-                        }
-                        else
-                        {
-                            this._repositoryLastUpdateByInt.Create(lastUpdate);
-                        }
-
-                        if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
-                        {
-
-                            var taskParameters = message.Data.Convert(_config);
-                            var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
-
-                            this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
-
-                            message.Result = MessageHandlingResult.Confirmed;
-
-                        }
-                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
-                        {
-
-                            var taskParameters = message.Data.Convert(_config);
-                            var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
-
-                            this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
-
-                            message.Result = MessageHandlingResult.Confirmed;
-
-                        }
-                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
-                        {
-
-                            var taskParameters = message.Data.Convert(_config);
-                            var idTaskParameters = this._repositoryTaskParameters.Create(taskParameters);
-
-                            this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
-
-                            message.Result = MessageHandlingResult.Confirmed;
-
-                        }
-                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
-                        {
-                            message.Result = MessageHandlingResult.Trash;
-                            throw new NotImplementedException("Not supported MeasurementType  'Level'");
-                        }
-                        else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.MonitoringStations)
-                        {
-                            message.Result = MessageHandlingResult.Trash;
-                            throw new NotImplementedException("Not supported MeasurementType 'MonitoringStations'");
-                        }
-                        else
-                        {
-                            message.Result = MessageHandlingResult.Trash;
-                            throw new NotImplementedException("Not supported MeasurementType");
-                        }
+                        message.Result = MessageHandlingResult.Trash;
+                        throw new NotImplementedException("Not supported MeasurementType  'Level'");
+                    }
+                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.MonitoringStations)
+                    {
+                        message.Result = MessageHandlingResult.Trash;
+                        throw new NotImplementedException("Not supported MeasurementType 'MonitoringStations'");
+                    }
+                    else
+                    {
+                        message.Result = MessageHandlingResult.Trash;
+                        throw new NotImplementedException("Not supported MeasurementType");
                     }
                 }
                 else
@@ -152,21 +103,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                 message.Result = MessageHandlingResult.Error;
                 this._logger.Error(Contexts.ThisComponent, Exceptions.UnknownErrorsInSendMeasTaskHandler, e.Message);
             }
-        }
-
-        /// <summary>
-        /// Предварительная валидация measTask
-        /// </summary>
-        /// <param name="measTask"></param>
-        /// <returns></returns>
-        public bool Validation(DM.MeasTask measTask, DM.Sensor sensor)
-        {
-            bool isSuccessValidation = false;
-            if ((measTask.SensorName == sensor.Name) && (measTask.EquipmentTechId == sensor.Equipment.TechId))
-            {
-                isSuccessValidation = true;
-            }
-            return isSuccessValidation;
         }
     }
 }

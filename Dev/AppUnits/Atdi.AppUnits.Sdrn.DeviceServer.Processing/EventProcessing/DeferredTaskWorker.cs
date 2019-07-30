@@ -19,7 +19,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ITimeService _timeService;
         private readonly ConfigProcessing _config;
         private readonly IWorkScheduler _workScheduler;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
 
 
         public DeferredTaskWorker(ILogger logger,
@@ -28,7 +28,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             IWorkScheduler workScheduler,
             ConfigProcessing config,
             ITimeService timeService,
-            IRepository<TaskParameters, long?> repositoryTaskParametersByInt)
+            IRepository<TaskParameters, string> repositoryTaskParametersByString)
         {
             this._logger = logger;
             this._processingDispatcher = processingDispatcher;
@@ -36,7 +36,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._timeService = timeService;
             this._config = config;
             this._workScheduler = workScheduler;
-            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
+            this._repositoryTaskParametersByString = repositoryTaskParametersByString;
         }
         /// <summary>
         /// Обработка отложенных задач
@@ -84,14 +84,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         soTask.LastTimeSend = DateTime.Now;
                                         soTask.taskParameters = taskParameters;
                                         soTask.taskParameters.status = StatusTask.A.ToString();
-                                        this._repositoryTaskParametersByInt.Update(soTask.taskParameters);
+                                        this._repositoryTaskParametersByString.Update(soTask.taskParameters);
                                         soTask.mesureTraceParameter = soTask.taskParameters.ConvertForSO();
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
                                         _taskStarter.RunParallel(soTask, process, context);
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(soTask.Id));
-                                        if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                        if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
                                         {
-                                            context.Process.listDeferredTasks.Remove(taskParameters);
+                                            context.Process.listDeferredTasks.RemoveAll(c=>c.SDRTaskId== taskParameters.SDRTaskId);
                                         }
                                     }
                                 }
@@ -106,16 +106,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     signalTask.LastTimeSend = DateTime.Now;
                                     signalTask.taskParameters = taskParameters;
                                     signalTask.taskParameters.status = StatusTask.A.ToString();
-                                    this._repositoryTaskParametersByInt.Update(signalTask.taskParameters);
+                                    this._repositoryTaskParametersByString.Update(signalTask.taskParameters);
                                     signalTask.mesureTraceParameter = signalTask.taskParameters.ConvertForSignaling();
                                     signalTask.actionConvertBW = ConvertTaskParametersToMesureTraceParameterForBandWidth.ConvertForBW;
                                     signalTask.actionConvertSysInfo = ConvertTaskParametersToMesureSystemInfoParameterForSysInfo.ConvertForMesureSystemInfoParameter;
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
                                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));
-                                    if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                    if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
                                     {
-                                        context.Process.listDeferredTasks.Remove(taskParameters);
+                                        context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
                                     }
                                 }
                                 else if (taskParameters.MeasurementType == MeasType.BandwidthMeas)
@@ -134,14 +134,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     bandWidtTask.LastTimeSend = DateTime.Now;
                                     bandWidtTask.taskParameters = taskParameters;
                                     bandWidtTask.taskParameters.status = StatusTask.A.ToString();
-                                    this._repositoryTaskParametersByInt.Update(bandWidtTask.taskParameters);
+                                    this._repositoryTaskParametersByString.Update(bandWidtTask.taskParameters);
                                     bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
                                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(bandWidtTask.Id));
-                                    if (context.Process.listDeferredTasks.Contains(taskParameters))
+                                    if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
                                     {
-                                        context.Process.listDeferredTasks.Remove(taskParameters);
+                                        context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
                                     }
                                 }
                                 else

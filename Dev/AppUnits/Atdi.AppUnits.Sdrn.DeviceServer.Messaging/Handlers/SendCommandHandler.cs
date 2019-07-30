@@ -20,24 +20,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
         private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
-        private readonly IRepository<LastUpdate, long?> _repositoryLastUpdateByInt;
+        private readonly ConfigMessaging _configMessaging;
+        private readonly IRepository<DM.DeviceCommand, string> _repositoryDeviceCommand;
+
 
         public SendCommandHandler(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
-            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
-            IRepository<LastUpdate, long?> repositoryLastUpdateByInt,
             IRepository<TaskParameters, string> repositoryTaskParametersBystring,
+            ConfigMessaging configMessaging,
+            IRepository<DM.DeviceCommand, string> repositoryDeviceCommand,
             ITaskStarter taskStarter, ILogger logger)
         {
+            this._configMessaging = configMessaging;
             this._processingDispatcher = processingDispatcher;
             this._timeService = timeService;
             this._taskStarter = taskStarter;
             this._logger = logger;
-            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
             this._repositoryTaskParametersByString = repositoryTaskParametersBystring;
-            this._repositoryLastUpdateByInt = repositoryLastUpdateByInt;
+            this._repositoryDeviceCommand = repositoryDeviceCommand;
         }
 
         public override void OnHandle(IReceivedMessage<DM.DeviceCommand> message)
@@ -45,55 +46,37 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
             _logger.Verbouse(Contexts.ThisComponent, Categories.Handling, Events.MessageIsBeingHandled.With(message.Token.Type));
             try
             {
-                DM.DeviceCommand deviceCommand = message.Data;
-                if (deviceCommand.CustTxt1 != null)
+                if ((message.Data.Command == "StopMeasTask") || (message.Data.Command == "RunMeasTask") || (message.Data.Command == "DelMeasTask"))
                 {
-                    string idsTask = deviceCommand.CustTxt1;
-                    if (!string.IsNullOrEmpty(idsTask))
+                    DM.DeviceCommand deviceCommand = message.Data;
+                    if (deviceCommand.CustTxt1 != null)
                     {
-                        var taskParams = this._repositoryTaskParametersByString.LoadObject(idsTask);
-                        if (taskParams != null)
+                        string idsTask = deviceCommand.CustTxt1;
+                        if (!string.IsNullOrEmpty(idsTask))
                         {
-                            if (deviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
-                            {
-                                taskParams.status = StatusTask.A.ToString();
-                            }
-                            else if (deviceCommand.Command == TypeMeasTask.DelMeasTask.ToString())
-                            {
-                                taskParams.status = StatusTask.Z.ToString();
-                            }
-                            else if (deviceCommand.Command == TypeMeasTask.StopMeasTask.ToString())
-                            {
-                                taskParams.status = StatusTask.F.ToString();
-                            }
-                            // обновление TaskParameters в БД
-                            this._repositoryTaskParametersByInt.Update(taskParams);
 
-                            var lastUpdate = new LastUpdate()
+                            var taskParams = this._repositoryTaskParametersByString.LoadObject(idsTask);
+                            if (taskParams != null)
                             {
-                                TableName = "XBS_TASKPARAMETERS",
-                                LastDateTimeUpdate = DateTime.Now,
-                                Status = "N"
-                            };
-                            var allTablesLastUpdated = this._repositoryLastUpdateByInt.LoadAllObjects();
-                            if ((allTablesLastUpdated != null) && (allTablesLastUpdated.Length > 0))
-                            {
-                                var listAlTables = allTablesLastUpdated.ToList();
-                                var findTableProperties = listAlTables.Find(z => z.TableName == "XBS_TASKPARAMETERS");
-                                if (findTableProperties != null)
+                                this._repositoryDeviceCommand.Create(message.Data);
+
+                                if (deviceCommand.Command == TypeMeasTask.RunMeasTask.ToString())
                                 {
-                                    this._repositoryLastUpdateByInt.Update(lastUpdate);
+                                    taskParams.status = StatusTask.A.ToString();
                                 }
-                                else
+                                else if (deviceCommand.Command == TypeMeasTask.DelMeasTask.ToString())
                                 {
-                                    this._repositoryLastUpdateByInt.Create(lastUpdate);
+                                    taskParams.status = StatusTask.Z.ToString();
                                 }
+                                else if (deviceCommand.Command == TypeMeasTask.StopMeasTask.ToString())
+                                {
+                                    taskParams.status = StatusTask.F.ToString();
+                                }
+                                // обновление TaskParameters в БД
+                                this._repositoryTaskParametersByString.Update(taskParams);
+
+                                this._logger.Info(Contexts.ThisComponent, Categories.SendCommandHandlerHandlerStart, Events.UpdateTaskParameters);
                             }
-                            else
-                            {
-                                this._repositoryLastUpdateByInt.Create(lastUpdate);
-                            }
-                            this._logger.Info(Contexts.ThisComponent, Categories.SendCommandHandlerHandlerStart, Events.UpdateTaskParameters);
                         }
                     }
                 }

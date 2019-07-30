@@ -19,21 +19,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
 
-        public SendSensorUpdatingResultHandler(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger, IRepository<DM.Sensor, long?> repositorySensor)
+        public SendSensorUpdatingResultHandler(ITimeService timeService, IProcessingDispatcher processingDispatcher, ITaskStarter taskStarter, ILogger logger)
         {
             this._processingDispatcher = processingDispatcher;
             this._timeService = timeService;
             this._taskStarter = taskStarter;
             this._logger = logger;
-            this._repositorySensor = repositorySensor;
         }
 
         public override void OnHandle(IReceivedMessage<DM.SensorUpdatingResult> message)
         {
             _logger.Verbouse(Contexts.ThisComponent, Categories.Handling, Events.MessageIsBeingHandled.With(message.Token.Type));
-            message.Result = MessageHandlingResult.Confirmed;
+            try
+            {
+                DM.SensorUpdatingResult sensorRegistrationResult = message.Data;
+                message.Result = MessageHandlingResult.Confirmed;
+            }
+            catch (Exception e)
+            {
+                message.Result = MessageHandlingResult.Error;
+                this._logger.Error(Contexts.ThisComponent, Exceptions.UnknownErrorsInSendUpdatingResultHandler, e.Message);
+            }
         }
     }
 }

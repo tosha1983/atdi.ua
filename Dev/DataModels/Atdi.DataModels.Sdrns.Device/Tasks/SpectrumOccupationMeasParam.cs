@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Spectrum occupancy measurement parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class SpectrumOccupationMeasParam
     {
         /// <summary>
