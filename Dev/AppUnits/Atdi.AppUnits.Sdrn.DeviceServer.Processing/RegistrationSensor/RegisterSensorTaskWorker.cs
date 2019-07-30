@@ -197,11 +197,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else
                 {
-                    this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorInformationRecordedDB);
                     sensor.Status = "A";
                     var publisher = this._busGate.CreatePublisher("main");
                     publisher.Send<DM.Sensor>("RegisterSensor", sensor);
                     publisher.Dispose();
+
+                    this._logger.Info(Contexts.RegisterSensorTaskWorker, Events.SensorInformationSendToSDRNS);
+
                     context.Process.activeSensor = sensor;
                 }
                 context.Finish();

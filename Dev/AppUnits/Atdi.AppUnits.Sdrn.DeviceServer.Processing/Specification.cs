@@ -32,6 +32,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     {
         public static readonly EventText ReceivedSensorUpdatingConfirmation = "Received sensor updating confirmation";
         public static readonly EventText ReceivedSensorRegistrationConfirmation = "Received sensor registration confirmation";
+        public static readonly EventText SensorInformationSendToSDRNS = "Sensor information succesfully sended in SDRNS";
         public static readonly EventText SensorInformationRecordedDB = "Sensor information succesfully recorded in database";
         public static readonly EventText SensorInformationUpdatedInDb = "Sensor information succesfully updated in database";
         public static readonly EventText SensorInformationNotRecordedDB = "Sensor information not recorded in database";
