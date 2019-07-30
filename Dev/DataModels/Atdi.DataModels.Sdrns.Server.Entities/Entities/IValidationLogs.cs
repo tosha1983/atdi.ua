@@ -19,5 +19,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string TableName { get; set; }
         string Info { get; set; }
         DateTime When { get; set; }
+        IAmqpMessage MESSAGE { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }

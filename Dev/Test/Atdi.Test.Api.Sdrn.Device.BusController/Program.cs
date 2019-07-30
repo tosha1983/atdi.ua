@@ -8,9 +8,15 @@ using Atdi.Api.Sdrn.Device.BusController;
 
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrns.Device;
+using Newtonsoft.Json;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
+    class JsonData
+    {
+        public string Type;
+        public string JsonBody;
+    }
     class Program
     {
         static void Main(string[] args)
@@ -243,10 +249,44 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 Equipment = new DM.SensorEquipment
                 {
                     TechId = "Atdi.Sdrn.Device.Client.API"
-                }
+                },
+                Administration = "Administration",
+                Antenna = new SensorAntenna
+                {
+                    AddLoss = 1,
+                    Category = "Category",
+                    Class = "Class",
+                    Code = "Code",
+                    CustDate1 = DateTime.Now,
+                    Direction = DataModels.Sdrns.AntennaDirectivity.Directional,
+                    GainMax = 1,
+                    GainType = "GainType",
+                    HBeamwidth = 120,
+                    LowerFreq_MHz = 100,
+                    Manufacturer = "Manufacturer",
+                    Name = "SensorAntenna",
+                    Polarization = DataModels.Sdrns.AntennaPolarization.V,
+                    TechId = "SensorAntenna.TechId",
+                    
+                },
+                Type = "Type",
+                Status = "A",
+                RxLoss = 20
             };
 
+            //publisher.Send("RegisterSensor", sensor, $"testing ");
+            //Console.ReadLine();
+
+            var res = LoadFromFiles(@"C:\Users\andrey\Downloads\2019-May-28_11.35_queue_Q.SDRN.Server");
+            foreach (var item in res)
+            {
+                publisher.Send("SendMeasResults", item, $"MonitoringStations");
+                //Console.ReadLine();
+            }
+            Console.ReadLine();
+            var measMSResult = BuildTestMeasResultsMonitoringStations();
             
+
 
             var measResult = BuildTestMeasResults();
             var commandResult = new DeviceCommandResult()
@@ -324,6 +364,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             return gate;
         }
 
+
+
         static IBusGateConfig CreateConfig(IBusGateFactory gateFactory)
         {
             var config = gateFactory.CreateConfig();
@@ -350,6 +392,121 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["SDRN.MessageConvertor.UseCompression"] = "false";
 
             return config;
+        }
+
+        static MeasResults[] LoadFromFiles(string folder)
+        {
+            var files = System.IO.Directory.GetFiles(folder, "*.json");
+            var result = new MeasResults[files.Length];
+            for (int i = 0; i < files.Length; i++)
+            {
+                var file = files[i];
+                var json = System.IO.File.ReadAllText(file);
+
+                var body = JsonConvert.DeserializeObject<JsonData>(json);
+                result[i] = JsonConvert.DeserializeObject<MeasResults>(body.JsonBody);
+            }
+            return result;
+        }
+        static MeasResults BuildTestMeasResultsMonitoringStations()
+        {
+            var result = new MeasResults
+            {
+                TaskId = "",
+                Measured = DateTime.Now,
+                Measurement = DataModels.Sdrns.MeasurementType.MonitoringStations,
+                ResultId = $"Client result ID: {Guid.NewGuid()}",
+                StartTime = DateTime.Today,
+                StopTime = DateTime.Today,
+                Status = "A",
+                ScansNumber = 1000,
+                SwNumber = 9000,
+                StationResults = BuildStationResults(10)
+                
+            };
+
+            return result;
+        }
+        static StationMeasResult[] BuildStationResults(int count)
+        {
+            var result = new StationMeasResult[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = BuildStationResult(i);
+            }
+            return result;
+        }
+        static StationMeasResult BuildStationResult(int index)
+        {
+            return new StationMeasResult
+            {
+                Status = "A",
+                Standard = "Standard",
+                RealGlobalSid = $"RGSID-{index:D4}",
+                TaskGlobalSid = $"TGSID-{index:D4}",
+                SectorId = index.ToString(),
+                StationId = index.ToString(),
+                LevelResults = BuildLevelResults(400),
+                Bearings =  BuildBearings(400),
+                GeneralResult = new GeneralMeasResult
+                {
+                    CentralFrequency_MHz = 5000,
+                    CentralFrequencyMeas_MHz = 6000,
+                    LevelsSpectrum_dBm = new float[300],
+                    BandwidthResult = new BandwidthMeasResult
+                    {
+                        Bandwidth_kHz = 120,
+                        MarkerIndex = 25,
+                        T1 = 1,
+                        T2 = 2,
+                        TraceCount = 123,
+                        СorrectnessEstimations = false
+                    },
+                    MeasDuration_sec = 100,
+                    MeasFinishTime = DateTime.Now,
+                    MeasStartTime = DateTime.Today,
+                    OffsetFrequency_mk = 455,
+                    RBW_kHz = 65665,
+                    SpectrumStartFreq_MHz = 5454,
+                    SpectrumSteps_kHz = 25,
+                    VBW_kHz = 55,
+                    
+                }
+            };
+        }
+        static LevelMeasResult[] BuildLevelResults(int count)
+        {
+            var result = new LevelMeasResult[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = new LevelMeasResult
+                {
+                    DifferenceTimeStamp_ns = 1000,
+                    Level_dBm = 45,
+                    Level_dBmkVm = 12,
+                    MeasurementTime = DateTime.Now
+                };
+            }
+            return result;
+        }
+        static DirectionFindingData[] BuildBearings(int count)
+        {
+            var result = new DirectionFindingData[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = new DirectionFindingData
+                {
+                    AntennaAzimut = 100,
+                    Bandwidth_kHz = 200,
+                    Bearing = 150,
+                    CentralFrequency_MHz = 350,
+                    Quality = 12,
+                    Level_dBm = 45,
+                    Level_dBmkVm = 12,
+                    MeasurementTime = DateTime.Now
+                };
+            }
+            return result;
         }
 
         static MeasResults BuildTestMeasResults()

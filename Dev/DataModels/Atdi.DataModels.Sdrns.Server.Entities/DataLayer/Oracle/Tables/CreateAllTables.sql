@@ -1116,12 +1116,11 @@ MONITORING;
 CREATE TABLE ICSC.VALIDATION_LOGS
 (
   ID          NUMBER(15)                        NOT NULL,
-  EVENT       NVARCHAR2(50),
   TABLE_NAME  NVARCHAR2(50),
-  LCOUNT      NUMBER(15),
   INFO        NVARCHAR2(250),
-  WHO         NVARCHAR2(50),
-  WHEN        DATE                              NOT NULL
+  WHEN        DATE,                              
+  MESSAGE_ID  NUMBER(15),	
+  RES_MEAS_ID NUMBER(15)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -2339,9 +2338,10 @@ MONITORING;
 
 CREATE TABLE ICSC.RES_MEAS_STATION
 (
-  ID                   NUMBER(15)               NOT NULL,
+  ID                   NUMBER(15)    NOT NULL,
   GLOBAL_SID           NVARCHAR2(250),
   MEAS_GLOBAL_SID      NVARCHAR2(250),
+  FREQUENCY			   NUMBER(30,10) NOT NULL,
   STATUS               NVARCHAR2(250),
   RES_MEAS_ID          NUMBER(15),
   STANDARD             NVARCHAR2(50),

@@ -8,6 +8,18 @@ using Atdi.Platform;
 
 namespace Atdi.CoreServices.DataLayer.Oracle
 {
+    static class Monitoring
+    {
+        public static readonly IStatisticCounterKey ExecutorHitsCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Executor.Hits");
+        public static readonly IStatisticCounterKey ExecutorCountCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Executor.Count");
+        public static readonly IStatisticCounterKey TranHitsCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Transactions.Hits");
+        public static readonly IStatisticCounterKey TranCountCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Transactions.Count");
+        public static readonly IStatisticCounterKey TranCommitCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Transactions.Commit");
+        public static readonly IStatisticCounterKey TranRollbackCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Transactions.Rollback");
+        public static readonly IStatisticCounterKey ErrorsCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Errors");
+        public static readonly IStatisticCounterKey ConnectionsCountCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Connections.Count");
+        public static readonly IStatisticCounterKey ConnectionsHitsCounterKey = STS.DefineCounterKey("DataLayer.Oracle.Connections.Hits");
+    }
     static class Contexts
     {
         public static readonly EventContext OracleEngine = "OracleEngine";

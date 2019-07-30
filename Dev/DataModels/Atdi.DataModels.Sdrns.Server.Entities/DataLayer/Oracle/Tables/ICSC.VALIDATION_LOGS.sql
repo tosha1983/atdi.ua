@@ -1,12 +1,11 @@
 ﻿CREATE TABLE ICSC.VALIDATION_LOGS
 (
   ID          NUMBER(15)                        NOT NULL,
-  EVENT       NVARCHAR2(50),
   TABLE_NAME  NVARCHAR2(50),
-  LCOUNT      NUMBER(15),
   INFO        NVARCHAR2(250),
-  WHO         NVARCHAR2(50),
-  WHEN        DATE                              NOT NULL
+  WHEN        DATE,                              
+  MESSAGE_ID  NUMBER(15),	
+  RES_MEAS_ID NUMBER(15)	
 )
 TABLESPACE USERS
 PCTUSED    0
