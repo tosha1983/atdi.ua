@@ -13,8 +13,6 @@ namespace Atdi.DataModels.Sdrns.Device
     {
         [DataMember]
         public bool? CompareTraceJustWithRefLevels { get; set; }
-
-
         [DataMember]
         public bool? FiltrationTrace { get; set; }
         [DataMember]
@@ -23,8 +21,12 @@ namespace Atdi.DataModels.Sdrns.Device
         public int? SignalizationNCount { get; set; } // максимальное количество измерений сигнализации в день. 
         [DataMember]
         public int? SignalizationNChenal { get; set; } //Количество точек в канале при сканировании.
-
-
+        [DataMember]
+        bool CorrelationAnalize { get; set; }// проводить корреляционный анализ между излучениями по умолчанию лож
+        [DataMember]
+        double CorrelationFactor { get; set; }// коєфициент кореляции при котором обединяем излучения по умолчанию 0.7
+        [DataMember]
+        bool CheckFreqChannel { get; set; }// проверять совподение частоты сигнала с частотой канала по умолчанию лож
         [DataMember]
         public bool? AnalyzeByChannel { get; set; } // true значит надо анализировать согласно существующим частото каналам  по умолчанию false
         [DataMember]
