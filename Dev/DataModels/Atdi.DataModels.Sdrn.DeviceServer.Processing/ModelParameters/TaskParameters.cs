@@ -8,6 +8,7 @@ using Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
+    [Serializable]
     public class TaskParameters
     {
         public string SDRTaskId { get; set; }

@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents the sensor polygon
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class SensorPolygon
     {
         /// <summary>

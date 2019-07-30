@@ -874,7 +874,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     //отключим SignalHound по USB 
                     DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
-                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                    Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
@@ -885,7 +885,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     //подключим SignalHound по USB 
                     DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
-                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                    Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
@@ -894,6 +894,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                 try
                 {
+                    Disconnect();
                     if (Connect(_adapterConfig.SerialNumber))
                     {
                         //оповестим о завершении перезапуска устройства
@@ -934,7 +935,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     //отключим SignalHound по USB 
                     DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
-                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                    Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
@@ -945,7 +946,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     //подключим SignalHound по USB 
                     DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
-                    Thread.Sleep(3000);//надо подождать пока система все сделает
+                    Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
@@ -954,6 +955,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                 try
                 {
+                    Disconnect();
                     Connect(_adapterConfig.SerialNumber);
                 }
                 catch (Exception exp)

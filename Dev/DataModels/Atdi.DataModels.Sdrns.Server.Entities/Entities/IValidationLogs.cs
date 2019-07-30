@@ -16,11 +16,10 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IValidationLogs : IValidationLogs_PK
     {
-        string Event { get; set; }
         string TableName { get; set; }
-        long? Lcount { get; set; }
         string Info { get; set; }
-        string Who { get; set; }
         DateTime When { get; set; }
+        IAmqpMessage MESSAGE { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }

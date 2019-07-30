@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Platform;
 using Atdi.Platform.Logging;
 using System.Data.Common;
 using Atdi.Contracts.CoreServices.DataLayer.DataEngines;
@@ -13,10 +10,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
     internal sealed class OracleDataEngine : LoggedObject, IOracleDataEngine
     {
         private readonly OracleQueryPatternFactory _patternFactory;
-        public OracleDataEngine(OracleQueryPatternFactory patternFactory, OracleEngineSyntax engineSyntax, ILogger logger) : base(logger)
+        private readonly IStatistics _statistics;
+        public OracleDataEngine(OracleQueryPatternFactory patternFactory, OracleEngineSyntax engineSyntax, IStatistics statistics, ILogger logger) : base(logger)
         {
             this._patternFactory = patternFactory;
             this.Syntax = engineSyntax;
+            this._statistics = statistics;
             logger.Verbouse(Contexts.OracleEngine, Categories.Creation, Events.ObjectWasCreated.With("OracleDataEngine"));
         }
 
@@ -28,7 +27,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
         {
             try
             {
-                var executer = new EngineExecuter(this._patternFactory, this.Config, this.Logger);
+                var executer = new EngineExecuter(this._patternFactory, this.Config, this._statistics, this.Logger);
                 return executer;
             }
             catch (Exception e)

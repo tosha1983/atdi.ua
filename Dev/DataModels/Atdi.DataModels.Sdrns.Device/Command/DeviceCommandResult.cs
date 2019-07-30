@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents the command result
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class DeviceCommandResult
     {
         ///// <summary>

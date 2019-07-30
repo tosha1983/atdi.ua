@@ -9,8 +9,8 @@ using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
-    public class QueueEventTask : TaskBase
+    public class SendResult : TaskBase
     {
-        public TaskParameters taskParameters;
+
     }
 }

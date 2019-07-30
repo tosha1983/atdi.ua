@@ -7,7 +7,7 @@ using Atdi.DataModels.Sdrn.DeviceServer.Processing;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
-    static class SmoothTrace
+    public static class SmoothTrace
     {
         private const double PersentLongFilterFromTrace = 3;
         public static float[] blackman (float[] ArrIn, bool LogInterpolation = false)

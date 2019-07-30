@@ -50,10 +50,10 @@
     <Compile Include="DispatcherWorker.cs" />
     <Compile Include="EventProcessing\DeferredTaskWorker.cs" />
     <Compile Include="ConfigProcessing.cs" />
-    <Compile Include="EventProcessing\EventCommand.cs" />
+    <Compile Include="EventProcessing\CommandHandler.cs" />
     <Compile Include="GPS\GPSWorker.cs" />
     <Compile Include="GPS\GPSTaskResultHandler.cs" />
-    <Compile Include="EventProcessing\QueueEventTaskWorker.cs" />
+    <Compile Include="EventProcessing\CommandTaskWorker.cs" />
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureDFDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureAudioDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureGpsLocationPropertiesToSensor.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="RegistrationSensor\Convertors\SpectrumOccupation\ConvertMesureTraceDevicePropertiesToSensor.cs" />
     <Compile Include="RegistrationSensor\RegisterSensorTaskWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SendResultsToBus\SendResultsWorker.cs" />
     <Compile Include="SensorActivity\SensorActivityWorker.cs" />
     <Compile Include="Specification.cs" />
   </ItemGroup>

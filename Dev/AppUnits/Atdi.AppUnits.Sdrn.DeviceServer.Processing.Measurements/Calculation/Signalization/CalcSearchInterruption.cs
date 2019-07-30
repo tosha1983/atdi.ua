@@ -173,7 +173,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // выделение произошло. 
             return (index_start_stop);
         }
+        /// <summary>
+        /// Команда должна вернуть индексы каналов в которых имеет смысл анализировать сигнал. По принципу, что в соеднем канале он ниже. Удобно подходит для GSM сетей.
+        /// </summary>
+        /// <param name="Trace"></param>
+        /// <param name="Freq_Mhz"></param>
+        /// <param name="BWChalnel_kHz"></param>
+        /// <param name="NoiseLevel_dBm"></param>
+        /// <param name="DifferencePowerInCoChannel_dB"></param>
+        /// <returns></returns>
+        private static List<int> SearchStartStopByChannelPlanGSM(MesureTraceResult Trace, List<double> Freq_Mhz, double BWChalnel_kHz, double NoiseLevel_dBm, int DifferencePowerInCoChannel_dB = 15)
+        {// не тестилось
+            List<int> result= new List<int>();
+            if (Freq_Mhz is null) { return null;}
+            if (Freq_Mhz.Count == 1) { result.Add(0); return result; }
+            double Freq_start_Hz = Trace.Freq_Hz[0];
+            double step = (Trace.Freq_Hz[Trace.Freq_Hz.Length-1] - Trace.Freq_Hz[0]) / (Trace.Freq_Hz.Length - 1);
 
+            int IndexCenterFirstChannel = (int)Math.Round((Freq_Mhz[0] * 1000000 - Freq_start_Hz) / step);
+            double PowFirstCh = Trace.Level[IndexCenterFirstChannel];
+            int IndexCenterSecondChannel = (int)Math.Round((Freq_Mhz[1] * 1000000 - Freq_start_Hz) / step);
+            double PowSecondCh = Trace.Level[IndexCenterSecondChannel];
+            if (Freq_Mhz.Count == 2)
+            {
+                if (PowSecondCh - DifferencePowerInCoChannel_dB >= PowFirstCh) { result.Add(1); return result; }
+                else if (PowFirstCh  - DifferencePowerInCoChannel_dB > PowSecondCh) { result.Add(0); return result; }
+            }
+
+            if (PowFirstCh - DifferencePowerInCoChannel_dB >= PowSecondCh) { result.Add(0); return result;}
+            for (int i = 2;  Freq_Mhz.Count > i; i++)
+            {
+                int IndexCenterLastChannel = (int)Math.Round((Freq_Mhz[i] * 1000000 - Freq_start_Hz) / step);
+                double PowLastCh = Trace.Level[IndexCenterLastChannel];
+                if ((PowSecondCh - DifferencePowerInCoChannel_dB >= PowFirstCh)&& (PowSecondCh - DifferencePowerInCoChannel_dB >= PowLastCh)){ result.Add(i-1);}
+                PowFirstCh = PowSecondCh;
+                PowSecondCh = PowLastCh;
+            }
+            if (PowSecondCh - DifferencePowerInCoChannel_dB >= PowFirstCh) { result.Add(Freq_Mhz.Count-1); return result; }
+            return result;
+        }
         private static List<int> DivisionEmitting (TaskParameters taskParameters, List<int> index_start_stop,  MesureTraceResult Trace)
         { // НЕ ПРОВЕРЕННО
             List<int> ResultStartStopIndexArr = new List<int>();
@@ -304,6 +342,84 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return emittings.ToArray();
         }
-      
+        private static Emitting[] CreateEmittingsForChannelPlanGSM(MesureTraceResult trace, ReferenceLevels refLevel, List<double> Freq_Mhz, double ChannelBW_kHz, List<int> IndexChannel, double TraceStep_kHz, double NoiseLevel_dBm)
+        { // не тестировалось. Задача создать emmiting там где есть соответсвующее преевышение
+
+            float[] levels = trace.Level;
+            double[] freqTr_Hz = trace.Freq_Hz;
+            var emittings = new List<Emitting>();
+            for (int i = 0; i < IndexChannel.Count; i = i + 1)
+            {
+                // для каждого излучения вычислим стартовые точки и проверим их наличие на трейсе 
+                int start = (int)Math.Floor(((Freq_Mhz[IndexChannel[i]] * 1000000.0 - ChannelBW_kHz * 1000.0)-freqTr_Hz[0])/(TraceStep_kHz*1000.0));
+                int stop = (int)Math.Ceiling(((Freq_Mhz[IndexChannel[i]] * 1000000.0 + ChannelBW_kHz * 1000.0) - freqTr_Hz[0]) / (TraceStep_kHz * 1000.0));
+                int start_ = start; int stop_ = stop;
+                // определяем границы для канала
+                double winBW = (stop - start) * windowBW; 
+                if ((start + stop - winBW) / 2 > 0) { start_ = (int)((start + stop - winBW) / 2.0); } else { start_ = 0; }
+                if ((start + stop + winBW) / 2 < levels.Length - 1) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = levels.Length - 1; }
+                // границы находяться в start_  и stop_ 
+
+                Emitting emitting = new Emitting();
+                float[] templevel = new float[stop_ - start_];
+                Array.Copy(levels, start_, templevel, 0, stop_ - start_);
+                MeasBandwidthResult measSdrBandwidthResults = BandWidthEstimation.GetBandwidthPoint(templevel, BandWidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, 0);
+                emitting.Spectrum = new Spectrum();
+                if (measSdrBandwidthResults.СorrectnessEstimations != null)
+                {
+                    if (measSdrBandwidthResults.СorrectnessEstimations.Value)
+                    {
+                        // значит спектр хороший можно брать его параметры
+                        if (measSdrBandwidthResults.T1 != null) { start = start_ + measSdrBandwidthResults.T1.Value; emitting.Spectrum.T1 = measSdrBandwidthResults.T1.Value; }
+                        if (measSdrBandwidthResults.T2 != null) { stop = start_ + measSdrBandwidthResults.T2.Value; emitting.Spectrum.T2 = measSdrBandwidthResults.T2.Value; }
+                        if (measSdrBandwidthResults.MarkerIndex != null) { emitting.Spectrum.MarkerIndex = measSdrBandwidthResults.MarkerIndex.Value; }
+                        emitting.Spectrum.Bandwidth_kHz = (stop - start) * TraceStep_kHz;
+                        emitting.Spectrum.СorrectnessEstimations = true;
+                    }
+                    else
+                    { // если нет коректного то хоть какойто.
+                            emitting.Spectrum.СorrectnessEstimations = false;
+                    }
+                }
+                else
+                {
+                    emitting.Spectrum.СorrectnessEstimations = false;
+                }
+                emitting.Spectrum.Levels_dBm = templevel;
+                emitting.Spectrum.SpectrumSteps_kHz = TraceStep_kHz;
+                emitting.Spectrum.SpectrumStartFreq_MHz = freqTr_Hz[start_] / 1000000.0;
+                emitting.StartFrequency_MHz = trace.Freq_Hz[start] / 1000000.0; // частоты сигнала по каналу
+                emitting.StopFrequency_MHz = trace.Freq_Hz[stop] / 1000000.0; // частоты сигнала по каналу
+
+                emitting.ReferenceLevel_dBm = 0;
+                emitting.CurentPower_dBm = 0;
+                for (int j = start; j < stop; j++)
+                {
+                    emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel.levels[j] / 10);
+                    emitting.CurentPower_dBm = emitting.CurentPower_dBm + Math.Pow(10, levels[j] / 10);
+                }
+
+                emitting.ReferenceLevel_dBm = 10 * Math.Log10(emitting.ReferenceLevel_dBm);
+                emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);
+                emitting.WorkTimes = new WorkTime[1];
+                emitting.WorkTimes[0] = new WorkTime();
+                emitting.WorkTimes[0].StartEmitting = DateTime.Now;
+                emitting.WorkTimes[0].StopEmitting = emitting.WorkTimes[0].StartEmitting;
+                emitting.WorkTimes[0].HitCount = 1;
+                emitting.WorkTimes[0].PersentAvailability = 100;
+                emitting.WorkTimes[0].ScanCount = 0;
+                emitting.WorkTimes[0].TempCount = 0;
+
+                Spectrum spectrum = emitting.Spectrum;
+                bool checkcontr = CalcSignalization.CheckContravention(ref spectrum, refLevel);
+                emitting.Spectrum = spectrum;
+                //emitting.WorkTimes[0].PersentAvailability = 100;
+                emittings.Add(emitting);
+            }
+            return emittings.ToArray();
+        }
+
+
+
     }
 }

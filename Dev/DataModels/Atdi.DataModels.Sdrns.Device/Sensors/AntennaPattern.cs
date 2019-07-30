@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents the antenna pattetrn parameters depending on frequency
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class AntennaPattern
     {
         /// <summary>
