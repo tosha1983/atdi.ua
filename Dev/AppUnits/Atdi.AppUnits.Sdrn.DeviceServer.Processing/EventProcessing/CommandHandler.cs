@@ -15,22 +15,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     /// <summary>
     /// 
     /// </summary>
-    public class EventCommand<Task, Process>
+    public class CommandHandler<Task, Process>
         where Task: MeasurementTaskBase
         where Process: IProcess
     {
         private readonly ILogger _logger;
         private readonly ConfigProcessing _config;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
+        private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
 
-        public EventCommand(ILogger logger,  IRepository<TaskParameters, long?> repositoryTaskParametersByInt,  ConfigProcessing config)
+        public CommandHandler(ILogger logger,  IRepository<TaskParameters, string> repositoryTaskParametersByString,  ConfigProcessing config)
         {
             this._logger = logger;
             this._config = config;
-            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
+            this._repositoryTaskParametersByString = repositoryTaskParametersByString;
         }
 
-        public bool StartCommand(TaskParameters tskParam,  List<ITaskContext<Task, Process>> contextTasks,  Action action,  ref List<TaskParameters> listDeferredTasks, int cntActiveTaskParameters)
+        public bool StartCommand(TaskParameters tskParam,  List<ITaskContext<Task, Process>> contextTasks,  Action action,  ref List<TaskParameters> listDeferredTasks, ref List<string> listRunTask, int cntActiveTaskParameters)
         {
             bool isSuccess = true;
             try
@@ -53,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         {
                             action.Invoke();
                             tskParam.status = StatusTask.A.ToString();
-                            this._repositoryTaskParametersByInt.Update(tskParam);
+                            this._repositoryTaskParametersByString.Update(tskParam);
                         }
                         else
                         {
@@ -65,12 +65,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     {
                         action.Invoke();
                         tskParam.status = StatusTask.A.ToString();
-                        this._repositoryTaskParametersByInt.Update(tskParam);
+                        this._repositoryTaskParametersByString.Update(tskParam);
                     }
                     else
                     {
-                        tskParam.status = StatusTask.C.ToString();
-                        this._repositoryTaskParametersByInt.Update(tskParam);
+                        if (tskParam.StopTime.Value < DateTime.Now)
+                        {
+                            tskParam.status = StatusTask.C.ToString();
+                            this._repositoryTaskParametersByString.Update(tskParam);
+                        }
                     }
                 }
                 else if (tskParam.status == StatusTask.A.ToString())
@@ -97,7 +100,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             {
                                 action.Invoke();
                                 tskParam.status = StatusTask.A.ToString();
-                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                this._repositoryTaskParametersByString.Update(tskParam);
                             }
                             else
                             {
@@ -109,12 +112,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         {
                             action.Invoke();
                             tskParam.status = StatusTask.A.ToString();
-                            this._repositoryTaskParametersByInt.Update(tskParam);
+                            this._repositoryTaskParametersByString.Update(tskParam);
                         }
                         else
                         {
-                            tskParam.status = StatusTask.C.ToString();
-                            this._repositoryTaskParametersByInt.Update(tskParam);
+                            if (tskParam.StopTime.Value < DateTime.Now)
+                            {
+                                tskParam.status = StatusTask.C.ToString();
+                                this._repositoryTaskParametersByString.Update(tskParam);
+                            }
                         }
                     }
                 }
@@ -137,12 +143,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 action.Invoke();
                                 //System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
                                 
-                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                this._repositoryTaskParametersByString.Update(tskParam);
                             }
                             else
                             {
-                                tskParam.status = StatusTask.C.ToString();
-                                this._repositoryTaskParametersByInt.Update(tskParam);
+                                if (tskParam.StopTime.Value < DateTime.Now)
+                                {
+                                    tskParam.status = StatusTask.C.ToString();
+                                    this._repositoryTaskParametersByString.Update(tskParam);
+                                }
                             }
                         }
                     }
@@ -153,6 +162,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     if (findTask != null)
                     {
                         findTask.Task.taskParameters.status = StatusTask.Z.ToString();
+                        this._repositoryTaskParametersByString.Update(tskParam);
+                        listRunTask.Remove(tskParam.SDRTaskId);
+                        listDeferredTasks.RemoveAll(x => x.SDRTaskId == tskParam.SDRTaskId);
                     }
                 }
                 contextTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());

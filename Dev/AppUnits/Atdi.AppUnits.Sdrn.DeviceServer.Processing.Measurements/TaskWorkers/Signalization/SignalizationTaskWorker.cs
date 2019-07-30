@@ -24,15 +24,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
-
+        private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
+        private readonly IRepository<MeasResults, string> _measResultsByStringRepository;
+        private readonly IRepository<DM.DeviceCommandResult, string> _repositoryDeviceCommandResult;
 
         public SignalizationTaskWorker(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
             ILogger logger,
             IBusGate busGate,
-            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
+            IRepository<TaskParameters, string> repositoryTaskParametersByString,
+            IRepository<MeasResults, string> measResultsByStringRepository,
+            IRepository<DM.DeviceCommandResult, string> repositoryDeviceCommandResult,
             IController controller)
         {
             this._processingDispatcher = processingDispatcher;
@@ -41,7 +44,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._logger = logger;
             this._busGate = busGate;
             this._controller = controller;
-            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
+            this._repositoryTaskParametersByString = repositoryTaskParametersByString;
+            this._measResultsByStringRepository = measResultsByStringRepository;
+            this._repositoryDeviceCommandResult = repositoryDeviceCommandResult;
         }
 
 
@@ -100,15 +105,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         // обновление TaskParameters в БД
                         context.Task.taskParameters.status = StatusTask.C.ToString();
-                        this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
+                        this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                         DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
                         deviceCommandResult.Status = StatusTask.C.ToString();
                         deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
-                        var publisher = this._busGate.CreatePublisher("main");
-                        publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
-                        publisher.Dispose();
+                        
+                        this._repositoryDeviceCommandResult.Create(deviceCommandResult);
+                        
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
                         context.Cancel();
                         break;
@@ -221,7 +226,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //////////////////////////////////////////////
                             //outResultData.ResultId = Guid.NewGuid().ToString();
                             context.Task.CountSendResults++;
-                            outResultData.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
+                            outResultData.ResultId = Guid.NewGuid().ToString();
+                            //outResultData.ScansNumber = context.Task.CountSendResults;
                             outResultData.Status = "N";
                             outResultData.ScansNumber = context.Task.CountMeasurementDone;
                             outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
@@ -264,7 +271,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
 
-                            outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
+                            //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
                             var arrEmit = new Emitting[outResultData.Emittings.Length];
                             for (int i=0; i< outResultData.Emittings.Length; i++)
                             {
@@ -357,12 +364,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 TaskId = outResultData.TaskId
                             };
 
+                            
+                            this._measResultsByStringRepository.Create(measResultsNew);
 
-
-                            //Отправка результатов в шину 
-                            var publisher = this._busGate.CreatePublisher("main");
-                            publisher.Send<DM.MeasResults>("SendMeasResults", measResultsNew);
-                            publisher.Dispose();
                             context.Task.MeasResults = null;
                             context.Task.LastTimeSend = currTime;
                             context.Task.CounterCallSignaling = 0;
@@ -404,7 +408,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                         // обновление TaskParameters в БД
                         context.Task.taskParameters.status = StatusTask.C.ToString();
-                        this._repositoryTaskParametersByInt.Update(context.Task.taskParameters);
+                        this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
 
                         DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
@@ -413,9 +417,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         deviceCommandResult.Status = StatusTask.C.ToString();
                         deviceCommandResult.CustNbr1 = int.Parse(context.Task.taskParameters.SDRTaskId);
 
-                        var publisher = this._busGate.CreatePublisher("main");
-                        publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
-                        publisher.Dispose();
+                        this._repositoryDeviceCommandResult.Create(deviceCommandResult);
 
                         context.Finish();
                         break;

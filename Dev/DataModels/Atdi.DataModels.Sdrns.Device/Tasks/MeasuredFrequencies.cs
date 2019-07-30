@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents frequencies for  measurements
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class MeasuredFrequencies
     {
         /// <summary>

@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Нормальна ситуация когда один и тотже стандарт требует несколько записей, например для случая когда мы имеем LTE с различными полосами частот.
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class StandardScanParameter
     {
         /// <summary>

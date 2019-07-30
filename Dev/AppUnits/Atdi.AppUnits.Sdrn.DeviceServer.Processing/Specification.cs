@@ -6,6 +6,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
     static class Contexts
     {
+        
+        public static readonly EventContext SendResultsWorker = "SendResultsWorker";
         public static readonly EventContext MeasurementTaskWorker = "MeasurementTaskWorker";
         public static readonly EventContext DeferredTaskWorker = "DeferredTaskWorker";
         public static readonly EventContext QueueEventTaskWorker = "QueueEventTaskWorker";
@@ -28,8 +30,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
     static class Events
     {
+        public static readonly EventText ReceivedSensorUpdatingConfirmation = "Received sensor updating confirmation";
         public static readonly EventText ReceivedSensorRegistrationConfirmation = "Received sensor registration confirmation";
         public static readonly EventText SensorInformationRecordedDB = "Sensor information succesfully recorded in database";
+        public static readonly EventText SensorInformationUpdatedInDb = "Sensor information succesfully updated in database";
         public static readonly EventText SensorInformationNotRecordedDB = "Sensor information not recorded in database";
         public static readonly EventText MessageTimedOut = "Message Timed Out";
         public static readonly EventText StartDeferredTaskWorker = "Start DeferredTaskWorker context.Task.Id = {0}";
@@ -69,6 +73,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static readonly string UnknownErrorRegisterSensorTaskWorker = "Unknown error in RegisterSensorTaskWorker";
         public static readonly string UnknownErrorGPSWorker = "Unknown error in GPSWorker";
         public static readonly string UnknownErrorDeferredTaskWorker = "Unknown error in DeferredTaskWorker";
+        public static readonly string UnknownErrorSendResultsWorker = "Unknown error in SendResultsWorker";
         public static readonly string UnknownErrorQueueEventTaskWorker = "Unknown error in QueueEventTaskWorker";
         public static readonly string MeasurementTypeNotsupported = $"MeasurementType {0} not supported";
         public static readonly string DeviceServerCanNotBeStarted = "The DeviceServer can not be started, because there is no information about the registered object in the database";

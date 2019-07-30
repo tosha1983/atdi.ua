@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
+    [Serializable]
     public class LastUpdate
     {
         public string TableName { get; set; }

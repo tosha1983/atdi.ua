@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Station parameters to be measured
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class MeasuredStation
     {
         /// <summary>

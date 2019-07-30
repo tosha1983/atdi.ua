@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device
 {
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class EntityPart
     {
         /// <summary>

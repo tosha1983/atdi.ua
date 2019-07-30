@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 {
+    [Serializable]
     public class SpectrumOcupationResult 
     {
         public SemplFreq[] fSemplesResult { get; set; } // результат со всеми отсчетами
