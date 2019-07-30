@@ -248,6 +248,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         // приостановка потока на время DurationWaitingCheckNewTasks
                         System.Threading.Thread.Sleep(this._config.DurationWaitingCheckNewTasks);
                         // проверка признака поступления новых тасков в БД
+                        this._repositoryTaskParametersByString.RemoveOldObjects();
                         var deviceCommands = this._repositoryDeviceCommand.LoadAllObjects();
                         if ((deviceCommands != null) && (deviceCommands.Length>0))
                         {
