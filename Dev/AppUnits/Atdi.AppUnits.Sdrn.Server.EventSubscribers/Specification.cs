@@ -11,7 +11,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers
 {
     static class DataCaches
     {
-        public static readonly IDataCacheDescriptor<string, int> MeasTaskIdentity = DataCacheDefiner.Define<string, int>("SDRN.Server.MeasTaskIdentity");
+        public static readonly IDataCacheDescriptor<string, long> AutoMeasTaskIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.AutoMeasTaskIdentity");
+        public static readonly IDataCacheDescriptor<string, long> AutoSubTaskIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.AutoSubTaskIdentity");
+        public static readonly IDataCacheDescriptor<string, long> AutoSubTaskSensorIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.AutoSubTaskSensorIdentity");
+        public static readonly IDataCacheDescriptor<string, long> VerifiedSubTaskSensorIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.VerifiedSubTaskSensorIdentity");
+
+        public static readonly IDataCacheDescriptor<string, long> MeasResultStationIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.MeasResultStationIdentity");
+        public static readonly IDataCacheDescriptor<string, long> SensorIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.SensorIdentity");
     }
 
     static class Monitoring
