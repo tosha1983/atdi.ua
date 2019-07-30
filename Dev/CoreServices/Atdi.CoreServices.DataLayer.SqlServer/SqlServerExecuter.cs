@@ -274,7 +274,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                 case DataType.Integer:
                     return SqlDbType.Int;
                 case DataType.DateTime:
-                    return SqlDbType.DateTime;
+                    return SqlDbType.DateTime2;
                 case DataType.Double:
                     return SqlDbType.Float;
                 case DataType.Float:
