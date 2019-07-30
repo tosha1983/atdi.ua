@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpectrSygnal.cs" />
     <Compile Include="TestForm.cs">
       <SubType>Form</SubType>
     </Compile>
