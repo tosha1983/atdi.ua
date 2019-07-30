@@ -10,7 +10,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static readonly EventContext SendResultsWorker = "SendResultsWorker";
         public static readonly EventContext MeasurementTaskWorker = "MeasurementTaskWorker";
         public static readonly EventContext DeferredTaskWorker = "DeferredTaskWorker";
-        public static readonly EventContext QueueEventTaskWorker = "QueueEventTaskWorker";
+        public static readonly EventContext CommandTaskWorker = "CommandTaskWorker";
         public static readonly EventContext GPSWorker = "GPSWorker";
         public static readonly EventContext ProcessingTaskFromDBWorker = "ProcessingTaskFromDBWorker";
         public static readonly EventContext RegisterSensorTaskWorker = "RegisterSensorTaskWorker";

@@ -67,10 +67,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 soTask.mesureTraceParameter = soTask.taskParameters.ConvertForSO();
                 if (!listRunTask.Contains(soTask.taskParameters.SDRTaskId))
                 {
-                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(soTask.Id));
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(soTask.Id));
                     _taskStarter.RunParallel(soTask, process, context);
                     listRunTask.Add(soTask.taskParameters.SDRTaskId);
-                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(soTask.Id));
                 }
             }
         }
@@ -112,10 +112,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 if (!listRunTask.Contains(signalTask.taskParameters.SDRTaskId))
                 {
-                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(signalTask.Id));
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(signalTask.Id));
                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                     listRunTask.Add(signalTask.taskParameters.SDRTaskId);
-                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(signalTask.Id));
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(signalTask.Id));
                 }
             }
         }
@@ -139,10 +139,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 bandWidtTask.mesureTraceParameter = bandWidtTask.taskParameters.ConvertForBW();
                 if (!listRunTask.Contains(bandWidtTask.taskParameters.SDRTaskId))
                 {
-                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(bandWidtTask.Id));
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(bandWidtTask.Id));
                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                     listRunTask.Add(bandWidtTask.taskParameters.SDRTaskId);
-                    _logger.Info(Contexts.QueueEventTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(bandWidtTask.Id));
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(bandWidtTask.Id));
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     }
                     else
                     {
-                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
+                        _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                         throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                     }
                 }
@@ -215,7 +215,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         {
             try
             {
-                _logger.Verbouse(Contexts.QueueEventTaskWorker, Categories.Processing, Events.StartQueueEventTaskWorker.With(context.Task.Id));
+                _logger.Verbouse(Contexts.CommandTaskWorker, Categories.Processing, Events.StartQueueEventTaskWorker.With(context.Task.Id));
                 var activeSensor = context.Process.activeSensor;
                 var listRunTask = new List<string>();
                 Action action = new Action(() =>
@@ -234,7 +234,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     }
                     else
                     {
-                        _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(context.Task.taskParameters.MeasurementType));
+                        _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(context.Task.taskParameters.MeasurementType));
                         throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(context.Task.taskParameters.MeasurementType));
                     }
                 });
@@ -301,7 +301,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         }
                                         else
                                         {
-                                            _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
+                                            _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                                             throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                                         }
                                     }
@@ -315,7 +315,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.QueueEventTaskWorker, Categories.Processing, Exceptions.UnknownErrorQueueEventTaskWorker, e.Message);
+                _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.UnknownErrorQueueEventTaskWorker, e.Message);
                 context.Abort(e);
             }
         }
