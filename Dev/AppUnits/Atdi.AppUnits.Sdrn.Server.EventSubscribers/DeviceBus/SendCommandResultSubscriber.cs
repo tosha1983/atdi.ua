@@ -94,7 +94,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 //status = SdrnMessageHandlingStatus.Confirmed;
                                 break;
                             case "UpdateStatusMeasTask":
-                                string taskId = "";
                                 long subTaskStationId = -1;
                                 long taskIds = -1;
                                 if (deliveryObject.CustTxt1 != null)
