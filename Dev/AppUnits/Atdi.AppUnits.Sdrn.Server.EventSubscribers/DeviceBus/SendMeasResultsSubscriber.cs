@@ -290,41 +290,35 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             try
             {
                 var measResult = context.measResult;
-                if (string.IsNullOrEmpty(measResult.ResultId))
-                {
-                    WriteLog("Undefined value ResultId", "IResMeas", context);
-                    return false;
-                }
-                else if (measResult.ResultId.Length > 50)
-                    measResult.ResultId.SubString(50);
-
+                
                 if (string.IsNullOrEmpty(measResult.TaskId))
                 {
                     WriteLog("Undefined value TaskId", "IResMeas", context);
                     return false;
                 }
-                else if (measResult.TaskId.Length > 200)
-                    measResult.TaskId.SubString(200);
+                if (string.IsNullOrEmpty(measResult.ResultId))
+                {
+                    WriteLog("Undefined value ResultId", "IResMeas", context);
+                    return false;
+                }
+                if (measResult.StationResults == null || measResult.StationResults.Length == 0)
+                {
+                    WriteLog("Undefined values StationResults[]", "IResMeas", context);
+                    return false;
+                }
+                if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
+                {
+                    WriteLog("Incorrect value SwNumber", "IResMeas", context);
+                }
+
+                measResult.TaskId = measResult.TaskId.SubString(200);
+                measResult.ResultId = measResult.ResultId.SubString(50);
 
                 if ((measResult.Status != null) && (measResult.Status.Length > 5))
                 {
                     measResult.Status = "";
                 }
                 
-
-                if (!(measResult.SwNumber >= 0 && measResult.SwNumber <= 10000))
-                    WriteLog("Incorrect value SwNumber", "IResMeas", context);
-
-                if (measResult.StationResults == null || measResult.StationResults.Length == 0)
-                {
-                    WriteLog("Undefined values StationResults[]", "IResMeas", context);
-                    return false;
-                }
-                //if (measResult.Routes == null || measResult.Routes.Length == 0)
-                //{
-                //WriteLog("Undefined values Routes[]", "IResMeas");
-                //return false;
-                //}
 
                 var subSubTaskSensorId = EnsureSubTaskSensorId(context.sensorName, context.sensorTechId, measResult.Measurement, measResult.TaskId, measResult.Measured, context.scope);
                 //var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
@@ -370,97 +364,70 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         }
                     }
                 }
-                if (measResult.StationResults != null)
+
+                for (int i = 0; i < measResult.StationResults.Length; i++)
                 {
-                    foreach (StationMeasResult station in measResult.StationResults)
+                    var station = measResult.StationResults[i];
+                    var generalResult = station.GeneralResult;
+                    if (generalResult == null)
                     {
-                        station.StationId = station.StationId.SubString(50);
-                        station.TaskGlobalSid = station.TaskGlobalSid.SubString(50);
-                        station.RealGlobalSid = station.RealGlobalSid.SubString(50);
-                        station.SectorId = station.SectorId.SubString(50);
-                        station.Status = station.Status.SubString(5);
-                        station.Standard = station.Standard.SubString(10);
-
-                        if (station.GeneralResult == null)
-                        {
-                            ///TODO: Записать влог и игнорироват запись - перейти на следующую
-                        }
-
-
-                        if (!station.GeneralResult.RBW_kHz.HasValue || station.GeneralResult.RBW_kHz.Value < 0.001 || station.GeneralResult.RBW_kHz.Value > 100000)
-                            station.GeneralResult.RBW_kHz = null;
-                        if (!station.GeneralResult.VBW_kHz.HasValue || station.GeneralResult.VBW_kHz.Value < 0.001 || station.GeneralResult.VBW_kHz.Value > 100000)
-                            station.GeneralResult.VBW_kHz = null;
-
-                        if (!station.GeneralResult.CentralFrequency_MHz.HasValue 
-                            || station.GeneralResult.CentralFrequency_MHz.Value < 0.001 || station.GeneralResult.CentralFrequency_MHz.Value > 400000)
-                            station.GeneralResult.CentralFrequency_MHz = null;
-                        if (!station.GeneralResult.CentralFrequencyMeas_MHz.HasValue 
-                            || station.GeneralResult.CentralFrequencyMeas_MHz.Value < 0.001 || station.GeneralResult.CentralFrequencyMeas_MHz.Value > 400000)
-                            station.GeneralResult.CentralFrequencyMeas_MHz = null;
-
                         ///TODO: Записать влог и игнорироват запись - перейти на следующую
-                        var stationFrequency = station.GeneralResult.CentralFrequency_MHz ?? station.GeneralResult.CentralFrequencyMeas_MHz;
-                        if (stationFrequency == null)
-                        {
-                            ///TODO: Записать влог и игнорироват запись - перейти на следующую
-                        }
-
-                        if (!station.GeneralResult.SpectrumStartFreq_MHz.HasValue || station.GeneralResult.SpectrumStartFreq_MHz.Value < 0.001m || station.GeneralResult.SpectrumStartFreq_MHz.Value > 400000
-                           || !station.GeneralResult.SpectrumSteps_kHz.HasValue || station.GeneralResult.SpectrumSteps_kHz.Value < 0.001m || station.GeneralResult.SpectrumSteps_kHz.Value > 100000)
-                        {
-                            station.GeneralResult.SpectrumStartFreq_MHz = null;
-                            station.GeneralResult.SpectrumSteps_kHz = null;
-                            station.GeneralResult.LevelsSpectrum_dBm = null;
-                            station.GeneralResult.BandwidthResult = null;
-                        }
-                        if (station.GeneralResult.MeasStartTime > station.GeneralResult.MeasFinishTime)
-                        {
-                            WriteLog("MeasStartTime must be less than MeasFinishTime", "IResStGeneralRaw", context);
-                        }
-
-                        /// TODO: тут принимаем решение о создагнии или не создании записи о станции
-                        var builderInsertResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
-                        builderInsertResMeasStation.SetValue(c => c.Status, station.Status);
-                        builderInsertResMeasStation.SetValue(c => c.MeasGlobalSID, station.RealGlobalSid);
-                        builderInsertResMeasStation.SetValue(c => c.GlobalSID, station.TaskGlobalSid);
-                        builderInsertResMeasStation.SetValue(c => c.Frequency, stationFrequency);
-                        builderInsertResMeasStation.SetValue(c => c.RES_MEAS.Id, context.resMeasId);
-                        builderInsertResMeasStation.SetValue(c => c.Standard, station.Standard);
-                        if (int.TryParse(station.StationId, out int Idstation))
-                            builderInsertResMeasStation.SetValue(c => c.ClientStationCode, Idstation);
-                        if (int.TryParse(station.SectorId, out int IdSector))
-                            builderInsertResMeasStation.SetValue(c => c.ClientSectorCode, IdSector);
-                        
-                        var valInsResMeasStation = context.scope.Executor.Execute<MD.IResMeasStation_PK>(builderInsertResMeasStation);
-
-                        if (valInsResMeasStation.Id > 0)
-                        {
-                            if (measResult.SensorId != null)
-                            {
-                                var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>().Insert();
-                                builderInsertLinkResSensor.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation.Id);
-                                builderInsertLinkResSensor.SetValue(c => c.SENSOR.Id, (long)measResult.SensorId);
-
-                                context.scope.Executor.Execute<MD.ILinkResSensor_PK>(builderInsertLinkResSensor);
-                            }
-
-                            var generalResult = station.GeneralResult;
-                            if (generalResult != null)
-                            {
-                                var IDResGeneral = InsertResStGeneral(station, valInsResMeasStation.Id, generalResult, context);
-                                if (IDResGeneral > 0)
-                                {
-                                    InsertResSysInfo(station, IDResGeneral, context);
-                                    InsertResStMaskElement(station, IDResGeneral, context);
-                                }
-                            }
-
-                            InsertResStLevelCar(station, valInsResMeasStation.Id, context);
-                            InsertBearing(valInsResMeasStation.Id, station, context);
-                        }
+                        WriteLog($"({i}) GeneralResult is empty", "IResStGeneral", context);
+                        continue;
                     }
+
+                    if (!generalResult.CentralFrequency_MHz.HasValue
+                        || generalResult.CentralFrequency_MHz.Value < 0.001 || generalResult.CentralFrequency_MHz.Value > 400000)
+                        generalResult.CentralFrequency_MHz = null;
+                    if (!generalResult.CentralFrequencyMeas_MHz.HasValue
+                        || generalResult.CentralFrequencyMeas_MHz.Value < 0.001 || generalResult.CentralFrequencyMeas_MHz.Value > 400000)
+                        generalResult.CentralFrequencyMeas_MHz = null;
+
+                    ///TODO: Записать влог и игнорироват запись - перейти на следующую
+                    var stationFrequency = generalResult.CentralFrequency_MHz ?? generalResult.CentralFrequencyMeas_MHz;
+                    if (stationFrequency == null)
+                    {
+                        ///TODO: Записать влог и игнорироват запись - перейти на следующую
+                        WriteLog($"({i}) CentralFrequency and CentralFrequencyMeas are empty", "IResStGeneral", context);
+                        continue;
+                    }
+
+                    station.StationId = station.StationId.SubString(50);
+                    station.TaskGlobalSid = station.TaskGlobalSid.SubString(50);
+                    station.RealGlobalSid = station.RealGlobalSid.SubString(50);
+                    station.SectorId = station.SectorId.SubString(50);
+                    station.Status = station.Status.SubString(5);
+                    station.Standard = station.Standard.SubString(10);
+
+                    if (!generalResult.SpectrumStartFreq_MHz.HasValue || generalResult.SpectrumStartFreq_MHz.Value < 0.001m || generalResult.SpectrumStartFreq_MHz.Value > 400000
+                        || !generalResult.SpectrumSteps_kHz.HasValue || generalResult.SpectrumSteps_kHz.Value < 0.001m || generalResult.SpectrumSteps_kHz.Value > 100000)
+                    {
+                        generalResult.SpectrumStartFreq_MHz = null;
+                        generalResult.SpectrumSteps_kHz = null;
+                        generalResult.LevelsSpectrum_dBm = null;
+                        generalResult.BandwidthResult = null;
+                    }
+                    if (generalResult.MeasStartTime > generalResult.MeasFinishTime)
+                    {
+                        WriteLog($"({i}) MeasStartTime must be less than MeasFinishTime", "IResStGeneralRaw", context);
+                    }
+
+                    
+                    var resMeasStationId = this.EnsureMeasResultStation(context.resMeasId, station, stationFrequency.Value, context);
+                        
+                    
+                    if (generalResult.LevelsSpectrum_dBm != null 
+                        && generalResult.LevelsSpectrum_dBm.Length > 0)
+                    {
+                        var resGeneralId = InsertResStGeneral(resMeasStationId, generalResult, i, context);
+                        InsertResSysInfo(station, resGeneralId, context);
+                        InsertResStMaskElement(generalResult, resGeneralId, context);
+                    }
+
+                    InsertResStLevelCar(resMeasStationId, station.LevelResults, i, context);
+                    InsertBearing(resMeasStationId, station, context);
                 }
+
                 return true;
             }
             catch (Exception exp)
@@ -803,14 +770,15 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 return false;
             }
         }
-        private long InsertResStGeneral(StationMeasResult station, long valInsResMeasStation, GeneralMeasResult generalResult, HandleContext context)
+        private long InsertResStGeneral(long resMeasStationId, GeneralMeasResult generalResult, int index, HandleContext context)
         {
-            if (generalResult.LevelsSpectrum_dBm == null || generalResult.LevelsSpectrum_dBm.Length == 0)
-            {
-                return default(long);
-            }
+            if (!generalResult.RBW_kHz.HasValue || generalResult.RBW_kHz.Value < 0.001 || generalResult.RBW_kHz.Value > 100000)
+                generalResult.RBW_kHz = null;
+            if (!generalResult.VBW_kHz.HasValue || generalResult.VBW_kHz.Value < 0.001 || generalResult.VBW_kHz.Value > 100000)
+                generalResult.VBW_kHz = null;
 
             var builderInsertResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().Insert();
+            builderInsertResStGeneral.SetValue(c => c.RES_MEAS_STATION.Id, resMeasStationId);
             builderInsertResStGeneral.SetValue(c => c.Rbw, generalResult.RBW_kHz);
             builderInsertResStGeneral.SetValue(c => c.Vbw, generalResult.VBW_kHz);
             builderInsertResStGeneral.SetValue(c => c.CentralFrequencyMeas, generalResult.CentralFrequencyMeas_MHz);
@@ -827,19 +795,24 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
                         builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
                         builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
-
                     }
                     else
                     {
-                        WriteLog("Incorrect values T1, T2 or M", "IResStGeneral", context);
+                        WriteLog($"({index}) Incorrect values T1, T2 or M", "IResStGeneral", context);
                     }
                 }
                 if (bandwidthResult.Bandwidth_kHz.HasValue && bandwidthResult.Bandwidth_kHz >= 1 && bandwidthResult.Bandwidth_kHz <= 100000)
-                    builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
-                else WriteLog("Incorrect value of Bandwidth", "IResStGeneral", context);
-                if (bandwidthResult.TraceCount >= 1 && bandwidthResult.TraceCount <= 100000)
                 {
-                    WriteLog("Incorrect value TraceCount", "IResStGeneral", context);
+                    builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
+                }
+                else
+                {
+                    WriteLog($"({index}) Incorrect value of Bandwidth", "IResStGeneral", context);
+                }
+                    
+                if (bandwidthResult.TraceCount < 1 || bandwidthResult.TraceCount > 100000)
+                {
+                    WriteLog($"({index}) Incorrect value TraceCount", "IResStGeneral", context);
                 }
                 builderInsertResStGeneral.SetValue(c => c.TraceCount, bandwidthResult.TraceCount);
                 builderInsertResStGeneral.SetValue(c => c.Correctnessestim, bandwidthResult.СorrectnessEstimations == true ? 1 : 0);
@@ -849,11 +822,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             builderInsertResStGeneral.SetValue(c => c.SpecrumSteps, generalResult.SpectrumSteps_kHz);
             builderInsertResStGeneral.SetValue(c => c.TimeFinishMeas, generalResult.MeasFinishTime);
             builderInsertResStGeneral.SetValue(c => c.TimeStartMeas, generalResult.MeasStartTime);
-            builderInsertResStGeneral.SetValue(c => c.LevelsSpectrumdBm, station.GeneralResult.LevelsSpectrum_dBm);
-            builderInsertResStGeneral.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
-            
-            var IDResGeneral = context.scope.Executor.Execute<MD.IResStGeneral_PK>(builderInsertResStGeneral);
-            return IDResGeneral.Id;
+            builderInsertResStGeneral.SetValue(c => c.LevelsSpectrumdBm, generalResult.LevelsSpectrum_dBm);
+
+            var pk = context.scope.Executor.Execute<MD.IResStGeneral_PK>(builderInsertResStGeneral);
+            return pk.Id;
         }
         private void InsertResSysInfo(StationMeasResult station, long IDResGeneral, HandleContext context)
         {
@@ -909,16 +881,17 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertStationSysInfoBlock.SetValue(c => c.Data, blocks.Data);
                         builderInsertStationSysInfoBlock.SetValue(c => c.Type, blocks.Type);
                         builderInsertStationSysInfoBlock.SetValue(c => c.RES_SYS_INFO.Id, IDResSysInfoGeneral.Id);
-                        context.scope.Executor.Execute<MD.IResSysInfoBlocks_PK>(builderInsertStationSysInfoBlock);
+                        context.scope.Executor.Execute(builderInsertStationSysInfoBlock);
                     }
                 }
             }
         }
-        private void InsertResStMaskElement(StationMeasResult station, long IDResGeneral, HandleContext context)
+
+        private void InsertResStMaskElement(GeneralMeasResult generalResult, long IDResGeneral, HandleContext context)
         {
-            if (station.GeneralResult.BWMask != null)
+            if (generalResult.BWMask != null)
             {
-                foreach (ElementsMask maskElem in station.GeneralResult.BWMask)
+                foreach (ElementsMask maskElem in generalResult.BWMask)
                 {
                     if (maskElem.Level_dB.HasValue && maskElem.Level_dB.Value >= -300 && maskElem.Level_dB.Value <= 300
                         && maskElem.BW_kHz.HasValue && maskElem.BW_kHz.Value >= 1 && maskElem.BW_kHz.Value <= 200000)
@@ -933,11 +906,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
             }
         }
-        private void InsertResStLevelCar(StationMeasResult station, long valInsResMeasStation, HandleContext context)
+        private void InsertResStLevelCar(long valInsResMeasStation, LevelMeasResult[] levelResults, int index, HandleContext context)
         {
-            if (station.LevelResults != null)
+            if (levelResults != null)
             {
-                foreach (LevelMeasResult car in station.LevelResults)
+                foreach (LevelMeasResult car in levelResults)
                 {
                     if (car.Level_dBm.HasValue && car.Level_dBm >= -150 && car.Level_dBm <= 20
                         &&
@@ -952,7 +925,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             builderInsertResStLevelCar.SetValue(c => c.Lat, car.Location.Lat);
                         }
                         if (car.DifferenceTimeStamp_ns.HasValue && (car.DifferenceTimeStamp_ns < 0 && car.DifferenceTimeStamp_ns > 999999999))
-                            WriteLog($"Incorrect value DifferenceTimeStamp_ns: {car.DifferenceTimeStamp_ns}", "IResStLevelCar", context);
+                        {
+                            WriteLog($"({index}) Incorrect value DifferenceTimeStamp_ns: {car.DifferenceTimeStamp_ns}", "IResStLevelCar", context);
+                        }
+
                         builderInsertResStLevelCar.SetValue(c => c.DifferenceTimeStamp, car.DifferenceTimeStamp_ns);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbm, car.Level_dBm);
                         builderInsertResStLevelCar.SetValue(c => c.LevelDbmkvm, car.Level_dBmkVm);
@@ -960,7 +936,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         builderInsertResStLevelCar.SetValue(c => c.RES_MEAS_STATION.Id, valInsResMeasStation);
                         context.scope.Executor.Execute(builderInsertResStLevelCar);
                     }
-                    else WriteLog($"Incorrect value of Level_dBmkVm: {car.Level_dBmkVm} or Level_dBmkVm: {car.Level_dBmkVm}", "IResStLevelCar", context);
+                    else
+                    {
+                        WriteLog($"({index}) Incorrect value of Level_dBmkVm: {car.Level_dBmkVm} or Level_dBmkVm: {car.Level_dBmkVm}", "IResStLevelCar", context);
+                    }
                 }
             }
         }
@@ -1052,14 +1031,17 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
         private long EnsureSubTaskSensorId(string sensorName, string techId, MeasurementType measurement, string clientTaskId, DateTime measDate, IDataLayerScope scope)
         {
-            if (string.IsNullOrEmpty(clientTaskId) && measurement != MeasurementType.MonitoringStations)
+            // формат токена SDRN.FieldName.LongValue
+            var tokens = clientTaskId.Split('.');
+            
+            if (tokens.Length == 3 && "SDRN".Equals(tokens[0]))
             {
-                throw new InvalidOperationException("Undefined Task ID");
-            }
+                if (!"SubTaskSensorId".Equals(tokens[1], StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException($"Incorrect SDRN Task ID token '{clientTaskId}'");
+                }
 
-            if (!string.IsNullOrEmpty(clientTaskId))
-            {
-                if (!long.TryParse(clientTaskId, out long subTaskSensorId))
+                if (!long.TryParse(tokens[2], out long subTaskSensorId))
                 {
                     throw new InvalidOperationException($"Incorrect Task ID value '{clientTaskId}'");
                 }
@@ -1080,7 +1062,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 return subTaskSensorId;
             }
 
-            // для MonitoringStations таск может не приходить, будем его автоматически создавать
+            // для MonitoringStations идентификатор если нами не определен считается что таска нету и его нужно автоматически создавать
+            // ужасная логика но так уже договрились с клиентами
             if (measurement == MeasurementType.MonitoringStations)
             {
                 var autoMeasTaskId = this.EnsureAutoMeasTask(measDate, scope);
@@ -1262,7 +1245,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .OnTop(1)
                 .Select(c => c.Id)
                 .Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, measTaskId)
-                .Where(c => c.TimeStart, ConditionOperator.LessThan, dateWOTime)
+                .Where(c => c.TimeStart, ConditionOperator.LessEqual, dateWOTime)
                 .Where(c => c.TimeStop, ConditionOperator.GreaterEqual, dateWOTime);
 
             var id = default(long);
@@ -1305,7 +1288,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .OnTop(1)
                 .Select(c => c.Id)
                 .Where(c => c.SUBTASK.Id, ConditionOperator.Equal, subTaskId)
-                .Where(c => c.SENSOR.Id, ConditionOperator.LessThan, sensorId);
+                .Where(c => c.SENSOR.Id, ConditionOperator.Equal, sensorId);
 
             var id = default(long);
             var result = scope.Executor.ExecuteAndFetch(query, reader =>
@@ -1329,7 +1312,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .OnTop(1)
                 .Select(c => c.Id)
                 .Where(c => c.Id, ConditionOperator.Equal, subTaskSensorId)
-                .Where(c => c.SENSOR.Id, ConditionOperator.LessThan, sensorId);
+                .Where(c => c.SENSOR.Id, ConditionOperator.Equal, sensorId);
 
             return scope.Executor.ExecuteAndFetch(query, reader =>
             {
@@ -1368,13 +1351,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             // поиск в хранилище
             if (this.TryGetMeasResultFromStorage(date, subTaskSensorId, context, out measResultId))
             {
-                _measTaskIdentityCache.Set(key, measResultId);
+                _measResultIdentityCache.Set(key, measResultId);
                 return measResultId;
             }
 
             // нужно создать таск
             measResultId = this.CreateMeasResult(date, subTaskSensorId, context);
-            _measTaskIdentityCache.Set(key, measResultId);
+            _measResultIdentityCache.Set(key, measResultId);
 
             return measResultId;
         }
@@ -1422,6 +1405,91 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             }
 
             return pk.Id;
+        }
+
+        private long EnsureMeasResultStation(long measResultId, StationMeasResult clientStation, double clientFrequency,  HandleContext context)
+        {
+            var key = $"measResultId: {measResultId}, GlobalSID: {clientStation.TaskGlobalSid}, MeasGlobalSID : {clientStation.RealGlobalSid}, Frequency: {clientFrequency}";
+
+            // поиск в кеше
+            if (_measResultStationIdentityCache.TryGet(key, out long measResultStationId))
+            {
+                return measResultStationId;
+            }
+
+            // поиск в хранилище
+            if (this.TryGetMeasResultStationFromStorage(measResultId, clientStation, clientFrequency, context, out measResultStationId))
+            {
+                _measResultStationIdentityCache.Set(key, measResultStationId);
+                return measResultStationId;
+            }
+
+            // нужно создать таск
+            measResultStationId = this.CreateMeasResultStation(measResultId, clientStation, clientFrequency, context);
+            _measResultStationIdentityCache.Set(key, measResultStationId);
+
+            return measResultStationId;
+        }
+
+        private long CreateMeasResultStation(long measResultId, StationMeasResult clientStation, double clientFrequency, HandleContext context)
+        {
+            var statement = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
+            statement.SetValue(c => c.RES_MEAS.Id, measResultId);
+            statement.SetValue(c => c.Status, clientStation.Status);
+            statement.SetValue(c => c.MeasGlobalSID, clientStation.RealGlobalSid);
+            statement.SetValue(c => c.GlobalSID, clientStation.TaskGlobalSid);
+            statement.SetValue(c => c.Frequency, clientFrequency);
+            statement.SetValue(c => c.Standard, clientStation.Standard);
+
+            if (int.TryParse(clientStation.StationId, out int Idstation))
+            {
+                statement.SetValue(c => c.ClientStationCode, Idstation);
+            }
+            if (int.TryParse(clientStation.SectorId, out int IdSector))
+            {
+                statement.SetValue(c => c.ClientSectorCode, IdSector);
+            }
+
+            var pk = context.scope.Executor.Execute<MD.IResMeasStation_PK>(statement);
+            if (pk == null)
+            {
+                throw new InvalidOperationException($"Cannot create meas result station by Meas Result ID #{measResultId} and  MeasGlobalSID is '{clientStation.RealGlobalSid}' and  GlobalSID = '{clientStation.TaskGlobalSid}' and Frequency #{clientFrequency}");
+            }
+
+            var sensorId = this.EnsureSensor(context.sensorName, context.sensorTechId, context.scope);
+
+            var builderInsertLinkResSensor = this._dataLayer.GetBuilder<MD.ILinkResSensor>()
+                .Insert()
+                .SetValue(c => c.RES_MEAS_STATION.Id, pk.Id)
+                .SetValue(c => c.SENSOR.Id, sensorId);
+            context.scope.Executor.Execute(builderInsertLinkResSensor);
+
+            return pk.Id;
+        }
+
+        private bool TryGetMeasResultStationFromStorage(long measResultId, StationMeasResult clientStation, double clientFrequency, HandleContext context, out long measResultStationId)
+        {
+            var query = _dataLayer.GetBuilder<MD.IResMeasStation>()
+                .From()
+                .OnTop(1)
+                .Select(c => c.Id)
+                .Where(c => c.Frequency, ConditionOperator.Equal, clientFrequency)
+                .Where(c => c.GlobalSID, ConditionOperator.Equal, clientStation.TaskGlobalSid)
+                .Where(c => c.MeasGlobalSID, ConditionOperator.Equal, clientStation.RealGlobalSid);
+
+            var id = default(long);
+            var result = context.scope.Executor.ExecuteAndFetch(query, reader =>
+            {
+                var readState = reader.Read();
+                if (readState)
+                {
+                    id = reader.GetValue(c => c.Id);
+                }
+                return readState;
+            });
+
+            measResultStationId = id;
+            return result;
         }
     }
 }

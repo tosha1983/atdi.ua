@@ -239,8 +239,8 @@
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_LOCATION_PARAM.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_OTHER.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_STATION.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_SUB_TASK.sql" />
-    <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_SUB_TASK_STATION.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.SUBTASK.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.SUBTASK_SENSOR.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_TASK.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_TASK_SIGNAL.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.OWNER_DATA.sql" />

@@ -10,17 +10,19 @@ namespace Atdi.Platform.Caching
     public class DataCacheSite : IDataCacheSite
     {
         private readonly ConcurrentDictionary<IDataCacheDescriptor, IDataCache> _caches;
-
-        public DataCacheSite()
+        private readonly IStatistics _statistics;
+        
+        public DataCacheSite(IStatistics statistics)
         {
             this._caches = new ConcurrentDictionary<IDataCacheDescriptor, IDataCache>();
+            this._statistics = statistics;
         }
 
         public IDataCache<TKey, TData> Ensure<TKey, TData>(IDataCacheDescriptor<TKey, TData> descriptor)
         {
             if (!_caches.TryGetValue(descriptor, out IDataCache cache))
             {
-                cache = new DataCache<TKey, TData>(descriptor);
+                cache = new DataCache<TKey, TData>(descriptor, _statistics);
                 if (!_caches.TryAdd(descriptor, cache))
                 {
                     if (!_caches.TryGetValue(descriptor, out cache))
