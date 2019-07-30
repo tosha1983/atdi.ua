@@ -14,7 +14,7 @@
     <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.250" SourceName="GLOBAL_SID" SourceType="Column" Required="false"/>
     <Field Desc="MeasGlobalSID" Title="MeasGlobalSID" Name="MeasGlobalSID" DataType="Text.250" SourceName="MEAS_GLOBAL_SID" SourceType="Column" Required="false"/>
     
-    <Field Desc="Frequency" Title="Frequency" Name="Frequency" DataType="Double.30.10" SourceName="FREQUENCY" SourceType="Column" Required="false"/>
+    <Field Desc="Frequency" Title="Frequency" Name="Frequency" DataType="Double.30.10" SourceName="FREQUENCY" SourceType="Column" Required="true"/>
     
     <Field Desc="Status" Title="Status" Name="Status" DataType="Text.250" SourceName="STATUS" SourceType="Column" Required="false"/>
     <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
