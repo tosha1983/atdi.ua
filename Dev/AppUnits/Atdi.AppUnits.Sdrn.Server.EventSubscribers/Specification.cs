@@ -17,6 +17,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers
         public static readonly IDataCacheDescriptor<string, long> VerifiedSubTaskSensorIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.VerifiedSubTaskSensorIdentity");
 
         public static readonly IDataCacheDescriptor<string, long> MeasResultStationIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.MeasResultStationIdentity");
+        public static readonly IDataCacheDescriptor<string, long> MeasResultIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.MeasResultIdentity");
         public static readonly IDataCacheDescriptor<string, long> SensorIdentity = DataCacheDefiner.Define<string, long>("SDRN.Server.SensorIdentity");
     }
 
