@@ -3,8 +3,8 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[VALIDATIO
 go
 create table [ICSC].[VALIDATION_LOGS] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[TABLE_NAME]	[nvarchar](20) null,
-	[INFO]	[nvarchar](250) null,
+	[TABLE_NAME]	[nvarchar](150) null,
+	[INFO]	[nvarchar](max) null,
 	[WHEN]	[datetime] null,
 	[MESSAGE_ID]	[bigint] null,
 	[RES_MEAS_ID]	[bigint] null,

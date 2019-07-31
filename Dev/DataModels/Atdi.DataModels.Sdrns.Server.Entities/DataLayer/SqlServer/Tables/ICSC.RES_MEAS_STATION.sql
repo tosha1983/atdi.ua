@@ -9,8 +9,8 @@ create table [ICSC].[RES_MEAS_STATION] (
 	[STATUS]	[nvarchar](250) null,
 	[RES_MEAS_ID]	[bigint] not null,
 	[STANDARD]	[nvarchar](50) null,
-	[ClientSectorCode] [int] null,
-	[ClientStationCode] [int] null,
+	[CLIENT_SECTOR_CODE] [int] null,
+	[CLIENT_STATION_CODE] [int] null,
 	constraint [PK_RES_MEAS_STATION] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go
