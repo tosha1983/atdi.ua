@@ -411,9 +411,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     {
                         WriteLog($"({i}) MeasStartTime must be less than MeasFinishTime", "IResStGeneralRaw", context);
                     }
-
                     
-                    var resMeasStationId = this.EnsureMeasResultStation(context.resMeasId, station, stationFrequency.Value, context);
+                    var clientFrequency = Convert.ToDecimal(Math.Round(stationFrequency.Value, 3));
+                    var resMeasStationId = this.EnsureMeasResultStation(context.resMeasId, station, clientFrequency, context);
                         
                     
                     if (generalResult.LevelsSpectrum_dBm != null 
@@ -1407,7 +1407,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             return pk.Id;
         }
 
-        private long EnsureMeasResultStation(long measResultId, StationMeasResult clientStation, double clientFrequency,  HandleContext context)
+        private long EnsureMeasResultStation(long measResultId, StationMeasResult clientStation, decimal clientFrequency,  HandleContext context)
         {
             var key = $"measResultId: {measResultId}, GlobalSID: {clientStation.TaskGlobalSid}, MeasGlobalSID : {clientStation.RealGlobalSid}, Frequency: {clientFrequency}";
 
@@ -1431,7 +1431,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             return measResultStationId;
         }
 
-        private long CreateMeasResultStation(long measResultId, StationMeasResult clientStation, double clientFrequency, HandleContext context)
+        private long CreateMeasResultStation(long measResultId, StationMeasResult clientStation, decimal clientFrequency, HandleContext context)
         {
             var statement = this._dataLayer.GetBuilder<MD.IResMeasStation>().Insert();
             statement.SetValue(c => c.RES_MEAS.Id, measResultId);
@@ -1467,7 +1467,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             return pk.Id;
         }
 
-        private bool TryGetMeasResultStationFromStorage(long measResultId, StationMeasResult clientStation, double clientFrequency, HandleContext context, out long measResultStationId)
+        private bool TryGetMeasResultStationFromStorage(long measResultId, StationMeasResult clientStation, decimal clientFrequency, HandleContext context, out long measResultStationId)
         {
             var query = _dataLayer.GetBuilder<MD.IResMeasStation>()
                 .From()
