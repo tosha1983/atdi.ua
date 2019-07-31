@@ -108,10 +108,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 .SetValue(c => c.Status, deliveryObject.Status);
                                             var updated = scope.Executor
                                             .Execute(querySubTaskSensor) == 1;
-                                            if (updated == true)
-                                            {
-                                                scope.Commit();
-                                            }
+                                            
 
                                            var queryMeasTaskSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
                                          .From()
@@ -161,11 +158,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 .SetValue(c => c.Status, deliveryObject.Status);
                                                 var updatedMeasTask = scope.Executor
                                                 .Execute(queryMeasTask) == 1;
-                                                if (updatedMeasTask == true)
-                                                {
-                                                    scope.Commit();
-                                                }
                                             }
+
+                                            scope.Commit();
                                         }
                                     }
                                 }
