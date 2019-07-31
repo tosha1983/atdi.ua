@@ -44,7 +44,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             var pathResults = "";
             try
             {
-                var additionalParameters = item.Measurement.ToString()+"_"+ item.TaskId+"_";
+                var additionalParameters = string.Format("{0}_{1}_", item.Measurement.ToString(), item.TaskId);
                 var messagesBus = new SaveMessages(++_fileCounter, additionalParameters, this._logger, this._configRepositories.FolderMeasResults);
                 pathResults = messagesBus.SaveObject<DM.MeasResults>(item);
             }

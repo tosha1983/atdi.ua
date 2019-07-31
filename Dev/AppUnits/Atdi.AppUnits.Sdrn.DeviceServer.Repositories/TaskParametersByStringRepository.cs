@@ -48,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             var pathTaskParameters = "";
             try
             {
-                var additionalParameters = item.MeasurementType.ToString() + "_" + item.SDRTaskId+"_";
+                var additionalParameters = string.Format("{0}_{1}_", item.MeasurementType.ToString(), item.SDRTaskId);
                 var messagesBus = new SaveMessages(++_fileCounter, additionalParameters, this._logger, this._configRepositories.FolderTaskParameters);
                 pathTaskParameters = messagesBus.SaveObject<TaskParameters>(item);
             }
@@ -64,7 +64,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             bool isSuccess = false;
             try
             {
-                var additionalParameters = item.MeasurementType.ToString() + "_" + item.SDRTaskId+"_";
+                var additionalParameters = string.Format("{0}_{1}_", item.MeasurementType.ToString(), item.SDRTaskId);
                 var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
                 var fileNameFinded = loadMessages.GetFileName(additionalParameters);
                 if (!string.IsNullOrEmpty(fileNameFinded))
@@ -116,9 +116,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     for (int i = 0; i < taskParameters.Length; i++)
                     {
-                        if ((taskParameters[i].status == "C") || (taskParameters[i].status == "Z") || (taskParameters[i].StopTime < DateTime.Now))
+                        if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()) || (taskParameters[i].StopTime < DateTime.Now))
                         {
-                            var additionalParameters = taskParameters[i].MeasurementType.ToString() + "_" + taskParameters[i].SDRTaskId + "_";
+                            var additionalParameters = string.Format("{0}_{1}_", taskParameters[i].MeasurementType.ToString(), taskParameters[i].SDRTaskId);
                             var fileName = loadMessages.GetFileName(additionalParameters);
                             var messagesBus = new SaveMessages(_fileCounter, fileName, this._logger, this._configRepositories.FolderTaskParameters);
                             messagesBus.DeleteObject(fileName);
@@ -144,22 +144,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     for (int i = 0; i < taskParameters.Length; i++)
                     {
-                        if ((taskParameters[i].status != "C") && (taskParameters[i].StopTime >= DateTime.Now))
+                        var param = string.Format("{0}_{1}_", taskParameters[i].MeasurementType.ToString(), taskParameters[i].SDRTaskId);
+                        if ((taskParameters[i].status != StatusTask.C.ToString()) && (taskParameters[i].StopTime >= DateTime.Now))
                         {
-                            if (!listSDRTaskId.Contains(taskParameters[i].MeasurementType.ToString()+"_"+taskParameters[i].SDRTaskId+"_"))
+                            if (!listSDRTaskId.Contains(param))
                             {
-                                listSDRTaskId.Add(taskParameters[i].MeasurementType.ToString() + "_" + taskParameters[i].SDRTaskId + "_");
+                                listSDRTaskId.Add(param);
                                 listTaskParameters.Add(taskParameters[i]);
                             }
                         }
-                        else if ((taskParameters[i].status == "C") || (taskParameters[i].status == "Z") || (taskParameters[i].StopTime < DateTime.Now))
+                        else if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()) || (taskParameters[i].StopTime < DateTime.Now))
                         {
-                            
-                            var additionalParameters = taskParameters[i].MeasurementType.ToString() + "_" + taskParameters[i].SDRTaskId + "_";
-                            var fileName = loadMessages.GetFileName(additionalParameters);
+                            var fileName = loadMessages.GetFileName(param);
                             var messagesBus = new SaveMessages(_fileCounter, fileName, this._logger, this._configRepositories.FolderTaskParameters);
                             messagesBus.DeleteObject(fileName);
-                            listRunTask.Remove(taskParameters[i].MeasurementType.ToString() + "_" + taskParameters[i].SDRTaskId + "_");
+                            listRunTask.Remove(param);
                         }
                     }
                 }
