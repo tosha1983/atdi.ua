@@ -98,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 long taskIds = -1;
                                 if (deliveryObject.CustTxt1 != null)
                                 {
-                                    if (long.TryParse(deliveryObject.CustTxt1, out subTaskStationId))
+                                    if (long.TryParse(deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.",""), out subTaskStationId))
                                     {
                                         if (subTaskStationId > -1)
                                         {
