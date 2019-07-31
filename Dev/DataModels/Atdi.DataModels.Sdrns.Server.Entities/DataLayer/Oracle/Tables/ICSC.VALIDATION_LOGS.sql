@@ -2,10 +2,10 @@
 (
   ID          NUMBER(15)                        NOT NULL,
   TABLE_NAME  NVARCHAR2(50),
-  INFO        NVARCHAR2(250),
   WHEN        DATE,                              
   MESSAGE_ID  NUMBER(15),	
-  RES_MEAS_ID NUMBER(15)	
+  RES_MEAS_ID NUMBER(15),
+  INFO        NCLOB
 )
 TABLESPACE USERS
 PCTUSED    0
