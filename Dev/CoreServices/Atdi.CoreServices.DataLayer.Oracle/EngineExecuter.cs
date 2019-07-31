@@ -28,6 +28,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             this._config = config;
             this._statistics = statistics;
             this.TryOpenConnection();
+            _statistics.Counter(Monitoring.ExecutorCountCounterKey)?.Increment();
             logger.Verbouse(Contexts.OracleEngine, Categories.Creation, Events.ObjectWasCreated.With("EngineExecuter"));
         }
 
