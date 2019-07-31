@@ -94,6 +94,8 @@
     <Compile Include="OldAPI\Models\Measurements\Signaling\SignalingSysInfo.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\Spectrum.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\WorkTime.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingGroupingParameters.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingInterruptionParameters.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingMeasTask.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalMask.cs" />
     <Compile Include="OldAPI\Models\Measurements\StationMeasurements.cs" />
