@@ -21,7 +21,7 @@
     <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
       <dependentAssembly>
         <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral"/>
-        <bindingRedirect oldVersion="0.0.0.0-11.0.0.0" newVersion="11.0.0.0"/>
+        <bindingRedirect oldVersion="0.0.0.0-12.0.0.0" newVersion="12.0.0.0"/>
       </dependentAssembly>
     </assemblyBinding>
   </runtime>
@@ -89,6 +89,10 @@
       <!-- Сервис потребителя событий логгера: ввыод событий в файл, можно подключать несколько раз с разной конфигурацией -->
       <install type="Atdi.Platform.Logging.EventsConsumers.FileEventsConsumerInstaller, Atdi.Platform.Logging">
         <parameters>
+          <!-- Катало куда писать логи -->
+          <parameter name="FolderPath" value=""/>
+          <!-- Префикс к файлу лога -->
+          <parameter name="FilePrefix" value=""/>
           <!-- Уровень события с которого необходимо принимать события, работате как фильтр -->
           <parameter name="Levels" value=""/>
           <!-- Фильтрация по контексту -->
@@ -119,6 +123,14 @@
       <components>
 
   <!-- Точка регистрации базовых компонентов сервера устройств -->
+
+        <!-- Компоеннта сбора информации для мониторинга работы сервера -->
+        <component type="MonitoringCoreServices" assembly="Atdi.CoreServices.Monitoring">
+          <parameters>
+            <!-- Размер буфера сообщений из лога -->
+            <parameter name="LogEvent.BufferSize" value="5000"/>
+          </parameters>
+        </component>
         
         <!-- Базовая компонента 1:  Entity ORM - работа с сущностями хранилища сервера устройств, пока стартует самая первая. 
              Описание параметров смотреть в файле конфигурации "Atdi.CoreServices.EntityOrm.dll.config" -->
@@ -132,6 +144,13 @@
         <component type="DataLayerCoreServices" assembly="Atdi.CoreServices.DataLayer">
           <parameters>
           </parameters>
+        </component>
+
+        <component type="AssembliesDataLayerCoreServices" assembly="Atdi.CoreServices.DataLayer.Assemblies">
+        </component>
+        <component type="OracleDataLayerCoreServices" assembly="Atdi.CoreServices.DataLayer.Oracle">
+        </component>
+        <component type="SqlServerDataLayerCoreServices" assembly="Atdi.CoreServices.DataLayer.SqlServer">
         </component>
 
 
@@ -201,7 +220,33 @@
           </parameters>
         </component>
 
+  <!-- Точка регистрации компонентов Web API -->
 
+        <!-- Компонента Web API: хост сервера, обязательный, без него другие компоненты Web API не смогут опубликовать свой функционал
+             Описание параметров смотреть в файле конфигурации "Atdi.WebApiServices.SelfHost.dll.config" -->
+        <component type="SelfHostWebApiServices" instance="SdrnDeviceWebApiServer" assembly="Atdi.WebApiServices.SelfHost">
+          <parameters>
+          </parameters>
+        </component>
+
+        <!-- Компонента Web API: основной функционал Web API Device Server
+             Описание параметров смотреть в файле конфигурации "Atdi.WebApiServices.DeviceServer.dll.config" -->
+        <component type="SdrnDeviceServerWebApiServices" assembly="Atdi.WebApiServices.Sdrn.DeviceServer">
+          <parameters>
+            <!-- Инстанс компоненты хоста Web API - в данном случаи равен "SdrnDeviceWebApiServer" из предыдущего подключения  -->
+            <parameter name="Instance" value="SdrnDeviceWebApiServer"/>
+          </parameters>
+        </component>
+
+        <!-- Компонента Web API: основной функционал Web API Entity ORM 
+             Описание параметров смотреть в файле конфигурации "Atdi.WebApiServices.EntityOrm.dll.config" -->
+        <component type="EntityOrmWebApiServices" assembly="Atdi.WebApiServices.EntityOrm">
+          <parameters>
+            <!-- Инстанс компоненты хоста Web API -->
+            <parameter name="Instance" value="SdrnDeviceWebApiServer"/>
+          </parameters>
+        </component>
+        
       </components>
     </appServer>
 

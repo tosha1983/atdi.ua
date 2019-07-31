@@ -22,7 +22,7 @@
     <Field Desc="StartTime" Title="StartTime" Name="StartTime" DataType="DateTime" SourceName="START_TIME" SourceType="Column" Required="false"/>
     <Field Desc="StopTime" Title="StopTime" Name="StopTime" DataType="DateTime" SourceName="STOP_TIME" SourceType="Column" Required="false"/>
     <Field Desc="ScansNumber" Title="ScansNumber" Name="ScansNumber" DataType="Integer.32" SourceName="SCANS_NUMBER" SourceType="Column" Required="false"/>
-    <Field Name="MEAS_SUBTASK_STATION" SourceType="Reference" SourceName="MeasSubTaskStation" Title="Relation ResMeas to MeasSubTaskStation"/>
+    <Field Name="SUBTASK_SENSOR" SourceType="Reference" SourceName="SubTaskSensor" Title="Relation ResMeas to SubTaskSensor"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
