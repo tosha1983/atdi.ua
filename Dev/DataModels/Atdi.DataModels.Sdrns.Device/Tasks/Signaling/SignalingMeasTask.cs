@@ -22,11 +22,11 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public int? SignalizationNChenal { get; set; } //Количество точек в канале при сканировании.
         [DataMember]
-        bool CorrelationAnalize { get; set; }// проводить корреляционный анализ между излучениями по умолчанию лож
+        public bool? CorrelationAnalize { get; set; }// проводить корреляционный анализ между излучениями по умолчанию лож
         [DataMember]
-        double CorrelationFactor { get; set; }// коєфициент кореляции при котором обединяем излучения по умолчанию 0.7
+        public double? CorrelationFactor { get; set; }// коєфициент кореляции при котором обединяем излучения по умолчанию 0.7
         [DataMember]
-        bool CheckFreqChannel { get; set; }// проверять совподение частоты сигнала с частотой канала по умолчанию лож
+        public bool? CheckFreqChannel { get; set; }// проверять совподение частоты сигнала с частотой канала по умолчанию лож
         [DataMember]
         public bool? AnalyzeByChannel { get; set; } // true значит надо анализировать согласно существующим частото каналам  по умолчанию false
         [DataMember]

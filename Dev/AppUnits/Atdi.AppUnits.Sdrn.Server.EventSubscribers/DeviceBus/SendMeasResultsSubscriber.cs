@@ -1473,9 +1473,24 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .From()
                 .OnTop(1)
                 .Select(c => c.Id)
-                .Where(c => c.Frequency, ConditionOperator.Equal, clientFrequency)
-                .Where(c => c.GlobalSID, ConditionOperator.Equal, clientStation.TaskGlobalSid)
-                .Where(c => c.MeasGlobalSID, ConditionOperator.Equal, clientStation.RealGlobalSid);
+                .Where(c => c.Frequency, ConditionOperator.Equal, clientFrequency);
+            if (clientStation.TaskGlobalSid != null)
+            {
+                query.Where(c => c.GlobalSID, ConditionOperator.Equal, clientStation.TaskGlobalSid);
+            }
+            else
+            {
+                query.Where(c => c.GlobalSID, ConditionOperator.IsNull);
+            }
+            if (clientStation.RealGlobalSid != null)
+            {
+                query.Where(c => c.MeasGlobalSID, ConditionOperator.Equal, clientStation.RealGlobalSid);
+            }
+            else
+            {
+                query.Where(c => c.MeasGlobalSID, ConditionOperator.IsNull);
+            }
+            
 
             var id = default(long);
             var result = context.scope.Executor.ExecuteAndFetch(query, reader =>
