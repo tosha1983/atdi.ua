@@ -248,7 +248,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         // приостановка потока на время DurationWaitingCheckNewTasks
                         System.Threading.Thread.Sleep(this._config.DurationWaitingCheckNewTasks);
                         // проверка признака поступления новых тасков в БД
-                        this._repositoryTaskParametersByString.RemoveOldObjects();
                         var deviceCommands = this._repositoryDeviceCommand.LoadAllObjects();
                         if ((deviceCommands != null) && (deviceCommands.Length>0))
                         {
@@ -309,6 +308,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 }
                             }
                         }
+                        this._repositoryTaskParametersByString.RemoveOldObjects();
                     }
                 }
                 // контекст никогда не выгружается т.к. в этом воркере происходит процесс постоянного ожидания для обработки сообщений типа DeviceCommand и TaskParameters
