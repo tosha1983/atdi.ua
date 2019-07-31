@@ -49,7 +49,7 @@ namespace Atdi.Test.Platform
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Signaling,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),
@@ -65,7 +65,7 @@ namespace Atdi.Test.Platform
                 Status = Guid.NewGuid().ToString(),
                 StopTime = DateTime.Now,
                 SwNumber = int.MinValue,
-                TaskId = Guid.NewGuid().ToString()
+                TaskId = "SDRN.SubTaskSensorId.1"//Guid.NewGuid().ToString()
             };
 
             return result;
@@ -103,16 +103,16 @@ namespace Atdi.Test.Platform
                             СorrectnessEstimations = true
                         },
                         BWMask = BuildTestBWMask(bwMaskCount),
-                        CentralFrequencyMeas_MHz = double.MaxValue,
+                        CentralFrequencyMeas_MHz = 2222,
                         LevelsSpectrum_dBm = BuildTestLevelsSpectrum(levelsSpectrumCount),
-                        CentralFrequency_MHz = double.MaxValue,
+                        CentralFrequency_MHz = 1111,
                         MeasDuration_sec = double.MaxValue,
                         MeasFinishTime = DateTime.Now,
                         MeasStartTime = DateTime.Now,
                         OffsetFrequency_mk = double.MaxValue,
                         RBW_kHz = double.MinValue,
-                        SpectrumStartFreq_MHz = decimal.MinValue,
-                        SpectrumSteps_kHz = decimal.MaxValue,
+                        SpectrumStartFreq_MHz = 3333,
+                        SpectrumSteps_kHz = 4444,
                         StationSysInfo = new StationSysInfo
                         {
                             BandWidth = double.MaxValue,

@@ -11,3 +11,7 @@ create table [ICSC].[SUBTASK_SENSOR] (
 	constraint [PK_MSUBTASK_SENSOR] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go
+
+
+insert into [ICSC].[SUBTASK_SENSOR] (SENSOR_ID, SUBTASK_ID)
+select 1, 1
