@@ -1,7 +1,7 @@
 ﻿CREATE TABLE ICSC.VALIDATION_LOGS
 (
   ID          NUMBER(15)                        NOT NULL,
-  TABLE_NAME  NVARCHAR2(50),
+  TABLE_NAME   NVARCHAR2(150),
   WHEN        DATE,                              
   MESSAGE_ID  NUMBER(15),	
   RES_MEAS_ID NUMBER(15),
