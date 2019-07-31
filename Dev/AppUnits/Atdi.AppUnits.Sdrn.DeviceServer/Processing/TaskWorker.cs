@@ -1,5 +1,6 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer;
+using Atdi.Platform;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     {
         private readonly TaskWorkerDescriptor _descriptor;
         private readonly ITaskWorkerFactory _workerFactory;
+        private readonly IStatistics _statistics;
         private readonly ILogger _logger;
+        private readonly IStatisticCounter _tasksHitsCounter;
+        private readonly IStatisticCounter _tasksSyncCounter;
+        private readonly IStatisticCounter _tasksAsyncCounter;
 
-        public TaskWorker(TaskWorkerDescriptor descriptor, ITaskWorkerFactory workerFactory, ILogger logger)
+        public TaskWorker(TaskWorkerDescriptor descriptor, ITaskWorkerFactory workerFactory, IStatistics statistics, ILogger logger)
         {
             this._descriptor = descriptor;
             this._workerFactory = workerFactory;
+            this._statistics = statistics;
             this._logger = logger;
+            if (this._statistics != null)
+            {
+                this._tasksHitsCounter = _statistics.Counter(Monitoring.TasksHitsKey);
+                this._tasksSyncCounter = _statistics.Counter(Monitoring.TasksSyncKey);
+                this._tasksAsyncCounter = _statistics.Counter(Monitoring.TasksAsyncKey);
+            }
         }
 
         public bool IsAsync => _descriptor.IsAsync;
 
         public void Run(ITaskDescriptor descriptor)
         {
+            this._tasksHitsCounter?.Increment();
+            this._tasksSyncCounter?.Increment();
             var task = descriptor.Task as TaskBase;
             var taskContext = _descriptor.CreateTaskContext(descriptor);
             var instance = this._workerFactory.Create(this._descriptor.InstanceType);
@@ -35,6 +49,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
         public Task RunAsync(ITaskDescriptor descriptor)
         {
+            this._tasksHitsCounter?.Increment();
+            this._tasksAsyncCounter?.Increment();
             var task = descriptor.Task as TaskBase;
             var taskContext = _descriptor.CreateTaskContext(descriptor);
             var instance = this._workerFactory.Create(this._descriptor.InstanceType);

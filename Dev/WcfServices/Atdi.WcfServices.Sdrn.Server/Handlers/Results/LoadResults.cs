@@ -1412,7 +1412,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? rbw = null;
                         double? vbw = null;
                         double? bw = null;
-                        decimal? centralFrequency =  readerResMeasStation.GetValue(c => c.Frequency);
+                        var centralFrequency =  readerResMeasStation.GetValue(c => c.Frequency);
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -1926,7 +1926,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? vbw = null;
                         double? bw = null;
                         //double? centralFrequency = null;
-                        decimal? centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
+                        var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
@@ -2729,7 +2729,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 double? rbw = null;
                                 double? vbw = null;
                                 double? bw = null;
-                                decimal? centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
+                                var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
                                 var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
