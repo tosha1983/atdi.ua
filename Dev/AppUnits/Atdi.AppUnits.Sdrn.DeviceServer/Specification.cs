@@ -8,6 +8,23 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer
 {
+    static class Monitoring
+    {
+        public static readonly IStatisticCounterKey AdaptersCountKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Count");
+        public static readonly IStatisticCounterKey AdaptersCommandsHitsKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Hits");
+        public static readonly IStatisticCounterKey AdaptersCommandsShotsKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Shots");
+        public static readonly IStatisticCounterKey AdaptersCommandsCanceledKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Canceled");
+
+        public static readonly IStatisticCounterKey AdaptersCommandsExecutionCountKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Count");
+        public static readonly IStatisticCounterKey AdaptersCommandsExecutionAbortedKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Aborted");
+        public static readonly IStatisticCounterKey AdaptersCommandsExecutionCanceledKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Canceled");
+        public static readonly IStatisticCounterKey AdaptersCommandsExecutionCompletedKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Completed");
+
+        public static readonly IStatisticCounterKey TasksHitsKey = STS.DefineCounterKey("SDRN.DeviceServer.Tasks.Hits");
+        public static readonly IStatisticCounterKey TasksSyncKey = STS.DefineCounterKey("SDRN.DeviceServer.Tasks.Sync");
+        public static readonly IStatisticCounterKey TasksAsyncKey = STS.DefineCounterKey("SDRN.DeviceServer.Tasks.Async");
+    }
+
     static class Contexts
     {
         public static readonly EventContext ThisComponent = "SDRN.DeviceServer";

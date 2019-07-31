@@ -1,5 +1,6 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer;
+using Atdi.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly CommandDescriptor _commandDescriptor;
         private readonly AdapterWorker _adapterWorker;
         private readonly IResultBuffer _resultBuffer;
+        private readonly IStatistics _statistics;
+        private readonly IStatisticCounter _adaptersCommandsExecutionCountCounter;
+        private readonly IStatisticCounter _adaptersCommandsExecutionCompletedCounter;
+        private readonly IStatisticCounter _adaptersCommandsExecutionCanceledCounter;
+        private readonly IStatisticCounter _adaptersCommandsExecutionAbortedCounter;
 
-        public ExecutionContext(CommandDescriptor commandDescriptor, AdapterWorker adapterWorker, IResultBuffer resultBuffer)
+        public ExecutionContext(CommandDescriptor commandDescriptor, AdapterWorker adapterWorker, IResultBuffer resultBuffer, IStatistics statistics)
         {
             this._commandDescriptor = commandDescriptor;
             this._adapterWorker = adapterWorker;
             this._resultBuffer = resultBuffer;
+            this._statistics = statistics;
+
+            if (this._statistics != null)
+            {
+                this._adaptersCommandsExecutionCountCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionCountKey);
+                this._adaptersCommandsExecutionCompletedCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionCompletedKey);
+                this._adaptersCommandsExecutionCanceledCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionCanceledKey);
+                this._adaptersCommandsExecutionAbortedCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionAbortedKey);
+
+                this._adaptersCommandsExecutionCountCounter?.Increment();
+            }
         }
 
         public CancellationToken Token => _commandDescriptor.CancellationToken;
@@ -28,18 +45,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             _commandDescriptor.Abort(CommandFailureReason.Exception, e);
             _adapterWorker.FinalizeCommand(_commandDescriptor, _resultBuffer);
+
+            this._adaptersCommandsExecutionAbortedCounter?.Increment();
+            this._adaptersCommandsExecutionCountCounter?.Decrement();
         }
 
         public void Cancel()
         {
             _commandDescriptor.Cancel();
             _adapterWorker.FinalizeCommand(_commandDescriptor, _resultBuffer);
+
+            this._adaptersCommandsExecutionCanceledCounter?.Increment();
+            this._adaptersCommandsExecutionCountCounter?.Decrement();
+
         }
 
         public void Finish()
         {
             _commandDescriptor.Done();
             _adapterWorker.FinalizeCommand(_commandDescriptor, _resultBuffer);
+
+            this._adaptersCommandsExecutionCompletedCounter?.Increment();
+            this._adaptersCommandsExecutionCountCounter?.Decrement();
+
         }
 
         public void Lock(params CommandType[] types)

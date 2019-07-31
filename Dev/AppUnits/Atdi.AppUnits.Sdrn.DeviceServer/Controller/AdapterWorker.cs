@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Reflection;
 using Atdi.Common;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
@@ -22,6 +23,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly IResultsHost _resultsHost;
         private readonly ITimeService _timeService;
         private readonly IEventWaiter _eventWaiter;
+        private readonly IStatistics _statistics;
         private readonly ILogger _logger;
         private readonly int _abortingTimeout = 1000;
         private Thread _adapterThread;
@@ -38,6 +40,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly Dictionary<Type, CommandLock> _typeLocks;
 
         private readonly Dictionary<CommandType, IDeviceProperties> _properties;
+        private readonly IStatisticCounter _adaptersCommandsHitsCounter;
+        private readonly IStatisticCounter _adaptersCommandsCanceledCounter;
+        private readonly IStatisticCounter _adaptersCommandsShotsCounter;
         private long _counter;
 
         public DeviceState State => _state;
@@ -51,6 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             IResultsHost resultsHost, 
             ITimeService timeService,
             IEventWaiter eventWaiter,
+            IStatistics statistics,
             ILogger logger)
         {
             this._adapterType = adapterType ?? throw new ArgumentNullException(nameof(adapterType));
@@ -59,6 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._resultsHost = resultsHost;
             this._timeService = timeService;
             this._eventWaiter = eventWaiter;
+            this._statistics = statistics;
             this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.DeviceId = Guid.NewGuid();
             this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
@@ -69,6 +76,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._properties = new Dictionary<CommandType, IDeviceProperties>();
             this._counter = 0;
             this._state = DeviceState.Created;
+            if (this._statistics != null)
+            {
+                _statistics.Counter(Monitoring.AdaptersCountKey)?.Increment();
+                this._adaptersCommandsShotsCounter = _statistics.Counter(Monitoring.AdaptersCommandsShotsKey);
+                this._adaptersCommandsHitsCounter = _statistics.Counter(Monitoring.AdaptersCommandsHitsKey);
+                this._adaptersCommandsCanceledCounter = _statistics.Counter(Monitoring.AdaptersCommandsCanceledKey);
+            }
         }
 
         public Guid DeviceId { get; private set; }
@@ -123,6 +137,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     this._state = DeviceState.Basy;
                     var command = commandDescriptor.Command;
 
+                    this._adaptersCommandsShotsCounter?.Increment();
+
                     using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.ExecutingAdapterCommand.With(commandDescriptor.CommandType.Name, command.Type, command.Id, _adapterType, waitTime, timer.Elapsed.TotalMilliseconds)))
                     {
                         //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TookCommand.With(_adapterType, command.Type, command.ParameterType));
@@ -131,6 +147,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         {
                             if (!_timeService.TimeStamp.HitMilliseconds(command.StartTimeStamp, command.Timeout, out long lateness))
                             {
+                                this._adaptersCommandsCanceledCounter?.Increment();
+
                                 this._state = DeviceState.Available;
                                 commandDescriptor.Reject(CommandFailureReason.TimeoutExpired);
                                 _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.TimeoutExpired));
@@ -143,6 +161,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         // пока команда доходжила ее могли отменить
                         if (commandDescriptor.CancellationToken.IsCancellationRequested)
                         {
+                            this._adaptersCommandsCanceledCounter?.Increment();
+
                             this._state = DeviceState.Available;
                             commandDescriptor.Reject(CommandFailureReason.CanceledBeforeExecution);
                             continue;
@@ -153,6 +173,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         // так допсуается ситуаци язапуска в отдельном потоке измерения по отдельнйо комманде
                         if (!this.CheckLockState(commandDescriptor.CommandType, command.Type))
                         {
+                            this._adaptersCommandsCanceledCounter?.Increment();
+
                             this._state = DeviceState.Available;
                             commandDescriptor.Reject(CommandFailureReason.DeviceIsBusy);
                             _logger.Warning(Contexts.AdapterWorker, Categories.Processing, Events.RejectedCommand.With(_adapterType, command.Type, command.ParameterType, CommandFailureReason.DeviceIsBusy));
@@ -161,6 +183,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         }
 
                         // выполням комманду
+                        this._adaptersCommandsHitsCounter?.Increment();
                         this.StartExecutingCommand(commandDescriptor);
                         this._state = DeviceState.Available;
                         //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TransferCommand.With(_adapterType, command.Type, command.ParameterType));
@@ -208,6 +231,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     this._adapterThread.Join(_abortingTimeout);
                     
                     this._adapterThread = null;
+
+                    _statistics.Counter(Monitoring.AdaptersCountKey)?.Decrement();
                 }
             }
             catch (Exception e)
@@ -261,7 +286,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
             var resultBuffer = this._resultsHost.TakeBuffer(commandDescriptor);
 
-            var executionContext = new ExecutionContext(commandDescriptor, this, resultBuffer);
+            var executionContext = new ExecutionContext(commandDescriptor, this, resultBuffer, this._statistics);
             this._executingCommands.TryAdd(command.Id, executionContext);
 
             commandDescriptor.Process();
