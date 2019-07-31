@@ -485,10 +485,13 @@ namespace XICSM.ICSControlClient.ViewModels
                     },
                     SignalingMeasTaskParameters = new SDR.SignalingMeasTask()
                     {
+                        InterruptionParameters = new SDR.SignalingInterruptionParameters()
+                        {
+                            AutoDivisionEmitting = this._currentMeasTask.AutoDivisionEmitting,
+                            DifferenceMaxMax = this._currentMeasTask.DifferenceMaxMax
+                        },
                         allowableExcess_dB = this._currentMeasTask.AllowableExcess_dB,
-                        AutoDivisionEmitting = this._currentMeasTask.AutoDivisionEmitting,
                         CompareTraceJustWithRefLevels = this._currentMeasTask.CompareTraceJustWithRefLevels,
-                        DifferenceMaxMax = this._currentMeasTask.DifferenceMaxMax,
                         FiltrationTrace = this._currentMeasTask.FiltrationTrace,
                         SignalizationNChenal = this._currentMeasTask.SignalizationNChenal,
                         SignalizationNCount = this._currentMeasTask.SignalizationNCount

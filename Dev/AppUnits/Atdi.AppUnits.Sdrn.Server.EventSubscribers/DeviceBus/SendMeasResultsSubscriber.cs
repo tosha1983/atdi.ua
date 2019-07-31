@@ -194,16 +194,15 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     WriteLog("Undefined value ResultId", "IResMeas", context);
                     return false;
                 }
-                else if (measResult.ResultId.Length > 50)
-                    measResult.ResultId.SubString(50);
-
+                
                 if (string.IsNullOrEmpty(measResult.TaskId))
                 {
                     WriteLog("Undefined value TaskId", "IResMeas", context);
                     return false;
                 }
-                else if (measResult.TaskId.Length > 200)
-                    measResult.TaskId.SubString(200);
+
+                measResult.ResultId = measResult.ResultId.SubString(50);
+                measResult.TaskId = measResult.TaskId.SubString(200);
 
                 if ((measResult.Status != null) && (measResult.Status.Length > 5))
                 {
@@ -319,20 +318,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     measResult.Status = "";
                 }
                 
-
                 var subSubTaskSensorId = EnsureSubTaskSensorId(context.sensorName, context.sensorTechId, measResult.Measurement, measResult.TaskId, measResult.Measured, context.scope);
-                //var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
-                //builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
-                //builderInsertIResMeas.SetValue(c => c.Status, measResult.Status);
-                //builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
-                //builderInsertIResMeas.SetValue(c => c.DataRank, measResult.SwNumber);
-                //builderInsertIResMeas.SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString());
-                //builderInsertIResMeas.SetValue(c => c.SUBTASK_SENSOR.Id, subSubTaskSensorId);
-                //builderInsertIResMeas.SetValue(c => c.StartTime, measResult.StartTime);
-                //builderInsertIResMeas.SetValue(c => c.StopTime, measResult.StopTime);
-                //var idResMeas = context.scope.Executor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
-                //context.resMeasId = idResMeas.Id;
-
                 context.resMeasId = this.EnsureMeasResultMonitoring(subSubTaskSensorId, context);
 
                 if (measResult.Routes != null)
@@ -446,23 +432,19 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     WriteLog("Undefined value ResultId", "IResMeas", context);
                     return false;
                 }
-                else if (measResult.ResultId.Length > 50)
-                    measResult.ResultId.SubString(50);
-
                 if (string.IsNullOrEmpty(measResult.TaskId))
                 {
                     WriteLog("Undefined value TaskId", "IResMeas", context);
                     return false;
                 }
-                else if (measResult.TaskId.Length > 200)
-                    measResult.TaskId.SubString(200);
 
-                
+                measResult.ResultId = measResult.ResultId.SubString(50);
+                measResult.TaskId = measResult.TaskId.SubString(200);
+
                 if ((measResult.Status != null) && (measResult.Status.Length > 5))
                 {
                     measResult.Status = "";
                 }
-                
 
                 if (!(measResult.ScansNumber >= 0 && measResult.ScansNumber <= 10000000))
                     WriteLog("Incorrect value ScansNumber", "IResMeas", context);
