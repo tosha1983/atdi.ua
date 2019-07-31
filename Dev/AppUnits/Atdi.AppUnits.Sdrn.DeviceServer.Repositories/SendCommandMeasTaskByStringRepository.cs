@@ -50,7 +50,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             var pathDeviceCommand = "";
             try
             {
-                var additionalParameters = item.CommandId + "_" + item.CustTxt1 + "_";
+                var additionalParameters = string.Format("{0}_{1}_", item.CommandId, item.CustTxt1);
                 var messagesBus = new SaveMessages(++_fileCounter, additionalParameters, this._logger, this._configRepositories.FolderDeviceCommand);
                 pathDeviceCommand = messagesBus.SaveObject<DM.DeviceCommand>(item);
             }
@@ -66,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             bool isSuccess = false;
             try
             {
-                var additionalParameters = item.CommandId + "_" + item.CustTxt1 + "_";
+                var additionalParameters = string.Format("{0}_{1}_", item.CommandId, item.CustTxt1);
                 var loadMessages = new LoadMessages<DM.DeviceCommand>(this._logger, this._configRepositories.FolderDeviceCommand);
                 var fileNameFinded = loadMessages.GetFileName(additionalParameters);
                 if (!string.IsNullOrEmpty(fileNameFinded))
@@ -110,7 +110,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     for (int i = 0; i < taskParameters.Length; i++)
                     {
                         var item = taskParameters[i];
-                        var additionalParameters = item.CommandId + "_" + item.CustTxt1 + "_";
+                        var additionalParameters = string.Format("{0}_{1}_", item.CommandId, item.CustTxt1);
                         var fileName = loadMessages.GetFileName(additionalParameters);
                         var messagesBus = new SaveMessages(_fileCounter, fileName, this._logger, this._configRepositories.FolderDeviceCommand);
                         messagesBus.DeleteObject(fileName);

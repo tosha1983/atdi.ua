@@ -50,27 +50,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     System.Threading.Thread.Sleep(this._config.SleepTimePeriodSendingBus_ms);
                     var allFileNamesSendMeasResults = new List<string>();
                     var resultsSendMeasResults = this._measResultsByStringRepository.LoadObjectsWithRestrict(ref allFileNamesSendMeasResults);
-                    for (int i = 0; i < resultsSendMeasResults.Length; i++)
+                    if (resultsSendMeasResults != null)
                     {
-                        //Отправка результатов в шину 
-                        IMessageToken messageToken = null;
-                        try
+                        for (int i = 0; i < resultsSendMeasResults.Length; i++)
                         {
-                            var publisher = this._busGate.CreatePublisher("main");
-                            messageToken = publisher.Send<DM.MeasResults>("SendMeasResults", resultsSendMeasResults[i]);
-                            publisher.Dispose();
-                        }
-                        catch (Exception e)
-                        {
-                            messageToken = null;
-                            _logger.Error(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e.Message);
-                            System.Threading.Thread.Sleep(this._config.SleepTimePeriodWaitingErrorSendingBus_ms);
-                        }
-                        if (messageToken!=null)
-                        {
-                            if (!string.IsNullOrEmpty(messageToken.Id))
+                            //Отправка результатов в шину 
+                            IMessageToken messageToken = null;
+                            try
                             {
-                                this._measResultsByStringRepository.Delete(allFileNamesSendMeasResults[i]);
+                                var publisher = this._busGate.CreatePublisher("main");
+                                messageToken = publisher.Send<DM.MeasResults>("SendMeasResults", resultsSendMeasResults[i]);
+                                publisher.Dispose();
+                            }
+                            catch (Exception e)
+                            {
+                                messageToken = null;
+                                _logger.Error(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e.Message);
+                                System.Threading.Thread.Sleep(this._config.SleepTimePeriodWaitingErrorSendingBus_ms);
+                            }
+                            if (messageToken != null)
+                            {
+                                if (!string.IsNullOrEmpty(messageToken.Id))
+                                {
+                                    this._measResultsByStringRepository.Delete(allFileNamesSendMeasResults[i]);
+                                }
                             }
                         }
                     }
@@ -78,27 +81,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                     var allFileNamesSendCommandResult = new List<string>();
                     var resultsSendCommandResult = this._repositoryDeviceCommandResult.LoadObjectsWithRestrict(ref allFileNamesSendCommandResult);
-                    for (int i = 0; i < resultsSendCommandResult.Length; i++)
+                    if (resultsSendCommandResult != null)
                     {
-                        //Отправка результатов в шину 
-                        IMessageToken messageToken = null;
-                        try
+                        for (int i = 0; i < resultsSendCommandResult.Length; i++)
                         {
-                            var publisher = this._busGate.CreatePublisher("main");
-                            messageToken = publisher.Send<DM.DeviceCommandResult>("SendCommandResult", resultsSendCommandResult[i]);
-                            publisher.Dispose();
-                        }
-                        catch (Exception e)
-                        {
-                            messageToken = null;
-                            _logger.Error(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e.Message);
-                            System.Threading.Thread.Sleep(this._config.SleepTimePeriodWaitingErrorSendingBus_ms);
-                        }
-                        if (messageToken != null)
-                        {
-                            if (!string.IsNullOrEmpty(messageToken.Id))
+                            //Отправка результатов в шину 
+                            IMessageToken messageToken = null;
+                            try
                             {
-                                this._measResultsByStringRepository.Delete(allFileNamesSendCommandResult[i]);
+                                var publisher = this._busGate.CreatePublisher("main");
+                                messageToken = publisher.Send<DM.DeviceCommandResult>("SendCommandResult", resultsSendCommandResult[i]);
+                                publisher.Dispose();
+                            }
+                            catch (Exception e)
+                            {
+                                messageToken = null;
+                                _logger.Error(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e.Message);
+                                System.Threading.Thread.Sleep(this._config.SleepTimePeriodWaitingErrorSendingBus_ms);
+                            }
+                            if (messageToken != null)
+                            {
+                                if (!string.IsNullOrEmpty(messageToken.Id))
+                                {
+                                    this._measResultsByStringRepository.Delete(allFileNamesSendCommandResult[i]);
+                                }
                             }
                         }
                     }
