@@ -281,8 +281,10 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             foreach (var item in res)
             {
                 publisher.Send("SendMeasResults", item, $"MonitoringStations");
-                //Console.ReadLine();
+                Console.WriteLine($"TASK ID: {item.TaskId}");
             }
+
+            Console.WriteLine($"Test finished ...");
             Console.ReadLine();
             var measMSResult = BuildTestMeasResultsMonitoringStations();
             
