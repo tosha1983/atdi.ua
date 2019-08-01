@@ -14,7 +14,8 @@
 
 # Build results
 
-
+!x86/
+!x64/
 
 # Visual Studio 2015 cache/options directory
 .vs/
