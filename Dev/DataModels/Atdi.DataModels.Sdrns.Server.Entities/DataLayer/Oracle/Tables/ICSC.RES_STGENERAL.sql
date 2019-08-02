@@ -9,7 +9,7 @@
   T1                      NUMBER(9),
   T2                      NUMBER(9),
   TIME_FINISH_MEAS        DATE,
-  TIME_START_MEAS_DATE    DATE,
+  TIME_START_MEAS    DATE,
   OFFSET_FREQUENCY        NUMBER(30,10),
   SPECRUM_START_FREQ      NUMBER(22,8),
   SPECRUM_STEPS           NUMBER(22,8),
