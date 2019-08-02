@@ -87,6 +87,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
 
+                        bool isSetMeasurementType = false;
+
                         var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
                         builderMeasDtParam.Select(c => c.Id);
                         builderMeasDtParam.Select(c => c.Demod);
@@ -107,10 +109,27 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 MeasurementType typeMeasurements;
                                 if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
+                                {
                                     measTask.TypeMeasurements = typeMeasurements;
+                                    isSetMeasurementType = true;
+                                }
                             }
                             return true;
                         });
+
+                        
+                        if ((isSetMeasurementType==false) && (readerMeasTask.GetValue(c => c.Type) != null))
+                        {
+                            MeasurementType typeMeasurements;
+                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+                            {
+                                measTask.TypeMeasurements = typeMeasurements;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                            }
+                        }
 
                         listMeasTask.Add(measTask);
                     }
@@ -184,6 +203,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
 
 
+                        bool isSetMeasurementType = false;
 
                         var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
                         builderMeasDtParam.Select(c => c.Id);
@@ -206,10 +226,26 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 MeasurementType typeMeasurements;
                                 if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
+                                {
                                     measTask.TypeMeasurements = typeMeasurements;
+                                    isSetMeasurementType = true;
+                                }
                             }
                             return resultMeasDtParam;
                         });
+
+                        if ((isSetMeasurementType==false) && (readerMeasTask.GetValue(c => c.Type) != null))
+                        {
+                            MeasurementType typeMeasurements;
+                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+                            {
+                                measTask.TypeMeasurements = typeMeasurements;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                            }
+                        }
                     }
                     return true;
                 });
@@ -580,11 +616,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                         });
                         measTask.Stations = measStations.ToArray();
 
+                        if (measTask.MeasDtParam == null)
+                        {
+                            measTask.MeasDtParam = new MeasDtParam();
+                            MeasurementType typeMeasurements;
+                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+                            {
+                                measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                            }
+                        }
 
-                    // IMeasFreqParam
+
+                        // IMeasFreqParam
 
 
-                    var builderMeasFreqParam = this._dataLayer.GetBuilder<MD.IMeasFreqParam>().From();
+                        var builderMeasFreqParam = this._dataLayer.GetBuilder<MD.IMeasFreqParam>().From();
                         builderMeasFreqParam.Select(c => c.Id);
                         builderMeasFreqParam.Select(c => c.MEAS_TASK.Id);
                         builderMeasFreqParam.Select(c => c.Mode);
@@ -974,6 +1024,19 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                             return true;
                         });
+                        if (measTask.MeasDtParam==null)
+                        {
+                            measTask.MeasDtParam = new MeasDtParam();
+                            MeasurementType typeMeasurements;
+                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+                            {
+                                measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                            }
+                        }
                         measTask.Stations = measStations.ToArray();
 
 

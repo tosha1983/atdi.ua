@@ -98,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 long taskIds = -1;
                                 if (deliveryObject.CustTxt1 != null)
                                 {
-                                    if (long.TryParse(deliveryObject.CustTxt1, out subTaskStationId))
+                                    if (long.TryParse(deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.",""), out subTaskStationId))
                                     {
                                         if (subTaskStationId > -1)
                                         {
@@ -108,10 +108,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 .SetValue(c => c.Status, deliveryObject.Status);
                                             var updated = scope.Executor
                                             .Execute(querySubTaskSensor) == 1;
-                                            if (updated == true)
-                                            {
-                                                scope.Commit();
-                                            }
+                                            
 
                                            var queryMeasTaskSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
                                          .From()
@@ -161,11 +158,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 .SetValue(c => c.Status, deliveryObject.Status);
                                                 var updatedMeasTask = scope.Executor
                                                 .Execute(queryMeasTask) == 1;
-                                                if (updatedMeasTask == true)
-                                                {
-                                                    scope.Commit();
-                                                }
                                             }
+
+                                            scope.Commit();
                                         }
                                     }
                                 }
