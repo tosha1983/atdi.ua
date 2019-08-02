@@ -1455,6 +1455,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .From()
                 .OnTop(1)
                 .Select(c => c.Id)
+                .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, measResultId)
                 .Where(c => c.Frequency, ConditionOperator.Equal, clientFrequency);
             if (clientStation.TaskGlobalSid != null)
             {

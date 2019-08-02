@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +83,8 @@ namespace Atdi.CoreServices.Monitoring
                 statistics.Set(STS.Process.Is64Bit, Environment.Is64BitOperatingSystem.ToString());
                 statistics.Set(STS.Process.UserName, Environment.UserName);
                 statistics.Set(STS.Process.Directory , Environment.CurrentDirectory);
+                statistics.Set(STS.Process.CommandLine, Environment.CommandLine);
+                //Process.GetCurrentProcess().
 
                 var stsCollector = this.Resolver.Resolve<StatisticCollector>();
                 stsCollector.Run();
