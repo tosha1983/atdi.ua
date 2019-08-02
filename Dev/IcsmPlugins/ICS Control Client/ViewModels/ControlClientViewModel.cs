@@ -513,10 +513,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this._measResults.Source = sdrMeasResults;
+                this._measResults.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
             }));
-
-            
         }
 
         private void ReloadMeasTaskDetail(MeasTaskViewModel measTask)
@@ -608,7 +606,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    this._resultsMeasurementsStations.Source = sdrMeasResults;
+                    this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
                 }));
 
                 if (this.MeasResultsDetailVisibility == Visibility.Visible)
@@ -685,7 +683,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this._shortSensors.Source = sensors;
+                this._shortSensors.Source = sensors.OrderByDescending(c => c.Id.Value).ToArray();
             }));
         }
 
@@ -1311,7 +1309,60 @@ namespace XICSM.ICSControlClient.ViewModels
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
+            var routes = new List<MP.MapDrawingDataRoute>();
+            var polygons = new List<MP.MapDrawingDataPolygon>();
             var points = new List<MP.MapDrawingDataPoint>();
+
+            var sdrRoutes = SVC.SdrnsControllerWcfClient.GetRoutes(this._currentMeasurementResults.MeasSdrResultsId);
+            if (sdrRoutes != null && sdrRoutes.Length > 0)
+            {
+                var routePoints = new List<Location>();
+                sdrRoutes.ToList().ForEach(sdrRoute =>
+                {
+                    if (sdrRoute.RoutePoints != null && sdrRoute.RoutePoints.Length > 0)
+                    {
+                        sdrRoute.RoutePoints.OrderBy(c => c.StartTime).ToList().ForEach(point =>
+                        {
+                            routePoints.Add(new Location(point.Lon, point.Lat));
+                        });
+                    }
+                });
+                routes.Add(new MP.MapDrawingDataRoute() { Points = routePoints.ToArray(), Color = System.Windows.Media.Colors.Black, Fill = System.Windows.Media.Colors.Black });
+            }
+
+            var sdrPolygonPoints = SVC.SdrnsControllerWcfClient.GetSensorPoligonPoint(this._currentMeasurementResults.MeasSdrResultsId);
+            if (sdrPolygonPoints != null && sdrPolygonPoints.Length > 0)
+            {
+                var polygonPoints = new List<Location>();
+                sdrPolygonPoints.ToList().ForEach(sdrPolygonPoint =>
+                {
+                    if (sdrPolygonPoint.Lon.HasValue && sdrPolygonPoint.Lat.HasValue)
+                    {
+                        polygonPoints.Add(new Location(sdrPolygonPoint.Lon.Value, sdrPolygonPoint.Lat.Value));
+                    }
+                });
+                polygons.Add(new MP.MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
+            }
+
+            if (this.LevelMeasurements != null)
+            {
+                foreach (var levelMeasurement in LevelMeasurements.Source)
+                {
+                    if (levelMeasurement.Lon.HasValue && levelMeasurement.Lat.HasValue)
+                    {
+                        System.Windows.Media.Brush pointBrush = System.Windows.Media.Brushes.GreenYellow;
+                        if (levelMeasurement.LeveldBmkVm.HasValue && levelMeasurement.LeveldBmkVm.Value != 0)
+                        {
+                            pointBrush = GetBrushColor(10, 80, levelMeasurement.LeveldBmkVm.Value);
+                        }
+                        else if (levelMeasurement.LeveldBm.HasValue && levelMeasurement.LeveldBm.Value != 0)
+                        {
+                            pointBrush = GetBrushColor(-100, -30, levelMeasurement.LeveldBm.Value);
+                        }
+                        points.Add(new MP.MapDrawingDataPoint() { Location = new Location(levelMeasurement.Lon.Value, levelMeasurement.Lat.Value), Opacity = 0.5, Height = 5, Width = 5, Fill = pointBrush, Color = pointBrush });
+                    }
+                }
+            }
 
             if (this.CurrentShortSensor != null)
             {
@@ -1421,7 +1472,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
             }
 
-
+            data.Routes = routes.ToArray();
+            data.Polygons = polygons.ToArray();
             data.Points = points.ToArray();
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -1435,7 +1487,26 @@ namespace XICSM.ICSControlClient.ViewModels
             return String.Format("{0:00}:{1:00}:{2:00}.{3:00}", val.Hours, val.Minutes, val.Seconds, val.Milliseconds / 10);
 
         }
+        private System.Windows.Media.Brush GetBrushColor(double minVal, double maxVal, double val)
+        {
+            byte id;
 
+            if (val <= minVal)
+                id = 0;
+            else if (val >= maxVal)
+                id = 255;
+            else
+            {
+                double oneprcVal = (maxVal - minVal) / 100;
+                double rezVal = (val - minVal) / oneprcVal * 2.55;
+                byte.TryParse(Math.Round(rezVal, 0).ToString(), out id);
+            }
+
+            byte.TryParse(id.ToString(), out byte a);
+            byte.TryParse((255 - id).ToString(), out byte b);
+
+            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(a, a, b));
+        }
         public SDR.MeasurementType TypeMeasurements
         {
             get

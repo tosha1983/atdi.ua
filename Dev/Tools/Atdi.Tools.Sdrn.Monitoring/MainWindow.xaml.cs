@@ -510,7 +510,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 TreeViewItem item = e.NewValue as TreeViewItem;
                 if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
                 {
-                    gridEntryRecords.ItemsSource = statEntrysList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                    gridEntryRecords.ItemsSource = statEntrysList.Where(c => c.Name.StartsWith(item.Tag.ToString()));
                 }
             }
         }
@@ -521,8 +521,8 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 TreeViewItem item = e.NewValue as TreeViewItem;
                 if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
                 {
-                    gridCurrentCounter.ItemsSource = statCurrCounterList.Where(c => c.Name.Contains(item.Tag.ToString()));
-                    gridCounterRecords.ItemsSource = statCounterList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                    gridCurrentCounter.ItemsSource = statCurrCounterList.Where(c => c.Name.StartsWith(item.Tag.ToString()));
+                    gridCounterRecords.ItemsSource = statCounterList.Where(c => c.Name.StartsWith(item.Tag.ToString()));
                 }
             }
         }
