@@ -84,7 +84,11 @@ namespace Atdi.CoreServices.Monitoring
                 statistics.Set(STS.Process.UserName, Environment.UserName);
                 statistics.Set(STS.Process.Directory , Environment.CurrentDirectory);
                 statistics.Set(STS.Process.CommandLine, Environment.CommandLine);
-                //Process.GetCurrentProcess().
+
+                var process = Process.GetCurrentProcess();
+                statistics.Set(STS.Process.Name, process.ProcessName);
+                statistics.Set(STS.Process.ID, process.Id);
+                statistics.Set(STS.Process.StartTime, process.StartTime);
 
                 var stsCollector = this.Resolver.Resolve<StatisticCollector>();
                 stsCollector.Run();
