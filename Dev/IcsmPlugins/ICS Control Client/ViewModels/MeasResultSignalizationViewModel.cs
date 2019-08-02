@@ -358,7 +358,7 @@ namespace XICSM.ICSControlClient.ViewModels
                             Application.Current.Dispatcher.Invoke(new Action(() =>
                             {
 
-                                this._emittings.Source = this._currentMeasResult.Emittings;
+                                this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
                                 this.EmittingCaption = this.GetCurrentEmittingCaption();
 
                                 if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
