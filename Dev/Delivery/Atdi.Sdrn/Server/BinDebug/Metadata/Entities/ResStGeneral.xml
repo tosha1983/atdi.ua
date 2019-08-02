@@ -17,7 +17,7 @@
     <Field Desc="MarkerIndex" Title="MarkerIndex" Name="MarkerIndex" DataType="Integer.32" SourceName="MARKER_INDEX" SourceType="Column" Required="false"/>
     <Field Desc="T1" Title="T1" Name="T1" DataType="Integer.32" SourceName="T1" SourceType="Column" Required="false"/>
     <Field Desc="T2" Title="T2" Name="T2" DataType="Integer.32" SourceName="T2" SourceType="Column" Required="false"/>
-    <Field Desc="TimeStartMeas" Title="TimeStartMeas" Name="TimeStartMeas" DataType="DateTime" SourceName="TIME_START_MEAS_DATE" SourceType="Column" Required="false"/>
+    <Field Desc="TimeStartMeas" Title="TimeStartMeas" Name="TimeStartMeas" DataType="DateTime" SourceName="TIME_START_MEAS" SourceType="Column" Required="false"/>
     <Field Desc="TimeFinishMeas" Title="TimeFinishMeas" Name="TimeFinishMeas" DataType="DateTime" SourceName="TIME_FINISH_MEAS" SourceType="Column" Required="false"/>
     <Field Desc="OffsetFrequency" Title="OffsetFrequency" Name="OffsetFrequency" DataType="Double.30.10" SourceName="OFFSET_FREQUENCY" SourceType="Column" Required="false"/>
     <Field Desc="SpecrumStartFreq" Title="SpecrumStartFreq" Name="SpecrumStartFreq" DataType="Decimal.22.8" SourceName="SPECRUM_START_FREQ" SourceType="Column" Required="false"/>
