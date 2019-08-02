@@ -72,17 +72,18 @@ namespace Atdi.Platform
 
         public static class Host
         {
-            public static readonly IStatisticEntryKey<string> Name = STS.DefineEntryKeyAsString("OS.Host.Name");
+            public static readonly IStatisticEntryKey<string> Name = STS.DefineEntryKeyAsString("Host.Name");
             public static class CPU
             {
-                public static readonly IStatisticEntryKey<int> Cores = STS.DefineEntryKeyAsInteger("OS.Host.CPU.Cores");
+                public static readonly IStatisticEntryKey<int> Cores = STS.DefineEntryKeyAsInteger("Host.CPU.Cores");
             }
         }
         public static class Process
         {
-            public static readonly IStatisticEntryKey<string> Is64Bit = STS.DefineEntryKeyAsString("OS.Process.Is64Bit");
-            public static readonly IStatisticEntryKey<string> UserName = STS.DefineEntryKeyAsString("OS.Process.UserName");
-            public static readonly IStatisticEntryKey<string> Directory = STS.DefineEntryKeyAsString("OS.Process.Directory");
+            public static readonly IStatisticEntryKey<string> Is64Bit = STS.DefineEntryKeyAsString("Process.Is64Bit");
+            public static readonly IStatisticEntryKey<string> UserName = STS.DefineEntryKeyAsString("Process.UserName");
+            public static readonly IStatisticEntryKey<string> Directory = STS.DefineEntryKeyAsString("Process.Directory");
+            public static readonly IStatisticEntryKey<string> CommandLine = STS.DefineEntryKeyAsString("Process.CommandLine");
         }
 
         public static class Counter

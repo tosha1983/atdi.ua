@@ -331,7 +331,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             {
                                 var builderInsertroutePoints = this._dataLayer.GetBuilder<MD.IResRoutes>().Insert();
                                 if (routePoint.StartTime > routePoint.FinishTime)
-                                    WriteLog("StartTime must be less than FinishTime", "IResRoutesRaw", context);
+                                    WriteLog("StartTime must be less than FinishTime", "IResRoutes", context);
 
                                 if (this.ValidateGeoLocation<RoutePoint>(routePoint, "IResRoutes", context))
                                 {
@@ -395,7 +395,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     }
                     if (generalResult.MeasStartTime > generalResult.MeasFinishTime)
                     {
-                        WriteLog($"({i}) MeasStartTime must be less than MeasFinishTime", "IResStGeneralRaw", context);
+                        WriteLog($"({i}) MeasStartTime must be less than MeasFinishTime", "IResStGeneral", context);
                     }
                     
                     var clientFrequency = Convert.ToDecimal(Math.Round(stationFrequency.Value, 3));
@@ -1350,7 +1350,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .OnTop(1)
                 .Select(c => c.Id)
                 .Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId)
-                .Where(c => c.TimeMeas, ConditionOperator.Equal, date);
+                .Where(c => c.TimeMeas, ConditionOperator.Between, date.Date, new DateTime(date.Year, date.Month, date.Day, 23, 59, 59));
 
             var id = default(long);
             var result = context.scope.Executor.ExecuteAndFetch(query, reader =>
@@ -1373,7 +1373,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .Insert()
                 .SetValue(c => c.MeasResultSID, measResult.ResultId)
                 .SetValue(c => c.Status, measResult.Status)
-                .SetValue(c => c.TimeMeas, measResult.Measured)
+                .SetValue(c => c.TimeMeas, measResult.Measured.Date)
                 .SetValue(c => c.DataRank, measResult.SwNumber)
                 .SetValue(c => c.TypeMeasurements, measResult.Measurement.ToString())
                 .SetValue(c => c.SUBTASK_SENSOR.Id, subTaskSensorId)
@@ -1455,6 +1455,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 .From()
                 .OnTop(1)
                 .Select(c => c.Id)
+                .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, measResultId)
                 .Where(c => c.Frequency, ConditionOperator.Equal, clientFrequency);
             if (clientStation.TaskGlobalSid != null)
             {

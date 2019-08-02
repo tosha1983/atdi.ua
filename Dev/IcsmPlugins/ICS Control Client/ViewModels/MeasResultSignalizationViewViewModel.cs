@@ -232,7 +232,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this._emittings.Source = emittings;
+                this._emittings.Source = emittings.OrderByDescending(c => c.Id).ToArray();
                 this.RBW = this.GetCurrentRBWValue();
                 this.EmittingCaption = this.GetCurrentEmittingCaption();
 
@@ -322,7 +322,7 @@ namespace XICSM.ICSControlClient.ViewModels
         //                    emitings.Add(emitting.Id.Value);
         //                    ids.Add(emitting.Id.Value);
         //                }
-                            
+
         //            }
 
         //            this.StatusBarTitle = $"Deleting emissions ({emitings.Count}) ...";
@@ -345,7 +345,7 @@ namespace XICSM.ICSControlClient.ViewModels
         //                    Application.Current.Dispatcher.Invoke(new Action(() =>
         //                    {
 
-        //                        this._emittings.Source = this._currentMeasResult.Emittings;
+        //                        this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
         //                        this.EmittingCaption = this.GetCurrentEmittingCaption();
 
         //                        if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
@@ -483,7 +483,7 @@ namespace XICSM.ICSControlClient.ViewModels
         //                rs.Close();
         //            rs.Destroy();
         //        }
-                
+
         //        if (stationData.Count == 0)
         //        {
         //            System.Windows.MessageBox.Show("No Stations");
