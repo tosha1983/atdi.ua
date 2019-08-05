@@ -242,6 +242,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="StationId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ResultsSpectrumsMeasurementsStation GetSpectrumsResMeasStationById(long StationId);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="MeasResultsId"></param>
         /// <param name="StationId"></param>
         /// <returns></returns>
