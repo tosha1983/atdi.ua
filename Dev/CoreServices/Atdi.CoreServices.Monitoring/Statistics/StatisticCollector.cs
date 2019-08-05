@@ -21,19 +21,32 @@ namespace Atdi.CoreServices.Monitoring.Statistics
         private Thread _thread;
         private CancellationTokenSource _tokenSource;
 
-        private readonly int _timeout = 100;
+        private readonly int _timeout = 10000;
         private Stopwatch _timer;
         private DateTime _started;
         private CounterRecord[] _buffer;
         private int _index;
         private int _count;
+        private readonly string _processName;
+
+        private readonly PerformanceCounter _privateBytesSysCounter;
+        private readonly PerformanceCounter _gen0SysCounter;
+        private readonly PerformanceCounter _gen1SysCounter;
+        private readonly PerformanceCounter _gen2SysCounter;
+        private readonly PerformanceCounter _gen0HeapSizeSysCounter;
+        private readonly PerformanceCounter _gen1HeapSizeSysCounter;
+        private readonly PerformanceCounter _gen2HeapSizeSysCounter;
+        private readonly PerformanceCounter _lohHeapSizeSysCounter;
+        private readonly PerformanceCounter _threadsLogicalSysCounter;
+        private readonly PerformanceCounter _threadsPhysicalSysCounter;
+        private readonly PerformanceCounter _threadsQueueSysCounter;
 
         public StatisticCollector(IStatistics statistic, AppComponentConfig config, ILogger logger)
         {
             this._statistic = statistic;
             this._config = config;
             this._logger = logger;
-            this._timeout = config.CollectorTimeout??1000;
+            this._timeout = config.CollectorTimeout??10000;
             this._tokenSource = new CancellationTokenSource();
             this._started = DateTime.Now;
             this._timer = Stopwatch.StartNew();
@@ -41,6 +54,20 @@ namespace Atdi.CoreServices.Monitoring.Statistics
             this._buffer = new CounterRecord[config.CollectorBufferSize??10000];
             this._index = -1;
             this._count = 0;
+            this._processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            this._privateBytesSysCounter = new PerformanceCounter("Process", "Private Bytes", _processName);
+            this._gen0SysCounter = new PerformanceCounter(".NET CLR Memory", "# Gen 0 Collections", _processName);
+            this._gen1SysCounter = new PerformanceCounter(".NET CLR Memory", "# Gen 1 Collections", _processName);
+            this._gen2SysCounter = new PerformanceCounter(".NET CLR Memory", "# Gen 2 Collections", _processName);
+            this._gen0HeapSizeSysCounter = new PerformanceCounter(".NET CLR Memory", "Gen 0 heap size", _processName);
+            this._gen1HeapSizeSysCounter = new PerformanceCounter(".NET CLR Memory", "Gen 1 heap size", _processName);
+            this._gen2HeapSizeSysCounter = new PerformanceCounter(".NET CLR Memory", "Gen 2 heap size", _processName);
+            this._lohHeapSizeSysCounter = new PerformanceCounter(".NET CLR Memory", "Large Object Heap size", _processName);
+
+            this._threadsLogicalSysCounter = new PerformanceCounter(".NET CLR LocksAndThreads", "# of current logical Threads", _processName);
+            this._threadsPhysicalSysCounter = new PerformanceCounter(".NET CLR LocksAndThreads", "# of current physical Threads", _processName);
+            this._threadsQueueSysCounter = new PerformanceCounter(".NET CLR LocksAndThreads", "Current Queue Length", _processName);
+
         }
 
         public void Dispose()
@@ -70,8 +97,39 @@ namespace Atdi.CoreServices.Monitoring.Statistics
         {
             try
             {
+                
+
                 while (!_tokenSource.Token.IsCancellationRequested)
                 {
+                    var process = System.Diagnostics.Process.GetCurrentProcess();
+
+                    _statistic.Counter(STS.Counter.Process.Handles)?.Change(process.HandleCount);
+                    _statistic.Counter(STS.Counter.Process.Threads)?.Change(process.Threads.Count);
+
+                    _statistic.Counter(STS.Counter.Memory.NonpagedSystem)?.Change(process.NonpagedSystemMemorySize64);
+                    _statistic.Counter(STS.Counter.Memory.Paged)?.Change(process.PagedSystemMemorySize64);
+                    _statistic.Counter(STS.Counter.Memory.PagedSystem)?.Change(process.PagedSystemMemorySize64);
+
+                    _statistic.Counter(STS.Counter.Memory.Private)?.Change(process.PrivateMemorySize64);
+                    _statistic.Counter(STS.Counter.Memory.Virtual)?.Change(process.VirtualMemorySize64);
+                    _statistic.Counter(STS.Counter.Memory.WorkingSet)?.Change(process.WorkingSet64);
+
+                    _statistic.Entry(STS.Process.Memory.PeakPaged)?.Set(process.PeakPagedMemorySize64);
+                    _statistic.Entry(STS.Process.Memory.PeakVirtual)?.Set(process.PeakVirtualMemorySize64);
+                    _statistic.Entry(STS.Process.Memory.PeakWorkingSet)?.Set(process.PeakWorkingSet64);
+
+                    _statistic.Counter(STS.Counter.Memory.GC.Private)?.Change(this._privateBytesSysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.Gen0)?.Change(this._gen0SysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.Gen1)?.Change(this._gen1SysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.Gen2)?.Change(this._gen2SysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.Gen0Heap)?.Change(this._gen0HeapSizeSysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.Gen1Heap)?.Change(this._gen1HeapSizeSysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.Gen2Heap)?.Change(this._gen2HeapSizeSysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Memory.GC.LOHeap)?.Change(this._lohHeapSizeSysCounter.RawValue);
+
+                    _statistic.Counter(STS.Counter.Process.ThreadsLogical)?.Change(this._threadsLogicalSysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Process.ThreadsPhysical)?.Change(this._threadsPhysicalSysCounter.RawValue);
+                    _statistic.Counter(STS.Counter.Process.ThreadsQueue)?.Change(this._threadsQueueSysCounter.RawValue);
                     var counters = _statistic.GetCounters();
                     for (int i = 0; i < counters.Length; i++)
                     {
