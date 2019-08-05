@@ -15,13 +15,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     public static class CalcSearchInterruption
     {
         // Константы 
-        private static int NumberPointForChangeExcess = 10; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
-        private static double allowableExcess_dB = 10;
-        private static double DiffLevelForCalcBW = 25;
-        private static double windowBW = 1.05;
-        private static double nDbLevel_dB = 15;
-        private static int NumberIgnoredPoints = 1;
-        private static double MinExcessNoseLevel_dB = 5;
+        private static int NumberPointForChangeExcess; // на самом деле зависит от параметров таска там будем вычислять и прокидывать сюда.
+        private static double allowableExcess_dB;
+        private static double DiffLevelForCalcBW;
+        private static double windowBW;
+        private static double nDbLevel_dB;
+        private static int NumberIgnoredPoints;
+        private static double MinExcessNoseLevel_dB;
         // Конец констант
 
         /// <summary>
@@ -32,14 +32,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static Emitting[] Calc(TaskParameters taskParameters, ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm)
         { //НЕ ТЕСТИРОВАННО
-            
+
+            NumberPointForChangeExcess = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.Value;
+            allowableExcess_dB = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB.Value;
+            DiffLevelForCalcBW = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW.Value;
+            windowBW = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.windowBW.Value;
+            nDbLevel_dB = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB.Value;
+            NumberIgnoredPoints = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints.Value;
+            MinExcessNoseLevel_dB = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB.Value;
+
             if (refLevels.levels.Length != Trace.Level.Length)
             {
                 return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
             }
             // выделение мест где произошло превышение порога 
             List<int> index_start_stop = new List<int>();
-            if (taskParameters.CompareTraceJustWithRefLevels)
+            if (taskParameters.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels==true)
             {
                 index_start_stop = SearchStartStopCompaireWithRefLevels(refLevels, Trace, NoiseLevel_dBm, NumberPointForChangeExcess);
             }
@@ -49,11 +57,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             // конец выделения 
             //возможно необходимо произвести разделение нескольких излучений которые моги быть ошибочно восприняты как одно
-            if (taskParameters.AutoDivisionEmitting) { index_start_stop = DivisionEmitting(taskParameters, index_start_stop, Trace); }
+            if (taskParameters.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting==true) { index_start_stop = DivisionEmitting(taskParameters, index_start_stop, Trace); }
 
             //Формируем помехи.
             double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length-1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length-1)*1000.0);
-            Emitting[] newEmittings = CreateEmittings(Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm, taskParameters.CompareTraceJustWithRefLevels);
+            Emitting[] newEmittings = CreateEmittings(Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm,  taskParameters.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels.Value);
             // сформировали новые параметры излучения теперь надо накатить старые по идее.
             return newEmittings;
         }
@@ -218,7 +226,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             for (int i = 0; i < index_start_stop.Count - 1; i = i + 2)
             {
                 int[] StartStopAnalized;
-                int count = EmissionCounting.Counting(Trace.Level, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, taskParameters.DifferenceMaxMax, taskParameters.FiltrationTrace);
+                int count = EmissionCounting.Counting(Trace.Level, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, taskParameters.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax.Value, taskParameters.SignalingMeasTaskParameters.FiltrationTrace.Value);
                 for (int j = 0; j< StartStopAnalized.Length; j++)
                 {
                     ResultStartStopIndexArr.Add(StartStopAnalized[j]);
@@ -268,7 +276,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (CorectCalcBW)
                         {
                             // поиск коректной полосы 
-                            if (CompareTraceJustWithRefLevels)
+                            if (CompareTraceJustWithRefLevels==true)
                             {
                                 double tempBW = StandartBW.GetStandartBW_kHz((stoptreal - startreal) * stepBW_kHz);
                                 double CentralFreq = (trace.Freq_Hz[startreal] + trace.Freq_Hz[stoptreal]) / 2000000.0;

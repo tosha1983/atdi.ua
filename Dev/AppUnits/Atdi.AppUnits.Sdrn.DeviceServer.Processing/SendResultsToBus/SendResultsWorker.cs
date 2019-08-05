@@ -58,9 +58,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             IMessageToken messageToken = null;
                             try
                             {
-                                var publisher = this._busGate.CreatePublisher("main");
-                                messageToken = publisher.Send<DM.MeasResults>("SendMeasResults", resultsSendMeasResults[i]);
-                                publisher.Dispose();
+
+                                using (var publisher = this._busGate.CreatePublisher("main"))
+                                {
+                                    messageToken = publisher.Send<DM.MeasResults>("SendMeasResults", resultsSendMeasResults[i]);
+                                }
                             }
                             catch (Exception e)
                             {
@@ -89,9 +91,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             IMessageToken messageToken = null;
                             try
                             {
-                                var publisher = this._busGate.CreatePublisher("main");
-                                messageToken = publisher.Send<DM.DeviceCommandResult>("SendCommandResult", resultsSendCommandResult[i]);
-                                publisher.Dispose();
+                                using (var publisher = this._busGate.CreatePublisher("main"))
+                                {
+                                    messageToken = publisher.Send<DM.DeviceCommandResult>("SendCommandResult", resultsSendCommandResult[i]);
+                                }
                             }
                             catch (Exception e)
                             {

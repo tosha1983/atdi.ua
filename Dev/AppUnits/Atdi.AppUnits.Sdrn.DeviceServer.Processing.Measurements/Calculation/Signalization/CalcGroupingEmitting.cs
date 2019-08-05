@@ -16,10 +16,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     {
 
         //константа 
-        private const int TimeBetweenWorkTimes_sec = 60;
-        private const int TypeJoinSpectrum = 0; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
-        private const double CrossingBWPercentageForGoodSignals = 70; // определяет насколько процентов должно совпадать излучение если BW определен 
-        private const double CrossingBWPercentageForBadSignals = 40; // определяет насколько процентов должно совпадать излучение если BW не определен 
+        private static int TimeBetweenWorkTimes_sec;
+        private static int TypeJoinSpectrum; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
+        private static double CrossingBWPercentageForGoodSignals; // определяет насколько процентов должно совпадать излучение если BW определен 
+        private static double CrossingBWPercentageForBadSignals; // определяет насколько процентов должно совпадать излучение если BW не определен 
         // конец констант
 
         /// <summary>
@@ -29,10 +29,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool CalcGrouping(Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary,  ILogger logger, double NoiseLevel_dBm)
+        public static bool CalcGrouping(TaskParameters taskParameters, Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary,  ILogger logger, double NoiseLevel_dBm)
         {
             try
             {
+                TimeBetweenWorkTimes_sec = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec.Value;
+                TypeJoinSpectrum = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum.Value;
+                CrossingBWPercentageForGoodSignals = taskParameters.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.Value;
+                CrossingBWPercentageForBadSignals = taskParameters.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals.Value;
+
+
                 // Увеличиваем счетчики у всех излучений
                 if (EmittingsSummary != null)
                 {
