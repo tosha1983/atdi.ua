@@ -1842,7 +1842,7 @@ namespace Atdi.CoreServices.EntityOrm
 
 
             var proxyType = proxyTypeBuilder.CreateType();
-            assemblyBuilder.Save($"{an.Name}.EntitiesProxy.dll");
+            //assemblyBuilder.Save($"{an.Name}.EntitiesProxy.dll");
 
             return proxyType;
         }

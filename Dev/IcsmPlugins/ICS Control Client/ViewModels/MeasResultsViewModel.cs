@@ -188,7 +188,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadMeasResult()
         {
             var sdrResult = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderSpecial(this._measDtParamTypeMeasurements);
-            this._measResults.Source = sdrResult;
+            this._measResults.Source = sdrResult.OrderByDescending(c => c.Id).ToArray();
 
             if (this._measDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
             {
@@ -272,7 +272,7 @@ namespace XICSM.ICSControlClient.ViewModels
             if (this._currentMeasurementResults != null)
             {
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
-                this._resultsMeasurementsStations.Source = sdrMeasResults;
+                this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
 
                 var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId, null, null);
                 LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
@@ -597,7 +597,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     if (sdrRoute.RoutePoints != null && sdrRoute.RoutePoints.Length > 0)
                     {
-                        sdrRoute.RoutePoints.ToList().ForEach(point =>
+                        sdrRoute.RoutePoints.OrderBy(c => c.StartTime).ToList().ForEach(point =>
                         {
                             routePoints.Add(new Location(point.Lon, point.Lat));
                         });

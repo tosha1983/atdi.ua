@@ -11,12 +11,11 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="Event" Title="Event" Name="Event" DataType="Text.20" SourceName="EVENT" SourceType="Column" Required="false"/>
-    <Field Desc="TableName" Title="TableName" Name="TableName" DataType="Text.20" SourceName="TABLE_NAME" SourceType="Column" Required="false"/>
-    <Field Desc="Lcount" Title="Lcount" Name="Lcount" DataType="Integer.64" SourceName="LCOUNT" SourceType="Column" Required="true"/>
-    <Field Desc="Info" Title="Info" Name="Info" DataType="Text.250" SourceName="INFO" SourceType="Column" Required="false"/>
-    <Field Desc="Who" Title="Who" Name="Who" DataType="Text.50" SourceName="WHO" SourceType="Column" Required="false"/>
+    <Field Desc="TableName" Title="TableName" Name="TableName" DataType="Text.150" SourceName="TABLE_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="Info" Title="Info" Name="Info" DataType="Text.MAX" SourceName="INFO" SourceType="Column" Required="false"/>
     <Field Desc="When" Title="When" Name="When" DataType="DateTime" SourceName="WHEN" SourceType="Column" Required="false"/>
+    <Field Name="RES_MEAS" SourceType="Reference" SourceName="ResMeas" Title="Relation ValidationLogs to ResMeas"/>
+    <Field Name="MESSAGE" SourceType="Reference" SourceName="AmqpMessage" Title="Relation ValidationLogs to AmqpMessage"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

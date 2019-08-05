@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StatisticCounter"
+  Title       = "Statistic Counter"
+  Desc        = "The counter record of statistic"
+  Type        = "Abstruct"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="ClrObject" Object="Service">
+    <Name>Atdi.Contracts.CoreServices.Monitoring.IStatisticCounters, Atdi.Contracts.CoreServices.Monitoring, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Name>
+  </DataSource>
+  <Fields>
+    <Field Name="Name" DataType="String.NTEXT" SourceName="Name" SourceType="Column" Desc="The name of the counter" Title="Name" Required="true"/>
+    <Field Name="Time" DataType="DateTime.DATETIME" SourceName="Time" SourceType="Column" Desc="The time of the counter" Title="Time" Required="true"/>
+    <Field Name="Data" DataType="Long.INT64" SourceName="Data" SourceType="Column" Desc="The value data of the counter" Title="Data" Required="true"/>
+  </Fields>
+</Entity>

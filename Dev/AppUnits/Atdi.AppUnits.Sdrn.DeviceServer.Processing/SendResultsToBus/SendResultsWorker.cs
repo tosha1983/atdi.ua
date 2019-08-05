@@ -58,7 +58,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             IMessageToken messageToken = null;
                             try
                             {
-
                                 using (var publisher = this._busGate.CreatePublisher("main"))
                                 {
                                     messageToken = publisher.Send<DM.MeasResults>("SendMeasResults", resultsSendMeasResults[i]);

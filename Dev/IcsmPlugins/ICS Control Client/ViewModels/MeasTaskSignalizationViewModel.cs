@@ -94,7 +94,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadMeasTasksAndResult()
         {
             var sdrResult = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(_taskId);
-            this._measResults.Source = sdrResult;
+            this._measResults.Source = sdrResult.OrderByDescending(c => c.Id).ToArray();
             var sdrTasks = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(_taskId);
             var taskViewModel = Mappers.Map(sdrTasks);
             this._currentMeasTask = taskViewModel;
@@ -119,7 +119,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     sdrSensors = new SDR.ShortSensor[] { };
                 }
             }
-            this._shortSensors.Source = sdrSensors;
+            this._shortSensors.Source = sdrSensors.OrderByDescending(c => c.Id.Value).ToArray();
             RedrawMap();
         }
         private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)

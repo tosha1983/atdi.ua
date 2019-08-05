@@ -326,6 +326,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         });
                         measTask.Stations = measStations.ToArray();
 
+                        if (measTask.MeasDtParam == null)
+                        {
+                            measTask.MeasDtParam = new MeasDtParam();
+                            MeasurementType typeMeasurements;
+                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+                            {
+                                measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                            }
+                        }
+
 
                         // IMeasFreqParam
 

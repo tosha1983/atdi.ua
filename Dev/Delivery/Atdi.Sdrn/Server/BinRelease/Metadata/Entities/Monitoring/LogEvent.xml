@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LogEvent"
+  Title       = "Log event"
+  Desc        = "The event of LOG"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="ClrObject" Object="Service">
+    <Name>Atdi.Contracts.CoreServices.Monitoring.ILogEventSite, Atdi.Contracts.CoreServices.Monitoring, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Name>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Guid.GUID" SourceName="Id" SourceType="Column" Desc="The id of the event" Title="Id event" Required="true"/>
+    <Field Name="Time" DataType="DateTime.DATETIME" SourceName="Time" SourceType="Column" Desc="The time of the event level" Title="Time" Required="true"/>
+    <Field Name="Thread" DataType="Integer.INT32" SourceName="ManagedThread" SourceType="Column" Desc="The thread of the event level" Title="Thread" Required="true"/>
+    <Field Name="LevelCode" DataType="Integer.INT32" SourceName="Level" SourceType="Column" Desc="The code of the event level" Title="Level Code" Required="true"/>
+    <Field Name="LevelName" DataType="String.NTEXT" SourceName="Level" SourceType="Column" Desc="The name of the event level" Title="Level Name" Required="true"/>
+
+    <Field Name="Context" DataType="String.NTEXT" SourceName="Context" SourceType="Column" Desc="The context of the event level" Title="Context" Required="true"/>
+    <Field Name="Category" DataType="String.NTEXT" SourceName="Category" SourceType="Column" Desc="The category of the event level" Title="Category" Required="true"/>
+
+    <Field Name="Text" DataType="String.NTEXT" SourceName="Text" SourceType="Column" Desc="The text of the event" Title="Event Text" Required="true"/>
+
+    <Field Name="Source" DataType="String.NTEXT" SourceName="Source" SourceType="Column" Desc="The source of the event" Title="Source" Required="false"/>
+    <Field Name="Duration" DataType="Time.TIME" SourceName="Duration" SourceType="Column" Desc="The duration of the event" Title="Duration" Required="false"/>
+
+    <Field Name="Data" DataType="CT.ReadOnlyDictionary.String.String" SourceName="Data" SourceType="Column" Desc="The duration of the event" Title="Data" Required="false"/>
+
+    <Field Name="Exception" DataType="CT.Object" SourceName="Exception" SourceType="Column" Desc="The exception of the event" Title="Exception" Required="false"/>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

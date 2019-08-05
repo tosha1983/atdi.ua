@@ -278,8 +278,10 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             //Console.ReadLine();
 
             var res = LoadFromFiles(@"C:\Users\andrey\Downloads\2019-May-28_11.35_queue_Q.SDRN.Server");
-            foreach (var item in res)
+            for (int i = 0; i < res.Length; i++)
             {
+                var item = res[i];
+              //  item.Measured = item.Measured.AddDays(i);
                 publisher.Send("SendMeasResults", item, $"MonitoringStations");
                 Console.WriteLine($"TASK ID: {item.TaskId}");
             }
