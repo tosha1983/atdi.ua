@@ -40,30 +40,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (measTask.Id == null) measTask.Id = measTaskIdentifier;
                     if (measTask.Status == null) measTask.Status = Status.N.ToString();
                     var SensorIds = new List<long>();
-                    if (measTask.MeasSubTasks != null)
+                    if (measTask.Sensors != null)
                     {
-                        for (int u = 0; u < measTask.MeasSubTasks.Length; u++)
+                        for (int u = 0; u < measTask.Sensors.Length; u++)
                         {
-                            var station = measTask.MeasSubTasks[u];
-                            if (station.MeasSubTaskSensors != null)
+                            var station = measTask.Sensors[u];
+                            if (station.SendorId != null)
                             {
-                                for (int m = 0; m < station.MeasSubTaskSensors.Length; m++)
+                                if (station.SendorId.Value > 0)
                                 {
-                                    var subTaskSensor = station.MeasSubTaskSensors[m];
-                                    if (subTaskSensor.SensorId != null)
+                                    if (!SensorIds.Contains(station.SendorId.Value))
                                     {
-                                        var sensorId = subTaskSensor.SensorId.Value;
-                                        if (!SensorIds.Contains(sensorId))
+                                        var sens = loadSensor.LoadObjectSensor(station.SendorId.Value);
+                                        if (sens != null)
                                         {
-                                            var sens = loadSensor.LoadObjectSensor(sensorId);
-                                            if (sens != null)
+                                            if (sens.Id != null)
                                             {
-                                                if (sens.Id != null)
+                                                if (sens.Id.Value > 0)
                                                 {
-                                                    if (sens.Id.Value > 0)
-                                                    {
-                                                        SensorIds.Add(sensorId);
-                                                    }
+                                                    SensorIds.Add(station.SendorId.Value);
                                                 }
                                             }
                                         }
@@ -72,6 +67,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                         }
                     }
+
                     var massSensor = SensorIds.ToArray();
                     if (massSensor.Length > 0)
                     {
