@@ -15,7 +15,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class MeasSensor
     {
         /// <summary>
-        /// SendorId
+        /// SensorId
         /// </summary>
         [DataMember]
         public MeasSensorIdentifier SensorId;
