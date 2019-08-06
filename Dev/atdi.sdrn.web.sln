@@ -287,6 +287,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Console.32",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Console.64", "Hosts\Atdi.AppServer.Console.64\Atdi.AppServer.Console.64.csproj", "{A80D7607-EA3D-423C-965E-80159DE1D02B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.Api.Sdrn.Client.Bus.Anton", "Test\Atdi.Test.Api.Sdrn.Client.Bus.Anton\Atdi.Test.Api.Sdrn.Client.Bus.Anton.csproj", "{D8779FAA-1600-47B5-A931-9487B7CE382F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1473,6 +1475,18 @@ Global
 		{A80D7607-EA3D-423C-965E-80159DE1D02B}.Release|x64.Build.0 = Release|Any CPU
 		{A80D7607-EA3D-423C-965E-80159DE1D02B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A80D7607-EA3D-423C-965E-80159DE1D02B}.Release|x86.Build.0 = Release|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Debug|x64.Build.0 = Debug|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x64.ActiveCfg = Release|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x64.Build.0 = Release|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1611,6 +1625,7 @@ Global
 		{B551E073-CC82-4B4E-ABA5-A183C949496D} = {240972EA-070F-48EA-BF3F-4E3B1657ED32}
 		{0725D5B2-F834-4B99-8DD9-4ADB60717183} = {240972EA-070F-48EA-BF3F-4E3B1657ED32}
 		{A80D7607-EA3D-423C-965E-80159DE1D02B} = {240972EA-070F-48EA-BF3F-4E3B1657ED32}
+		{D8779FAA-1600-47B5-A931-9487B7CE382F} = {9B3AC25D-D0D4-41B5-824D-DF78A982FFD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

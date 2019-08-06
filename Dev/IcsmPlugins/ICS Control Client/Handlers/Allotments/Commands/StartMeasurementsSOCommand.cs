@@ -71,9 +71,9 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 data.AppendLine($"Name: {measTask.Name}");
                 data.AppendLine($"Mode: {measTask.ExecutionMode}");
                 data.AppendLine($"Created: {measTask.DateCreated}");
-                if (measTask.Stations != null)
+                if (measTask.Sensors != null)
                 {
-                    data.AppendLine($"Stations: {measTask.Stations.Length}");
+                    data.AppendLine($"Stations: {measTask.Sensors.Length}");
                 }
                 else
                 {
@@ -100,7 +100,7 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 Task = SDR.MeasTaskType.Scan,
                 DateCreated = DateTime.Now,
                 CreatedBy = IM.ConnectedUser(),
-                Stations = PreparedStations(allotment),
+                Sensors = PreparedStations(allotment),
                 MeasDtParam = PreparedDetectedParam(allotment),
                 MeasFreqParam = PreparedFreqParam(allotment, freqPlanChans),
                 MeasOther = PreparedOther(allotment),
@@ -110,9 +110,9 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
             return measTask;
         }
 
-        private static SDR.MeasStation[] PreparedStations(DM.Allotment allotment)
+        private static SDR.MeasSensor[] PreparedStations(DM.Allotment allotment)
         {
-            var stations = new List<SDR.MeasStation>();
+            var stations = new List<SDR.MeasSensor>();
 
             var constraint = new AAC.ComplexCondition()
             {
@@ -141,9 +141,9 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
             if (result.Length > 0)
             {
                 stations.AddRange(
-                    result.Select(sensor => new SDR.MeasStation
+                    result.Select(sensor => new SDR.MeasSensor
                     {
-                        StationId = new SDR.MeasStationIdentifier
+                        SensorId = new SDR.MeasSensorIdentifier
                         {
                             Value = sensor.Id.Value
                         }

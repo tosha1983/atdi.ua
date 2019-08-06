@@ -10,7 +10,7 @@ create table [ICSC].[RES_STGENERAL] (
 	[MARKER_INDEX]		[int] null,
 	[T1]		[int] null,
 	[T2]		[int] null,
-	[TIME_START_MEAS_DATE]		[datetime] null,
+	[TIME_START_MEAS]		[datetime] null,
 	[TIME_FINISH_MEAS]		[datetime] null,
 	[OFFSET_FREQUENCY]		[float] null,
 	[SPECRUM_START_FREQ]		[numeric](22,8) null,

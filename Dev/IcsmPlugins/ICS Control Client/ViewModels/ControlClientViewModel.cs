@@ -395,7 +395,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStation
         {
             get => this._currentResultsMeasurementsStation;
-            set => this.Set(ref this._currentResultsMeasurementsStation, value, () => { ReloadMeasResultStationDetail(); ReloadLevelMeasurements(); UpdateCurrentChartOption(this.CurrentMeasurementResults); });
+            set => this.Set(ref this._currentResultsMeasurementsStation, value, () => { ReloadMeasResultStationDetail(); ReloadLevelMeasurements(); UpdateCurrentChartOption(this.CurrentMeasurementResults); RedrawMap(); });
         }
         public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStationData
         {
@@ -1313,6 +1313,12 @@ namespace XICSM.ICSControlClient.ViewModels
             var polygons = new List<MP.MapDrawingDataPolygon>();
             var points = new List<MP.MapDrawingDataPoint>();
 
+            if (this._currentMeasurementResults == null)
+            {
+                this.CurrentMapData = null;
+                return;
+            }
+
             var sdrRoutes = SVC.SdrnsControllerWcfClient.GetRoutes(this._currentMeasurementResults.MeasSdrResultsId);
             if (sdrRoutes != null && sdrRoutes.Length > 0)
             {
@@ -1344,7 +1350,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 polygons.Add(new MP.MapDrawingDataPolygon() { Points = polygonPoints.ToArray(), Color = System.Windows.Media.Colors.Red, Fill = System.Windows.Media.Colors.Red });
             }
 
-            if (this.LevelMeasurements != null)
+            if (this.LevelMeasurements != null && this.LevelMeasurements.Source != null)
             {
                 foreach (var levelMeasurement in LevelMeasurements.Source)
                 {

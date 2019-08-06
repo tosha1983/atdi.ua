@@ -427,10 +427,10 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
 
 
-                List<SDR.MeasStation> stationsList = new List<SDR.MeasStation>();
+                List<SDR.MeasSensor> stationsList = new List<SDR.MeasSensor>();
                 foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                 {
-                    stationsList.Add(new SDR.MeasStation() { StationId = new SDR.MeasStationIdentifier() { Value = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id).Id.Value } });
+                    stationsList.Add(new SDR.MeasSensor() { SensorId = new SDR.MeasSensorIdentifier() { Value = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id).Id.Value } });
                 }
 
                 var measTask = new SDR.MeasTask()
@@ -496,7 +496,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         SignalizationNChenal = this._currentMeasTask.SignalizationNChenal,
                         SignalizationNCount = this._currentMeasTask.SignalizationNCount
                     },
-                    Stations = stationsList.ToArray(),
+                    Sensors = stationsList.ToArray(),
                     Task = SDR.MeasTaskType.Scan,
                     ExecutionMode = SDR.MeasTaskExecutionMode.Automatic,
                     DateCreated = DateTime.Now,

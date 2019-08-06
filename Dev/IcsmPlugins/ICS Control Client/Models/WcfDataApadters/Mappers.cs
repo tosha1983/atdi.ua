@@ -180,7 +180,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Task = source.Task,
                 Type = source.Type,
                 StationsForMeasurements = source.StationsForMeasurements,
-                Stations = source.Stations
+                Sensors = source.Sensors
             };
         }
 
