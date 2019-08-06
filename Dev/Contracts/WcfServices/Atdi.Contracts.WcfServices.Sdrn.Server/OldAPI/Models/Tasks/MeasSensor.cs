@@ -18,6 +18,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// SendorId
         /// </summary>
         [DataMember]
-        public MeasSensorIdentifier SendorId;
+        public MeasSensorIdentifier SensorId;
     }
 }

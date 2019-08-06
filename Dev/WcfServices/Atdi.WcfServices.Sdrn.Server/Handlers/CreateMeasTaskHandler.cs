@@ -45,20 +45,20 @@ namespace Atdi.WcfServices.Sdrn.Server
                         for (int u = 0; u < measTask.Sensors.Length; u++)
                         {
                             var station = measTask.Sensors[u];
-                            if (station.SendorId != null)
+                            if (station.SensorId != null)
                             {
-                                if (station.SendorId.Value > 0)
+                                if (station.SensorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(station.SendorId.Value))
+                                    if (!SensorIds.Contains(station.SensorId.Value))
                                     {
-                                        var sens = loadSensor.LoadObjectSensor(station.SendorId.Value);
+                                        var sens = loadSensor.LoadObjectSensor(station.SensorId.Value);
                                         if (sens != null)
                                         {
                                             if (sens.Id != null)
                                             {
                                                 if (sens.Id.Value > 0)
                                                 {
-                                                    SensorIds.Add(station.SendorId.Value);
+                                                    SensorIds.Add(station.SensorId.Value);
                                                 }
                                             }
                                         }

@@ -56,7 +56,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                         MSTS.Id = j; j++;
                         MSTS.Status = Status.N.ToString();
                         MSTS.SensorId = new SensorIdentifier();
-                        MSTS.SensorId.Value = St.SendorId.Value;
+                        MSTS.SensorId.Value = St.SensorId.Value;
                         ListMSTS.Add(MSTS);
                     }
                     MST.MeasSubTaskSensors = ListMSTS.ToArray();
@@ -88,7 +88,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                             MSTS.Id = j; j++;
                             MSTS.Status = Status.N.ToString();
                             MSTS.SensorId = new SensorIdentifier();
-                            MSTS.SensorId.Value = St.SendorId.Value;
+                            MSTS.SensorId.Value = St.SensorId.Value;
                             ListMSTS.Add(MSTS);
                         }
                         MST.MeasSubTaskSensors = ListMSTS.ToArray();

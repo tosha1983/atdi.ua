@@ -790,7 +790,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         listMeasSubTaskStation.Add(measSubTaskSensor);
                                         measSensors.Add(new MeasSensor()
                                         {
-                                            SendorId = new MeasSensorIdentifier()
+                                            SensorId = new MeasSensorIdentifier()
                                             {
                                                 Value = measSubTaskSensor.SensorId.Value
                                             }
@@ -1208,7 +1208,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         listMeasSubTaskStation.Add(measSubTaskSensor);
                                         measSensors.Add(new MeasSensor()
                                         {
-                                            SendorId = new MeasSensorIdentifier()
+                                            SensorId = new MeasSensorIdentifier()
                                             {
                                                 Value = measSubTaskSensor.SensorId.Value
                                             }

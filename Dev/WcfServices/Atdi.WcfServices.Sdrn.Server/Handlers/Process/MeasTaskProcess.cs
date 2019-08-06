@@ -114,7 +114,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         }
                                     }
                                 }
-                                if ((measTask.Sensors != null) && (measTask.Sensors.ToList().FindAll(e => e.SendorId.Value == SensorId) != null))
+                                if ((measTask.Sensors != null) && (measTask.Sensors.ToList().FindAll(e => e.SensorId.Value == SensorId) != null))
                                 {
                                     measTask.UpdateStatusSubTasks(SensorId, actionType, isOnline);
                                     if ((actionType == MeasTaskMode.New.ToString()) && (IdTsk == null))
@@ -253,11 +253,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var item = mt.Sensors[d];
 
-                                if (item.SendorId.Value > 0)
+                                if (item.SensorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(item.SendorId.Value))
+                                    if (!SensorIds.Contains(item.SensorId.Value))
                                     {
-                                        SensorIds.Add(item.SendorId.Value);
+                                        SensorIds.Add(item.SensorId.Value);
                                     }
                                 }
                             }
@@ -344,11 +344,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var item = mt.Sensors[d];
 
-                                if (item.SendorId.Value > 0)
+                                if (item.SensorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(item.SendorId.Value))
+                                    if (!SensorIds.Contains(item.SensorId.Value))
                                     {
-                                        SensorIds.Add(item.SendorId.Value);
+                                        SensorIds.Add(item.SensorId.Value);
                                     }
                                 }
                             }
@@ -414,11 +414,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var item = mt.Sensors[d];
 
-                                if (item.SendorId.Value > 0)
+                                if (item.SensorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(item.SendorId.Value))
+                                    if (!SensorIds.Contains(item.SensorId.Value))
                                     {
-                                        SensorIds.Add(item.SendorId.Value);
+                                        SensorIds.Add(item.SensorId.Value);
                                     }
                                 }
                             }
