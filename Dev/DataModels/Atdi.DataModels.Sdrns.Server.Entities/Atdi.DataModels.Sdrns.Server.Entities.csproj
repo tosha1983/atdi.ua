@@ -384,7 +384,6 @@
     <Content Include="Metadata\Entities\MeasFreq.xml" />
     <Content Include="Metadata\Entities\MeasFreqParam.xml" />
     <Content Include="Metadata\Entities\MeasOther.xml" />
-    <Content Include="Metadata\Entities\MeasStation.xml" />
     <Content Include="Metadata\Entities\SubTaskSensor.xml" />
     <Content Include="Metadata\Entities\Sector.xml" />
     <Content Include="Metadata\Entities\SectorFreq.xml" />
