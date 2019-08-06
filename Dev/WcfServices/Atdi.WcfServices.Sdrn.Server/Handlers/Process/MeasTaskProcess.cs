@@ -114,7 +114,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         }
                                     }
                                 }
-                                if ((measTask.Stations != null) && (measTask.Stations.ToList().FindAll(e => e.StationId.Value == SensorId) != null))
+                                if ((measTask.Sensors != null) && (measTask.Sensors.ToList().FindAll(e => e.SendorId.Value == SensorId) != null))
                                 {
                                     measTask.UpdateStatusSubTasks(SensorId, actionType, isOnline);
                                     if ((actionType == MeasTaskMode.New.ToString()) && (IdTsk == null))
@@ -145,12 +145,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             for (int f = 0; f < measTask.MeasSubTasks.Length; f++)
                                             {
                                                 var SubTask = measTask.MeasSubTasks[f];
-                                                if (SubTask.MeasSubTaskStations != null)
+                                                if (SubTask.MeasSubTaskSensors != null)
                                                 {
-                                                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                                                    for (int g = 0; g < SubTask.MeasSubTaskSensors.Length; g++)
                                                     {
-                                                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
-                                                        measTaskIds = string.Format("{0}_SDRN.SubTaskSensorId.{1}_", measTask.MeasDtParam.TypeMeasurements.ToString(),SubTaskStation.Id);
+                                                        var SubTaskSensor = SubTask.MeasSubTaskSensors[g];
+                                                        measTaskIds = string.Format("{0}_SDRN.SubTaskSensorId.{1}_", measTask.MeasDtParam.TypeMeasurements.ToString(), SubTaskSensor.Id);
                                                         if (actionType != MeasTaskMode.New.ToString())
                                                         {
                                                             var masTaskEvent = new OnMeasTaskEvent()
@@ -235,36 +235,36 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var item = mt.MeasSubTasks[i];
 
-                                for (int j = 0; j < item.MeasSubTaskStations.Length; j++)
+                                for (int j = 0; j < item.MeasSubTaskSensors.Length; j++)
                                 {
-                                    var u = item.MeasSubTaskStations[j];
+                                    var u = item.MeasSubTaskSensors[j];
 
-                                    if (!SensorIds.Contains(u.StationId.Value))
+                                    if (!SensorIds.Contains(u.SensorId.Value))
                                     {
-                                        SensorIds.Add(u.StationId.Value);
+                                        SensorIds.Add(u.SensorId.Value);
                                     }
                                 }
                             }
                         }
 
-                        if (mt.Stations != null)
+                        if (mt.Sensors != null)
                         {
-                            for (int d = 0; d < mt.Stations.Length; d++)
+                            for (int d = 0; d < mt.Sensors.Length; d++)
                             {
-                                var item = mt.Stations[d];
+                                var item = mt.Sensors[d];
 
-                                if (item.StationId.Value > 0)
+                                if (item.SendorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(item.StationId.Value))
+                                    if (!SensorIds.Contains(item.SendorId.Value))
                                     {
-                                        SensorIds.Add(item.StationId.Value);
+                                        SensorIds.Add(item.SendorId.Value);
                                     }
                                 }
                             }
                         }
 
                         long? id = null;
-                        var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
+                        var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Sensors = mt.Sensors, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                         bool isSuccessTemp = false;
 
                         var massSensor = SensorIds.ToArray();
@@ -326,35 +326,35 @@ namespace Atdi.WcfServices.Sdrn.Server
                             for (int d = 0; d < mt.MeasSubTasks.Length; d++)
                             {
                                 var item = mt.MeasSubTasks[d];
-                                for (int r = 0; r < item.MeasSubTaskStations.Length; r++)
+                                for (int r = 0; r < item.MeasSubTaskSensors.Length; r++)
                                 {
-                                    var measSubTaskStations = item.MeasSubTaskStations[r];
+                                    var measSubTaskSensor= item.MeasSubTaskSensors[r];
 
-                                    if (!SensorIds.Contains(measSubTaskStations.StationId.Value))
+                                    if (!SensorIds.Contains(measSubTaskSensor.SensorId.Value))
                                     {
-                                        SensorIds.Add(measSubTaskStations.StationId.Value);
+                                        SensorIds.Add(measSubTaskSensor.SensorId.Value);
                                     }
                                 }
                             }
                         }
 
-                        if (mt.Stations != null)
+                        if (mt.Sensors != null)
                         {
-                            for (int d = 0; d < mt.Stations.Length; d++)
+                            for (int d = 0; d < mt.Sensors.Length; d++)
                             {
-                                var item = mt.Stations[d];
+                                var item = mt.Sensors[d];
 
-                                if (item.StationId.Value > 0)
+                                if (item.SendorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(item.StationId.Value))
+                                    if (!SensorIds.Contains(item.SendorId.Value))
                                     {
-                                        SensorIds.Add(item.StationId.Value);
+                                        SensorIds.Add(item.SendorId.Value);
                                     }
                                 }
                             }
                         }
 
-                        var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
+                        var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType,  Sensors = mt.Sensors, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                         var massSensor = SensorIds.ToArray();
                         if (massSensor.Length > 0)
                         {
@@ -396,35 +396,35 @@ namespace Atdi.WcfServices.Sdrn.Server
                             for (int d = 0; d < mt.MeasSubTasks.Length; d++)
                             {
                                 var item = mt.MeasSubTasks[d];
-                                for (int r = 0; r < item.MeasSubTaskStations.Length; r++)
+                                for (int r = 0; r < item.MeasSubTaskSensors.Length; r++)
                                 {
-                                    var measSubTaskStations = item.MeasSubTaskStations[r];
+                                    var measSubTaskSensor = item.MeasSubTaskSensors[r];
 
-                                    if (!SensorIds.Contains(measSubTaskStations.StationId.Value))
+                                    if (!SensorIds.Contains(measSubTaskSensor.SensorId.Value))
                                     {
-                                        SensorIds.Add(measSubTaskStations.StationId.Value);
+                                        SensorIds.Add(measSubTaskSensor.SensorId.Value);
                                     }
                                 }
                             }
                         }
 
-                        if (mt.Stations != null)
+                        if (mt.Sensors != null)
                         {
-                            for (int d = 0; d < mt.Stations.Length; d++)
+                            for (int d = 0; d < mt.Sensors.Length; d++)
                             {
-                                var item = mt.Stations[d];
+                                var item = mt.Sensors[d];
 
-                                if (item.StationId.Value > 0)
+                                if (item.SendorId.Value > 0)
                                 {
-                                    if (!SensorIds.Contains(item.StationId.Value))
+                                    if (!SensorIds.Contains(item.SendorId.Value))
                                     {
-                                        SensorIds.Add(item.StationId.Value);
+                                        SensorIds.Add(item.SendorId.Value);
                                     }
                                 }
                             }
                         }
 
-                        var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Stations = mt.Stations, Status = mt.Status, Task = mt.Task, Type = mt.Type };
+                        var measTaskedit = new MeasTask() { CreatedBy = mt.CreatedBy, DateCreated = mt.DateCreated, ExecutionMode = mt.ExecutionMode, Id = mt.Id, MaxTimeBs = mt.MaxTimeBs, MeasDtParam = mt.MeasDtParam, MeasFreqParam = mt.MeasFreqParam, MeasLocParams = mt.MeasLocParams, MeasOther = mt.MeasOther, MeasSubTasks = mt.MeasSubTasks, MeasTimeParamList = mt.MeasTimeParamList, Name = mt.Name, OrderId = mt.OrderId, Prio = mt.Prio, ResultType = mt.ResultType, Sensors = mt.Sensors, Status = mt.Status, Task = mt.Task, Type = mt.Type };
                         var massSensor = SensorIds.ToArray();
                         if (massSensor.Length > 0)
                         {

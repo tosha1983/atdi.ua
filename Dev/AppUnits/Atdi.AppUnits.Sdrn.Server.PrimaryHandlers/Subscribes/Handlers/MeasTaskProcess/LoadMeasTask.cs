@@ -258,8 +258,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         measTask.MeasTimeParamList = timeParamList;
 
                         // IMeasStation
-
-                        var measStations = new List<MeasStation>();
+                        /*
+                        var measSensors = new List<MeasSensor>();
                         var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
                         builderMeasstation.Select(c => c.Id);
                         builderMeasstation.Select(c => c.MEAS_TASK.Id);
@@ -270,15 +270,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         {
                             while (readerMeasStation.Read())
                             {
-                                var measStation = new MeasStation();
-                                measStation.StationId = new MeasStationIdentifier();
-                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
-                                measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
-                                measStations.Add(measStation);
+                                var measStation = new MeasSensor();
+                                measStation.SendorId = new MeasSensorIdentifier();
+                                measStation.SendorId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
+                                measSensors.Add(measStation);
                             }
                             return true;
                         });
-                        measTask.Stations = measStations.ToArray();
+                        measTask.Sensors = measStations.ToArray();
+                        */
 
                         // IMeasDtParam
 
@@ -324,7 +324,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                             }
                             return true;
                         });
-                        measTask.Stations = measStations.ToArray();
+                       
 
                         if (measTask.MeasDtParam == null)
                         {
@@ -455,7 +455,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                         });
                         measTask.MeasOther = measOther;
 
-
                         var listmeasSubTask = new List<MeasSubTask>();
                         var builderMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().From();
                         builderMeasSubTask.Select(c => c.Id);
@@ -476,7 +475,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 measSubTask.Status = readerMeasSubTask.GetValue(c => c.Status);
                                 if (readerMeasSubTask.GetValue(c => c.TimeStart) != null) measSubTask.TimeStart = readerMeasSubTask.GetValue(c => c.TimeStart).Value;
                                 if (readerMeasSubTask.GetValue(c => c.TimeStop) != null) measSubTask.TimeStop = readerMeasSubTask.GetValue(c => c.TimeStop).Value;
-                                var listMeasSubTaskStation = new List<MeasSubTaskStation>();
+                                var listMeasSubTaskStation = new List<MeasSubTaskSensor>();
                                 var builderMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
                                 builderMeasSubTaskSta.Select(c => c.Id);
                                 builderMeasSubTaskSta.Select(c => c.Count);
@@ -489,19 +488,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 {
                                     while (readerMeasSubTaskSta.Read())
                                     {
-                                        var measSubTaskStation = new MeasSubTaskStation();
-                                        measSubTaskStation.Count = readerMeasSubTaskSta.GetValue(c => c.Count);
-                                        measSubTaskStation.Id = readerMeasSubTaskSta.GetValue(c => c.Id);
-                                        measSubTaskStation.StationId = new SensorIdentifier();
-                                        measSubTaskStation.StationId.Value = readerMeasSubTaskSta.GetValue(c => c.SENSOR.Id);
-                                        measSubTaskStation.Status = readerMeasSubTaskSta.GetValue(c => c.Status);
-                                        measSubTaskStation.TimeNextTask = readerMeasSubTaskSta.GetValue(c => c.TimeNextTask);
-                                        listMeasSubTaskStation.Add(measSubTaskStation);
+                                        var measSubTaskSensor = new MeasSubTaskSensor();
+                                        measSubTaskSensor.Count = readerMeasSubTaskSta.GetValue(c => c.Count);
+                                        measSubTaskSensor.Id = readerMeasSubTaskSta.GetValue(c => c.Id);
+                                        measSubTaskSensor.SensorId = new SensorIdentifier();
+                                        measSubTaskSensor.SensorId.Value = readerMeasSubTaskSta.GetValue(c => c.SENSOR.Id);
+                                        measSubTaskSensor.Status = readerMeasSubTaskSta.GetValue(c => c.Status);
+                                        measSubTaskSensor.TimeNextTask = readerMeasSubTaskSta.GetValue(c => c.TimeNextTask);
+                                        listMeasSubTaskStation.Add(measSubTaskSensor);
                                     }
                                     return true;
                                 });
-                                measSubTask.MeasSubTaskStations = listMeasSubTaskStation.ToArray();
+                                measSubTask.MeasSubTaskSensors = listMeasSubTaskStation.ToArray();
                                 listmeasSubTask.Add(measSubTask);
+                               
                             }
                             return true;
                         });

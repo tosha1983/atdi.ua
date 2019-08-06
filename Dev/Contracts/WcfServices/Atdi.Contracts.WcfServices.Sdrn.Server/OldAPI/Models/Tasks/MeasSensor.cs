@@ -8,10 +8,16 @@ using Atdi.DataModels.Sdrns.Server;
 
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
+    /// <summary>
+    /// Represents Sensor for measurements.
+    /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class MeasStationIdentifier
+    public class MeasSensor
     {
+        /// <summary>
+        /// SendorId
+        /// </summary>
         [DataMember]
-        public long Value;
+        public MeasSensorIdentifier SendorId;
     }
 }

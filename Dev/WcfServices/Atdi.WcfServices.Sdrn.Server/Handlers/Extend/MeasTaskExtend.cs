@@ -47,19 +47,19 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                     MST.TimeStart = task.MeasTimeParamList.PerStart;
                     MST.TimeStop = task.MeasTimeParamList.PerStop;
                     MST.Status = Status.A.ToString();
-                    var ListMSTS = new List<MeasSubTaskStation>();
+                    var ListMSTS = new List<MeasSubTaskSensor>();
                     int j = 0;
-                    for (int f=0; f< task.Stations.Length; f++)
+                    for (int f=0; f< task.Sensors.Length; f++)
                     {
-                        var St = task.Stations[f];
-                        var MSTS = new MeasSubTaskStation();
+                        var St = task.Sensors[f];
+                        var MSTS = new MeasSubTaskSensor();
                         MSTS.Id = j; j++;
                         MSTS.Status = Status.N.ToString();
-                        MSTS.StationId = new SensorIdentifier();
-                        MSTS.StationId.Value = St.StationId.Value;
+                        MSTS.SensorId = new SensorIdentifier();
+                        MSTS.SensorId.Value = St.SendorId.Value;
                         ListMSTS.Add(MSTS);
                     }
-                    MST.MeasSubTaskStations = ListMSTS.ToArray();
+                    MST.MeasSubTaskSensors = ListMSTS.ToArray();
                     ListMST.Add(MST);
                 }
                 else
@@ -79,19 +79,19 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);
                         MST.TimeStop = new DateTime(day.Year, day.Month, day.Day, hour_stop, min_stop, sec_stop);
                         MST.Status = Status.A.ToString();
-                        var ListMSTS = new List<MeasSubTaskStation>();
+                        var ListMSTS = new List<MeasSubTaskSensor>();
                         int j = 0;
-                        for (int f = 0; f < task.Stations.Length; f++)
+                        for (int f = 0; f < task.Sensors.Length; f++)
                         {
-                            var St = task.Stations[f];
-                            var MSTS = new MeasSubTaskStation();
+                            var St = task.Sensors[f];
+                            var MSTS = new MeasSubTaskSensor();
                             MSTS.Id = j; j++;
                             MSTS.Status = Status.N.ToString();
-                            MSTS.StationId = new SensorIdentifier();
-                            MSTS.StationId.Value = St.StationId.Value;
+                            MSTS.SensorId = new SensorIdentifier();
+                            MSTS.SensorId.Value = St.SendorId.Value;
                             ListMSTS.Add(MSTS);
                         }
-                        MST.MeasSubTaskStations = ListMSTS.ToArray();
+                        MST.MeasSubTaskSensors = ListMSTS.ToArray();
                         ListMST.Add(MST);
 
                     }
@@ -110,27 +110,27 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
             for (int f = 0; f < measSubTasks.Length; f++)
             {
                 var SubTask = measSubTasks[f];
-                if (SubTask.MeasSubTaskStations != null)
+                if (SubTask.MeasSubTaskSensors != null)
                 {
-                    var measSubTaskStations = SubTask.MeasSubTaskStations.ToArray();
-                    for (int l = 0; l < measSubTaskStations.Length; l++)
+                    var measSubTaskSensors = SubTask.MeasSubTaskSensors.ToArray();
+                    for (int l = 0; l < measSubTaskSensors.Length; l++)
                     {
-                        var SubTaskStation = measSubTaskStations[l];
-                        if (SubTaskStation.StationId.Value == Id_Sensor)
+                        var SubTaskSensor = measSubTaskSensors[l];
+                        if (SubTaskSensor.SensorId.Value == Id_Sensor)
                         {
                             if (Type == MeasTaskMode.Run.ToString())
                             {
-                                if (isOnline) SubTaskStation.Status = Status.O.ToString();
-                                else SubTaskStation.Status = Status.A.ToString();
+                                if (isOnline) SubTaskSensor.Status = Status.O.ToString();
+                                else SubTaskSensor.Status = Status.A.ToString();
                             }
                             else if (Type == MeasTaskMode.Stop.ToString())
                             {
-                                if (isOnline) SubTaskStation.Status = Status.P.ToString(); 
-                                else SubTaskStation.Status = Status.F.ToString(); 
+                                if (isOnline) SubTaskSensor.Status = Status.P.ToString(); 
+                                else SubTaskSensor.Status = Status.F.ToString(); 
                             }
                             else if (Type == MeasTaskMode.Del.ToString())
                             {
-                                SubTaskStation.Status = Status.Z.ToString();
+                                SubTaskSensor.Status = Status.Z.ToString();
                             }
                         }
                     }
@@ -195,28 +195,28 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                 var SubTask = measSubTasks[l];
                 string StatusWithMaxWeight = "";
                 MaxWeightLst = new List<int>();
-                if (SubTask.MeasSubTaskStations != null)
+                if (SubTask.MeasSubTaskSensors != null)
                 {
-                    var measSubTaskStations = SubTask.MeasSubTaskStations.ToArray();
-                    for (int f = 0; f < measSubTaskStations.Length; f++)
+                    var measSubTaskSensors = SubTask.MeasSubTaskSensors.ToArray();
+                    for (int f = 0; f < measSubTaskSensors.Length; f++)
                     {
-                        var SubTaskStation = measSubTaskStations[f];
+                        var SubTaskSensor = measSubTaskSensors[f];
                         if (Type == MeasTaskMode.Run.ToString())
                         {
-                            if (SubTaskStation.Status == Status.P.ToString())
+                            if (SubTaskSensor.Status == Status.P.ToString())
                             {
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.O.ToString())) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskSensor.Status && t.ToStatuses == Status.O.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = Status.O.ToString();
+                                    SubTaskSensor.Status = Status.O.ToString();
                                     SubTask.Status = Status.O.ToString();
                                     task.Status = Status.O.ToString();
                                 }
                             }
-                            if (SubTaskStation.Status == Status.F.ToString())
+                            if (SubTaskSensor.Status == Status.F.ToString())
                             {
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.A.ToString())) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskSensor.Status && t.ToStatuses == Status.A.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = Status.A.ToString();
+                                    SubTaskSensor.Status = Status.A.ToString();
                                     SubTask.Status = Status.A.ToString();
                                     task.Status = Status.A.ToString();
                                 }
@@ -224,30 +224,30 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                         }
                         else if (Type == MeasTaskMode.Del.ToString())
                         {
-                            SubTaskStation.Status = Status.Z.ToString();
+                            SubTaskSensor.Status = Status.Z.ToString();
                             SubTask.Status = Status.Z.ToString();
                             task.Status = Status.Z.ToString();
                         }
                         else if (Type == MeasTaskMode.Stop.ToString())
                         {
-                            var DescrStat = Descr_MeasSubTaskStation.Find(t => t.Type != ModeStatus.final && t.NameStatus == SubTaskStation.Status);
+                            var DescrStat = Descr_MeasSubTaskStation.Find(t => t.Type != ModeStatus.final && t.NameStatus == SubTaskSensor.Status);
                             if (DescrStat != null)
                             {
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.P.ToString())) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskSensor.Status && t.ToStatuses == Status.P.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = Status.P.ToString();
+                                    SubTaskSensor.Status = Status.P.ToString();
                                     SubTask.Status = Status.P.ToString();
                                     task.Status = Status.P.ToString();
                                 }
-                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskStation.Status && t.ToStatuses == Status.F.ToString())) != null)
+                                if ((OperationTransitionRule.Find(t => t.NameOperation == Type && t.StartStatus == SubTaskSensor.Status && t.ToStatuses == Status.F.ToString())) != null)
                                 {
-                                    SubTaskStation.Status = Status.F.ToString();
+                                    SubTaskSensor.Status = Status.F.ToString();
                                     SubTask.Status = Status.F.ToString();
                                     task.Status = Status.F.ToString();
                                 }
                             }
                         }
-                        var val_fnd_status = Descr_MeasSubTaskStation.Find(t => t.NameStatus == SubTaskStation.Status);
+                        var val_fnd_status = Descr_MeasSubTaskStation.Find(t => t.NameStatus == SubTaskSensor.Status);
                         if (val_fnd_status != null)
                         {
                             MaxWeightLst.Add(val_fnd_status.Weight);

@@ -126,8 +126,8 @@
     <Compile Include="OldAPI\Models\Tasks\MeasLocParam.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasLocParamIdentifier.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasOther.cs" />
-    <Compile Include="OldAPI\Models\Tasks\MeasStation.cs" />
-    <Compile Include="OldAPI\Models\Tasks\MeasStationIdentifier.cs" />
+    <Compile Include="OldAPI\Models\Tasks\MeasSensor.cs" />
+    <Compile Include="OldAPI\Models\Tasks\MeasSensorIdentifier.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasSubTask.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasSubTaskStation.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasTask.cs" />

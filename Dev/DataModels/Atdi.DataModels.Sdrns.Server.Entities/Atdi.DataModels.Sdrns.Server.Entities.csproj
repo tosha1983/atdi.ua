@@ -60,7 +60,6 @@
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IFreqSample.cs" />
     <Compile Include="Entities\IValidationLogs.cs" />
-    <Compile Include="Entities\ILinkMeasStation.cs" />
     <Compile Include="Entities\ILinkResSensor.cs" />
     <Compile Include="Entities\ILinkSectorFreq.cs" />
     <Compile Include="Entities\ILinkSectorMaskElement.cs" />
@@ -69,7 +68,6 @@
     <Compile Include="Entities\IMeasFreqParam.cs" />
     <Compile Include="Entities\IMeasLocationParam.cs" />
     <Compile Include="Entities\IMeasOther.cs" />
-    <Compile Include="Entities\IMeasStation.cs" />
     <Compile Include="Entities\ISubTask.cs" />
     <Compile Include="Entities\ISubTaskSensor.cs" />
     <Compile Include="Entities\IMeasTask.cs" />
@@ -154,7 +152,6 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_TASK.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.SUBTASK_SENSOR.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.SUBTASK.sql" />
-    <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_STATION.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_OTHER.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_LOCATION_PARAM.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.MEAS_FREQ_PARAM.sql" />
@@ -163,7 +160,6 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_SECTOR_MASK.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_SECTOR_FREQ.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_RES_SENSOR.sql" />
-    <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_MEAS_STATION.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.FREQ_SAMPLE.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.ENTITY_PART.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.ENTITY.sql" />
@@ -179,7 +175,6 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.ENTITY_PART_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.ENTITY_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.FREQ_SAMPLE_ID_SEQ.sql" />
-    <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_MEAS_STATION_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_RES_SENSOR_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_SECTOR_FREQ_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_SECTOR_MASK_ID_SEQ.sql" />
@@ -189,7 +184,6 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_FREQ_PARAM_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_LOCATION_PARAM_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_OTHER_ID_SEQ.sql" />
-    <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_STATION_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.SUB_TASK_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.SUBTASK_SENSOR_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.MEAS_TASK_ID_SEQ.sql" />
