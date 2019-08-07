@@ -1374,7 +1374,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return results.ToArray();
         }
 
-
+        /*
         public ResultsSpectrumsMeasurementsStation GetSpectrumsResMeasStationById(long StationId)
         {
             var resMeasStatiion = new ResultsSpectrumsMeasurementsStation();
@@ -1610,6 +1610,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return resMeasStatiion;
         }
+        */
 
 
         /// <summary>
@@ -1653,7 +1654,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? bw = null;
                         var centralFrequency =  readerResMeasStation.GetValue(c => c.Frequency);
 
-                        var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                        var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                         builderResStGeneral.Select(c => c.CentralFrequency);
                         builderResStGeneral.Select(c => c.CentralFrequencyMeas);
@@ -1680,6 +1681,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             while (readerResStGeneral.Read())
                             {
+                                var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
                                 measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
@@ -1790,11 +1792,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     }
                                     return true;
                                 });
-
+                                listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
                             }
                             return true;
                         });
-                        resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                        resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
 
 
 
@@ -2060,6 +2062,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                             measurementsParameterGeneral.CentralFrequencyMeas = (double)readerResMeasStation.GetValue(c => c.Frequency);
 
+                            var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
                             var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                             builderResStGeneral.Select(c => c.CentralFrequency);
                             builderResStGeneral.Select(c => c.CentralFrequencyMeas);
@@ -2082,6 +2085,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 while (readerResStGeneral.Read())
                                 {
+                                    measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                     measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
                                     measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
                                     measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
@@ -2093,12 +2097,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
                                     measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
                                     measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
-                                    break;
+                                    listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
                                 }
                                 return true;
                             });
 
-                            resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                            resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
                             listResMeasStatiion.Add(resMeasStatiion);
                         }
                     }
@@ -2157,9 +2161,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? vbw = null;
                         double? bw = null;
                         //double? centralFrequency = null;
-                        var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
-                        var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                        var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
+                        var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
+                        
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                         builderResStGeneral.Select(c => c.CentralFrequency);
                         builderResStGeneral.Select(c => c.CentralFrequencyMeas);
@@ -2186,6 +2191,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             while (readerResStGeneral.Read())
                             {
+                                var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
                                 measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
@@ -2297,12 +2303,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 });
 
 
-                                
+                                listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
 
                             }
                             return true;
                         });
-                        resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                        resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
 
                         var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
                         var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
@@ -2962,7 +2968,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 double? bw = null;
                                 var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
-                                var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                                var listParameterGeneral = new List<MeasurementsParameterGeneral>();
                                 var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                                 builderResStGeneral.Select(c => c.CentralFrequency);
                                 builderResStGeneral.Select(c => c.CentralFrequencyMeas);
@@ -2989,6 +2995,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 {
                                     while (readerResStGeneral.Read())
                                     {
+                                        var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                         measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
                                         measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
                                         measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
@@ -3027,10 +3034,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         });
                                         measurementsParameterGeneral.MaskBW = listMaskElements.ToArray();
                                         measurementsParameterGeneral.LevelsSpecrum = readerResStGeneral.GetValue(c=>c.LevelsSpectrumdBm);
+                                        listParameterGeneral.Add(measurementsParameterGeneral);
                                     }
                                     return true;
                                 });
-                                resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                                resMeasStatiion.GeneralResult = listParameterGeneral.ToArray();
 
 
                                 var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
