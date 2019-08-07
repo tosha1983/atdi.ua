@@ -188,7 +188,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadMeasResult()
         {
             var sdrResult = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderSpecial(this._measDtParamTypeMeasurements);
-            this._measResults.Source = sdrResult.OrderByDescending(c => c.Id).ToArray();
+            this._measResults.Source = sdrResult.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
 
             if (this._measDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
             {

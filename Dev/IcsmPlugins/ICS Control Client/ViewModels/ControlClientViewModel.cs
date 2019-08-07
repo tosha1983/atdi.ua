@@ -513,7 +513,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this._measResults.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
+                this._measResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
             }));
         }
 

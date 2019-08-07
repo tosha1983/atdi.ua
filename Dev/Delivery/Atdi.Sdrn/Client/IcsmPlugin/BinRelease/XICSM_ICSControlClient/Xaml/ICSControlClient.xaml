@@ -453,6 +453,7 @@
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="*"></RowDefinition>
                                     </Grid.RowDefinitions>
                                   
@@ -630,7 +631,7 @@
                                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=T2}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Marker"  />
-                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=GeneralResultMarkerIndex}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=Marker}"  IsReadOnly="True" />
                                          </Grid>
                                     </Expander>                                  
                                     <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
@@ -681,8 +682,8 @@
                                             <RowDefinition Height="20"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
                                           </Grid.RowDefinitions>
-                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
-                                          <Button Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
+                                          <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
+                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
                                           <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}">
                                             <DataGrid.Columns>
                                               <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
@@ -699,6 +700,17 @@
                                             </DataGrid.Columns>
                                           </DataGrid>
                                         </Grid>
+                                    </Expander>
+                                    <Expander Grid.Column="0" Grid.Row="7" Header="Station Sys Info" Visibility="{Binding ResIdStationVisibility}">
+                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                        <Grid.ColumnDefinitions>
+                                          <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                          <RowDefinition Height="*"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Path=StationSysInfo}" Padding="5,0,0,0" Height="300" IsReadOnly="True"/>
+                                      </Grid>
                                     </Expander>
                                 </Grid>
                             </ScrollViewer>
