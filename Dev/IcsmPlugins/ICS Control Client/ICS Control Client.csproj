@@ -233,6 +233,7 @@
     <Compile Include="Models\Processes\SynchroInspections\Tour.cs" />
     <Compile Include="Models\Views\EmittingViewModel.cs" />
     <Compile Include="Models\Views\EmittingWorkTimeViewModel.cs" />
+    <Compile Include="Models\Views\GeneralResultViewModel.cs" />
     <Compile Include="Models\Views\LevelMeasurementsCarViewModel.cs" />
     <Compile Include="Models\Views\MeasStationsSignalizationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Models\Views\SignSysInfoViewModel.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\GeneralResultDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\Mappers.cs" />
     <Compile Include="Models\WcfDataApadters\MeasStationsSignalizationDataAdapter.cs" />

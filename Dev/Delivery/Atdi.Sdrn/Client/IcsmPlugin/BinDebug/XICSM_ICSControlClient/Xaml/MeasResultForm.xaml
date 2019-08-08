@@ -232,7 +232,7 @@
                                          </Grid>
                                     </Expander>
                                     <Expander Grid.Column="0" Grid.Row="3" Header="Frequency" Visibility="{Binding ResFreq2Visibility}">
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                        <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -243,33 +243,36 @@
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "CentralFrequency, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=GeneralResultCentralFrequency}"  IsReadOnly="True"/>
+                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=CentralFrequency}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "CentralFrequencyMeas, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GeneralResultCentralFrequencyMeas}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=CentralFrequencyMeas}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "OffsetFrequency, 10^-6"  />
-                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GeneralResultOffsetFrequency}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=OffsetFrequency}"  IsReadOnly="True" />
                                          </Grid>
-                                    </Expander>                                  
+                                    </Expander>
+
+
                                     <Expander Grid.Column="0" Grid.Row="4" Header="Spectrum"  Visibility="{Binding ResSpecVisibility}">
-                                        <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                        <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"></RowDefinition>
-                                                <RowDefinition Height="Auto"></RowDefinition>
-                                                <RowDefinition Height="Auto"></RowDefinition>
-                                                <RowDefinition Height="Auto"></RowDefinition>
-                                                <RowDefinition Height="*"></RowDefinition>
+                                              <RowDefinition Height="Auto"></RowDefinition>
+                                              <RowDefinition Height="Auto"></RowDefinition>
+                                              <RowDefinition Height="Auto"></RowDefinition>
+                                              <RowDefinition Height="Auto"></RowDefinition>
+                                              <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Number points of spectrum"  />
+
+                                          <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Number points of spectrum"  />
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=NumberPointsOfSpectrum}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Step of spectrum, kHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GeneralResultSpecrumSteps}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SpecrumSteps}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "T1, MHz"  />
                                             <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=T1}"  IsReadOnly="True" />
@@ -278,11 +281,16 @@
                                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=T2}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Marker"  />
-                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=Marker}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MarkerIndex}"  IsReadOnly="True" />
                                          </Grid>
-                                    </Expander>                                  
-                                    <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
-                                        <Grid DataContext="{Binding CurrentMeasurementResults}">
+                                    </Expander>
+
+                                  <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5,0,0" Content="&lt;" Width="15" Height="15" Command="{Binding PrevSpecCommand}"/>
+                                  <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100"/>
+                                  <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}"/>
+
+                                  <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
+                                        <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -292,10 +300,10 @@
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TimeStartMeas"  />
-                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=StartTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
+                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=TimeStartMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "TimeFinishMeas"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=StopTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeFinishMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
                                     
                                          </Grid>
                                     </Expander>

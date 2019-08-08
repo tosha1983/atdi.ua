@@ -230,29 +230,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 return null;
             }
 
-            var generalResult = source.GeneralResult ?? new SDR.MeasurementsParameterGeneral();
-
             return new VM.ResultsMeasurementsStationViewModel
             {
-                GeneralResultCentralFrequency = generalResult.CentralFrequency.ToNull(),
-                GeneralResultCentralFrequencyMeas = generalResult.CentralFrequencyMeas.ToNull(),
-                GeneralResultDurationMeas = generalResult.DurationMeas.ToNull(),
-                GeneralResultLevelsSpecrum = generalResult.LevelsSpecrum,
-                GeneralResultMarkerIndex = generalResult.MarkerIndex.ToNull(),
-                GeneralResultMaskBW = generalResult.MaskBW,
-                GeneralResultOffsetFrequency = generalResult.OffsetFrequency.ToNull(),
-                GeneralResultSpecrumStartFreq = generalResult.SpecrumStartFreq,
-                GeneralResultSpecrumSteps = generalResult.SpecrumSteps,
-                GeneralResultT1 = generalResult.T1.ToNull(),
-                GeneralResultT2 = generalResult.T2.ToNull(),
-                GeneralResultTimeFinishMeas = generalResult.TimeFinishMeas.ToNull(),
-                GeneralResultTimeStartMeas = generalResult.TimeStartMeas.ToNull(),
-
-                NumberPointsOfSpectrum = generalResult.LevelsSpecrum == null ? (int?)null : generalResult.LevelsSpecrum.Length,
-                T1 = Convert.ToDouble((generalResult.SpecrumStartFreq ?? 0) + (generalResult.T1.ToNull() ?? 0) * (generalResult.SpecrumSteps ?? 0) / 1000),
-                T2 = Convert.ToDouble((generalResult.SpecrumStartFreq ?? 0) + (generalResult.T2.ToNull() ?? 0) * (generalResult.SpecrumSteps ?? 0) / 1000),
-                Marker = Convert.ToDouble((generalResult.SpecrumStartFreq ?? 0) + (generalResult.MarkerIndex.ToNull() ?? 0) * (generalResult.SpecrumSteps ?? 0) / 1000),
-
+                Id = source.Id,
                 GlobalSID = source.GlobalSID,
                 LevelMeasurements = source.LevelMeasurements,
                 LevelMeasurementsLength = source.LevelMeasurements == null ? (int?)null : source.LevelMeasurements.Length,
@@ -261,10 +241,33 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StationId = source.Idstation,
                 Status = source.Status,
                 StationSysInfo = source.StationSysInfo,
-                CentralFrequencyMeas_MHz = source.GeneralResult.CentralFrequencyMeas,
-                CentralFrequencyMHz = source.GeneralResult.CentralFrequency,
-                Id = source.Id,
-                Standard = source.Standard
+                Standard = source.Standard,
+                GeneralResults = source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()
+            };
+        }
+        public static VM.GeneralResultViewModel Map(SDR.MeasurementsParameterGeneral source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.GeneralResultViewModel
+            {
+                CentralFrequency = source.CentralFrequency,
+                CentralFrequencyMeas = source.CentralFrequencyMeas,
+                DurationMeas = source.DurationMeas,
+                LevelsSpecrum = source.LevelsSpecrum,
+                MaskBW = source.MaskBW,
+                OffsetFrequency = source.OffsetFrequency,
+                SpecrumStartFreq = source.SpecrumStartFreq,
+                SpecrumSteps = source.SpecrumSteps,
+                TimeFinishMeas = source.TimeFinishMeas,
+                TimeStartMeas = source.TimeStartMeas,
+                NumberPointsOfSpectrum = source.LevelsSpecrum == null ? (int?)null : source.LevelsSpecrum.Length,
+                T1 = Convert.ToDouble((source.SpecrumStartFreq ?? 0) + (source.T1.ToNull() ?? 0) * (source.SpecrumSteps ?? 0) / 1000),
+                T2 = Convert.ToDouble((source.SpecrumStartFreq ?? 0) + (source.T2.ToNull() ?? 0) * (source.SpecrumSteps ?? 0) / 1000),
+                MarkerIndex = Convert.ToDouble((source.SpecrumStartFreq ?? 0) + (source.MarkerIndex.ToNull() ?? 0) * (source.SpecrumSteps ?? 0) / 1000)
             };
         }
         public static VM.LevelMeasurementsCarViewModel Map(SDR.LevelMeasurementsCar source)

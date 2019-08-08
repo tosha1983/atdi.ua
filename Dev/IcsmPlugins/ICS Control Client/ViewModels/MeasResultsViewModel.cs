@@ -35,6 +35,8 @@ namespace XICSM.ICSControlClient.ViewModels
         #region Commands
         public WpfCommand GetCSVCommand { get; set; }
         public WpfCommand SearchStationCommand { get; set; }
+        public WpfCommand PrevSpecCommand { get; set; }
+        public WpfCommand NextSpecCommand { get; set; }
         #endregion
 
         #region Current Objects
@@ -42,6 +44,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStation;
         private ResultsMeasurementsStationViewModel _currentResultsMeasurementsStationData;
         private LevelMeasurementsCarViewModel _currentLevelMeasurements;
+        private GeneralResultViewModel _currentGeneralResult;
         private CS.ChartOption _currentChartOption;
         private MP.MapDrawingData _currentMapData;
         private ModelType _currentModel;
@@ -60,14 +63,18 @@ namespace XICSM.ICSControlClient.ViewModels
         public MeasurementResultsDataAdatper ShortMeasResultsSpecial => this._measResults;
         public ResultsMeasurementsStationDataAdapter ResultsMeasurementsStations => this._resultsMeasurementsStations;
         public LevelMeasurementsCarDataAdapter LevelMeasurements => this._levelMeasurements;
+        public GeneralResultDataAdapter GeneralResults => this._generalResults;
         #endregion
 
         private MeasurementResultsDataAdatper _measResults;
         private ResultsMeasurementsStationDataAdapter _resultsMeasurementsStations;
         private LevelMeasurementsCarDataAdapter _levelMeasurements;
+        private GeneralResultDataAdapter _generalResults;
 
         private double? _LowFreq;
         private double? _UpFreq;
+        private string _specLabelText = "0 of 0";
+        private int _selectedSpectrum = 0;
 
         private CS.ChartOption GetDefaultChartOption()
         {
@@ -95,12 +102,14 @@ namespace XICSM.ICSControlClient.ViewModels
             this._measResults = new MeasurementResultsDataAdatper();
             this._resultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
             this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
+            this._generalResults = new GeneralResultDataAdapter();
             this._measDtParamTypeMeasurements = SDR.MeasurementType.MonitoringStations;
             this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
             this.SearchStationCommand = new WpfCommand(this.OnSearchStationCommand);
+            this.PrevSpecCommand = new WpfCommand(this.OnPrevSpecCommand);
+            this.NextSpecCommand = new WpfCommand(this.OnNextSpecCommand);
             this.ReloadMeasResult();
         }
-
         public SDR.MeasurementType MeasDtParamTypeMeasurements
         {
             get => this._measDtParamTypeMeasurements;
@@ -129,6 +138,11 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             get => this._currentMeasurementResults;
             set => this.Set(ref this._currentMeasurementResults, value, () => { ReloadMeasResaltDetail(); UpdateCurrentChartOption(); RedrawMap(); });
+        }
+        public GeneralResultViewModel CurrentGeneralResult
+        {
+            get => this._currentGeneralResult;
+            set => this.Set(ref this._currentGeneralResult, value, () => { UpdateCurrentChartOption(); });
         }
         public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStation
         {
@@ -184,6 +198,11 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             get => this._UpFreq;
             set => this.Set(ref this._UpFreq, value);
+        }
+        public string SpecLabelText
+        {
+            get => this._specLabelText;
+            set => this.Set(ref this._specLabelText, value);
         }
         private void ReloadMeasResult()
         {
@@ -292,6 +311,14 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationById(this._currentResultsMeasurementsStation.Id);
                 this.CurrentResultsMeasurementsStationData = Mappers.Map(sdrMeasResults);
+                this._selectedSpectrum = 0;
+                this.GenerateSpecLabelText();
+                if (this.CurrentResultsMeasurementsStationData != null && this.CurrentResultsMeasurementsStationData.GeneralResults != null && this.CurrentResultsMeasurementsStationData.GeneralResults.Length > 0)
+                {
+                    this.CurrentGeneralResult = Mappers.Map(this.CurrentResultsMeasurementsStationData.GeneralResults[0]);
+                }
+                else
+                    this.CurrentGeneralResult = null;
             }
         }
         private void ReloadLevelMeasurements()
@@ -351,13 +378,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            var measStation = this._currentResultsMeasurementsStationData;
-            if (measStation == null)
+            var generalResult = this._currentGeneralResult;
+            if (generalResult == null)
             {
                 return option;
             }
 
-            var spectrumLevels = measStation.GeneralResultLevelsSpecrum;
+            var spectrumLevels = generalResult.LevelsSpecrum;
             if (spectrumLevels == null || spectrumLevels.Length == 0)
             {
                 return option;
@@ -372,7 +399,7 @@ namespace XICSM.ICSControlClient.ViewModels
             var minY = default(double);
             for (int i = 0; i < count; i++)
             {
-                var valX = Convert.ToDouble(measStation.GeneralResultSpecrumStartFreq + i * measStation.GeneralResultSpecrumSteps / 1000);
+                var valX = Convert.ToDouble(generalResult.SpecrumStartFreq + i * generalResult.SpecrumSteps / 1000);
                 var valY = spectrumLevels[i];
 
                 var point = new Point
@@ -792,13 +819,13 @@ namespace XICSM.ICSControlClient.ViewModels
                         if ((!ms.LeveldBmkVm.HasValue || ms.LeveldBmkVm == 0 || ms.LeveldBmkVm == -1 || ms.LeveldBmkVm <= -30 || ms.LeveldBmkVm >= 200))
                         {
                             double freq = 0;
-                            if (this._currentResultsMeasurementsStationData.GeneralResultCentralFrequencyMeas.HasValue && this._currentResultsMeasurementsStationData.GeneralResultCentralFrequencyMeas > 0.01)
+                            if (this._currentGeneralResult.CentralFrequencyMeas.HasValue && this._currentGeneralResult.CentralFrequencyMeas > 0.01)
                             {
-                                freq = this._currentResultsMeasurementsStationData.GeneralResultCentralFrequencyMeas.Value;
+                                freq = this._currentGeneralResult.CentralFrequencyMeas.Value;
                             }
-                            if (this._currentResultsMeasurementsStationData.GeneralResultCentralFrequency.HasValue && this._currentResultsMeasurementsStationData.GeneralResultCentralFrequency > 0.01)
+                            if (this._currentGeneralResult.CentralFrequency.HasValue && this._currentGeneralResult.CentralFrequency > 0.01)
                             {
-                                freq = this._currentResultsMeasurementsStationData.GeneralResultCentralFrequency.Value;
+                                freq = this._currentGeneralResult.CentralFrequency.Value;
                             }
                             if (freq > 0 && ms.LeveldBm.HasValue && ms.LeveldBm > -300 && ms.LeveldBm < -10)
                             {
@@ -932,6 +959,29 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 MessageBox.Show(e.ToString());
             }
+        }
+        private void OnPrevSpecCommand(object parameter)
+        {
+            if (this.CurrentResultsMeasurementsStationData != null && this.CurrentResultsMeasurementsStationData.GeneralResults != null && this.CurrentResultsMeasurementsStationData.GeneralResults.Length > 0 && _selectedSpectrum > 0)
+            {
+                this.CurrentGeneralResult = Mappers.Map(this.CurrentResultsMeasurementsStationData.GeneralResults[--_selectedSpectrum]);
+                this.GenerateSpecLabelText();
+            }
+        }
+        private void OnNextSpecCommand(object parameter)
+        {
+            if (this.CurrentResultsMeasurementsStationData != null && this.CurrentResultsMeasurementsStationData.GeneralResults != null && this.CurrentResultsMeasurementsStationData.GeneralResults.Length > 0 && _selectedSpectrum < this.CurrentResultsMeasurementsStationData.GeneralResults.Length - 1)
+            {
+                this.CurrentGeneralResult = Mappers.Map(this.CurrentResultsMeasurementsStationData.GeneralResults[++_selectedSpectrum]);
+                this.GenerateSpecLabelText();
+            }
+        }
+        private void GenerateSpecLabelText()
+        {
+            if (this.CurrentResultsMeasurementsStationData != null && this.CurrentResultsMeasurementsStationData.GeneralResults != null && this.CurrentResultsMeasurementsStationData.GeneralResults.Length > 0)
+                SpecLabelText = (_selectedSpectrum + 1).ToString() + " of " + this.CurrentResultsMeasurementsStationData.GeneralResults.Length.ToString();
+            else
+                SpecLabelText = "0 of 0";
         }
     }
 }
