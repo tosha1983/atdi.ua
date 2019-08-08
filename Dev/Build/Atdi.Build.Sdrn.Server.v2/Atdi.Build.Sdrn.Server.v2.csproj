@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -242,6 +246,8 @@ copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bi
 copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\DataLayer\Oracle"
+
 
 copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
