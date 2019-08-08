@@ -1160,7 +1160,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsByDateMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
+                var builderResMeas = this._dataLayer.GetBuilder<MD.IResRoutes>().From();
                 builderResMeas.Select(c => c.RES_MEAS.AntVal);
                 builderResMeas.Select(c => c.RES_MEAS.DataRank);
                 builderResMeas.Select(c => c.RES_MEAS.Id);
