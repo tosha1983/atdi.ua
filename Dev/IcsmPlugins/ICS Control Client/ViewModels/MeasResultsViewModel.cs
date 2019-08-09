@@ -304,6 +304,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 LowFreq = null;
                 UpFreq = null;
             }
+            this.CurrentGeneralResult = null;
+            this.CurrentResultsMeasurementsStationData = null;
         }
         private void ReloadMeasResultStationDetail()
         {

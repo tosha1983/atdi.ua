@@ -312,6 +312,8 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 _userActionTask = _userActionTask.ContinueWith(t => this.OnChangedCurrentShortMeasTaskAction(shortMeasTask));
             }
+            this.CurrentGeneralResult = null;
+            this.CurrentResultsMeasurementsStationData = null;
         }
 
         private void OnChangedCurrentShortMeasTaskAction(ShortMeasTaskViewModel shortMeasTask)
@@ -390,6 +392,10 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 _userActionTask = _userActionTask.ContinueWith(t => this.OnChangedCurrentMeasurementResultsAction(measurementResults));
             }
+            this.CurrentGeneralResult = null;
+            this.CurrentResultsMeasurementsStationData = null;
+            this.ShortSensors.ClearFilter();
+            this.ShortSensors.ApplyFilter(c => c.Name == measurementResults.SensorName);
         }
 
         private void OnChangedCurrentMeasurementResultsAction(MeasurementResultsViewModel measurementResults)
