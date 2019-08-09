@@ -809,6 +809,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 builderResMeas.Select(c => c.StartTime);
@@ -955,6 +957,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
                         }
 
+                        /*
                         var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                         builderLinkResSensoT.Select(c => c.Id);
                         builderLinkResSensoT.Select(c => c.SENSOR.Id);
@@ -975,6 +978,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                             return true;
                         });
+                        */
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
 
                         results.Add(levelmeasurementResults);
                     }
@@ -2383,6 +2389,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 builderResMeas.Select(c => c.StartTime);
@@ -2611,7 +2619,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
-
+                            /*
                             var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                             builderLinkResSensoT.Select(c => c.Id);
                             builderLinkResSensoT.Select(c => c.SENSOR.Id);
@@ -2632,7 +2640,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
+
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
                         GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), isLoadAllData, out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
@@ -2666,6 +2678,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 
@@ -2730,6 +2744,32 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TypeMeasurements = outResType;
                         }
+
+                        /*
+                        var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
+                        builderLinkResSensoT.Select(c => c.Id);
+                        builderLinkResSensoT.Select(c => c.SENSOR.Id);
+                        builderLinkResSensoT.Select(c => c.SENSOR.Name);
+                        builderLinkResSensoT.Select(c => c.SENSOR.TechId);
+                        builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderLinkResSensoT.OrderByAsc(c => c.Id);
+                        queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
+                        {
+                            while (readerLinkResSensor.Read())
+                            {
+                                if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
+                                {
+                                    levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
+                                    levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
+                                    break;
+                                }
+                            }
+                            return true;
+                        });
+                        */
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
+
                         results.Add(levelmeasurementResults);
                     }
                     return true;
