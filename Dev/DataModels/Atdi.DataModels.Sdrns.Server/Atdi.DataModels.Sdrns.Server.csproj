@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientMeasTaskPipebox.cs" />
+    <Compile Include="Pipelines.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Test\TestDeliveryObjects.cs" />

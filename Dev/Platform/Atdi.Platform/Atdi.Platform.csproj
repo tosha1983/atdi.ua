@@ -121,6 +121,15 @@
     <Compile Include="Statistics\StatisticEntry.cs" />
     <Compile Include="Statistics\StatisticEntryKey.cs" />
     <Compile Include="Statistics\Statistics.cs" />
+    <Compile Include="Workflows\IPipeline.cs" />
+    <Compile Include="Workflows\IPipelineContext.cs" />
+    <Compile Include="Workflows\IPipelineHandler.cs" />
+    <Compile Include="Workflows\IPipelineHandlerFactory.cs" />
+    <Compile Include="Workflows\IPipelineSite.cs" />
+    <Compile Include="Workflows\Pipeline.cs" />
+    <Compile Include="Workflows\PipelineContext.cs" />
+    <Compile Include="Workflows\PipelineHandlerFactory.cs" />
+    <Compile Include="Workflows\PipelineSite.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
