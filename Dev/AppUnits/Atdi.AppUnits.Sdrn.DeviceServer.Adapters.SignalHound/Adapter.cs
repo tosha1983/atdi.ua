@@ -273,6 +273,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 result.RBW_Hz = (double)RBW;
                                 result.VBW_Hz = (double)VBW;
                                 result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                                if (RFOverload == 1)
+                                {
+                                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                                }
                                 context.PushResult(result);
                             }
 
@@ -303,11 +307,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             TraceAveraged.AveragingCount = (int)TraceCountToMeas;
                         }
+                        bool _RFOverload = false;
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
+                            
                             if (GetTrace())
                             {
                                 TraceCount++;
+                                if (RFOverload == 1)
+                                {
+                                    _RFOverload = true;
+                                }
                             }
                             // иногда нужно проверять токен окончания работы комманды
                             if (context.Token.IsCancellationRequested)
@@ -357,6 +367,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             result.RBW_Hz = (double)RBW;
                             result.VBW_Hz = (double)VBW;
                             result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                            if (_RFOverload)
+                            {
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                            }
                             context.PushResult(result);
                         }
                     }
