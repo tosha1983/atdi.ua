@@ -201,13 +201,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 res = VBWFromParameter;
             }
-            return res;
-            string sfsdfs = "$GNSS,,,";
-            string[] df = sfsdfs.Split(',');
-            if (df[0] != "")
-            {
-                double f = double.Parse(df[0]);
-            }
+            return res;            
         }
         public EN.TraceType TraceType(PEN.TraceType TraceTypeFromParameter)
         {
