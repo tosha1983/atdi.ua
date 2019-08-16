@@ -82,15 +82,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 res = EN.Gain.Gain_0;
             }
-            else if (GainFromParameter == 1)
+            else if (GainFromParameter == 10)
             {
                 res = EN.Gain.Gain_1;
             }
-            else if (GainFromParameter == 2)
+            else if (GainFromParameter == 20)
             {
                 res = EN.Gain.Gain_2;
             }
-            else if (GainFromParameter == 3)
+            else if (GainFromParameter == 30)
             {
                 res = EN.Gain.Gain_3;
             }
@@ -99,9 +99,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 int delta = int.MaxValue;
                 foreach (int t in Enum.GetValues(typeof(EN.Gain)))
                 {
-                    if (Math.Abs(GainFromParameter - t) < delta)
+                    if (Math.Abs(GainFromParameter - t * 10) < delta)
                     {
-                        delta = Math.Abs(GainFromParameter - t);
+                        delta = Math.Abs(GainFromParameter - t * 10);
                         res = (EN.Gain)t;
                     }
                 }
@@ -132,7 +132,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 res = 30;
             }
-            
+
             return res;
         }
         public decimal FreqStart(Adapter SH, decimal FreqStartFromParameter)
@@ -201,7 +201,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 res = VBWFromParameter;
             }
-            return res;
+            return res;            
         }
         public EN.TraceType TraceType(PEN.TraceType TraceTypeFromParameter)
         {
