@@ -507,7 +507,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.Att_dB = 20;
                 command.Parameter.FreqStart_Hz = 1800000000;
                 command.Parameter.FreqStop_Hz = 1900000000;
-                command.Parameter.PreAmp_dB = 20;
+                command.Parameter.PreAmp_dB = 26;
                 command.Parameter.RBW_Hz = -1;
                 command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
