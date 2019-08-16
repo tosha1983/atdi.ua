@@ -29,7 +29,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public LevelMeasurementsCar[] LevelMeasurements;
         [DataMember]
-        public MeasurementsParameterGeneral GeneralResult;
+        public MeasurementsParameterGeneral[] GeneralResult;
         [DataMember]
         public string Standard;
         [DataMember]

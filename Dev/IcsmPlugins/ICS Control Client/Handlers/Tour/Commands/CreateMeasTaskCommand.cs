@@ -71,7 +71,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                 data.AppendLine($"Name: {measTask.Name}");
                 data.AppendLine($"Mode: {measTask.ExecutionMode}");
                 data.AppendLine($"Created: {measTask.DateCreated}");
-                data.AppendLine($"Stations: {measTask.Stations.Length}");
+                data.AppendLine($"Stations: {measTask.Sensors.Length}");
                 data.AppendLine($"StationsForMeasurements: {measTask.StationsForMeasurements.Length}");
 
                 Logger.WriteInfo(PluginMetadata.Processes.CreateMeasTask, data.ToString());
@@ -92,7 +92,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                 CreatedBy = IM.ConnectedUser(),
                 MeasDtParam = PreparedDetectedParam(tour),
                 MeasTimeParamList = new SDR.MeasTimeParamList() { PerStart = tour.StartDate, PerStop = tour.StopDate },
-                Stations = PreparedStations(tour), // new SDR.MeasStation[] { } ,
+                Sensors = PreparedStations(tour), // new SDR.MeasStation[] { } ,
                 StationsForMeasurements = PreparedStationDataForMeasurements(tour, inspections),
                 
             };
@@ -100,9 +100,9 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
             return measTask;
         }
 
-        private static SDR.MeasStation[] PreparedStations(DM.Tour tour)
+        private static SDR.MeasSensor[] PreparedStations(DM.Tour tour)
         {
-            var stations = new List<SDR.MeasStation>();
+            var stations = new List<SDR.MeasSensor>();
 
             var constraint = new AAC.ComplexCondition()
             {
@@ -132,9 +132,9 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
             if (result.Length > 0)
             {
                 stations.AddRange(
-                    result.Select(sensor => new SDR.MeasStation
+                    result.Select(sensor => new SDR.MeasSensor
                     {
-                        StationId = new SDR.MeasStationIdentifier
+                        SensorId = new SDR.MeasSensorIdentifier
                         {
                             Value = sensor.Id.Value
                         }

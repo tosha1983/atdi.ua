@@ -106,11 +106,11 @@ namespace XICSM.ICSControlClient.ViewModels
             var measTask = this.CurrentMeasTask;
             if (measTask != null)
             {
-                if (measTask.Stations != null && measTask.Stations.Length > 0)
+                if (measTask.Sensors != null && measTask.Sensors.Length > 0)
                 {
                     sdrSensors = sdrSensors
-                        .Where(sdrSensor => measTask.Stations
-                                .FirstOrDefault(s => s.StationId.Value == sdrSensor.Id.Value) != null
+                        .Where(sdrSensor => measTask.Sensors
+                                .FirstOrDefault(s => s.SensorId.Value == sdrSensor.Id.Value) != null
                             )
                         .ToArray();
                 }

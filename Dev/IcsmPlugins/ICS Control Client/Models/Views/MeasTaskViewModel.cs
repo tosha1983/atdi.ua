@@ -121,7 +121,7 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public StationDataForMeasurements[] StationsForMeasurements { get; set; }
 
-        public MeasStation[] Stations { get; set; }
+        public MeasSensor[] Sensors { get; set; }
 
         public SignalingMeasTask SignalingMeasTaskParameters { get; set; }
 

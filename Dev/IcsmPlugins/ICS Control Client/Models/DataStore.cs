@@ -90,11 +90,11 @@ namespace XICSM.ICSControlClient.Models
 
             if (!cache.TryGetValue(measTask.Id, out ShortSensor[] data))
             {
-                if (measTask.Stations != null && measTask.Stations.Length > 0)
+                if (measTask.Sensors != null && measTask.Sensors.Length > 0)
                 {
                     data = allSensors
-                        .Where(sdrSensor => measTask.Stations
-                                .FirstOrDefault(s => s.StationId.Value == sdrSensor.Id.Value) != null
+                        .Where(sdrSensor => measTask.Sensors
+                                .FirstOrDefault(s => s.SensorId.Value == sdrSensor.Id.Value) != null
                             )
                         .ToArray();
                 }

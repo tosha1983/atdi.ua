@@ -92,10 +92,10 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public MeasLocParam[] MeasLocParams;
         /// <summary>
-        /// Stations for measurements.
+        /// Sensors for measurements.
         /// </summary>
         [DataMember]
-        public MeasStation[] Stations;
+        public MeasSensor[] Sensors;
         /// <summary>
         /// receiver (detector) setting (parameter) for measurements
         /// </summary>

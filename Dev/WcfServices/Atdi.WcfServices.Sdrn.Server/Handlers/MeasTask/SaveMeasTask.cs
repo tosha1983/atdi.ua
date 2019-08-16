@@ -406,25 +406,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         measSubTask.Id.Value = valueIdmeasSubTask;
 
 
-                                        if ((measSubTask.MeasSubTaskStations != null) && (valueIdmeasSubTask > -1))
+                                        if ((measSubTask.MeasSubTaskSensors != null) && (valueIdmeasSubTask > -1))
                                         {
-                                            for (int v = 0; v < measSubTask.MeasSubTaskStations.Length; v++)
+                                            for (int v = 0; v < measSubTask.MeasSubTaskSensors.Length; v++)
                                             {
-                                                var subTaskStation = measSubTask.MeasSubTaskStations[v];
+                                                var subTaskSensor = measSubTask.MeasSubTaskSensors[v];
                                                 long valueIdmeasSubTaskSta = -1;
                                                 var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().Insert();
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskStation.Count);
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskStation.Status);
-                                                if (subTaskStation.StationId != null)
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskSensor.Count);
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskSensor.Status);
+                                                if (subTaskSensor.SensorId != null)
                                                 {
-                                                    builderInsertMeasSubTaskSta.SetValue(c => c.SENSOR.Id, subTaskStation.StationId.Value);
+                                                    builderInsertMeasSubTaskSta.SetValue(c => c.SENSOR.Id, subTaskSensor.SensorId.Value);
                                                 }
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.SUBTASK.Id, valueIdmeasSubTask);
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskStation.TimeNextTask);
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskSensor.TimeNextTask);
                                                 
                                                 var insertMeasSubTaskStaPK = scope.Executor.Execute<MD.ISubTaskSensor_PK>(builderInsertMeasSubTaskSta);
                                                 valueIdmeasSubTaskSta = insertMeasSubTaskStaPK.Id;
-                                                subTaskStation.Id = valueIdmeasSubTaskSta;
+                                                subTaskSensor.Id = valueIdmeasSubTaskSta;
                                             }
                                         }
                                     }
@@ -466,10 +466,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                             }
 
-
+                            /*
                             if (value.Stations != null)
                             {
-
                                 for (int i = 0; i < value.Stations.Length; i++)
                                 {
                                     if (value.Stations[i].StationId != null)
@@ -478,14 +477,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertMeasStation.SetValue(c => c.StationType, value.Stations[i].StationType);
                                         builderInsertMeasStation.SetValue(c => c.ClientStationCode, value.Stations[i].StationId.Value);
                                         builderInsertMeasStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        
-
-
                                         var measStation_PK = scope.Executor.Execute<MD.IMeasStation_PK>(builderInsertMeasStation);
-
                                     }
                                 }
                             }
+                            */
 
                             if (value.StationsForMeasurements != null)
                             {
@@ -548,6 +544,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     var stationPK = scope.Executor.Execute<MD.IStation_PK>(builderInsertStation);
                                     idstationDataParam = stationPK.Id;
 
+                                    /*
                                     if (idstationDataParam > -1)
                                     {
                                         long? idLinkMeasStation = -1;
@@ -558,6 +555,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var linkMeasStationPK = scope.Executor.Execute<MD.ILinkMeasStation_PK>(builderInsertLinkMeasStation);
                                         idLinkMeasStation = linkMeasStationPK.Id;
                                     }
+                                    */
 
                                     if (stationDataParam.Sectors != null)
                                     {

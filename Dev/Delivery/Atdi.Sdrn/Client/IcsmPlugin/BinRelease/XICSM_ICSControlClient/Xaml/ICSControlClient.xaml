@@ -405,6 +405,8 @@
                                 <DataGridTextColumn Header="№ Stations" Binding="{Binding Path=StationsNumber}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="№ Points" Binding="{Binding Path=PointsNumber}"></DataGridTextColumn>-->
                                 <DataGridTextColumn Header="SubTaskId" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="SensorTechId" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
                             </DataGrid.Columns>                        
                         </cdg:CustomDataGridMeasResult>
 
@@ -421,6 +423,7 @@
                                   <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="№ Meas. Location" Binding="{Binding Path=LevelMeasurementsLength}"></DataGridTextColumn>
                                   <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
+                                  <DataGridTextColumn Header="Standard" Binding="{Binding Path=Standard}"></DataGridTextColumn>
                               </DataGrid.Columns> 
                             </DataGrid>
                         </GroupBox>
@@ -446,6 +449,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
@@ -569,7 +573,7 @@
                                           </Style.Triggers>
                                         </Style>
                                       </Expander.Style>
-                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                      <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -580,13 +584,13 @@
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "CentralFrequency, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=GeneralResultCentralFrequency}"  IsReadOnly="True"/>
+                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=CentralFrequency}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "CentralFrequencyMeas, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GeneralResultCentralFrequencyMeas}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=CentralFrequencyMeas}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "OffsetFrequency, 10^-6"  />
-                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GeneralResultOffsetFrequency}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=OffsetFrequency}"  IsReadOnly="True" />
                                          </Grid>
                                     </Expander>                                  
                                     <Expander Grid.Column="0" Grid.Row="4" Header="Spectrum" Visibility="{Binding ResSpecVisibility}">
@@ -605,7 +609,7 @@
                                           </Style.Triggers>
                                         </Style>
                                       </Expander.Style>
-                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                      <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -621,7 +625,7 @@
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=NumberPointsOfSpectrum}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Step of spectrum, kHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GeneralResultSpecrumSteps}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SpecrumSteps}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "T1, MHz"  />
                                             <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=T1}"  IsReadOnly="True" />
@@ -630,11 +634,14 @@
                                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=T2}"  IsReadOnly="True" />
 
                                             <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Marker"  />
-                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=GeneralResultMarkerIndex}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MarkerIndex}"  IsReadOnly="True" />
                                          </Grid>
-                                    </Expander>                                  
+                                    </Expander>
+                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5,0,0" Content="&lt;" Width="15" Height="15" Command="{Binding PrevSpecCommand}"/>
+                                    <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100"/>
+                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}"/>
                                     <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
-                                        <Grid DataContext="{Binding CurrentMeasurementResults}">
+                                        <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
                                                 <ColumnDefinition Width="*" />
@@ -644,10 +651,10 @@
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TimeStartMeas"  />
-                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=StartTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
+                                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=TimeStartMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
 
                                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "TimeFinishMeas"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=StopTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeFinishMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
                                          </Grid>
                                     </Expander>
                                     <Expander Grid.Column="0" Grid.Row="6" Header="LevelMeasurements" Visibility="{Binding ResLevelMes1Visibility}">
@@ -681,8 +688,8 @@
                                             <RowDefinition Height="20"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
                                           </Grid.RowDefinitions>
-                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
-                                          <Button Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
+                                          <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
+                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
                                           <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}">
                                             <DataGrid.Columns>
                                               <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
@@ -699,6 +706,17 @@
                                             </DataGrid.Columns>
                                           </DataGrid>
                                         </Grid>
+                                    </Expander>
+                                    <Expander Grid.Column="0" Grid.Row="7" Header="Station Sys Info" Visibility="{Binding ResIdStationVisibility}">
+                                      <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
+                                        <Grid.ColumnDefinitions>
+                                          <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                          <RowDefinition Height="*"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Path=StationSysInfo}" Padding="5,0,0,0" Height="300" IsReadOnly="True"/>
+                                      </Grid>
                                     </Expander>
                                 </Grid>
                             </ScrollViewer>

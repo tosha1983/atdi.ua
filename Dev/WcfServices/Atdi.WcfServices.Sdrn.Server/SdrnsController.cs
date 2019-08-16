@@ -101,7 +101,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetResMeasStation(ResId, StationId);
         }
-
+      
         public ResultsMeasurementsStation GetResMeasStationById(long StationId)
         {
             var loadResults = new LoadResults(_dataLayer, _logger);

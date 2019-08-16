@@ -42,22 +42,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 var SubTask = task.MeasSubTasks[f];
 
-                if (SubTask.MeasSubTaskStations != null)
+                if (SubTask.MeasSubTaskSensors != null)
                 {
-                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                    for (int g = 0; g < SubTask.MeasSubTaskSensors.Length; g++)
                     {
-                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+                        var SubTaskSensor = SubTask.MeasSubTaskSensors[g];
 
-                        if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
-                            ((Type == "Del") && (SubTaskStation.Status == "Z")))
+                        if ((Type == "New") || ((Type == "Stop") && ((SubTaskSensor.Status == "F") || (SubTaskSensor.Status == "P"))) || ((Type == "Run") && ((SubTaskSensor.Status == "O") || (SubTaskSensor.Status == "A"))) ||
+                            ((Type == "Del") && (SubTaskSensor.Status == "Z")))
                         {
-                            if (SensorId!= SubTaskStation.StationId.Value)
+                            if (SensorId!= SubTaskSensor.SensorId.Value)
                             {
                                 continue;
                             }
 
                             var MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            MTSDR.TaskId = string.Format("SDRN.SubTaskSensorId.{0}",SubTaskStation.Id);
+                            MTSDR.TaskId = string.Format("SDRN.SubTaskSensorId.{0}", SubTaskSensor.Id);
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
                             if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }

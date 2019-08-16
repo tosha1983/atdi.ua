@@ -96,7 +96,7 @@ namespace XICSM.ICSControlClient.Handlers.TourCommnads
                 data.AppendLine($"Name: {measTask.Name}");
                 data.AppendLine($"Mode: {measTask.ExecutionMode}");
                 data.AppendLine($"Created: {measTask.DateCreated}");
-                data.AppendLine($"Stations: {measTask.Stations.Length}");
+                data.AppendLine($"Stations: {measTask.Sensors.Length}");
                 data.AppendLine($"StationsForMeasurements: {measTask.StationsForMeasurements.Length}");
 
                 Logger.WriteInfo(PluginMetadata.Processes.CreateMeasTask, data.ToString());
