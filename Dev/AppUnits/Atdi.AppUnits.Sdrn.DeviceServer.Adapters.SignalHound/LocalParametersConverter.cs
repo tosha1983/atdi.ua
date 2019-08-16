@@ -46,6 +46,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             return res;
         }
+        public int Attenuator(EN.Attenuator ATTFromDevice)
+        {
+            int res = 0;
+            if (ATTFromDevice == EN.Attenuator.Atten_AUTO)
+            {
+                res = -1;
+            }
+            else if (ATTFromDevice == EN.Attenuator.Atten_0)
+            {
+                res = 0;
+            }
+            else if (ATTFromDevice == EN.Attenuator.Atten_10)
+            {
+                res = 10;
+            }
+            else if (ATTFromDevice == EN.Attenuator.Atten_20)
+            {
+                res = 20;
+            }
+            else if (ATTFromDevice == EN.Attenuator.Atten_30)
+            {
+                res = 30;
+            }
+            return res;
+        }
         public EN.Gain Gain(int GainFromParameter)
         {
             EN.Gain res = EN.Gain.Gain_0;
@@ -82,6 +107,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
 
             }
+            return res;
+        }
+        public int Gain(EN.Gain GainFromDevice)
+        {
+            int res = 0;
+            if (GainFromDevice == EN.Gain.Gain_AUTO)
+            {
+                res = -1;
+            }
+            else if (GainFromDevice == EN.Gain.Gain_0)
+            {
+                res = 0;
+            }
+            else if (GainFromDevice == EN.Gain.Gain_1)
+            {
+                res = 10;
+            }
+            else if (GainFromDevice == EN.Gain.Gain_2)
+            {
+                res = 20;
+            }
+            else if (GainFromDevice == EN.Gain.Gain_3)
+            {
+                res = 30;
+            }
+            
             return res;
         }
         public decimal FreqStart(Adapter SH, decimal FreqStartFromParameter)

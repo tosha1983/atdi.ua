@@ -265,9 +265,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                     result.Freq_Hz[j] = FreqArr[j];
                                     result.Level[j] = LevelArr[j];
                                 }
-                                //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                result.Att_dB = LPC.Attenuator(Attenuator);
+                                result.PreAmp_dB = LPC.Gain(Gain);
+                                result.RefLevel_dBm = (int)RefLevel;
+                                result.RBW_Hz = (double)RBW;
+                                result.VBW_Hz = (double)VBW;
                                 result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                                 context.PushResult(result);
                             }
@@ -345,9 +349,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 result.Freq_Hz[j] = FreqArr[j];
                                 result.Level[j] = LevelArr[j];
                             }
-                            //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                            result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                            result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                            //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            result.Att_dB = LPC.Attenuator(Attenuator);
+                            result.PreAmp_dB = LPC.Gain(Gain);
+                            result.RefLevel_dBm = (int)RefLevel;
+                            result.RBW_Hz = (double)RBW;
+                            result.VBW_Hz = (double)VBW;
+                            result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                             context.PushResult(result);
                         }
                     }

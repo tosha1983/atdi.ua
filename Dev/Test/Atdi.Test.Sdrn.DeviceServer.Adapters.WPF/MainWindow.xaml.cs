@@ -88,11 +88,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //ANThread.Start();
             //AND += ANConnect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
 
             //GPSThread = new Thread(GPSWorks);
             //GPSThread.Name = "GPSThread";
@@ -101,11 +101,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //GPSD += GPSConnect;
 
 
-            TSMxThread = new Thread(TSMxWorks);
-            TSMxThread.Name = "TSMxThread";
-            TSMxThread.IsBackground = true;
-            TSMxThread.Start();
-            TSMxD += TSMxConnect;
+            //TSMxThread = new Thread(TSMxWorks);
+            //TSMxThread.Name = "TSMxThread";
+            //TSMxThread.IsBackground = true;
+            //TSMxThread.Start();
+            //TSMxD += TSMxConnect;
         }
         //long NextSecond = 0;
         private void GetGPSData()
@@ -316,7 +316,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     IPAddress = "192.168.2.50",
                     RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
                 };
-                TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
+                //TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
 
 
 
