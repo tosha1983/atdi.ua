@@ -77,7 +77,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.JacksConsole
                 {
                     DeviceType = 2,
                     IPAddress = "192.168.2.50",
-                    RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
+                    RSViComPath = @"c:\RuS\rs-vicom-pro-19.1.0.1085"
                 };
                 IWorkScheduler _workScheduler = new Atdi.AppUnits.Sdrn.DeviceServer.Processing.TestWorkScheduler(logger);
                 TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService, _workScheduler);

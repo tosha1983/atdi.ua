@@ -110,7 +110,6 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="DLL\RohdeSchwarz.Tools.Net.dll" />
     <Content Include="DLL\RohdeSchwarz.ViCom.Net.dll" />
