@@ -265,10 +265,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                     result.Freq_Hz[j] = FreqArr[j];
                                     result.Level[j] = LevelArr[j];
                                 }
-                                //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                result.Att_dB = LPC.Attenuator(Attenuator);
+                                result.PreAmp_dB = LPC.Gain(Gain);
+                                result.RefLevel_dBm = (int)RefLevel;
+                                result.RBW_Hz = (double)RBW;
+                                result.VBW_Hz = (double)VBW;
                                 result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                                if (RFOverload == 1)
+                                {
+                                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                                }
                                 context.PushResult(result);
                             }
 
@@ -299,11 +307,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             TraceAveraged.AveragingCount = (int)TraceCountToMeas;
                         }
+                        bool _RFOverload = false;
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
+
                             if (GetTrace())
                             {
                                 TraceCount++;
+                                if (RFOverload == 1)
+                                {
+                                    _RFOverload = true;
+                                }
                             }
                             // иногда нужно проверять токен окончания работы комманды
                             if (context.Token.IsCancellationRequested)
@@ -345,9 +359,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 result.Freq_Hz[j] = FreqArr[j];
                                 result.Level[j] = LevelArr[j];
                             }
-                            //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                            result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                            result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                            //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            result.Att_dB = LPC.Attenuator(Attenuator);
+                            result.PreAmp_dB = LPC.Gain(Gain);
+                            result.RefLevel_dBm = (int)RefLevel;
+                            result.RBW_Hz = (double)RBW;
+                            result.VBW_Hz = (double)VBW;
+                            result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                            if (_RFOverload)
+                            {
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                            }
                             context.PushResult(result);
                         }
                     }
@@ -834,7 +857,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 SetGain();
                 SetRbwVbwSweepTimeRbwType();
                 SetPortType();
-                
+
                 StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.TimeStamp));
                 IsRuning = true;
                 IdleState = true;
@@ -857,8 +880,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                 res = false;
-                if (status == EN.Status.ADCOverflow) { RFOverload = 1; }
-                else { RFOverload = 0; }
+                if (status == EN.Status.ADCOverflow)
+                {
+                    RFOverload = 1;
+                }
+            }
+            else
+            {
+                RFOverload = 0;
             }
             //Приближенно при этих ошибках необходимо переподключить устройство, возможно еще какие-то есть
             if (status == EN.Status.DeviceConnectionErr || status == EN.Status.DeviceInvalidErr)
@@ -1450,7 +1479,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         TraceReset = false;
                     }
                 }
-               // NewTrace = true;
+                // NewTrace = true;
             }
         }
 
@@ -1666,7 +1695,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 ReceivedBlockWithErrors = true;
                             }
                         }
-                        
+
                         //IsCancellationRequested = true;
                     }
                 }
