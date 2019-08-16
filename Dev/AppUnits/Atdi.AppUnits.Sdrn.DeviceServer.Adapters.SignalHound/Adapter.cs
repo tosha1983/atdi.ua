@@ -310,7 +310,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         bool _RFOverload = false;
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
-                            
+
                             if (GetTrace())
                             {
                                 TraceCount++;
@@ -857,7 +857,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 SetGain();
                 SetRbwVbwSweepTimeRbwType();
                 SetPortType();
-                
+
                 StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.TimeStamp));
                 IsRuning = true;
                 IdleState = true;
@@ -880,8 +880,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                 res = false;
-                if (status == EN.Status.ADCOverflow) { RFOverload = 1; }
-                else { RFOverload = 0; }
+                if (status == EN.Status.ADCOverflow)
+                {
+                    RFOverload = 1;
+                }
+            }
+            else
+            {
+                RFOverload = 0;
             }
             //Приближенно при этих ошибках необходимо переподключить устройство, возможно еще какие-то есть
             if (status == EN.Status.DeviceConnectionErr || status == EN.Status.DeviceInvalidErr)
@@ -1473,7 +1479,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         TraceReset = false;
                     }
                 }
-               // NewTrace = true;
+                // NewTrace = true;
             }
         }
 
@@ -1689,7 +1695,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 ReceivedBlockWithErrors = true;
                             }
                         }
-                        
+
                         //IsCancellationRequested = true;
                     }
                 }
