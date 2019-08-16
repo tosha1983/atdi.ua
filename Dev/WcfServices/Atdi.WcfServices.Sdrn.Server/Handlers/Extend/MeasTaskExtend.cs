@@ -73,7 +73,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
                     for (var day = task.MeasTimeParamList.PerStart; day.Date <= task.MeasTimeParamList.PerStop; day = day.AddDays(1))
                     {
                         var MST = new MeasSubTask();
-                        if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int?)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 3600; };
+                        if (task.MeasTimeParamList.PerInterval != null) { MST.Interval = (int?)task.MeasTimeParamList.PerInterval; } else { MST.Interval = 600; };
                         MST.Id = new MeasTaskIdentifier();
                         MST.Id.Value = i; i++;
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);

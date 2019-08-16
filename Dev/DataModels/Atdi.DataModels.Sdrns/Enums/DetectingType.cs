@@ -19,10 +19,10 @@ namespace Atdi.DataModels.Sdrns
         [EnumMember]
         Average,
         /// <summary>
-        /// Peak value
+        /// Auto value
         /// </summary>
         [EnumMember]
-        Peak,
+        Auto,
         /// <summary>
         /// Maximum peak value
         /// </summary>
@@ -37,6 +37,11 @@ namespace Atdi.DataModels.Sdrns
         /// Root mean square value
         /// </summary>
         [EnumMember]
-        RMS
+        RMS,
+        /// <summary>
+        /// Peak value
+        /// </summary>
+        [EnumMember]
+        Peak
     }
 }

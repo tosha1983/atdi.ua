@@ -109,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 
                                 switch (task.MeasDtParam.DetectType)
                                 {
-                                    case DetectingType.Avarage:
+                                    case DetectingType.Average:
                                         MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Average;
                                         break;
                                     case DetectingType.MaxPeak:
@@ -121,15 +121,51 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                     case DetectingType.Peak:
                                         MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Peak;
                                         break;
+                                    case DetectingType.RMS:
+                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.RMS;
+                                        break;
+                                    case DetectingType.Auto:
+                                        MTSDR.DeviceParam.DetectType = DataModels.Sdrns.DetectingType.Auto;
+                                        break;
                                     default:
                                         throw new NotImplementedException($"Type '{task.MeasDtParam.DetectType}' not supported");
                                 }
 
-                                MTSDR.DeviceParam.Preamplification_dB = task.MeasDtParam.Preamplification;
-                                if (task.MeasDtParam.RBW != null) { MTSDR.DeviceParam.RBW_kHz = task.MeasDtParam.RBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.RBW_kHz= 10; }
-                                MTSDR.DeviceParam.RfAttenuation_dB = (int)task.MeasDtParam.RfAttenuation;
-                                if (task.MeasDtParam.VBW != null) { MTSDR.DeviceParam.VBW_kHz = task.MeasDtParam.VBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.VBW_kHz = 10; }
-                                MTSDR.DeviceParam.RefLevel_dBm = -30;
+                                if (task.MeasDtParam.Preamplification != null)
+                                {
+                                    MTSDR.DeviceParam.Preamplification_dB = task.MeasDtParam.Preamplification;
+                                }
+                                else
+                                {
+                                    MTSDR.DeviceParam.Preamplification_dB = -1;
+                                }
+
+                                if (task.MeasDtParam.RBW != null)
+                                {
+                                    MTSDR.DeviceParam.RBW_kHz = task.MeasDtParam.RBW.GetValueOrDefault(); }
+                                else
+                                {
+                                    MTSDR.DeviceParam.RBW_kHz= -1;
+                                }
+                                if (task.MeasDtParam.RfAttenuation != null)
+                                {
+                                    MTSDR.DeviceParam.RfAttenuation_dB = (int)task.MeasDtParam.RfAttenuation;
+                                }
+                                else
+                                {
+                                    MTSDR.DeviceParam.RfAttenuation_dB = -1;
+                                }
+                                if (task.MeasDtParam.VBW != null) { MTSDR.DeviceParam.VBW_kHz = task.MeasDtParam.VBW.GetValueOrDefault(); } else { MTSDR.DeviceParam.VBW_kHz = -1; }
+                                if ((task.MeasDtParam.TypeMeasurements == MeasurementType.Signaling)
+                                    || (task.MeasDtParam.TypeMeasurements == MeasurementType.BandwidthMeas)
+                                        || (task.MeasDtParam.TypeMeasurements == MeasurementType.Level))
+                                {
+                                    MTSDR.DeviceParam.RefLevel_dBm = 1000000000;
+                                }
+                                else if (task.MeasDtParam.TypeMeasurements == MeasurementType.SpectrumOccupation)
+                                {
+                                    MTSDR.DeviceParam.RefLevel_dBm = 1000000000;
+                                }
 
                                 MTSDR.Frequencies = new DEV.MeasuredFrequencies();
                                 if (task.MeasFreqParam != null)

@@ -306,15 +306,15 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
                                     dtx.DetectType = detectType;
 
-                                dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
+                                dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation);
                                 dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
                                 MeasurementMode mode;
                                 if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out mode))
                                     dtx.Mode = mode;
 
-                                dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
+                                dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification);
                                 dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
-                                dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
+                                dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation);
                                 MeasurementType typeMeasurements;
                                 if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
                                     dtx.TypeMeasurements = typeMeasurements;
