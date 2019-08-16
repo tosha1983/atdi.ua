@@ -42,22 +42,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             {
                 var SubTask = task.MeasSubTasks[f];
 
-                if (SubTask.MeasSubTaskStations != null)
+                if (SubTask.MeasSubTaskSensors != null)
                 {
-                    for (int g = 0; g < SubTask.MeasSubTaskStations.Length; g++)
+                    for (int g = 0; g < SubTask.MeasSubTaskSensors.Length; g++)
                     {
-                        var SubTaskStation = SubTask.MeasSubTaskStations[g];
+                        var SubTaskSensor = SubTask.MeasSubTaskSensors[g];
 
-                        if ((Type == "New") || ((Type == "Stop") && ((SubTaskStation.Status == "F") || (SubTaskStation.Status == "P"))) || ((Type == "Run") && ((SubTaskStation.Status == "O") || (SubTaskStation.Status == "A"))) ||
-                            ((Type == "Del") && (SubTaskStation.Status == "Z")))
+                        if ((Type == "New") || ((Type == "Stop") && ((SubTaskSensor.Status == "F") || (SubTaskSensor.Status == "P"))) || ((Type == "Run") && ((SubTaskSensor.Status == "O") || (SubTaskSensor.Status == "A"))) ||
+                            ((Type == "Del") && (SubTaskSensor.Status == "Z")))
                         {
-                            if (SensorId!= SubTaskStation.StationId.Value)
+                            if (SensorId!= SubTaskSensor.SensorId.Value)
                             {
                                 continue;
                             }
 
-                            Atdi.DataModels.Sdrns.Device.MeasTask MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
-                            MTSDR.TaskId = string.Format("{0}|{1}|{2}|{3}", MeasTaskId, SubTask.Id.Value, SubTaskStation.Id, SubTaskStation.StationId.Value);
+                            var MTSDR = new Atdi.DataModels.Sdrns.Device.MeasTask();
+                            MTSDR.TaskId = string.Format("SDRN.SubTaskSensorId.{0}", SubTaskSensor.Id);
                             if (task.Id == null) task.Id = new MeasTaskIdentifier();
                             if (task.MeasOther == null) task.MeasOther = new MeasOther();
                             if (task.MeasDtParam == null) { task.MeasDtParam = new MeasDtParam(); }
@@ -169,16 +169,48 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                                 if (task.SignalingMeasTaskParameters != null)
                                 {
                                     MTSDR.SignalingMeasTaskParameters = new DEV.SignalingMeasTask();
-                                    MTSDR.SignalingMeasTaskParameters.allowableExcess_dB = task.SignalingMeasTaskParameters.allowableExcess_dB;
-                                    MTSDR.SignalingMeasTaskParameters.AutoDivisionEmitting = task.SignalingMeasTaskParameters.AutoDivisionEmitting;
+                                    MTSDR.SignalingMeasTaskParameters.InterruptionParameters = new DEV.SignalingInterruptionParameters();
+                                    MTSDR.SignalingMeasTaskParameters.GroupingParameters = new DEV.SignalingGroupingParameters();
+
+
+                                    if (task.SignalingMeasTaskParameters.GroupingParameters != null)
+                                    {
+                                        MTSDR.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals = task.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals;
+                                        MTSDR.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = task.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals;
+                                        MTSDR.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec = task.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec;
+                                        MTSDR.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum = task.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum;
+                                    }
+
+                                    if (task.SignalingMeasTaskParameters.InterruptionParameters != null)
+                                    {
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB = task.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting = task.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax = task.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW = task.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB = task.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB = task.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints = task.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess = task.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess;
+                                        MTSDR.SignalingMeasTaskParameters.InterruptionParameters.windowBW = task.SignalingMeasTaskParameters.InterruptionParameters.windowBW;
+                                        MTSDR.SignalingMeasTaskParameters.allowableExcess_dB = task.SignalingMeasTaskParameters.allowableExcess_dB;
+                                    }
+
                                     MTSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = task.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels;
-                                    MTSDR.SignalingMeasTaskParameters.DifferenceMaxMax = task.SignalingMeasTaskParameters.DifferenceMaxMax;
                                     MTSDR.SignalingMeasTaskParameters.FiltrationTrace = task.SignalingMeasTaskParameters.FiltrationTrace;
                                     MTSDR.SignalingMeasTaskParameters.SignalizationNChenal = task.SignalingMeasTaskParameters.SignalizationNChenal;
                                     MTSDR.SignalingMeasTaskParameters.SignalizationNCount = task.SignalingMeasTaskParameters.SignalizationNCount;
+                                    MTSDR.SignalingMeasTaskParameters.AnalyzeByChannel = task.SignalingMeasTaskParameters.AnalyzeByChannel;
+                                    MTSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = task.SignalingMeasTaskParameters.AnalyzeSysInfoEmission;
+                                    MTSDR.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = task.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission;
+                                    MTSDR.SignalingMeasTaskParameters.Standard = task.SignalingMeasTaskParameters.Standard;
+                                    MTSDR.SignalingMeasTaskParameters.triggerLevel_dBm_Hz = task.SignalingMeasTaskParameters.triggerLevel_dBm_Hz;
+
+                                    MTSDR.SignalingMeasTaskParameters.CorrelationAnalize = task.SignalingMeasTaskParameters.CorrelationAnalize;
+                                    MTSDR.SignalingMeasTaskParameters.CorrelationFactor = task.SignalingMeasTaskParameters.CorrelationFactor;
+                                    MTSDR.SignalingMeasTaskParameters.CheckFreqChannel = task.SignalingMeasTaskParameters.CheckFreqChannel;
                                 }
 
-                                    if (task.RefSituation!=null)
+                                if (task.RefSituation!=null)
                                 {
                                     if (task.RefSituation != null)
                                     {

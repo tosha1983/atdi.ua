@@ -33,13 +33,15 @@
             this.buttonCalcGroupingEmitting1 = new System.Windows.Forms.Button();
             this.ButtonCalcSearchEmitting = new System.Windows.Forms.Button();
             this.ButtonCalcSearchInterruption = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ButtonCalcReferenceLevels
             // 
-            this.ButtonCalcReferenceLevels.Location = new System.Drawing.Point(21, 34);
+            this.ButtonCalcReferenceLevels.Location = new System.Drawing.Point(28, 42);
+            this.ButtonCalcReferenceLevels.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ButtonCalcReferenceLevels.Name = "ButtonCalcReferenceLevels";
-            this.ButtonCalcReferenceLevels.Size = new System.Drawing.Size(136, 23);
+            this.ButtonCalcReferenceLevels.Size = new System.Drawing.Size(181, 28);
             this.ButtonCalcReferenceLevels.TabIndex = 0;
             this.ButtonCalcReferenceLevels.Text = "CalcReferenceLevels";
             this.ButtonCalcReferenceLevels.UseVisualStyleBackColor = true;
@@ -52,40 +54,55 @@
             // 
             // buttonCalcGroupingEmitting1
             // 
-            this.buttonCalcGroupingEmitting1.Location = new System.Drawing.Point(21, 64);
+            this.buttonCalcGroupingEmitting1.Location = new System.Drawing.Point(28, 79);
+            this.buttonCalcGroupingEmitting1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonCalcGroupingEmitting1.Name = "buttonCalcGroupingEmitting1";
-            this.buttonCalcGroupingEmitting1.Size = new System.Drawing.Size(136, 23);
+            this.buttonCalcGroupingEmitting1.Size = new System.Drawing.Size(181, 28);
             this.buttonCalcGroupingEmitting1.TabIndex = 1;
             this.buttonCalcGroupingEmitting1.Text = "CalcGroupingEmitting";
             this.buttonCalcGroupingEmitting1.UseVisualStyleBackColor = true;
             // 
             // ButtonCalcSearchEmitting
             // 
-            this.ButtonCalcSearchEmitting.Location = new System.Drawing.Point(21, 93);
+            this.ButtonCalcSearchEmitting.Location = new System.Drawing.Point(28, 114);
+            this.ButtonCalcSearchEmitting.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ButtonCalcSearchEmitting.Name = "ButtonCalcSearchEmitting";
-            this.ButtonCalcSearchEmitting.Size = new System.Drawing.Size(136, 23);
+            this.ButtonCalcSearchEmitting.Size = new System.Drawing.Size(181, 28);
             this.ButtonCalcSearchEmitting.TabIndex = 2;
             this.ButtonCalcSearchEmitting.Text = "CalcSearchEmitting";
             this.ButtonCalcSearchEmitting.UseVisualStyleBackColor = true;
             // 
             // ButtonCalcSearchInterruption
             // 
-            this.ButtonCalcSearchInterruption.Location = new System.Drawing.Point(21, 122);
+            this.ButtonCalcSearchInterruption.Location = new System.Drawing.Point(28, 150);
+            this.ButtonCalcSearchInterruption.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ButtonCalcSearchInterruption.Name = "ButtonCalcSearchInterruption";
-            this.ButtonCalcSearchInterruption.Size = new System.Drawing.Size(136, 23);
+            this.ButtonCalcSearchInterruption.Size = new System.Drawing.Size(181, 28);
             this.ButtonCalcSearchInterruption.TabIndex = 3;
             this.ButtonCalcSearchInterruption.Text = "CalcSearchInterruption";
             this.ButtonCalcSearchInterruption.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(28, 197);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(181, 23);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // TestForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(374, 261);
+            this.ClientSize = new System.Drawing.Size(499, 321);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.ButtonCalcSearchInterruption);
             this.Controls.Add(this.ButtonCalcSearchEmitting);
             this.Controls.Add(this.buttonCalcGroupingEmitting1);
             this.Controls.Add(this.ButtonCalcReferenceLevels);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "TestForm";
             this.ResumeLayout(false);
 
@@ -98,6 +115,7 @@
         private System.Windows.Forms.Button buttonCalcGroupingEmitting1;
         private System.Windows.Forms.Button ButtonCalcSearchEmitting;
         private System.Windows.Forms.Button ButtonCalcSearchInterruption;
+        private System.Windows.Forms.Button button1;
     }
 }
 

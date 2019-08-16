@@ -36,18 +36,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     CompareTraceJustWithRefLevels = configMessaging.CompareTraceJustWithRefLevels;
                 }
 
-                if (taskSDR.SignalingMeasTaskParameters.AutoDivisionEmitting != null)
+                if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters!= null)
                 {
-                    AutoDivisionEmitting = taskSDR.SignalingMeasTaskParameters.AutoDivisionEmitting;
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting != null)
+                    {
+                        AutoDivisionEmitting = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting;
+                    }
+                    else
+                    {
+                        AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
+                    }
                 }
                 else
                 {
                     AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
                 }
 
-                if (taskSDR.SignalingMeasTaskParameters.DifferenceMaxMax != null)
+                if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters != null)
                 {
-                    DifferenceMaxMax = taskSDR.SignalingMeasTaskParameters.DifferenceMaxMax;
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax != null)
+                    {
+                        DifferenceMaxMax = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax;
+                    }
+                    else
+                    {
+                        DifferenceMaxMax = configMessaging.DifferenceMaxMax;
+                    }
                 }
                 else
                 {

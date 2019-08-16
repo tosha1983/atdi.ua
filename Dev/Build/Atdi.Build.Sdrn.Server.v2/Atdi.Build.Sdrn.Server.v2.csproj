@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -164,14 +168,6 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Console\Atdi.AppServer.Console.csproj">
-      <Project>{b551e073-cc82-4b4e-aba5-a183c949496d}</Project>
-      <Name>Atdi.AppServer.Console</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Svchost\Atdi.AppServer.Svchost.csproj">
-      <Project>{c9d6ed82-abf9-4585-aa7c-b49fe0bf8eb9}</Project>
-      <Name>Atdi.AppServer.Svchost</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.AmqpBroker\Atdi.Modules.AmqpBroker.csproj">
       <Project>{714f342f-3838-4088-80e5-a54c4173b0ea}</Project>
       <Name>Atdi.Modules.AmqpBroker</Name>
@@ -242,8 +238,6 @@ copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Metadata\Unit
 
 copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
-copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 
 
 copy "$(TargetDir)\Castle.Core.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
@@ -252,6 +246,8 @@ copy "$(TargetDir)\Castle.Windsor.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bi
 copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "$(TargetDir)\RabbitMQ.Client.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "$(TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
+copy "$(TargetDir)\Oracle.ManagedDataAccess.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\DataLayer\Oracle"
+
 
 copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"
 copy "..\..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Bin$(ConfigurationName)"

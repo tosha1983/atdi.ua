@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Represents the sensor location
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class SensorLocation : GeoLocation
     {
         /// <summary>

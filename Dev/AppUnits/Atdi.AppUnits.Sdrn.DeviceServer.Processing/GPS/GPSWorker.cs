@@ -10,6 +10,8 @@ using System.Linq;
 using Atdi.DataModels.EntityOrm;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
+using System.Collections.Generic;
+
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
@@ -23,13 +25,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly IController _controller;
         private ConfigProcessing _configProcessing;
         private readonly IBusGate _busGate;
-        private readonly IRepository<DM.Sensor, long?> _repositorySensor;
+        private readonly DM.Sensor _sensor;
+
 
         public GPSWorker(
             ConfigProcessing configProcessing,
             IController controller,
             IBusGate busGate,
-            IRepository<DM.Sensor, long?> repositorySensor,
             ITimeService timeService, ILogger logger)
         {
             this._logger = logger;
@@ -37,7 +39,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._controller = controller;
             this._busGate = busGate;
             this._configProcessing = configProcessing;
-            this._repositorySensor = repositorySensor;
+            _sensor = new DM.Sensor();
         }
 
         public void Run(ITaskContext<GPSTask, DispatchProcess> context)
@@ -98,12 +100,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         context.Process.Lon = gpsResult.Lon.Value;
                         context.Process.Lat = gpsResult.Lat.Value;
 
-                        var sensors = this._repositorySensor.LoadAllObjects();
-                        if ((sensors != null) && (sensors.Length > 0))
+                        
+                        if (_sensor != null)
                         {
-                            var sensorCurr = sensors[0];
-                            var listSensorLocations = sensorCurr.Locations.ToList();
-                            var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - context.Process.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - context.Process.Lat) <= this._configProcessing.LatDelta && Math.Abs(t.ASL.Value - context.Process.Asl) <= this._configProcessing.AslDelta && t.Status != "Z");
+                            if (_sensor.Locations==null)
+                            {
+                                _sensor.Locations = new DM.SensorLocation[1];
+                                _sensor.Locations[0] = new DM.SensorLocation()
+                                {
+                                    Status = StatusTask.A.ToString(),
+                                    Created = DateTime.Now,
+                                    From = DateTime.Now,
+                                    To = DateTime.Now
+                                };
+                            }
+
+                            var listSensorLocations = _sensor.Locations.ToList();
+                            var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - context.Process.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - context.Process.Lat) <= this._configProcessing.LatDelta && Math.Abs(t.ASL.Value - context.Process.Asl) <= this._configProcessing.AslDelta && t.Status != StatusTask.Z.ToString());
                             if (lSensorLocations.Count == 0)
                             {
                                 lSensorLocations.OrderByDescending(x => x.Created);
@@ -113,8 +126,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 {
                                     for (int i = 0; i < mass.Length; i++)
                                     {
-                                        sensorLocation[i] = sensorCurr.Locations[i];
-                                        sensorLocation[i].Status = "Z";
+                                        sensorLocation[i] = _sensor.Locations[i];
+                                        sensorLocation[i].Status = StatusTask.Z.ToString();
                                     }
                                 }
 
@@ -132,14 +145,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 };
 
                                 sensorLocation[mass.Length] = location;
-                                sensorCurr.Locations = sensorLocation;
-                                this._repositorySensor.Update(sensorCurr);
+                                _sensor.Locations = sensorLocation;
+
 
                                 DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                                 deviceCommandResult.CommandId = "UpdateSensorLocation";
                                 deviceCommandResult.CustDate1 = DateTime.Now;
                                 deviceCommandResult.CustTxt1 = $"{location.Lon}|{location.Lat}|{location.ASL}";
-                                deviceCommandResult.Status = "A";
+                                deviceCommandResult.Status = StatusTask.A.ToString();
                                 deviceCommandResult.CustNbr1 = 0;
 
                                 var publisher = this._busGate.CreatePublisher("main");

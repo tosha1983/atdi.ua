@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using Atdi.Contracts.CoreServices.DataLayer;
-using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrn.DeviceServer.Entities;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Modules.Sdrn.DeviceServer;
 using System.Xml;
@@ -15,22 +12,73 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 {
     public sealed class TaskParametersByStringRepository : IRepository<TaskParameters, string>
     {
-        private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
+        private readonly ConfigRepositories _configRepositories;
+        private long _fileCounter = 0;
+
+
+        public TaskParametersByStringRepository(ConfigRepositories configRepositories, ILogger logger)
+        {
+            this._logger = logger;
+            this._configRepositories = configRepositories;
+        }
 
         public TaskParametersByStringRepository()
         {
         }
 
-        public TaskParametersByStringRepository(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+
+        public TaskParameters LoadObject(string additionalParameters)
         {
-            this._dataLayer = dataLayer;
-            this._logger = logger;
+            TaskParameters taskParameters = null;
+            try
+            {
+                var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
+                taskParameters = loadMessages.GetMessage(additionalParameters);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return taskParameters;
         }
 
         public string Create(TaskParameters item)
         {
-            throw new NotImplementedException();
+            var pathTaskParameters = "";
+            try
+            {
+                var additionalParameters = string.Format("{0}_{1}_", item.MeasurementType.ToString(), item.SDRTaskId);
+                var messagesBus = new SaveMessages(++_fileCounter, additionalParameters, this._logger, this._configRepositories.FolderTaskParameters);
+                pathTaskParameters = messagesBus.SaveObject<TaskParameters>(item);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return pathTaskParameters;
+        }
+
+        public bool Update(TaskParameters item)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var additionalParameters = string.Format("{0}_{1}_", item.MeasurementType.ToString(), item.SDRTaskId);
+                var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
+                var fileNameFinded = loadMessages.GetFileName(additionalParameters);
+                if (!string.IsNullOrEmpty(fileNameFinded))
+                {
+                    var messagesBus = new SaveMessages(_fileCounter, additionalParameters, this._logger, this._configRepositories.FolderTaskParameters);
+                    isSuccess = messagesBus.UpdateObject<TaskParameters>(fileNameFinded, item);
+                }
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
         }
 
         public bool Delete(string id)
@@ -43,291 +91,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             //throw new NotImplementedException();
         }
 
-        public int GetCountObjectsWithRestrict()
+        TaskParameters[] IRepository<TaskParameters, string>.LoadAllObjects()
         {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<string, string> GetDictionaryStatusObjects()
-        {
-            throw new NotImplementedException();
-        }
-
-        public TaskParameters[] LoadAllObjects()
-        {
-            throw new NotImplementedException();
-        }
-
-        public TaskParameters LoadObject(string SDRTaskId)
-        {
-            TaskParameters taskParameters = null;
+            TaskParameters[] taskParameters = null;
             try
             {
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDeviceDataContext>();
-
-                var builderInsertTaskParameters = this._dataLayer.GetBuilder<MD.ITaskParameters>().From();
-                builderInsertTaskParameters.Select(c => c.LevelMinOccup_dBm);
-                builderInsertTaskParameters.Select(c => c.MaxFreq_MHz);
-                builderInsertTaskParameters.Select(c => c.MeasurementType);
-                builderInsertTaskParameters.Select(c => c.MinFreq_MHz);
-                builderInsertTaskParameters.Select(c => c.NChenal);
-                builderInsertTaskParameters.Select(c => c.RBW_Hz);
-                builderInsertTaskParameters.Select(c => c.ReceivedIQStreemDuration_sec);
-                builderInsertTaskParameters.Select(c => c.SDRTaskId);
-                builderInsertTaskParameters.Select(c => c.NCount);
-                builderInsertTaskParameters.Select(c => c.StartTime);
-                builderInsertTaskParameters.Select(c => c.Status);
-                builderInsertTaskParameters.Select(c => c.StepSO_kHz);
-                builderInsertTaskParameters.Select(c => c.StopTime);
-                builderInsertTaskParameters.Select(c => c.TypeTechnology);
-                builderInsertTaskParameters.Select(c => c.Type_of_SO);
-                builderInsertTaskParameters.Select(c => c.VBW_Hz);
-                builderInsertTaskParameters.Select(c => c.SweepTime_ms);
-                builderInsertTaskParameters.Select(c => c.Id);
-                builderInsertTaskParameters.Select(c => c.SensorId);
-                builderInsertTaskParameters.Select(c => c.CompareTraceJustWithRefLevels);
-                builderInsertTaskParameters.Select(c => c.AutoDivisionEmitting);
-                builderInsertTaskParameters.Select(c => c.DifferenceMaxMax);
-                builderInsertTaskParameters.Select(c => c.FiltrationTrace);
-                builderInsertTaskParameters.Select(c => c.AllowableExcess_dB);
-                builderInsertTaskParameters.Select(c => c.PercentForCalcNoise);
-                builderInsertTaskParameters.Select(c => c.SignalizationNChenal);
-                builderInsertTaskParameters.Select(c => c.SignalizationNCount);
-                builderInsertTaskParameters.Where(c => c.SDRTaskId, DataModels.DataConstraint.ConditionOperator.Equal, SDRTaskId);
-                queryExecuter.Fetch(builderInsertTaskParameters, readerMeasTask =>
-                {
-                    if (readerMeasTask.Read())
-                    {
-                        taskParameters = new TaskParameters();
-
-                        if (readerMeasTask.GetValue(c => c.SignalizationNCount) != null)
-                        {
-                            taskParameters.SignalizationNCount = readerMeasTask.GetValue(c => c.SignalizationNCount).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.SignalizationNChenal) != null)
-                        {
-                            taskParameters.SignalizationNChenal = readerMeasTask.GetValue(c => c.SignalizationNChenal).Value;
-                        }
-
-                        taskParameters.CompareTraceJustWithRefLevels = readerMeasTask.GetValue(c => c.CompareTraceJustWithRefLevels);
-                        
-                        taskParameters.FiltrationTrace = readerMeasTask.GetValue(c => c.FiltrationTrace);
-                        
-                        taskParameters.AutoDivisionEmitting = readerMeasTask.GetValue(c => c.AutoDivisionEmitting);
-                        
-
-                        if (readerMeasTask.GetValue(c => c.DifferenceMaxMax) != null)
-                        {
-                            taskParameters.DifferenceMaxMax = readerMeasTask.GetValue(c => c.DifferenceMaxMax).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.AllowableExcess_dB) != null)
-                        {
-                            taskParameters.allowableExcess_dB = readerMeasTask.GetValue(c => c.AllowableExcess_dB).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.PercentForCalcNoise) != null)
-                        {
-                            taskParameters.PercentForCalcNoise = readerMeasTask.GetValue(c => c.PercentForCalcNoise).Value;
-                        }
-
-                        taskParameters.SensorId = readerMeasTask.GetValue(c => c.SensorId);
-
-                        if (readerMeasTask.GetValue(c => c.LevelMinOccup_dBm) != null)
-                        {
-                            taskParameters.LevelMinOccup_dBm = readerMeasTask.GetValue(c => c.LevelMinOccup_dBm).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.MaxFreq_MHz) != null)
-                        {
-                            taskParameters.MaxFreq_MHz = readerMeasTask.GetValue(c => c.MaxFreq_MHz).Value;
-                        }
-
-                        MeasType measurementType;
-
-                        if (Enum.TryParse<MeasType>(readerMeasTask.GetValue(c => c.MeasurementType) != null ? readerMeasTask.GetValue(c => c.MeasurementType).ToString() : "", out measurementType))
-                        {
-                            taskParameters.MeasurementType = measurementType;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.MinFreq_MHz) != null)
-                        {
-                            taskParameters.MinFreq_MHz = readerMeasTask.GetValue(c => c.MinFreq_MHz).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.NChenal) != null)
-                        {
-                            taskParameters.NChenal = readerMeasTask.GetValue(c => c.NChenal).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.NCount) != null)
-                        {
-                            taskParameters.NCount = readerMeasTask.GetValue(c => c.NCount).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.RBW_Hz) != null)
-                        {
-                            taskParameters.RBW_Hz = readerMeasTask.GetValue(c => c.RBW_Hz).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.ReceivedIQStreemDuration_sec) != null)
-                        {
-                            taskParameters.ReceivedIQStreemDuration_sec = readerMeasTask.GetValue(c => c.ReceivedIQStreemDuration_sec).Value;
-                        }
-
-
-                        taskParameters.SDRTaskId = readerMeasTask.GetValue(c => c.SDRTaskId);
-                        taskParameters.status = readerMeasTask.GetValue(c => c.Status);
-
-                        if (readerMeasTask.GetValue(c => c.StartTime) != null)
-                        {
-                            taskParameters.StartTime = readerMeasTask.GetValue(c => c.StartTime).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.StepSO_kHz) != null)
-                        {
-                            taskParameters.StepSO_kHz = readerMeasTask.GetValue(c => c.StepSO_kHz).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.StopTime) != null)
-                        {
-                            taskParameters.StopTime = readerMeasTask.GetValue(c => c.StopTime).Value;
-                        }
-
-                        if (readerMeasTask.GetValue(c => c.SweepTime_ms) != null)
-                        {
-                            taskParameters.SweepTime_s = readerMeasTask.GetValue(c => c.SweepTime_ms).Value;
-                        }
-
-
-                        TypeTechnology typeTechnology;
-                        if (Enum.TryParse<TypeTechnology>(readerMeasTask.GetValue(c => c.TypeTechnology) != null ? readerMeasTask.GetValue(c => c.TypeTechnology).ToString() : "", out typeTechnology))
-                        {
-                            taskParameters.TypeTechnology = typeTechnology;
-                        }
-
-                        SOType sOType;
-                        if (Enum.TryParse<SOType>(readerMeasTask.GetValue(c => c.Type_of_SO) != null ? readerMeasTask.GetValue(c => c.Type_of_SO).ToString() : "", out sOType))
-                        {
-                            taskParameters.TypeOfSO = sOType;
-                        }
-
-
-                        if (readerMeasTask.GetValue(c => c.VBW_Hz) != null)
-                        {
-                            taskParameters.VBW_Hz = readerMeasTask.GetValue(c => c.VBW_Hz).Value;
-                        }
-
-                        taskParameters.ListFreqCH = new List<double>();
-
-                        var builderInsertTaskParametersFreq = this._dataLayer.GetBuilder<MD.ITaskParametersFreq>().From();
-                        builderInsertTaskParametersFreq.Select(c => c.FreqCH);
-                        builderInsertTaskParametersFreq.Select(c => c.IdTaskParameters);
-                        builderInsertTaskParametersFreq.Select(c => c.Id);
-                        builderInsertTaskParametersFreq.Where(c => c.IdTaskParameters, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderInsertTaskParametersFreq, readerTaskParametersFreq =>
-                        {
-                            while (readerTaskParametersFreq.Read())
-                            {
-                                if (readerTaskParametersFreq.GetValue(c => c.FreqCH) != null)
-                                {
-                                    taskParameters.ListFreqCH.Add(readerTaskParametersFreq.GetValue(c => c.FreqCH).Value);
-                                }
-                            }
-                            return true;
-                        });
-
-                        //ReferenceSignal
-
-                        var listReferenceSituation = new List<DataModels.Sdrns.Device.ReferenceSituation>();
-                        var builderReferenceSituationRaw = this._dataLayer.GetBuilder<MD.IReferenceSituation>().From();
-                        builderReferenceSituationRaw.Select(c => c.Id);
-                        builderReferenceSituationRaw.Select(c => c.SensorId);
-                        builderReferenceSituationRaw.Select(c => c.MeasTaskId);
-                        builderReferenceSituationRaw.Where(c => c.MeasTaskId, DataModels.DataConstraint.ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderReferenceSituationRaw, readerReferenceSituationRaw =>
-                        {
-                            while (readerReferenceSituationRaw.Read())
-                            {
-                                var refSituation = new DataModels.Sdrns.Device.ReferenceSituation();
-                                
-                                refSituation.SensorId = (int)readerReferenceSituationRaw.GetValue(c => c.SensorId);
-
-                                var referenceSignals = new List<DataModels.Sdrns.Device.ReferenceSignal>();
-                                var builderReferenceSignalRaw = this._dataLayer.GetBuilder<MD.IReferenceSignal>().From();
-                                builderReferenceSignalRaw.Select(c => c.Id);
-                                builderReferenceSignalRaw.Select(c => c.Bandwidth_kHz);
-                                builderReferenceSignalRaw.Select(c => c.Frequency_MHz);
-                                builderReferenceSignalRaw.Select(c => c.LevelSignal_dBm);
-                                builderReferenceSignalRaw.Select(c => c.RefSituationId);
-                                builderReferenceSignalRaw.Where(c => c.RefSituationId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSituationRaw.GetValue(c => c.Id));
-                                queryExecuter.Fetch(builderReferenceSignalRaw, readerReferenceSignalRaw =>
-                                {
-                                    while (readerReferenceSignalRaw.Read())
-                                    {
-
-                                        var referenceSignal = new DataModels.Sdrns.Device.ReferenceSignal();
-                                        if (readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz) != null)
-                                        {
-                                            referenceSignal.Bandwidth_kHz = readerReferenceSignalRaw.GetValue(c => c.Bandwidth_kHz).Value;
-                                        }
-                                        if (readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz) != null)
-                                        {
-                                            referenceSignal.Frequency_MHz = readerReferenceSignalRaw.GetValue(c => c.Frequency_MHz).Value;
-                                        }
-                                        if (readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm) != null)
-                                        {
-                                            referenceSignal.LevelSignal_dBm = readerReferenceSignalRaw.GetValue(c => c.LevelSignal_dBm).Value;
-                                        }
-
-                                        referenceSignal.SignalMask = new DataModels.Sdrns.Device.SignalMask();
-                                        List<double> freqs = new List<double>();
-                                        List<float> loss = new List<float>();
-                                        var builderSignalMaskRaw = this._dataLayer.GetBuilder<MD.ISignalMask>().From();
-                                        builderSignalMaskRaw.Select(c => c.Id);
-                                        builderSignalMaskRaw.Select(c => c.ReferenceSignalId);
-                                        builderSignalMaskRaw.Select(c => c.Freq_kHz);
-                                        builderSignalMaskRaw.Select(c => c.Loss_dB);
-                                        builderSignalMaskRaw.Where(c => c.ReferenceSignalId, DataModels.DataConstraint.ConditionOperator.Equal, readerReferenceSignalRaw.GetValue(c => c.Id));
-                                        queryExecuter.Fetch(builderSignalMaskRaw, readerSignalMaskRaw =>
-                                        {
-                                            while (readerSignalMaskRaw.Read())
-                                            {
-                                                if (readerSignalMaskRaw.GetValue(c => c.Freq_kHz) != null)
-                                                {
-                                                    freqs.Add(readerSignalMaskRaw.GetValue(c => c.Freq_kHz).Value);
-                                                }
-                                                if (readerSignalMaskRaw.GetValue(c => c.Loss_dB) != null)
-                                                {
-                                                    loss.Add((float)readerSignalMaskRaw.GetValue(c => c.Loss_dB).Value);
-                                                }
-                                            }
-                                            return true;
-                                        });
-
-                                        referenceSignal.SignalMask.Freq_kHz = freqs.ToArray();
-                                        referenceSignal.SignalMask.Loss_dB = loss.ToArray();
-
-                                        referenceSignals.Add(referenceSignal);
-                                    }
-                                    return true;
-                                });
-
-                                refSituation.ReferenceSignal = referenceSignals.ToArray();
-
-                                listReferenceSituation.Add(refSituation);
-                            }
-                            return true;
-                        });
-
-                        if (listReferenceSituation.Count > 0)
-                        {
-                            taskParameters.RefSituation = listReferenceSituation[0];
-                        }
-                    }
-                    return true;
-                });
+                var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
+                taskParameters = loadMessages.GetAllMessages();
             }
             catch (Exception e)
             {
@@ -336,15 +106,70 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             return taskParameters;
         }
 
-        public TaskParameters[] LoadObjectsWithRestrict()
+        public void RemoveOldObjects()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
+                var taskParameters = loadMessages.GetAllMessages();
+                if ((taskParameters != null) && (taskParameters.Length > 0))
+                {
+                    for (int i = 0; i < taskParameters.Length; i++)
+                    {
+                        if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()) || (taskParameters[i].StopTime < DateTime.Now))
+                        {
+                            var additionalParameters = string.Format("{0}_{1}_", taskParameters[i].MeasurementType.ToString(), taskParameters[i].SDRTaskId);
+                            var fileName = loadMessages.GetFileName(additionalParameters);
+                            var messagesBus = new SaveMessages(_fileCounter, fileName, this._logger, this._configRepositories.FolderTaskParameters);
+                            messagesBus.DeleteObject(fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
         }
 
-        public bool Update(TaskParameters item)
+        public TaskParameters[] LoadObjectsWithRestrict(ref List<string> listRunTask)
         {
-            throw new NotImplementedException();
+            List<TaskParameters> listTaskParameters = new List<TaskParameters>();
+            var listSDRTaskId = new List<string>();
+            try
+            {
+                var loadMessages = new LoadMessages<TaskParameters>(this._logger, this._configRepositories.FolderTaskParameters);
+                var taskParameters = loadMessages.GetAllMessages();
+                if ((taskParameters!=null) && (taskParameters.Length > 0))
+                {
+                    for (int i = 0; i < taskParameters.Length; i++)
+                    {
+                        var param = string.Format("{0}_{1}_", taskParameters[i].MeasurementType.ToString(), taskParameters[i].SDRTaskId);
+                        if ((taskParameters[i].status != StatusTask.C.ToString()) && (taskParameters[i].StopTime >= DateTime.Now))
+                        {
+                            if (!listSDRTaskId.Contains(param))
+                            {
+                                listSDRTaskId.Add(param);
+                                listTaskParameters.Add(taskParameters[i]);
+                            }
+                        }
+                        else if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()) || (taskParameters[i].StopTime < DateTime.Now))
+                        {
+                            var fileName = loadMessages.GetFileName(param);
+                            var messagesBus = new SaveMessages(_fileCounter, fileName, this._logger, this._configRepositories.FolderTaskParameters);
+                            messagesBus.DeleteObject(fileName);
+                            listRunTask.Remove(param);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return listTaskParameters.ToArray();
         }
+      
     }
 }
 

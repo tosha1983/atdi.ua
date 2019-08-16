@@ -9,10 +9,10 @@ using Atdi.DataModels.Sdrns.Server;
 namespace Atdi.Contracts.WcfServices.Sdrn.Server
 {
     /// <summary>
-    /// Represents subtask of measurements for station
+    /// Represents subtask of measurements for sensor
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class MeasSubTaskStation
+    public class MeasSubTaskSensor
     {
         /// <summary>
         /// Id
@@ -20,10 +20,10 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public long Id;
         /// <summary>
-        /// StationId
+        /// SensorId
         /// </summary>
         [DataMember]
-        public SensorIdentifier StationId;
+        public SensorIdentifier SensorId;
         /// <summary>
         /// Status
         /// </summary>

@@ -48,6 +48,14 @@ namespace Atdi.Platform.ServicesContainer.Castle
                         .ImplementedBy<Statistics>()
                         .LifeStyle.Singleton
                 );
+
+            container.Register(
+                    Component.For<Caching.IDataCacheSite>()
+                        .ImplementedBy<Caching.DataCacheSite>()
+                        .LifeStyle.Singleton
+                );
+
+            
         }
     }
 }

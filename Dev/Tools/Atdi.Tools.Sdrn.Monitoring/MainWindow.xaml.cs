@@ -36,6 +36,8 @@ namespace Atdi.Tools.Sdrn.Monitoring
         List<StatisticCounterRecord> statCounterList = new List<StatisticCounterRecord>();
         public Dictionary<string, string> endpointUrls = new Dictionary<string, string>();
 
+        private readonly Dictionary<string, string> _namespaces = new Dictionary<string, string>();
+
         public MainWindow()
         {
             try
@@ -141,6 +143,8 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         }
                         // 5.
                         var responseOrm = wc.GetAsync(endpointUrl.Value + "/api/orm/Config").Result;
+                        string ormNamespace = string.Empty;
+
                         if (responseOrm.StatusCode == HttpStatusCode.OK)
                         {
                             var twOrmItem = new TreeViewItem();
@@ -151,9 +155,11 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             twOrmItem.Items.Add(new TreeViewItem() { Header = "Version: " + config.Version, IsExpanded = true, FontWeight = FontWeights.Normal });
                             twOrmItem.Items.Add(new TreeViewItem() { Header = "Namespace: " + config.Namespace, IsExpanded = true, FontWeight = FontWeights.Normal });
                             twEndPointItem.Items.Add(twOrmItem);
+                            ormNamespace = config.Namespace;
+                            _namespaces.Add(endpointUrl.Key, ormNamespace);
                         }
                         // 6.
-                        var responseLog = wc.GetAsync(endpointUrl.Value + "/api/orm/metadata/entity/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/LogEvent").Result;
+                        var responseLog = wc.GetAsync(endpointUrl.Value + $"/api/orm/metadata/entity/{ormNamespace}.Monitoring/LogEvent").Result;
                         if (responseLog.StatusCode == HttpStatusCode.OK)
                         {
                             var twLogItem = new TreeViewItem();
@@ -267,7 +273,8 @@ namespace Atdi.Tools.Sdrn.Monitoring
             using (var wc = new HttpClient())
             {
                 var logeventData = new List<LogEventResult>();
-                var response = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/LogEvent?select=Id,Time,Thread,LevelCode,LevelName,Context,Category,Text,Source,Duration,Exception").Result;
+                var ormNamespace = _namespaces[endpointKey];
+                var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/Platform/{ormNamespace}.Monitoring/LogEvent?select=Id,Time,Thread,LevelCode,LevelName,Context,Category,Text,Source,Duration,Exception").Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var dicFields = new Dictionary<string, int>();
@@ -310,10 +317,10 @@ namespace Atdi.Tools.Sdrn.Monitoring
             statCounterTreeDic.Clear();
             statEntryKeysTree.Items.Clear();
             statCounterKeysTree.Items.Clear();
-
+            var ormNamespace = _namespaces[endpointKey];
             using (var wc = new HttpClient())
             {
-                var response1 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticEntryKey?select=Name,Type").Result;
+                var response1 = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/Platform/{ormNamespace}.Monitoring/StatisticEntryKey?select=Name,Type").Result;
                 if (response1.StatusCode == HttpStatusCode.OK)
                 {
                     var dicFields = new Dictionary<string, int>();
@@ -338,7 +345,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 }
 
                 statEntrysList.Clear();
-                var response3 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticEntryRecord?select=Name,Data").Result;
+                var response3 = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/Platform/{ormNamespace}.Monitoring/StatisticEntryRecord?select=Name,Data").Result;
                 if (response3.StatusCode == HttpStatusCode.OK)
                 {
                     var dicFields = new Dictionary<string, int>();
@@ -363,11 +370,12 @@ namespace Atdi.Tools.Sdrn.Monitoring
         }
         private void RefreshStatistics(string endpointKey)
         {
+            var ormNamespace = _namespaces[endpointKey];
             using (var wc = new HttpClient())
             {
                 statCounterKeysTree.Items.Clear();
                 statCounterTreeDic.Clear();
-                var response2 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticCounterKey?select=Name,Type,Scale").Result;
+                var response2 = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/Platform/{ormNamespace}.Monitoring/StatisticCounterKey?select=Name,Type,Scale").Result;
                 if (response2.StatusCode == HttpStatusCode.OK)
                 {
                     var dicFields = new Dictionary<string, int>();
@@ -393,7 +401,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 }
 
                 statCurrCounterList.Clear();
-                var response4 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticCurrentCounter?select=Name,Time,Data").Result;
+                var response4 = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/Platform/{ormNamespace}.Monitoring/StatisticCurrentCounter?select=Name,Time,Data").Result;
                 if (response4.StatusCode == HttpStatusCode.OK)
                 {
                     var dicFields = new Dictionary<string, int>();
@@ -414,7 +422,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 }
 
                 statCounterList.Clear();
-                var response5 = wc.GetAsync(endpointUrls[endpointKey] + "/api/orm/data/Platform/Atdi.DataModels.Sdrns.Server.Entities.Monitoring/StatisticCounterRecord?select=Name,Time,Data").Result;
+                var response5 = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/Platform/{ormNamespace}.Monitoring/StatisticCounterRecord?select=Name,Time,Data").Result;
                 if (response5.StatusCode == HttpStatusCode.OK)
                 {
                     var dicFields = new Dictionary<string, int>();
@@ -502,7 +510,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 TreeViewItem item = e.NewValue as TreeViewItem;
                 if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
                 {
-                    gridEntryRecords.ItemsSource = statEntrysList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                    gridEntryRecords.ItemsSource = statEntrysList.Where(c => c.Name.StartsWith(item.Tag.ToString()));
                 }
             }
         }
@@ -513,8 +521,8 @@ namespace Atdi.Tools.Sdrn.Monitoring
                 TreeViewItem item = e.NewValue as TreeViewItem;
                 if (item.Tag != null && !string.IsNullOrEmpty(item.Tag.ToString()))
                 {
-                    gridCurrentCounter.ItemsSource = statCurrCounterList.Where(c => c.Name.Contains(item.Tag.ToString()));
-                    gridCounterRecords.ItemsSource = statCounterList.Where(c => c.Name.Contains(item.Tag.ToString()));
+                    gridCurrentCounter.ItemsSource = statCurrCounterList.Where(c => c.Name.StartsWith(item.Tag.ToString()));
+                    gridCounterRecords.ItemsSource = statCounterList.Where(c => c.Name.StartsWith(item.Tag.ToString()));
                 }
             }
         }

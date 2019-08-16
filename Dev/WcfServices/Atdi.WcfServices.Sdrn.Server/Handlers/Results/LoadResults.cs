@@ -718,7 +718,10 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             if (isLoadAllData == false)
             {
-                referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+                if (level.levels != null)
+                {
+                    referenceLevels = ReferenceLevelsCut(level, StartFrequency_Hz, StopFrequency_Hz);
+                }
             }
             else
             {
@@ -806,6 +809,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 builderResMeas.Select(c => c.StartTime);
@@ -952,6 +957,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
                         }
 
+                        /*
                         var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                         builderLinkResSensoT.Select(c => c.Id);
                         builderLinkResSensoT.Select(c => c.SENSOR.Id);
@@ -972,6 +978,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                             return true;
                         });
+                        */
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
 
                         results.Add(levelmeasurementResults);
                     }
@@ -1157,7 +1166,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetShortMeasResultsByDateMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var builderResMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
+                var builderResMeas = this._dataLayer.GetBuilder<MD.IResRoutes>().From();
                 builderResMeas.Select(c => c.RES_MEAS.AntVal);
                 builderResMeas.Select(c => c.RES_MEAS.DataRank);
                 builderResMeas.Select(c => c.RES_MEAS.Id);
@@ -1371,16 +1380,11 @@ namespace Atdi.WcfServices.Sdrn.Server
             return results.ToArray();
         }
 
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="measurementType"></param>
-        /// <returns></returns>
-        public ResultsMeasurementsStation ReadResultResMeasStation(long StationId)
+        /*
+        public ResultsSpectrumsMeasurementsStation GetSpectrumsResMeasStationById(long StationId)
         {
-            var resMeasStatiion = new ResultsMeasurementsStation();
+            var resMeasStatiion = new ResultsSpectrumsMeasurementsStation();
+            var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
             try
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCallReadResultResMeasStationMethod.Text);
@@ -1392,6 +1396,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.RES_MEAS.Id);
                 builderResMeasStation.Select(c => c.ClientSectorCode);
                 builderResMeasStation.Select(c => c.Standard);
+                builderResMeasStation.Select(c => c.Frequency);
                 builderResMeasStation.Select(c => c.ClientStationCode);
                 builderResMeasStation.Select(c => c.Status);
                 builderResMeasStation.Where(c => c.Id, ConditionOperator.Equal, StationId);
@@ -1411,10 +1416,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? rbw = null;
                         double? vbw = null;
                         double? bw = null;
-                        double? centralFrequency = null;
+                        var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
-
-
+                        
                         var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                         builderResStGeneral.Select(c => c.CentralFrequency);
@@ -1456,7 +1460,250 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                 vbw = readerResStGeneral.GetValue(c => c.Vbw);
                                 bw = readerResStGeneral.GetValue(c => c.BW);
-                                centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+
+                                //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+
+
+                                var listMaskElements = new List<MaskElements>();
+                                var builderResStMaskElement = this._dataLayer.GetBuilder<MD.IResStMaskElement>().From();
+                                builderResStMaskElement.Select(c => c.Bw);
+                                builderResStMaskElement.Select(c => c.Level);
+                                builderResStMaskElement.Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                builderResStMaskElement.OrderByAsc(c => c.Id);
+                                queryExecuter.Fetch(builderResStMaskElement, readerResStMaskElement =>
+                                {
+
+                                    while (readerResStMaskElement.Read())
+                                    {
+                                        var maskElements = new MaskElements();
+                                        maskElements.BW = readerResStMaskElement.GetValue(c => c.Bw);
+                                        maskElements.level = readerResStMaskElement.GetValue(c => c.Level);
+                                        listMaskElements.Add(maskElements);
+                                    }
+                                    return true;
+
+                                });
+                                measurementsParameterGeneral.MaskBW = listMaskElements.ToArray();
+                                measurementsParameterGeneral.LevelsSpecrum = readerResStGeneral.GetValue(c => c.LevelsSpectrumdBm);
+
+
+                                var valSysInfo = "";
+
+
+                                var queryStationSysInfo = this._dataLayer.GetBuilder<MD.IResSysInfo>()
+                               .From()
+                               .Select(c => c.Id, c => c.Agl, c => c.Asl, c => c.Bandwidth, c => c.BaseId, c => c.Bsic, c => c.ChannelNumber, c => c.Cid, c => c.Code, c => c.Ctoi, c => c.Eci, c => c.Enodebid, c => c.Freq, c => c.Icio, c => c.InbandPower, c => c.Iscp, c => c.Lac)
+                               .Select(c => c.Lat, c => c.Lon, c => c.Mcc, c => c.Mnc, c => c.Nid, c => c.Pci, c => c.Pn, c => c.Power, c => c.Ptotal, c => c.Rnc, c => c.Rscp, c => c.Rsrp, c => c.Rsrq, c => c.Sc, c => c.Sid, c => c.Tac, c => c.TypeCdmaevdo, c => c.Ucid)
+                               .Where(c => c.RES_STGENERAL.Id, ConditionOperator.Equal, readerResStGeneral.GetValue(c => c.Id));
+                                queryExecuter.Fetch(queryStationSysInfo, readerStationSysInfo =>
+                                {
+                                    while (readerStationSysInfo.Read())
+                                    {
+
+                                        valSysInfo += string.Format("AGL : {0}", readerStationSysInfo.GetValue(c => c.Agl)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ASL : {0}", readerStationSysInfo.GetValue(c => c.Asl)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BandWidth : {0}", readerStationSysInfo.GetValue(c => c.Bandwidth)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BaseID : {0}", readerStationSysInfo.GetValue(c => c.BaseId)) + Environment.NewLine;
+                                        valSysInfo += string.Format("BSIC : {0}", readerStationSysInfo.GetValue(c => c.Bsic)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ChannelNumber : {0}", readerStationSysInfo.GetValue(c => c.ChannelNumber)) + Environment.NewLine;
+                                        valSysInfo += string.Format("CID : {0}", readerStationSysInfo.GetValue(c => c.Cid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Code : {0}", readerStationSysInfo.GetValue(c => c.Code)) + Environment.NewLine;
+                                        valSysInfo += string.Format("CtoI : {0}", readerStationSysInfo.GetValue(c => c.Ctoi)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ECI : {0}", readerStationSysInfo.GetValue(c => c.Eci)) + Environment.NewLine;
+                                        valSysInfo += string.Format("eNodeBId : {0}", readerStationSysInfo.GetValue(c => c.Enodebid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Freq : {0}", readerStationSysInfo.GetValue(c => c.Freq)) + Environment.NewLine;
+                                        valSysInfo += string.Format("IcIo : {0}", readerStationSysInfo.GetValue(c => c.Icio)) + Environment.NewLine;
+                                        valSysInfo += string.Format("INBAND_POWER : {0}", readerStationSysInfo.GetValue(c => c.InbandPower)) + Environment.NewLine;
+                                        valSysInfo += string.Format("ISCP : {0}", readerStationSysInfo.GetValue(c => c.Iscp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("LAC : {0}", readerStationSysInfo.GetValue(c => c.Lac)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Lat : {0}", readerStationSysInfo.GetValue(c => c.Lat)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Lon : {0}", readerStationSysInfo.GetValue(c => c.Lon)) + Environment.NewLine;
+                                        valSysInfo += string.Format("MCC : {0}", readerStationSysInfo.GetValue(c => c.Mcc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("MNC : {0}", readerStationSysInfo.GetValue(c => c.Mnc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("NID : {0}", readerStationSysInfo.GetValue(c => c.Nid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("PCI : {0}", readerStationSysInfo.GetValue(c => c.Pci)) + Environment.NewLine;
+                                        valSysInfo += string.Format("PN : {0}", readerStationSysInfo.GetValue(c => c.Pn)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Power : {0}", readerStationSysInfo.GetValue(c => c.Power)) + Environment.NewLine;
+                                        valSysInfo += string.Format("Ptotal : {0}", readerStationSysInfo.GetValue(c => c.Ptotal)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RNC : {0}", readerStationSysInfo.GetValue(c => c.Rnc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSCP : {0}", readerStationSysInfo.GetValue(c => c.Rscp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSRP : {0}", readerStationSysInfo.GetValue(c => c.Rsrp)) + Environment.NewLine;
+                                        valSysInfo += string.Format("RSRQ : {0}", readerStationSysInfo.GetValue(c => c.Rsrq)) + Environment.NewLine;
+                                        valSysInfo += string.Format("SC : {0}", readerStationSysInfo.GetValue(c => c.Sc)) + Environment.NewLine;
+                                        valSysInfo += string.Format("SID : {0}", readerStationSysInfo.GetValue(c => c.Sid)) + Environment.NewLine;
+                                        valSysInfo += string.Format("TAC : {0}", readerStationSysInfo.GetValue(c => c.Tac)) + Environment.NewLine;
+                                        valSysInfo += string.Format("TypeCDMAEVDO : {0}", readerStationSysInfo.GetValue(c => c.TypeCdmaevdo)) + Environment.NewLine;
+                                        valSysInfo += string.Format("UCID : {0}", readerStationSysInfo.GetValue(c => c.Ucid)) + Environment.NewLine;
+
+
+                                        var queryStationSysInfoBls = this._dataLayer.GetBuilder<MD.IResSysInfoBlocks>()
+                                        .From()
+                                        .Select(c => c.Id, c => c.Data, c => c.Type)
+                                        .Where(c => c.RES_SYS_INFO.Id, ConditionOperator.Equal, readerStationSysInfo.GetValue(c => c.Id));
+                                        queryExecuter.Fetch(queryStationSysInfoBls, readerStationSysInfoBls =>
+                                        {
+                                            while (readerStationSysInfoBls.Read())
+                                            {
+                                                valSysInfo += string.Format("SysInfoBlocks.Data  : {0}", readerStationSysInfoBls.GetValue(c => c.Data)) + Environment.NewLine;
+                                                valSysInfo += string.Format("SysInfoBlocks.Type  : {0}", readerStationSysInfoBls.GetValue(c => c.Type)) + Environment.NewLine;
+                                            }
+                                            return true;
+                                        });
+
+                                        resMeasStatiion.StationSysInfo = valSysInfo;
+
+                                        break;
+                                    }
+                                    return true;
+                                });
+                                listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
+                            }
+                            return true;
+                        });
+
+                        resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
+
+
+                        var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
+                        var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
+                        builderResStLevelCar.Select(c => c.Agl);
+                        builderResStLevelCar.Select(c => c.Altitude);
+                        builderResStLevelCar.Select(c => c.DifferenceTimeStamp);
+                        builderResStLevelCar.Select(c => c.Id);
+                        builderResStLevelCar.Select(c => c.Lat);
+                        builderResStLevelCar.Select(c => c.LevelDbm);
+                        builderResStLevelCar.Select(c => c.LevelDbmkvm);
+                        builderResStLevelCar.Select(c => c.Lon);
+                        builderResStLevelCar.Select(c => c.RES_MEAS_STATION.Id);
+                        builderResStLevelCar.Select(c => c.TimeOfMeasurements);
+                        builderResStLevelCar.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStLevelCar.OrderByAsc(c => c.Id);
+                        queryExecuter.Fetch(builderResStLevelCar, readerResStLevelCar =>
+                        {
+                            while (readerResStLevelCar.Read())
+                            {
+                                var levelMeasurementsCar = new LevelMeasurementsCar();
+                                levelMeasurementsCar.Altitude = readerResStLevelCar.GetValue(c => c.Altitude);
+                                levelMeasurementsCar.DifferenceTimestamp = readerResStLevelCar.GetValue(c => c.DifferenceTimeStamp);
+                                levelMeasurementsCar.Lat = readerResStLevelCar.GetValue(c => c.Lat);
+                                levelMeasurementsCar.LeveldBm = readerResStLevelCar.GetValue(c => c.LevelDbm);
+                                levelMeasurementsCar.LeveldBmkVm = readerResStLevelCar.GetValue(c => c.LevelDbmkvm);
+                                levelMeasurementsCar.Lon = readerResStLevelCar.GetValue(c => c.Lon);
+
+                                levelMeasurementsCar.RBW = rbw;
+                                levelMeasurementsCar.VBW = vbw;
+                                levelMeasurementsCar.BW = bw;
+                                levelMeasurementsCar.CentralFrequency = (decimal?)centralFrequency;
+
+
+                                if (readerResStLevelCar.GetValue(c => c.TimeOfMeasurements) != null)
+                                {
+                                    levelMeasurementsCar.TimeOfMeasurements = readerResStLevelCar.GetValue(c => c.TimeOfMeasurements).Value;
+                                }
+                                listLevelMeasurementsCar.Add(levelMeasurementsCar);
+                            }
+                            return true;
+                        });
+                        resMeasStatiion.LevelMeasurements = listLevelMeasurementsCar.ToArray();
+
+                    }
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return resMeasStatiion;
+        }
+        */
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="measurementType"></param>
+        /// <returns></returns>
+        public ResultsMeasurementsStation ReadResultResMeasStation(long StationId)
+        {
+            var resMeasStatiion = new ResultsMeasurementsStation();
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCallReadResultResMeasStationMethod.Text);
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                builderResMeasStation.Select(c => c.GlobalSID);
+                builderResMeasStation.Select(c => c.Id);
+                builderResMeasStation.Select(c => c.MeasGlobalSID);
+                builderResMeasStation.Select(c => c.RES_MEAS.Id);
+                builderResMeasStation.Select(c => c.ClientSectorCode);
+                builderResMeasStation.Select(c => c.Standard);
+                builderResMeasStation.Select(c => c.Frequency);
+                builderResMeasStation.Select(c => c.ClientStationCode);
+                builderResMeasStation.Select(c => c.Status);
+                builderResMeasStation.Where(c => c.Id, ConditionOperator.Equal, StationId);
+                builderResMeasStation.OrderByAsc(c => c.Id);
+                queryExecuter.Fetch(builderResMeasStation, readerResMeasStation =>
+                {
+                    while (readerResMeasStation.Read())
+                    {
+                        resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.ClientSectorCode);
+                        resMeasStatiion.GlobalSID = readerResMeasStation.GetValue(c => c.GlobalSID);
+                        resMeasStatiion.MeasGlobalSID = readerResMeasStation.GetValue(c => c.MeasGlobalSID);
+                        resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
+                        resMeasStatiion.Id = readerResMeasStation.GetValue(c => c.Id);
+                        resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.ClientStationCode).ToString();
+                        resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
+
+                        double? rbw = null;
+                        double? vbw = null;
+                        double? bw = null;
+                        var centralFrequency =  readerResMeasStation.GetValue(c => c.Frequency);
+
+                        var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
+                        var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
+                        builderResStGeneral.Select(c => c.CentralFrequency);
+                        builderResStGeneral.Select(c => c.CentralFrequencyMeas);
+                        builderResStGeneral.Select(c => c.Correctnessestim);
+                        builderResStGeneral.Select(c => c.DurationMeas);
+                        builderResStGeneral.Select(c => c.Id);
+                        builderResStGeneral.Select(c => c.MarkerIndex);
+                        builderResStGeneral.Select(c => c.OffsetFrequency);
+                        builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
+                        builderResStGeneral.Select(c => c.SpecrumStartFreq);
+                        builderResStGeneral.Select(c => c.SpecrumSteps);
+                        builderResStGeneral.Select(c => c.T1);
+                        builderResStGeneral.Select(c => c.T2);
+                        builderResStGeneral.Select(c => c.BW);
+                        builderResStGeneral.Select(c => c.TimeFinishMeas);
+                        builderResStGeneral.Select(c => c.TimeStartMeas);
+                        builderResStGeneral.Select(c => c.TraceCount);
+                        builderResStGeneral.Select(c => c.Rbw);
+                        builderResStGeneral.Select(c => c.Vbw);
+                        builderResStGeneral.Select(c => c.LevelsSpectrumdBm);
+                        builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                        builderResStGeneral.OrderByAsc(c => c.Id);
+                        queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
+                        {
+                            while (readerResStGeneral.Read())
+                            {
+                                var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                                measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+                                measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
+                                measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
+                                measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
+                                measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
+                                measurementsParameterGeneral.SpecrumStartFreq = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                measurementsParameterGeneral.SpecrumSteps = (decimal?)readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
+                                measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
+                                measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
+                                measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
+                                rbw = readerResStGeneral.GetValue(c => c.Rbw);
+                                vbw = readerResStGeneral.GetValue(c => c.Vbw);
+                                bw = readerResStGeneral.GetValue(c => c.BW);
+
+                                //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -1551,11 +1798,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     }
                                     return true;
                                 });
-
+                                listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
                             }
                             return true;
                         });
-                        resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                        resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
 
 
 
@@ -1702,6 +1949,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.RES_MEAS.Id);
                 builderResMeasStation.Select(c => c.ClientSectorCode);
                 builderResMeasStation.Select(c => c.Standard);
+                builderResMeasStation.Select(c => c.Frequency);
                 builderResMeasStation.Select(c => c.ClientStationCode);
                 builderResMeasStation.Select(c => c.Status);
                 builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
@@ -1718,6 +1966,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
                         resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.ClientSectorCode);
                         resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
+                        resMeasStatiion.CentralFrequencyMeas_MHz= (double?)readerResMeasStation.GetValue(c => c.Frequency);
 
 
                         var builderStation = this._dataLayer.GetBuilder<MD.IStation>().From();
@@ -1758,34 +2007,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                             }
                             return true;
                         });
-
-                        var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
-                        builderResStGeneral.Select(c => c.CentralFrequency);
-                        builderResStGeneral.Select(c => c.CentralFrequencyMeas);
-                        builderResStGeneral.Select(c => c.Correctnessestim);
-                        builderResStGeneral.Select(c => c.DurationMeas);
-                        builderResStGeneral.Select(c => c.Id);
-                        builderResStGeneral.Select(c => c.MarkerIndex);
-                        builderResStGeneral.Select(c => c.OffsetFrequency);
-                        builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
-                        builderResStGeneral.Select(c => c.SpecrumStartFreq);
-                        builderResStGeneral.Select(c => c.SpecrumSteps);
-                        builderResStGeneral.Select(c => c.T1);
-                        builderResStGeneral.Select(c => c.T2);
-                        builderResStGeneral.Select(c => c.BW);
-                        builderResStGeneral.Select(c => c.TimeFinishMeas);
-                        builderResStGeneral.Select(c => c.TimeStartMeas);
-                        builderResStGeneral.Select(c => c.TraceCount);
-                        builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
-                        builderResStGeneral.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
-                        {
-                            while (readerResStGeneral.Read())
-                            {
-                                resMeasStatiion.CentralFrequencyMeas_MHz = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
-                            }
-                            return true;
-                        });
                         listResMeasStatiion.Add(resMeasStatiion);
                     }
                     return true;
@@ -1797,6 +2018,8 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return listResMeasStatiion.ToArray();
         }
+
+        
 
         /// <summary>
         /// 
@@ -1811,69 +2034,87 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCallGetResMeasStationHeaderByResIdMethod.Text);
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
 
-                var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
-                builderResStGeneral.Select(c => c.CentralFrequency);
-                builderResStGeneral.Select(c => c.CentralFrequencyMeas);
-                builderResStGeneral.Select(c => c.Correctnessestim);
-                builderResStGeneral.Select(c => c.DurationMeas);
-                builderResStGeneral.Select(c => c.Id);
-                builderResStGeneral.Select(c => c.MarkerIndex);
-                builderResStGeneral.Select(c => c.OffsetFrequency);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Id);
-                builderResStGeneral.Select(c => c.SpecrumStartFreq);
-                builderResStGeneral.Select(c => c.SpecrumSteps);
-                builderResStGeneral.Select(c => c.T1);
-                builderResStGeneral.Select(c => c.T2);
-                builderResStGeneral.Select(c => c.BW);
-                builderResStGeneral.Select(c => c.TimeFinishMeas);
-                builderResStGeneral.Select(c => c.TimeStartMeas);
-                builderResStGeneral.Select(c => c.TraceCount);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.ClientSectorCode);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.ClientStationCode);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.GlobalSID);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.MeasGlobalSID);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Status);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.Standard);
-                builderResStGeneral.Select(c => c.RES_MEAS_STATION.RES_MEAS.Id);
-                builderResStGeneral.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, ResId);
-                builderResStGeneral.OrderByAsc(c => c.Id);
-                queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
+
+                var builderIResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
+                builderIResMeasStation.Select(c => c.Id);
+                builderIResMeasStation.Select(c => c.ClientSectorCode);
+                builderIResMeasStation.Select(c => c.ClientStationCode);
+                builderIResMeasStation.Select(c => c.GlobalSID);
+                builderIResMeasStation.Select(c => c.MeasGlobalSID);
+                builderIResMeasStation.Select(c => c.Status);
+                builderIResMeasStation.Select(c => c.Standard);
+                builderIResMeasStation.Select(c => c.Frequency);
+                builderIResMeasStation.Select(c => c.RES_MEAS.Id);
+                builderIResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
+                builderIResMeasStation.OrderByAsc(c => c.Id);
+                queryExecuter.Fetch(builderIResMeasStation, readerResMeasStation =>
                 {
-                    while (readerResStGeneral.Read())
+                    while (readerResMeasStation.Read())
                     {
                         var resMeasStatiion = new ResultsMeasurementsStation();
-
-                        if (listResMeasStatiion.Find(x => x.Id == readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Id)) == null)
+                        if (listResMeasStatiion.Find(x => x.Id == readerResMeasStation.GetValue(c => c.Id)) == null)
                         {
-                            resMeasStatiion.Idstation = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.ClientStationCode).ToString();
-                            resMeasStatiion.GlobalSID = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.GlobalSID);
-                            resMeasStatiion.MeasGlobalSID = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.MeasGlobalSID);
-                            resMeasStatiion.Status = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Status);
-                            resMeasStatiion.Id = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Id);
-                            resMeasStatiion.IdSector = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.ClientSectorCode);
-                            resMeasStatiion.Standard = readerResStGeneral.GetValue(c => c.RES_MEAS_STATION.Standard);
+                            resMeasStatiion.Idstation = readerResMeasStation.GetValue(c => c.ClientStationCode).ToString();
+                            resMeasStatiion.GlobalSID = readerResMeasStation.GetValue(c => c.GlobalSID);
+                            resMeasStatiion.MeasGlobalSID = readerResMeasStation.GetValue(c => c.MeasGlobalSID);
+                            resMeasStatiion.Status = readerResMeasStation.GetValue(c => c.Status);
+                            resMeasStatiion.Id = readerResMeasStation.GetValue(c => c.Id);
+                            resMeasStatiion.IdSector = readerResMeasStation.GetValue(c => c.ClientSectorCode);
+                            resMeasStatiion.Standard = readerResMeasStation.GetValue(c => c.Standard);
+                            resMeasStatiion.CentralFrequencyMeas_MHz = (double)readerResMeasStation.GetValue(c => c.Frequency);
+
 
 
                             var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                            measurementsParameterGeneral.CentralFrequencyMeas = (double)readerResMeasStation.GetValue(c => c.Frequency);
 
-                            measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
-                            measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
-                            measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
-                            measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
-                            measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
-                            measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
-                            measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
-                            measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
-                            measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
-                            measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
-                            measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
-                            resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                            var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
+                            var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
+                            builderResStGeneral.Select(c => c.CentralFrequency);
+                            builderResStGeneral.Select(c => c.CentralFrequencyMeas);
+                            builderResStGeneral.Select(c => c.Correctnessestim);
+                            builderResStGeneral.Select(c => c.DurationMeas);
+                            builderResStGeneral.Select(c => c.Id);
+                            builderResStGeneral.Select(c => c.MarkerIndex);
+                            builderResStGeneral.Select(c => c.OffsetFrequency);
+                            builderResStGeneral.Select(c => c.SpecrumStartFreq);
+                            builderResStGeneral.Select(c => c.SpecrumSteps);
+                            builderResStGeneral.Select(c => c.T1);
+                            builderResStGeneral.Select(c => c.T2);
+                            builderResStGeneral.Select(c => c.BW);
+                            builderResStGeneral.Select(c => c.TimeFinishMeas);
+                            builderResStGeneral.Select(c => c.TimeStartMeas);
+                            builderResStGeneral.Select(c => c.TraceCount);
+                            builderResStGeneral.Where(c => c.RES_MEAS_STATION.Id, ConditionOperator.Equal, readerResMeasStation.GetValue(c => c.Id));
+                            builderResStGeneral.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderResStGeneral, readerResStGeneral =>
+                            {
+                                while (readerResStGeneral.Read())
+                                {
+                                    measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                                    measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+                                    measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
+                                    measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
+                                    measurementsParameterGeneral.MarkerIndex = readerResStGeneral.GetValue(c => c.MarkerIndex);
+                                    measurementsParameterGeneral.OffsetFrequency = readerResStGeneral.GetValue(c => c.OffsetFrequency);
+                                    measurementsParameterGeneral.SpecrumStartFreq = readerResStGeneral.GetValue(c => c.SpecrumStartFreq);
+                                    measurementsParameterGeneral.SpecrumSteps = readerResStGeneral.GetValue(c => c.SpecrumSteps);
+                                    measurementsParameterGeneral.T1 = readerResStGeneral.GetValue(c => c.T1);
+                                    measurementsParameterGeneral.T2 = readerResStGeneral.GetValue(c => c.T2);
+                                    measurementsParameterGeneral.TimeFinishMeas = readerResStGeneral.GetValue(c => c.TimeFinishMeas);
+                                    measurementsParameterGeneral.TimeStartMeas = readerResStGeneral.GetValue(c => c.TimeStartMeas);
+                                    listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
+                                }
+                                return true;
+                            });
+
+                            resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
                             listResMeasStatiion.Add(resMeasStatiion);
                         }
-
                     }
                     return true;
                 });
+                this._logger.Info(Contexts.ThisComponent, $"All record = {listResMeasStatiion.Count} ResMeasStation for ResId={ResId}");
             }
             catch (Exception e)
             {
@@ -1903,6 +2144,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeasStation.Select(c => c.ClientSectorCode);
                 builderResMeasStation.Select(c => c.Standard);
                 builderResMeasStation.Select(c => c.ClientStationCode);
+                builderResMeasStation.Select(c => c.Frequency);
                 builderResMeasStation.Select(c => c.Status);
                 builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, ResId);
                 builderResMeasStation.Where(c => c.ClientStationCode, ConditionOperator.Equal, (int)StationId);
@@ -1924,9 +2166,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                         double? rbw = null;
                         double? vbw = null;
                         double? bw = null;
-                        double? centralFrequency = null;
+                        //double? centralFrequency = null;
 
-                        var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                        var listMeasurementsParameterGeneral = new List<MeasurementsParameterGeneral>();
+                        var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
+                        
                         var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                         builderResStGeneral.Select(c => c.CentralFrequency);
                         builderResStGeneral.Select(c => c.CentralFrequencyMeas);
@@ -1953,6 +2197,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             while (readerResStGeneral.Read())
                             {
+                                var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                 measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
                                 measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
                                 measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
@@ -1967,7 +2212,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                 vbw = readerResStGeneral.GetValue(c => c.Vbw);
                                 bw = readerResStGeneral.GetValue(c => c.BW);
-                                centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
+                                //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
 
 
                                 var listMaskElements = new List<MaskElements>();
@@ -2064,12 +2309,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 });
 
 
-                                
+                                listMeasurementsParameterGeneral.Add(measurementsParameterGeneral);
 
                             }
                             return true;
                         });
-                        resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                        resMeasStatiion.GeneralResult = listMeasurementsParameterGeneral.ToArray();
 
                         var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();
                         var builderResStLevelCar = this._dataLayer.GetBuilder<MD.IResStLevelCar>().From();
@@ -2144,6 +2389,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 builderResMeas.Select(c => c.StartTime);
@@ -2372,7 +2619,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
-
+                            /*
                             var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
                             builderLinkResSensoT.Select(c => c.Id);
                             builderLinkResSensoT.Select(c => c.SENSOR.Id);
@@ -2393,7 +2640,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
+
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
                         GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), isLoadAllData, out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
@@ -2427,6 +2678,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 
@@ -2491,6 +2744,32 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             levelmeasurementResults.TypeMeasurements = outResType;
                         }
+
+                        /*
+                        var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
+                        builderLinkResSensoT.Select(c => c.Id);
+                        builderLinkResSensoT.Select(c => c.SENSOR.Id);
+                        builderLinkResSensoT.Select(c => c.SENSOR.Name);
+                        builderLinkResSensoT.Select(c => c.SENSOR.TechId);
+                        builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
+                        builderLinkResSensoT.OrderByAsc(c => c.Id);
+                        queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
+                        {
+                            while (readerLinkResSensor.Read())
+                            {
+                                if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
+                                {
+                                    levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
+                                    levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
+                                    break;
+                                }
+                            }
+                            return true;
+                        });
+                        */
+                        levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
+
                         results.Add(levelmeasurementResults);
                     }
                     return true;
@@ -2705,6 +2984,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResMeasStation.Select(c => c.ClientSectorCode);
                         builderResMeasStation.Select(c => c.Standard);
                         builderResMeasStation.Select(c => c.ClientStationCode);
+                        builderResMeasStation.Select(c => c.Frequency);
                         builderResMeasStation.Select(c => c.Status);
                         builderResMeasStation.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
                         builderResMeasStation.OrderByAsc(c => c.Id);
@@ -2726,9 +3006,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 double? rbw = null;
                                 double? vbw = null;
                                 double? bw = null;
-                                double? centralFrequency = null;
+                                var centralFrequency = readerResMeasStation.GetValue(c => c.Frequency);
 
-                                var measurementsParameterGeneral = new MeasurementsParameterGeneral();
+                                var listParameterGeneral = new List<MeasurementsParameterGeneral>();
                                 var builderResStGeneral = this._dataLayer.GetBuilder<MD.IResStGeneral>().From();
                                 builderResStGeneral.Select(c => c.CentralFrequency);
                                 builderResStGeneral.Select(c => c.CentralFrequencyMeas);
@@ -2755,6 +3035,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 {
                                     while (readerResStGeneral.Read())
                                     {
+                                        var measurementsParameterGeneral = new MeasurementsParameterGeneral();
                                         measurementsParameterGeneral.CentralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
                                         measurementsParameterGeneral.CentralFrequencyMeas = readerResStGeneral.GetValue(c => c.CentralFrequencyMeas);
                                         measurementsParameterGeneral.DurationMeas = readerResStGeneral.GetValue(c => c.DurationMeas);
@@ -2769,7 +3050,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         rbw = readerResStGeneral.GetValue(c => c.Rbw);
                                         vbw = readerResStGeneral.GetValue(c => c.Vbw);
                                         bw = readerResStGeneral.GetValue(c => c.BW);
-                                        centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
+                                        //centralFrequency = readerResStGeneral.GetValue(c => c.CentralFrequency);
 
 
                                         var listMaskElements = new List<MaskElements>();
@@ -2793,10 +3074,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         });
                                         measurementsParameterGeneral.MaskBW = listMaskElements.ToArray();
                                         measurementsParameterGeneral.LevelsSpecrum = readerResStGeneral.GetValue(c=>c.LevelsSpectrumdBm);
+                                        listParameterGeneral.Add(measurementsParameterGeneral);
                                     }
                                     return true;
                                 });
-                                resMeasStatiion.GeneralResult = measurementsParameterGeneral;
+                                resMeasStatiion.GeneralResult = listParameterGeneral.ToArray();
 
 
                                 var listLevelMeasurementsCar = new List<LevelMeasurementsCar>();

@@ -43,6 +43,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// MeasSubTaskStations
         /// </summary>
         [DataMember]
-        public MeasSubTaskStation[] MeasSubTaskStations;
+        public MeasSubTaskSensor[] MeasSubTaskSensors;
     }
 }

@@ -51,7 +51,7 @@ namespace XICSM.ICSControlClient.Forms
                 }
 
                 var shortMeasResults = SVC.SdrnsControllerWcfClient.GetShortMeasResultsByDates(dtStartMeas.Value, dtStopMeas.Value);
-                dlgForm._shortMeasResults = shortMeasResults;
+                dlgForm._shortMeasResults = shortMeasResults.Where(c => c.TypeMeasurements == Atdi.Contracts.WcfServices.Sdrn.Server.MeasurementType.MonitoringStations).ToArray();
                 dlgForm._planIds = _planIds;
                 dlgForm._points = _points;
                 dlgForm._trigger = trigger;

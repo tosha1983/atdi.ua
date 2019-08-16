@@ -143,6 +143,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public int SleepTimePeriodSendActivitySensor_ms { get; set; }
 
         /// <summary>
+        /// период в миллисекундах временной приостановки потока выполнения задачи отправки очередного результата в шину RabbitMQ при возникновении ошибки
+        /// </summary>
+        public int SleepTimePeriodWaitingErrorSendingBus_ms { get; set; }
+
+        /// <summary>
+        /// период в миллисекундах временной приостановки потока выполнения задачи отправки очередного результата в шину RabbitMQ
+        /// </summary>
+        public int SleepTimePeriodSendingBus_ms { get; set; }
+
+        
+
+        /// <summary>
         /// период в миллисекундах временной приостановки потока выполняющего "перевод" таска со статуса F в А 
         /// </summary>
         public int SleepTimeForUpdateContextSOTask_ms { get; set; }

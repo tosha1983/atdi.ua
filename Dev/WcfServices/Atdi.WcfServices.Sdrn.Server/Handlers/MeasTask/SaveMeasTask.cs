@@ -152,21 +152,108 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 {
                                     builderInsertMeasTaskSignaling.SetValue(c => c.allowableExcess_dB, value.SignalingMeasTaskParameters.allowableExcess_dB);
                                 }
-                                if (value.SignalingMeasTaskParameters.AutoDivisionEmitting != null)
+                                if (value.SignalingMeasTaskParameters.AnalyzeByChannel != null)
                                 {
-                                    builderInsertMeasTaskSignaling.SetValue(c => c.AutoDivisionEmitting, value.SignalingMeasTaskParameters.AutoDivisionEmitting == true ? 1 : 0);
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.AnalyzeByChannel, value.SignalingMeasTaskParameters.AnalyzeByChannel);
                                 }
+                                if (value.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.AnalyzeSysInfoEmission, value.SignalingMeasTaskParameters.AnalyzeSysInfoEmission);
+                                }
+                                if (value.SignalingMeasTaskParameters.CheckFreqChannel != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.CheckFreqChannel, value.SignalingMeasTaskParameters.CheckFreqChannel);
+                                }
+                                if (value.SignalingMeasTaskParameters.CorrelationAnalize != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.CorrelationAnalize, value.SignalingMeasTaskParameters.CorrelationAnalize);
+                                }
+                                if (value.SignalingMeasTaskParameters.CorrelationFactor != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.CorrelationFactor, value.SignalingMeasTaskParameters.CorrelationFactor);
+                                }
+                                if (value.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.DetailedMeasurementsBWEmission, value.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission);
+                                }
+                                if (value.SignalingMeasTaskParameters.Standard != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.Standard, value.SignalingMeasTaskParameters.Standard);
+                                }
+                                if (value.SignalingMeasTaskParameters.triggerLevel_dBm_Hz != null)
+                                {
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.TriggerLevel_dBm_Hz, value.SignalingMeasTaskParameters.triggerLevel_dBm_Hz);
+                                }
+
+                                if (value.SignalingMeasTaskParameters.GroupingParameters != null)
+                                {
+                                    if (value.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.CrossingBWPercentageForBadSignals, value.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.CrossingBWPercentageForGoodSignals, value.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.TimeBetweenWorkTimes_sec, value.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.TypeJoinSpectrum, value.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum);
+                                    }
+                                }
+
+                                if (value.SignalingMeasTaskParameters.InterruptionParameters != null)
+                                {
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.AutoDivisionEmitting, value.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.DifferenceMaxMax, value.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax);
+                                    }
+
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.InterruptAllowableExcess_dB, value.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.DiffLevelForCalcBW, value.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.MinExcessNoseLevel_dB, value.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.NDbLevel_dB, value.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.NumberIgnoredPoints, value.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.NumberPointForChangeExcess, value.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess);
+                                    }
+                                    if (value.SignalingMeasTaskParameters.InterruptionParameters.windowBW != null)
+                                    {
+                                        builderInsertMeasTaskSignaling.SetValue(c => c.WindowBW, value.SignalingMeasTaskParameters.InterruptionParameters.windowBW);
+                                    }
+
+                                }
+                                
                                 if (value.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels != null)
                                 {
-                                    builderInsertMeasTaskSignaling.SetValue(c => c.CompareTraceJustWithRefLevels, value.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels == true ? 1 : 0);
-                                }
-                                if (value.SignalingMeasTaskParameters.DifferenceMaxMax != null)
-                                {
-                                    builderInsertMeasTaskSignaling.SetValue(c => c.DifferenceMaxMax, value.SignalingMeasTaskParameters.DifferenceMaxMax);
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.CompareTraceJustWithRefLevels, value.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels);
                                 }
                                 if (value.SignalingMeasTaskParameters.FiltrationTrace != null)
                                 {
-                                    builderInsertMeasTaskSignaling.SetValue(c => c.FiltrationTrace, value.SignalingMeasTaskParameters.FiltrationTrace == true ? 1 : 0);
+                                    builderInsertMeasTaskSignaling.SetValue(c => c.FiltrationTrace, value.SignalingMeasTaskParameters.FiltrationTrace);
                                 }
                                 if (value.SignalingMeasTaskParameters.SignalizationNChenal != null)
                                 {
@@ -176,6 +263,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 {
                                     builderInsertMeasTaskSignaling.SetValue(c => c.SignalizationNCount, value.SignalingMeasTaskParameters.SignalizationNCount);
                                 }
+
+
                                 builderInsertMeasTaskSignaling.SetValue(c => c.MEAS_TASK.Id, ID);
                                 
 
@@ -317,25 +406,25 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         measSubTask.Id.Value = valueIdmeasSubTask;
 
 
-                                        if ((measSubTask.MeasSubTaskStations != null) && (valueIdmeasSubTask > -1))
+                                        if ((measSubTask.MeasSubTaskSensors != null) && (valueIdmeasSubTask > -1))
                                         {
-                                            for (int v = 0; v < measSubTask.MeasSubTaskStations.Length; v++)
+                                            for (int v = 0; v < measSubTask.MeasSubTaskSensors.Length; v++)
                                             {
-                                                var subTaskStation = measSubTask.MeasSubTaskStations[v];
+                                                var subTaskSensor = measSubTask.MeasSubTaskSensors[v];
                                                 long valueIdmeasSubTaskSta = -1;
                                                 var builderInsertMeasSubTaskSta = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().Insert();
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskStation.Count);
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskStation.Status);
-                                                if (subTaskStation.StationId != null)
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.Count, subTaskSensor.Count);
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.Status, subTaskSensor.Status);
+                                                if (subTaskSensor.SensorId != null)
                                                 {
-                                                    builderInsertMeasSubTaskSta.SetValue(c => c.SENSOR.Id, subTaskStation.StationId.Value);
+                                                    builderInsertMeasSubTaskSta.SetValue(c => c.SENSOR.Id, subTaskSensor.SensorId.Value);
                                                 }
                                                 builderInsertMeasSubTaskSta.SetValue(c => c.SUBTASK.Id, valueIdmeasSubTask);
-                                                builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskStation.TimeNextTask);
+                                                builderInsertMeasSubTaskSta.SetValue(c => c.TimeNextTask, subTaskSensor.TimeNextTask);
                                                 
                                                 var insertMeasSubTaskStaPK = scope.Executor.Execute<MD.ISubTaskSensor_PK>(builderInsertMeasSubTaskSta);
                                                 valueIdmeasSubTaskSta = insertMeasSubTaskStaPK.Id;
-                                                subTaskStation.Id = valueIdmeasSubTaskSta;
+                                                subTaskSensor.Id = valueIdmeasSubTaskSta;
                                             }
                                         }
                                     }
@@ -377,10 +466,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                             }
 
-
+                            /*
                             if (value.Stations != null)
                             {
-
                                 for (int i = 0; i < value.Stations.Length; i++)
                                 {
                                     if (value.Stations[i].StationId != null)
@@ -389,14 +477,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderInsertMeasStation.SetValue(c => c.StationType, value.Stations[i].StationType);
                                         builderInsertMeasStation.SetValue(c => c.ClientStationCode, value.Stations[i].StationId.Value);
                                         builderInsertMeasStation.SetValue(c => c.MEAS_TASK.Id, ID.Value);
-                                        
-
-
                                         var measStation_PK = scope.Executor.Execute<MD.IMeasStation_PK>(builderInsertMeasStation);
-
                                     }
                                 }
                             }
+                            */
 
                             if (value.StationsForMeasurements != null)
                             {
@@ -459,6 +544,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     var stationPK = scope.Executor.Execute<MD.IStation_PK>(builderInsertStation);
                                     idstationDataParam = stationPK.Id;
 
+                                    /*
                                     if (idstationDataParam > -1)
                                     {
                                         long? idLinkMeasStation = -1;
@@ -469,6 +555,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         var linkMeasStationPK = scope.Executor.Execute<MD.ILinkMeasStation_PK>(builderInsertLinkMeasStation);
                                         idLinkMeasStation = linkMeasStationPK.Id;
                                     }
+                                    */
 
                                     if (stationDataParam.Sectors != null)
                                     {

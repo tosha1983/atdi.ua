@@ -14,6 +14,7 @@ using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -24,19 +25,42 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
-        public SendEntityPartSubscriber(ISdrnMessagePublisher messagePublisher, IMessagesSite messagesSite, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger) : base(messagesSite, logger)
+        private readonly IStatistics _statistics;
+
+        private readonly IStatisticCounter _messageProcessingHitsCounter;
+        private readonly IStatisticCounter _sendEntityPartHitsCounter;
+        private readonly IStatisticCounter _sendEntityPartErrorsCounter;
+
+        public SendEntityPartSubscriber(
+            ISdrnMessagePublisher messagePublisher, 
+            IMessagesSite messagesSite, 
+            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnServerEnvironment environment,
+            IStatistics statistics,
+            ILogger logger) 
+            : base(messagesSite, logger)
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
+            this._statistics = statistics;
+            if (this._statistics != null)
+            {
+                this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
+                this._sendEntityPartHitsCounter = _statistics.Counter(Monitoring.Counters.SendEntityPartHits);
+                this._sendEntityPartErrorsCounter = _statistics.Counter(Monitoring.Counters.SendEntityPartErrors);
+            }
         }
 
 
 
-        protected override void Handle(string sensorName, string sensorTechId, DM.EntityPart deliveryObject)
+        protected override void Handle(string sensorName, string sensorTechId, DM.EntityPart deliveryObject, long messageId)
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
+                this._messageProcessingHitsCounter?.Increment();
+                this._sendEntityPartHitsCounter?.Increment();
+
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 try
                 {
@@ -62,6 +86,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
                 catch (Exception e)
                 {
+                    this._sendEntityPartErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
                     status = SdrnMessageHandlingStatus.Error;
                 }

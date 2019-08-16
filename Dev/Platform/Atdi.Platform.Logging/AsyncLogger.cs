@@ -107,15 +107,15 @@ namespace Atdi.Platform.Logging
 
                 if (tookEntries.Count > 0 && this._consumers != null && this._consumers.Count > 0)
                 {
-                    var evt = new CriticalEvent()
-                    {
-                        Category = "Internal",
-                        Context = "Logger",
-                        ManagedThread = System.Threading.Thread.CurrentThread.ManagedThreadId,
-                        Text = $"Took Entries {tookEntries.Count} ----------------------------------------------------------------------------",
+                    //var evt = new CriticalEvent()
+                    //{
+                    //    Category = "Internal",
+                    //    Context = "Logger",
+                    //    ManagedThread = System.Threading.Thread.CurrentThread.ManagedThreadId,
+                    //    Text = $"Took Entries {tookEntries.Count} ----------------------------------------------------------------------------",
 
-                    };
-                    tookEntries.Add(evt);
+                    //};
+                    //tookEntries.Add(evt);
                     var sortedEntries = tookEntries.OrderBy(e => e.Time.Ticks).ToArray();
 
                     foreach (var consumer in this._consumers.Values)

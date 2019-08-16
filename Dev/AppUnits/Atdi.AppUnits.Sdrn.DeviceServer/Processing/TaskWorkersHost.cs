@@ -1,4 +1,5 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
+using Atdi.Platform;
 using Atdi.Platform.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -12,16 +13,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     class TaskWorkersHost : ITaskWorkersHost
     {
         private readonly ITaskWorkerFactory _workerFactory;
+        private readonly IStatistics _statistics;
         private readonly ILogger _logger;
         private readonly Dictionary<string, TaskWorkerDescriptor> _descriptors;
         private readonly Dictionary<string, (Type taskType, Type processType)> _autoTasks;
         private readonly ConcurrentDictionary<string, ITaskWorker> _workers;
         private object _loker = new object();
 
-        public TaskWorkersHost(ITaskWorkerFactory workerFactory, ILogger logger)
+        public TaskWorkersHost(ITaskWorkerFactory workerFactory, IStatistics statistics, ILogger logger)
         {
             this._workerFactory = workerFactory;
             this._logger = logger;
+            this._statistics = statistics;
             this._descriptors = new Dictionary<string, TaskWorkerDescriptor>();
             this._autoTasks = new Dictionary<string, (Type taskType, Type processType)>();
             this._workers = new ConcurrentDictionary<string, ITaskWorker>();
@@ -53,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             lock (this._loker)
             {
                 var descriptor = this._descriptors[key];
-                worker = new TaskWorker(descriptor, this._workerFactory, this._logger);
+                worker = new TaskWorker(descriptor, this._workerFactory, this._statistics, this._logger);
                 this._workers.TryAdd(key, worker);
                 return worker;
             }

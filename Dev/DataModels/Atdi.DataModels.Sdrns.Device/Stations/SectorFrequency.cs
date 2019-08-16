@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Station sector frequency parameters
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class SectorFrequency
     {
         /// <summary>

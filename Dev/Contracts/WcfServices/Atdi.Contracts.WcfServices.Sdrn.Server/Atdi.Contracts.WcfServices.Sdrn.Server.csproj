@@ -94,6 +94,8 @@
     <Compile Include="OldAPI\Models\Measurements\Signaling\SignalingSysInfo.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\Spectrum.cs" />
     <Compile Include="OldAPI\Models\Measurements\Signaling\WorkTime.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingGroupingParameters.cs" />
+    <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingInterruptionParameters.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingMeasTask.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalMask.cs" />
     <Compile Include="OldAPI\Models\Measurements\StationMeasurements.cs" />
@@ -123,8 +125,8 @@
     <Compile Include="OldAPI\Models\Tasks\MeasLocParam.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasLocParamIdentifier.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasOther.cs" />
-    <Compile Include="OldAPI\Models\Tasks\MeasStation.cs" />
-    <Compile Include="OldAPI\Models\Tasks\MeasStationIdentifier.cs" />
+    <Compile Include="OldAPI\Models\Tasks\MeasSensor.cs" />
+    <Compile Include="OldAPI\Models\Tasks\MeasSensorIdentifier.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasSubTask.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasSubTaskStation.cs" />
     <Compile Include="OldAPI\Models\Tasks\MeasTask.cs" />

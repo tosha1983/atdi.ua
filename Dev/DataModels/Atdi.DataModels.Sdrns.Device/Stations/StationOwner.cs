@@ -11,6 +11,7 @@ namespace Atdi.DataModels.Sdrns.Device
     /// Station owner information
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
+    [Serializable]
     public class StationOwner
     {
         /// <summary>

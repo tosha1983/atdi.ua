@@ -15,8 +15,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public static Sensor Convert(this MesureSysInfoDeviceProperties mesure, string sensorName, string sensorTechId)
         {
             var sensor = new Sensor();
+            sensor.Status = "NOT_CONFIRMED";
             sensor.Name = sensorName;
-
+            sensor.Equipment = new SensorEquipment();
+            sensor.Equipment.TechId = sensorTechId;
             return sensor;
         }
     }

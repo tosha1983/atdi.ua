@@ -7,6 +7,7 @@ using Atdi.DataModels.Api.EventSystem;
 using Atdi.DataModels.Sdrns;
 using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Sdrns.Server.Events;
+using Atdi.Platform.Caching;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
 using System;
@@ -234,14 +235,14 @@ namespace Atdi.Test.Platform
         public static void Run(IServicesResolver servicesResolver, ILogger logger)
         {
             var dataLayer = servicesResolver.Resolve<IDataLayer<EntityDataOrm>>();
-
-            Test_Subscribes(dataLayer, logger);
+            var dataCacheSite = servicesResolver.Resolve<IDataCacheSite>();
+            Test_Subscribes(dataLayer, dataCacheSite, logger);
         }
 
-        private static void Test_Subscribes(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        private static void Test_Subscribes(IDataLayer<EntityDataOrm> dataLayer, IDataCacheSite dataCacheSite, ILogger logger)
         {
    
-            var subscriber = new SB.SendMeasResultsSubscriber(new EventEmitterFake(), new SdrnMessagePublisherFake(), new MessagesSiteFake(), dataLayer, new SdrnServerEnvironmentFake(), logger);
+            var subscriber = new SB.SendMeasResultsSubscriber(new EventEmitterFake(), new SdrnMessagePublisherFake(), new MessagesSiteFake(), dataLayer, new SdrnServerEnvironmentFake(), null, dataCacheSite, logger);
             var event1 = new DevicesBusEvent
             {
                 BusMessageId = 1

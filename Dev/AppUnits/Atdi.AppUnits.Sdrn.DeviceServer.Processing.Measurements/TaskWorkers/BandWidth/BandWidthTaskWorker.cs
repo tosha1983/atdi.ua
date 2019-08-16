@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        private readonly IRepository<TaskParameters, long?> _repositoryTaskParametersByInt;
+        private readonly IRepository<MeasResults, string> _measResultsByStringRepository;
 
 
         public BandWidthTaskWorker(ITimeService timeService,
@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ITaskStarter taskStarter,
             ILogger logger,
             IBusGate busGate,
-            IRepository<TaskParameters, long?> repositoryTaskParametersByInt,
+            IRepository<MeasResults, string> measResultsByStringRepository,
             IController controller)
         {
             this._processingDispatcher = processingDispatcher;
@@ -41,8 +41,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._taskStarter = taskStarter;
             this._logger = logger;
             this._busGate = busGate;
+            this._measResultsByStringRepository = measResultsByStringRepository;
             this._controller = controller;
-            this._repositoryTaskParametersByInt = repositoryTaskParametersByInt;
         }
 
 
@@ -123,8 +123,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //
                 //////////////////////////////////////////////
                 ///
-                if (parentProc == null)
+                if ((parentProc == null) || ((parentProc!=null) && ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == false)))
                 {
+                    
                     BWResult outResultData = null;
                     bool isDown = context.WaitEvent<BWResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
                     if (isDown == false) // таймут - результатов нет
@@ -155,7 +156,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             DM.MeasResults measResult = new DM.MeasResults();
                             context.Task.CountSendResults++;
-                            measResult.ResultId = string.Format("{0}|{1}", context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            //measResult.ResultId = string.Format("{0}|{1}", context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                            measResult.TaskId = context.Task.taskParameters.SDRTaskId;
+                            measResult.ResultId = Guid.NewGuid().ToString();
+                            measResult.ScansNumber = context.Task.CountSendResults;
                             measResult.Status = "N";
                             measResult.Measurement = DataModels.Sdrns.MeasurementType.BandwidthMeas;
                             measResult.Levels_dBm = outResultData.Levels_dBm;
@@ -216,13 +220,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
-                            measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
+                            
                             //Отправка результатов в шину 
                             if (isParentProcess == false)
                             {
-                                var publisher = this._busGate.CreatePublisher("main");
-                                publisher.Send<DM.MeasResults>("SendMeasResults", measResult);
-                                publisher.Dispose();
+                                this._measResultsByStringRepository.Create(measResult);
                             }
                             context.Task.MeasBWResults = null;
                         }

@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=2.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -166,17 +168,9 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Console\Atdi.AppServer.Console.csproj">
-      <Project>{b551e073-cc82-4b4e-aba5-a183c949496d}</Project>
-      <Name>Atdi.AppServer.Console</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Sdrn.DeviceServer.Console\Atdi.AppServer.Sdrn.DeviceServer.Console.csproj">
       <Project>{534a7e4e-4d4f-430e-a44c-aebfce8ec1fe}</Project>
       <Name>Atdi.AppServer.Sdrn.DeviceServer.Console</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Hosts\Atdi.AppServer.Svchost\Atdi.AppServer.Svchost.csproj">
-      <Project>{c9d6ed82-abf9-4585-aa7c-b49fe0bf8eb9}</Project>
-      <Name>Atdi.AppServer.Svchost</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.AmqpBroker\Atdi.Modules.AmqpBroker.csproj">
       <Project>{714f342f-3838-4088-80e5-a54c4173b0ea}</Project>
@@ -241,13 +235,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\Environment.xml" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata"
-copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\DataTypes\Database\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata\DataTypes\Database"
-copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\Entities\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata\Entities"
-copy "..\..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Entities\Metadata\Units\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\Metadata\Units"
-
-
-copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+    <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.CoreServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.WebApiServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
