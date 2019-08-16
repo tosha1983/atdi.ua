@@ -95,7 +95,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (parentProc == null)
                     {
                         SysInfoResult outResultData = null;
-                        bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasBW_ms));
+                        bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasSysInfo_ms));
                         if (isDown == false) // таймут - результатов нет
                         {
                             var error = new ExceptionProcessSysInfo();

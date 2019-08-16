@@ -95,7 +95,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /////(BandwidthMeas, Specter)
         ///// </summary>
         [DataMember]
-        public float[] Frequencies { get; set; }
+        public double[] Frequencies { get; set; }
 
         ///// <summary>
         ///// Signal levels, dBm

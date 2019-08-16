@@ -413,9 +413,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
-                        deviceCommandResult.CustTxt1 = "";
                         deviceCommandResult.Status = StatusTask.C.ToString();
-                        deviceCommandResult.CustNbr1 = int.Parse(context.Task.taskParameters.SDRTaskId);
+                        deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
 
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
 

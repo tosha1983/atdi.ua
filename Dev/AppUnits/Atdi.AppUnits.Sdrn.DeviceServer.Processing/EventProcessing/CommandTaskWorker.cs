@@ -146,6 +146,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
             }
         }
+
+        private void StartLevelTask(ITaskContext<EventTask, DispatchProcess> context, ref List<string> listRunTask)
+        {
+            if (context.Process.activeSensor != null)
+            {
+                var levelProcess = _processingDispatcher.Start<LevelProcess>(context.Process);
+                var levelTask = new LevelTask();
+                levelTask.durationForSendResultLevel = this._config.durationForSendResultLevel; 
+                levelTask.durationForMeasLevel_ms = this._config.durationForMeasLevel_ms;
+                levelTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
+                levelTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
+                levelTask.taskParameters = context.Task.taskParameters;
+                levelTask.mesureTraceParameter = levelTask.taskParameters.ConvertForLevel();
+                if (!listRunTask.Contains(levelTask.taskParameters.SDRTaskId))
+                {
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.StartTaskQueueEventTaskWorker.With(levelTask.Id));
+                    _taskStarter.RunParallel(levelTask, levelProcess, context);
+                    listRunTask.Add(levelTask.taskParameters.SDRTaskId);
+                    _logger.Info(Contexts.CommandTaskWorker, Categories.Processing, Events.EndTaskQueueEventTaskWorker.With(levelTask.Id));
+                }
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -201,6 +223,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             }
                         }
                     }
+                    else if (tskParam.MeasurementType == MeasType.Level)
+                    {
+                        var eventCommand = new CommandHandler<LevelTask, LevelProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
+                        var listDeferredTasksTemp = new List<TaskParameters>();
+                        var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextLevelTasks, action, ref listDeferredTasksTemp, ref listRunTask, loadData.Length);
+                        if (listDeferredTasksTemp.Count > 0)
+                        {
+                            if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
+                            {
+                                context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                            }
+                        }
+                    }
                     else
                     {
                         _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
@@ -231,6 +266,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     else if (context.Task.taskParameters.MeasurementType == MeasType.BandwidthMeas)
                     {
                         StartBandWidthTask(context, ref listRunTask);
+                    }
+                    else if (context.Task.taskParameters.MeasurementType == MeasType.Level)
+                    {
+                        StartLevelTask(context, ref listRunTask);
                     }
                     else
                     {
@@ -291,6 +330,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                             var eventCommand = new CommandHandler<BandWidthTask, BandWidthProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
                                             var listDeferredTasksTemp = new List<TaskParameters>();
                                             var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextBandWidthTasks, action, ref listDeferredTasksTemp, ref listRunTask, 1);
+                                            if (listDeferredTasksTemp.Count > 0)
+                                            {
+                                                if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
+                                                {
+                                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                                }
+                                            }
+                                        }
+                                        else if (tskParam.MeasurementType == MeasType.Level)
+                                        {
+                                            var eventCommand = new CommandHandler<LevelTask, LevelProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
+                                            var listDeferredTasksTemp = new List<TaskParameters>();
+                                            var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextLevelTasks, action, ref listDeferredTasksTemp, ref listRunTask, 1);
                                             if (listDeferredTasksTemp.Count > 0)
                                             {
                                                 if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)

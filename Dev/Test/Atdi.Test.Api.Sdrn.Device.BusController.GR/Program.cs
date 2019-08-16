@@ -731,13 +731,13 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController.GR
             return result;
         }
 
-        static float[] BuildTestFrequencies(int count)
+        static double[] BuildTestFrequencies(int count)
         {
             var r = new Random();
-            var result = new float[count];
+            var result = new double[count];
             for (int i = 0; i < count; i++)
             {
-                result[i] = (float)r.NextDouble();
+                result[i] = r.NextDouble();
             }
             return result;
         }

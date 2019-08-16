@@ -14,15 +14,15 @@ namespace Atdi.DataModels.Sdrns
     public enum DetectingType
     {
         /// <summary>
+        /// Auto value
+        /// </summary>
+        [EnumMember]
+        Auto,
+        /// <summary>
         /// Average value
         /// </summary>
         [EnumMember]
         Average,
-        /// <summary>
-        /// Peak value
-        /// </summary>
-        [EnumMember]
-        Peak,
         /// <summary>
         /// Maximum peak value
         /// </summary>
@@ -37,6 +37,11 @@ namespace Atdi.DataModels.Sdrns
         /// Root mean square value
         /// </summary>
         [EnumMember]
-        RMS
+        RMS,
+        /// <summary>
+        /// Peak value
+        /// </summary>
+        [EnumMember]
+        Peak
     }
 }

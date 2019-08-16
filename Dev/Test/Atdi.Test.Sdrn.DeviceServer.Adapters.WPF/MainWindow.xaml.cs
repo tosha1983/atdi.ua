@@ -316,7 +316,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     IPAddress = "192.168.2.50",
                     RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
                 };
-                TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
+                TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService, null);
 
 
 

@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters, taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.SignalingMeasTaskParameters.triggerLevel_dBm_Hz==null ? -999 : taskContext.Task.taskParameters.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value);
                     }
-                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.ChCentrFreqs_Mhz, taskContext.Task.taskParameters.BWChalnel_kHz);
                 }
                 // Результат содержится в taskContext.Task.EmittingsRaw
                 //получаем результаты BW
@@ -223,7 +223,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 var sysInfoProcess = _processingDispatcher.Start<SysInfoProcess>(taskContext.Process);
                 var sysInfoTask = new SysInfoTask();
-                sysInfoTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
+                sysInfoTask.durationForMeasSysInfo_ms = taskContext.Task.durationForMeasSysInfo_ms;
                 sysInfoTask.durationForSendResultSysInfo = taskContext.Task.durationForSendResultSysInfo; // файл конфигурации (с него надо брать)
                 sysInfoTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
                 sysInfoTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;

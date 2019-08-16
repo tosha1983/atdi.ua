@@ -137,17 +137,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // constant 
             double LevelDiffForChackCorrection = 30;
 
-            imax = 0; SumPow = 0; 
+            imax = 0; SumPow = 0;
             CalcSumAndMaxFromArry(ref SpecrtumArrdBm, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out imax);
+
+            if (SpecrtumArrdBm.Length < MaximumIgnorPoint + 2)
+                return false;
+
             // расчет области вначале 
             double SumStart = 0; double SumFinish = 0;
             for (int i = 0; i < MaximumIgnorPoint + 1; i++)
             {
-                SumStart = SumStart + Math.Pow(10, SpecrtumArrdBm[i]/10.0);
-                SumFinish = SumFinish + Math.Pow(10, SpecrtumArrdBm[SpecrtumArrdBm.Length-1-i]/10.0);
+
+                SumStart = SumStart + Math.Pow(10, SpecrtumArrdBm[i] / 10.0);
+                SumFinish = SumFinish + Math.Pow(10, SpecrtumArrdBm[SpecrtumArrdBm.Length - 1 - i] / 10.0);
             }
-            SumStart = 10.0 * Math.Log10(SumStart/(MaximumIgnorPoint + 1));
-            SumFinish = 10.0 * Math.Log10(SumFinish/(MaximumIgnorPoint + 1));
+            SumStart = 10.0 * Math.Log10(SumStart / (MaximumIgnorPoint + 1));
+            SumFinish = 10.0 * Math.Log10(SumFinish / (MaximumIgnorPoint + 1));
             if (((SpecrtumArrdBm[imax] - SumStart) > LevelDiffForChackCorrection) && ((SpecrtumArrdBm[imax] - SumFinish) > LevelDiffForChackCorrection))
             {
                 return true;
