@@ -45,6 +45,11 @@
     <Compile Include="AdapterConfig.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="CommandConnection.cs" />
+    <Compile Include="Enums\Detector.cs" />
+    <Compile Include="Enums\DFSQUMode.cs" />
+    <Compile Include="Enums\FFTMode.cs" />
+    <Compile Include="Enums\RFMode.cs" />
+    <Compile Include="Enums\SelectivityMode.cs" />
     <Compile Include="LocalParametersConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
@@ -87,5 +92,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
