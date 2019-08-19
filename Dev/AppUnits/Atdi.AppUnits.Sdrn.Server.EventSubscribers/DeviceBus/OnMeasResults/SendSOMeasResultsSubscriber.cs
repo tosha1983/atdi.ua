@@ -23,8 +23,8 @@ using Atdi.Platform.Caching;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
-    [SubscriptionEvent(EventName = "OnSendMeasResultsDeviceBusEvent", SubscriberName = "SendMeasResultsSubscriber")]
-    public class SendMeasResultsSubscriber : SubscriberBase<DM.MeasResults>
+    [SubscriptionEvent(EventName = "OnSOMeasResultsDeviceBusEvent", SubscriberName = "SendSOMeasResultsSubscriber")]
+    public class SendSOMeasResultsSubscriber : SubscriberBase<DM.MeasResults>
     {
         class HandleContext
         {
@@ -58,7 +58,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IStatisticCounter _signalingCounter;
         private readonly IStatisticCounter _spectrumOccupationCounter;
 
-        public SendMeasResultsSubscriber(
+        public SendSOMeasResultsSubscriber(
             IEventEmitter eventEmitter, 
             ISdrnMessagePublisher messagePublisher, 
             IMessagesSite messagesSite, 
@@ -100,8 +100,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
             {
-                this._messageProcessingHitsCounter?.Increment();
-                this._sendMeasResultsHitsCounter?.Increment();
+                if (deliveryObject.Measurement == MeasurementType.SpectrumOccupation)
+                {
+                    throw new InvalidOperationException("Incorrect MeasurementType. Expected is SpectrumOccupation");
+                }
+
 
                 var status = SdrnMessageHandlingStatus.Unprocessed;
                 bool isSuccessProcessed = false;
@@ -120,28 +123,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             measResult = deliveryObject
                         };
 
-                        if (deliveryObject.Measurement == MeasurementType.SpectrumOccupation)
-                        {
-                            var busEvent = new DevicesBusEvent($"OnSOMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber")
-                            {
-                                BusMessageId = messageId
-                            };
-                            _eventEmitter.Emit(busEvent);
-                        }
-                        else if (deliveryObject.Measurement == MeasurementType.MonitoringStations)
-                        {
-                            this._monitoringStationsCounter?.Increment();
-                            isSuccessProcessed = SaveMeasResultMonitoringStations(context);
-                        }
-                        else if (deliveryObject.Measurement == MeasurementType.Signaling)
-                        {
-                            this._signalingCounter?.Increment();
-                            isSuccessProcessed = SaveMeasResultSignaling(context);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException($"Unsupported MeasurementType '{deliveryObject.Measurement}'");
-                        }
+                        this._spectrumOccupationCounter?.Increment();
+
+                        this.SaveMeasResultSpectrumOccupation(context);
                     }
                 }
                 catch (Exception e)
