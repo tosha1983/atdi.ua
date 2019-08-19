@@ -120,6 +120,18 @@
     <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SignalizationSensorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SignalizationSensorsForm.Designer.cs">
+      <DependentUpon>SignalizationSensorsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SignalizationStationsEquipments.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SignalizationStationsEquipments.Designer.cs">
+      <DependentUpon>SignalizationStationsEquipments.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SignalizationSysInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -206,6 +218,7 @@
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
     <Compile Include="Models\Common\MeasStationsSignalization.cs" />
+    <Compile Include="Models\Common\StationsEquipment.cs" />
     <Compile Include="Models\DataStore.cs" />
     <Compile Include="Models\DTO\Station.cs" />
     <Compile Include="Metadata\Employee.cs" />
@@ -246,6 +259,7 @@
     <Compile Include="Models\Views\ShortResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\ShortSensorViewModel.cs" />
     <Compile Include="Models\Views\SignSysInfoViewModel.cs" />
+    <Compile Include="Models\Views\StationsEquipmentViewModel.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\GeneralResultDataAdapter.cs" />
@@ -260,6 +274,7 @@
     <Compile Include="Models\WcfDataApadters\ShortResultsMeasurementsStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortSensorDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\SignSysInfoDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\StationsEquipmentDataAdapter.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Handlers\PluginCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -279,6 +294,8 @@
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
+    <Compile Include="ViewModels\SignalizationSensorsViewModel.cs" />
+    <Compile Include="ViewModels\SignalizationStationsEquipmentsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSysInfoViewModel.cs" />
     <Compile Include="WcfServiceClients\SdrnsControllerWcfClient.cs" />
     <Compile Include="WpfControls\Charts\ChartColumnsStyle.cs" />
@@ -321,6 +338,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SignalizationSensorsForm.resx">
+      <DependentUpon>SignalizationSensorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SignalizationStationsEquipments.resx">
+      <DependentUpon>SignalizationStationsEquipments.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SignalizationSysInfoForm.resx">
       <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>

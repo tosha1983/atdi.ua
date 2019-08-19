@@ -14,7 +14,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public string IcsmTable { get; set; }
 
         [WpfColumn("IcsmId", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public int IcsmId { get; set; }
+        public long IcsmId { get; set; }
 
         [WpfColumn("StationName", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string StationName { get; set; }
