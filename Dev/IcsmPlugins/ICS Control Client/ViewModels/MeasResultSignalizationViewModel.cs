@@ -476,7 +476,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         {
                             IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
                             rs.SetAdditional(sqlQuery);
-                            rs.Select("TX_FREQ,STATUS,Station.Equipment.CODE,Station.Equipment.MANUFACTURER,Station.Equipment.NAME,Station.Equipment.DESIG_EMISSION,Station.Equipment.MAX_POWER,Station.Equipment.LOWER_FREQ,Station.Equipment.UPPER_FREQ,Station.Equipment.ID");
+                            rs.Select("TX_FREQ,Station.STATUS,Station.Equipment.CODE,Station.Equipment.MANUFACTURER,Station.Equipment.NAME,Station.Equipment.DESIG_EMISSION,Station.Equipment.MAX_POWER,Station.Equipment.LOWER_FREQ,Station.Equipment.UPPER_FREQ,Station.Equipment.ID");
                             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                             {
                                 var equipment = new StationsEquipment()
@@ -489,7 +489,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                     MaxPower = rs.GetD("Station.Equipment.MAX_POWER"),
                                     LowerFreq = rs.GetD("Station.Equipment.LOWER_FREQ"),
                                     UpperFreq = rs.GetD("Station.Equipment.UPPER_FREQ"),
-                                    Status = rs.GetS("STATUS"),
+                                    Status = rs.GetS("Station.STATUS"),
                                     IcsmId = rs.GetI("Station.Equipment.ID"),
                                     IcsmTable = "EQUIP_PMR"
                                 };
@@ -536,7 +536,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         {
                             IMRecordset rs = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
                             rs.SetAdditional(sqlQuery);
-                            rs.Select("TX_FREQ,STATUS,Station.Equipment.CODE,Station.Equipment.MANUFACTURER,Station.Equipment.NAME,Station.Equipment.DESIG_EMISSION,Station.Equipment.MAX_POWER,Station.Equipment.LOWER_FREQ,Station.Equipment.UPPER_FREQ,Station.Equipment.ID");
+                            rs.Select("TX_FREQ,Station.STATUS,Station.Equipment.CODE,Station.Equipment.MANUFACTURER,Station.Equipment.NAME,Station.Equipment.DESIG_EMISSION,Station.Equipment.MAX_POWER,Station.Equipment.LOWER_FREQ,Station.Equipment.UPPER_FREQ,Station.Equipment.ID");
                             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                             {
                                 var equipment = new StationsEquipment()
@@ -549,7 +549,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                     MaxPower = rs.GetD("Station.Equipment.MAX_POWER"),
                                     LowerFreq = rs.GetD("Station.Equipment.LOWER_FREQ"),
                                     UpperFreq = rs.GetD("Station.Equipment.UPPER_FREQ"),
-                                    Status = rs.GetS("STATUS"),
+                                    Status = rs.GetS("Station.STATUS"),
                                     IcsmId = rs.GetI("Station.Equipment.ID"),
                                     IcsmTable = "EQUIP_MOB2"
                                 };

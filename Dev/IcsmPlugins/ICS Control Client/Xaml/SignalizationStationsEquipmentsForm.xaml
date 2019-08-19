@@ -102,60 +102,58 @@
           </Grid>  
         </GroupBox>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
-        <GroupBox Grid.Row="2" Header="{Binding EmittingCaption}" Margin="0, 5, 5, 5">
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <GroupBox Grid.Column="0" Header="{Binding EmittingCaption}" Margin="0, 5, 5, 5">
-              <DataGrid Grid.Column="0" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" AlternatingRowBackground="LightCyan" AlternationCount="3" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItem="{Binding CurrentEmitting}">
-                <DataGrid.Columns>
-                  <DataGridTextColumn Header="StartFreq_MHz" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="StopFreq_MHz" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="CurentPower_dBm" Binding="{Binding Path=CurentPower_dBm}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="ReferenceLevel_dBm" Binding="{Binding Path=ReferenceLevel_dBm}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="EmissionFreqMHz" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Bandwidth_kHz" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="CorrectnessEstimations" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Contravention" Binding="{Binding Path=Contravention}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="TraceCount" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="StandardBW" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="SumHitCount" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="IcsmID" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="MeanDeviationFromReference" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
-                </DataGrid.Columns>
-              </DataGrid>
-            </GroupBox>
-            <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>
-            <GroupBox Grid.Column="2" Header="{Binding EquipmentCaption}" Margin="0, 5, 5, 5">
-              <cdg:CustomDataGridEquipments ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Equipments}" SelectedItem="{Binding CurrentEquipment}" SelectedItemsList="{Binding CurrentEquipments, Mode=TwoWay}">
-                <DataGrid.Columns>
-                  <DataGridTextColumn Header="Freq_MHz" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Code" Binding="{Binding Path=Code}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=Manufacturer}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="DesigEmission" Binding="{Binding Path=DesigEmission}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="MaxPower" Binding="{Binding Path=MaxPower}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="LowerFreq" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="UpperFreq" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="IcsmId" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
-                </DataGrid.Columns>
-              </cdg:CustomDataGridEquipments>
-            </GroupBox>
-          </Grid>
-        </GroupBox>
+        <Grid Grid.Row="2">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+          </Grid.RowDefinitions>
+          <GroupBox Grid.Column="0" Header="{Binding EmittingCaption}" Margin="0, 5, 5, 5">
+            <DataGrid Grid.Column="0" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" AlternatingRowBackground="LightCyan" AlternationCount="3" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItem="{Binding CurrentEmitting}">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="StartFreq_MHz" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="StopFreq_MHz" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="CurentPower_dBm" Binding="{Binding Path=CurentPower_dBm}"></DataGridTextColumn>
+                <DataGridTextColumn Header="ReferenceLevel_dBm" Binding="{Binding Path=ReferenceLevel_dBm}"></DataGridTextColumn>
+                <DataGridTextColumn Header="EmissionFreqMHz" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Bandwidth_kHz" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="CorrectnessEstimations" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Contravention" Binding="{Binding Path=Contravention}"></DataGridTextColumn>
+                <DataGridTextColumn Header="TraceCount" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
+                <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
+                <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
+                <DataGridTextColumn Header="StandardBW" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
+                <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="SumHitCount" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
+                <DataGridTextColumn Header="IcsmID" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
+                <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+                <DataGridTextColumn Header="MeanDeviationFromReference" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
+                <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
+              </DataGrid.Columns>
+            </DataGrid>
+          </GroupBox>
+          <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>
+          <GroupBox Grid.Column="2" Header="{Binding EquipmentCaption}" Margin="0, 5, 5, 5">
+            <cdg:CustomDataGridEquipments ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Equipments}" SelectedItem="{Binding CurrentEquipment}" SelectedItemsList="{Binding CurrentEquipments, Mode=TwoWay}">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Freq_MHz" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Code" Binding="{Binding Path=Code}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=Manufacturer}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="DesigEmission" Binding="{Binding Path=DesigEmission}"></DataGridTextColumn>
+                <DataGridTextColumn Header="MaxPower" Binding="{Binding Path=MaxPower}"></DataGridTextColumn>
+                <DataGridTextColumn Header="LowerFreq" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+                <DataGridTextColumn Header="UpperFreq" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+                <DataGridTextColumn Header="IcsmId" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
+              </DataGrid.Columns>
+            </cdg:CustomDataGridEquipments>
+          </GroupBox>
+        </Grid>
     </Grid>
     </DockPanel>
 </UserControl>
