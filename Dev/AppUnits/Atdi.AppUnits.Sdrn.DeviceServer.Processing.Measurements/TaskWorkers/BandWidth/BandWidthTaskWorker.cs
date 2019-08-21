@@ -168,8 +168,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.Levels_dBm = outResultData.Levels_dBm;
                             if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length > 0))
                             {
-
-                                measResult.Frequencies = outResultData.Freq_Hz;
+                                var floatArray = outResultData.Freq_Hz.Select(x => (float)x).ToList();
+                                measResult.Frequencies = floatArray.ToArray();
                             }
                             measResult.BandwidthResult = new BandwidthMeasResult();
                             measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;

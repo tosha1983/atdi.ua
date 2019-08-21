@@ -231,7 +231,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.Measurement = DataModels.Sdrns.MeasurementType.Level;
                             measResult.Levels_dBm = outResultData.Level;
 
-                            measResult.Frequencies = outResultData.Freq_Hz;
+                            var floatArray = outResultData.Freq_Hz.Select(x => (float)x).ToList();
+                            measResult.Frequencies = floatArray.ToArray();
 
 
                             measResult.StartTime = currTime;

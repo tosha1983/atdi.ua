@@ -894,13 +894,13 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             return result;
         }
 
-        static double[] BuildTestFrequencies(int count)
+        static float[] BuildTestFrequencies(int count)
         {
             var r = new Random();
-            var result = new double[count];
+            var result = new float[count];
             for (int i = 0; i < count; i++)
             {
-                result[i] = r.NextDouble();
+                result[i] = (float)r.NextDouble();
             }
             return result;
         }
