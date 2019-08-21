@@ -940,7 +940,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
 
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -955,30 +955,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
 
-                        /*
-                        var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
-                        builderLinkResSensoT.Select(c => c.Id);
-                        builderLinkResSensoT.Select(c => c.SENSOR.Id);
-                        builderLinkResSensoT.Select(c => c.SENSOR.Name);
-                        builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                        builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                        builderLinkResSensoT.OrderByAsc(c => c.Id);
-                        queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
-                        {
-                            while (readerLinkResSensor.Read())
-                            {
-                                if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
-                                {
-                                    levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
-                                    levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
-                                    break;
-                                }
-                            }
-                            return true;
-                        });
-                        */
+
                         levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
                         levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
 
@@ -1124,7 +1104,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     return true;
                                 });
 
-
+                                /*
                                 builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                                 builderResMeasStation.Select(c => c.Id);
                                 builderResMeasStation.Select(c => c.Status);
@@ -1139,6 +1119,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     }
                                     return true;
                                 });
+                                */
                             }
 
                         }
@@ -1277,7 +1258,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -1292,6 +1273,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
 
                         if ((results.Find(x => x.Id.MeasSdrResultsId == levelmeasurementResults.Id.MeasSdrResultsId)) == null)
@@ -2603,7 +2585,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -2618,29 +2600,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
-
-                            /*
-                            var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
-                            builderLinkResSensoT.Select(c => c.Id);
-                            builderLinkResSensoT.Select(c => c.SENSOR.Id);
-                            builderLinkResSensoT.Select(c => c.SENSOR.Name);
-                            builderLinkResSensoT.Select(c => c.SENSOR.TechId);
-                            builderLinkResSensoT.Where(c => c.RES_MEAS_STATION.RES_MEAS.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.Id));
-                            builderLinkResSensoT.OrderByAsc(c => c.Id);
-                            queryExecuter.Fetch(builderLinkResSensoT, readerLinkResSensor =>
-                            {
-                                while (readerLinkResSensor.Read())
-                                {
-                                    if (readerLinkResSensor.GetValue(c => c.SENSOR.Name) != null)
-                                    {
-                                        levelmeasurementResults.SensorName = readerLinkResSensor.GetValue(c => c.SENSOR.Name);
-                                        levelmeasurementResults.SensorTechId = readerLinkResSensor.GetValue(c => c.SENSOR.TechId);
-                                        break;
-                                    }
-                                }
-                                return true;
-                            });
                             */
+
+
                         }
 
                         levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
@@ -3355,6 +3317,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -3369,6 +3332,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
@@ -3498,7 +3462,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -3513,6 +3477,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
@@ -3643,7 +3608,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
 
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -3658,6 +3623,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
