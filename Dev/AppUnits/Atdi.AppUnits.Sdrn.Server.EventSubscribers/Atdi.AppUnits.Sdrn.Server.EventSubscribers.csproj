@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="DeviceBus\OnMeasResults\SendMSMeasResultsSubscriber.cs" />
+    <Compile Include="DeviceBus\OnMeasResults\SendSGMeasResultsSubscriber.cs" />
     <Compile Include="DeviceBus\OnMeasResults\SendSOMeasResultsSubscriber.cs" />
     <Compile Include="DeviceBus\SubscriberBase.cs" />
     <Compile Include="DeviceBus\SendCommandResultSubscriber.cs" />
