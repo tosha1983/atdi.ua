@@ -90,17 +90,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ANThread.Start();
             AND += ANConnect;
 
-            SHThread = new Thread(SHWorks);
-            SHThread.Name = "SHThread";
-            SHThread.IsBackground = true;
-            SHThread.Start();
-            SHD += SHConnect;
+            //SHThread = new Thread(SHWorks);
+            //SHThread.Name = "SHThread";
+            //SHThread.IsBackground = true;
+            //SHThread.Start();
+            //SHD += SHConnect;
 
-            GPSThread = new Thread(GPSWorks);
-            GPSThread.Name = "GPSThread";
-            GPSThread.IsBackground = true;
-            GPSThread.Start();
-            GPSD += GPSConnect;
+            //GPSThread = new Thread(GPSWorks);
+            //GPSThread.Name = "GPSThread";
+            //GPSThread.IsBackground = true;
+            //GPSThread.Start();
+            //GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
@@ -358,18 +358,18 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 0;
-                command.Parameter.FreqStart_Hz = 1800000000;
-                command.Parameter.FreqStop_Hz = 1900000000;
-                command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 3000;
-                command.Parameter.VBW_Hz = 3000;
-                command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 100001;
+                command.Parameter.Att_dB = -1;
+                command.Parameter.FreqStart_Hz = 1805000000;
+                command.Parameter.FreqStop_Hz = 1880000000;
+                command.Parameter.PreAmp_dB = -1;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
+                command.Parameter.RefLevel_dBm = -1;
+                command.Parameter.SweepTime_s = 0.003;
+                command.Parameter.TraceCount = 1;
+                command.Parameter.TracePoint = 3750;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
-                command.Parameter.DetectorType = CMD.Parameters.DetectorType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
                 ANadapter.MesureTraceCommandHandler(command, context);
@@ -499,18 +499,18 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 20;
-                command.Parameter.FreqStart_Hz = 1800000000;
-                command.Parameter.FreqStop_Hz = 1900000000;
-                command.Parameter.PreAmp_dB = 26;
+                command.Parameter.Att_dB = -1;
+                command.Parameter.FreqStart_Hz = 1805000000;
+                command.Parameter.FreqStop_Hz = 1880000000;
+                command.Parameter.PreAmp_dB = -1;
                 command.Parameter.RBW_Hz = -1;
                 command.Parameter.VBW_Hz = -1;
-                command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 100001;
+                command.Parameter.RefLevel_dBm = -1;
+                command.Parameter.SweepTime_s = 0.003;
+                command.Parameter.TraceCount = 1;
+                command.Parameter.TracePoint = 3750;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
-                command.Parameter.DetectorType = CMD.Parameters.DetectorType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
                 SHadapter.MesureTraceCommandHandler(command, context);

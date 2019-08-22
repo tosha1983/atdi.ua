@@ -3711,7 +3711,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         if (pr == 0 || pr == 2) { PowerRegister = EN.PowerRegister.Normal; }
                         else if (pr == 4) { PowerRegister = EN.PowerRegister.IFOverload; }
                         else if (pr == 1) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
-
                         if (System.Text.Encoding.ASCII.GetString(byteArray, tracedataoffset, 1) == "#")
                         {
                             int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, tracedataoffset + 1, 1));
@@ -3721,6 +3720,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             for (int j = 0; j < lengthData / 4; j++)
                             {
                                 temp[j + 1] = System.BitConverter.ToSingle(byteArray, tracedataoffset + lengthPreamb + 2 + j * 4);
+                                if (float.IsNaN(temp[j]) || temp[j] == -200 || temp[j] == -145)
+                                    res = false;
                             }
                             temp[0] = temp[1];
                             temp[temp.Length - 1] = temp[temp.Length - 2];
@@ -3877,89 +3878,77 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         private bool GetIQStream(ref COMR.MesureIQStreamResult result, decimal meastime, int sample)
         {
             bool res = false;
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
+                //ели надо изменяем размер буфера
+                int length = (SampleLength * 4) * 2 + SampleLength.ToString().Length + 100;
+                if (session.DefaultBufferSize != length)
                 {
-                    //ели надо изменяем размер буфера
-                    int length = (SampleLength * 4) * 2 + SampleLength.ToString().Length + 100;
-                    if (session.DefaultBufferSize != length)
-                    {
-                        session.DefaultBufferSize = length;
-                    }
-                    session.Write("INIT:CONT OFF");
-                    session.Write("TRIG:SOUR EXT");
-                    session.Write("TRACe:IQ:DATA:FORMat IQPair");
-                    session.Write("INIT;*WAI;");
-                    int sleep = (int)(meastime * 1000 - 250);
-                    if (sleep < 1)
-                    {
-                        sleep = 1;
-                    }
-                    Thread.Sleep(sleep);
+                    session.DefaultBufferSize = length;
+                }
+                session.Write("INIT:CONT OFF");
+                session.Write("TRIG:SOUR EXT");
+                session.Write("TRACe:IQ:DATA:FORMat IQPair");
+                session.Write("INIT;*WAI;");
+                int sleep = (int)(meastime * 1000 - 250);
+                if (sleep < 1)
+                {
+                    sleep = 1;
+                }
+                Thread.Sleep(sleep);
 
-                    int step = sample / 10;
-                    if (step > 50000)
-                    {
-                        step = 50000;
-                    }
-                    else if (step < 10000)
-                    {
-                        step = 1000;
-                    }
-
-                    float[] temp = new float[sample * 2];
-                    long ddd = _timeService.TimeStamp.Ticks;
-                    int pos = 0;
-                    for (int i = 0; i < sample; i += step)
-                    {
-                        int from = i, to = i + step;
-                        if (to > sample) to = sample;
-                        session.Write($"TRAC:IQ:DATA:MEM? {from},{to - from}");
-                        byte[] byteArray = session.ReadByteArray();
-                        if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                        {
-                            int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                            int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                            float[] temp2 = new float[lengthData / 4];
-
-                            for (int j = 0; j < temp2.Length; j++)
-                            {
-                                temp2[j] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
-                            }
-                            //Debug.WriteLine(temp2.Length);
-                            Array.Copy(temp2, 0, temp, pos, temp2.Length);
-                            pos += temp2.Length;
-
-                        }
-                    }
-                    string dfghkjdp = session.Query("TRACe:IQ:TPISample?").TrimEnd();
-                    TriggerOffsetInSample = DecimalParse(dfghkjdp);
-                    //Посчитаем когда точно был триггер относительно первого семпла
-                    TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
-                    Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
-                    IQArr = temp;
-
-                    result.iq_samples[0] = temp;
-                    result.OneSempleDuration_ns = (long)(SampleTimeLength / 1000000000);
-                    //result.TimeStamp = ;
-                    //result.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// надыбать время первого семпла
-                    //result.PPSTimeDifference_ns = TimeToStartBlockWithPPS;// когда был ппс точно относительно первого семпла
-
+                int step = sample / 10;
+                if (step > 50000)
+                {
+                    step = 50000;
+                }
+                else if (step < 10000)
+                {
+                    step = 1000;
                 }
 
-                res = true;
+                float[] temp = new float[sample * 2];
+                long ddd = _timeService.TimeStamp.Ticks;
+                int pos = 0;
+                for (int i = 0; i < sample; i += step)
+                {
+                    int from = i, to = i + step;
+                    if (to > sample) to = sample;
+                    session.Write($"TRAC:IQ:DATA:MEM? {from},{to - from}");
+                    byte[] byteArray = session.ReadByteArray();
+                    if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
+                    {
+                        int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
+                        int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
+                        float[] temp2 = new float[lengthData / 4];
+
+                        for (int j = 0; j < temp2.Length; j++)
+                        {
+                            temp2[j] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
+                        }
+                        //Debug.WriteLine(temp2.Length);
+                        Array.Copy(temp2, 0, temp, pos, temp2.Length);
+                        pos += temp2.Length;
+
+                    }
+                }
+                string dfghkjdp = session.Query("TRACe:IQ:TPISample?").TrimEnd();
+                TriggerOffsetInSample = DecimalParse(dfghkjdp);
+                //Посчитаем когда точно был триггер относительно первого семпла
+                TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
+                Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
+                IQArr = temp;
+                result.iq_samples = new float[1][];
+                result.iq_samples[0] = temp;
+                result.OneSempleDuration_ns = (long)(SampleTimeLength / 1000000000);
+                //result.TimeStamp = ;
+                //result.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// надыбать время первого семпла
+                //result.PPSTimeDifference_ns = TimeToStartBlockWithPPS;// когда был ппс точно относительно первого семпла
+
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
+
+            res = true;
+
             return res;
         }
         #endregion
