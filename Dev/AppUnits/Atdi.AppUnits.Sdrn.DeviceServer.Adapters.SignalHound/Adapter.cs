@@ -954,8 +954,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                 res = false;
-                if (status == EN.Status.ADCOverflow) { RFOverload = 1; }
-                else { RFOverload = 0; }
+                if (status == EN.Status.ADCOverflow)
+                {
+                    RFOverload = 1;
+                }
+            }
+            else
+            {
+                RFOverload = 0;
             }
             //Приближенно при этих ошибках необходимо переподключить устройство, возможно еще какие-то есть
             if (status == EN.Status.DeviceConnectionErr || status == EN.Status.DeviceInvalidErr)
@@ -1713,6 +1719,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             iq_samples = new float[IQStopIndex - IQStartIndex][]
                         };
                         Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
+                        //dell
+                        float[] _IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length]; 
+                        for (int k = 0; k < IQStreamResult.iq_samples.Length; k++)
+                        {
+                            for (int j = 0; j < IQStreamResult.iq_samples[0].Length; j++)
+                            {
+                                _IQArr[k*j] = IQStreamResult.iq_samples[k][j];
+                            }
+                        }
+                        IQArr = _IQArr;
                     }
                     else
                     {

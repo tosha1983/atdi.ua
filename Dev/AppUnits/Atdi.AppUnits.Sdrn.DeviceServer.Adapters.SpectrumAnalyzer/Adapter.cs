@@ -410,7 +410,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                                 }
                                 //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
                                 result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                                if (PowerRegister != EN.PowerRegister.Normal)
+                                {
+                                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                                }
                                 context.PushResult(result);
                             }
                             else
@@ -444,6 +447,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         {
                             TraceAveraged.AveragingCount = (int)TraceCountToMeas;
                         }
+                        bool _RFOverload = false;
                         bool newres = false;
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
@@ -451,6 +455,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             if (newres)
                             {
                                 TraceCount++;
+                                if (PowerRegister != EN.PowerRegister.Normal)
+                                {
+                                    _RFOverload = true;
+                                }
                             }
                             else
                             {
@@ -492,7 +500,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             result.VBW_Hz = (double)VBW;
                             //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
                             result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                            if (_RFOverload)
+                            {
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                            }
                             context.PushResult(result);
                         }
                     }
@@ -612,14 +623,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
 
                 //IQMeasTime
-                decimal delay = Math.Abs( ((decimal)ToNextSecond )/ 10000000 )-0.1m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
+                decimal delay = Math.Abs(((decimal)ToNextSecond) / 10000000) - 0.1m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
                 //ищем ближайшее целое по отношени к длительности семпла
                 int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
                 //delay = divisor * SampleTimeLength;
                 SetTriggerOffset(divisor * SampleTimeLength);
                 IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
                 IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s + delay;
-                Debug.WriteLine("\r\n" + delay.ToString() + " delay"); 
+                Debug.WriteLine("\r\n" + delay.ToString() + " delay");
                 Debug.WriteLine("\r\n" + IQMeasTimeAll.ToString() + " All");
                 Debug.WriteLine("\r\n" + new TimeSpan((long)(IQMeasTimeAll * 10000000) + time).ToString(@"hh\:mm\:ss\.fffffff") + " Stop");
                 SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
@@ -650,8 +661,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         }
         #endregion
 
-        private TcpipSession session;
+
         #region Param
+        private TcpipSession session;
         private LocalSpectrumAnalyzerInfo UniqueData { get; set; } = new LocalSpectrumAnalyzerInfo { };
         private List<LocalSpectrumAnalyzerInfo> AllUniqueData = new List<LocalSpectrumAnalyzerInfo>
         {
@@ -1841,6 +1853,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 GetSweepType();
                 GetSweepPoints();
                 GetOptimization();
+                SetOptimization((EN.Optimization)_adapterConfig.Optimization);
                 GetRefLevel();
                 GetRange();
                 GetAttLevel();
@@ -3318,11 +3331,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         {
             try
             {
-                if (UniqueData.InstrManufacture == 1)
+                if (UniqueData.OptimizationAvailable)
                 {
-                    string temp1 = string.Empty;
-                    if (UniqueData.HiSpeed == true)
+                    if (UniqueData.InstrManufacture == 1)
                     {
+                        string temp1 = string.Empty;
                         temp1 = session.Query("SENSe:SWEep:OPTimize?");
                         foreach (ParamWithId TT in UniqueData.Optimization)
                         {
@@ -3332,18 +3345,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             }
                         }
                     }
-                    else if (UniqueData.HiSpeed == false)
+                    else if (UniqueData.InstrManufacture == 2)
                     {
+
                     }
+                    else if (UniqueData.InstrManufacture == 3)
+                    {
 
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-
+                    }
                 }
             }
             #region Exception

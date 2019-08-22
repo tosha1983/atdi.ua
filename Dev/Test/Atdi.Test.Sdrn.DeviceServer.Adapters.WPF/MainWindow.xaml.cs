@@ -82,11 +82,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //TimeThread.IsBackground = true;
             //TimeThread.Start();
 
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            ANThread = new Thread(ANWorks);
+            ANThread.Name = "ANThread";
+            ANThread.IsBackground = true;
+            ANThread.Start();
+            AND += ANConnect;
 
             SHThread = new Thread(SHWorks);
             SHThread.Name = "SHThread";
@@ -94,18 +94,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             SHThread.Start();
             SHD += SHConnect;
 
-            //GPSThread = new Thread(GPSWorks);
-            //GPSThread.Name = "GPSThread";
-            //GPSThread.IsBackground = true;
-            //GPSThread.Start();
-            //GPSD += GPSConnect;
+            GPSThread = new Thread(GPSWorks);
+            GPSThread.Name = "GPSThread";
+            GPSThread.IsBackground = true;
+            GPSThread.Start();
+            GPSD += GPSConnect;
 
-
-            //TSMxThread = new Thread(TSMxWorks);
-            //TSMxThread.Name = "TSMxThread";
-            //TSMxThread.IsBackground = true;
-            //TSMxThread.Start();
-            //TSMxD += TSMxConnect;
         }
         //long NextSecond = 0;
         private void GetGPSData()
@@ -153,7 +147,6 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     DisplayUpdate = true,
                     OnlyAutoSweepTime = true,
                     Optimization = 2
-
                 };
 
                 ANadapter = new ADP.SpectrumAnalyzer.Adapter(adapterConfig, logger, TimeService);
@@ -202,7 +195,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 {
                     SerialNumber = "16319373",
                     GPSPPSConnected = true,
-                    Reference10MHzConnected = true,
+                    Reference10MHzConnected = false,
                     //SyncCPUtoGPS = true,
                     //GPSPortBaudRate = 38400,
                     //GPSPortNumber = 1,
@@ -255,7 +248,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var adapterConfig = new ADP.GPS.ConfigGPS()
                 {
                     PortName = "COM21",
-                    PortBaudRate = "baudRate115200",
+                    PortBaudRate = "baudRate9600",
                     PortDataBits = "dataBits8",
                     PortHandshake = "None",
                     PortParity = "None",
@@ -401,7 +394,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 10;
                 command.Parameter.TracePoint = -1;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
@@ -728,7 +721,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.IQReceivTime_s = 1.5;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = false;
-                long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks;
+                long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
                 command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long offset = DateTime.Now.Ticks - NextSecond;
                 //command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
