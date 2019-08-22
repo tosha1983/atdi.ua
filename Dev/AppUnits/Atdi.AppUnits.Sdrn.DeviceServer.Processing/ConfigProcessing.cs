@@ -23,6 +23,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
 
         /// <summary>
+        /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Level
+        /// </summary>
+        public int durationForSendResultLevel { get; set; }
+
+        /// <summary>
         /// Время в миллисекундах в течении которого мы посылаем один результат для типа измерения Signaling
         /// </summary>
         public int durationForSendResultSignaling { get; set; }
@@ -42,6 +47,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         public int durationForMeasBW_ms { get; set; }
 
+        /// <summary>
+        /// Максимальное время в миллисекундах, выделяемое для выполнения одного измерения типа Level
+        /// </summary>
+        public int durationForMeasLevel_ms { get; set; }
+
+
+        
 
         /// <summary>
         /// 

@@ -166,13 +166,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             return shift;
         }
         public static int CalcShiftSpectrum(float[] arr1, double freq1_Hz, double BW1_Hz, float[] arr2, double freq2_Hz, double BW2_Hz, MethodCalcCorrelation methodCalcCorrelation, out double BestCorrelation, double PersentMaxShift = 10)
-        {// НЕ ТЕСТИРОВАННО
+        {// НЕ ТЕСТИРОВАННО предварительно тестированно
          // пока реализовано простое смещение без ускорений В дальнейшем это можно принципиально оптимизировать.
          // смещение идет второго масива относительно первого.
             BestCorrelation = -3;
             int shift = 0;
             float[] arr1corr; float[] arr2corr;
-            bool a = ArrAdaptation(arr1, freq1_Hz, BW1_Hz, arr2, freq2_Hz, BW2_Hz, out arr1corr, out arr2corr, 90);
+            bool a = ArrAdaptation(arr1, freq1_Hz, BW1_Hz, arr2, freq2_Hz, BW2_Hz, out arr1corr, out arr2corr, 30);
             if (!a) { return -1000000; }
             shift = CalcShiftSpectrum(arr1corr, arr2corr, methodCalcCorrelation, out BestCorrelation, PersentMaxShift);
             return shift;

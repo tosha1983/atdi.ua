@@ -331,7 +331,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show("Unknown error", "Delete Emittings faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-        public static void AddAssociationStationByEmitting(long[] emittingsId, int AssociatedStationID, string AssociatedStationTableName)
+        public static void AddAssociationStationByEmitting(long[] emittingsId, long AssociatedStationID, string AssociatedStationTableName)
         {
             var result = Execute(contract => contract.AddAssociationStationByEmitting(emittingsId, AssociatedStationID, AssociatedStationTableName));
             if (!result)

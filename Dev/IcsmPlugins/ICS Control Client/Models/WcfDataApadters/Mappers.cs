@@ -365,5 +365,28 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Status = source.Status
             };
         }
+        public static VM.StationsEquipmentViewModel Map(M.StationsEquipment source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+             return new VM.StationsEquipmentViewModel
+            {
+                Code = source.Code,
+                DesigEmission = source.DesigEmission,
+                Freq_MHz = source.Freq_MHz,
+                LowerFreq = source.LowerFreq,
+                UpperFreq = source.UpperFreq,
+                MaxPower = source.MaxPower,
+                Name = source.Name,
+                Manufacturer = source.Manufacturer,
+                Loss = source.Loss,
+                Freq = source.Freq,
+                IcsmId = source.IcsmId,
+                IcsmTable = source.IcsmTable,
+                Status = source.Status
+            };
+        }
     }
 }

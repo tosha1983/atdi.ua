@@ -17,5 +17,9 @@ namespace Atdi.DataModels.Sdrns.Device
         public double StandardBW { get; set; } // or channel BW
         [DataMember]
         public string Standard { get; set; } // or channel GSM/LTE/UMTS
+        [DataMember]
+        public double FreqDeviation { get; set; } // отклонение частоты от частоты канала по отношению к частоте канала 
+        [DataMember]
+        public double TriggerFreqDeviation { get; set; } // допустимое отклонение частоты от частоты канала по отношению к частоте канала 
     }
 }

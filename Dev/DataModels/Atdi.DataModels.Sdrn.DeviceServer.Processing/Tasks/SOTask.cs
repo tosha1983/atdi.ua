@@ -15,5 +15,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public DateTime? LastTimeSend = null;
         public SensorParameters sensorParameters;
         public long maximumTimeForWaitingResultSO; // в миллисекундах из файла конфигурации - время в течении которого будем ждать результат измерения и расчета SO для одного трейса
+        public long durationForSendResultSO;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
     }
 }

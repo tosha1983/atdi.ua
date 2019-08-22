@@ -26,6 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
         private readonly IRepository<MeasResults, string> _measResultsByStringRepository;
+        private readonly IRepository<DM.DeviceCommandResult, string> _repositoryDeviceCommandResult;
 
 
         public BandWidthTaskWorker(ITimeService timeService,
@@ -34,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ILogger logger,
             IBusGate busGate,
             IRepository<MeasResults, string> measResultsByStringRepository,
+            IRepository<DM.DeviceCommandResult, string> repositoryDeviceCommandResult,
             IController controller)
         {
             this._processingDispatcher = processingDispatcher;
@@ -43,6 +45,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._busGate = busGate;
             this._measResultsByStringRepository = measResultsByStringRepository;
             this._controller = controller;
+            this._repositoryDeviceCommandResult = repositoryDeviceCommandResult;
         }
 
 
@@ -165,8 +168,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             measResult.Levels_dBm = outResultData.Levels_dBm;
                             if ((outResultData.Freq_Hz != null) && (outResultData.Freq_Hz.Length > 0))
                             {
-                                var floatFreq_Hz = outResultData.Freq_Hz.Select(x => (float)x).ToArray();
-                                measResult.Frequencies = floatFreq_Hz;
+                                var floatArray = outResultData.Freq_Hz.Select(x => (float)x).ToList();
+                                measResult.Frequencies = floatArray.ToArray();
                             }
                             measResult.BandwidthResult = new BandwidthMeasResult();
                             measResult.BandwidthResult.MarkerIndex = outResultData.MarkerIndex;
@@ -225,6 +228,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             if (isParentProcess == false)
                             {
                                 this._measResultsByStringRepository.Create(measResult);
+
+                                DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                                deviceCommandResult.CommandId = "UpdateStatusMeasTask";
+                                deviceCommandResult.CustDate1 = DateTime.Now;
+                                deviceCommandResult.Status = StatusTask.C.ToString();
+                                deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
+                                this._repositoryDeviceCommandResult.Create(deviceCommandResult);
+
                             }
                             context.Task.MeasBWResults = null;
                         }

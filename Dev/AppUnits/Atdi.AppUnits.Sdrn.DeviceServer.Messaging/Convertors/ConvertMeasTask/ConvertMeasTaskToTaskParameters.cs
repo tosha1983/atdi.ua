@@ -1,5 +1,5 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
-using Atdi.DataModels.Sdrn.DeviceServer.Processing;
+using Proc = Atdi.DataModels.Sdrn.DeviceServer.Processing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +12,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 {
     public static class ConvertMeasTaskToTaskParameters
     {
-        public static TaskParameters Convert(this MeasTask taskSDR, ConfigMessaging configMessaging)
+
+        public static Proc.SignalingMeasTask GetSignalizationParameters(this MeasTask taskSDR, ConfigMessaging configMessaging)
         {
-            const bool Smooth = true; // из клиента для BW
-         
             // сигнализация
             bool? CompareTraceJustWithRefLevels = null;
             bool? AutoDivisionEmitting = null;
@@ -25,8 +24,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             int? SignalizationNCount = null;
             int? SignalizationNChenal = null;
 
+            bool? CorrelationAnalize = null;
+            double? CorrelationFactor = null;
+            bool? CheckFreqChannel = null;
+            bool? AnalyzeByChannel = null;
+            bool? AnalyzeSysInfoEmission = null;
+            bool? DetailedMeasurementsBWEmission = null;
+            string Standard = null;
+            double? triggerLevel_dBm_Hz = null;
+            int? NumberPointForChangeExcess = null;
+            double? InterruptionllowableExcess_dB = null;
+            double? windowBW = null;
+            double? DiffLevelForCalcBW = null;
+            double? nDbLevel_dB = null;
+            int? NumberIgnoredPoints = null;
+            double? MinExcessNoseLevel_dB = null;
+            int? TimeBetweenWorkTimes_sec = null;
+            int? TypeJoinSpectrum = null;
+            double? CrossingBWPercentageForGoodSignals = null;
+            double? CrossingBWPercentageForBadSignals = null;
+
+
             if (taskSDR.SignalingMeasTaskParameters != null)
             {
+                ///////////// CompareTraceJustWithRefLevels /////////////
                 if (taskSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels != null)
                 {
                     CompareTraceJustWithRefLevels = taskSDR.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels;
@@ -36,8 +57,139 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     CompareTraceJustWithRefLevels = configMessaging.CompareTraceJustWithRefLevels;
                 }
 
-                if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters!= null)
+                ///////////// AnalyzeByChannel /////////////
+                if (taskSDR.SignalingMeasTaskParameters.AnalyzeByChannel != null)
                 {
+                    AnalyzeByChannel = taskSDR.SignalingMeasTaskParameters.AnalyzeByChannel;
+                }
+                else
+                {
+                    AnalyzeByChannel = configMessaging.AnalyzeByChannel;
+                }
+
+                ///////////// AnalyzeSysInfoEmission /////////////
+                if (taskSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
+                {
+                    AnalyzeSysInfoEmission = taskSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission;
+                }
+                else
+                {
+                    AnalyzeSysInfoEmission = configMessaging.AnalyzeSysInfoEmission;
+                }
+
+                ///////////// CheckFreqChannel /////////////
+                if (taskSDR.SignalingMeasTaskParameters.CheckFreqChannel != null)
+                {
+                    CheckFreqChannel = taskSDR.SignalingMeasTaskParameters.CheckFreqChannel;
+                }
+                else
+                {
+                    CheckFreqChannel = configMessaging.CheckFreqChannel;
+                }
+
+                ///////////// CorrelationAnalize /////////////
+                if (taskSDR.SignalingMeasTaskParameters.CorrelationAnalize != null)
+                {
+                    CorrelationAnalize = taskSDR.SignalingMeasTaskParameters.CorrelationAnalize;
+                }
+                else
+                {
+                    CorrelationAnalize = configMessaging.CorrelationAnalize;
+                }
+
+                ///////////// CorrelationFactor /////////////
+                if (taskSDR.SignalingMeasTaskParameters.CorrelationFactor != null)
+                {
+                    CorrelationFactor = taskSDR.SignalingMeasTaskParameters.CorrelationFactor;
+                }
+                else
+                {
+                    CorrelationFactor = configMessaging.CorrelationFactor;
+                }
+
+                ///////////// DetailedMeasurementsBWEmission /////////////
+                if (taskSDR.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission != null)
+                {
+                    DetailedMeasurementsBWEmission = taskSDR.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission;
+                }
+                else
+                {
+                    DetailedMeasurementsBWEmission = configMessaging.DetailedMeasurementsBWEmission;
+                }
+
+                ///////////// Standard /////////////
+                if (taskSDR.SignalingMeasTaskParameters.Standard != null)
+                {
+                    Standard = taskSDR.SignalingMeasTaskParameters.Standard;
+                }
+                else
+                {
+                    Standard = configMessaging.Standard;
+                }
+
+                ///////////// triggerLevel_dBm_Hz /////////////
+                if (taskSDR.SignalingMeasTaskParameters.triggerLevel_dBm_Hz != null)
+                {
+                    triggerLevel_dBm_Hz = taskSDR.SignalingMeasTaskParameters.triggerLevel_dBm_Hz;
+                }
+                else
+                {
+                    triggerLevel_dBm_Hz = configMessaging.triggerLevel_dBm_Hz;
+                }
+
+                if (taskSDR.SignalingMeasTaskParameters.GroupingParameters != null)
+                {
+                    ///////////// CrossingBWPercentageForBadSignals /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals != null)
+                    {
+                        CrossingBWPercentageForBadSignals = taskSDR.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals;
+                    }
+                    else
+                    {
+                        CrossingBWPercentageForBadSignals = configMessaging.CrossingBWPercentageForBadSignals;
+                    }
+
+                    ///////////// CrossingBWPercentageForGoodSignals /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals != null)
+                    {
+                        CrossingBWPercentageForGoodSignals = taskSDR.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals;
+                    }
+                    else
+                    {
+                        CrossingBWPercentageForGoodSignals = configMessaging.CrossingBWPercentageForGoodSignals;
+                    }
+
+                    ///////////// TimeBetweenWorkTimes_sec /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec != null)
+                    {
+                        TimeBetweenWorkTimes_sec = taskSDR.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec;
+                    }
+                    else
+                    {
+                        TimeBetweenWorkTimes_sec = configMessaging.TimeBetweenWorkTimes_sec;
+                    }
+
+                    ///////////// TypeJoinSpectrum /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum != null)
+                    {
+                        TypeJoinSpectrum = taskSDR.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum;
+                    }
+                    else
+                    {
+                        TypeJoinSpectrum = configMessaging.TypeJoinSpectrum;
+                    }
+                }
+                else
+                {
+                    TypeJoinSpectrum = configMessaging.TypeJoinSpectrum;
+                    TimeBetweenWorkTimes_sec = configMessaging.TimeBetweenWorkTimes_sec;
+                    CrossingBWPercentageForGoodSignals = configMessaging.CrossingBWPercentageForGoodSignals;
+                    CrossingBWPercentageForBadSignals = configMessaging.CrossingBWPercentageForBadSignals;
+                }
+
+                if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters != null)
+                {
+                    ///////////// AutoDivisionEmitting /////////////
                     if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting != null)
                     {
                         AutoDivisionEmitting = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting;
@@ -46,14 +198,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     {
                         AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
                     }
-                }
-                else
-                {
-                    AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
-                }
 
-                if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters != null)
-                {
+                    ///////////// DifferenceMaxMax /////////////
                     if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax != null)
                     {
                         DifferenceMaxMax = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax;
@@ -62,11 +208,93 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     {
                         DifferenceMaxMax = configMessaging.DifferenceMaxMax;
                     }
+
+                    ///////////// InterruptionllowableExcess_dB /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB != null)
+                    {
+                        InterruptionllowableExcess_dB = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB;
+                    }
+                    else
+                    {
+                        InterruptionllowableExcess_dB = configMessaging.allowableExcess_dB;
+                    }
+
+                    ///////////// DiffLevelForCalcBW /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW != null)
+                    {
+                        DiffLevelForCalcBW = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW;
+                    }
+                    else
+                    {
+                        DiffLevelForCalcBW = configMessaging.DiffLevelForCalcBW;
+                    }
+
+                    ///////////// MinExcessNoseLevel_dB /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB != null)
+                    {
+                        MinExcessNoseLevel_dB = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB;
+                    }
+                    else
+                    {
+                        MinExcessNoseLevel_dB = configMessaging.MinExcessNoseLevel_dB;
+                    }
+
+                    ///////////// nDbLevel_dB /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB != null)
+                    {
+                        nDbLevel_dB = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB;
+                    }
+                    else
+                    {
+                        nDbLevel_dB = configMessaging.nDbLevel_dB;
+                    }
+
+                    ///////////// NumberIgnoredPoints /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints != null)
+                    {
+                        NumberIgnoredPoints = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints;
+                    }
+                    else
+                    {
+                        NumberIgnoredPoints = configMessaging.NumberIgnoredPoints;
+                    }
+
+                    ///////////// NumberPointForChangeExcess /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess != null)
+                    {
+                        NumberPointForChangeExcess = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess;
+                    }
+                    else
+                    {
+                        NumberPointForChangeExcess = configMessaging.NumberPointForChangeExcess;
+                    }
+
+                    ///////////// windowBW /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.windowBW != null)
+                    {
+                        windowBW = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.windowBW;
+                    }
+                    else
+                    {
+                        windowBW = configMessaging.windowBW;
+                    }
+
+
                 }
                 else
                 {
+                    AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
                     DifferenceMaxMax = configMessaging.DifferenceMaxMax;
+                    InterruptionllowableExcess_dB = configMessaging.InterruptionAllowableExcess_dB;
+                    DiffLevelForCalcBW = configMessaging.DiffLevelForCalcBW;
+                    MinExcessNoseLevel_dB = configMessaging.MinExcessNoseLevel_dB;
+                    nDbLevel_dB = configMessaging.nDbLevel_dB;
+                    NumberIgnoredPoints = configMessaging.NumberIgnoredPoints;
+                    NumberPointForChangeExcess = configMessaging.NumberPointForChangeExcess;
+                    windowBW = configMessaging.windowBW;
                 }
+
+
 
                 if (taskSDR.SignalingMeasTaskParameters.FiltrationTrace != null)
                 {
@@ -110,42 +338,186 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             else
             {
                 CompareTraceJustWithRefLevels = configMessaging.CompareTraceJustWithRefLevels;
-                AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
-                DifferenceMaxMax = configMessaging.DifferenceMaxMax;
                 FiltrationTrace = configMessaging.FiltrationTrace;
                 allowableExcess_dB = configMessaging.allowableExcess_dB;
                 SignalizationNCount = configMessaging.SignalizationNCount;
                 SignalizationNChenal = configMessaging.SignalizationNChenal;
+                AnalyzeByChannel = configMessaging.AnalyzeByChannel;
+                AnalyzeSysInfoEmission = configMessaging.AnalyzeSysInfoEmission;
+                CheckFreqChannel = configMessaging.CheckFreqChannel;
+                CorrelationAnalize = configMessaging.CorrelationAnalize;
+                CorrelationFactor = configMessaging.CorrelationFactor;
+                DetailedMeasurementsBWEmission = configMessaging.DetailedMeasurementsBWEmission;
+                Standard = configMessaging.Standard;
+                triggerLevel_dBm_Hz = configMessaging.triggerLevel_dBm_Hz;
             }
 
+            var signalingMeasTask = new Proc.SignalingMeasTask();
+            signalingMeasTask = new DataModels.Sdrn.DeviceServer.Processing.SignalingMeasTask();
+            signalingMeasTask.GroupingParameters = new DataModels.Sdrn.DeviceServer.Processing.SignalingGroupingParameters();
+            signalingMeasTask.InterruptionParameters = new DataModels.Sdrn.DeviceServer.Processing.SignalingInterruptionParameters();
+
+            if (CompareTraceJustWithRefLevels != null)
+            {
+                signalingMeasTask.CompareTraceJustWithRefLevels = CompareTraceJustWithRefLevels.Value;
+            }
+            if (FiltrationTrace != null)
+            {
+                signalingMeasTask.FiltrationTrace = FiltrationTrace.Value;
+            }
+            if (allowableExcess_dB != null)
+            {
+                signalingMeasTask.allowableExcess_dB = allowableExcess_dB.Value;
+            }
+            if (CorrelationAnalize != null)
+            {
+                signalingMeasTask.CorrelationAnalize = CorrelationAnalize.Value;
+            }
+            if (CorrelationFactor != null)
+            {
+                signalingMeasTask.CorrelationFactor = CorrelationFactor.Value;
+            }
+            if (CheckFreqChannel != null)
+            {
+                signalingMeasTask.CheckFreqChannel = CheckFreqChannel.Value;
+            }
+            if (AnalyzeByChannel != null)
+            {
+                signalingMeasTask.AnalyzeByChannel = AnalyzeByChannel.Value;
+            }
+            if (AnalyzeSysInfoEmission != null)
+            {
+                signalingMeasTask.AnalyzeSysInfoEmission = AnalyzeSysInfoEmission.Value;
+            }
+            if (DetailedMeasurementsBWEmission != null)
+            {
+                signalingMeasTask.DetailedMeasurementsBWEmission = DetailedMeasurementsBWEmission.Value;
+            }
+            if (Standard != null)
+            {
+                signalingMeasTask.Standard = Standard;
+            }
+            if (triggerLevel_dBm_Hz != null)
+            {
+                signalingMeasTask.triggerLevel_dBm_Hz = triggerLevel_dBm_Hz.Value;
+            }
+            if (triggerLevel_dBm_Hz != null)
+            {
+                signalingMeasTask.triggerLevel_dBm_Hz = triggerLevel_dBm_Hz.Value;
+            }
+
+            if (AutoDivisionEmitting != null)
+            {
+                signalingMeasTask.InterruptionParameters.AutoDivisionEmitting = AutoDivisionEmitting.Value;
+            }
+            if (DifferenceMaxMax != null)
+            {
+                signalingMeasTask.InterruptionParameters.DifferenceMaxMax = DifferenceMaxMax.Value;
+            }
+            if (NumberPointForChangeExcess != null)
+            {
+                signalingMeasTask.InterruptionParameters.NumberPointForChangeExcess = NumberPointForChangeExcess.Value;
+            }
+            if (InterruptionllowableExcess_dB != null)
+            {
+                signalingMeasTask.InterruptionParameters.allowableExcess_dB = InterruptionllowableExcess_dB.Value;
+            }
+            if (windowBW != null)
+            {
+                signalingMeasTask.InterruptionParameters.windowBW = windowBW.Value;
+            }
+            if (DiffLevelForCalcBW != null)
+            {
+                signalingMeasTask.InterruptionParameters.DiffLevelForCalcBW = DiffLevelForCalcBW.Value;
+            }
+            if (nDbLevel_dB != null)
+            {
+                signalingMeasTask.InterruptionParameters.nDbLevel_dB = nDbLevel_dB.Value;
+            }
+            if (NumberIgnoredPoints != null)
+            {
+                signalingMeasTask.InterruptionParameters.NumberIgnoredPoints = NumberIgnoredPoints.Value;
+            }
+            if (MinExcessNoseLevel_dB != null)
+            {
+                signalingMeasTask.InterruptionParameters.MinExcessNoseLevel_dB = MinExcessNoseLevel_dB.Value;
+            }
+
+
+            if (TimeBetweenWorkTimes_sec != null)
+            {
+                signalingMeasTask.GroupingParameters.TimeBetweenWorkTimes_sec = TimeBetweenWorkTimes_sec.Value;
+            }
+            if (TypeJoinSpectrum != null)
+            {
+                signalingMeasTask.GroupingParameters.TypeJoinSpectrum = TypeJoinSpectrum.Value;
+            }
+            if (CrossingBWPercentageForGoodSignals != null)
+            {
+                signalingMeasTask.GroupingParameters.CrossingBWPercentageForGoodSignals = CrossingBWPercentageForGoodSignals.Value;
+            }
+            if (CrossingBWPercentageForBadSignals != null)
+            {
+                signalingMeasTask.GroupingParameters.CrossingBWPercentageForBadSignals = CrossingBWPercentageForBadSignals.Value;
+            }
+            if (SignalizationNChenal != null)
+            {
+                signalingMeasTask.SignalizationNChenal = SignalizationNChenal.Value;
+            }
+            if (SignalizationNCount != null)
+            {
+                signalingMeasTask.SignalizationNCount = SignalizationNCount.Value;
+            }
+            return signalingMeasTask;
+        }
+
+        public static Proc.TaskParameters Convert(this MeasTask taskSDR, ConfigMessaging configMessaging)
+        {
+            const bool Smooth = true; // из клиента для BW
             double PercentForCalcNoise = configMessaging.PercentForCalcNoise;
-
-            /*
-            bool? CompareTraceJustWithRefLevels = false; // из клиента
-            bool?  AutoDivisionEmitting = true; // из клиента
-            double? DifferenceMaxMax = 20; // из клиента
-            bool? FiltrationTrace = true; // из клиента 
-            double? allowableExcess_dB = 10; // из клиента
-            int? SignalizationNCount = 1000000; // из клиента
-            int? SignalizationNChenal = 50; // из клиента
-            */
-           
             // сигнализация
-
-
 
             const int SO_Ncount = 10000;
             const int OtherNCount = 1000;
-
-
             const int SO_NChenal = 10;
 
 
-            var taskParameters = new TaskParameters();
+            var taskParameters = new Proc.TaskParameters();
+            if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
+            {
+                var signalizationParams = taskSDR.GetSignalizationParameters(configMessaging);
+                taskParameters.SignalingMeasTaskParameters = signalizationParams;
+                taskParameters.NChenal = taskParameters.SignalingMeasTaskParameters.SignalizationNChenal.Value;
+                taskParameters.NCount = taskParameters.SignalingMeasTaskParameters.SignalizationNCount.Value;
+            }
             taskParameters.Smooth = Smooth;
 
             //
             //taskParameters.NCount = необходимо вичислить
+            if (taskSDR.DeviceParam != null)
+            {
+                taskParameters.Preamplification_dB = taskSDR.DeviceParam.Preamplification_dB;
+                taskParameters.RefLevel_dBm = taskSDR.DeviceParam.RefLevel_dBm;
+                taskParameters.RfAttenuation_dB = taskSDR.DeviceParam.RfAttenuation_dB;
+                if (taskSDR.DeviceParam.RBW_kHz<=0)
+                {
+                    taskParameters.RBW_Hz = -1;
+                }
+                else
+                {
+                    taskParameters.RBW_Hz = taskSDR.DeviceParam.RBW_kHz * 1000;
+                }
+                if (taskSDR.DeviceParam.VBW_kHz <= 0)
+                {
+                    taskParameters.VBW_Hz = -1;
+                }
+                else
+                {
+                    taskParameters.VBW_Hz = taskSDR.DeviceParam.VBW_kHz * 1000;
+                }
+                    
+                taskParameters.DetectType = taskSDR.DeviceParam.DetectType;
+            }
 
             taskParameters.StartTime = taskSDR.StartTime;
             taskParameters.StopTime = taskSDR.StopTime;
@@ -181,11 +553,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 }
                 if (taskSDR.Frequencies.Step_kHz != null) { taskParameters.StepSO_kHz = taskSDR.Frequencies.Step_kHz.Value; } // обязательный параметер для SO (типа ширина канала или шаг сетки частот)
             }
-            if (taskSDR.DeviceParam != null)
-            {
-                if (taskSDR.DeviceParam.RBW_kHz != 0) { taskParameters.RBW_Hz = taskSDR.DeviceParam.RBW_kHz * 1000; } else { taskParameters.RBW_Hz = 10000; }
-                if (taskSDR.DeviceParam.VBW_kHz != 0) { taskParameters.VBW_Hz = taskSDR.DeviceParam.VBW_kHz.Value * 1000; } else { taskParameters.VBW_Hz = 10000; }
-            }
+            //if (taskSDR.DeviceParam != null)
+            //{
+                //if (taskSDR.DeviceParam.RBW_kHz != 0) { taskParameters.RBW_Hz = taskSDR.DeviceParam.RBW_kHz * 1000; } else { taskParameters.RBW_Hz = 10000; }
+                //if (taskSDR.DeviceParam.VBW_kHz != 0) { taskParameters.VBW_Hz = taskSDR.DeviceParam.VBW_kHz.Value * 1000; } else { taskParameters.VBW_Hz = 10000; }
+            //}
             if (taskSDR.DeviceParam.MeasTime_sec != null) { taskParameters.SweepTime_s = taskSDR.DeviceParam.MeasTime_sec.Value; } else { taskParameters.SweepTime_s = 0.0001; }
 
             if (taskSDR.SOParam != null)
@@ -198,7 +570,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                             taskParameters.NCount = SO_Ncount;
                             break;
                         case DataModels.Sdrns.MeasurementType.Signaling:
-                            taskParameters.NCount = SignalizationNCount.Value;
+                            taskParameters.NCount = taskParameters.SignalingMeasTaskParameters.SignalizationNCount.Value;
                             break;
                         default:
                             taskParameters.NCount = OtherNCount;
@@ -249,38 +621,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 
             if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
             {
-                if (CompareTraceJustWithRefLevels != null)
+                var listChCentrFreqs_Mhz = new List<double>();
+                if (taskSDR.Frequencies!=null)
                 {
-                    taskParameters.CompareTraceJustWithRefLevels = CompareTraceJustWithRefLevels.Value;
+                    if (taskSDR.Frequencies.Values_MHz != null)
+                    {
+                        for (int i = 0; i < taskSDR.Frequencies.Values_MHz.Length; i++)
+                        {
+                            var value_MHz = taskSDR.Frequencies.Values_MHz[i];
+                            if (!listChCentrFreqs_Mhz.Contains(value_MHz))
+                            {
+                                listChCentrFreqs_Mhz.Add(value_MHz);
+                            }
+                        }
+                    }
+                    listChCentrFreqs_Mhz.Sort();
+                    taskParameters.ChCentrFreqs_Mhz = listChCentrFreqs_Mhz;
                 }
-                if (AutoDivisionEmitting != null)
+                if (taskSDR.Frequencies.Step_kHz != null)
                 {
-                    taskParameters.AutoDivisionEmitting = AutoDivisionEmitting.Value;
-                }
-                if (DifferenceMaxMax != null)
-                {
-                    taskParameters.DifferenceMaxMax = DifferenceMaxMax.Value;
-                }
-                if (FiltrationTrace != null)
-                {
-                    taskParameters.FiltrationTrace = FiltrationTrace.Value;
-                }
-                if (allowableExcess_dB != null)
-                {
-                    taskParameters.allowableExcess_dB = allowableExcess_dB.Value;
-                }
-                taskParameters.PercentForCalcNoise = PercentForCalcNoise;
-                if (SignalizationNChenal != null)
-                {
-                    //taskParameters.SignalizationNChenal = SignalizationNChenal.Value;
-                    taskParameters.NChenal = SignalizationNChenal.Value;
-                }
-                if (SignalizationNCount != null)
-                {
-                    //taskParameters.SignalizationNCount = SignalizationNCount.Value;
-                    taskParameters.NCount = SignalizationNCount.Value;
+                    taskParameters.BWChalnel_kHz = taskSDR.Frequencies.Step_kHz.Value;
                 }
 
+                
+
+
+                taskParameters.PercentForCalcNoise = PercentForCalcNoise;
+                
+                
+              
 
                 //taskParameters.NCount = SignalizationNCount.Value;
 
@@ -320,53 +689,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 }
             }
 
-            taskParameters.TypeTechnology = TypeTechnology.Unknown;
+            taskParameters.TypeTechnology = Proc.TypeTechnology.Unknown;
             // до конца не определенные блоки
             taskParameters.ReceivedIQStreemDuration_sec = 1.0;
             taskParameters.SensorId = taskSDR.SensorId;
             return taskParameters;
         }
 
-        private static SOType GetSOTypeFromSpectrumOccupationType(DataModels.Sdrns.SpectrumOccupationType spectrumOccupationType)
+        private static Proc.SOType GetSOTypeFromSpectrumOccupationType(DataModels.Sdrns.SpectrumOccupationType spectrumOccupationType)
         {
-            SOType sOType;
+            Proc.SOType sOType;
             switch (spectrumOccupationType)
             {
                 case DataModels.Sdrns.SpectrumOccupationType.FreqBandOccupancy:
-                    sOType = SOType.FreqBandwidthOccupation;
+                    sOType = Proc.SOType.FreqBandwidthOccupation;
                     break;
                 case DataModels.Sdrns.SpectrumOccupationType.FreqChannelOccupancy:
-                    sOType = SOType.FreqChannelOccupation;
+                    sOType = Proc.SOType.FreqChannelOccupation;
                     break;
                 default:
-                    sOType = SOType.FreqChannelOccupation;
+                    sOType = Proc.SOType.FreqChannelOccupation;
                     break;
             }
             return (sOType);
         }
 
-        private static MeasType GetMeasTypeFromMeasurementType(DataModels.Sdrns.MeasurementType measurementType)
+        private static Proc.MeasType GetMeasTypeFromMeasurementType(DataModels.Sdrns.MeasurementType measurementType)
         {
-            MeasType measType;
+            Proc.MeasType measType;
             switch (measurementType)
             {
                 case DataModels.Sdrns.MeasurementType.BandwidthMeas:
-                    measType = MeasType.BandwidthMeas;
+                    measType = Proc.MeasType.BandwidthMeas;
                     break;
                 case DataModels.Sdrns.MeasurementType.Level:
-                    measType = MeasType.Level;
+                    measType = Proc.MeasType.Level;
                     break;
                 case DataModels.Sdrns.MeasurementType.SpectrumOccupation:
-                    measType = MeasType.SpectrumOccupation;
+                    measType = Proc.MeasType.SpectrumOccupation;
                     break;
                 case DataModels.Sdrns.MeasurementType.MonitoringStations:
-                    measType = MeasType.MonitoringStations;
+                    measType = Proc.MeasType.MonitoringStations;
                     break;
                 case DataModels.Sdrns.MeasurementType.Signaling:
-                    measType = MeasType.Signaling;
+                    measType = Proc.MeasType.Signaling;
                     break;
                 default:
-                    measType = MeasType.Level;
+                    measType = Proc.MeasType.Level;
                     break;
             }
             return (measType);

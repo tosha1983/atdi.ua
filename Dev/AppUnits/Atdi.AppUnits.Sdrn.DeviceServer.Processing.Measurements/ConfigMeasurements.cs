@@ -9,9 +9,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     public class ConfigMeasurements
     {
         /// <summary>
-        /// 
+        /// Директория для хранения эталонных сигналов
         /// </summary>
-        public bool EnableBandWidthTask { get; set; }
-        public bool EnableSysInfoTask { get; set; }
+        public string FolderSignalGSM { get; set; }
     }
 }

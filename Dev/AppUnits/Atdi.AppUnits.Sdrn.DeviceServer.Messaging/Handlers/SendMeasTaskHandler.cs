@@ -55,7 +55,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                 {
                     if ((message.Data.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                         || (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Signaling)
-                        || (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas))
+                        || (message.Data.Measurement == DataModels.Sdrns.MeasurementType.BandwidthMeas)
+                        || (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level))
                     {
 
                         var taskParameters = message.Data.Convert(_config);
@@ -75,11 +76,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
 
                         message.Result = MessageHandlingResult.Confirmed;
 
-                    }
-                    else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.Level)
-                    {
-                        message.Result = MessageHandlingResult.Trash;
-                        throw new NotImplementedException("Not supported MeasurementType  'Level'");
                     }
                     else if (message.Data.Measurement == DataModels.Sdrns.MeasurementType.MonitoringStations)
                     {

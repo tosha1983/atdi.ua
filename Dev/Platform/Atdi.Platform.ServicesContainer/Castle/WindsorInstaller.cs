@@ -9,6 +9,7 @@ using Castle.Facilities.TypedFactory;
 using Castle.Facilities.WcfIntegration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Atdi.Platform.DependencyInjection;
+using Atdi.Platform.Workflows;
 
 namespace Atdi.Platform.ServicesContainer.Castle
 {
@@ -55,7 +56,18 @@ namespace Atdi.Platform.ServicesContainer.Castle
                         .LifeStyle.Singleton
                 );
 
-            
+            container.Register(
+                    Component.For<IPipelineHandlerFactory>()
+                        .ImplementedBy<PipelineHandlerFactory>()
+                        .LifeStyle.Singleton
+                );
+
+            container.Register(
+                    Component.For<IPipelineSite>()
+                        .ImplementedBy<PipelineSite>()
+                        .LifeStyle.Singleton
+                );
+
         }
     }
 }

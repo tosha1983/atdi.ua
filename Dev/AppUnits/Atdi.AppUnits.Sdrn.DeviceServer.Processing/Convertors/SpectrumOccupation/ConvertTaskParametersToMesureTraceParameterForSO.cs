@@ -15,23 +15,49 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     {
         public static MesureTraceParameter ConvertForSO(this TaskParameters taskParameters)
         {
-            
+
             MesureTraceParameter mesureTraceParameter = new MesureTraceParameter();
 
-            mesureTraceParameter.FreqStart_Hz = (decimal)(taskParameters.MinFreq_MHz*1000000 - taskParameters.StepSO_kHz*500);
-            mesureTraceParameter.FreqStop_Hz = (decimal)(taskParameters.MaxFreq_MHz*1000000 + taskParameters.StepSO_kHz * 500);
+            mesureTraceParameter.FreqStart_Hz = (decimal)(taskParameters.MinFreq_MHz * 1000000 - taskParameters.StepSO_kHz * 500);
+            mesureTraceParameter.FreqStop_Hz = (decimal)(taskParameters.MaxFreq_MHz * 1000000 + taskParameters.StepSO_kHz * 500);
             mesureTraceParameter.SweepTime_s = taskParameters.SweepTime_s;
-            mesureTraceParameter.TracePoint = (int)Math.Ceiling((double) ((mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz)) / (1000*(taskParameters.StepSO_kHz / taskParameters.NChenal)));
-
-            mesureTraceParameter.RefLevel_dBm = -1; // константа для SO
+            mesureTraceParameter.TracePoint = (int)Math.Ceiling((double)((mesureTraceParameter.FreqStop_Hz - mesureTraceParameter.FreqStart_Hz)) / (1000 * (taskParameters.StepSO_kHz / taskParameters.NChenal)));
             mesureTraceParameter.TraceType = TraceType.ClearWhrite; // константа для SO
             mesureTraceParameter.TraceCount = 1; // константа для SO
-            mesureTraceParameter.Att_dB = -1;    // константа для SO
-            mesureTraceParameter.PreAmp_dB = -1; // константа для SO
-            mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для SO
             mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для SO
             mesureTraceParameter.VBW_Hz = -1; // константа для SO
             mesureTraceParameter.RBW_Hz = -1; // константа для SO
+
+            //авто
+
+            mesureTraceParameter.RefLevel_dBm = (int)taskParameters.RefLevel_dBm.Value;
+            mesureTraceParameter.Att_dB = taskParameters.RfAttenuation_dB.Value;    // константа для SO
+            mesureTraceParameter.PreAmp_dB = taskParameters.Preamplification_dB.Value; // константа для SO
+            switch (taskParameters.DetectType)
+            {
+                case DataModels.Sdrns.DetectingType.Average:
+                    mesureTraceParameter.DetectorType = DetectorType.Average;
+                    break;
+                case DataModels.Sdrns.DetectingType.MaxPeak:
+                    mesureTraceParameter.DetectorType = DetectorType.MaxPeak;
+                    break;
+                case DataModels.Sdrns.DetectingType.MinPeak:
+                    mesureTraceParameter.DetectorType = DetectorType.MinPeak;
+                    break;
+                case DataModels.Sdrns.DetectingType.Peak:
+                    mesureTraceParameter.DetectorType = DetectorType.MaxPeak;
+                    break;
+                case DataModels.Sdrns.DetectingType.RMS:
+                    mesureTraceParameter.DetectorType = DetectorType.RMS;
+                    break;
+                case DataModels.Sdrns.DetectingType.Auto:
+                    mesureTraceParameter.DetectorType = DetectorType.Auto;
+                    break;
+                default:
+                    mesureTraceParameter.DetectorType = DetectorType.MaxPeak; // константа для SO
+                    break;
+            }
+
             return mesureTraceParameter;
         }
     }

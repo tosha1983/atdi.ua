@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform;
 using Atdi.Platform.Logging;
+using Atdi.Platform.Workflows;
+using Atdi.DataModels.Sdrns.Server;
 
 namespace Atdi.AppUnits.Sdrn.Server
 {
@@ -79,6 +81,10 @@ namespace Atdi.AppUnits.Sdrn.Server
         protected override void OnActivateUnit()
         {
             var typeResolver = this.Resolver.Resolve<ITypeResolver>();
+
+            // 
+            
+
             var eventDispatcher = this.Resolver.Resolve<IEventDispatcher>();
             var eventSubscribeInterfaceType = typeof(IEventSubscriber<>);
 
