@@ -663,6 +663,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
 
         #region Param
+        private string decimalSeparator = System.Globalization.NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator;
         private TcpipSession session;
         private LocalSpectrumAnalyzerInfo UniqueData { get; set; } = new LocalSpectrumAnalyzerInfo { };
         private List<LocalSpectrumAnalyzerInfo> AllUniqueData = new List<LocalSpectrumAnalyzerInfo>
@@ -1686,6 +1687,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         #endregion Param
         #region Private Method
+        private decimal DecimalParse(string str)
+        {
+            return decimal.Parse(str.Replace(".", decimalSeparator).Replace(",", decimalSeparator));
+        }
         private bool SetConnect()
         {
             bool res = false;
@@ -1779,8 +1784,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         TracePoints = SweepPoints;
                     }
                     session.DefaultBufferSize = SweepPoints * 18 + 25; //увеличиваем буфер чтобы влезло 32001 точка трейса
-                    UniqueData.FreqMin = decimal.Parse(session.Query(":SENSe:FREQuency:STAR? MIN"));
-                    UniqueData.FreqMax = decimal.Parse(session.Query(":SENSe:FREQuency:STOP? MAX"));
+                    UniqueData.FreqMin = DecimalParse(session.Query(":SENSe:FREQuency:STAR? MIN"));
+                    UniqueData.FreqMax = DecimalParse(session.Query(":SENSe:FREQuency:STOP? MAX"));
 
                     UniqueData.PreAmp = false;
                     if (UniqueData.LoadedInstrOption != null && UniqueData.LoadedInstrOption.Count > 0)
@@ -1895,15 +1900,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    FreqCentr = decimal.Parse(session.Query(":SENSe:FREQuency:CENTer?").Replace('.', ','));
+                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    FreqCentr = decimal.Parse(session.Query(":FREQ:CENT?").Replace('.', ','));
+                    FreqCentr = DecimalParse(session.Query(":FREQ:CENT?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    FreqCentr = decimal.Parse(session.Query(":SENSe:FREQuency:CENTer?"));
+                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
                 }
             }
             #region Exception
@@ -1927,15 +1932,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    FreqSpan = decimal.Parse(session.Query(":SENSe:FREQuency:SPAN?").Replace('.', ','));
+                    FreqSpan = DecimalParse(session.Query(":SENSe:FREQuency:SPAN?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    FreqSpan = decimal.Parse(session.Query(":FREQuency:SPAN?").Replace('.', ','));
+                    FreqSpan = DecimalParse(session.Query(":FREQuency:SPAN?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    FreqSpan = decimal.Parse(session.Query(":SENSe:FREQuency:SPAN?"));
+                    FreqSpan = DecimalParse(session.Query(":SENSe:FREQuency:SPAN?"));
                 }
             }
             #region Exception
@@ -1962,17 +1967,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 if (UniqueData.InstrManufacture == 1)
                 {
                     session.Write(":SENSe:FREQ:STAR " + FreqStart.ToString().Replace(',', '.'));
-                    FreqStart = decimal.Parse(session.Query(":SENSe:FREQ:STAR?").Replace('.', ','));
+                    FreqStart = DecimalParse(session.Query(":SENSe:FREQ:STAR?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
                     session.Write("FREQ:STAR " + FreqStart.ToString().Replace(',', '.'));
-                    FreqStart = decimal.Parse(session.Query(":FREQ:STAR?").Replace('.', ','));
+                    FreqStart = DecimalParse(session.Query(":FREQ:STAR?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
                     session.Write("FREQ:STAR " + FreqStart.ToString().Replace(',', '.'));
-                    FreqCentr = decimal.Parse(session.Query(":SENSe:FREQuency:CENTer?"));
+                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
                 }
                 res = true;
             }
@@ -2006,17 +2011,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 if (UniqueData.InstrManufacture == 1)
                 {
                     session.Write(":SENSe:FREQ:STOP " + FreqStop.ToString().Replace(',', '.'));
-                    FreqStop = decimal.Parse(session.Query(":SENSe:FREQ:STOP?").Replace('.', ','));
+                    FreqStop = DecimalParse(session.Query(":SENSe:FREQ:STOP?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
                     session.Write(":FREQ:STOP " + FreqStop.ToString().Replace(',', '.'));
-                    FreqStop = decimal.Parse(session.Query(":FREQ:STOP?").Replace('.', ','));
+                    FreqStop = DecimalParse(session.Query(":FREQ:STOP?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
                     session.Write(":SENSe:FREQ:STOP " + FreqStop.ToString().Replace(',', '.'));
-                    FreqCentr = decimal.Parse(session.Query(":SENSe:FREQuency:CENTer?"));
+                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
                 }
                 res = true;
             }
@@ -2137,7 +2142,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 if (UniqueData.InstrManufacture == 1)
                 {
                     session.Write($"FREQ:CENT {FreqCentrIQ.ToString().Replace(",", ".")}");
-                    FreqCentrIQ = decimal.Parse(session.Query(":FREQ:CENT?").Replace('.', ','));
+                    FreqCentrIQ = DecimalParse(session.Query(":FREQ:CENT?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
@@ -2177,7 +2182,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     {
                         session.Write(":INP:ATT:AUTO 0");
                     }
-                    AttLevel = decimal.Parse(session.Query(":INP:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":INP:ATT?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
@@ -2189,7 +2194,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     {
                         session.Write(":POW:ATT:AUTO 0");
                     }
-                    AttLevel = decimal.Parse(session.Query(":POW:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":POW:ATT?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
@@ -2201,7 +2206,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     {
                         session.Write(":POW:ATT:AUTO 0");
                     }
-                    AttLevel = decimal.Parse(session.Query(":POW:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":POW:ATT?"));
                 }
             }
             #region Exception
@@ -2261,16 +2266,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    AttLevel = decimal.Parse(session.Query(":INP:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":INP:ATT?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    AttLevel = decimal.Parse(session.Query(":POW:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":POW:ATT?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    string t = session.Query(":POW:ATT?").Replace('.', ',');
-                    if (t != "0.0") { AttLevel = decimal.Parse(t); }
+                    string t = session.Query(":POW:ATT?");
+                    if (t != "0.0") { AttLevel = DecimalParse(t); }
                     else AttLevel = 0;
                 }
             }
@@ -2295,19 +2300,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
                     if (AttAuto == true) session.Write(":INP:ATT:AUTO 1");
                     if (AttAuto == false) session.Write(":INP:ATT:AUTO 0");
-                    AttLevel = decimal.Parse(session.Query(":INP:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":INP:ATT?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
                     if (AttAuto == true) session.Write(":POW:ATT:AUTO 1");
                     if (AttAuto == false) session.Write(":POW:ATT:AUTO 0");
-                    AttLevel = decimal.Parse(session.Query(":POW:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":POW:ATT?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
                     if (AttAuto == true) session.Write(":POW:ATT:AUTO 1");
                     if (AttAuto == false) session.Write(":POW:ATT:AUTO 0");
-                    AttLevel = decimal.Parse(session.Query(":POW:ATT?").Replace('.', ','));
+                    AttLevel = DecimalParse(session.Query(":POW:ATT?"));
                 }
                 res = true;
             }
@@ -2422,19 +2427,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
                 {
-                    string temp = session.Query(":INP:GAIN:STAT?");
-                    if (temp == "1\n") { PreAmp = true; }
-                    else if (temp == "0\n") { PreAmp = false; }
+                    string temp = session.Query(":INP:GAIN:STAT?").TrimEnd();
+                    if (temp.Contains("1")) { PreAmp = true; }
+                    else if (temp.Contains("0")) { PreAmp = false; }
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    string temp = session.Query(":POW:GAIN:STAT?");
-                    if (temp == "1\n") { PreAmp = true; }
-                    else if (temp == "0\n") { PreAmp = false; }
+                    string temp = session.Query(":POW:GAIN:STAT?").TrimEnd();
+                    if (temp.Contains("1")) { PreAmp = true; }
+                    else if (temp.Contains("0")) { PreAmp = false; }
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    string temp = session.Query(":POW:GAIN:STAT?");
+                    string temp = session.Query(":POW:GAIN:STAT?").TrimEnd();
                     if (temp.Contains("1")) { PreAmp = true; }
                     else if (temp.Contains("0")) { PreAmp = false; }
                 }
@@ -2502,17 +2507,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.HiSpeed)
                 {
-                    RefLevel = Math.Round(decimal.Parse(session.Query(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel?").Replace('.', ',')));
+                    RefLevel = Math.Round(DecimalParse(session.Query(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel?")));
                 }
-                else { RefLevel = Math.Round(decimal.Parse(session.Query(":DISP:TRAC:Y:RLEV?").Replace('.', ','))); }
+                else { RefLevel = Math.Round(DecimalParse(session.Query(":DISP:TRAC:Y:RLEV?"))); }
             }
             else if (UniqueData.InstrManufacture == 2)
             {
-                RefLevel = Math.Round(decimal.Parse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?").Replace('.', ',')));
+                RefLevel = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
             }
             else if (UniqueData.InstrManufacture == 3)
             {
-                RefLevel = Math.Round(decimal.Parse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?").Replace('.', ',')));
+                RefLevel = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
             }
         }
         private void SetRange()
@@ -2548,15 +2553,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         {
             if (UniqueData.InstrManufacture == 1)
             {
-                Range = Math.Round(decimal.Parse(session.Query(":DISP:TRAC:Y?").Replace('.', ',')));
+                Range = Math.Round(DecimalParse(session.Query(":DISP:TRAC:Y?")));
             }
             else if (UniqueData.InstrManufacture == 2)
             {
-                //Range = Math.Round(decimal.Parse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?").Replace('.', ',')));
+                //Range = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
             }
             else if (UniqueData.InstrManufacture == 3)
             {
-                //Range = Math.Round(decimal.Parse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?").Replace('.', ',')));
+                //Range = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
             }
         }
 
@@ -2756,17 +2761,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    RBW = decimal.Parse(session.Query(":SENSe:BWIDth:RESolution?").Replace('.', ','));
+                    RBW = DecimalParse(session.Query(":SENSe:BWIDth:RESolution?"));
                     RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    RBW = decimal.Parse(session.Query(":SENS:BAND:RES?").Replace('.', ','));
+                    RBW = DecimalParse(session.Query(":SENS:BAND:RES?"));
                     RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    RBW = decimal.Parse(session.Query(":SENSe:BWIDth:RESolution?"));
+                    RBW = DecimalParse(session.Query(":SENSe:BWIDth:RESolution?"));
                     RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
                 }
             }
@@ -2904,17 +2909,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    VBW = decimal.Parse(session.Query(":SENSe:BANDwidth:VIDeo?").Replace('.', ','));
+                    VBW = DecimalParse(session.Query(":SENSe:BANDwidth:VIDeo?"));
                     VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    VBW = decimal.Parse(session.Query(":SENS:BAND:VID?").Replace('.', ','));
+                    VBW = DecimalParse(session.Query(":SENS:BAND:VID?"));
                     VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    VBW = decimal.Parse(session.Query(":SENSe:BANDwidth:VIDeo?"));
+                    VBW = DecimalParse(session.Query(":SENSe:BANDwidth:VIDeo?"));
                     VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
                 }
             }
@@ -3098,15 +3103,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    SweepTime = decimal.Parse(session.Query(":SWE:TIME?").Replace('.', ','));
+                    SweepTime = DecimalParse(session.Query(":SWE:TIME?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    SweepTime = decimal.Parse(session.Query(":SWE:MTIM?").Replace('.', ','));
+                    SweepTime = DecimalParse(session.Query(":SWE:MTIM?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    SweepTime = decimal.Parse(session.Query(":SWE:TIME:ACT?").Replace('.', ','));
+                    SweepTime = DecimalParse(session.Query(":SWE:TIME:ACT?"));
                 }
             }
             #region Exception
@@ -3129,19 +3134,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 if (UniqueData.InstrManufacture == 1)
                 {
                     session.Write(":SWE:TIME " + SweepTime.ToString());
-                    SweepTime = decimal.Parse(session.Query(":SWE:TIME?"));
+                    SweepTime = DecimalParse(session.Query(":SWE:TIME?"));
                     AutoSweepTime = false;
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
                     session.Write(":SWE:TIME " + SweepTime.ToString().Replace(',', '.'));
-                    SweepTime = decimal.Parse(session.Query(":SWE:TIME?").Replace('.', ','));
+                    SweepTime = DecimalParse(session.Query(":SWE:TIME?"));
                     AutoSweepTime = false;
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
                     session.Write(":SWE:TIME:ACT " + SweepTime.ToString().Replace(',', '.'));
-                    SweepTime = decimal.Parse(session.Query(":SWE:TIME:ACT?").Replace('.', ','));
+                    SweepTime = DecimalParse(session.Query(":SWE:TIME:ACT?"));
                     AutoSweepTime = false;
                 }
                 res = true;
@@ -3928,8 +3933,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
                         }
                     }
-                    string dfghkjdp = session.Query("TRACe:IQ:TPISample?").TrimEnd().Replace(".", ",");
-                    TriggerOffsetInSample = decimal.Parse(dfghkjdp);
+                    string dfghkjdp = session.Query("TRACe:IQ:TPISample?").TrimEnd();
+                    TriggerOffsetInSample = DecimalParse(dfghkjdp);
                     //Посчитаем когда точно был триггер относительно первого семпла
                     TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
                     Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
@@ -4134,7 +4139,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         //                }
         //            }
-        //            TriggerOffsetInSample = decimal.Parse(session.Query("TRACe:IQ:TPISample?"));
+        //            TriggerOffsetInSample = DecimalParse(session.Query("TRACe:IQ:TPISample?"));
         //            //Debug.WriteLine(((double)(_timeService.TimeStamp.Ticks - ddd)) / 10000);
         //            IQArr = temp;
         //        }

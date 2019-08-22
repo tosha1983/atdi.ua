@@ -1719,16 +1719,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             iq_samples = new float[IQStopIndex - IQStartIndex][]
                         };
                         Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
-                        //dell
-                        float[] _IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length]; 
-                        for (int k = 0; k < IQStreamResult.iq_samples.Length; k++)
-                        {
-                            for (int j = 0; j < IQStreamResult.iq_samples[0].Length; j++)
-                            {
-                                _IQArr[k*j] = IQStreamResult.iq_samples[k][j];
-                            }
-                        }
-                        IQArr = _IQArr;
+                        
                     }
                     else
                     {
@@ -1739,6 +1730,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     IQStreamResult.iq_samples = tempIQStream.IQData;
                 }
+                //dell
+                float[] _IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length];
+                for (int k = 0; k < IQStreamResult.iq_samples.Length; k++)
+                {
+                    for (int j = 0; j < IQStreamResult.iq_samples[0].Length; j++)
+                    {
+                        _IQArr[k * j] = IQStreamResult.iq_samples[k][j];
+                    }
+                }
+                IQArr = _IQArr;
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
