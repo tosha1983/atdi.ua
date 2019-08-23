@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="OnMeasResults\OnMSMeasResultAppeared.cs" />
+    <Compile Include="OnMeasResults\OnSGMeasResultAppeared.cs" />
+    <Compile Include="OnMeasResults\OnSOMeasResultAppeared.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Test\TestHandler1.cs" />
@@ -75,6 +78,10 @@
       <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
       <Name>Atdi.DataModels.Api.DataBus</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
+      <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
+      <Name>Atdi.DataModels.Api.EventSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
@@ -82,6 +89,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Events\Atdi.DataModels.Sdrns.Server.Events.csproj">
+      <Project>{e41db4c2-2171-4e39-b437-221c0ce195f2}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Events</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>

@@ -30,6 +30,8 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         public static readonly EventCategory Initilazing = "Initilazing";
         public static readonly EventCategory Callbacking = "Callbacking";
 
+        public static readonly EventCategory MessageProcessing = "Message processing";
+        public static readonly EventCategory EventProcessing = "Processing";
 
     }
 

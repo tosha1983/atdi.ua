@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E41DB4C2-2171-4E39-B437-221C0CE195F2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrns.Server.Events</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrns.Server.Events</AssemblyName>
+    <ProjectGuid>{773F0C6B-065A-47DB-A468-C3943E29267C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.AppServer.Sdrn.AggregationServer.Console.Anton</RootNamespace>
+    <AssemblyName>Atdi.AppServer.Sdrn.AggregationServer.Console.Anton</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,23 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DevicesBusEvent.cs" />
-    <Compile Include="MeasResultAggregated\MSMeasResultAggregated.cs" />
-    <Compile Include="MeasResultAppeared\MSMeasResultAppeared.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MeasResultAggregated\SGMeasResultAggregated.cs" />
-    <Compile Include="MeasResultAppeared\SGMeasResultAppeared.cs" />
-    <Compile Include="MeasResultAggregated\SOMeasResultAggregated.cs" />
-    <Compile Include="MeasResultAppeared\SOMeasResultAppeared.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
-      <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
-      <Name>Atdi.DataModels.Api.EventSystem</Name>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
+    <ProjectReference Include="..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
