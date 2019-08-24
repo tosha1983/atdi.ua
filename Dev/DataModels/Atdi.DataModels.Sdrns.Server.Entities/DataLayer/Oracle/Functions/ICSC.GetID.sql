@@ -91,14 +91,9 @@ into n
 from dual;
 end if;
 
-if inttable_name ='MEAS_STATION' then
-select ICSC.MEAS_STATION_ID_SEQ.nextval
-into n
-from dual;
-end if;
 
 if inttable_name ='SUBTASK' then
-select ICSC.SUB_TASK_ID_SEQ.nextval
+select ICSC.SUBTASK_ID_SEQ.nextval
 into n
 from dual;
 end if;
@@ -108,6 +103,7 @@ select ICSC.SUBTASK_SENSOR_ID_SEQ.nextval
 into n
 from dual;
 end if;
+
 
 if inttable_name ='MEAS_TASK' then
 select ICSC.MEAS_TASK_ID_SEQ.nextval
@@ -334,6 +330,21 @@ select ICSC.SIGN_SYSINFO_WTIMES_ID_SEQ.nextval
 into n
 from dual;
 end if;
+
+if inttable_name ='LINK_AGGREGATION_SENSOR' then
+select ICSC.LINK_AGGREGATION_SENSOR_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='LINK_SUBTASK_SENSOR_MASTER' then
+select ICSC.LINK_SUBTASK_MASTER_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+
 
 
 return(n);
