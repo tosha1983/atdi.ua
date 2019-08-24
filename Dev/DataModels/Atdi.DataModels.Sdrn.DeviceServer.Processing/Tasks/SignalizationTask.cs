@@ -29,14 +29,11 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public long maximumTimeForWaitingResultSignalization; // (максимальное время ожидания результата)
         public Func<TaskParameters, MesureTraceParameter> actionConvertBW = null;
         public Func<TaskParameters, MesureSystemInfoParameter[]> actionConvertSysInfo = null;
-
-
-        //public int CountCallSignaling = 0;
-        //public int CountGetResultBWPositive = 0;
-
-        //public int CountCallBW = 0;
-        //public int CountGetResultBWNegative = 0;
-        //public int CountGetResultBWN = 0;
+        public long durationForSendResultBandWidth;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
+        public long durationForMeasBW_ms; // в миллисекундах из файла конфигурации - максимальное время, выделяемое для выполнения измерения BW
+        public long durationForMeasSysInfo_ms; // в миллисекундах из файла конфигурации - максимальное время, выделяемое для выполнения измерения SysInfo
+        public long durationForSendResultSysInfo;
+        public long durationForSendResultSignaling;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
 
     }
    

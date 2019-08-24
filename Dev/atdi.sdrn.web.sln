@@ -295,6 +295,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDRN Master Role", "SDRN Ma
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDRN Aggr Role", "SDRN Aggr Role", "{051DE720-52AE-46E3-A258-396A48FB361A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Sdrn.AggregationServer.Console.Anton", "Atdi.AppServer.Sdrn.AggregationServer.Console.Anton\Atdi.AppServer.Sdrn.AggregationServer.Console.Anton.csproj", "{773F0C6B-065A-47DB-A468-C3943E29267C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1493,6 +1495,18 @@ Global
 		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x64.Build.0 = Release|Any CPU
 		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x86.ActiveCfg = Release|Any CPU
 		{D8779FAA-1600-47B5-A931-9487B7CE382F}.Release|x86.Build.0 = Release|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Debug|x64.Build.0 = Debug|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Debug|x86.Build.0 = Debug|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Release|x64.ActiveCfg = Release|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Release|x64.Build.0 = Release|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Release|x86.ActiveCfg = Release|Any CPU
+		{773F0C6B-065A-47DB-A468-C3943E29267C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1635,6 +1649,7 @@ Global
 		{BD250EFE-36DB-4D2A-AAC8-7A02DE541392} = {C7442EAC-ADFF-44F8-9478-FE271C766C2F}
 		{3D3F43C3-79C7-4213-BE53-5DF7817AC071} = {C7442EAC-ADFF-44F8-9478-FE271C766C2F}
 		{051DE720-52AE-46E3-A258-396A48FB361A} = {C7442EAC-ADFF-44F8-9478-FE271C766C2F}
+		{773F0C6B-065A-47DB-A468-C3943E29267C} = {547F89DF-C34B-450B-8631-1A7AA10AECCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

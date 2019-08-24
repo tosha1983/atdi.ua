@@ -42,19 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="LoadData\MeasTask\LoadMeasTask.cs" />
-    <Compile Include="LoadData\Sensor\LoadSensor.cs" />
-    <Compile Include="LoadData\Sensor\SaveSensor.cs" />
-    <Compile Include="MessageHandlers\MeasTaskCommandsOnAggServerHandler.cs" />
-    <Compile Include="PipelineHandlers\CommandsOnAggServerPipelineHandler.cs" />
-    <Compile Include="PipelineHandlers\CommandsOnAggServerSendEventPipelineHandler.cs" />
-    <Compile Include="PipelineHandlers\MeasTasksOnAggServerPipelineHandler.cs" />
-    <Compile Include="PipelineHandlers\MeasTasksOnAggServerSendEventPipelineHandler.cs" />
+    <Compile Include="OnMeasResults\OnMSMeasResultAppeared.cs" />
+    <Compile Include="OnMeasResults\OnSGMeasResultAppeared.cs" />
+    <Compile Include="OnMeasResults\OnSOMeasResultAppeared.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegisterHandler\RegistrationAggregationServer.cs" />
     <Compile Include="Specification.cs" />
-    <Compile Include="MessageHandlers\MeasTaskCreateOnAggServerHandler.cs" />
-    <Compile Include="Subscribers\OnRegisterAggregationServerEvent.cs" />
     <Compile Include="Test\TestHandler1.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +90,10 @@
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Events\Atdi.DataModels.Sdrns.Server.Events.csproj">
+      <Project>{e41db4c2-2171-4e39-b437-221c0ce195f2}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Events</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
       <Name>Atdi.DataModels.Sdrns.Server</Name>
@@ -109,10 +105,6 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.Server.Events\Atdi.Modules.Sdrn.Server.Events.csproj">
-      <Project>{f06a380a-c156-4e02-a6a0-86dbe4a9a442}</Project>
-      <Name>Atdi.Modules.Sdrn.Server.Events</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
@@ -126,6 +118,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -43,9 +43,12 @@
   <ItemGroup>
     <Compile Include="ExceptionProcess\GPS\ExceptionProcessGPS.cs" />
     <Compile Include="ExceptionProcess\BW\ExceptionProcessBandWidth.cs" />
+    <Compile Include="ExceptionProcess\Level\ExceptionProcessLevel.cs" />
     <Compile Include="ExceptionProcess\Signalization\ExceptionProcessSignalization.cs" />
     <Compile Include="ExceptionProcess\SpectrumOccupation\ExceptionProcessSO.cs" />
     <Compile Include="ExceptionProcess\SysInfo\ExceptionProcessSysInfo.cs" />
+    <Compile Include="ModelParameters\DeviceParameterState.cs" />
+    <Compile Include="ModelParameters\LevelResult.cs" />
     <Compile Include="ModelParameters\SysInfoResult.cs" />
     <Compile Include="ModelParameters\enum\MeasType.cs" />
     <Compile Include="ModelParameters\enum\SOType.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="ModelParameters\SpectrumOcupationResult.cs" />
     <Compile Include="ModelParameters\LastUpdate.cs" />
     <Compile Include="ModelParameters\TaskParameters.cs" />
+    <Compile Include="Processes\LevelProcess.cs" />
     <Compile Include="Processes\SysInfoProcess.cs" />
     <Compile Include="Processes\DispatchProcess.cs" />
     <Compile Include="Processes\ExampleContext.cs" />
@@ -66,6 +70,9 @@
     <Compile Include="Processes\SpectrumOccupationProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results\MeasBandwidthResult.cs" />
+    <Compile Include="ModelParameters\Signaling\SignalingGroupingParameters.cs" />
+    <Compile Include="ModelParameters\Signaling\SignalingInterruptionParameters.cs" />
+    <Compile Include="ModelParameters\Signaling\SignalingMeasTask.cs" />
     <Compile Include="Tasks\AutoTasks\BaseAutoTask.cs" />
     <Compile Include="Tasks\DispatcherTasks\SendResult.cs" />
     <Compile Include="Tasks\DispatcherTasks\DeferredTasks.cs" />

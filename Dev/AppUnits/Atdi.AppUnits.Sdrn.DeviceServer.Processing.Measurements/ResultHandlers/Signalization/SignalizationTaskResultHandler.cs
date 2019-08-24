@@ -25,13 +25,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITaskStarter _taskStarter;
         private readonly ITimeService _timeService;
         private readonly IWorkScheduler _workScheduler;
-        private readonly ConfigMeasurements _configMeasurements;
 
         public SignalizationTaskResultHandler(ILogger logger,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
             IWorkScheduler workScheduler,
-            ConfigMeasurements configMeasurements,
             ITimeService timeService)
         {
             this._logger = logger;
@@ -39,7 +37,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._taskStarter = taskStarter;
             this._timeService = timeService;
             this._workScheduler = workScheduler;
-            this._configMeasurements = configMeasurements;
         }
 
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
@@ -55,14 +52,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     if (taskContext.Task.CountMeasurementDone == 0)
                     {
-                        taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters, taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm);
+                        taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters, taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.SignalingMeasTaskParameters.triggerLevel_dBm_Hz==null ? -999 : taskContext.Task.taskParameters.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value);
                     }
-                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
+                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.ChCentrFreqs_Mhz, taskContext.Task.taskParameters.BWChalnel_kHz);
                 }
                 // Результат содержится в taskContext.Task.EmittingsRaw
                 //получаем результаты BW
+                
                 var listMeasBandwidthResult = new List<BWResult>();
-                if (this._configMeasurements.EnableBandWidthTask == true)
+                if (taskContext.Task.taskParameters.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission == true)
                 {
                     while (true)
                     {
@@ -83,7 +81,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 var listMeasSysInfoResult = new List<SysInfoResult>();
-                if (this._configMeasurements.EnableSysInfoTask == true)
+                if (taskContext.Task.taskParameters.SignalingMeasTaskParameters.AnalyzeSysInfoEmission == true)
                 {
                     while (true)
                     {
@@ -128,7 +126,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 //Групируем сырые данные измерений к существующим
-                bool isSuccessCalcGrouping = CalcGroupingEmitting.CalcGrouping(taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsTemp, ref taskContext.Task.EmittingsSummary, _logger, taskContext.Task.NoiseLevel_dBm);
+                bool isSuccessCalcGrouping = CalcGroupingEmitting.CalcGrouping(taskContext.Task.taskParameters, taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsTemp, ref taskContext.Task.EmittingsSummary, _logger, taskContext.Task.NoiseLevel_dBm);
                 if (isSuccessCalcGrouping == false)
                 {
                     //обработка  ошибка
@@ -136,7 +134,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 //Нужно ли исследование существующих сигналов?
-                if (this._configMeasurements.EnableBandWidthTask == true)
+                if (taskContext.Task.taskParameters.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission == true)
                 {
                     if (CalcNeedResearchExistSignals.NeedResearchExistSignals(taskContext.Task.EmittingsSummary, out taskContext.Task.taskParametersForBW))
                     {
@@ -145,7 +143,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 //Нужно ли исследование по SysInfo?
-                if (this._configMeasurements.EnableSysInfoTask == true)
+                if (taskContext.Task.taskParameters.SignalingMeasTaskParameters.AnalyzeSysInfoEmission == true)
                 {
                     if (CalcNeedResearchSysInfo.NeedGetSysInfo(taskContext.Task.CounterCallSignaling))
                     {
@@ -225,7 +223,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 var sysInfoProcess = _processingDispatcher.Start<SysInfoProcess>(taskContext.Process);
                 var sysInfoTask = new SysInfoTask();
-                sysInfoTask.durationForMeasBW_ms = taskContext.Task.durationForMeasBW_ms;
+                sysInfoTask.durationForMeasSysInfo_ms = taskContext.Task.durationForMeasSysInfo_ms;
                 sysInfoTask.durationForSendResultSysInfo = taskContext.Task.durationForSendResultSysInfo; // файл конфигурации (с него надо брать)
                 sysInfoTask.maximumTimeForWaitingResultBandWidth = taskContext.Task.maximumTimeForWaitingResultSignalization;
                 sysInfoTask.SleepTimePeriodForWaitingStartingMeas = taskContext.Task.SleepTimePeriodForWaitingStartingMeas;

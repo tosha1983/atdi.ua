@@ -14,15 +14,15 @@ namespace Atdi.DataModels.Sdrns
     public enum DetectingType
     {
         /// <summary>
-        /// Average value
-        /// </summary>
-        [EnumMember]
-        Average,
-        /// <summary>
         /// Auto value
         /// </summary>
         [EnumMember]
         Auto,
+        /// <summary>
+        /// Average value
+        /// </summary>
+        [EnumMember]
+        Average,
         /// <summary>
         /// Maximum peak value
         /// </summary>

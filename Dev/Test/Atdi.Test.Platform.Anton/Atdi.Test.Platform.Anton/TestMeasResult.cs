@@ -49,7 +49,7 @@ namespace Atdi.Test.Platform
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.MonitoringStations,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Signaling,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),
@@ -65,7 +65,7 @@ namespace Atdi.Test.Platform
                 Status = Guid.NewGuid().ToString(),
                 StopTime = DateTime.Now,
                 SwNumber = int.MinValue,
-                TaskId = "SDRN.SubTaskSensorId.1"//Guid.NewGuid().ToString()
+                TaskId = "SDRN.SubTaskSensorId.2"//Guid.NewGuid().ToString()
             };
 
             return result;

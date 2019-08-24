@@ -18,6 +18,8 @@ using Atdi.DataModels.Sdrn.DeviceServer.Adapters;
 using ADP = Atdi.AppUnits.Sdrn.DeviceServer.Adapters;
 using CMD = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using Atdi.UnitTest.Sdrn.DeviceServer;
+using Atdi.DataModels.Sdrn.DeviceServer;
+using Atdi.Platform.Logging;
 using System.Threading;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -82,17 +84,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //TimeThread.IsBackground = true;
             //TimeThread.Start();
 
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            ANThread = new Thread(ANWorks);
+            ANThread.Name = "ANThread";
+            ANThread.IsBackground = true;
+            ANThread.Start();
+            AND += ANConnect;
 
-            SHThread = new Thread(SHWorks);
-            SHThread.Name = "SHThread";
-            SHThread.IsBackground = true;
-            SHThread.Start();
-            SHD += SHConnect;
+            //SHThread = new Thread(SHWorks);
+            //SHThread.Name = "SHThread";
+            //SHThread.IsBackground = true;
+            //SHThread.Start();
+            //SHD += SHConnect;
 
             //GPSThread = new Thread(GPSWorks);
             //GPSThread.Name = "GPSThread";
@@ -100,12 +102,6 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //GPSThread.Start();
             //GPSD += GPSConnect;
 
-
-            //TSMxThread = new Thread(TSMxWorks);
-            //TSMxThread.Name = "TSMxThread";
-            //TSMxThread.IsBackground = true;
-            //TSMxThread.Start();
-            //TSMxD += TSMxConnect;
         }
         //long NextSecond = 0;
         private void GetGPSData()
@@ -153,7 +149,6 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     DisplayUpdate = true,
                     OnlyAutoSweepTime = true,
                     Optimization = 2
-
                 };
 
                 ANadapter = new ADP.SpectrumAnalyzer.Adapter(adapterConfig, logger, TimeService);
@@ -202,7 +197,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 {
                     SerialNumber = "16319373",
                     GPSPPSConnected = true,
-                    Reference10MHzConnected = true,
+                    Reference10MHzConnected = false,
                     //SyncCPUtoGPS = true,
                     //GPSPortBaudRate = 38400,
                     //GPSPortNumber = 1,
@@ -255,7 +250,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var adapterConfig = new ADP.GPS.ConfigGPS()
                 {
                     PortName = "COM21",
-                    PortBaudRate = "baudRate115200",
+                    PortBaudRate = "baudRate9600",
                     PortDataBits = "dataBits8",
                     PortHandshake = "None",
                     PortParity = "None",
@@ -274,7 +269,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 CMD.Parameters.GpsParameter par = new CMD.Parameters.GpsParameter();
                 par.GpsMode = CMD.Parameters.GpsMode.Start;
                 CMD.GpsCommand command = new CMD.GpsCommand(par);
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 GPSadapter.GPSCommandHandler(command, context);
             }
             finally
@@ -361,20 +356,20 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 0;
-                command.Parameter.FreqStart_Hz = 1800000000;
-                command.Parameter.FreqStop_Hz = 1900000000;
-                command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 3000;
-                command.Parameter.VBW_Hz = 3000;
-                command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 100001;
+                command.Parameter.Att_dB = -1;
+                command.Parameter.FreqStart_Hz = 1805000000;
+                command.Parameter.FreqStop_Hz = 1880000000;
+                command.Parameter.PreAmp_dB = -1;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
+                command.Parameter.RefLevel_dBm = -1;
+                command.Parameter.SweepTime_s = 0.003;
+                command.Parameter.TraceCount = 1;
+                command.Parameter.TracePoint = 3750;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
-                command.Parameter.DetectorType = CMD.Parameters.DetectorType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
                 ANadapter.MesureTraceCommandHandler(command, context);
@@ -389,7 +384,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -401,7 +396,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 10;
                 command.Parameter.TracePoint = -1;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
@@ -417,7 +412,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -445,7 +440,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
                 command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -473,7 +468,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
                 command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -502,20 +497,20 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 20;
-                command.Parameter.FreqStart_Hz = 1800000000;
-                command.Parameter.FreqStop_Hz = 1900000000;
-                command.Parameter.PreAmp_dB = 26;
+                command.Parameter.Att_dB = -1;
+                command.Parameter.FreqStart_Hz = 1805000000;
+                command.Parameter.FreqStop_Hz = 1880000000;
+                command.Parameter.PreAmp_dB = -1;
                 command.Parameter.RBW_Hz = -1;
                 command.Parameter.VBW_Hz = -1;
-                command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 100001;
+                command.Parameter.RefLevel_dBm = -1;
+                command.Parameter.SweepTime_s = 0.003;
+                command.Parameter.TraceCount = 1;
+                command.Parameter.TracePoint = 3750;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
-                command.Parameter.DetectorType = CMD.Parameters.DetectorType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
                 SHadapter.MesureTraceCommandHandler(command, context);
@@ -530,7 +525,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 10;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -550,7 +545,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
 
                 //// send command
-                //var context = new DummyExecutionContext(logger);
+                //var context = new DummyExecutionContextMy(logger);
                 //var command = new CMD.MesureTraceCommand();
                 //command.Parameter.Att_dB = -1;
                 //command.Parameter.FreqStart_Hz = 421589781.033924m;//100000000;
@@ -578,7 +573,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 10;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -606,7 +601,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 10;
                 command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -634,7 +629,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 20;
                 command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
@@ -674,7 +669,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
 
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureIQStreamCommand();
                 //135,5
                 //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
@@ -709,7 +704,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             try
             {
                 // send command
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureIQStreamCommand();
                 //135,5
                 //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
@@ -728,7 +723,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.IQReceivTime_s = 1.5;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = false;
-                long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks;
+                long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
                 command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long offset = DateTime.Now.Ticks - NextSecond;
                 //command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
@@ -789,7 +784,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         private void SetMeas1_Click(object sender, RoutedEventArgs e)
         {
             //// send command
-            //var context = new DummyExecutionContext(logger);
+            //var context = new DummyExecutionContextMy(logger);
             //var command = new CMD.MesureTraceCommand();
             //command.Parameter.Att_dB = 10;
             //command.Parameter.FreqStart_Hz = 934.85m * 1000000;
@@ -850,7 +845,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         private void SetMeas21_Click(object sender, RoutedEventArgs e)
         {
             //    // send command
-            //    var context = new DummyExecutionContext(logger);
+            //    var context = new DummyExecutionContextMy(logger);
             //    var command = new CMD.MesureTraceCommand();
             //    command.Parameter.Att_dB = 0;
             //    command.Parameter.FreqStart_Hz = 90000000;
@@ -875,7 +870,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         private void SetMeas22_Click(object sender, RoutedEventArgs e)
         {
             //// send command
-            //var context = new DummyExecutionContext(logger);
+            //var context = new DummyExecutionContextMy(logger);
             //var command = new CMD.MesureTraceCommand();
             //command.Parameter.Att_dB = 0;
             //command.Parameter.FreqStart_Hz = 90000000;
@@ -900,7 +895,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private void GetIQ1_Click(object sender, RoutedEventArgs e)
         {
-            //var context = new DummyExecutionContext(logger);
+            //var context = new DummyExecutionContextMy(logger);
             //var command = new CMD.MesureIQStreamCommand();
 
             //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
@@ -940,7 +935,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             try
             {
-                var context = new DummyExecutionContext(logger);
+                var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureIQStreamCommand();
                 //135,5
                 command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
@@ -1080,6 +1075,81 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         public bool HitMilliseconds(long startStampMilliseconds, long timeoutMilliseconds, out long lateness)
         {
             return AC.TimeStamp.HitTimeout(startStampMilliseconds, timeoutMilliseconds, out lateness);
+        }
+    }
+    public class DummyExecutionContextMy : IExecutionContext
+    {
+        private readonly ILogger _logger;
+
+        public DummyExecutionContextMy(ILogger logger)
+        {
+            this._logger = logger;
+        }
+
+        public CancellationToken Token { get; set; }
+
+        public void Abort(Exception e)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Abort");
+        }
+
+        public void Cancel()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Cancel");
+        }
+
+        public void Finish()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Finish");
+        }
+
+        public void Lock(params CommandType[] types)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void Lock(params Type[] commandType)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void Lock()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Lock");
+        }
+
+        public void PushResult(ICommandResultPart result)
+        {
+            //this._logger.Verbouse("DummyExecutionContext", "Call method", $"PushResult");
+
+            //Task.Run(() =>
+            //{
+            //    var myResult = result as MyResultObject
+
+            //    for (int i = 0; i < length; i++)
+            //    {
+            //        var data = myResult.myProperty[i];
+            //        if (data > 10000)
+            //        {
+            //            this._logger.Critical("Test", "Result", $"Не соотвествие данных");
+            //        }
+            //    }
+            //});
+        }
+
+        public void Unlock(params CommandType[] types)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+        public void Unlock(params Type[] commandType)
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+        public void Unlock()
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
         }
     }
 }

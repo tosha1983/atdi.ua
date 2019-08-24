@@ -81,6 +81,8 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand ZoomDefaultCommand { get; set; }
         public WpfCommand AddAssociationStationCommand { get; set; }
         public WpfCommand DeleteEmissionCommand { get; set; }
+        public WpfCommand CompareWithTransmitterMaskCommand { get; set; }
+        public WpfCommand CompareWithEmissionOnOtherSensorsCommand { get; set; }
         #endregion
 
         public MeasResultSignalizationViewModel(long resultId)
@@ -96,9 +98,9 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
             this.AddAssociationStationCommand = new WpfCommand(this.OnAddAssociationStationCommand);
             this.DeleteEmissionCommand = new WpfCommand(this.OnDeleteEmissionCommand);
+            this.CompareWithTransmitterMaskCommand = new WpfCommand(this.OnCompareWithTransmitterMaskCommand);
+            this.CompareWithEmissionOnOtherSensorsCommand = new WpfCommand(this.OnCompareWithEmissionOnOtherSensorsCommand);
             Task.Run(() => this.ReloadMeasResult());
-
-            
         }
 
         private void _dataStore_OnEndInvoke(string description)
@@ -388,6 +390,237 @@ namespace XICSM.ICSControlClient.ViewModels
                     _waitForm.ShowDialog();
 
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnCompareWithEmissionOnOtherSensorsCommand(object parameter)
+        {
+            try
+            {
+                var dlgForm = new FM.SignalizationSensorsForm();
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnCompareWithTransmitterMaskCommand(object parameter)
+        {
+            try
+            {
+                double? startFrequency = null;
+                double? stopFrequency = null;
+                var emittings = new List<EmittingViewModel>();
+
+                if (this._currentEmittings != null)
+                {
+                    foreach (EmittingViewModel emitting in this._currentEmittings)
+                    {
+                        emittings.Add(emitting);
+                        if (startFrequency == null || startFrequency > emitting.StartFrequency_MHz)
+                            startFrequency = emitting.StartFrequency_MHz;
+                        if (stopFrequency == null || stopFrequency < emitting.StopFrequency_MHz)
+                            stopFrequency = emitting.StopFrequency_MHz;
+                    }
+                }
+                else
+                    return;
+
+                var equipments = new List<StationsEquipment>();
+                var eqpDictionary = new Dictionary<string, string>();
+
+                string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                double lonSensor = 0;
+                double latSensor = 0;
+
+                if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                {
+                    var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
+
+                    if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                    {
+                        lonSensor = _currentSensorLocation.Lon.Value;
+                        latSensor = _currentSensorLocation.Lat.Value;
+                    }
+                }
+
+                var dlgForm = new FM.MeasStationsSignalizationDlg1Form(10, 0, true);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+
+                double distance = dlgForm.Distance;
+
+                this.StatusBarTitle = $"Search stations ...";
+                this.StatusBarIsIndeterminate = true;
+
+                _waitForm = new FM.WaitForm();
+                _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
+                _waitForm.TopMost = true;
+
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        //string sqlQuery = "(([TX_FREQ] - [Station.BW] / 2000 <= " + startFrequency.ToString().Replace(sep, ".");
+                        //sqlQuery = sqlQuery + " and " + "[TX_FREQ] + [Station.BW] / 2000 >= " + startFrequency.ToString().Replace(sep, ".") + ") or (";
+                        //sqlQuery = sqlQuery + "[TX_FREQ] - [Station.BW] / 2000 <= " + stopFrequency.ToString().Replace(sep, ".");
+                        //sqlQuery = sqlQuery + " and " + "[TX_FREQ] + [Station.BW] / 2000 >= " + stopFrequency.ToString().Replace(sep, ".") + "))";
+                        string sqlQuery = "(([TX_FREQ] - [Station.BW] / 2000 <= " + stopFrequency.ToString().Replace(sep, ".");
+                        sqlQuery = sqlQuery + " and " + "[TX_FREQ] + [Station.BW] / 2000 >= " + startFrequency.ToString().Replace(sep, ".") + "))";
+                        sqlQuery = sqlQuery + " and " + "111.315 * POWER((POWER(((" + lonSensor.ToString().Replace(sep, ".") + " - [Station.Position.LONGITUDE]) * COS([Station.Position.LATITUDE] * 3.14159265359 / 180)), 2) + POWER((" + latSensor.ToString().Replace(sep, ".") + " - [Station.Position.LATITUDE]), 2)), 0.5)  < " + distance.ToString().Replace(sep, ".");
+                        {
+                            IMRecordset rs = new IMRecordset("MOBSTA_FREQS", IMRecordset.Mode.ReadOnly);
+                            rs.SetAdditional(sqlQuery);
+                            rs.Select("TX_FREQ,Station.STATUS,Station.Equipment.CODE,Station.Equipment.MANUFACTURER,Station.Equipment.NAME,Station.Equipment.DESIG_EMISSION,Station.Equipment.MAX_POWER,Station.Equipment.LOWER_FREQ,Station.Equipment.UPPER_FREQ,Station.Equipment.ID");
+                            for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                            {
+                                var equipment = new StationsEquipment()
+                                {
+                                    Freq_MHz = rs.GetD("TX_FREQ"),
+                                    Code = rs.GetS("Station.Equipment.CODE"),
+                                    Manufacturer = rs.GetS("Station.Equipment.MANUFACTURER"),
+                                    Name = rs.GetS("Station.Equipment.NAME"),
+                                    DesigEmission = rs.GetS("Station.Equipment.DESIG_EMISSION"),
+                                    MaxPower = rs.GetD("Station.Equipment.MAX_POWER"),
+                                    LowerFreq = rs.GetD("Station.Equipment.LOWER_FREQ"),
+                                    UpperFreq = rs.GetD("Station.Equipment.UPPER_FREQ"),
+                                    Status = rs.GetS("Station.STATUS"),
+                                    IcsmId = rs.GetI("Station.Equipment.ID"),
+                                    IcsmTable = "EQUIP_PMR"
+                                };
+                                string key = equipment.IcsmId + "/" + equipment.IcsmTable + "/" + equipment.Status + "/" + equipment.Freq_MHz;
+                                if (!eqpDictionary.ContainsKey(key))
+                                {
+                                    eqpDictionary.Add(key, key);
+
+                                    var listFreq = new List<double>();
+                                    var listLoss = new List<float>();
+
+                                    IMRecordset rsEqp = new IMRecordset("EQUIP_PMR_MPT", IMRecordset.Mode.ReadOnly);
+                                    rsEqp.SetWhere("EQUIP_ID", IMRecordset.Operation.Eq, equipment.IcsmId);
+                                    rsEqp.SetWhere("TYPE", IMRecordset.Operation.Eq, "TS");
+                                    rsEqp.Select("ATTN,FREQ");
+                                    for (rsEqp.Open(); !rsEqp.IsEOF(); rsEqp.MoveNext())
+                                    {
+                                        float loss = (float)rsEqp.GetD("ATTN");
+
+                                        if (loss < -10)
+                                            loss = -10;
+                                        if (loss > 100)
+                                            loss = 100;
+
+                                        listLoss.Add(loss);
+                                        listFreq.Add(rsEqp.GetD("FREQ"));
+                                    }
+                                    if (rsEqp.IsOpen())
+                                        rsEqp.Close();
+                                    rsEqp.Destroy();
+
+                                    if (listLoss.Count > 0 && listFreq.Count > 0)
+                                    {
+                                        equipment.Loss = listLoss.ToArray();
+                                        equipment.Freq = listFreq.ToArray();
+                                    }
+                                    equipments.Add(equipment);
+                                }
+                            }
+                            if (rs.IsOpen())
+                                rs.Close();
+                            rs.Destroy();
+                        }
+                        {
+                            IMRecordset rs = new IMRecordset("MOBSTA_FREQS2", IMRecordset.Mode.ReadOnly);
+                            rs.SetAdditional(sqlQuery);
+                            rs.Select("TX_FREQ,Station.STATUS,Station.Equipment.CODE,Station.Equipment.MANUFACTURER,Station.Equipment.NAME,Station.Equipment.DESIG_EMISSION,Station.Equipment.MAX_POWER,Station.Equipment.LOWER_FREQ,Station.Equipment.UPPER_FREQ,Station.Equipment.ID");
+                            for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
+                            {
+                                var equipment = new StationsEquipment()
+                                {
+                                    Freq_MHz = rs.GetD("TX_FREQ"),
+                                    Code = rs.GetS("Station.Equipment.CODE"),
+                                    Manufacturer = rs.GetS("Station.Equipment.MANUFACTURER"),
+                                    Name = rs.GetS("Station.Equipment.NAME"),
+                                    DesigEmission = rs.GetS("Station.Equipment.DESIG_EMISSION"),
+                                    MaxPower = rs.GetD("Station.Equipment.MAX_POWER"),
+                                    LowerFreq = rs.GetD("Station.Equipment.LOWER_FREQ"),
+                                    UpperFreq = rs.GetD("Station.Equipment.UPPER_FREQ"),
+                                    Status = rs.GetS("Station.STATUS"),
+                                    IcsmId = rs.GetI("Station.Equipment.ID"),
+                                    IcsmTable = "EQUIP_MOB2"
+                                };
+                                string key = equipment.IcsmId + "/" + equipment.IcsmTable + "/" + equipment.Status + "/" + equipment.Freq_MHz;
+                                if (!eqpDictionary.ContainsKey(key))
+                                {
+                                    eqpDictionary.Add(key, key);
+
+                                    var listFreq = new List<double>();
+                                    var listLoss = new List<float>();
+
+                                    IMRecordset rsEqp = new IMRecordset("EQUIP_MOB2_MPT", IMRecordset.Mode.ReadOnly);
+                                    rsEqp.SetWhere("EQUIP_ID", IMRecordset.Operation.Eq, equipment.IcsmId);
+                                    rsEqp.SetWhere("TYPE", IMRecordset.Operation.Eq, "TS");
+                                    rsEqp.Select("ATTN,FREQ");
+                                    for (rsEqp.Open(); !rsEqp.IsEOF(); rsEqp.MoveNext())
+                                    {
+                                        float loss = (float)rsEqp.GetD("ATTN");
+
+                                        if (loss < -10)
+                                            loss = -10;
+                                        if (loss > 100)
+                                            loss = 100;
+
+                                        listLoss.Add(loss);
+                                        listFreq.Add(rsEqp.GetD("FREQ"));
+                                    }
+                                    if (rsEqp.IsOpen())
+                                        rsEqp.Close();
+                                    rsEqp.Destroy();
+
+                                    if (listLoss.Count > 0 && listFreq.Count > 0)
+                                    {
+                                        equipment.Loss = listLoss.ToArray();
+                                        equipment.Freq = listFreq.ToArray();
+                                    }
+                                    equipments.Add(equipment);
+                                }
+                            }
+                            if (rs.IsOpen())
+                                rs.Close();
+                            rs.Destroy();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        this.StatusBarTitle = $"An error occurred while the search stations: {e.Message}";
+                    }
+
+                }).ContinueWith(task =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        this.StatusBarIsIndeterminate = false;
+                        if (_waitForm != null)
+                        {
+                            _waitForm.Close();
+                            _waitForm = null;
+                        }
+                    }));
+                });
+                _waitForm.ShowDialog();
+
+                //if (equipments.Count == 0)
+                //{
+                //System.Windows.MessageBox.Show("No Equipments");
+                //return;
+                //}
+                var measTaskForm = new FM.SignalizationStationsEquipments(equipments.ToArray(), emittings.ToArray(), this._currentMeasResult, this._zoomHistory, this._selectedRangeX);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
             }
             catch (Exception e)
             {

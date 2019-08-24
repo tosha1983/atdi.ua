@@ -19,10 +19,13 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public long KoeffWaitingDevice;  // в разах коэфициент который показывает в сколько раз больше и будем спать при проблемах с девайсом относительно времени между измерениями
         public long SleepTimePeriodForWaitingStartingMeas;  // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
 
-        public long durationForSendResultSignaling;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
-        public long durationForSendResultBandWidth;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
-        public long durationForSendResultSO;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
-        public long durationForMeasBW_ms; // в миллисекундах из файла конфигурации - максимальное время, выделяемое для выполнения измерения BW
-        public long durationForSendResultSysInfo;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
+        
+        
+        
+        
+
+        
+        
+        
     }
 }

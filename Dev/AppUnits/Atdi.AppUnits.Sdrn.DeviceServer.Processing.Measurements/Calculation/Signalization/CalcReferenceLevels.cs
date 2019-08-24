@@ -30,7 +30,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             for (int i = 0; i < referenceLevels.levels.Length; i++)
             {
                 // расчет уровня для одной частоты StartFrequency_Hz + StepFrequency_Hz*i
-                referenceLevels.levels[i] = (float)(triggerLevel_dBm_Hz + 10.0 * Math.Log10(referenceLevels.StepFrequency_Hz) + taskParameters.allowableExcess_dB);
+                referenceLevels.levels[i] = (float)(triggerLevel_dBm_Hz + 10.0 * Math.Log10(referenceLevels.StepFrequency_Hz) + taskParameters.SignalingMeasTaskParameters.allowableExcess_dB.Value);
                 double levelFromSignal_mW = 0;
                 double gainInFreq = CalcSDRParameters.SDRGainFromFrequency(mesureTraceDeviceProperties, referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i));
                 if ((referenceSituation != null)&&(referenceSituation.ReferenceSignal != null))
@@ -67,7 +67,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 if (levelFromSignal_mW > 0)
                 {// доп проверка на нулевые значения
                     double lev = levelFromSignal_mW / (Math.Pow(10, gainInFreq / 10));
-                    lev = lev * Math.Pow(10, taskParameters.allowableExcess_dB / 10);
+                    lev = lev * Math.Pow(10, taskParameters.SignalingMeasTaskParameters.allowableExcess_dB.Value / 10);
                     referenceLevels.levels[i] = (float)(10 * Math.Log10(Math.Pow(10, referenceLevels.levels[i] / 10) + lev));
                 }
             }

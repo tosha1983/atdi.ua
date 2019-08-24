@@ -12,5 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public DateTime? LastTimeSend = null;
         public SysInfoResult  sysInfoResult; //  результат измерения
         public long maximumTimeForWaitingResultBandWidth; // (максимальное время ожидания результата)
+        public long durationForMeasSysInfo_ms;
+        public long durationForSendResultSysInfo;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
     }
 }
