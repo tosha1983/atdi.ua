@@ -247,6 +247,16 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadResults.GetSignalingSysInfos(measResultId, freq_Hz);
 
         }
+
+        public OnlineMeasurementInitiationResult InitOnlineMeasurement(OnlineMeasurementOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
+        {
+            throw new NotImplementedException();
+        }
     }
    
 
