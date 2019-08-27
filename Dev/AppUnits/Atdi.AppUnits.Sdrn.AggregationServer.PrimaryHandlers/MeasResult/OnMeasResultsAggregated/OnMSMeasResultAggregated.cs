@@ -16,6 +16,7 @@ using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.Common;
 using Atdi.Platform;
 using Atdi.Platform.Caching;
+using Atdi.Contracts.Api.DataBus;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
@@ -27,12 +28,14 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         private readonly IQueryExecutor _queryExecutor;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
-        public OnMSMeasResultAggregated(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger, ISdrnServerEnvironment environment)
+        private readonly IPublisher _publisher;
+        public OnMSMeasResultAggregated(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger, ISdrnServerEnvironment environment, IPublisher publisher)
         {
             this._logger = logger;
             this._dataLayer = dataLayer;
             this._environment = environment;
             this._eventEmitter = eventEmitter;
+            this._publisher = publisher;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
         }
         public void Notify(MSMeasResultAggregated @event)

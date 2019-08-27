@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeasResults\MeasResultContainer.cs" />
+    <Compile Include="Messages\MeasResult\SendMeasResultMSToMasterServer.cs" />
+    <Compile Include="Messages\MeasResult\SendMeasResultSGToMasterServer.cs" />
+    <Compile Include="Messages\MeasResult\SendMeasResultSOToMasterServer.cs" />
     <Compile Include="PipeBox\CommandMeasTaskPipebox.cs" />
     <Compile Include="PipeBox\CreateMeasTaskPipebox.cs" />
     <Compile Include="PipeBox\ClientMeasTaskPipebox.cs" />
@@ -115,6 +119,10 @@
     <ProjectReference Include="..\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj">
       <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
       <Name>Atdi.DataModels.Api.DataBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
     </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>

@@ -17,6 +17,8 @@ using Atdi.Common;
 using Atdi.Platform;
 using Atdi.Platform.Caching;
 using Atdi.DataModels.Sdrns.Device;
+using DMS = Atdi.DataModels.Sdrns.Server;
+using Atdi.Contracts.Api.DataBus;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
@@ -28,12 +30,14 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         private readonly IQueryExecutor _queryExecutor;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
-        public OnSOMeasResultAggregated(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger, ISdrnServerEnvironment environment)
+        private readonly IPublisher _publisher;
+        public OnSOMeasResultAggregated(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger, ISdrnServerEnvironment environment, IPublisher publisher)
         {
             this._logger = logger;
             this._dataLayer = dataLayer;
             this._environment = environment;
             this._eventEmitter = eventEmitter;
+            this._publisher = publisher;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
         }
         public void Notify(MSMeasResultAggregated @event)
@@ -67,7 +71,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                     measResult.StartTime = readerResMeas.GetValue(c => c.StartTime).GetValueOrDefault();
                     measResult.StopTime = readerResMeas.GetValue(c => c.StopTime).GetValueOrDefault();
                     measResult.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).GetValueOrDefault();
-                    if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out MeasurementType outResType)) measResult.Measurement = outResType;
+                    measResult.Measurement = (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out MeasurementType outResType)) ? outResType : MeasurementType.SpectrumOccupation;
                 }
                 return true;
             });
@@ -127,15 +131,11 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             });
             measResult.Location = location;
 
-
-
-
-
-            //var busEvent = new MSMeasResultAggregated($"MSMeasResultAggregated", "OnMSMeasResultAppeared")
-            //{
-            //    MeasResultId = measResultId
-            //};
-            //_eventEmitter.Emit(busEvent);
+            var deliveryObject = new DMS.MeasResultContainer() { MeasResult = measResult };
+            var envelope = this._publisher.CreateEnvelope<DMS.SendMeasResultSOToMasterServer, DMS.MeasResultContainer>();
+            envelope.To = this._environment.MasterServerInstance;
+            envelope.DeliveryObject = deliveryObject;
+            this._publisher.Send(envelope);
         }
     }
 }
