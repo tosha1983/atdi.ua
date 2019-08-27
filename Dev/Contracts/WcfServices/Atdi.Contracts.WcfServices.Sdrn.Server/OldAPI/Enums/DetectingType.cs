@@ -15,24 +15,34 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public enum DetectingType
     {
         /// <summary>
-        /// 
+        /// Average value
         /// </summary>
         [EnumMember]
-        Avarage,
+        Average,
         /// <summary>
-        /// 
+        /// Auto value
         /// </summary>
         [EnumMember]
-        Peak,
+        Auto,
         /// <summary>
-        /// 
+        /// Maximum peak value
         /// </summary>
         [EnumMember]
         MaxPeak,
         /// <summary>
-        /// 
+        /// Minimum peak value
         /// </summary>
         [EnumMember]
-        MinPeak
+        MinPeak,
+        /// <summary>
+        /// Root mean square value
+        /// </summary>
+        [EnumMember]
+        RMS,
+        /// <summary>
+        /// Peak value
+        /// </summary>
+        [EnumMember]
+        Peak
     }
 }

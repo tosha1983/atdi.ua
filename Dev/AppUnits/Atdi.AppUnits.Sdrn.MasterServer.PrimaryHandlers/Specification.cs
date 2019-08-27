@@ -22,6 +22,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
         public static readonly EventCategory Registering = "Registering";
         public static readonly EventCategory Finalizing = "Finalizing";
         public static readonly EventCategory Handling = "Handling";
+        public static readonly EventCategory PipelineHandling = "PipelineHandling";
         public static readonly EventCategory Converting = "Converting";
 
         public static readonly EventCategory Creating = "Creating";
@@ -29,7 +30,18 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
 
         public static readonly EventCategory Initilazing = "Initilazing";
         public static readonly EventCategory Callbacking = "Callbacking";
+        public static readonly EventCategory Subscribes = "Subscribes";
 
+        public static readonly EventCategory OnReceivedNewTaskCreateToMasterServerEvent = "OnReceivedNewTaskCreateToMasterServerEvent";
+        public static readonly EventCategory OnReceivedDelTaskCreateToMasterServerEvent = "OnReceivedDelTaskCreateToMasterServerEvent";
+        public static readonly EventCategory OnReceivedRunTaskCreateToMasterServerEvent = "OnReceivedRunTaskCreateToMasterServerEvent";
+        public static readonly EventCategory OnReceivedStopTaskCreateToMasterServerEvent = "OnReceivedStopTaskCreateToMasterServerEvent";
+
+        public static readonly EventCategory RegistrationSensorOnMasterServerHandler = "RegistrationSensorOnMasterServerHandler";
+        public static readonly EventCategory CommandsMasterServerSendEventPipelineHandler = "CommandsMasterServerSendEventPipelineHandler";
+        public static readonly EventCategory MeasTasksMasterServerSendEventPipelineHandler = "MeasTasksMasterServerSendEventPipelineHandler";
+        public static readonly EventCategory GenerateMeasTasksPipelineHandler = "GenerateMeasTasksPipelineHandler";
+        
 
     }
 
@@ -37,72 +49,46 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
     {
 
 
-        //public static readonly EventText DisconnectingAdapterError = "Error occurred while disconnecting the adapter: AdapterType = '{0}'";
-        //public static readonly EventText AbortAdapterThread = "Abort the thread of the adapter: AdapterType = '{0}'";
-        //public static readonly EventText ProcessingAdapterError = "Error occurred while processing the adapter: AdapterType = '{0}'";
-        //public static readonly EventText TookCommand = "The new command was took: AdapterType = '{0}', CommandType = '{1}', ParameterType = '{2}'";
-        //public static readonly EventText RejectedCommand = "The new command was rejected: AdapterType = '{0}', CommandType = '{1}', ParameterType = '{2}', Reasone = '{3}'";
-
-        //public static readonly EventText RejectedCommandByTimeout = "Timeout info: Delay = '{0}', Timeout = '{1}', Lateness = '{2}'";
-
-        //public static readonly EventText TransferCommand = "Transfer command to adapter: AdapterType = '{0}', CommandType = '{1}', ParameterType = '{2}'";
-        //public static readonly EventText FinalizedCommand = "The execution command was finalized: AdapterType = '{0}', CommandType = '{1}', ParameterType = '{2}'";
-
-        //public static readonly EventText CreatedAdapter = "The adapter object was created: AdapterType = '{0}'";
-        //public static readonly EventText ConnectedAdapter = "The adapter object was connected: AdapterType = '{0}'";
-
-        //public static readonly EventText RanAdapterThread = "The adapter thread was ran: AdapterType = '{0}'";
-
-        //public static readonly EventText RegisteredAdapter = "The adapter was registered: AdapterType = '{0}'";
-
-        //public static readonly EventText ProcessingResultError = "Error occurred while processing the result: AdapterType = '{0}', CommandType = '{1}'";
-
-        //public static readonly EventText HandlingResultError = "Error occurred while processing the results: CommandType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
-        //public static readonly EventText ConvertingResultError = "Error occurred while converting the results: FromType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
-
-
-        //public static readonly EventText AutomaticTaskActivationWasStarted = "Automatic task activation was started";
-        //public static readonly EventText AutomaticTaskActivationWasFinished = "Automatic task activation was finished";
-        //public static readonly EventText AutomaticTasksDetected = "The Auto tasks were detected: Count = {0}";
-
-        //public static readonly EventText AutomaticTaskWorkerCodeHasCompleted = "Automatic task worker code has completed its execution: TaskType = '{0}', ProcessType = '{1}'";
-
-        //public static readonly EventText ProcessContextWasCreated = "The Process Context was created: Name = '{0}', Type = {1}";
-
-        //public static readonly EventText WorkTaskHasBeenCreated = "The Work Task has been created: WorkContext = '{0}', Key = '{1}'";
-        //public static readonly EventText WorkTaskHasFinished = "The Work Task has finished: WorkContext = '{0}', Key = '{1}'";
-
-        //public static readonly EventText TaskIsBeingRunSync = "Task is being run synchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
-        //public static readonly EventText TaskHasBeenRunSync = "Task has been run synchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
-        //public static readonly EventText TaskIsBeingRunAsync = "Task is being run asynchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
-        //public static readonly EventText TaskHasBeenRunAsync = "Task has been run asynchronously: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
-        //public static readonly EventText TaskIsBeingRunParallel = "Task is being run parallel: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
-        //public static readonly EventText TaskHasBeenRunParallel = "Task has been run parallel: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
-
-        //public static readonly EventText GateFactoryWasCreated = "The Gate Factory was created";
-        //public static readonly EventText GateConfigWasLoaded = "The Gate Configuration was loaded: API = '{0}', SDRN Server Instance = '{1}', Rabbit Host = '{2}'";
-        //public static readonly EventText GateWasCreated = "The Gate was created: ContextName = '{0}'";
-
-        //public static readonly EventText ProcessingObjectsWereRegistered = "The Processing Objects were registered";
-        //public static readonly EventText ControllerObjectsWereRegistered = "The Controller Objects were registered";
-
-        //public static readonly EventText TaskWorkerTypesWereRegistered = "The Task Worker Types were registered";
-        //public static readonly EventText ResultHandlerTypesWereRegistered = "The Result Handler Types were registered";
-        //public static readonly EventText ResultConvertorTypesWereRegistered = "The Result Convertor Types were registered";
-        //public static readonly EventText AdapterObjectsWereRegistered = "The Adapter Objects were registered";
-        //public static readonly EventText AutoTasksWereWtarted = "The Auto Tasks were started";
-
-
-        //public static readonly EventText CreatedEventWaiter = "The Event Waiter object was created";
-
-        //public static readonly EventText AdapterRegistrationTimedOut = "Adapter registration timed out: AdapterType = '{0}'";
-        //public static readonly EventText AdapterRegistrationFailed = "Adapter registration failed: AdapterType = '{0}'";
-        //public static readonly EventText AdapterRegistrationAborted = "Adapter registration aborted: AdapterType = '{0}'";
-        //public static readonly EventText AdapterRegistrationCompleted = "Adapter registration is completed successfully: AdapterType = '{0}', Assigned ID = '{1}'";
-
-        //public static readonly EventText ErrorOccurredDuringCallbackCall = "An error occurred during the callback call: Command Type = '{0}'";
-        //public static readonly EventText AbortSchedulerThread = "Abort the thread: Command Type = '{0}'";
-        //public static readonly EventText ProcessingSchedulerError = "Error occurred while processing the scheduler: Command Type = '{0}'";
+        public static readonly EventText HandlerLoadListShortSensorMethod = "Call 'LoadListShortSensor' method";
+        public static readonly EventText HandlerLoadShortSensorMethod = "Call 'LoadShortSensor' method";
+        public static readonly EventText HandlerCallLoadObjectSensorMethod = "Call 'LoadObjectSensor' method";
+        public static readonly EventText HandlerLoadObjectSensorMethod = "Call 'LoadObjectSensor' method";
+        public static readonly EventText StartOperationWriting = "Start of validation operation and writing to main tables";
+        public static readonly EventText EndOperationWriting = "End of validation operation and writing to main tables";
+        public static readonly EventText IsAlreadySaveResults = "ResultId = {0} is already recorded in the XBS_RESMEASRAW table with Id = {1}, repeated recording is canceled";
+        public static readonly EventText HandlerTypeWasRegistred = "The event subscriber type was registered successfully: '{0}'";
+        public static readonly EventText HandlerCallDeleteResultFromDBMethod = "Call 'DeleteResultFromDB' method";
+        public static readonly EventText HandlerCallGetMeasResultsByTaskIdMethod = "Call 'GetMeasResultsByTaskId' method";
+        public static readonly EventText HandlerCallRunMeasTaskMethod = "Call 'RunMeasTask' method";
+        public static readonly EventText HandlerCallStopMeasTaskMethod = "Call 'StopMeasTask' method";
+        public static readonly EventText HandlerCallGetMeasResultsHeaderByTaskIdMethod = "Call 'GetMeasResultsHeaderByTaskId' method";
+        public static readonly EventText HandlerCallGetMeasResultsHeaderSpecialMethod = "Call 'GetMeasResultsHeaderSpecial' method";
+        public static readonly EventText HandlerCallDeleteMeasTaskMethod = "Call 'DeleteMeasTask' method";
+        public static readonly EventText HandlerMeasTaskProcessEnd = "End 'MeasTaskProcess' action '{0}'";
+        public static readonly EventText MeasTimeParamListIncorrect = "Incorrect task parameters (MeasTimeParamList.TimeStart or MeasTimeParamList.PerStart) greater  (MeasTimeParamList.TimeStop or MeasTimeParamList.PerStop)";
+        public static readonly EventText HandlerDeleteMeasTaskProcess = "Start 'DeleteMeasTask' for ID  '{0}'";
+        public static readonly EventText HandlerRunMeasTaskProcess = "Start 'RunMeasTask' for ID '{0}'";
+        public static readonly EventText HandlerStopMeasTaskProcess = "Start 'StopMeasTask' for ID '{0}'";
+        public static readonly EventText HandlerMeasTaskProcessStart = "Call 'MeasTaskProcess' method";
+        public static readonly EventText HandlerCallShortReadTaskMethod = "Call 'ShortReadTask' method";
+        public static readonly EventText HandlerCallGetMeasurementResultByResIdMethod = "Call 'GetMeasurementResultByResId' method";
+        public static readonly EventText HandlerCallGetResMeasStationMethod = "Call 'GetResMeasStation' method";
+        public static readonly EventText HandlerCallReadResultResMeasStationMethod = "Call 'ReadResultResMeasStation' method";
+        public static readonly EventText HandlerCallGetResMeasStationHeaderByResIdMethod = "Call 'ReadResultResMeasStation' method";
+        public static readonly EventText HandlerCallGetSensorPoligonPointMethod = "Call 'GetSensorPoligonPoint' method";
+        public static readonly EventText HandlerGetShortMeasResStationMethod = "Call 'GetShortMeasResStation' method";
+        public static readonly EventText HandlerGetShortMeasResultsMethod = "Call 'GetShortMeasResults' method";
+        public static readonly EventText HandlerGetShortMeasResultsByDateMethod = "Call 'GetShortMeasResultsByDate' method";
+        public static readonly EventText HandlerGetShortMeasResultsByIdMethod = "Call 'GetShortMeasResultsById' method";
+        public static readonly EventText HandlerGetShortMeasResultsByTaskIdMethod = "Call 'GetShortMeasResultsByTaskId' method";
+        public static readonly EventText HandlerGetShortMeasResultsByTypeAndTaskIdMethod = "Call 'GetShortMeasResultsByTypeAndTaskId' method";
+        public static readonly EventText HandlerGetShortMeasResultsSpecialMethod = "Call 'GetShortMeasResultsSpecial' method";
+        public static readonly EventText HandlerGetShortMeasTaskMethod = "Call 'GetShortMeasTask' method";
+        public static readonly EventText HandlerGetShortMeasTasksMethod = "Call 'GetShortMeasTasks' method";
+        public static readonly EventText HandlerCalcAppUnitMethod = "Call 'CalcAppUnit' method";
+        public static readonly EventText HandlerGetStationDataForMeasurementsByTaskIdMethod = "Call 'GetStationDataForMeasurementsByTaskId' method";
+        public static readonly EventText HandlerGetStationLevelsByTaskMethod = "Call 'GetStationLevelsByTask' method";
+        public static readonly EventText HandlerCallGetRoutesMethod = "Call 'GetRoutes' method";
 
     }
     static class TraceScopeNames

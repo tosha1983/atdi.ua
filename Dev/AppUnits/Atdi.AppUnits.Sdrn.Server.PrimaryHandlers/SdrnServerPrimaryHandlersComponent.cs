@@ -28,21 +28,26 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
             var exampleConfig = this.Config.Extract<Configs>();
             this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
 
-
             // регистрация  обрабочика конвеера в DI-окружении
-            this.Container.Register<ClientMeasTasksPipelineHandler, ClientMeasTasksPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<MeasTasksPipelineHandler, MeasTasksPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<CommandsPipelineHandler, CommandsPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<MeasTasksSendPipelineHandler, MeasTasksSendPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<CommandsSendEventPipelineHandler, CommandsSendEventPipelineHandler>(ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()
         {
             var pipelineSite = this.Resolver.Resolve<IPipelineSite>();
 
-            // декларация конвейера
+            // декларация конвейеров
             var tasksPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
             
-            // регистрация обработчика
-            tasksPipeline.Register(typeof(ClientMeasTasksPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            // регистрация обработчиков
+            tasksPipeline.Register(typeof(MeasTasksPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            commandsPipeline.Register(typeof(CommandsPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            tasksPipeline.Register(typeof(MeasTasksSendPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            commandsPipeline.Register(typeof(CommandsSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
         }
 
         protected override void OnDeactivateUnit()

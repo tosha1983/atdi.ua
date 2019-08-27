@@ -15,6 +15,11 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
+using Atdi.Contracts.Api.EventSystem;
+using Atdi.Modules.Sdrn.Server.Events;
+     
+
+
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -26,6 +31,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IStatistics _statistics;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IMessagesSite _messagesSite;
+        private readonly IEventEmitter _eventEmitter;
 
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _registerSensorHitsCounter;
@@ -37,6 +43,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             IDataLayer<EntityDataOrm> dataLayer, 
             ISdrnServerEnvironment environment,
             IStatistics statistics,
+            IEventEmitter eventEmitter,
             ILogger logger) 
             : base(messagesSite, logger)
         {
@@ -45,6 +52,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             this._dataLayer = dataLayer;
             this._environment = environment;
             this._statistics = statistics;
+            this._eventEmitter = eventEmitter;
             if (this._statistics != null)
             {
                 this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
@@ -117,7 +125,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     }
                     else if (sensorExistsInDb)
                     {
-                        //registrationResult.Status = "Reject";
                         registrationResult.Status = "Success";
                         registrationResult.Message = string.Format("The sensor has already been registered earlier Name = {0}, TechId = {1}. Sensor information updated.", deliveryObject.Name, deliveryObject.Equipment.TechId);
                     }
@@ -131,6 +138,21 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         registrationResult.Status = "Error";
                         registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
                     }
+
+                    ///Отправка уведомления в AggregationServer о необходимости регистрации сенсора
+                    var measTaskEventToAggregationServer = new OnRegisterAggregationServer()
+                    {
+                        EquipmentTechId = deliveryObject.Equipment.TechId,
+                        SensorName = deliveryObject.Name,
+                        Name = $"OnRegisterAggregationServerEvent"
+                    };
+                    this._eventEmitter.Emit(measTaskEventToAggregationServer, new EventEmittingOptions()
+                    {
+                        Rule = EventEmittingRule.Default,
+                        Destination = new string[] { $"SubscriberOnRegisterAggregationServerEvent" }
+                    });
+                   
+
 
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
                     envelop.SensorName = sensorName;

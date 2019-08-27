@@ -1,21 +1,4 @@
-﻿CREATE SEQUENCE ICSC.SIGN_SYSINFO_ID_SEQ
-  START WITH 1
-  MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
-  NOCYCLE
-  CACHE 2
-  NOORDER;
-
-CREATE SEQUENCE ICSC.SIGN_SYSINFO_WTIMES_ID_SEQ
-  START WITH 1
-  MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
-  NOCYCLE
-  CACHE 2
-  NOORDER;
-
-
-CREATE SEQUENCE ICSC.AMQP_EVENTS_ID_SEQ
+﻿CREATE SEQUENCE ICSC.AMQP_EVENTS_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
   MINVALUE 0
@@ -87,6 +70,15 @@ CREATE SEQUENCE ICSC.FREQ_SAMPLE_ID_SEQ
   NOORDER;
 
 
+CREATE SEQUENCE ICSC.LINK_AGGREGATION_SENSOR_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
 CREATE SEQUENCE ICSC.LINK_MEAS_STATION_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
@@ -99,7 +91,7 @@ CREATE SEQUENCE ICSC.LINK_MEAS_STATION_ID_SEQ
 CREATE SEQUENCE ICSC.LINK_RES_SENSOR_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -123,7 +115,7 @@ CREATE SEQUENCE ICSC.LINK_SECTOR_MASK_ID_SEQ
   NOORDER;
 
 
-CREATE SEQUENCE ICSC.VALIDATION_LOGS_ID_SEQ
+CREATE SEQUENCE ICSC.LINK_SUBTASK_MASTER_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
   MINVALUE 0
@@ -169,25 +161,6 @@ CREATE SEQUENCE ICSC.MEAS_LOCATION_PARAM_ID_SEQ
 
 
 CREATE SEQUENCE ICSC.MEAS_OTHER_ID_SEQ
-  START WITH 1
-  MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
-  NOCYCLE
-  CACHE 2
-  NOORDER;
-
-
-  
-CREATE SEQUENCE ICSC.SUBTASK_ID_SEQ
-  START WITH 1
-  MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
-  NOCYCLE
-  CACHE 2
-  NOORDER;
-
-
-CREATE SEQUENCE ICSC.SUBTASK_SENSOR_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
   MINVALUE 0
@@ -280,7 +253,7 @@ CREATE SEQUENCE ICSC.RES_LOCATION_SENSOR_MEAS_I_SEQ
 CREATE SEQUENCE ICSC.RES_MEAS_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -289,7 +262,7 @@ CREATE SEQUENCE ICSC.RES_MEAS_ID_SEQ
 CREATE SEQUENCE ICSC.RES_MEAS_STATION_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -307,7 +280,7 @@ CREATE SEQUENCE ICSC.RES_ROUTES_ID_SEQ
 CREATE SEQUENCE ICSC.RES_STGENERAL_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -316,7 +289,7 @@ CREATE SEQUENCE ICSC.RES_STGENERAL_ID_SEQ
 CREATE SEQUENCE ICSC.RES_STLEVEL_CAR_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -343,7 +316,7 @@ CREATE SEQUENCE ICSC.RES_SYS_INFO_BLOCKS_ID_SEQ
 CREATE SEQUENCE ICSC.RES_SYS_INFO_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -388,7 +361,7 @@ CREATE SEQUENCE ICSC.SENSOR_ANTENNA_ID_SEQ
 CREATE SEQUENCE ICSC.SENSOR_EQUIP_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -406,7 +379,7 @@ CREATE SEQUENCE ICSC.SENSOR_EQUIP_SENSITIVITES__SEQ
 CREATE SEQUENCE ICSC.SENSOR_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
-  MINVALUE 0
+  MINVALUE 1
   NOCYCLE
   CACHE 2
   NOORDER;
@@ -422,6 +395,24 @@ CREATE SEQUENCE ICSC.SENSOR_LOCATION_ID_SEQ
 
 
 CREATE SEQUENCE ICSC.SENSOR_POLIG_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+CREATE SEQUENCE ICSC.SIGN_SYSINFO_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+CREATE SEQUENCE ICSC.SIGN_SYSINFO_WTIMES_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
   MINVALUE 0
@@ -457,6 +448,33 @@ CREATE SEQUENCE ICSC.STATION_SITE_ID_SEQ
   NOORDER;
 
 
+CREATE SEQUENCE ICSC.SUBTASK_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+CREATE SEQUENCE ICSC.SUBTASK_SENSOR_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+CREATE SEQUENCE ICSC.VALIDATION_LOGS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
 CREATE SEQUENCE ICSC.WORK_TIME_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
@@ -466,1274 +484,11 @@ CREATE SEQUENCE ICSC.WORK_TIME_ID_SEQ
   NOORDER;
 
 
-CREATE TABLE ICSC.SIGN_SYSINFO_WTIMES
-(
-  ID                 NUMBER(15)                 NOT NULL,
-  START_EMIT         DATE                       NOT NULL,
-  STOP_EMIT          DATE                       NOT NULL,
-  HIT_COUNT          NUMBER(9)                  NOT NULL,
-  PERCENT_AVAILABLE  NUMBER(22,8)               NOT NULL,
-  SYSINFO_ID         NUMBER(15)                 NOT NULL
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SIGN_SYSINFO
-(
-  ID              NUMBER(15)                    NOT NULL,
-  BANDWIDTH_HZ    NUMBER(30,10),
-  FREQ_HZ         NUMBER(22,8)                  NOT NULL,
-  LEVEL_DBM       NUMBER(30,10),
-  CID             NUMBER(9),
-  MCC             NUMBER(9),
-  MNC             NUMBER(9),
-  BSIC            NUMBER(9),
-  CHANNEL_NUMBER  NUMBER(9),
-  LAC             NUMBER(9),
-  RNC             NUMBER(9),
-  CTOI            NUMBER(30,10),
-  POWER           NUMBER(30,10),
-  EMITTING_ID     NUMBER(15),
-  STANDARD        VARCHAR2(20 CHAR)             NOT NULL
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_LEV_MEAS_ONLINE
-(
-  ID           NUMBER(15)                       NOT NULL,
-  VALUE        NUMBER(30,10),
-  RES_MEAS_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.BEARING
-(
-  ID                    NUMBER(15)              NOT NULL,
-  RES_MEAS_STATION_ID   NUMBER(15),
-  LEVEL_DBM             NUMBER(30,10),
-  LEVEL_DBMKVM          NUMBER(30,10),
-  TIME_OF_MEASUREMENTS  DATE,
-  BW                    NUMBER(30,10),
-  QUALITY               NUMBER(30,10),
-  CENTRAL_FREQUENCY     NUMBER(30,10),
-  BEARING               NUMBER(30,10),
-  AZIMUTH               NUMBER(30,10),
-  ASL                   NUMBER(30,10),
-  LON                   NUMBER(30,10),
-  LAT                   NUMBER(30,10),
-  AGL                   NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.FREQ_SAMPLE
-(
-  ID             NUMBER(15)                     NOT NULL,
-  FREQ_MHZ       NUMBER(30,10),
-  LEVEL_DBM      NUMBER(30,10),
-  LEVEL_DBMKVM   NUMBER(30,10),
-  LEVEL_MIN_DBM  NUMBER(30,10),
-  LEVEL_MAX_DBM  NUMBER(30,10),
-  OCCUPATION_PT  NUMBER(30,10),
-  RES_MEAS_ID    NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.LINK_RES_SENSOR
-(
-  ID                   NUMBER(15)               NOT NULL,
-  SENSOR_ID            NUMBER(15),
-  RES_MEAS_STATION_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.ENTITY
-(
-  ID             NVARCHAR2(250)                 NOT NULL,
-  NAME           NVARCHAR2(250),
-  PARENT_ID      NVARCHAR2(250),
-  PARENT_TYPE    NVARCHAR2(250),
-  CONTENT_TYPE   NVARCHAR2(250),
-  HASH_ALGORITM  NVARCHAR2(250),
-  HASH_CODE      VARCHAR2(4000 CHAR),
-  DESCRIPTION    VARCHAR2(4000 CHAR)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.STATION_SITE
-(
-  ID      NUMBER(15)                            NOT NULL,
-  LON     NUMBER(30,10),
-  LAT     NUMBER(30,10),
-  ADDRES  NVARCHAR2(2000),
-  REGION  NVARCHAR2(50)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.LINK_SECTOR_FREQ
-(
-  ID              NUMBER(15)                    NOT NULL,
-  SECTOR_FREQ_ID  NUMBER(15),
-  SECTOR_ID       NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.LINK_SECTOR_MASK
-(
-  ID                   NUMBER(15)               NOT NULL,
-  SECTOR_MASK_ELEM_ID  NUMBER(15),
-  SECTOR_ID            NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.REFERENCE_SITUATION
-(
-  ID            NUMBER(15)                      NOT NULL,
-  SENSOR_ID     NUMBER(15),
-  MEAS_TASK_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SECTOR
-(
-  ID                  NUMBER(15)                NOT NULL,
-  AGL                 NUMBER(30,10),
-  EIRP                NUMBER(30,10),
-  AZIMUTH             NUMBER(30,10),
-  BW                  NUMBER(30,10),
-  CLASS_EMISSION      NVARCHAR2(50),
-  STATION_ID          NUMBER(15),
-  CLIENT_SECTOR_CODE  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SENSOR_EQUIP_SENSITIVITES
-(
-  ID               NUMBER(15)                   NOT NULL,
-  SENSOR_EQUIP_ID  NUMBER(15),
-  FREQ             NUMBER(30,10),
-  KTBF             NUMBER(30,10),
-  NOISEF           NUMBER(30,10),
-  FREQ_STABILITY   NUMBER(30,10),
-  ADDLOSS          NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SECTOR_MASK_ELEM
-(
-  ID       NUMBER(15)                           NOT NULL,
-  "LEVEL"  NUMBER(30,10),
-  BW       NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.LINK_MEAS_STATION
-(
-  ID            NUMBER(15)                      NOT NULL,
-  MEAS_TASK_ID  NUMBER(15),
-  STATION_ID    NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SECTOR_FREQ
-(
-  ID                NUMBER(15)                  NOT NULL,
-  CLIENT_PLAN_CODE  NUMBER(15),
-  CHANNAL_NUMBER    NUMBER(15),
-  FREQUENCY         NUMBER(22,8),
-  CLIENT_FREQ_CODE  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.OWNER_DATA
-(
-  ID          NUMBER(15)                        NOT NULL,
-  OWNER_NAME  NVARCHAR2(100),
-  OKPO        NVARCHAR2(50),
-  ZIP         NVARCHAR2(50),
-  CODE        NVARCHAR2(50),
-  ADDRES      NVARCHAR2(2000),
-  STATION_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.STATION
-(
-  ID                      NUMBER(15)            NOT NULL,
-  GLOBAL_SID              NVARCHAR2(50),
-  STATUS                  NVARCHAR2(50),
-  STANDARD                NVARCHAR2(50),
-  MEAS_TASK_ID            NUMBER(15),
-  CLIENT_STATION_CODE     NUMBER(15),
-  START_DATE              DATE,
-  END_DATE                DATE,
-  CLOSE_DATE              DATE,
-  DOZVIL_NAME             NVARCHAR2(100),
-  OWNER_DATA_ID           NUMBER(15),
-  STATION_SITE_ID         NUMBER(15),
-  CLIENT_PERMISSION_CODE  NUMBER(9)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.ENTITY_PART
-(
-  ENTITY_ID   NVARCHAR2(250)                    NOT NULL,
-  PART_INDEX  NUMBER(9)                         NOT NULL,
-  EOF         NUMBER(1),
-  CONTENT     BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.ANTENNA_PATTERN
-(
-  ID                 NUMBER(15)                 NOT NULL,
-  SENSOR_ANTENNA_ID  NUMBER(15),
-  FREQ               NUMBER(30,10),
-  GAIN               NUMBER(30,10),
-  DIAGA              NVARCHAR2(1000),
-  DIAGH              NVARCHAR2(1000),
-  DIAGV              NVARCHAR2(1000)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SENSOR_POLIG
-(
-  ID         NUMBER(15)                         NOT NULL,
-  SENSOR_ID  NUMBER(15),
-  LON        NUMBER(30,10),
-  LAT        NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.REFERENCE_SIGNAL
-(
-  ID                      NUMBER(15)            NOT NULL,
-  FREQ_MHZ                NUMBER(30,10),
-  BANDWIDTH_KHZ           NUMBER(30,10),
-  LEVELSIGNAL_DBM         NUMBER(30,10),
-  REFERENCE_SITUATION_ID  NUMBER(15),
-  ICSM_ID                 NUMBER(9),
-  ICSM_TABLE              NVARCHAR2(50),
-  LOSS_DB                 BLOB,
-  FREQ_KHZ                BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.VALIDATION_LOGS
-(
-  ID          NUMBER(15)                        NOT NULL,
-  TABLE_NAME   NVARCHAR2(150),
-  WHEN        DATE,                              
-  MESSAGE_ID  NUMBER(15),	
-  RES_MEAS_ID NUMBER(15),
-  INFO        NCLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SENSOR_LOCATION
-(
-  ID            NUMBER(15)                      NOT NULL,
-  SENSOR_ID     NUMBER(15),
-  DATA_FROM     DATE,
-  DATA_TO       DATE,
-  DATA_CREATED  DATE,
-  STATUS        NVARCHAR2(50),
-  LON           NUMBER(30,10),
-  LAT           NUMBER(30,10),
-  ASL           NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.MEAS_LOCATION_PARAM
-(
-  ID            NUMBER(15)                      NOT NULL,
-  LON           NUMBER(30,10),
-  LAT           NUMBER(30,10),
-  ASL           NUMBER(30,10),
-  MAXDIST       NUMBER(30,10),
-  MEAS_TASK_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.REFERENCE_LEVELS
-(
-  ID            NUMBER(15)                      NOT NULL,
-  STARTFREQ_HZ  NUMBER(30,10),
-  STEPFREQ_HZ   NUMBER(30,10),
-  RES_MEAS_ID   NUMBER(15),
-  REF_LEVELS    BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-LOB (REF_LEVELS) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_LOCATION_SENSOR_MEAS
-(
-  ID           NUMBER(15)                       NOT NULL,
-  LON          NUMBER(30,10),
-  LAT          NUMBER(30,10),
-  ASL          NUMBER(30,10),
-  RES_MEAS_ID  NUMBER(15),
-  AGL          NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SUBTASK_SENSOR
-(
-  ID              NUMBER(15)                    NOT NULL,
-  STATUS          NVARCHAR2(50),
-  COUNT           NUMBER(9),
-  TIME_NEXT_TASK  DATE,
-  SENSOR_ID       NUMBER(15),
-  SUBTASK_ID      NUMBER(15)                    NOT NULL
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SUBTASK
-(
-  ID            NUMBER(15)                      NOT NULL,
-  TIME_START    DATE,
-  TIME_STOP     DATE,
-  STATUS        NVARCHAR2(50),
-  INTERVAL      NUMBER(9),
-  MEAS_TASK_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.MEAS_FREQ_PARAM
-(
-  ID            NUMBER(15)                      NOT NULL,
-  "MODE"        NVARCHAR2(50),
-  RGL           NUMBER(30,10),
-  RGU           NUMBER(30,10),
-  STEP          NUMBER(30,10),
-  MEAS_TASK_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.EMITTING
-(
-  ID                         NUMBER(15)         NOT NULL,
-  STARTFREQ_MHZ              NUMBER(30,10),
-  STOPFREQ_MHZ               NUMBER(30,10),
-  CURRPOWER_DBM              NUMBER(30,10),
-  REFLEVEL_DBM               NUMBER(30,10),
-  MEANDEVFROM_REF            NUMBER(30,10),
-  TRIGGERDEVFROM_REF         NUMBER(30,10),
-  ROLL_OFF_ACTOR             NUMBER(30,10),
-  STANDARD_BW                NUMBER(30,10),
-  RES_MEAS_ID                NUMBER(15),
-  SENSOR_ID                  NUMBER(15),
-  STATION_ID                 NUMBER(15),
-  STATION_TABLE_NAME         NVARCHAR2(50),
-  LEVELS_DISTRIBUTION_LVL    BLOB,
-  LEVELS_DISTRIBUTION_COUNT  BLOB,
-  LOSS_DB                    BLOB,
-  FREQ_KHZ                   BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-LOB (FREQ_KHZ) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-  LOB (LOSS_DB) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-  LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-  LOB (LEVELS_DISTRIBUTION_LVL) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_STMASKELM
-(
-  ID                NUMBER(15)                  NOT NULL,
-  RES_STGENERAL_ID  NUMBER(15),
-  BW                NUMBER(30,10),
-  "LEVEL"           NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.SENSOR_EQUIP
-(
-  ID              NUMBER(15)                    NOT NULL,
-  SENSOR_ID       NUMBER(15),
-  CODE            NVARCHAR2(50),
-  MANUFACTURER    NVARCHAR2(50),
-  NAME            NVARCHAR2(50),
-  FAMILY          NVARCHAR2(50),
-  TECHID          NVARCHAR2(200),
-  VERSION         NVARCHAR2(50),
-  LOWER_FREQ      NUMBER(30,10),
-  UPPER_FREQ      NUMBER(30,10),
-  RBW_MIN         NUMBER(30,10),
-  RBW_MAX         NUMBER(30,10),
-  VBW_MIN         NUMBER(30,10),
-  VBW_MAX         NUMBER(30,10),
-  MOBILITY        NUMBER(1),
-  FFT_POINT_MAX   NUMBER(30,10),
-  REF_LEVEL_DBM   NUMBER(30,10),
-  OPERATION_MODE  NVARCHAR2(50),
-  TYPE            NVARCHAR2(50),
-  EQUIP_CLASS     NVARCHAR2(50),
-  TUNING_STEP     NUMBER(30,10),
-  USE_TYPE        NVARCHAR2(50),
-  CATEGORY        NVARCHAR2(50),
-  REMARK          NVARCHAR2(250),
-  CUSTTXT1        NVARCHAR2(250),
-  CUSTDATA1       DATE,
-  CUSTNBR1        NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_SYS_INFO_BLOCKS
-(
-  ID               NUMBER(15)                   NOT NULL,
-  TYPE             NVARCHAR2(50),
-  RES_SYS_INFO_ID  NUMBER(15),
-  DATA             BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-LOB (DATA) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.MEAS_DT_PARAM
-(
-  ID                 NUMBER(15)                 NOT NULL,
-  TYPE_MEASUREMENTS  NVARCHAR2(50),
-  DETECT_TYPE        NVARCHAR2(50),
-  RF_ATTENUATION     NUMBER(30,10),
-  IF_ATTENUATION     NUMBER(30,10),
-  MEAS_TIME          NUMBER(30,10),
-  DEMOD              NVARCHAR2(50),
-  PREAMPLIFICATION   NUMBER(9),
-  "MODE"             NVARCHAR2(50),
-  RBW                NUMBER(30,10),
-  VBW                NUMBER(30,10),
-  MEAS_TASK_ID       NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_STLEVEL_CAR
-(
-  ID                    NUMBER(15)              NOT NULL,
-  RES_MEAS_STATION_ID   NUMBER(15),
-  ALTITUDE              NUMBER(30,10),
-  DIFFERENCE_TIMESTAMP  NUMBER(30,10),
-  LAT                   NUMBER(30,10),
-  LON                   NUMBER(30,10),
-  LEVEL_DBM             NUMBER(30,10),
-  LEVEL_DBMKVM          NUMBER(30,10),
-  TIME_OF_MEASUREMENTS  DATE,
-  AGL                   NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.WORK_TIME
-(
-  ID                 NUMBER(15)                 NOT NULL,
-  START_EMIT         DATE                       NOT NULL,
-  STOP_EMIT          DATE                       NOT NULL,
-  HIT_COUNT          NUMBER(9)                  NOT NULL,
-  PERCENT_AVAILABLE  NUMBER(22,8)               NOT NULL,
-  EMITTING_ID        NUMBER(15)                 NOT NULL
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-
-CREATE TABLE ICSC.MEAS_OTHER
+CREATE TABLE ICSC.LINK_SUBTASK_SENSOR_MASTER
 (
   ID                        NUMBER(15)          NOT NULL,
-  SW_NUMBER                 NUMBER(9),
-  TYPE_SPECTRUM_SCAN        NVARCHAR2(50),
-  TYPE_SPECTRUM_OCCUPATION  NVARCHAR2(50),
-  LEVEL_MIN_OCCUP           NUMBER(30,10),
-  NCHENAL                   NUMBER(9),
-  MEAS_TASK_ID              NUMBER(15)
+  SUBTASK_SENSOR_ID         NUMBER(15),
+  SUBTASK_SENSOR_MASTER_ID  NUMBER(15)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -1755,33 +510,11 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE ICSC.AMQP_MESSAGES
+CREATE TABLE ICSC.LINK_AGGREGATION_SENSOR
 (
-  ID                     NUMBER(15)             NOT NULL,
-  STATUS_CODE            NUMBER(3)              NOT NULL,
-  CREATED_DATE           TIMESTAMP(7) WITH TIME ZONE NOT NULL,
-  THREAD_ID              NUMBER(15)             NOT NULL,
-  PROCESSED_SDATE        TIMESTAMP(7) WITH TIME ZONE,
-  PROCESSED_FDATE        TIMESTAMP(7) WITH TIME ZONE,
-  PROP_EXCHANGE          NVARCHAR2(250),
-  PROP_ROUTING_KEY       NVARCHAR2(250),
-  PROP_DELIVERY_TAG      NVARCHAR2(250),
-  PROP_CONSUMER_TAG      NVARCHAR2(250),
-  PROP_APP_ID            NVARCHAR2(250),
-  PROP_TYPE              NVARCHAR2(250),
-  PROP_TIMESTAMP         NVARCHAR2(50),
-  PROP_MESSAGE_ID        NVARCHAR2(250),
-  PROP_CORRELATION_ID    NVARCHAR2(250),
-  PROP_CONTENT_ENCODING  NVARCHAR2(250),
-  PROP_CONTENT_TYPE      NVARCHAR2(250),
-  HEADER_CREATED         NVARCHAR2(250),
-  HEADER_SDRNSERVER      NVARCHAR2(250),
-  HEADER_SENSORNAME      NVARCHAR2(250),
-  HEADER_SENSORTECHID    NVARCHAR2(250),
-  BODY_CONTENT_TYPE      NVARCHAR2(250),
-  BODY_CONTENT_ENCODING  NVARCHAR2(250),
-  BODY_CONTENT           BLOB,
-  STATUS_NOTE            NCLOB
+  ID                    NUMBER(15)              NOT NULL,
+  SENSOR_ID             NUMBER(15),
+  AGGR_SERVER_INSTANCE  VARCHAR2(150 BYTE)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -1798,85 +531,57 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
-LOB (STATUS_NOTE) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-  LOB (BODY_CONTENT) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
 NOCACHE
 NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE ICSC.SENSOR_ANTENNA
+CREATE TABLE ICSC.RES_LEVELS
+(
+  ID               NUMBER(15)                   NOT NULL,
+  VALUE_LVL        NUMBER(22,8),
+  STDDEV_LVL       NUMBER(30,10),
+  VMIN_LVL         NUMBER(22,8),
+  VMMAX_LVL        NUMBER(22,8),
+  LIMIT_LVL        NUMBER(30,10),
+  OCCUPANCY_LVL    NUMBER(30,10),
+  PMIN_LVL         NUMBER(30,10),
+  PMAX_LVL         NUMBER(30,10),
+  PDIFF_LVL        NUMBER(30,10),
+  FREQ_MEAS        NUMBER(22,8),
+  VALUE_SPECT      NUMBER(22,8),
+  STDDEV_SPECT     NUMBER(30,10),
+  VMIN_SPECT       NUMBER(30,10),
+  VMMAX_SPECT      NUMBER(30,10),
+  LIMIT_SPECT      NUMBER(30,10),
+  OCCUPANCY_SPECT  NUMBER(22,8),
+  RES_MEAS_ID      NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.AMQP_EVENTS
 (
   ID            NUMBER(15)                      NOT NULL,
-  SENSOR_ID     NUMBER(15),
-  CODE          NVARCHAR2(50),
-  SLEWANG       NUMBER(30,10),
-  MANUFACTURER  NVARCHAR2(50),
-  NAME          NVARCHAR2(50),
-  TECHID        NVARCHAR2(50),
-  ANTDIR        NVARCHAR2(50),
-  HBEAMWIDTH    NUMBER(30,10),
-  VBEAMWIDTH    NUMBER(30,10),
-  POLARIZATION  NVARCHAR2(50),
-  USETYPE       NVARCHAR2(50),
-  CATEGORY      NVARCHAR2(50),
-  GAINTYPE      NVARCHAR2(50),
-  GAINMAX       NUMBER(30,10),
-  LOWERFREQ     NUMBER(30,10),
-  UPPERFREQ     NUMBER(30,10),
-  ADDLOSS       NUMBER(30,10),
-  XPD           NUMBER(30,10),
-  ANTCLASS      NVARCHAR2(50),
-  REMARK        NVARCHAR2(250),
-  CUSTTXT1      NVARCHAR2(250),
-  CUSTDATA1     DATE,
-  CUSTNBR1      NUMBER(30,10)
+  PROP_TYPE     VARCHAR2(250 CHAR),
+  CREATED_DATE  TIMESTAMP(7) WITH TIME ZONE
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -1898,27 +603,350 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE ICSC.MEAS_TASK
+CREATE TABLE ICSC.RES_MEAS_STATION
 (
-  ID              NUMBER(15)                    NOT NULL,
-  STATUS          NVARCHAR2(50),
-  ORDER_ID        NUMBER(9),
-  TYPE            NVARCHAR2(50),
-  NAME            NVARCHAR2(100),
-  EXECUTION_MODE  NVARCHAR2(50),
-  TASK            NVARCHAR2(50),
-  PRIO            NUMBER(9),
-  RESULT_TYPE     NVARCHAR2(50),
-  MAX_TIME_BS     NUMBER(9),
-  DATE_CREATED    DATE,
-  CREATED_BY      NVARCHAR2(50),
-  IDENT_START     NVARCHAR2(50),
-  PER_START       DATE,
-  PER_STOP        DATE,
-  TIME_START      DATE,
-  TIME_STOP       DATE,
-  DAYS            NVARCHAR2(250),
-  PER_INTERVAL    NUMBER(30,10)
+  ID                   NUMBER(15)               NOT NULL,
+  GLOBAL_SID           NVARCHAR2(250),
+  MEAS_GLOBAL_SID      NVARCHAR2(250),
+  FREQUENCY            NUMBER(22,8)             NOT NULL,
+  STATUS               NVARCHAR2(250),
+  RES_MEAS_ID          NUMBER(15)               NOT NULL,
+  STANDARD             NVARCHAR2(50),
+  CLIENT_SECTOR_CODE   NUMBER(9),
+  CLIENT_STATION_CODE  NUMBER(9)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_STGENERAL
+(
+  ID                      NUMBER(15)            NOT NULL,
+  RES_MEAS_STATION_ID     NUMBER(15),
+  CENTRAL_FREQUENCY       NUMBER(30,10),
+  CENTRAL_FREQUENCY_MEAS  NUMBER(30,10),
+  DURATION_MEAS           NUMBER(30,10),
+  MARKER_INDEX            NUMBER(9),
+  T1                      NUMBER(9),
+  T2                      NUMBER(9),
+  TIME_FINISH_MEAS        DATE,
+  TIME_START_MEAS         DATE,
+  OFFSET_FREQUENCY        NUMBER(30,10),
+  SPECRUM_START_FREQ      NUMBER(22,8),
+  SPECRUM_STEPS           NUMBER(22,8),
+  CORRECTNESS_ESTIM       NUMBER(1),
+  TRACE_COUNT             NUMBER(9),
+  VBW                     NUMBER(30,10),
+  RBW                     NUMBER(30,10),
+  BW                      NUMBER(30,10),
+  LEVEL_SSPECTRUM_DBM     BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (LEVEL_SSPECTRUM_DBM) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_MEAS
+(
+  ID                   NUMBER(15)               NOT NULL,
+  SUBTASK_SENSOR_ID    NUMBER(15),
+  ANTVAL               NUMBER(30,10),
+  TIME_MEAS            DATE,
+  DATA_RANK            NUMBER(9),
+  N                    NUMBER(9),
+  STATUS               NVARCHAR2(50),
+  TYPE_MEASUREMENTS    NVARCHAR2(50),
+  MEAS_SDR_RESULT_SID  NVARCHAR2(450),
+  SYNCHRONIZED         NUMBER(1)                DEFAULT 0,
+  START_TIME           DATE,
+  STOP_TIME            DATE,
+  SCANS_NUMBER         NUMBER(10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_ROUTES
+(
+  ID               NUMBER(15)                   NOT NULL,
+  ROUTE_ID         NVARCHAR2(250),
+  AGL              NUMBER(30,10),
+  ASL              NUMBER(30,10),
+  FINISH_TIME      DATE                         NOT NULL,
+  LAT              NUMBER(30,10),
+  LON              NUMBER(30,10),
+  POINT_STAY_TYPE  NVARCHAR2(150),
+  START_TIME       DATE,
+  RES_MEAS_ID      NUMBER(15)                   NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.MEAS_FREQ
+(
+  ID                  NUMBER(15)                NOT NULL,
+  FREQ                NUMBER(30,10),
+  MEAS_FREQ_PARAM_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.MEAS_TASK_SIGNAL
+(
+  ID                             NUMBER(15)     NOT NULL,
+  AUTO_DIV_EMIT                  NUMBER(1),
+  COMPARE_TRACE_JUST_REF_LEVELS  NUMBER(1),
+  DIFF_MAX_MAX                   NUMBER(30,10),
+  FILTRATION_TRACE               NUMBER(1),
+  SIGN_NCHENAL                   NUMBER(9),
+  SIGN_NCOUNT                    NUMBER(9),
+  ALLOW_EXCESS_DB                NUMBER(30,10),
+  MEAS_TASK_ID                   NUMBER(15),
+  CORELLATION_ANALIZE            NUMBER(1),
+  CHECK_FREQ_CH                  NUMBER(1),
+  ANALIZE_BY_CH                  NUMBER(1),
+  ANALIZE_SYSINFO_CH             NUMBER(1),
+  MEAS_BW_EMISSION               NUMBER(1),
+  CORRELATION_FACTOR             NUMBER(30,10),
+  STANDARD                       VARCHAR2(50 BYTE),
+  TRIGGER_LEVEL_DBM_HZ           NUMBER(30,10),
+  NUMBER_POINT_FOR               NUMBER(30,10),
+  WINDOW_BW                      NUMBER(30,10),
+  DIFF_LEVEL_FOR_BW              NUMBER(30,10),
+  NDBLEVEL_DB                    NUMBER(30,10),
+  NUM_IGNORED_POINTS             NUMBER(9),
+  MIN_EXCESS_NOSE_LVL            NUMBER(30,10),
+  TIME_BETWEEN_WORKTIMES         NUMBER(9),
+  TYPE_JOIN_SPECTRUM             NUMBER(9),
+  CROSSING_BW_PERCENT_GOOD       NUMBER(30,10),
+  CROSSING_BW_PERCENT_BAD        NUMBER(30,10),
+  INTERRUPT_ALLOW_EXCESS_DB      NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SPECTRUM
+(
+  ID               NUMBER(15)                   NOT NULL,
+  STARTFREQ_MHZ    NUMBER(30,10),
+  STEPFREQ_KHZ     NUMBER(30,10),
+  T1               NUMBER(9),
+  T2               NUMBER(9),
+  MARKER_INDEX     NUMBER(9),
+  BW_KHZ           NUMBER(30,10),
+  CORRECT_ESTIM    NUMBER(1),
+  TRACE_COUNT      NUMBER(9),
+  SIGNALLEVEL_DBM  NUMBER(22,8),
+  EMITTING_ID      NUMBER(15),
+  CONTRAVENTION    NUMBER(1),
+  LEVELS_DBM       BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (LEVELS_DBM) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_SYS_INFO
+(
+  ID                NUMBER(15)                  NOT NULL,
+  BANDWIDTH         NUMBER(30,10),
+  BASEID            NUMBER(9),
+  BSIC              NUMBER(9),
+  CHANNELNUMBER     NUMBER(9),
+  CID               NUMBER(9),
+  CODE              NUMBER(30,10),
+  CTOI              NUMBER(22,8),
+  ECI               NUMBER(9),
+  ENODEBID          NUMBER(9),
+  FREQ              NUMBER(30,10),
+  ICIO              NUMBER(30,10),
+  INBAND_POWER      NUMBER(30,10),
+  ISCP              NUMBER(30,10),
+  LAC               NUMBER(9),
+  AGL               NUMBER(30,10),
+  ASL               NUMBER(30,10),
+  LAT               NUMBER(30,10),
+  LON               NUMBER(30,10),
+  MCC               NUMBER(9),
+  MNC               NUMBER(9),
+  NID               NUMBER(9),
+  PCI               NUMBER(9),
+  PN                NUMBER(9),
+  POWER             NUMBER(30,10),
+  PTOTAL            NUMBER(30,10),
+  RNC               NUMBER(9),
+  RSCP              NUMBER(30,10),
+  RSRP              NUMBER(30,10),
+  RSRQ              NUMBER(30,10),
+  SC                NUMBER(9),
+  SID               NUMBER(9),
+  TAC               NUMBER(9),
+  TYPECDMAEVDO      VARCHAR2(250 BYTE),
+  UCID              NUMBER(9),
+  RES_STGENERAL_ID  NUMBER(15)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -1990,44 +1018,27 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE ICSC.RES_SYS_INFO
+CREATE TABLE ICSC.MEAS_TASK
 (
-  ID                NUMBER(15)                  NOT NULL,
-  BANDWIDTH         NUMBER(30,10),
-  BASEID            NUMBER(9),
-  BSIC              NUMBER(9),
-  CHANNELNUMBER     NUMBER(9),
-  CID               NUMBER(9),
-  CODE              NUMBER(30,10),
-  CTOI              NUMBER(22,8),
-  ECI               NUMBER(9),
-  ENODEBID          NUMBER(9),
-  FREQ              NUMBER(30,10),
-  ICIO              NUMBER(30,10),
-  INBAND_POWER      NUMBER(30,10),
-  ISCP              NUMBER(30,10),
-  LAC               NUMBER(9),
-  AGL               NUMBER(30,10),
-  ASL               NUMBER(30,10),
-  LAT               NUMBER(30,10),
-  LON               NUMBER(30,10),
-  MCC               NUMBER(9),
-  MNC               NUMBER(9),
-  NID               NUMBER(9),
-  PCI               NUMBER(9),
-  PN                NUMBER(9),
-  POWER             NUMBER(30,10),
-  PTOTAL            NUMBER(30,10),
-  RNC               NUMBER(9),
-  RSCP              NUMBER(30,10),
-  RSRP              NUMBER(30,10),
-  RSRQ              NUMBER(30,10),
-  SC                NUMBER(9),
-  SID               NUMBER(9),
-  TAC               NUMBER(9),
-  TYPECDMAEVDO      VARCHAR2(250 BYTE),
-  UCID              NUMBER(9),
-  RES_STGENERAL_ID  NUMBER(15)
+  ID              NUMBER(15)                    NOT NULL,
+  STATUS          NVARCHAR2(50),
+  ORDER_ID        NUMBER(9),
+  TYPE            NVARCHAR2(50),
+  NAME            NVARCHAR2(100),
+  EXECUTION_MODE  NVARCHAR2(50),
+  TASK            NVARCHAR2(50),
+  PRIO            NUMBER(9),
+  RESULT_TYPE     NVARCHAR2(50),
+  MAX_TIME_BS     NUMBER(9),
+  DATE_CREATED    DATE,
+  CREATED_BY      NVARCHAR2(50),
+  IDENT_START     NVARCHAR2(50),
+  PER_START       DATE,
+  PER_STOP        DATE,
+  TIME_START      DATE,
+  TIME_STOP       DATE,
+  DAYS            NVARCHAR2(250),
+  PER_INTERVAL    NUMBER(30,10)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -2049,315 +1060,32 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE ICSC.SPECTRUM
-(
-  ID               NUMBER(15)                   NOT NULL,
-  STARTFREQ_MHZ    NUMBER(30,10),
-  STEPFREQ_KHZ     NUMBER(30,10),
-  T1               NUMBER(9),
-  T2               NUMBER(9),
-  MARKER_INDEX     NUMBER(9),
-  BW_KHZ           NUMBER(30,10),
-  CORRECT_ESTIM    NUMBER(1),
-  TRACE_COUNT      NUMBER(9),
-  SIGNALLEVEL_DBM  NUMBER(22,8),
-  EMITTING_ID      NUMBER(15),
-  CONTRAVENTION    NUMBER(1),
-  LEVELS_DBM       BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-LOB (LEVELS_DBM) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.MEAS_TASK_SIGNAL
-(
- ID                             NUMBER(15)     NOT NULL,
-  AUTO_DIV_EMIT                  NUMBER(1),
-  COMPARE_TRACE_JUST_REF_LEVELS  NUMBER(1),
-  DIFF_MAX_MAX                   NUMBER(30,10),
-  FILTRATION_TRACE               NUMBER(1),
-  SIGN_NCHENAL                   NUMBER(9),
-  SIGN_NCOUNT                    NUMBER(9),
-  ALLOW_EXCESS_DB                NUMBER(30,10),
-  MEAS_TASK_ID                   NUMBER(15),
-  CORELLATION_ANALIZE            NUMBER(1),
-  CHECK_FREQ_CH                  NUMBER(1),
-  ANALIZE_BY_CH                  NUMBER(1),
-  ANALIZE_SYSINFO_CH             NUMBER(1),
-  MEAS_BW_EMISSION               NUMBER(1),
-  CORRELATION_FACTOR             NUMBER(30,10),
-  STANDARD                       VARCHAR2(50 BYTE),
-  TRIGGER_LEVEL_DBM_HZ           NUMBER(30,10),
-  NUMBER_POINT_FOR               NUMBER(30,10),
-  WINDOW_BW                      NUMBER(30,10),
-  DIFF_LEVEL_FOR_BW              NUMBER(30,10),
-  NDBLEVEL_DB                    NUMBER(30,10),
-  NUM_IGNORED_POINTS             NUMBER(9),
-  MIN_EXCESS_NOSE_LVL            NUMBER(30,10),
-  TIME_BETWEEN_WORKTIMES         NUMBER(9),
-  TYPE_JOIN_SPECTRUM             NUMBER(9),
-  CROSSING_BW_PERCENT_GOOD       NUMBER(30,10),
-  CROSSING_BW_PERCENT_BAD        NUMBER(30,10),
-  INTERRUPT_ALLOW_EXCESS_DB      NUMBER(30,10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.MEAS_FREQ
-(
-  ID                  NUMBER(15)                NOT NULL,
-  FREQ                NUMBER(30,10),
-  MEAS_FREQ_PARAM_ID  NUMBER(15)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_ROUTES
-(
-  ID               NUMBER(15)                   NOT NULL,
-  ROUTE_ID         NVARCHAR2(250),
-  AGL              NUMBER(30,10),
-  ASL              NUMBER(30,10),
-  FINISH_TIME      DATE                         NOT NULL,
-  LAT              NUMBER(30,10),
-  LON              NUMBER(30,10),
-  POINT_STAY_TYPE  NVARCHAR2(150),
-  START_TIME       DATE,
-  RES_MEAS_ID      NUMBER(15)                   NOT NULL
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_MEAS
-(
-  ID                   NUMBER(15)               NOT NULL,
-  SUBTASK_SENSOR_ID    NUMBER(15),
-  ANTVAL               NUMBER(30,10),
-  TIME_MEAS            DATE,
-  DATA_RANK            NUMBER(9),
-  N                    NUMBER(9),
-  STATUS               NVARCHAR2(50),
-  TYPE_MEASUREMENTS    NVARCHAR2(50),
-  MEAS_SDR_RESULT_SID  NVARCHAR2(450),
-  SYNCHRONIZED         NUMBER(1)                DEFAULT 0,
-  START_TIME           DATE,
-  STOP_TIME            DATE,
-  SCANS_NUMBER         NUMBER(10)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_STGENERAL
-(
-  ID                      NUMBER(15)            NOT NULL,
-  RES_MEAS_STATION_ID     NUMBER(15),
-  CENTRAL_FREQUENCY       NUMBER(30,10),
-  CENTRAL_FREQUENCY_MEAS  NUMBER(30,10),
-  DURATION_MEAS           NUMBER(30,10),
-  MARKER_INDEX            NUMBER(9),
-  T1                      NUMBER(9),
-  T2                      NUMBER(9),
-  TIME_FINISH_MEAS        DATE,
-  TIME_START_MEAS        DATE,
-  OFFSET_FREQUENCY        NUMBER(30,10),
-  SPECRUM_START_FREQ      NUMBER(22,8),
-  SPECRUM_STEPS           NUMBER(22,8),
-  CORRECTNESS_ESTIM       NUMBER(1),
-  TRACE_COUNT             NUMBER(9),
-  VBW                     NUMBER(30,10),
-  RBW                     NUMBER(30,10),
-  BW                      NUMBER(30,10),
-  LEVEL_SSPECTRUM_DBM     BLOB
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-LOB (LEVEL_SSPECTRUM_DBM) STORE AS SECUREFILE 
-      ( TABLESPACE  USERS 
-        ENABLE      STORAGE IN ROW
-        CHUNK       8192
-        NOCACHE
-        INDEX       (
-          TABLESPACE USERS
-          STORAGE    (
-                      INITIAL          64K
-                      NEXT             1
-                      MINEXTENTS       1
-                      MAXEXTENTS       UNLIMITED
-                      PCTINCREASE      0
-                      BUFFER_POOL      DEFAULT
-                     ))
-        STORAGE    (
-                    INITIAL          104K
-                    NEXT             1M
-                    MINEXTENTS       1
-                    MAXEXTENTS       UNLIMITED
-                    PCTINCREASE      0
-                    BUFFER_POOL      DEFAULT
-                   )
-      )
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.RES_MEAS_STATION
-(
-  ID                   NUMBER(15)    NOT NULL,
-  GLOBAL_SID           NVARCHAR2(250),
-  MEAS_GLOBAL_SID      NVARCHAR2(250),
-  FREQUENCY            NUMBER(22,8) NOT NULL,
-  STATUS               NVARCHAR2(250),
-  RES_MEAS_ID          NUMBER(15)   NOT NULL,
-  STANDARD             NVARCHAR2(50),
-  CLIENT_SECTOR_CODE   NUMBER(9),
-  CLIENT_STATION_CODE  NUMBER(9)
-)
-TABLESPACE USERS
-PCTUSED    0
-PCTFREE    10
-INITRANS   1
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-LOGGING 
-NOCOMPRESS 
-NOCACHE
-NOPARALLEL
-MONITORING;
-
-
-CREATE TABLE ICSC.AMQP_EVENTS
+CREATE TABLE ICSC.SENSOR_ANTENNA
 (
   ID            NUMBER(15)                      NOT NULL,
-  PROP_TYPE     VARCHAR2(250 CHAR),
-  CREATED_DATE  TIMESTAMP(7) WITH TIME ZONE
+  SENSOR_ID     NUMBER(15),
+  CODE          NVARCHAR2(50),
+  SLEWANG       NUMBER(30,10),
+  MANUFACTURER  NVARCHAR2(50),
+  NAME          NVARCHAR2(50),
+  TECHID        NVARCHAR2(50),
+  ANTDIR        NVARCHAR2(50),
+  HBEAMWIDTH    NUMBER(30,10),
+  VBEAMWIDTH    NUMBER(30,10),
+  POLARIZATION  NVARCHAR2(50),
+  USETYPE       NVARCHAR2(50),
+  CATEGORY      NVARCHAR2(50),
+  GAINTYPE      NVARCHAR2(50),
+  GAINMAX       NUMBER(30,10),
+  LOWERFREQ     NUMBER(30,10),
+  UPPERFREQ     NUMBER(30,10),
+  ADDLOSS       NUMBER(30,10),
+  XPD           NUMBER(30,10),
+  ANTCLASS      NVARCHAR2(50),
+  REMARK        NVARCHAR2(250),
+  CUSTTXT1      NVARCHAR2(250),
+  CUSTDATA1     DATE,
+  CUSTNBR1      NUMBER(30,10)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -2379,26 +1107,312 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE ICSC.RES_LEVELS
+CREATE TABLE ICSC.AMQP_MESSAGES
+(
+  ID                     NUMBER(15)             NOT NULL,
+  STATUS_CODE            NUMBER(3)              NOT NULL,
+  CREATED_DATE           TIMESTAMP(7) WITH TIME ZONE NOT NULL,
+  THREAD_ID              NUMBER(15)             NOT NULL,
+  PROCESSED_SDATE        TIMESTAMP(7) WITH TIME ZONE,
+  PROCESSED_FDATE        TIMESTAMP(7) WITH TIME ZONE,
+  PROP_EXCHANGE          NVARCHAR2(250),
+  PROP_ROUTING_KEY       NVARCHAR2(250),
+  PROP_DELIVERY_TAG      NVARCHAR2(250),
+  PROP_CONSUMER_TAG      NVARCHAR2(250),
+  PROP_APP_ID            NVARCHAR2(250),
+  PROP_TYPE              NVARCHAR2(250),
+  PROP_TIMESTAMP         NVARCHAR2(50),
+  PROP_MESSAGE_ID        NVARCHAR2(250),
+  PROP_CORRELATION_ID    NVARCHAR2(250),
+  PROP_CONTENT_ENCODING  NVARCHAR2(250),
+  PROP_CONTENT_TYPE      NVARCHAR2(250),
+  HEADER_CREATED         NVARCHAR2(250),
+  HEADER_SDRNSERVER      NVARCHAR2(250),
+  HEADER_SENSORNAME      NVARCHAR2(250),
+  HEADER_SENSORTECHID    NVARCHAR2(250),
+  BODY_CONTENT_TYPE      NVARCHAR2(250),
+  BODY_CONTENT_ENCODING  NVARCHAR2(250),
+  BODY_CONTENT           BLOB,
+  STATUS_NOTE            NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (STATUS_NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (BODY_CONTENT) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.MEAS_OTHER
+(
+  ID                        NUMBER(15)          NOT NULL,
+  SW_NUMBER                 NUMBER(9),
+  TYPE_SPECTRUM_SCAN        NVARCHAR2(50),
+  TYPE_SPECTRUM_OCCUPATION  NVARCHAR2(50),
+  LEVEL_MIN_OCCUP           NUMBER(30,10),
+  NCHENAL                   NUMBER(9),
+  MEAS_TASK_ID              NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.WORK_TIME
+(
+  ID                 NUMBER(15)                 NOT NULL,
+  START_EMIT         DATE                       NOT NULL,
+  STOP_EMIT          DATE                       NOT NULL,
+  HIT_COUNT          NUMBER(9)                  NOT NULL,
+  PERCENT_AVAILABLE  NUMBER(22,8)               NOT NULL,
+  EMITTING_ID        NUMBER(15)                 NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_STLEVEL_CAR
+(
+  ID                    NUMBER(15)              NOT NULL,
+  RES_MEAS_STATION_ID   NUMBER(15),
+  ALTITUDE              NUMBER(30,10),
+  DIFFERENCE_TIMESTAMP  NUMBER(30,10),
+  LAT                   NUMBER(30,10),
+  LON                   NUMBER(30,10),
+  LEVEL_DBM             NUMBER(30,10),
+  LEVEL_DBMKVM          NUMBER(30,10),
+  TIME_OF_MEASUREMENTS  DATE,
+  AGL                   NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.MEAS_DT_PARAM
+(
+  ID                NUMBER(15)                  NOT NULL,
+  DETECT_TYPE       NVARCHAR2(50),
+  RF_ATTENUATION    NUMBER(30,10),
+  IF_ATTENUATION    NUMBER(30,10),
+  MEAS_TIME         NUMBER(30,10),
+  DEMOD             NVARCHAR2(50),
+  PREAMPLIFICATION  NUMBER(9),
+  "MODE"            NVARCHAR2(50),
+  RBW               NUMBER(30,10),
+  VBW               NUMBER(30,10),
+  MEAS_TASK_ID      NUMBER(15),
+  SW_NUMBER         NUMBER(9)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_SYS_INFO_BLOCKS
 (
   ID               NUMBER(15)                   NOT NULL,
-  VALUE_LVL        NUMBER(22,8),
-  STDDEV_LVL       NUMBER(30,10),
-  VMIN_LVL         NUMBER(22,8),
-  VMMAX_LVL        NUMBER(22,8),
-  LIMIT_LVL        NUMBER(30,10),
-  OCCUPANCY_LVL    NUMBER(30,10),
-  PMIN_LVL         NUMBER(30,10),
-  PMAX_LVL         NUMBER(30,10),
-  PDIFF_LVL        NUMBER(30,10),
-  FREQ_MEAS        NUMBER(22,8),
-  VALUE_SPECT      NUMBER(22,8),
-  STDDEV_SPECT     NUMBER(30,10),
-  VMIN_SPECT       NUMBER(30,10),
-  VMMAX_SPECT      NUMBER(30,10),
-  LIMIT_SPECT      NUMBER(30,10),
-  OCCUPANCY_SPECT  NUMBER(22,8),
-  RES_MEAS_ID      NUMBER(15)
+  TYPE             NVARCHAR2(50),
+  RES_SYS_INFO_ID  NUMBER(15),
+  DATA             BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (DATA) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SENSOR_EQUIP
+(
+  ID              NUMBER(15)                    NOT NULL,
+  SENSOR_ID       NUMBER(15),
+  CODE            NVARCHAR2(50),
+  MANUFACTURER    NVARCHAR2(50),
+  NAME            NVARCHAR2(50),
+  FAMILY          NVARCHAR2(50),
+  TECHID          NVARCHAR2(200),
+  VERSION         NVARCHAR2(50),
+  LOWER_FREQ      NUMBER(30,10),
+  UPPER_FREQ      NUMBER(30,10),
+  RBW_MIN         NUMBER(30,10),
+  RBW_MAX         NUMBER(30,10),
+  VBW_MIN         NUMBER(30,10),
+  VBW_MAX         NUMBER(30,10),
+  MOBILITY        NUMBER(1),
+  FFT_POINT_MAX   NUMBER(30,10),
+  REF_LEVEL_DBM   NUMBER(30,10),
+  OPERATION_MODE  NVARCHAR2(50),
+  TYPE            NVARCHAR2(50),
+  EQUIP_CLASS     NVARCHAR2(50),
+  TUNING_STEP     NUMBER(30,10),
+  USE_TYPE        NVARCHAR2(50),
+  CATEGORY        NVARCHAR2(50),
+  REMARK          NVARCHAR2(250),
+  CUSTTXT1        NVARCHAR2(250),
+  CUSTDATA1       DATE,
+  CUSTNBR1        NUMBER(30,10)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -2420,8 +1434,1181 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE INDEX ICSC.STATION_ID_STATION_PK ON ICSC.STATION
-(CLIENT_STATION_CODE)
+CREATE TABLE ICSC.RES_STMASKELM
+(
+  ID                NUMBER(15)                  NOT NULL,
+  RES_STGENERAL_ID  NUMBER(15),
+  BW                NUMBER(30,10),
+  "LEVEL"           NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.EMITTING
+(
+  ID                         NUMBER(15)         NOT NULL,
+  STARTFREQ_MHZ              NUMBER(30,10),
+  STOPFREQ_MHZ               NUMBER(30,10),
+  CURRPOWER_DBM              NUMBER(30,10),
+  REFLEVEL_DBM               NUMBER(30,10),
+  MEANDEVFROM_REF            NUMBER(30,10),
+  TRIGGERDEVFROM_REF         NUMBER(30,10),
+  ROLL_OFF_ACTOR             NUMBER(30,10),
+  STANDARD_BW                NUMBER(30,10),
+  RES_MEAS_ID                NUMBER(15),
+  SENSOR_ID                  NUMBER(15),
+  STATION_ID                 NUMBER(15),
+  STATION_TABLE_NAME         NVARCHAR2(50),
+  LEVELS_DISTRIBUTION_LVL    BLOB,
+  LEVELS_DISTRIBUTION_COUNT  BLOB,
+  LOSS_DB                    BLOB,
+  FREQ_KHZ                   BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (FREQ_KHZ) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (LOSS_DB) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (LEVELS_DISTRIBUTION_LVL) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.MEAS_FREQ_PARAM
+(
+  ID            NUMBER(15)                      NOT NULL,
+  "MODE"        NVARCHAR2(50),
+  RGL           NUMBER(30,10),
+  RGU           NUMBER(30,10),
+  STEP          NUMBER(30,10),
+  MEAS_TASK_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SUBTASK
+(
+  ID            NUMBER(15)                      NOT NULL,
+  TIME_START    DATE,
+  TIME_STOP     DATE,
+  STATUS        NVARCHAR2(50),
+  INTERVAL      NUMBER(9),
+  MEAS_TASK_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SUBTASK_SENSOR
+(
+  ID              NUMBER(15)                    NOT NULL,
+  STATUS          NVARCHAR2(50),
+  COUNT           NUMBER(9),
+  TIME_NEXT_TASK  DATE,
+  SENSOR_ID       NUMBER(15),
+  SUBTASK_ID      NUMBER(15)                    NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_LOCATION_SENSOR_MEAS
+(
+  ID           NUMBER(15)                       NOT NULL,
+  LON          NUMBER(30,10),
+  LAT          NUMBER(30,10),
+  ASL          NUMBER(30,10),
+  RES_MEAS_ID  NUMBER(15),
+  AGL          NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.REFERENCE_LEVELS
+(
+  ID            NUMBER(15)                      NOT NULL,
+  STARTFREQ_HZ  NUMBER(30,10),
+  STEPFREQ_HZ   NUMBER(30,10),
+  RES_MEAS_ID   NUMBER(15),
+  REF_LEVELS    BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (REF_LEVELS) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.MEAS_LOCATION_PARAM
+(
+  ID            NUMBER(15)                      NOT NULL,
+  LON           NUMBER(30,10),
+  LAT           NUMBER(30,10),
+  ASL           NUMBER(30,10),
+  MAXDIST       NUMBER(30,10),
+  MEAS_TASK_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SENSOR_LOCATION
+(
+  ID            NUMBER(15)                      NOT NULL,
+  SENSOR_ID     NUMBER(15),
+  DATA_FROM     DATE,
+  DATA_TO       DATE,
+  DATA_CREATED  DATE,
+  STATUS        NVARCHAR2(50),
+  LON           NUMBER(30,10),
+  LAT           NUMBER(30,10),
+  ASL           NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.VALIDATION_LOGS
+(
+  ID           NUMBER(15)                       NOT NULL,
+  TABLE_NAME   NVARCHAR2(150),
+  WHEN         DATE,
+  MESSAGE_ID   NUMBER(15),
+  RES_MEAS_ID  NUMBER(15),
+  INFO         NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (INFO) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.REFERENCE_SIGNAL
+(
+  ID                      NUMBER(15)            NOT NULL,
+  FREQ_MHZ                NUMBER(30,10),
+  BANDWIDTH_KHZ           NUMBER(30,10),
+  LEVELSIGNAL_DBM         NUMBER(30,10),
+  REFERENCE_SITUATION_ID  NUMBER(15),
+  ICSM_ID                 NUMBER(9),
+  ICSM_TABLE              NVARCHAR2(50),
+  LOSS_DB                 BLOB,
+  FREQ_KHZ                BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (FREQ_KHZ) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (LOSS_DB) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SENSOR_POLIG
+(
+  ID         NUMBER(15)                         NOT NULL,
+  SENSOR_ID  NUMBER(15),
+  LON        NUMBER(30,10),
+  LAT        NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.ANTENNA_PATTERN
+(
+  ID                 NUMBER(15)                 NOT NULL,
+  SENSOR_ANTENNA_ID  NUMBER(15),
+  FREQ               NUMBER(30,10),
+  GAIN               NUMBER(30,10),
+  DIAGA              NVARCHAR2(1000),
+  DIAGH              NVARCHAR2(1000),
+  DIAGV              NVARCHAR2(1000)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.ENTITY_PART
+(
+  ENTITY_ID   NVARCHAR2(250)                    NOT NULL,
+  PART_INDEX  NUMBER(9)                         NOT NULL,
+  EOF         NUMBER(1),
+  CONTENT     BLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (CONTENT) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.STATION
+(
+  ID                      NUMBER(15)            NOT NULL,
+  GLOBAL_SID              NVARCHAR2(50),
+  STATUS                  NVARCHAR2(50),
+  STANDARD                NVARCHAR2(50),
+  MEAS_TASK_ID            NUMBER(15),
+  CLIENT_STATION_CODE     NUMBER(15),
+  START_DATE              DATE,
+  END_DATE                DATE,
+  CLOSE_DATE              DATE,
+  DOZVIL_NAME             NVARCHAR2(100),
+  OWNER_DATA_ID           NUMBER(15),
+  STATION_SITE_ID         NUMBER(15),
+  CLIENT_PERMISSION_CODE  NUMBER(9)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.OWNER_DATA
+(
+  ID          NUMBER(15)                        NOT NULL,
+  OWNER_NAME  NVARCHAR2(100),
+  OKPO        NVARCHAR2(50),
+  ZIP         NVARCHAR2(50),
+  CODE        NVARCHAR2(50),
+  ADDRES      NVARCHAR2(2000),
+  STATION_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SECTOR_FREQ
+(
+  ID                NUMBER(15)                  NOT NULL,
+  CLIENT_PLAN_CODE  NUMBER(15),
+  CHANNAL_NUMBER    NUMBER(15),
+  FREQUENCY         NUMBER(22,8),
+  CLIENT_FREQ_CODE  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.LINK_MEAS_STATION
+(
+  ID            NUMBER(15)                      NOT NULL,
+  MEAS_TASK_ID  NUMBER(15),
+  STATION_ID    NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SECTOR_MASK_ELEM
+(
+  ID       NUMBER(15)                           NOT NULL,
+  "LEVEL"  NUMBER(30,10),
+  BW       NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SENSOR_EQUIP_SENSITIVITES
+(
+  ID               NUMBER(15)                   NOT NULL,
+  SENSOR_EQUIP_ID  NUMBER(15),
+  FREQ             NUMBER(30,10),
+  KTBF             NUMBER(30,10),
+  NOISEF           NUMBER(30,10),
+  FREQ_STABILITY   NUMBER(30,10),
+  ADDLOSS          NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SECTOR
+(
+  ID                  NUMBER(15)                NOT NULL,
+  AGL                 NUMBER(30,10),
+  EIRP                NUMBER(30,10),
+  AZIMUTH             NUMBER(30,10),
+  BW                  NUMBER(30,10),
+  CLASS_EMISSION      NVARCHAR2(50),
+  STATION_ID          NUMBER(15),
+  CLIENT_SECTOR_CODE  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.REFERENCE_SITUATION
+(
+  ID            NUMBER(15)                      NOT NULL,
+  SENSOR_ID     NUMBER(15),
+  MEAS_TASK_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.LINK_SECTOR_MASK
+(
+  ID                   NUMBER(15)               NOT NULL,
+  SECTOR_MASK_ELEM_ID  NUMBER(15),
+  SECTOR_ID            NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.LINK_SECTOR_FREQ
+(
+  ID              NUMBER(15)                    NOT NULL,
+  SECTOR_FREQ_ID  NUMBER(15),
+  SECTOR_ID       NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.STATION_SITE
+(
+  ID      NUMBER(15)                            NOT NULL,
+  LON     NUMBER(30,10),
+  LAT     NUMBER(30,10),
+  ADDRES  NVARCHAR2(2000),
+  REGION  NVARCHAR2(50)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.ENTITY
+(
+  ID             NVARCHAR2(250)                 NOT NULL,
+  NAME           NVARCHAR2(250),
+  PARENT_ID      NVARCHAR2(250),
+  PARENT_TYPE    NVARCHAR2(250),
+  CONTENT_TYPE   NVARCHAR2(250),
+  HASH_ALGORITM  NVARCHAR2(250),
+  HASH_CODE      VARCHAR2(4000 CHAR),
+  DESCRIPTION    VARCHAR2(4000 CHAR)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.LINK_RES_SENSOR
+(
+  ID                   NUMBER(15)               NOT NULL,
+  SENSOR_ID            NUMBER(15),
+  RES_MEAS_STATION_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.FREQ_SAMPLE
+(
+  ID             NUMBER(15)                     NOT NULL,
+  FREQ_MHZ       NUMBER(30,10),
+  LEVEL_DBM      NUMBER(30,10),
+  LEVEL_DBMKVM   NUMBER(30,10),
+  LEVEL_MIN_DBM  NUMBER(30,10),
+  LEVEL_MAX_DBM  NUMBER(30,10),
+  OCCUPATION_PT  NUMBER(30,10),
+  RES_MEAS_ID    NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.BEARING
+(
+  ID                    NUMBER(15)              NOT NULL,
+  RES_MEAS_STATION_ID   NUMBER(15),
+  LEVEL_DBM             NUMBER(30,10),
+  LEVEL_DBMKVM          NUMBER(30,10),
+  TIME_OF_MEASUREMENTS  DATE,
+  BW                    NUMBER(30,10),
+  QUALITY               NUMBER(30,10),
+  CENTRAL_FREQUENCY     NUMBER(30,10),
+  BEARING               NUMBER(30,10),
+  AZIMUTH               NUMBER(30,10),
+  ASL                   NUMBER(30,10),
+  LON                   NUMBER(30,10),
+  LAT                   NUMBER(30,10),
+  AGL                   NUMBER(30,10)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.RES_LEV_MEAS_ONLINE
+(
+  ID           NUMBER(15)                       NOT NULL,
+  VALUE        NUMBER(30,10),
+  RES_MEAS_ID  NUMBER(15)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SIGN_SYSINFO
+(
+  ID              NUMBER(15)                    NOT NULL,
+  BANDWIDTH_HZ    NUMBER(30,10),
+  FREQ_HZ         NUMBER(22,8)                  NOT NULL,
+  LEVEL_DBM       NUMBER(30,10),
+  CID             NUMBER(9),
+  MCC             NUMBER(9),
+  MNC             NUMBER(9),
+  BSIC            NUMBER(9),
+  CHANNEL_NUMBER  NUMBER(9),
+  LAC             NUMBER(9),
+  RNC             NUMBER(9),
+  CTOI            NUMBER(30,10),
+  POWER           NUMBER(30,10),
+  EMITTING_ID     NUMBER(15),
+  STANDARD        VARCHAR2(20 CHAR)             NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.SIGN_SYSINFO_WTIMES
+(
+  ID                 NUMBER(15)                 NOT NULL,
+  START_EMIT         DATE                       NOT NULL,
+  STOP_EMIT          DATE                       NOT NULL,
+  HIT_COUNT          NUMBER(9)                  NOT NULL,
+  PERCENT_AVAILABLE  NUMBER(22,8)               NOT NULL,
+  SYSINFO_ID         NUMBER(15)                 NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE INDEX ICSC.STATION_SITE_REGION_PK ON ICSC.STATION_SITE
+(REGION)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -2438,241 +2625,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.SENSOR_POLIG_SENSORID_PK ON ICSC.SENSOR_POLIG
-(SENSOR_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.REFERENCE_SIGNAL_PK ON ICSC.REFERENCE_SIGNAL
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.STATIONSITE_ID_PK ON ICSC.STATION_SITE
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SECTOR_MASK_ELEM_ID_PK ON ICSC.SECTOR_MASK_ELEM
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.LINK_MEAS_STATION_TASK_ID_PK ON ICSC.LINK_MEAS_STATION
-(MEAS_TASK_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.LINK_SECTOR_MASK_SECTOR_ID_PK ON ICSC.LINK_SECTOR_MASK
-(SECTOR_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.STATION_STATIONSITEID_PK ON ICSC.STATION
-(STATION_SITE_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SECTOR_FREQ_FREQUENCY_PK ON ICSC.SECTOR_FREQ
-(FREQUENCY)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SECTOR_MASK_ELEM_LEVEL_PK ON ICSC.SECTOR_MASK_ELEM
-("LEVEL")
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SECTOR_STATION_ID_PK ON ICSC.SECTOR
-(STATION_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SECTOR_IDSECTOR_PK ON ICSC.SECTOR
-(CLIENT_SECTOR_CODE)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.ENTITY_PART_PK ON ICSC.ENTITY_PART
-(ENTITY_ID, PART_INDEX)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.LINK_MEAS_STATION_PK ON ICSC.LINK_MEAS_STATION
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SENSOR_EQUIP_SENS_ID_PK ON ICSC.SENSOR_EQUIP_SENSITIVITES
+CREATE UNIQUE INDEX ICSC.ENTITY_ID_PK ON ICSC.ENTITY
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -2708,7 +2661,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.ENTITY_ID_PK ON ICSC.ENTITY
+CREATE UNIQUE INDEX ICSC.SENSOR_EQUIP_SENS_ID_PK ON ICSC.SENSOR_EQUIP_SENSITIVITES
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -2726,61 +2679,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.STATION_SITE_REGION_PK ON ICSC.STATION_SITE
-(REGION)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.LINK_SECTOR_FREQ_SEC_FREQ_PK ON ICSC.LINK_SECTOR_FREQ
-(SECTOR_FREQ_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SECTOR_FREQ_CHAN_NUM_PK ON ICSC.SECTOR_FREQ
-(CHANNAL_NUMBER)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.REFERENCE_SITUATION_ID_PK ON ICSC.REFERENCE_SITUATION
+CREATE UNIQUE INDEX ICSC.LINK_MEAS_STATION_PK ON ICSC.LINK_MEAS_STATION
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -2798,8 +2697,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.LINK_SECTOR_MASK_PK ON ICSC.LINK_SECTOR_MASK
-(SECTOR_MASK_ELEM_ID)
+CREATE UNIQUE INDEX ICSC.ENTITY_PART_PK ON ICSC.ENTITY_PART
+(ENTITY_ID, PART_INDEX)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -2816,8 +2715,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.ID_XBS_SENSORKEY ON ICSC.LINK_RES_SENSOR
-(SENSOR_ID)
+CREATE INDEX ICSC.SECTOR_IDSECTOR_PK ON ICSC.SECTOR
+(CLIENT_SECTOR_CODE)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -2834,233 +2733,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.SIGN_SYSINFOS_PK ON ICSC.SIGN_SYSINFO
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SIGN_SYSINFO_WTIMES_PK ON ICSC.SIGN_SYSINFO_WTIMES
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.FREQ_SAMPLE_ID_PK ON ICSC.FREQ_SAMPLE
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SIGN_SIGNSYSINFOSID_FK ON ICSC.SIGN_SYSINFO_WTIMES
-(SYSINFO_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SIGN_SYSINFO_EMITTINGID_FK ON ICSC.SIGN_SYSINFO
-(EMITTING_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.BEARING_PK ON ICSC.BEARING
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.BEARING_RES_MEAS_STATION_ID_PK ON ICSC.BEARING
-(RES_MEAS_STATION_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.LINK_RES_SENSOR_PK ON ICSC.LINK_RES_SENSOR
-(RES_MEAS_STATION_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_LEV_MEAS_ONLINE_ID_PK ON ICSC.RES_LEV_MEAS_ONLINE
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.RES_LEV_MEAS_ONLINE_PK ON ICSC.RES_LEV_MEAS_ONLINE
-(RES_MEAS_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.LINK_RES_SENSOR_ID_PK ON ICSC.LINK_RES_SENSOR
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.REF_SITUATION_TASK_ID_PK ON ICSC.REFERENCE_SITUATION
-(MEAS_TASK_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.STATION_OWNERDATA_ID_PK ON ICSC.STATION
-(OWNER_DATA_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.LINK_MEAS_STATION_STAT_ID_PK ON ICSC.LINK_MEAS_STATION
+CREATE INDEX ICSC.SECTOR_STATION_ID_PK ON ICSC.SECTOR
 (STATION_ID)
 LOGGING
 TABLESPACE USERS
@@ -3078,7 +2751,61 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.LINK_SECTOR_FREQ_SECTOR_ID_PK ON ICSC.LINK_SECTOR_FREQ
+CREATE INDEX ICSC.SECTOR_MASK_ELEM_LEVEL_PK ON ICSC.SECTOR_MASK_ELEM
+("LEVEL")
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SECTOR_FREQ_FREQUENCY_PK ON ICSC.SECTOR_FREQ
+(FREQUENCY)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.STATION_STATIONSITEID_PK ON ICSC.STATION
+(STATION_SITE_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.LINK_SECTOR_MASK_SECTOR_ID_PK ON ICSC.LINK_SECTOR_MASK
 (SECTOR_ID)
 LOGGING
 TABLESPACE USERS
@@ -3096,97 +2823,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.STATION_SITE_LON_PK ON ICSC.STATION_SITE
-(LON)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.ANTENNA_PATTERN_ID_PK ON ICSC.ANTENNA_PATTERN
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.LINK_SECTOR_FREQ_ID_PK ON ICSC.LINK_SECTOR_FREQ
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SECTOR_FREQ_ID_PK ON ICSC.SECTOR_FREQ
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.OWNER_DATA_ID_PK ON ICSC.OWNER_DATA
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.STATION_MEASTASK_ID_PK ON ICSC.STATION
+CREATE INDEX ICSC.LINK_MEAS_STATION_TASK_ID_PK ON ICSC.LINK_MEAS_STATION
 (MEAS_TASK_ID)
 LOGGING
 TABLESPACE USERS
@@ -3204,43 +2841,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.SECTOR_FREQ_ID_PLAN_PK ON ICSC.SECTOR_FREQ
-(CLIENT_PLAN_CODE)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.STATION_SITE_LAT_PK ON ICSC.STATION_SITE
-(LAT)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.STATION_ID_PK ON ICSC.STATION
+CREATE UNIQUE INDEX ICSC.SECTOR_MASK_ELEM_ID_PK ON ICSC.SECTOR_MASK_ELEM
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -3258,7 +2859,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.LINK_SECTOR_MASK_ID_PK ON ICSC.LINK_SECTOR_MASK
+CREATE UNIQUE INDEX ICSC.STATIONSITE_ID_PK ON ICSC.STATION_SITE
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -3276,7 +2877,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.SENSOR_POLIG_ID_PK ON ICSC.SENSOR_POLIG
+CREATE UNIQUE INDEX ICSC.REFERENCE_SIGNAL_PK ON ICSC.REFERENCE_SIGNAL
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -3294,8 +2895,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.SECTOR_MASK_ELEM_BW_PK ON ICSC.SECTOR_MASK_ELEM
-(BW)
+CREATE INDEX ICSC.SENSOR_POLIG_SENSORID_PK ON ICSC.SENSOR_POLIG
+(SENSOR_ID)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -3312,8 +2913,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.RES_STMASKELM_RESSTGEN_ID_PK ON ICSC.RES_STMASKELM
-(RES_STGENERAL_ID)
+CREATE INDEX ICSC.STATION_ID_STATION_PK ON ICSC.STATION
+(CLIENT_STATION_CODE)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -3330,43 +2931,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE INDEX ICSC.RES_LEVELS_RES_MEAS_ID_PK ON ICSC.RES_LEVELS
-(RES_MEAS_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.RES_SYS_INFO_GENERAL_ID_PK ON ICSC.RES_SYS_INFO
-(RES_STGENERAL_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_LOC_PARAM_ID_PK ON ICSC.MEAS_LOCATION_PARAM
+CREATE UNIQUE INDEX ICSC.LINK_SUBTASK_SENSOR_MASTER_PK ON ICSC.LINK_SUBTASK_SENSOR_MASTER
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -3384,8 +2949,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.RES_STGENERAL_ID_PK ON ICSC.RES_STGENERAL
-(ID)
+CREATE INDEX ICSC.RES_MEAS_STATION_COMPOS_IDX ON ICSC.RES_MEAS_STATION
+(RES_MEAS_ID, FREQUENCY, MEAS_GLOBAL_SID, GLOBAL_SID)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -3402,10 +2967,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_DT_PARAM_ID_PK ON ICSC.MEAS_DT_PARAM
-(ID)
+CREATE INDEX ICSC.RES_ST_LEV_CAR_MEASSTATID_PK ON ICSC.RES_STLEVEL_CAR
+(RES_MEAS_STATION_ID)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -3422,584 +2985,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.MEAS_SUB_TASK_STA_ID_PK ON ICSC.SUBTASK_SENSOR
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_SYS_INFO_ID_PK ON ICSC.RES_SYS_INFO
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.SPECTRUM_EMITTING_ID_FK ON ICSC.SPECTRUM
-(EMITTING_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_FREQ_ID_PK ON ICSC.MEAS_FREQ
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SENSOR_ANTENNA_ID_PK ON ICSC.SENSOR_ANTENNA
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_SYS_INFO_BLOCKS_ID_PK ON ICSC.RES_SYS_INFO_BLOCKS
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SPECTRUM_ID_PK ON ICSC.SPECTRUM
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SENSOR_ID_PK ON ICSC.SENSOR
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.AMQP_EVENTS_ID_PK ON ICSC.AMQP_EVENTS
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_OTHER_ID_PK ON ICSC.MEAS_OTHER
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SENSOR_LOCATION_ID_PK ON ICSC.SENSOR_LOCATION
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_LEVELS_ID_PK ON ICSC.RES_LEVELS
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_LOC_SENSOR_MEAS_ID_PK ON ICSC.RES_LOCATION_SENSOR_MEAS
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.RES_SYS_INFO_BLOCKS_INFOID_PK ON ICSC.RES_SYS_INFO_BLOCKS
-(RES_SYS_INFO_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_FREQ_PARAM_ID_PK ON ICSC.MEAS_FREQ_PARAM
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.SENSOR_EQUIP_ID_PK ON ICSC.SENSOR_EQUIP
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_ROUTES_ID_PK ON ICSC.RES_ROUTES
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_MEAS_STATION_ID_PK ON ICSC.RES_MEAS_STATION
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-
-CREATE INDEX ICSC.MEAS_TASK_SIGNAL_TASK_ID_FK ON ICSC.MEAS_TASK_SIGNAL
-(MEAS_TASK_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.REF_LEVELS_RES_MEAS_ID_PK ON ICSC.REFERENCE_LEVELS
-(RES_MEAS_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_MEAS_ID_PK ON ICSC.RES_MEAS
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.EMITTING_RES_MEAS_ID_FK ON ICSC.EMITTING
-(RES_MEAS_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.VALIDATION_LOGS_ID_PK ON ICSC.VALIDATION_LOGS
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.RES_LOC_SEN_MEAS_RESMEASID_PK ON ICSC.RES_LOCATION_SENSOR_MEAS
-(RES_MEAS_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_STMASKELM_ID_PK ON ICSC.RES_STMASKELM
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_TASK_SIGNAL_ID_PK ON ICSC.MEAS_TASK_SIGNAL
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.MEAS_SUB_TASK_ID_PK ON ICSC.SUBTASK
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.AMQP_MESSAGES_ID_PK ON ICSC.AMQP_MESSAGES
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE INDEX ICSC.WORKTIME_EMITTING_ID_FK ON ICSC.WORK_TIME
-(EMITTING_ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.UNIQ_NAME_TECHID ON ICSC.SENSOR
-(NAME, TECHID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.WORKTIME_ID_PK ON ICSC.WORK_TIME
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.RES_STLEVEL_CAR_ID_PK ON ICSC.RES_STLEVEL_CAR
-(ID)
-LOGGING
-TABLESPACE USERS
-PCTFREE    10
-INITRANS   2
-MAXTRANS   255
-STORAGE    (
-            INITIAL          64K
-            NEXT             1M
-            MINEXTENTS       1
-            MAXEXTENTS       UNLIMITED
-            PCTINCREASE      0
-            BUFFER_POOL      DEFAULT
-           )
-NOPARALLEL;
-
-
-CREATE UNIQUE INDEX ICSC.EMITTING_ID_PK ON ICSC.EMITTING
+CREATE UNIQUE INDEX ICSC.REFERENCE_LEVELS_ID_PK ON ICSC.REFERENCE_LEVELS
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -4035,7 +3021,7 @@ STORAGE    (
 NOPARALLEL;
 
 
-CREATE UNIQUE INDEX ICSC.REFERENCE_LEVELS_ID_PK ON ICSC.REFERENCE_LEVELS
+CREATE UNIQUE INDEX ICSC.EMITTING_ID_PK ON ICSC.EMITTING
 (ID)
 LOGGING
 TABLESPACE USERS
@@ -4053,8 +3039,1033 @@ STORAGE    (
 NOPARALLEL;
 
 
+CREATE UNIQUE INDEX ICSC.RES_STLEVEL_CAR_ID_PK ON ICSC.RES_STLEVEL_CAR
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
 
-CREATE INDEX ICSC.RES_ST_LEV_CAR_MEASSTATID_PK ON ICSC.RES_STLEVEL_CAR
+
+CREATE UNIQUE INDEX ICSC.WORKTIME_ID_PK ON ICSC.WORK_TIME
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.UNIQ_NAME_TECHID ON ICSC.SENSOR
+(NAME, TECHID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.WORKTIME_EMITTING_ID_FK ON ICSC.WORK_TIME
+(EMITTING_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.AMQP_MESSAGES_ID_PK ON ICSC.AMQP_MESSAGES
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_SUB_TASK_ID_PK ON ICSC.SUBTASK
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_TASK_SIGNAL_ID_PK ON ICSC.MEAS_TASK_SIGNAL
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_STMASKELM_ID_PK ON ICSC.RES_STMASKELM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.RES_LOC_SEN_MEAS_RESMEASID_PK ON ICSC.RES_LOCATION_SENSOR_MEAS
+(RES_MEAS_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.VALIDATION_LOGS_ID_PK ON ICSC.VALIDATION_LOGS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.EMITTING_RES_MEAS_ID_FK ON ICSC.EMITTING
+(RES_MEAS_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_MEAS_ID_PK ON ICSC.RES_MEAS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.REF_LEVELS_RES_MEAS_ID_PK ON ICSC.REFERENCE_LEVELS
+(RES_MEAS_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.MEAS_TASK_SIGNAL_TASK_ID_FK ON ICSC.MEAS_TASK_SIGNAL
+(MEAS_TASK_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_MEAS_STATION_ID_PK ON ICSC.RES_MEAS_STATION
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_ROUTES_ID_PK ON ICSC.RES_ROUTES
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SENSOR_EQUIP_ID_PK ON ICSC.SENSOR_EQUIP
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_FREQ_PARAM_ID_PK ON ICSC.MEAS_FREQ_PARAM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.RES_SYS_INFO_BLOCKS_INFOID_PK ON ICSC.RES_SYS_INFO_BLOCKS
+(RES_SYS_INFO_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_LOC_SENSOR_MEAS_ID_PK ON ICSC.RES_LOCATION_SENSOR_MEAS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_LEVELS_ID_PK ON ICSC.RES_LEVELS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SENSOR_LOCATION_ID_PK ON ICSC.SENSOR_LOCATION
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_OTHER_ID_PK ON ICSC.MEAS_OTHER
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.AMQP_EVENTS_ID_PK ON ICSC.AMQP_EVENTS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SENSOR_ID_PK ON ICSC.SENSOR
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SPECTRUM_ID_PK ON ICSC.SPECTRUM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_SYS_INFO_BLOCKS_ID_PK ON ICSC.RES_SYS_INFO_BLOCKS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SENSOR_ANTENNA_ID_PK ON ICSC.SENSOR_ANTENNA
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_FREQ_ID_PK ON ICSC.MEAS_FREQ
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SPECTRUM_EMITTING_ID_FK ON ICSC.SPECTRUM
+(EMITTING_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_SYS_INFO_ID_PK ON ICSC.RES_SYS_INFO
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_SUB_TASK_STA_ID_PK ON ICSC.SUBTASK_SENSOR
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_DT_PARAM_ID_PK ON ICSC.MEAS_DT_PARAM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_STGENERAL_ID_PK ON ICSC.RES_STGENERAL
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.MEAS_LOC_PARAM_ID_PK ON ICSC.MEAS_LOCATION_PARAM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.RES_SYS_INFO_GENERAL_ID_PK ON ICSC.RES_SYS_INFO
+(RES_STGENERAL_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.RES_LEVELS_RES_MEAS_ID_PK ON ICSC.RES_LEVELS
+(RES_MEAS_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.RES_STMASKELM_RESSTGEN_ID_PK ON ICSC.RES_STMASKELM
+(RES_STGENERAL_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SECTOR_MASK_ELEM_BW_PK ON ICSC.SECTOR_MASK_ELEM
+(BW)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SENSOR_POLIG_ID_PK ON ICSC.SENSOR_POLIG
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.LINK_SECTOR_MASK_ID_PK ON ICSC.LINK_SECTOR_MASK
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.STATION_ID_PK ON ICSC.STATION
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.STATION_SITE_LAT_PK ON ICSC.STATION_SITE
+(LAT)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SECTOR_FREQ_ID_PLAN_PK ON ICSC.SECTOR_FREQ
+(CLIENT_PLAN_CODE)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.STATION_MEASTASK_ID_PK ON ICSC.STATION
+(MEAS_TASK_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.OWNER_DATA_ID_PK ON ICSC.OWNER_DATA
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SECTOR_FREQ_ID_PK ON ICSC.SECTOR_FREQ
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.LINK_SECTOR_FREQ_ID_PK ON ICSC.LINK_SECTOR_FREQ
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.ANTENNA_PATTERN_ID_PK ON ICSC.ANTENNA_PATTERN
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.STATION_SITE_LON_PK ON ICSC.STATION_SITE
+(LON)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.LINK_SECTOR_FREQ_SECTOR_ID_PK ON ICSC.LINK_SECTOR_FREQ
+(SECTOR_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.LINK_MEAS_STATION_STAT_ID_PK ON ICSC.LINK_MEAS_STATION
+(STATION_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.STATION_OWNERDATA_ID_PK ON ICSC.STATION
+(OWNER_DATA_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.REF_SITUATION_TASK_ID_PK ON ICSC.REFERENCE_SITUATION
+(MEAS_TASK_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.LINK_RES_SENSOR_ID_PK ON ICSC.LINK_RES_SENSOR
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.RES_LEV_MEAS_ONLINE_PK ON ICSC.RES_LEV_MEAS_ONLINE
+(RES_MEAS_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.RES_LEV_MEAS_ONLINE_ID_PK ON ICSC.RES_LEV_MEAS_ONLINE
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.LINK_RES_SENSOR_PK ON ICSC.LINK_RES_SENSOR
 (RES_MEAS_STATION_ID)
 LOGGING
 TABLESPACE USERS
@@ -4072,9 +4083,8 @@ STORAGE    (
 NOPARALLEL;
 
 
-
-CREATE INDEX ICSC.RES_MEAS_STATION_COMPOS_IDX ON ICSC.RES_MEAS_STATION
-(RES_MEAS_ID, FREQUENCY, MEAS_GLOBAL_SID, GLOBAL_SID)
+CREATE INDEX ICSC.BEARING_RES_MEAS_STATION_ID_PK ON ICSC.BEARING
+(RES_MEAS_STATION_ID)
 LOGGING
 TABLESPACE USERS
 PCTFREE    10
@@ -4090,6 +4100,203 @@ STORAGE    (
            )
 NOPARALLEL;
 
+
+CREATE UNIQUE INDEX ICSC.BEARING_PK ON ICSC.BEARING
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SIGN_SYSINFO_EMITTINGID_FK ON ICSC.SIGN_SYSINFO
+(EMITTING_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SIGN_SIGNSYSINFOSID_FK ON ICSC.SIGN_SYSINFO_WTIMES
+(SYSINFO_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.FREQ_SAMPLE_ID_PK ON ICSC.FREQ_SAMPLE
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SIGN_SYSINFO_WTIMES_PK ON ICSC.SIGN_SYSINFO_WTIMES
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.SIGN_SYSINFOS_PK ON ICSC.SIGN_SYSINFO
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.ID_XBS_SENSORKEY ON ICSC.LINK_RES_SENSOR
+(SENSOR_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.LINK_SECTOR_MASK_PK ON ICSC.LINK_SECTOR_MASK
+(SECTOR_MASK_ELEM_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.REFERENCE_SITUATION_ID_PK ON ICSC.REFERENCE_SITUATION
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.SECTOR_FREQ_CHAN_NUM_PK ON ICSC.SECTOR_FREQ
+(CHANNAL_NUMBER)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE INDEX ICSC.LINK_SECTOR_FREQ_SEC_FREQ_PK ON ICSC.LINK_SECTOR_FREQ
+(SECTOR_FREQ_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
 
 
 CREATE OR REPLACE PROCEDURE ICSC.CHECKACTIVITY as
@@ -4434,34 +4641,35 @@ into n
 from dual;
 end if;
 
+if inttable_name ='LINK_AGGREGATION_SENSOR' then
+select ICSC.LINK_AGGREGATION_SENSOR_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='LINK_SUBTASK_SENSOR_MASTER' then
+select ICSC.LINK_SUBTASK_MASTER_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+
+
 
 return(n);
 end;
 /
 
-
-
 SHOW ERRORS;
 
 
-/* Formatted on 08.08.2019 11:30:10 (QP5 v5.115.810.9015) */
-CREATE OR REPLACE FORCE VIEW ICSC.UNIT
-(
-   LON,
-   LAT,
-   LEVELDBM,
-   CENTRALFREQUENCY,
-   TIMEOFMEASUREMENTS,
-   BW,
-   IDSTATION,
-   SPECRUMSTEPS,
-   T1,
-   T2,
-   ID,
-   MEASGLOBALSID
-)
-AS
-   SELECT   DISTINCT Tcaz_1.LON AS LON,
+CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT
+(LON, LAT, LEVELDBM, CENTRALFREQUENCY, TIMEOFMEASUREMENTS, 
+ BW, IDSTATION, SPECRUMSTEPS, T1, T2, 
+ ID, MEASGLOBALSID)
+AS 
+SELECT   DISTINCT Tcaz_1.LON AS LON,
                      Tcaz_1.LAT AS LAT,
                      Tcaz_1.LEVEL_DBM AS LEVELDBM,
                      Tcaz_4.CENTRAL_FREQUENCY AS CENTRALFREQUENCY,
@@ -4485,6 +4693,78 @@ AS
             ON Tcaz_4.RES_MEAS_STATION_ID = Tcaz_2.ID;
 
 
+CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT1
+(LON, LAT, LEVELDBM, CENTRALFREQUENCY, TIMEOFMEASUREMENTS, 
+ BW, IDSTATION, SPECRUMSTEPS, T1, T2)
+AS 
+SELECT   DISTINCT Tcaz_1.LON AS LON,
+                     Tcaz_1.LAT AS LAT,
+                     Tcaz_1.LEVELDBM AS LEVELDBM,
+                     Tcaz_1.CENTRALFREQUENCY AS CENTRALFREQUENCY,
+                     Tcaz_1.TIMEOFMEASUREMENTS AS TIMEOFMEASUREMENTS,
+                     Tcaz_1.BW AS BW,
+                     Tcaz_2.IDSTATION AS IDSTATION,
+                     Tcaz_4.SPECRUMSTEPS AS SPECRUMSTEPS,
+                     Tcaz_4.T1 AS T1,
+                     Tcaz_4.T2 AS T2
+     FROM            ICSC.XBS_RESSTLEVELCAR Tcaz_1
+                  INNER JOIN
+                     ICSC.XBS_RESMEASSTATION Tcaz_2
+                  ON Tcaz_1.XBS_RESMEASSTATIONID = Tcaz_2.ID
+               INNER JOIN
+                  ICSC.XBS_RESMEAS Tcaz_3
+               ON Tcaz_2.XBSRESMEASID = Tcaz_3.ID
+            INNER JOIN
+               ICSC.XBS_RESSTGENERAL Tcaz_4
+            ON Tcaz_4.RESMEASSTATIONID = Tcaz_2.ID;
+
+
+CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT2
+(LON, LAT, LEVELDBM, CENTRALFREQUENCY, TIMEOFMEASUREMENTS, 
+ BW, IDSTATION, SPECRUMSTEPS, T1, T2, 
+ ID, MEASGLOBALSID)
+AS 
+SELECT   DISTINCT Tcaz_1.LON AS LON,
+                     Tcaz_1.LAT AS LAT,
+                     Tcaz_1.LEVELDBM AS LEVELDBM,
+                     Tcaz_1.CENTRALFREQUENCY AS CENTRALFREQUENCY,
+                     Tcaz_1.TIMEOFMEASUREMENTS AS TIMEOFMEASUREMENTS,
+                     Tcaz_1.BW AS BW,
+                     Tcaz_2.IDSTATION AS IDSTATION,
+                     Tcaz_4.SPECRUMSTEPS AS SPECRUMSTEPS,
+                     Tcaz_4.T1 AS T1,
+                     Tcaz_4.T2 AS T2,
+                     Tcaz_3.ID AS ID,
+                     Tcaz_2.MEASGLOBALSID AS MEASGLOBALSID
+     FROM            ICSC.XBS_RESSTLEVELCAR Tcaz_1
+                  INNER JOIN
+                     ICSC.XBS_RESMEASSTATION Tcaz_2
+                  ON Tcaz_1.XBS_RESMEASSTATIONID = Tcaz_2.ID
+               INNER JOIN
+                  ICSC.XBS_RESMEAS Tcaz_3
+               ON Tcaz_2.XBSRESMEASID = Tcaz_3.ID
+            INNER JOIN
+               ICSC.XBS_RESSTGENERAL Tcaz_4
+            ON Tcaz_4.RESMEASSTATIONID = Tcaz_2.ID;
+
+
+CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT3
+(CENTRALFREQUENCYMEAS, MEASGLOBALSID, XBSRESMEASID, IDSECTOR, IDSTATION, 
+ ID)
+AS 
+SELECT   DISTINCT Tcaz_4.CENTRALFREQUENCYMEAS AS CENTRALFREQUENCYMEAS,
+                     Tcaz_2.MEASGLOBALSID AS MEASGLOBALSID,
+                     Tcaz_2.XBSRESMEASID AS XBSRESMEASID,
+                     Tcaz_2.IDSECTOR AS IDSECTOR,
+                     Tcaz_2.IDSTATION AS IDSTATION,
+                     Tcaz_2.ID AS ID
+     FROM      ICSC.XBS_RESMEASSTATION Tcaz_2
+            INNER JOIN
+               ICSC.XBS_RESSTGENERAL Tcaz_4
+            ON Tcaz_4.RESMEASSTATIONID = Tcaz_2.ID;
+
+
+CREATE PUBLIC SYNONYM TOAD_PLAN_TABLE FOR ICSC.TOAD_PLAN_TABLE;
 
 
 DECLARE
@@ -4493,7 +4773,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('10.07.2019 16:27:30','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4503,25 +4783,151 @@ END;
 
 
 
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
 
 
-ALTER TABLE ICSC.SIGN_SYSINFO_WTIMES ADD (
-  CONSTRAINT SIGN_SYSINFO_WTIMES_PK
- PRIMARY KEY
- (ID));
 
-ALTER TABLE ICSC.SIGN_SYSINFO ADD (
-  CONSTRAINT SIGN_SYSINFOS_PK
- PRIMARY KEY
- (ID));
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
 
-ALTER TABLE ICSC.RES_LEV_MEAS_ONLINE ADD (
-  CONSTRAINT RESLEVMEASONLINE_PK
- PRIMARY KEY
- (ID));
 
-ALTER TABLE ICSC.BEARING ADD (
-  CONSTRAINT BEARING_PK
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+
+DECLARE
+  X NUMBER;
+BEGIN
+  SYS.DBMS_JOB.SUBMIT
+  ( job       => X 
+   ,what      => 'ICSC.CHECKACTIVITY;'
+   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,interval  => '(SYSDATE) + 1/24/60'
+   ,no_parse  => TRUE
+  );
+COMMIT;
+END;
+/
+
+
+ALTER TABLE ICSC.LINK_SUBTASK_SENSOR_MASTER ADD (
+  CONSTRAINT LINK_SUBTASK_SENSOR_MASTER_PK
  PRIMARY KEY
  (ID)
     USING INDEX 
@@ -4537,173 +4943,86 @@ ALTER TABLE ICSC.BEARING ADD (
                 PCTINCREASE      0
                ));
 
-ALTER TABLE ICSC.FREQ_SAMPLE ADD (
-  CONSTRAINT FREQ_SAMPLE_PK
+ALTER TABLE ICSC.LINK_AGGREGATION_SENSOR ADD (
+  PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.RES_LEVELS ADD (
+  CONSTRAINT ID_RESLEVELS_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.LINK_RES_SENSOR ADD (
-  CONSTRAINT LINKRESSENSOR_PK
+ALTER TABLE ICSC.AMQP_EVENTS ADD (
+  CONSTRAINT AMQP_EVENTS_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.ENTITY ADD (
-  CONSTRAINT ENTITY_PK
+ALTER TABLE ICSC.RES_MEAS_STATION ADD (
+  CONSTRAINT RESMEASSTATION_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.STATION_SITE ADD (
-  CONSTRAINT STATIONSITE_PK
+ALTER TABLE ICSC.RES_STGENERAL ADD (
+  CONSTRAINT RESSTGENERAL_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.LINK_SECTOR_FREQ ADD (
-  CONSTRAINT LINKSECTORFREQ_PK
+ALTER TABLE ICSC.RES_MEAS ADD (
+  CONSTRAINT RESSTATIONMEAS_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.LINK_SECTOR_MASK ADD (
-  CONSTRAINT LINKSECTORMASK_PK
+ALTER TABLE ICSC.RES_ROUTES ADD (
+  CONSTRAINT RESROUTES_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.REFERENCE_SITUATION ADD (
-  CONSTRAINT REFSITUATION_PK
+ALTER TABLE ICSC.MEAS_FREQ ADD (
+  CONSTRAINT MEASFREQ_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.SECTOR ADD (
-  CONSTRAINT SECTOR_PK
+ALTER TABLE ICSC.MEAS_TASK_SIGNAL ADD (
+  CONSTRAINT MEASTASKSIGNAL_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.SENSOR_EQUIP_SENSITIVITES ADD (
-  CONSTRAINT SENSOREQUIPSENS_PK
+ALTER TABLE ICSC.SPECTRUM ADD (
+  CONSTRAINT SPECTRUM_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.SECTOR_MASK_ELEM ADD (
-  CONSTRAINT SECTORMASKELEM_PK
+ALTER TABLE ICSC.RES_SYS_INFO ADD (
+  CONSTRAINT RESSYSINFO_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.LINK_MEAS_STATION ADD (
-  CONSTRAINT LINKMEASSTATION_PK
+ALTER TABLE ICSC.SENSOR ADD (
+  CONSTRAINT SENSOR_PK
+ PRIMARY KEY
+ (ID),
+  CONSTRAINT UNIQUE_NAME_TECHID_F1UQ
+ UNIQUE (NAME, TECHID));
+
+ALTER TABLE ICSC.MEAS_TASK ADD (
+  CONSTRAINT MEASTASK_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.SECTOR_FREQ ADD (
-  CONSTRAINT SECTORFREQ_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.OWNER_DATA ADD (
-  CONSTRAINT OWNERDATA_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.STATION ADD (
-  CONSTRAINT STATION_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.ENTITY_PART ADD (
-  CONSTRAINT ENTITYPART_PK
- PRIMARY KEY
- (ENTITY_ID, PART_INDEX));
-
-ALTER TABLE ICSC.ANTENNA_PATTERN ADD (
-  CONSTRAINT ANTENNAPATTERN_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.SENSOR_POLIG ADD (
-  CONSTRAINT SENSORPOLIG_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.REFERENCE_SIGNAL ADD (
-  CONSTRAINT REFSIGNAL_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.VALIDATION_LOGS ADD (
-  CONSTRAINT PK_VALIDATION_LOGS
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.SENSOR_LOCATION ADD (
-  CONSTRAINT SENSORLOCATION_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.MEAS_LOCATION_PARAM ADD (
-  CONSTRAINT MEASLOCPARAM_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.REFERENCE_LEVELS ADD (
-  CONSTRAINT REFLEVELS_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.RES_LOCATION_SENSOR_MEAS ADD (
-  CONSTRAINT RESLOCSENSORMEAS_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.SUBTASK_SENSOR ADD (
-  CONSTRAINT MEASSUBTASKSTA_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.SUBTASK ADD (
-  CONSTRAINT MEASSUBTASK_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.MEAS_FREQ_PARAM ADD (
-  CONSTRAINT MEASFREQPARAM_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.EMITTING ADD (
-  CONSTRAINT EMITTING_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.RES_STMASKELM ADD (
-  CONSTRAINT RESSTMASKELM_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.SENSOR_EQUIP ADD (
-  CONSTRAINT SENSOREQUIP_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.RES_SYS_INFO_BLOCKS ADD (
-  CONSTRAINT RESSYSINFOBLOCKS_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.MEAS_DT_PARAM ADD (
-  CONSTRAINT MEASDTPARAM_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.RES_STLEVEL_CAR ADD (
-  CONSTRAINT RESSTLEVELCAR_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.WORK_TIME ADD (
-  CONSTRAINT WORKTIME_PK
- PRIMARY KEY
- (ID));
-
-ALTER TABLE ICSC.MEAS_OTHER ADD (
-  CONSTRAINT MEASOTHER_PK
+ALTER TABLE ICSC.SENSOR_ANTENNA ADD (
+  CONSTRAINT SENSORANTENNA_PK
  PRIMARY KEY
  (ID));
 
@@ -4724,70 +5043,229 @@ ALTER TABLE ICSC.AMQP_MESSAGES ADD (
                 PCTINCREASE      0
                ));
 
-ALTER TABLE ICSC.SENSOR_ANTENNA ADD (
-  CONSTRAINT SENSORANTENNA_PK
+ALTER TABLE ICSC.MEAS_OTHER ADD (
+  CONSTRAINT MEASOTHER_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.MEAS_TASK ADD (
-  CONSTRAINT MEASTASK_PK
+ALTER TABLE ICSC.WORK_TIME ADD (
+  CONSTRAINT WORKTIME_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.SENSOR ADD (
-  CONSTRAINT SENSOR_PK
- PRIMARY KEY
- (ID),
-  CONSTRAINT UNIQUE_NAME_TECHID_F1UQ
- UNIQUE (NAME, TECHID));
-
-ALTER TABLE ICSC.RES_SYS_INFO ADD (
-  CONSTRAINT RESSYSINFO_PK
+ALTER TABLE ICSC.RES_STLEVEL_CAR ADD (
+  CONSTRAINT RESSTLEVELCAR_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.SPECTRUM ADD (
-  CONSTRAINT SPECTRUM_PK
+ALTER TABLE ICSC.MEAS_DT_PARAM ADD (
+  CONSTRAINT MEASDTPARAM_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.MEAS_TASK_SIGNAL ADD (
-  CONSTRAINT MEASTASKSIGNAL_PK
+ALTER TABLE ICSC.RES_SYS_INFO_BLOCKS ADD (
+  CONSTRAINT RESSYSINFOBLOCKS_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.MEAS_FREQ ADD (
-  CONSTRAINT MEASFREQ_PK
+ALTER TABLE ICSC.SENSOR_EQUIP ADD (
+  CONSTRAINT SENSOREQUIP_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.RES_ROUTES ADD (
-  CONSTRAINT RESROUTES_PK
+ALTER TABLE ICSC.RES_STMASKELM ADD (
+  CONSTRAINT RESSTMASKELM_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.RES_MEAS ADD (
-  CONSTRAINT RESSTATIONMEAS_PK
+ALTER TABLE ICSC.EMITTING ADD (
+  CONSTRAINT EMITTING_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.RES_STGENERAL ADD (
-  CONSTRAINT RESSTGENERAL_PK
+ALTER TABLE ICSC.MEAS_FREQ_PARAM ADD (
+  CONSTRAINT MEASFREQPARAM_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.RES_MEAS_STATION ADD (
-  CONSTRAINT RESMEASSTATION_PK
+ALTER TABLE ICSC.SUBTASK ADD (
+  CONSTRAINT MEASSUBTASK_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.AMQP_EVENTS ADD (
-  CONSTRAINT AMQP_EVENTS_PK
+ALTER TABLE ICSC.SUBTASK_SENSOR ADD (
+  CONSTRAINT MEASSUBTASKSTA_PK
  PRIMARY KEY
  (ID));
 
-ALTER TABLE ICSC.RES_LEVELS ADD (
-  CONSTRAINT ID_RESLEVELS_PK
+ALTER TABLE ICSC.RES_LOCATION_SENSOR_MEAS ADD (
+  CONSTRAINT RESLOCSENSORMEAS_PK
  PRIMARY KEY
  (ID));
+
+ALTER TABLE ICSC.REFERENCE_LEVELS ADD (
+  CONSTRAINT REFLEVELS_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.MEAS_LOCATION_PARAM ADD (
+  CONSTRAINT MEASLOCPARAM_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SENSOR_LOCATION ADD (
+  CONSTRAINT SENSORLOCATION_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.VALIDATION_LOGS ADD (
+  CONSTRAINT PK_VALIDATION_LOGS
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.REFERENCE_SIGNAL ADD (
+  CONSTRAINT REFSIGNAL_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SENSOR_POLIG ADD (
+  CONSTRAINT SENSORPOLIG_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.ANTENNA_PATTERN ADD (
+  CONSTRAINT ANTENNAPATTERN_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.ENTITY_PART ADD (
+  CONSTRAINT ENTITYPART_PK
+ PRIMARY KEY
+ (ENTITY_ID, PART_INDEX));
+
+ALTER TABLE ICSC.STATION ADD (
+  CONSTRAINT STATION_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.OWNER_DATA ADD (
+  CONSTRAINT OWNERDATA_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SECTOR_FREQ ADD (
+  CONSTRAINT SECTORFREQ_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.LINK_MEAS_STATION ADD (
+  CONSTRAINT LINKMEASSTATION_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SECTOR_MASK_ELEM ADD (
+  CONSTRAINT SECTORMASKELEM_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SENSOR_EQUIP_SENSITIVITES ADD (
+  CONSTRAINT SENSOREQUIPSENS_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SECTOR ADD (
+  CONSTRAINT SECTOR_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.REFERENCE_SITUATION ADD (
+  CONSTRAINT REFSITUATION_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.LINK_SECTOR_MASK ADD (
+  CONSTRAINT LINKSECTORMASK_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.LINK_SECTOR_FREQ ADD (
+  CONSTRAINT LINKSECTORFREQ_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.STATION_SITE ADD (
+  CONSTRAINT STATIONSITE_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.ENTITY ADD (
+  CONSTRAINT ENTITY_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.LINK_RES_SENSOR ADD (
+  CONSTRAINT LINKRESSENSOR_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.FREQ_SAMPLE ADD (
+  CONSTRAINT FREQ_SAMPLE_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.BEARING ADD (
+  CONSTRAINT BEARING_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.RES_LEV_MEAS_ONLINE ADD (
+  CONSTRAINT RESLEVMEASONLINE_PK
+ PRIMARY KEY
+ (ID));
+
+ALTER TABLE ICSC.SIGN_SYSINFO ADD (
+  CONSTRAINT SIGN_SYSINFOS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.SIGN_SYSINFO_WTIMES ADD (
+  CONSTRAINT SIGN_SYSINFO_WTIMES_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
 
