@@ -67,6 +67,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 gpsParameter.GpsMode = GpsMode.Start;
                 var gpsDevice = new GpsCommand(gpsParameter);
 
+
                 this._controller.SendCommand<GpsResult>(context, gpsDevice,
                 (
                       ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex

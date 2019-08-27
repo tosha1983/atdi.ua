@@ -23,17 +23,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private readonly ITimeService _timeService;
         private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
-        
+        private readonly ConfigProcessing  _configProcessing;
+
 
         public DispatcherWorker(ITimeService timeService,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
+            ConfigProcessing configProcessing,
             ILogger logger)
         {
             this._processingDispatcher = processingDispatcher;
             this._timeService = timeService;
             this._taskStarter = taskStarter;
             this._logger = logger;
+            this._configProcessing = configProcessing;
         }
 
         public void Run(ITaskContext<AutoTaskBase, DeviceServerBackgroundProcess> context)
@@ -78,7 +81,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск задачи включения GPS
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
+                    if (this._configProcessing.EnableGPS)
+                    {
+                        _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
+                    }
 
 
                     ////////////////////////////////////////////////////////////////////////
