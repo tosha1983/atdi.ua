@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,10 +42,73 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientMeasTaskPipebox.cs" />
+    <Compile Include="MeasResults\MeasResultContainer.cs" />
+    <Compile Include="Messages\MeasResult\SendMeasResultMSToMasterServer.cs" />
+    <Compile Include="Messages\MeasResult\SendMeasResultSGToMasterServer.cs" />
+    <Compile Include="Messages\MeasResult\SendMeasResultSOToMasterServer.cs" />
+    <Compile Include="PipeBox\CommandMeasTaskPipebox.cs" />
+    <Compile Include="PipeBox\CreateMeasTaskPipebox.cs" />
+    <Compile Include="PipeBox\ClientMeasTaskPipebox.cs" />
+    <Compile Include="Messages\MeasTaskToAggregationServer.cs" />
+    <Compile Include="Messages\SendSensorFromAggregationToMasterServer.cs" />
+    <Compile Include="PipeBox\CommonOperation.cs" />
     <Compile Include="Pipelines.cs" />
+    <Compile Include="PipeBox\PrepareSendEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sensors\AntennaPattern.cs" />
+    <Compile Include="Sensors\Enums\AntennaDirectional.cs" />
+    <Compile Include="Sensors\Enums\AntennaPolarization.cs" />
+    <Compile Include="Sensors\Sensor.cs" />
+    <Compile Include="Sensors\SensorAntenna.cs" />
+    <Compile Include="Sensors\SensorEquip.cs" />
+    <Compile Include="Sensors\SensorEquipSensitivity.cs" />
+    <Compile Include="Sensors\SensorIdentifier.cs" />
+    <Compile Include="Sensors\SensorLocation.cs" />
+    <Compile Include="Sensors\SensorPoligonPoint.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="PipeBox\Enums\CommonOperationState.cs" />
+    <Compile Include="Tasks\Enums\DetectingType.cs" />
+    <Compile Include="Tasks\Enums\FrequencyMode.cs" />
+    <Compile Include="Tasks\Enums\MeasTaskExecutionMode.cs" />
+    <Compile Include="Tasks\Enums\MeasTaskMode.cs" />
+    <Compile Include="Tasks\Enums\MeasTaskResultType.cs" />
+    <Compile Include="Tasks\Enums\MeasTaskType.cs" />
+    <Compile Include="Tasks\Enums\MeasurementMode.cs" />
+    <Compile Include="Tasks\Enums\MeasurementType.cs" />
+    <Compile Include="Tasks\Enums\ModeStatus.cs" />
+    <Compile Include="Tasks\Enums\PointStayType.cs" />
+    <Compile Include="Tasks\Enums\SpectrumOccupationType.cs" />
+    <Compile Include="Tasks\Enums\SpectrumScanType.cs" />
+    <Compile Include="Tasks\Enums\Status.cs" />
+    <Compile Include="Tasks\MeasDtParam.cs" />
+    <Compile Include="Tasks\MeasFreq.cs" />
+    <Compile Include="Tasks\MeasFreqParam.cs" />
+    <Compile Include="Tasks\SpectrumOccupationParameters.cs" />
+    <Compile Include="Tasks\MeasSensor.cs" />
+    <Compile Include="Tasks\MeasSensorIdentifier.cs" />
+    <Compile Include="Tasks\MeasSubTask.cs" />
+    <Compile Include="Tasks\MeasSubTaskSensor.cs" />
+    <Compile Include="Tasks\MeasTaskBandWidth.cs" />
+    <Compile Include="Tasks\MeasTaskMonitoringStations.cs" />
+    <Compile Include="Tasks\MeasTaskLevel.cs" />
+    <Compile Include="Tasks\MeasTaskSpectrumOccupation.cs" />
+    <Compile Include="Tasks\MeasTaskSignaling.cs" />
+    <Compile Include="Tasks\MeasTask.cs" />
+    <Compile Include="Tasks\MeasTaskIdentifier.cs" />
+    <Compile Include="Tasks\MeasTimeParamList.cs" />
+    <Compile Include="Tasks\Signaling\ReferenceSignal.cs" />
+    <Compile Include="Tasks\Signaling\ReferenceSituation.cs" />
+    <Compile Include="Tasks\Signaling\SignalingGroupingParameters.cs" />
+    <Compile Include="Tasks\Signaling\SignalingInterruptionParameters.cs" />
+    <Compile Include="Tasks\Signaling\SignalingMeasTaskParameters.cs" />
+    <Compile Include="Tasks\Signaling\SignalMask.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\FrequencyForSectorFormICSM.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\MaskElements.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\OwnerData.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\PermissionForAssignment.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\SectorStationForMeas.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\SiteStationForMeas.cs" />
+    <Compile Include="Tasks\StationDataForMeasurements\StationDataForMeasurements.cs" />
     <Compile Include="Test\TestDeliveryObjects.cs" />
     <Compile Include="Test\TestMessage4.cs" />
     <Compile Include="Test\TestMessage3.cs" />
@@ -56,6 +120,10 @@
       <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
       <Name>Atdi.DataModels.Api.DataBus</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
       <Name>Atdi.DataModels.Sdrns</Name>
@@ -65,5 +133,6 @@
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -23,27 +23,27 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// RBW, kHz
         /// </summary>
         [DataMember]
-        public Double? RBW;//kHz
+        public double? RBW;//kHz
         /// <summary>
         /// VBW, kHz
         /// </summary>
         [DataMember]
-        public Double? VBW;//kHz
+        public double? VBW;//kHz
         /// <summary>
         /// Attenuation in radiofrequency, dB
         /// </summary>
         [DataMember]
-        public Double RfAttenuation; //0, 10, 20, 30, ...,  dB 
+        public double? RfAttenuation; //0, 10, 20, 30, ...,  dB 
         /// <summary>
         /// Attenuation in interim frequency, dB
         /// </summary>
         [DataMember]
-        public Double IfAttenuation;
+        public double? IfAttenuation;
         /// <summary>
         /// Time singl measurement, sec
         /// </summary>
         [DataMember]
-        public Double? MeasTime;
+        public double? MeasTime;
         /// <summary>
         /// Type of detecting - Avarage; Peak; MaxPeak; MinPeak;
         /// </summary>
@@ -58,7 +58,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// Gain of preamplifier, dB
         /// </summary>
         [DataMember]
-        public int Preamplification;//0, 10, 20, ..., dB
+        public int? Preamplification;//0, 10, 20, ..., dB
         /// <summary>
         /// Mode of measurements
         /// </summary>
