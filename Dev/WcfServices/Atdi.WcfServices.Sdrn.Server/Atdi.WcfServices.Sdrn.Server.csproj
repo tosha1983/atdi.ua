@@ -57,6 +57,7 @@
     <Compile Include="Handlers\Analitics\AnaliticsUnit.cs" />
     <Compile Include="Handlers\MeasTask\LoadMeasTask.cs" />
     <Compile Include="Handlers\MeasTask\SaveMeasTask.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\InitiationOnlineMesurementModel.cs" />
     <Compile Include="Handlers\Process\MeasTaskProcess.cs" />
     <Compile Include="Handlers\Results\LoadResults.cs" />
     <Compile Include="Handlers\Results\SaveResults.cs" />
@@ -98,6 +99,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Events\Atdi.DataModels.Sdrns.Server.Events.csproj">
+      <Project>{e41db4c2-2171-4e39-b437-221c0ce195f2}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Events</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>

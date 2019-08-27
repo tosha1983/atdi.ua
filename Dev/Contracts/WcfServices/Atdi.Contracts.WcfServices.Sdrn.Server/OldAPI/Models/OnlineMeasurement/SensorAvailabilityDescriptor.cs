@@ -26,7 +26,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// но еще не получил от него подтверждение
         /// </summary>
         [EnumMember]
-        WaiteSensor = 1,
+        WaitSensor = 1,
 
         /// <summary>
         /// Состояние при котором сервер отказал в онлайн измерении 
@@ -79,7 +79,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// Текущий статус инцированного клиентом онлайн измерения
         /// </summary>
         [DataMember]
-        OnlineMeasurementStatus Status { get; set; }
+        public OnlineMeasurementStatus Status { get; set; }
 
         /// <summary>
         /// Токен выданный устройством для данного клиента.
@@ -94,7 +94,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// с целью начать онлайн измерение
         /// </summary>
         [DataMember]
-        public string WebsocketUrl { get; set; }
+        public string WebSocketUrl { get; set; }
 
         /// <summary>
         /// Информационное сообщение формируемое сервером.

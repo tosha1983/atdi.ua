@@ -50,6 +50,7 @@
     <Compile Include="Entities\IReferenceLevels.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
     <Compile Include="Entities\IReferenceSignal.cs" />
+    <Compile Include="Entities\IOnlineMesurement.cs" />
     <Compile Include="Entities\ISignalingSysInfo.cs" />
     <Compile Include="Entities\ISpectrum.cs" />
     <Compile Include="Entities\ITestDataType.cs" />
@@ -323,6 +324,7 @@
     <Content Include="Metadata\Entities\Monitoring\StatisticEntryRecord.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounterRecord.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
+    <Content Include="Metadata\Entities\OnlineMesurement.xml" />
     <Content Include="Metadata\Entities\SignalingSysInfo.xml" />
     <Content Include="Metadata\Entities\TestDataTypeSql.xml" />
     <Content Include="Metadata\Entities\TestEntityRef3.xml" />

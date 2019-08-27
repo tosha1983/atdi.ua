@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponentConfig.cs" />
+    <Compile Include="DeviceBus\OnlineMeasurementStatusSubscriber.cs" />
+    <Compile Include="DeviceBus\OnlineMeasurementResponseSubscriber.cs" />
     <Compile Include="DeviceBus\SubscriberBase.cs" />
     <Compile Include="DeviceBus\SendCommandResultSubscriber.cs" />
     <Compile Include="DeviceBus\RegisterSensorSubscriber.cs" />

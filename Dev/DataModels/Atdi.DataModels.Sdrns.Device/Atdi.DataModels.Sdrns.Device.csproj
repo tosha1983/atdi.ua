@@ -65,6 +65,9 @@
     <Compile Include="DeviceBusMessages.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityPart.cs" />
+    <Compile Include="OnlineMeasurement\InitOnlineMeasurementOptions.cs" />
+    <Compile Include="OnlineMeasurement\OnlineMeasurementResponseData.cs" />
+    <Compile Include="OnlineMeasurement\OnlineMeasurementStatusData.cs" />
     <Compile Include="Results\BandwidthMeasResult.cs" />
     <Compile Include="Results\DirectionFindingData.cs" />
     <Compile Include="Results\FrequencySample.cs" />

@@ -11,6 +11,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
     {
         public static readonly EventContext ThisComponent = "SDRN Server Bus Messages Primary Handlers Component";
         public static readonly EventContext PrimaryHandler = "SDRN.PrimaryHandler";
+        public static readonly EventContext EventSubscriber = "SDRN.EventSubscriber";
     }
 
     static class Categories
@@ -18,7 +19,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
         public static readonly EventCategory MessageProcessing = "Processing";
         public static readonly EventCategory Notify = "Notify";
         public static readonly EventCategory OnReceivedNewSOResultEvent = "OnReceivedNewSOResultEvent";
-        
+        public static readonly EventCategory OnInitOnlineMeasurement = "OnInitOnlineMeasurement";
     }
 
     static class Events

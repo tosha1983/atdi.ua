@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DevicesBusEvent.cs" />
+    <Compile Include="OnlineMeasurement\OnInitOnlineMeasurement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
