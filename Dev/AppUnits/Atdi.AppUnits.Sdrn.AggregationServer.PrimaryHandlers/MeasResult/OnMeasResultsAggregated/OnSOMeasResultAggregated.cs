@@ -52,6 +52,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             var measResult = new MeasResults();
 
             // IResMeas
+            long subTaskSensorId = 0;
             var builderResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().From();
             builderResMeas.Select(c => c.MeasResultSID, c => c.TimeMeas, c => c.Status, c => c.StartTime, c => c.StopTime, c => c.ScansNumber, c => c.TypeMeasurements, c => c.SUBTASK_SENSOR.Id);
             builderResMeas.Where(c => c.Id, ConditionOperator.Equal, measResultId);
@@ -59,14 +60,29 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             {
                 while (readerResMeas.Read())
                 {
+                    subTaskSensorId = (readerResMeas.GetValue(c => c.SUBTASK_SENSOR.Id));
                     measResult.ResultId = (readerResMeas.GetValue(c => c.MeasResultSID));
                     measResult.Status = (readerResMeas.GetValue(c => c.Status));
                     measResult.Measured = readerResMeas.GetValue(c => c.TimeMeas).GetValueOrDefault();
                     measResult.StartTime = readerResMeas.GetValue(c => c.StartTime).GetValueOrDefault();
                     measResult.StopTime = readerResMeas.GetValue(c => c.StopTime).GetValueOrDefault();
                     measResult.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).GetValueOrDefault();
-                    //measResult.TaskId = ;
                     if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out MeasurementType outResType)) measResult.Measurement = outResType;
+                }
+                return true;
+            });
+
+            // ILinkSubTaskSensorMasterId
+            var builderResMeasTaskId = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().From();
+            builderResMeasTaskId.Select(c => c.SubtaskSensorMasterId);
+            builderResMeasTaskId.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId);
+            this._queryExecutor.Fetch(builderResMeasTaskId, readerResMeasTaskId =>
+            {
+                while (readerResMeasTaskId.Read())
+                {
+                    var subtaskSensorMasterId = readerResMeasTaskId.GetValue(c => c.SubtaskSensorMasterId);
+                    if (subtaskSensorMasterId.HasValue)
+                        measResult.TaskId = subtaskSensorMasterId.Value.ToString();
                 }
                 return true;
             });
