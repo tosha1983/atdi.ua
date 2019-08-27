@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                     measResult.StartTime = readerResMeas.GetValue(c => c.StartTime).GetValueOrDefault();
                     measResult.StopTime = readerResMeas.GetValue(c => c.StopTime).GetValueOrDefault();
                     measResult.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).GetValueOrDefault();
-                    measResult.TaskId = ;
+                    //measResult.TaskId = ;
                     if (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out MeasurementType outResType)) measResult.Measurement = outResType;
                 }
                 return true;
