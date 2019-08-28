@@ -806,6 +806,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         private int return_len;
         private int samples_per_sec;
         private double bandwidth;
+        public decimal TriggerOffset { get; set; } = 10000;
+        public decimal OneSempleDuration;
         #endregion IQStream
 
         #endregion Param
@@ -1498,7 +1500,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             tempIQStream.IQData = new float[tempIQStream.BlocksCount][];
             tempIQStream.dataRemainings = new int[tempIQStream.BlocksCount];
             tempIQStream.sampleLosses = new int[tempIQStream.BlocksCount];
+            
             tempIQStream.OneSempleDuration = 1000000000 / samples_per_sec;
+            OneSempleDuration = ((decimal)tempIQStream.OneSempleDuration) / 1000000000;
             tempIQStream.BlockTime = new long[100000];
             tempIQStream.BlockTimeDelta = new long[100000];
             tempIQStream.IQDataTemp = new float[return_len * 2];
@@ -1541,7 +1545,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             long PrevBlockTime = 0;
             long ThisBlockTime = 0;
 
-
+            long GNSSOffset = _timeService.TimeCorrection * 100;
             int dTPPSIndex = 0;//индекс PPS в BlockTime
             int IQStartIndex = 0;// иендекс Первого нужного IQ в BlockTime
             int IQStopIndex = 0;// иендекс Последнего нужного IQ в BlockTime
@@ -1586,7 +1590,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion
 
-                tempIQStream.BlockTime[AllBlockIndex] = ((long)iqSec) * 1000000000 + iqNano;
+                tempIQStream.BlockTime[AllBlockIndex] = ((long)iqSec) * 1000000000 + iqNano + GNSSOffset;
                 PrevBlockTime = ThisBlockTime;
                 ThisBlockTime = tempIQStream.BlockTime[AllBlockIndex];
                 if (PrevBlockTime != 0)
@@ -1719,7 +1723,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             iq_samples = new float[IQStopIndex - IQStartIndex][]
                         };
                         Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
-                        
+
                     }
                     else
                     {
@@ -1730,16 +1734,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     IQStreamResult.iq_samples = tempIQStream.IQData;
                 }
-                //dell
-                float[] _IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length];
-                for (int k = 0; k < IQStreamResult.iq_samples.Length; k++)
-                {
-                    for (int j = 0; j < IQStreamResult.iq_samples[0].Length; j++)
-                    {
-                        _IQArr[k * j] = IQStreamResult.iq_samples[k][j];
-                    }
-                }
-                IQArr = _IQArr;
+               
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;

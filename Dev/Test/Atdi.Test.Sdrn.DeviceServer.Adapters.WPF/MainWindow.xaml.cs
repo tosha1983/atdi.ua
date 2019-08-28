@@ -90,17 +90,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ANThread.Start();
             AND += ANConnect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
 
-            //GPSThread = new Thread(GPSWorks);
-            //GPSThread.Name = "GPSThread";
-            //GPSThread.IsBackground = true;
-            //GPSThread.Start();
-            //GPSD += GPSConnect;
+            GPSThread = new Thread(GPSWorks);
+            GPSThread.Name = "GPSThread";
+            GPSThread.IsBackground = true;
+            GPSThread.Start();
+            GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
@@ -685,14 +685,15 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.MandatoryPPS = false;
                 command.Parameter.MandatorySignal = false;
 
-                long offset = (long)(0.0 * 10000000);
-                command.Parameter.TimeStart = TimeService.GetGnssTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
-                //command.Parameter.TimeStart += (long)(0.1 * 10000000);
+                long offset = (long)(0.025 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
+                ////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
 
-                //Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
-                //Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
                 ANadapter.MesureIQStreamCommandHandler(command, context);
+
             }
             finally
             {
@@ -719,23 +720,116 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = 30;
 
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.IQBlockDuration_s = 0.5;
-                command.Parameter.IQReceivTime_s = 1.5;
+                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQReceivTime_s = 1.0;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = false;
-                long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
-                command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                //long offset = DateTime.Now.Ticks - NextSecond;
-                //command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                ////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+                long offset = (long)(0.025 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
+                //command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////long offset = DateTime.Now.Ticks - NextSecond;
+                ////////command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
 
                 //Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
                 //Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
                 SHadapter.MesureIQStreamCommandHandler(command, context);
             }
             finally
             {
                 SHD -= GetIQSH;
+            }
+        }
+
+        private void GetIQAN2()
+        {
+            try
+            {
+                //до следующей секунды
+                //long time = TimeService.GetGnssTime().Ticks;
+                //long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
+                //long NextSecond = time + ToNextSecond;
+                //long NextSecond2 = time + ToNextSecond - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //Debug.WriteLine("\r\n" + new TimeSpan(ToNextSecond).ToString() + " Next");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssTime().Ticks).ToString() + " NOW");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond2).ToString() + " Set Param");
+
+
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureIQStreamCommand();
+                //135,5
+                command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
+                //command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.Att_dB = 0;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.BitRate_MBs = 0.6;
+                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = false;
+                command.Parameter.MandatorySignal = false;
+
+                long offset = (long)(0.025 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
+                ////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                ANadapter.MesureIQStreamCommandHandler(command, context);
+
+            }
+            finally
+            {
+                AND -= GetIQAN2;
+            }
+        }
+        private void GetIQSH2()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureIQStreamCommand();
+                //135,5
+                command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.BitRate_MBs = 0.9;
+                command.Parameter.Att_dB = 10;
+                command.Parameter.PreAmp_dB = 10;
+                //command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
+                //command.Parameter.BitRate_MBs = 0.1;
+                //command.Parameter.Att_dB = 0;
+                //command.Parameter.PreAmp_dB = 30;
+
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatorySignal = false;
+                long offset = (long)(0.025 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
+                //command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////long offset = DateTime.Now.Ticks - NextSecond;
+                ////////command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+
+                //Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                SHadapter.MesureIQStreamCommandHandler(command, context);
+            }
+            finally
+            {
+                SHD -= GetIQSH2;
             }
         }
 
@@ -776,7 +870,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             AND += GetIQAN;
             SHD += GetIQSH;
         }
-
+        private void SetMeasIQ2_Click(object sender, RoutedEventArgs e)
+        {
+            AND += GetIQAN2;
+            SHD += GetIQSH2;
+        }
 
 
 

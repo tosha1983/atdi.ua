@@ -54,6 +54,7 @@
             <RepeatButton Click="SetMeas1800_Click" Content="GET Trace 1800" />
             <RepeatButton Click="SetMeas1800AVG_Click" Content="GET Trace 1800 AVG" />
             <RepeatButton Click="SetMeasIQ_Click" Content="GET IQ" />
+            <RepeatButton Click="SetMeasIQ2_Click" Content="GET IQ2" />
             
             <RepeatButton Click="SetMeas21_Click" Content="Set Meas 21" Margin="0,20,0,0" Delay="10"/>
             <RepeatButton Click="SetMeas22_Click" Content="Set Meas 22" Delay="10"/>
