@@ -23,7 +23,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? allowableExcess_dB { get; set; }
         int? SignalizationNCount { get; set; }
         int? SignalizationNChenal { get; set; }
-        double? InterruptAllowableExcess_dB { get; set; }
         bool? CorrelationAnalize { get; set; }// проводить корреляционный анализ между излучениями по умолчанию лож
         bool? CheckFreqChannel { get; set; }// проверять совподение частоты сигнала с частотой канала по умолчанию лож
         bool? AnalyzeByChannel { get; set; } // true значит надо анализировать согласно существующим частото каналам  по умолчанию false

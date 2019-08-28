@@ -102,7 +102,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         };
 
                         this._signalingCounter?.Increment();
-                        this.SaveMeasResultSignaling(context);
+                        if (this.SaveMeasResultSignaling(ref context))
+                        {
+                            var busEvent = new SGMeasResultAppeared($"OnSGMeasResultAppeared", "SendSGMeasResultsSubscriber")
+                            {
+                                MeasResultId = context.resMeasId
+                            };
+                            _eventEmitter.Emit(busEvent);
+                        }
                     }
                 }
                 catch (Exception e)
@@ -146,7 +153,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
             }
         }
-        private bool SaveMeasResultSignaling(HandleContext context)
+        private bool SaveMeasResultSignaling(ref HandleContext context)
         {
             try
             {

@@ -46,10 +46,12 @@
     <Compile Include="Entities\IAmqpMessage.cs" />
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\IEmitting.cs" />
+    <Compile Include="Entities\ILinkSubTaskSensorMasterId.cs" />
     <Compile Include="Entities\IMeasTaskSignaling.cs" />
     <Compile Include="Entities\IReferenceLevels.cs" />
     <Compile Include="Entities\IReferenceSituation.cs" />
     <Compile Include="Entities\IReferenceSignal.cs" />
+    <Compile Include="Entities\ILinkAggregationSensor.cs" />
     <Compile Include="Entities\ISignalingSysInfo.cs" />
     <Compile Include="Entities\ISpectrum.cs" />
     <Compile Include="Entities\ITestDataType.cs" />
@@ -112,9 +114,13 @@
     <Content Include="DataLayer\Oracle\Functions\ICSC.GetID.sql" />
     <Content Include="DataLayer\Oracle\Jobs\ICSC.CHECKACTIVITY_JOB.sql" />
     <Content Include="DataLayer\Oracle\Procedures\ICSC.CHECKACTIVITY.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_SUBTASK_MASTER_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_AGGREGATION_SENSOR_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.SIGN_SYSINFO_WTIMES_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.SIGN_SYSINFO_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Tables\CreateAllTables.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_SUBTASK_SENSOR_MASTER.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_AGGREGATION_SENSOR.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.SIGN_SYSINFO_WTIMES.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.SIGN_SYSINFO.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.AMQP_EVENTS.sql" />
@@ -316,6 +322,8 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\LinkSubTaskSensorMasterId.xml" />
+    <Content Include="Metadata\Entities\LinkAggregationSensor.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounterKey.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounter.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCurrentCounter.xml" />

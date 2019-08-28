@@ -16,7 +16,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     [Entity]
     public interface IMeasDtParam: IMeasDtParam_PK
     {
-        string TypeMeasurements { get; set; }
+        int? SwNumber { get; set; }
         string DetectType { get; set; }
         double? Rfattenuation { get; set; }
         double? Ifattenuation { get; set; }

@@ -43,21 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappers\MapperForMeasTask.cs" />
     <Compile Include="Handlers\Analitics\SOFrequencyTemp.cs" />
     <Compile Include="Handlers\Analitics\Hit.cs" />
     <Compile Include="Handlers\Analitics\LevelMeasurementsCarForSO.cs" />
     <Compile Include="Handlers\Analitics\CalcStationLevelsByTask.cs" />
-    <Compile Include="Handlers\CreateMeasTaskHandler.cs" />
-    <Compile Include="Handlers\Extend\Enum\MeasTaskMode.cs" />
-    <Compile Include="Handlers\Extend\Enum\Status.cs" />
-    <Compile Include="Handlers\Extend\Enum\ModeStatus.cs" />
-    <Compile Include="Handlers\Extend\StatusDescription.cs" />
-    <Compile Include="Handlers\Extend\RuleStatusTransition.cs" />
-    <Compile Include="Handlers\Extend\MeasTaskExtend.cs" />
     <Compile Include="Handlers\Analitics\AnaliticsUnit.cs" />
     <Compile Include="Handlers\MeasTask\LoadMeasTask.cs" />
-    <Compile Include="Handlers\MeasTask\SaveMeasTask.cs" />
-    <Compile Include="Handlers\Process\MeasTaskProcess.cs" />
     <Compile Include="Handlers\Results\LoadResults.cs" />
     <Compile Include="Handlers\Results\SaveResults.cs" />
     <Compile Include="Handlers\Sensor\LoadSensor.cs" />

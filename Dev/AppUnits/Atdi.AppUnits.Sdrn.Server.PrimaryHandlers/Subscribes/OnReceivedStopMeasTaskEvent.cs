@@ -27,6 +27,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             this._messagePublisher = messagePublisher;
         }
 
+        /// <summary>
+        /// Отправка команды StopMeasTask в шину DeviceBus
+        /// </summary>
+        /// <param name="event"></param>
         public void Notify(OnMeasTaskEvent @event)
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))

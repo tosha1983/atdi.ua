@@ -51,13 +51,16 @@
     <Compile Include="OldAPI\Enums\DetectingType.cs" />
     <Compile Include="OldAPI\Enums\FrequencyMode.cs" />
     <Compile Include="OldAPI\Enums\MeasTaskExecutionMode.cs" />
+    <Compile Include="OldAPI\Enums\MeasTaskMode.cs" />
     <Compile Include="OldAPI\Enums\MeasTaskResultType.cs" />
     <Compile Include="OldAPI\Enums\MeasTaskType.cs" />
     <Compile Include="OldAPI\Enums\MeasurementMode.cs" />
     <Compile Include="OldAPI\Enums\MeasurementType.cs" />
+    <Compile Include="OldAPI\Enums\ModeStatus.cs" />
     <Compile Include="OldAPI\Enums\PointStayType.cs" />
     <Compile Include="OldAPI\Enums\SpectrumOccupationType.cs" />
     <Compile Include="OldAPI\Enums\SpectrumScanType.cs" />
+    <Compile Include="OldAPI\Enums\Status.cs" />
     <Compile Include="OldAPI\ISdrnsController.cs" />
     <Compile Include="OldAPI\Models\Analitics\GetShortMeasResultsByDateValue.cs" />
     <Compile Include="OldAPI\Models\Analitics\GetSOformMeasResultStation.cs" />

@@ -11,6 +11,7 @@ using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using DEV = Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Api.EventSystem;
 
+
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
 {
     [SubscriptionEvent(EventName = "OnDelMeasTaskEvent", SubscriberName = "SubscriberOnDelMeasTaskEvent")]
@@ -27,6 +28,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
             this._messagePublisher = messagePublisher;
         }
 
+        /// <summary>
+        /// Отправка команды DelMeasTask в шину DeviceBus
+        /// </summary>
+        /// <param name="event"></param>
         public void Notify(OnMeasTaskEvent @event)
         {
             using (this._logger.StartTrace(Contexts.PrimaryHandler, Categories.Notify, this))

@@ -1,8 +1,6 @@
 ﻿CREATE TABLE ICSC.MEAS_OTHER
 (
   ID                        NUMBER(15)          NOT NULL,
-  SW_NUMBER                 NUMBER(9),
-  TYPE_SPECTRUM_SCAN        NVARCHAR2(50),
   TYPE_SPECTRUM_OCCUPATION  NVARCHAR2(50),
   LEVEL_MIN_OCCUP           NUMBER(30,10),
   NCHENAL                   NUMBER(9),

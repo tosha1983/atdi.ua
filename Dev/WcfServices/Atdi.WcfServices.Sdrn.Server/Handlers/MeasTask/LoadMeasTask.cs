@@ -87,38 +87,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
 
-                        bool isSetMeasurementType = false;
-
-                        var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
-                        builderMeasDtParam.Select(c => c.Id);
-                        builderMeasDtParam.Select(c => c.Demod);
-                        builderMeasDtParam.Select(c => c.DetectType);
-                        builderMeasDtParam.Select(c => c.Ifattenuation);
-                        builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
-                        builderMeasDtParam.Select(c => c.MeasTime);
-                        builderMeasDtParam.Select(c => c.Mode);
-                        builderMeasDtParam.Select(c => c.Preamplification);
-                        builderMeasDtParam.Select(c => c.Rbw);
-                        builderMeasDtParam.Select(c => c.Rfattenuation);
-                        builderMeasDtParam.Select(c => c.TypeMeasurements);
-                        builderMeasDtParam.Select(c => c.Vbw);
-                        builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
-                        {
-                            while (readerMeasDtParam.Read())
-                            {
-                                MeasurementType typeMeasurements;
-                                if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
-                                {
-                                    measTask.TypeMeasurements = typeMeasurements;
-                                    isSetMeasurementType = true;
-                                }
-                            }
-                            return true;
-                        });
-
                         
-                        if ((isSetMeasurementType==false) && (readerMeasTask.GetValue(c => c.Type) != null))
+                        if (readerMeasTask.GetValue(c => c.Type) != null)
                         {
                             MeasurementType typeMeasurements;
                             if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
@@ -202,39 +172,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
                         measTask.Type = readerMeasTask.GetValue(c => c.Type);
 
-
-                        bool isSetMeasurementType = false;
-
-                        var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
-                        builderMeasDtParam.Select(c => c.Id);
-                        builderMeasDtParam.Select(c => c.Demod);
-                        builderMeasDtParam.Select(c => c.DetectType);
-                        builderMeasDtParam.Select(c => c.Ifattenuation);
-                        builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
-                        builderMeasDtParam.Select(c => c.MeasTime);
-                        builderMeasDtParam.Select(c => c.Mode);
-                        builderMeasDtParam.Select(c => c.Preamplification);
-                        builderMeasDtParam.Select(c => c.Rbw);
-                        builderMeasDtParam.Select(c => c.Rfattenuation);
-                        builderMeasDtParam.Select(c => c.TypeMeasurements);
-                        builderMeasDtParam.Select(c => c.Vbw);
-                        builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
-                        {
-                            var resultMeasDtParam = true;
-                            while (readerMeasDtParam.Read())
-                            {
-                                MeasurementType typeMeasurements;
-                                if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
-                                {
-                                    measTask.TypeMeasurements = typeMeasurements;
-                                    isSetMeasurementType = true;
-                                }
-                            }
-                            return resultMeasDtParam;
-                        });
-
-                        if ((isSetMeasurementType==false) && (readerMeasTask.GetValue(c => c.Type) != null))
+                        if (readerMeasTask.GetValue(c => c.Type) != null)
                         {
                             MeasurementType typeMeasurements;
                             if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
@@ -385,7 +323,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasTaskSignaling.Select(c => c.Id);
                         builderMeasTaskSignaling.Select(c => c.MEAS_TASK.Id);
                         builderMeasTaskSignaling.Select(c => c.allowableExcess_dB);
-                        builderMeasTaskSignaling.Select(c => c.InterruptAllowableExcess_dB);
                         builderMeasTaskSignaling.Select(c => c.AutoDivisionEmitting);
                         builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
                         builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
@@ -421,7 +358,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters = new SignalingInterruptionParameters();
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting = readerMeasTaskSignaling.GetValue(c => c.AutoDivisionEmitting);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax = readerMeasTaskSignaling.GetValue(c => c.DifferenceMaxMax);
-                                measTask.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW = readerMeasTaskSignaling.GetValue(c => c.DiffLevelForCalcBW);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB = readerMeasTaskSignaling.GetValue(c => c.MinExcessNoseLevel_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB = readerMeasTaskSignaling.GetValue(c => c.NDbLevel_dB);
@@ -445,7 +381,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(c => c.TimeBetweenWorkTimes_sec);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(c => c.TypeJoinSpectrum);
-                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.InterruptAllowableExcess_dB);
+                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                             }
                             return resultMeasTaskSignaling;
                         });
@@ -547,32 +483,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         timeParamList.TimeStop = readerMeasTask.GetValue(c => c.TimeStop);
                         measTask.MeasTimeParamList = timeParamList;
 
-                    // IMeasStation
-                    /*
-                    var measStations = new List<MeasStation>();
-                        var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
-                        builderMeasstation.Select(c => c.Id);
-                        builderMeasstation.Select(c => c.ClientStationCode);
-                        builderMeasstation.Select(c => c.MEAS_TASK.Id);
-                        builderMeasstation.Select(c => c.StationType);
-                        builderMeasstation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasstation, readerMeasStation =>
-                        {
-                            while (readerMeasStation.Read())
-                            {
-                                var measStation = new MeasStation();
-                                measStation.StationId = new MeasStationIdentifier();
-                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
-                                measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
-                                measStations.Add(measStation);
-                            }
-                            return true;
-                        });
-                        measTask.Stations = measStations.ToArray();
-                        */
 
-                    // IMeasDtParam
-
+                    int? swNumber = null;
+                        
                     var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
                         builderMeasDtParam.Select(c => c.Id);
                         builderMeasDtParam.Select(c => c.Demod);
@@ -584,8 +497,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasDtParam.Select(c => c.Preamplification);
                         builderMeasDtParam.Select(c => c.Rbw);
                         builderMeasDtParam.Select(c => c.Rfattenuation);
-                        builderMeasDtParam.Select(c => c.TypeMeasurements);
                         builderMeasDtParam.Select(c => c.Vbw);
+                        builderMeasDtParam.Select(c => c.SwNumber);
                         builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
                         {
@@ -605,31 +518,29 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
                                 dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
+                                swNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
+
                                 dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
-                                MeasurementType typeMeasurements;
-                                if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
-                                    dtx.TypeMeasurements = typeMeasurements;
+
                                 dtx.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
                                 measTask.MeasDtParam = dtx;
 
                             }
                             return true;
                         });
-                       // measTask.Stations = measStations.ToArray();
 
-                        if (measTask.MeasDtParam == null)
+                        
+                        measTask.MeasDtParam = new MeasDtParam();
+                        MeasurementType typeMeasurements;
+                        if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
                         {
-                            measTask.MeasDtParam = new MeasDtParam();
-                            MeasurementType typeMeasurements;
-                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
-                            {
-                                measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
-                            }
+                            measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
                         }
+                        else
+                        {
+                            throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                        }
+                       
 
 
                         // IMeasFreqParam
@@ -717,9 +628,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasOther.Select(c => c.LevelMinOccup);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
-                        builderMeasOther.Select(c => c.SwNumber);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
-                        builderMeasOther.Select(c => c.TypeSpectrumscan);
                         builderMeasOther.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasOther, readerMeasOther =>
                         {
@@ -727,24 +636,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
-                                measOther.SwNumber = readerMeasOther.GetValue(c => c.SwNumber);
 
                                 SpectrumOccupationType typeSpectrumOccupation;
                                 if (Enum.TryParse<SpectrumOccupationType>(readerMeasOther.GetValue(c => c.TypeSpectrumOccupation), out typeSpectrumOccupation))
                                 {
                                     measOther.TypeSpectrumOccupation = typeSpectrumOccupation;
                                 }
-
-                                SpectrumScanType typeSpectrumscan;
-                                if (Enum.TryParse<SpectrumScanType>(readerMeasOther.GetValue(c => c.TypeSpectrumscan), out typeSpectrumscan))
-                                {
-                                    measOther.TypeSpectrumScan = typeSpectrumscan;
-                                }
-
+                                
                             }
                             return true;
                         });
                         measTask.MeasOther = measOther;
+                        measTask.MeasOther.SwNumber = swNumber;
 
                         var measSensors = new List<MeasSensor>();
                         var listmeasSubTask = new List<MeasSubTask>();
@@ -886,7 +789,6 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         builderMeasTaskSignaling.Select(c => c.allowableExcess_dB);
-                        builderMeasTaskSignaling.Select(c => c.InterruptAllowableExcess_dB);
                         builderMeasTaskSignaling.Select(c => c.AutoDivisionEmitting);
                         builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
                         builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
@@ -920,7 +822,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters = new SignalingInterruptionParameters();
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting = readerMeasTaskSignaling.GetValue(c => c.AutoDivisionEmitting);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax = readerMeasTaskSignaling.GetValue(c => c.DifferenceMaxMax);
-                                measTask.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW = readerMeasTaskSignaling.GetValue(c => c.DiffLevelForCalcBW);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB = readerMeasTaskSignaling.GetValue(c => c.MinExcessNoseLevel_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB = readerMeasTaskSignaling.GetValue(c => c.NDbLevel_dB);
@@ -944,7 +845,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(c => c.TimeBetweenWorkTimes_sec);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(c => c.TypeJoinSpectrum);
-                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.InterruptAllowableExcess_dB);
+                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                             }
                             return resultMeasTaskSignaling;
                         });
@@ -966,31 +867,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         timeParamList.TimeStop = readerMeasTask.GetValue(c => c.TimeStop);
                         measTask.MeasTimeParamList = timeParamList;
 
-                        // IMeasStation
-                        /*
-                        var measStations = new List<MeasStation>();
-                        var builderMeasstation = this._dataLayer.GetBuilder<MD.IMeasStation>().From();
-                        builderMeasstation.Select(c => c.Id);
-                        builderMeasstation.Select(c => c.ClientStationCode);
-                        builderMeasstation.Select(c => c.MEAS_TASK.Id);
-                        builderMeasstation.Select(c => c.StationType);
-                        builderMeasstation.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasstation, readerMeasStation =>
-                        {
-                            while (readerMeasStation.Read())
-                            {
-                                var measStation = new MeasStation();
-                                measStation.StationId = new MeasStationIdentifier();
-                                measStation.StationId.Value = readerMeasStation.GetValue(c => c.ClientStationCode).Value;
-                                measStation.StationType = readerMeasStation.GetValue(c => c.StationType);
-                                measStations.Add(measStation);
-                            }
-                            return true;
-                        });
-                        measTask.Stations = measStations.ToArray();
-                        */
-
+      
                         // IMeasDtParam
+                        int? swNumber = null;
 
                         var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
                         builderMeasDtParam.Select(c => c.Id);
@@ -1003,8 +882,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasDtParam.Select(c => c.Preamplification);
                         builderMeasDtParam.Select(c => c.Rbw);
                         builderMeasDtParam.Select(c => c.Rfattenuation);
-                        builderMeasDtParam.Select(c => c.TypeMeasurements);
                         builderMeasDtParam.Select(c => c.Vbw);
+                        builderMeasDtParam.Select(c => c.SwNumber);
                         builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
                         {
@@ -1024,30 +903,27 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                 dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
                                 dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
+                                swNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
                                 dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
-                                MeasurementType typeMeasurements;
-                                if (Enum.TryParse<MeasurementType>(readerMeasDtParam.GetValue(c => c.TypeMeasurements), out typeMeasurements))
-                                    dtx.TypeMeasurements = typeMeasurements;
+                                
                                 dtx.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
                                 measTask.MeasDtParam = dtx;
 
                             }
                             return true;
                         });
-                        if (measTask.MeasDtParam==null)
-                        {
-                            measTask.MeasDtParam = new MeasDtParam();
-                            MeasurementType typeMeasurements;
-                            if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
-                            {
-                                measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
-                            }
-                        }
-                        //measTask.Stations = measStations.ToArray();
+                        
+                         measTask.MeasDtParam = new MeasDtParam();
+                         MeasurementType typeMeasurements;
+                         if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
+                         {
+                               measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
+                         }
+                         else
+                         {
+                               throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
+                         }
+                        
 
 
                         // IMeasFreqParam
@@ -1135,9 +1011,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasOther.Select(c => c.LevelMinOccup);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
-                        builderMeasOther.Select(c => c.SwNumber);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
-                        builderMeasOther.Select(c => c.TypeSpectrumscan);
                         builderMeasOther.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasOther, readerMeasOther =>
                         {
@@ -1145,7 +1019,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
-                                measOther.SwNumber = readerMeasOther.GetValue(c => c.SwNumber);
 
                                 SpectrumOccupationType typeSpectrumOccupation;
                                 if (Enum.TryParse<SpectrumOccupationType>(readerMeasOther.GetValue(c => c.TypeSpectrumOccupation), out typeSpectrumOccupation))
@@ -1153,16 +1026,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     measOther.TypeSpectrumOccupation = typeSpectrumOccupation;
                                 }
 
-                                SpectrumScanType typeSpectrumscan;
-                                if (Enum.TryParse<SpectrumScanType>(readerMeasOther.GetValue(c => c.TypeSpectrumscan), out typeSpectrumscan))
-                                {
-                                    measOther.TypeSpectrumScan = typeSpectrumscan;
-                                }
-
                             }
                             return true;
                         });
                         measTask.MeasOther = measOther;
+                        measTask.MeasOther.SwNumber = swNumber;
 
                         var measSensors = new List<MeasSensor>();
                         var listmeasSubTask = new List<MeasSubTask>();

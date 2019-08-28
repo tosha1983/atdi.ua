@@ -7,6 +7,8 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.DataConstraint;
+using Atdi.Platform.Workflows;
+using SdrnsServer = Atdi.DataModels.Sdrns.Server;
 
 namespace Atdi.WcfServices.Sdrn.Server
 {
@@ -16,12 +18,14 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
+        private readonly IPipelineSite _pipelineSite;
 
-        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer,  ILogger logger)
+        public SdrnsController(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, IPipelineSite pipelineSite, ILogger logger)
         {
             this._eventEmitter = eventEmitter;
             this._dataLayer = dataLayer;
             this._logger = logger;
+            this._pipelineSite = pipelineSite;
         }
 
         public bool AddAssociationStationByEmitting(long[] emittingsId, long AssociatedStationID, string AssociatedStationTableName)
@@ -32,8 +36,13 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public MeasTaskIdentifier CreateMeasTask(MeasTask task)
         {
-            var createMeasTaskHandler = new CreateMeasTaskHandler(_eventEmitter, _dataLayer,  _logger);
-            return createMeasTaskHandler.Handle(task);
+            var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientMeasTasks);
+            var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+            {
+                MeasTaskPipeBox = MapperForMeasTask.ToMap(task),
+                MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.New
+            });
+            return new MeasTaskIdentifier() { Value = result.MeasTaskIdPipeResult };
         }
 
         public bool DeleteEmitting(long[] emittingsId)
@@ -50,8 +59,31 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public CommonOperationResult DeleteMeasTask(MeasTaskIdentifier taskId)
         {
-            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
-            return measTaskProcess.DeleteMeasTask(taskId);
+            var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientCommands);
+            var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+            {
+                MeasTaskPipeBox = new SdrnsServer.MeasTask()
+                {
+                    Id = new SdrnsServer.MeasTaskIdentifier()
+                    {
+                        Value = taskId.Value
+                    }
+                },
+                MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.Del
+            });
+
+            var commonOperationResult = new CommonOperationResult();
+            commonOperationResult.FaultCause = result.CommonOperationPipeBoxResult.FaultCause;
+            switch (result.CommonOperationPipeBoxResult.State)
+            {
+                case SdrnsServer.CommonOperationState.Fault:
+                    commonOperationResult.State = CommonOperationState.Fault;
+                    break;
+                case SdrnsServer.CommonOperationState.Success:
+                    commonOperationResult.State = CommonOperationState.Success;
+                    break;
+            }
+            return commonOperationResult;
         }
 
         public MeasurementResults[] GetMeasResultsByTaskId(MeasTaskIdentifier taskId)
@@ -225,14 +257,60 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public CommonOperationResult RunMeasTask(MeasTaskIdentifier taskId)
         {
-            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
-            return measTaskProcess.RunMeasTask(taskId);
+            var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientCommands);
+            var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+            {
+                MeasTaskPipeBox = new SdrnsServer.MeasTask()
+                {
+                    Id = new SdrnsServer.MeasTaskIdentifier()
+                    {
+                        Value = taskId.Value
+                    }
+                },
+                MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.Run
+            });
+
+            var commonOperationResult = new CommonOperationResult();
+            commonOperationResult.FaultCause = result.CommonOperationPipeBoxResult.FaultCause;
+            switch (result.CommonOperationPipeBoxResult.State)
+            {
+                case SdrnsServer.CommonOperationState.Fault:
+                    commonOperationResult.State = CommonOperationState.Fault;
+                    break;
+                case SdrnsServer.CommonOperationState.Success:
+                    commonOperationResult.State = CommonOperationState.Success;
+                    break;
+            }
+            return commonOperationResult;
         }
 
         public CommonOperationResult StopMeasTask(MeasTaskIdentifier taskId)
         {
-            var measTaskProcess = new MeasTaskProcess(_eventEmitter, _dataLayer, _logger);
-            return measTaskProcess.StopMeasTask(taskId);
+            var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientCommands);
+            var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+            {
+                MeasTaskPipeBox = new SdrnsServer.MeasTask()
+                {
+                    Id = new SdrnsServer.MeasTaskIdentifier()
+                    {
+                        Value = taskId.Value
+                    }
+                },
+                MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.Stop
+            });
+
+            var commonOperationResult = new CommonOperationResult();
+            commonOperationResult.FaultCause = result.CommonOperationPipeBoxResult.FaultCause;
+            switch (result.CommonOperationPipeBoxResult.State)
+            {
+                case SdrnsServer.CommonOperationState.Fault:
+                    commonOperationResult.State = CommonOperationState.Fault;
+                    break;
+                case SdrnsServer.CommonOperationState.Success:
+                    commonOperationResult.State = CommonOperationState.Success;
+                    break;
+            }
+            return commonOperationResult;
         }
 
         public Emitting[] GetEmittingsByIcsmId(long[] ids, string icsmTableName)
