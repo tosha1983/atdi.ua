@@ -624,8 +624,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 //ищем ближайшее целое по отношени к длительности семпла
                 int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
 
+
+                IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s;
                 IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
-                IQMeasTimeAll = IQMeasTime;
                 SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
                 //SetSampleLength(SampleLength);
                 SetTriggerOffsetAndSampleLength(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
@@ -4222,14 +4223,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             bool res = false;
             if (UniqueData.InstrManufacture == 1)
             {
+                
                 //ели надо изменяем размер буфера
                 int length = (SampleLength * 4) * 2 + SampleLength.ToString().Length + 100;
                 if (session.DefaultBufferSize != length)
                 {
                     session.DefaultBufferSize = length;
                 }
-
                 session.Write("INIT;*WAI;");
+
+                
+                
                 int sleep = (int)(meastime * 1000 - 250);
                 if (sleep < 1)
                 {
@@ -4278,9 +4282,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
                 Debug.WriteLine(TriggerOffset);
                 Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString());
-                IQArr = temp;
+
+                float noise = 2f / 10000000f; // уровень шума 
+                float SN = 10; // превышение шума в разах 
+                float TrigerLevel = noise * SN;
+                int IQStartIndex = 0;
+                int IQStopIndex = temp.Length;
+                bool SignalFound = false; //был ли сигнал
+                int stepf = temp.Length / 1000;//шаг проверки уровней на предмет детектирования сигнала
+                if (step < 1)
+                {
+                    step = 1;
+                }
+                if (command.Parameter.MandatorySignal)
+                {
+                    for (int j = 0; temp.Length - 6 > j; j += stepf)
+                    {
+                        if ((temp[j] >= TrigerLevel) || (temp[j + 1] >= TrigerLevel))
+                        {
+                            if ((temp[j + 2] >= TrigerLevel) || (temp[j + 3] >= TrigerLevel))
+                            {
+                                if ((temp[j + 4] >= TrigerLevel) || (temp[j + 5] >= TrigerLevel))
+                                {
+                                    SignalFound = true;//Есть сигнал 
+                                    IQStartIndex = j - stepf;
+                                    if (IQStartIndex < 0)
+                                        IQStartIndex = 0;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                
+                result.PPSTimeDifference_ns = (long)(TriggerOffset / 1000000000);
                 result.iq_samples = new float[1][];
-                result.iq_samples[0] = temp;
+                Array.Copy(temp, IQStartIndex, result.iq_samples[0], 0, IQStopIndex - IQStartIndex);
+                //result.iq_samples[0] = temp;
+                IQArr = result.iq_samples[0];
                 result.OneSempleDuration_ns = (long)(SampleTimeLength / 1000000000);
                 //result.TimeStamp = ;
                 //result.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// надыбать время первого семпла

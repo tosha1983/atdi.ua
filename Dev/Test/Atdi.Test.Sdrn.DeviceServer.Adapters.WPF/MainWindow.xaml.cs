@@ -682,8 +682,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.BitRate_MBs = 0.6;
                 command.Parameter.IQBlockDuration_s = 1.0;
                 command.Parameter.IQReceivTime_s = 1.0;
-                command.Parameter.MandatoryPPS = false;
-                command.Parameter.MandatorySignal = false;
+                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatorySignal = true;
 
                 long offset = (long)(0.025 * 10000000);
                 command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
@@ -723,7 +723,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.IQBlockDuration_s = 1.0;
                 command.Parameter.IQReceivTime_s = 1.0;
                 command.Parameter.MandatoryPPS = true;
-                command.Parameter.MandatorySignal = false;
+                command.Parameter.MandatorySignal = true;
                 long offset = (long)(0.025 * 10000000);
                 command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 

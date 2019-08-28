@@ -1734,7 +1734,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     IQStreamResult.iq_samples = tempIQStream.IQData;
                 }
-               
+                ////del from
+                float[] _IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length];
+                for (int k = 0; k < IQStreamResult.iq_samples.Length; k++)
+                {
+                    Array.Copy(IQStreamResult.iq_samples[k], 0, _IQArr, k * IQStreamResult.iq_samples[k].Length, IQStreamResult.iq_samples[k].Length);
+                    //for (int j = 0; j < IQStreamResult.iq_samples[0].Length; j++)
+                    //{
+                    //    _IQArr[k * j] = IQStreamResult.iq_samples[k][j];
+                    //}
+                }
+                IQArr = _IQArr;
+
+                ////del to
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
@@ -1767,6 +1779,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         throw new Exception("No PPS signal was detected during reception.");
                     }
                 }
+                TriggerOffset = ((decimal)IQStreamResult.PPSTimeDifference_ns) / 1000000000;
                 #endregion обработка полученных данных  
                 done = true;
 
