@@ -10,6 +10,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.Enums
     {
         Normal = 0, //Все хорошо и работает
         StartReset = 1, //запушен перзупуск устройства
-        FinishReset = 2 //перезапуск устройства завершен
+        FinishReset = 2, //перезапуск устройства завершен
+        RFOverload = 3 //Результат с перегрузкой приемного RF входа 
     }
 }

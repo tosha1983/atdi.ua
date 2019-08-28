@@ -186,9 +186,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                         FreqStart = (double)ANAdapter.FreqStart;
                         LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnits.Id).ToString();
 
-                        RefLevel = (double)ANAdapter.RefLevel;
+                        RefLevel = (double)ANAdapter.RefLevelSpec;
 
-                        Range = (double)ANAdapter.Range;
+                        Range = (double)ANAdapter.RangeSpec;
                         LowestLevel = RefLevel - Range;
                     }
                 }

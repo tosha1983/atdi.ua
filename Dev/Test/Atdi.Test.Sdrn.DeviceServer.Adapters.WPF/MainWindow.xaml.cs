@@ -82,30 +82,30 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //TimeThread.IsBackground = true;
             //TimeThread.Start();
 
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            ANThread = new Thread(ANWorks);
+            ANThread.Name = "ANThread";
+            ANThread.IsBackground = true;
+            ANThread.Start();
+            AND += ANConnect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
 
-            //GPSThread = new Thread(GPSWorks);
-            //GPSThread.Name = "GPSThread";
-            //GPSThread.IsBackground = true;
-            //GPSThread.Start();
-            //GPSD += GPSConnect;
+            GPSThread = new Thread(GPSWorks);
+            GPSThread.Name = "GPSThread";
+            GPSThread.IsBackground = true;
+            GPSThread.Start();
+            GPSD += GPSConnect;
 
 
-            TSMxThread = new Thread(TSMxWorks);
-            TSMxThread.Name = "TSMxThread";
-            TSMxThread.IsBackground = true;
-            TSMxThread.Start();
-            TSMxD += TSMxConnect;
+            //TSMxThread = new Thread(TSMxWorks);
+            //TSMxThread.Name = "TSMxThread";
+            //TSMxThread.IsBackground = true;
+            //TSMxThread.Start();
+            //TSMxD += TSMxConnect;
         }
         //long NextSecond = 0;
         private void GetGPSData()
@@ -310,13 +310,13 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             try
             {
-                var adapterConfig = new ADP.RSTSMx.AdapterConfig()
-                {
-                    DeviceType = 2,
-                    IPAddress = "192.168.2.50",
-                    RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
-                };
-                TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
+                //var adapterConfig = new ADP.RSTSMx.AdapterConfig()
+                //{
+                //    DeviceType = 2,
+                //    IPAddress = "192.168.2.50",
+                //    RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
+                //};
+                //TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
 
 
 
