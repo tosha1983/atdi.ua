@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DM = Atdi.DataModels.Sdrns.Device;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
 {
@@ -198,7 +199,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
         private void ProcessEvent(TcpClient client, WebSocketContext context)
         {
             var isConnected = false;
-
+            var status = DM.SensorOnlineMeasurementStatus.CanceledBySensor;
+            var reasone = "";
             try
             {
                 var stream = client.GetStream();
@@ -360,6 +362,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                         context.SendMessage(new WebSocketMessage { Kind = WebSocketMessageKind.Closed, Data = new byte[] { } });
                         stream.Close();
                         client.Close();
+                        status = DM.SensorOnlineMeasurementStatus.CanceledByClient;
+                        reasone = "The client asked to close the connection";
                     }
                     else if (messageKind == WebSocketMessageKind.Ping)
                     {
@@ -373,6 +377,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
             }
             catch (Exception e)
             {
+                reasone = $"Sensor interrupted measurement due to unexpected error: {e.Message}";
                 this._logger.Exception(Contexts.WebSocket, Categories.Processing, e, this);
                 if (client.Connected)
                 {
@@ -384,7 +389,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                 client.Dispose();
                 if (isConnected)
                 {
-                    _pipeline.OnDisconnect(context);
+                    _pipeline.OnDisconnect(context, status, reasone);
                     isConnected = false;
                 }
             }

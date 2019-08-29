@@ -72,6 +72,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 .Where(c => c.Id, ConditionOperator.Equal, response.OnlineMeasId)
                                 .Where(c => c.StatusCode, ConditionOperator.Equal, (byte)1) // WaiteSensor 
                                 .SetValue(c => c.StatusCode, (byte)4) // SonsorReady 
+                                .SetValue(c => c.StatusNote, $"SonsorReady: The sensor is waiting the client request")
                                 .SetValue(c => c.StartTime, DateTimeOffset.Now)
                                 .SetValue(c => c.SensorToken, response.Token)
                                 .SetValue(c => c.WebSocketUrl, response.WebSocketUrl);
@@ -85,7 +86,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 .Where(c => c.Id, ConditionOperator.Equal, response.OnlineMeasId)
                                 .Where(c => c.StatusCode, ConditionOperator.Equal, (byte)1)  // WaiteSensor
                                 .SetValue(c => c.StatusCode, (byte)3) //DeniedBySensor
-                                .SetValue(c => c.StatusNote, $"The device did not confirm the online measurement: {response.Message}") //DeniedBySensor
+                                .SetValue(c => c.StatusNote, $"DeniedBySensor: The device did not confirm the online measurement: {response.Message}") //DeniedBySensor
                                 .SetValue(c => c.SensorToken, null)
                                 .SetValue(c => c.WebSocketUrl, null);
 
