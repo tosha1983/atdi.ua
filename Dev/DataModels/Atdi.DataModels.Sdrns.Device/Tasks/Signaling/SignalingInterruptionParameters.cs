@@ -16,8 +16,6 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public int? NumberPointForChangeExcess { get; set; } //минимальное количество точек для нахождения излучения Необходимо для исключения случайных выбросов спектров по умолчанию 10
         [DataMember]
-        public double? allowableExcess_dB { get; set; } // допустимое превышение реферативного уровня по умолчанию 10
-        [DataMember]
         public double? windowBW { get; set; } // характеризует размер окна для обработки и хранения спектра излучения по умолчанию 1.1
 
         // Определение параметров излучения
@@ -35,6 +33,11 @@ namespace Atdi.DataModels.Sdrns.Device
         public bool? AutoDivisionEmitting { get; set; } // автоматическое разделение сигналов 
         [DataMember]
         public double? DifferenceMaxMax { get; set; } // разница между максимумом и минимумом для разделения сигналов.
-
+        [DataMember]
+        public double? MaxFreqDeviation { get; set; }
+        [DataMember]
+        public bool? CheckLevelChannel { get; set; }
+        [DataMember]
+        public int? MinPointForDetailBW { get; set; }
     }
 }

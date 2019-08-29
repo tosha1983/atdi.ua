@@ -13,7 +13,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
 
         // Первичное выделение излучения
         public int? NumberPointForChangeExcess { get; set; } //минимальное количество точек для нахождения излучения Необходимо для исключения случайных выбросов спектров по умолчанию 10
-        public double? allowableExcess_dB { get; set; } // допустимое превышение реферативного уровня по умолчанию 10
         public double? windowBW { get; set; } // характеризует размер окна для обработки и хранения спектра излучения по умолчанию 1.1
 
         // Определение параметров излучения
@@ -25,5 +24,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         // разделение сигналов при обычном сканировании
         public bool? AutoDivisionEmitting { get; set; } // автоматическое разделение сигналов 
         public double? DifferenceMaxMax { get; set; } // разница между максимумом и минимумом для разделения сигналов.
+
+        public double? MaxFreqDeviation { get; set; }
+        public bool? CheckLevelChannel { get; set; }
+        public int? MinPointForDetailBW { get; set; }
     }
 }

@@ -507,10 +507,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                                 builderInsertMeasTaskSignaling.SetValue(c => c.DifferenceMaxMax, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax);
                                             }
 
-                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB != null)
+                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation != null)
                                             {
-                                                builderInsertMeasTaskSignaling.SetValue(c => c.InterruptAllowableExcess_dB, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB);
+                                                builderInsertMeasTaskSignaling.SetValue(c => c.MaxFreqDeviation, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation);
                                             }
+                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel != null)
+                                            {
+                                                builderInsertMeasTaskSignaling.SetValue(c => c.CheckLevelChannel, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel);
+                                            }
+                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW != null)
+                                            {
+                                                builderInsertMeasTaskSignaling.SetValue(c => c.MinPointForDetailBW, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW);
+                                            }
+
                                             if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW != null)
                                             {
                                                 builderInsertMeasTaskSignaling.SetValue(c => c.DiffLevelForCalcBW, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW);
@@ -907,7 +916,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
 
                                         if (taskSignaling.SignalingMeasTaskParameters.InterruptionParameters != null)
                                         {
-                                            MTSDR.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB;
                                             MTSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting;
                                             MTSDR.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax;
                                             MTSDR.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW;

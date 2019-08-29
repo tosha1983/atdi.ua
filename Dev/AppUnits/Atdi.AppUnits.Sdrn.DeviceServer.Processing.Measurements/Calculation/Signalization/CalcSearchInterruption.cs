@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         { //НЕ ТЕСТИРОВАННО
 
             NumberPointForChangeExcess = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.Value;
-            allowableExcess_dB = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB.Value;
+            allowableExcess_dB = taskParameters.SignalingMeasTaskParameters.allowableExcess_dB.Value;
             DiffLevelForCalcBW = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW.Value;
             windowBW = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.windowBW.Value;
             nDbLevel_dB = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB.Value;
