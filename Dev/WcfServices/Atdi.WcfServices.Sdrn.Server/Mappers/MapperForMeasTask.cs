@@ -270,7 +270,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                 if (tskInterruption != null)
                 {
                     measTaskInterruption = new SdrnsDataModels.SignalingInterruptionParameters();
-                    measTaskInterruption.allowableExcess_dB = tskInterruption.allowableExcess_dB;
                     measTaskInterruption.AutoDivisionEmitting = tskInterruption.AutoDivisionEmitting;
                     measTaskInterruption.DifferenceMaxMax = tskInterruption.DifferenceMaxMax;
                     measTaskInterruption.DiffLevelForCalcBW = tskInterruption.DiffLevelForCalcBW;

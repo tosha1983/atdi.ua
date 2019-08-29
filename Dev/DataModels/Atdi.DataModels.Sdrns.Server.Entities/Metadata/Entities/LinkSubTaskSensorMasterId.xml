@@ -12,7 +12,7 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Name="SUBTASK_SENSOR" SourceType="Reference" SourceName="SubTaskSensor" Title="Relation LinkSubTaskSensorMasterId to SubTaskSensor"/>
-    <Field Desc="SubtaskSensorMasterId" Title="SubtaskSensorMasterId" Name="SubtaskSensorMasterId" DataType="Integer.64" SourceName="SUBTASK_SENSOR_MASTER_ID" SourceType="Column" Required="false"/>
+    <Field Desc="SubtaskSensorMasterId" Title="SubtaskSensorMasterId" Name="SubtaskSensorMasterId" DataType="Integer.64" SourceName="SUBTASK_SENSOR_MASTER_ID" SourceType="Column" Required="true"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

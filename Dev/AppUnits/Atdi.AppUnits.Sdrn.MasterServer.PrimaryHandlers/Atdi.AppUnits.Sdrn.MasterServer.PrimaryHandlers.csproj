@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="OnMeasResults\OnSendMSMeasResultsHandler.cs" />
+    <Compile Include="OnMeasResults\OnSendSGMeasResultsHandler.cs" />
+    <Compile Include="OnMeasResults\OnSendSOMeasResultsHandler.cs" />
     <Compile Include="PipelineHandlers\GenerateMeasTasksPipelineHandler.cs" />
     <Compile Include="Handlers\TestHandler1.cs" />
     <Compile Include="LoadData\Sensor\LoadSensor.cs" />
@@ -96,6 +99,10 @@
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
@@ -125,5 +132,6 @@
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

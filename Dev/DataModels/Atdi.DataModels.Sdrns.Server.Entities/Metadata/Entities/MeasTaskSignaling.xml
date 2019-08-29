@@ -16,7 +16,6 @@
     <Field Desc="FiltrationTrace" Title="FiltrationTrace" Name="FiltrationTrace" DataType="Boolean" SourceName="FILTRATION_TRACE" SourceType="Column" Required="false"/>
     <Field Desc="DifferenceMaxMax" Title="DifferenceMaxMax" Name="DifferenceMaxMax" DataType="Double.30.10" SourceName="DIFF_MAX_MAX" SourceType="Column" Required="false"/>
     <Field Desc="allowableExcess_dB" Title="allowableExcess_dB" Name="allowableExcess_dB" DataType="Double.30.10" SourceName="ALLOW_EXCESS_DB" SourceType="Column" Required="false"/>
-    <Field Desc="InterruptAllowableExcess_dB" Title="InterruptAllowableExcess_dB" Name="InterruptAllowableExcess_dB" DataType="Double.30.10" SourceName="INTERRUPT_ALLOW_EXCESS_DB" SourceType="Column" Required="false"/>
     <Field Desc="SignalizationNCount" Title="SignalizationNCount" Name="SignalizationNCount" DataType="Integer.32" SourceName="SIGN_NCOUNT" SourceType="Column" Required="false"/>
     <Field Desc="SignalizationNChenal" Title="SignalizationNChenal" Name="SignalizationNChenal" DataType="Integer.32" SourceName="SIGN_NCHENAL" SourceType="Column" Required="false"/>
 

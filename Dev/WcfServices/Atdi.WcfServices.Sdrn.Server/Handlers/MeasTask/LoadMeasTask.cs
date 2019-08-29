@@ -323,7 +323,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasTaskSignaling.Select(c => c.Id);
                         builderMeasTaskSignaling.Select(c => c.MEAS_TASK.Id);
                         builderMeasTaskSignaling.Select(c => c.allowableExcess_dB);
-                        builderMeasTaskSignaling.Select(c => c.InterruptAllowableExcess_dB);
                         builderMeasTaskSignaling.Select(c => c.AutoDivisionEmitting);
                         builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
                         builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
@@ -359,7 +358,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters = new SignalingInterruptionParameters();
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting = readerMeasTaskSignaling.GetValue(c => c.AutoDivisionEmitting);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax = readerMeasTaskSignaling.GetValue(c => c.DifferenceMaxMax);
-                                measTask.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW = readerMeasTaskSignaling.GetValue(c => c.DiffLevelForCalcBW);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB = readerMeasTaskSignaling.GetValue(c => c.MinExcessNoseLevel_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB = readerMeasTaskSignaling.GetValue(c => c.NDbLevel_dB);
@@ -383,7 +381,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(c => c.TimeBetweenWorkTimes_sec);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(c => c.TypeJoinSpectrum);
-                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.InterruptAllowableExcess_dB);
+                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                             }
                             return resultMeasTaskSignaling;
                         });
@@ -791,7 +789,6 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         builderMeasTaskSignaling.Select(c => c.allowableExcess_dB);
-                        builderMeasTaskSignaling.Select(c => c.InterruptAllowableExcess_dB);
                         builderMeasTaskSignaling.Select(c => c.AutoDivisionEmitting);
                         builderMeasTaskSignaling.Select(c => c.CompareTraceJustWithRefLevels);
                         builderMeasTaskSignaling.Select(c => c.DifferenceMaxMax);
@@ -825,7 +822,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters = new SignalingInterruptionParameters();
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting = readerMeasTaskSignaling.GetValue(c => c.AutoDivisionEmitting);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax = readerMeasTaskSignaling.GetValue(c => c.DifferenceMaxMax);
-                                measTask.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW = readerMeasTaskSignaling.GetValue(c => c.DiffLevelForCalcBW);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB = readerMeasTaskSignaling.GetValue(c => c.MinExcessNoseLevel_dB);
                                 measTask.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB = readerMeasTaskSignaling.GetValue(c => c.NDbLevel_dB);
@@ -849,7 +845,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(c => c.TimeBetweenWorkTimes_sec);
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(c => c.TypeJoinSpectrum);
-                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.InterruptAllowableExcess_dB);
+                                measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                             }
                             return resultMeasTaskSignaling;
                         });

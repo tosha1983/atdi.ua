@@ -10,7 +10,7 @@ namespace Atdi.Modules.Sdrn.Server.Events
     public class OnRegisterAggregationServer : Event
     {
         public OnRegisterAggregationServer()
-            : base("OnNewMeasTask")
+            : base("OnRegisterAggregationServer")
         {
         }
 
