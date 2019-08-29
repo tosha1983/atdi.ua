@@ -26,7 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         [ComponentConfigProperty("DifferenceMaxMax.double")]
         public double DifferenceMaxMax { get; set; }
         /// <summary>
-        /// 
+        ///   допустимое превышение реферативного уровня по умолчанию 10
         /// </summary>
         [ComponentConfigProperty("allowableExcess_dB.double")]
         public double allowableExcess_dB { get; set; }
@@ -77,11 +77,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         /// минимальное количество точек для нахождения излучения Необходимо для исключения случайных выбросов спектров по умолчанию 10
         /// </summary>
         public int? NumberPointForChangeExcess { get; set; }
-        /// <summary>
-        ///  допустимое превышение реферативного уровня по умолчанию 10
-        /// </summary>
-        [ComponentConfigProperty("InterruptionAllowableExcess_dB.double")]
-        public double? InterruptionAllowableExcess_dB { get; set; }
         /// <summary>
         ///  характеризует размер окна для обработки и хранения спектра излучения по умолчанию 1.1
         /// </summary>

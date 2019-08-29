@@ -33,7 +33,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             string Standard = null;
             double? triggerLevel_dBm_Hz = null;
             int? NumberPointForChangeExcess = null;
-            double? InterruptionllowableExcess_dB = null;
             double? windowBW = null;
             double? DiffLevelForCalcBW = null;
             double? nDbLevel_dB = null;
@@ -312,7 +311,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 {
                     AutoDivisionEmitting = configMessaging.AutoDivisionEmitting;
                     DifferenceMaxMax = configMessaging.DifferenceMaxMax;
-                    InterruptionllowableExcess_dB = configMessaging.InterruptionAllowableExcess_dB;
                     DiffLevelForCalcBW = configMessaging.DiffLevelForCalcBW;
                     MinExcessNoseLevel_dB = configMessaging.MinExcessNoseLevel_dB;
                     nDbLevel_dB = configMessaging.nDbLevel_dB;
@@ -447,10 +445,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             if (NumberPointForChangeExcess != null)
             {
                 signalingMeasTask.InterruptionParameters.NumberPointForChangeExcess = NumberPointForChangeExcess.Value;
-            }
-            if (InterruptionllowableExcess_dB != null)
-            {
-                signalingMeasTask.InterruptionParameters.allowableExcess_dB = InterruptionllowableExcess_dB.Value;
             }
             if (windowBW != null)
             {
