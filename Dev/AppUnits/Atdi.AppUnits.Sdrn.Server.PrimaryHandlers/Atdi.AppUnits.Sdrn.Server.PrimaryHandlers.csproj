@@ -87,6 +87,10 @@
       <Project>{b6324d12-6e97-4e02-9499-31265565467a}</Project>
       <Name>Atdi.Contracts.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
+      <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
       <Project>{61e920b8-8945-420c-a8c8-bc9a7cbf6f70}</Project>
       <Name>Atdi.DataModels.Api.EventSystem</Name>
