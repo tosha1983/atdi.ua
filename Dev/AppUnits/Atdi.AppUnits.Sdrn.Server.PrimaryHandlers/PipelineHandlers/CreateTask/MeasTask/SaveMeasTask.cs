@@ -507,7 +507,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                                 builderInsertMeasTaskSignaling.SetValue(c => c.DifferenceMaxMax, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax);
                                             }
 
-                                            
+                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation != null)
+                                            {
+                                                builderInsertMeasTaskSignaling.SetValue(c => c.MaxFreqDeviation, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation);
+                                            }
+                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel != null)
+                                            {
+                                                builderInsertMeasTaskSignaling.SetValue(c => c.CheckLevelChannel, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel);
+                                            }
+                                            if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW != null)
+                                            {
+                                                builderInsertMeasTaskSignaling.SetValue(c => c.MinPointForDetailBW, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW);
+                                            }
+
                                             if (measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW != null)
                                             {
                                                 builderInsertMeasTaskSignaling.SetValue(c => c.DiffLevelForCalcBW, measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW);

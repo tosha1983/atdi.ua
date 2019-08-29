@@ -43,6 +43,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             int? TypeJoinSpectrum = null;
             double? CrossingBWPercentageForGoodSignals = null;
             double? CrossingBWPercentageForBadSignals = null;
+            double? MaxFreqDeviation = null;
+            bool? CheckLevelChannel = null;
+            int? MinPointForDetailBW = null;
+         
 
 
             if (taskSDR.SignalingMeasTaskParameters != null)
@@ -189,6 +193,38 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
 
                 if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters != null)
                 {
+
+                    ///////////// AutoDivisionEmitting /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation != null)
+                    {
+                        MaxFreqDeviation = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation;
+                    }
+                    else
+                    {
+                        MaxFreqDeviation = configMessaging.MaxFreqDeviation;
+                    }
+
+                    ///////////// CheckLevelChannel /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel != null)
+                    {
+                        CheckLevelChannel = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel;
+                    }
+                    else
+                    {
+                        CheckLevelChannel = configMessaging.CheckLevelChannel;
+                    }
+
+                    ///////////// CheckLevelChannel /////////////
+                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW != null)
+                    {
+                        MinPointForDetailBW = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW;
+                    }
+                    else
+                    {
+                        MinPointForDetailBW = configMessaging.MinPointForDetailBW;
+                    }
+
+
                     ///////////// AutoDivisionEmitting /////////////
                     if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting != null)
                     {
@@ -209,15 +245,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         DifferenceMaxMax = configMessaging.DifferenceMaxMax;
                     }
 
-                    ///////////// InterruptionllowableExcess_dB /////////////
-                    if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB != null)
-                    {
-                        InterruptionllowableExcess_dB = taskSDR.SignalingMeasTaskParameters.InterruptionParameters.allowableExcess_dB;
-                    }
-                    else
-                    {
-                        InterruptionllowableExcess_dB = configMessaging.allowableExcess_dB;
-                    }
 
                     ///////////// DiffLevelForCalcBW /////////////
                     if (taskSDR.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW != null)
@@ -292,6 +319,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     NumberIgnoredPoints = configMessaging.NumberIgnoredPoints;
                     NumberPointForChangeExcess = configMessaging.NumberPointForChangeExcess;
                     windowBW = configMessaging.windowBW;
+                    MaxFreqDeviation = configMessaging.MaxFreqDeviation;
+                    CheckLevelChannel = configMessaging.CheckLevelChannel;
+                    MinPointForDetailBW = configMessaging.MinPointForDetailBW;
                 }
 
 
@@ -441,6 +471,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             if (MinExcessNoseLevel_dB != null)
             {
                 signalingMeasTask.InterruptionParameters.MinExcessNoseLevel_dB = MinExcessNoseLevel_dB.Value;
+            }
+            if (MaxFreqDeviation != null)
+            {
+                signalingMeasTask.InterruptionParameters.MaxFreqDeviation = MaxFreqDeviation.Value;
+            }
+            if (CheckLevelChannel != null)
+            {
+                signalingMeasTask.InterruptionParameters.CheckLevelChannel = CheckLevelChannel.Value;
+            }
+            if (MinPointForDetailBW != null)
+            {
+                signalingMeasTask.InterruptionParameters.MinPointForDetailBW = MinPointForDetailBW.Value;
             }
 
 

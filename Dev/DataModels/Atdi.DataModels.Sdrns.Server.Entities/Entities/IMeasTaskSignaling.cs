@@ -41,6 +41,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         int? TypeJoinSpectrum { get; set; } // принцип объединения спектра 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage по умолчанию 0
         double? CrossingBWPercentageForGoodSignals { get; set; } //определяет насколько процентов должно совпадать излучение если BW определен по умолчанию 70
         double? CrossingBWPercentageForBadSignals { get; set; } // определяет насколько процентов должно совпадать излучение если BW не определен по умолчанию 40
+        double? MaxFreqDeviation { get; set; }
+        bool? CheckLevelChannel { get; set; }
+        int? MinPointForDetailBW { get; set; }
         IMeasTask MEAS_TASK { get; set; }
     }
 }
