@@ -278,6 +278,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                     measTaskInterruption.NumberIgnoredPoints = tskInterruption.NumberIgnoredPoints;
                     measTaskInterruption.NumberPointForChangeExcess = tskInterruption.NumberPointForChangeExcess;
                     measTaskInterruption.windowBW = tskInterruption.windowBW;
+                    measTaskInterruption.MaxFreqDeviation = tskInterruption.MaxFreqDeviation;
+                    measTaskInterruption.CheckLevelChannel = tskInterruption.CheckLevelChannel;
+                    measTaskInterruption.MinPointForDetailBW = tskInterruption.MinPointForDetailBW;
                     measTask.SignalingMeasTaskParameters.InterruptionParameters = measTaskInterruption;
                 }
                 measTask.SignalingMeasTaskParameters.SignalizationNChenal = task.SignalingMeasTaskParameters.SignalizationNChenal;

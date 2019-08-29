@@ -25,5 +25,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         // разделение сигналов при обычном сканировании
         public bool? AutoDivisionEmitting { get; set; } // автоматическое разделение сигналов 
         public double? DifferenceMaxMax { get; set; } // разница между максимумом и минимумом для разделения сигналов.
+
+        public double? MaxFreqDeviation { get; set; }
+        public bool? CheckLevelChannel { get; set; }
+        public int? MinPointForDetailBW { get; set; }
     }
 }

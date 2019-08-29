@@ -185,7 +185,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 if (this.Name == "SHIQ" && SHAdapter != null)
                 {
                     IQ = SHAdapter.IQArr;
-                    //TriggerOffset = (double)SHAdapter.TriggerOffset;
+                    TriggerOffset = (double)SHAdapter.TriggerOffset;
+                    SampleTimeLength = (double)SHAdapter.OneSempleDuration;
                 }
                 //IQ = ANAdapter.IQArr;
                 //Level = ANAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
@@ -296,7 +297,18 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 }
                 else if (this.Name == "SHIQ" && SHAdapter != null)
                 {
-                    //TriggerOffset = (double)SHAdapter.TriggerOffset;
+                    gl.Begin(BeginMode.Lines);
+                    //float fcol = 0.3098f; //((i % 10) == 0) ? 0.3f : 0.15f;
+                    gl.Color(1f, 0f, 0f);
+
+
+                    gl.Vertex(TriggerOffset / SampleTimeLength, RefLevel);
+                    gl.Vertex(TriggerOffset / SampleTimeLength, LowestLevel);
+                    gl.End();
+                    gl.DrawText(0, (int)h - 70, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, "12332132");
+
+
+                    gl.Flush();
                 }
                
             }

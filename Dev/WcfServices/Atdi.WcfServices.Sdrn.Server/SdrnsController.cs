@@ -7,6 +7,9 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.DataConstraint;
+using DM = Atdi.DataModels.Sdrns.Server.Entities;
+using ES = Atdi.DataModels.Sdrns.Server.Events;
+using System.Collections.Generic;
 using Atdi.Platform.Workflows;
 using SdrnsServer = Atdi.DataModels.Sdrns.Server;
 
@@ -324,6 +327,233 @@ namespace Atdi.WcfServices.Sdrn.Server
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetSignalingSysInfos(measResultId, freq_Hz);
 
+        }
+
+        public OnlineMeasurementInitiationResult InitOnlineMeasurement(OnlineMeasurementOptions options)
+        {
+            
+            // 1. Поиск сенсора - нету - отказ
+            // 2. Поиск уже иницированых измерений по сенсору, 
+            //    если активно отказ 
+            //    иначе нужно обновит состояние в БД об измирении и отменить его со стороны сервера по причин езавершения времени отведенного клиентом для измерения
+            // 3. Сгенерировать серверный токен и создать щапись об измерении в БД
+            // 4. Подготовить и вернуть результат
+
+            try
+            {
+                if (options == null)
+                {
+                    throw new ArgumentNullException(nameof(options));
+                }
+
+                if (options.Period.TotalMinutes <= 0)
+                {
+                    throw new ArgumentException("Incorrect value of Period.");
+                }
+                using (var dbScope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    
+                    var result = new OnlineMeasurementInitiationResult();
+
+                    // step 1
+
+                    var sensorQuery = _dataLayer.GetBuilder<DM.ISensor>()
+                        .From()
+                        .Select(c => c.Id)
+                        .Where(c => c.Id, ConditionOperator.Equal, options.SensorId);
+
+                    var sensorExists = dbScope.Executor.ExecuteAndFetch(sensorQuery, reader =>
+                    {
+                        var exists = reader.Read();
+                        if (exists)
+                        {
+                            exists = reader.GetValue(c => c.Id) == options.SensorId;
+                            // read some data od the Sensor with ID = options.SensorId
+                        }
+                        return exists;
+                    });
+
+                    if (!sensorExists)
+                    {
+                        result.Allowed = false;
+                        result.Message = $"Not found a sensor with ID #{options.SensorId}.";
+                        return result;
+                    }
+
+                    // step 2
+
+                    var onlineMeasQuery = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
+                        .From()
+                        .Where(c => c.SENSOR.Id, ConditionOperator.Equal, options.SensorId)
+                        .Where(c => c.StatusCode, ConditionOperator.NotIn,  
+                            (byte)OnlineMeasurementStatus.CanceledByClient,
+                            (byte)OnlineMeasurementStatus.CanceledBySensor,
+                            (byte)OnlineMeasurementStatus.CanceledByServer,
+                            (byte)OnlineMeasurementStatus.DeniedBySensor,
+                            (byte)OnlineMeasurementStatus.DeniedByServer)
+                        .Select(
+                            c => c.Id,
+                            c => c.CreatedDate,
+                            c => c.StatusCode,
+                            c => c.PeriodMinutes,
+                            c => c.ServerToken,
+                            c => c.StartTime,
+                            c => c.FinishTime);
+
+                    var onlineMeases = dbScope.Executor.ExecuteAndFetch(onlineMeasQuery, reader =>
+                    {
+                        var list = new List<Handlers.OnlineMeasurement.InitiationOnlineMesurementModel>();
+                        while(reader.Read())
+                        {
+                            var model = new Handlers.OnlineMeasurement.InitiationOnlineMesurementModel
+                            {
+                                Id = reader.GetValue(c => c.Id),
+                                CreatedDate = reader.GetValue(c => c.CreatedDate),
+                                FinishTime = reader.GetValue(c => c.FinishTime),
+                                PeriodMinutes = reader.GetValue(c => c.PeriodMinutes),
+                                ServerToken = reader.GetValue(c => c.ServerToken),
+                                StartTime = reader.GetValue(c => c.StartTime),
+                                Status = reader.GetValue(c => c.StatusCode)
+                            };
+                            list.Add(model);
+                        }
+                        return list.ToArray();
+                    });
+                    for (int i = 0; i < onlineMeases.Length; i++)
+                    {
+                        var meas = onlineMeases[i];
+                        if (meas.Status == (byte)OnlineMeasurementStatus.Initiation || meas.Status == (byte)OnlineMeasurementStatus.WaitSensor)
+                        {
+                            if ((DateTimeOffset.Now - meas.CreatedDate).TotalMinutes > meas.PeriodMinutes)
+                            {
+                                var updateQuery = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
+                                    .Update()
+                                    .SetValue(c => c.StatusCode, (byte)OnlineMeasurementStatus.CanceledByServer)
+                                    .SetValue(c => c.StatusNote, "Measurement period was expired")
+                                    .SetValue(c => c.FinishTime, DateTimeOffset.Now)
+                                    .Where(c => c.Id, ConditionOperator.Equal, meas.Id);
+
+                                dbScope.Executor.Execute(updateQuery);
+                            }
+                            else
+                            {
+                                result.Allowed = false;
+                                result.Message = $"The sensor is busy with another measurement (meas token is '{meas.ServerToken}')";
+                                return result;
+                            }
+                        }
+                        else if (meas.Status == (byte)OnlineMeasurementStatus.SonsorReady)
+                        {
+                            if ((DateTimeOffset.Now - (meas.StartTime??meas.CreatedDate)).TotalMinutes > meas.PeriodMinutes)
+                            {
+                                var updateQuery = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
+                                    .Update()
+                                    .SetValue(c => c.StatusCode, (byte)OnlineMeasurementStatus.CanceledByServer)
+                                    .SetValue(c => c.StatusNote, "Measurement period was expired")
+                                    .SetValue(c => c.FinishTime, DateTimeOffset.Now)
+                                    .Where(c => c.Id, ConditionOperator.Equal, meas.Id);
+
+                                dbScope.Executor.Execute(updateQuery);
+                            }
+                            else
+                            {
+                                result.Allowed = false;
+                                result.Message = $"The sensor is busy with another measurement (meas token is '{meas.ServerToken}')";
+                                return result;
+                            }
+                        }
+                    }
+
+                    // step 3
+
+                    var serverToken = Guid.NewGuid();
+                    result.ServerToken = serverToken.ToByteArray();
+
+                    var insert = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
+                        .Insert()
+                        .SetValue(c => c.PeriodMinutes, Convert.ToInt32(options.Period.TotalMinutes))
+                        .SetValue(c => c.SENSOR.Id, options.SensorId)
+                        .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+                        .SetValue(c => c.StatusCode, (byte)OnlineMeasurementStatus.Initiation)
+                        .SetValue(c => c.ServerToken, serverToken);
+
+                    var pk = dbScope.Executor.Execute<DM.IOnlineMesurement_PK>(insert);
+
+                    // step 4 - generate event
+                    var initEvent = new ES.OnlineMeasurement.OnInitOnlineMeasurement(this.GetType().FullName)
+                    {
+                        OnlineMeasId = pk.Id
+                    };
+                    this._eventEmitter.Emit(initEvent);
+
+                    result.Allowed = true;
+                    return result;
+                }
+                    
+            }
+            catch (Exception e)
+            {
+                _logger.Exception(Contexts.ThisComponent, (EventCategory)"InitOnlineMeasurement",  e, this);
+                throw;
+            }
+            
+
+        }
+
+        public SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
+        {
+
+            try
+            {
+                if (serverToken == null)
+                {
+                    throw new ArgumentNullException(nameof(serverToken));
+                }
+
+                var tokenGuid = new Guid(serverToken);
+
+                using (var dbScope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    var result = new SensorAvailabilityDescriptor();
+
+                    var query = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
+                        .From()
+                        .Where(c => c.ServerToken, ConditionOperator.Equal, tokenGuid)
+                        .Select(c => c.Id,
+                            c => c.SensorToken,
+                            c => c.StatusCode,
+                            c => c.StatusNote,
+                            c => c.WebSocketUrl);
+
+                    var measExists = dbScope.Executor.ExecuteAndFetch(query, reader =>
+                    {
+                        var exists = reader.Read();
+                        if (exists)
+                        {
+                            result.SensorToken = reader.GetValue(c => c.SensorToken);
+                            result.Status = (OnlineMeasurementStatus)reader.GetValue(c => c.StatusCode);
+                            result.Message = reader.GetValue(c => c.StatusNote);
+                            result.WebSocketUrl = reader.GetValue(c => c.WebSocketUrl);
+                        }
+                        return exists;
+                    });
+
+                    if (!measExists)
+                    {
+                        result.Status = OnlineMeasurementStatus.DeniedByServer;
+                        result.Message = $"Not found a online measurement data by server token";
+                        return result;
+                    }
+
+                    return result;
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Exception(Contexts.ThisComponent, (EventCategory)"GetSensorAvailabilityForOnlineMesurement", e, this);
+                throw;
+            }
         }
     }
    

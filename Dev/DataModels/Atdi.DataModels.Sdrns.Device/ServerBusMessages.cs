@@ -56,5 +56,13 @@ namespace Atdi.DataModels.Sdrns.BusMessages
             {
             }
         }
+
+        public class InitOnlineMeasurementMessage : SdrnBusMessageType<InitOnlineMeasurementOptions>
+        {
+            public InitOnlineMeasurementMessage()
+                : base("InitOnlineMeasurement")
+            {
+            }
+        }
     }
 }

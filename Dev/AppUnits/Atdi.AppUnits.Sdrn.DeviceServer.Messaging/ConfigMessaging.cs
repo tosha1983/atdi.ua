@@ -124,5 +124,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         /// </summary>
         [ComponentConfigProperty("PercentForCalcNoise.double")]
         public double PercentForCalcNoise { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ComponentConfigProperty("MaxFreqDeviation.double")]
+        public double? MaxFreqDeviation { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ComponentConfigProperty("CheckLevelChannel.double")]
+        public bool? CheckLevelChannel { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ComponentConfigProperty("MinPointForDetailBW.double")]
+        public int? MinPointForDetailBW { get; set; }
     }
 }
