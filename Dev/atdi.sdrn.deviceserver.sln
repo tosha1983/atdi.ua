@@ -193,6 +193,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Svchost.32",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Svchost.64", "Hosts\Atdi.AppServer.Svchost.64\Atdi.AppServer.Svchost.64.csproj", "{C495C156-1CFD-4DC2-BD2B-CB9CA9CDE98A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement", "AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement\Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.csproj", "{C140F2D7-3ED4-40C3-A9BF-C8504C760791}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1083,6 +1085,18 @@ Global
 		{C495C156-1CFD-4DC2-BD2B-CB9CA9CDE98A}.Release|x64.Build.0 = Release|Any CPU
 		{C495C156-1CFD-4DC2-BD2B-CB9CA9CDE98A}.Release|x86.ActiveCfg = Release|Any CPU
 		{C495C156-1CFD-4DC2-BD2B-CB9CA9CDE98A}.Release|x86.Build.0 = Release|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Debug|x64.Build.0 = Debug|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Debug|x86.Build.0 = Debug|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Release|x64.ActiveCfg = Release|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Release|x64.Build.0 = Release|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Release|x86.ActiveCfg = Release|Any CPU
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1180,6 +1194,7 @@ Global
 		{A80D7607-EA3D-423C-965E-80159DE1D02B} = {CB59302C-D181-4944-A702-167FE7D81CB7}
 		{D33273EB-2E1D-4743-83E0-034A7C06AE8C} = {CB59302C-D181-4944-A702-167FE7D81CB7}
 		{C495C156-1CFD-4DC2-BD2B-CB9CA9CDE98A} = {CB59302C-D181-4944-A702-167FE7D81CB7}
+		{C140F2D7-3ED4-40C3-A9BF-C8504C760791} = {D6ABFCC0-41D6-441D-9CB0-9729127FC5BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}

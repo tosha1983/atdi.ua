@@ -281,6 +281,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                     var sensorQuery = _dataLayer.GetBuilder<DM.ISensor>()
                         .From()
+                        .Select(c => c.Id)
                         .Where(c => c.Id, ConditionOperator.Equal, options.SensorId);
 
                     var sensorExists = dbScope.Executor.ExecuteAndFetch(sensorQuery, reader =>
@@ -288,6 +289,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var exists = reader.Read();
                         if (exists)
                         {
+                            exists = reader.GetValue(c => c.Id) == options.SensorId;
                             // read some data od the Sensor with ID = options.SensorId
                         }
                         return exists;
@@ -296,7 +298,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (!sensorExists)
                     {
                         result.Allowed = false;
-                        result.Message = "Not found a sensor.";
+                        result.Message = $"Not found a sensor with ID #{options.SensorId}.";
                         return result;
                     }
 
@@ -315,6 +317,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             c => c.Id,
                             c => c.CreatedDate,
                             c => c.StatusCode,
+                            c => c.PeriodMinutes,
                             c => c.ServerToken,
                             c => c.StartTime,
                             c => c.FinishTime);

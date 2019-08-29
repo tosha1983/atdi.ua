@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9EBF735C-0A8C-49F5-B2CE-408701CB87BA}</ProjectGuid>
+    <ProjectGuid>{9660947E-668E-415F-B189-F4E3B612564C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Build.Sdrn.DeviceServer.Processing</RootNamespace>
-    <AssemblyName>Atdi.Build.Sdrn.DeviceServer.Processing</AssemblyName>
+    <RootNamespace>Atdi.Test.Sdrn.OnlineMeasurement.Client</RootNamespace>
+    <AssemblyName>Atdi.Test.Sdrn.OnlineMeasurement.Client</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,8 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,39 +49,35 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebSocketClient\WebSecketClient.cs" />
+    <Compile Include="WebSocketClient\WebSecketContext.cs" />
+    <Compile Include="WebSocketClient\WebSecketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement\Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.csproj">
-      <Project>{c140f2d7-3ed4-40c3-a9bf-c8504c760791}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement</Name>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
+      <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements\Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.csproj">
-      <Project>{66fb8f09-a0cf-4cdc-a3f0-2fad21bf8bef}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements</Name>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Processing\Atdi.AppUnits.Sdrn.DeviceServer.Processing.csproj">
-      <Project>{df8d6b14-e4a9-4786-9c81-ab6fdf2de152}</Project>
-      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Processing</Name>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
-      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
-      <Name>Atdi.Platform.Configurator</Name>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
+      <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
+      <Name>Atdi.DataModels.Sdrns</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
-      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
-      <Name>Atdi.Platform</Name>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Processing.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Processing\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Processing\Bin$(ConfigurationName)"
-
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Processing.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Processing\Bin$(ConfigurationName)"
-copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Processing\Bin$(ConfigurationName)"
-</PostBuildEvent>
-  </PropertyGroup>
 </Project>
