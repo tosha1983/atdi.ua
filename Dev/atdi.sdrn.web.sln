@@ -301,6 +301,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeviceSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.Sdrn.OnlineMeasurement.Client", "Test\Atdi.Test.Sdrn.OnlineMeasurement.Client\Atdi.Test.Sdrn.OnlineMeasurement.Client.csproj", "{9660947E-668E-415F-B189-F4E3B612564C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppServer.Sdrn.MasterServer.Console.Anton", "Hosts\Atdi.AppServer.Sdrn.MasterServer.Console.Anton\Atdi.AppServer.Sdrn.MasterServer.Console.Anton.csproj", "{C043F1C0-899A-420F-A47F-116B852B36AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1535,6 +1537,18 @@ Global
 		{A55813DF-7283-437F-809E-959639FFB0C9}.Release|x64.Build.0 = Release|Any CPU
 		{A55813DF-7283-437F-809E-959639FFB0C9}.Release|x86.ActiveCfg = Release|Any CPU
 		{A55813DF-7283-437F-809E-959639FFB0C9}.Release|x86.Build.0 = Release|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Debug|x64.Build.0 = Debug|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Release|x64.ActiveCfg = Release|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Release|x64.Build.0 = Release|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{C043F1C0-899A-420F-A47F-116B852B36AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1680,6 +1694,7 @@ Global
 		{9660947E-668E-415F-B189-F4E3B612564C} = {9B3AC25D-D0D4-41B5-824D-DF78A982FFD1}
 		{773F0C6B-065A-47DB-A468-C3943E29267C} = {547F89DF-C34B-450B-8631-1A7AA10AECCB}
 		{A55813DF-7283-437F-809E-959639FFB0C9} = {547F89DF-C34B-450B-8631-1A7AA10AECCB}
+		{C043F1C0-899A-420F-A47F-116B852B36AA} = {547F89DF-C34B-450B-8631-1A7AA10AECCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
