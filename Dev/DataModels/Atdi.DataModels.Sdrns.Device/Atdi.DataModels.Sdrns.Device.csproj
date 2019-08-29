@@ -67,7 +67,8 @@
     <Compile Include="Entities\EntityPart.cs" />
     <Compile Include="OnlineMeasurement\ClientData.cs" />
     <Compile Include="OnlineMeasurement\ClientMeasTaskData.cs" />
-    <Compile Include="OnlineMeasurement\ClientRegistrationData.cs" />
+    <Compile Include="OnlineMeasurement\ClientTaskCancellationData.cs" />
+    <Compile Include="OnlineMeasurement\ClientReadyData.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerData.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerParametersData.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerResult.cs" />

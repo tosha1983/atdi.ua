@@ -29,7 +29,7 @@ namespace WebSocketClientImpl
                     var readyMsg = new OnlineMeasMessage
                     {
                         Kind = OnlineMeasMessageKind.ClientReadyTakeMeasResult,
-                        Container = new ClientRegistrationData
+                        Container = new ClientReadyData
                         {
                             SensorToken = this.sensorToken
                         }

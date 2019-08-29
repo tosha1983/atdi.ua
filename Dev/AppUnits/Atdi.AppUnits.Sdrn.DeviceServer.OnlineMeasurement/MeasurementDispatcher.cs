@@ -54,7 +54,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
                 this._descriptor = new ClientDescriptor
                 {
                     OnlineMeasId = options.OnlineMeasId,
-                    Token = Guid.NewGuid()
+                    Token = Guid.NewGuid(),
+                    Dispatcher = this
                 };
 
                 this.OpenWebSocket();
@@ -105,14 +106,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
             }
         }
 
-        public void OnCloseConnect()
+        public void OnCloseConnect(DM.SensorOnlineMeasurementStatus status, string reason)
         {
             try
             {
                 var statusData = new DM.OnlineMeasurementStatusData()
                 {
                     OnlineMeasId = _descriptor.OnlineMeasId,
-                    Status = DM.SensorOnlineMeasurementStatus.CanceledBySensor
+                    Status = status,
+                    Note = reason
                 };
 
                 this.FreeDevice();

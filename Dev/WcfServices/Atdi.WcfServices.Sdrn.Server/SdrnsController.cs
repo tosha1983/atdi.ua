@@ -429,7 +429,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var updateQuery = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
                                     .Update()
                                     .SetValue(c => c.StatusCode, (byte)OnlineMeasurementStatus.CanceledByServer)
-                                    .SetValue(c => c.StatusNote, "Measurement period was expired")
+                                    .SetValue(c => c.StatusNote, "CanceledByServer: Measurement period was expired")
                                     .SetValue(c => c.FinishTime, DateTimeOffset.Now)
                                     .Where(c => c.Id, ConditionOperator.Equal, meas.Id);
 
@@ -449,7 +449,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 var updateQuery = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
                                     .Update()
                                     .SetValue(c => c.StatusCode, (byte)OnlineMeasurementStatus.CanceledByServer)
-                                    .SetValue(c => c.StatusNote, "Measurement period was expired")
+                                    .SetValue(c => c.StatusNote, "CanceledByServer: Measurement period was expired")
                                     .SetValue(c => c.FinishTime, DateTimeOffset.Now)
                                     .Where(c => c.Id, ConditionOperator.Equal, meas.Id);
 
@@ -475,6 +475,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         .SetValue(c => c.SENSOR.Id, options.SensorId)
                         .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
                         .SetValue(c => c.StatusCode, (byte)OnlineMeasurementStatus.Initiation)
+                        .SetValue(c => c.StatusNote, "Initiation: SDRN Server sent request to the Sensor")
                         .SetValue(c => c.ServerToken, serverToken);
 
                     var pk = dbScope.Executor.Execute<DM.IOnlineMesurement_PK>(insert);

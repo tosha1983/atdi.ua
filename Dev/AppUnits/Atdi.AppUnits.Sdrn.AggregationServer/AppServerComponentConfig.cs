@@ -11,15 +11,6 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer
     {
         private const string _sdatas = "Atdi.AppServer.AppService.SdrnsController";
 
-        [ComponentConfigProperty("License.FileName")]
-        public string LicenseFileName { get; set; }
-
-        [ComponentConfigProperty("License.OwnerId", SharedSecret = _sdatas)]
-        public string LicenseOwnerId { get; set; }
-
-        [ComponentConfigProperty("License.ProductKey", SharedSecret = _sdatas)]
-        public string LicenseProductKey { get; set; }
-
         [ComponentConfigProperty("DataBus.ApiVersion")]
         public string DataBusApiVersion { get; set; }
 
