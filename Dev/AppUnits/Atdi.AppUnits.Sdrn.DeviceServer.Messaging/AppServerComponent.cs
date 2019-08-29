@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.AppServer;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
 {
@@ -47,7 +48,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
             dispatcher.RegistryHandler(sendRegistrationResultHandler);
             dispatcher.RegistryHandler(sendSensorUpdatingResultHandler);
 
-            dispatcher.Activate();
+            this.Container.RegisterInstance<IMessageDispatcher>(dispatcher, ServiceLifetime.Singleton);
+
+            var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
+
+            hostLoader.RegisterTrigger("Running device bus handlers activation", () =>
+            {
+                dispatcher.Activate();
+            });
+            
         }
 
         protected override void OnDeactivateUnit()

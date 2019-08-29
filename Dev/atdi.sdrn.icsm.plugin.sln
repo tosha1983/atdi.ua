@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Build.Sdrn.Plugin", "B
 		{E1234FEA-9BB0-402A-AAD1-9EE393C25D1F} = {E1234FEA-9BB0-402A-AAD1-9EE393C25D1F}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Device", "DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj", "{4670DA92-06CF-4CE4-BBF8-67353A907BD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,14 @@ Global
 		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|x64.ActiveCfg = Release|Any CPU
 		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4}.Release|x64.Build.0 = Release|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Debug|x64.ActiveCfg = Debug|x64
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Debug|x64.Build.0 = Debug|x64
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|x64.ActiveCfg = Release|x64
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +139,7 @@ Global
 		{BB70F260-1614-4683-B693-BD5FB8848C55} = {67E676F5-6832-4C47-AD3C-39478AD57213}
 		{8943C072-6F62-4601-BCDA-1295DDE93C3A} = {E19DB19E-4EB2-482B-BB1F-C9E2B10AA13D}
 		{37316D9D-5AFE-4FF0-85E6-36A096FBD8F4} = {63FE4FE2-BCBE-46AE-AF52-19CA7138DF2F}
+		{4670DA92-06CF-4CE4-BBF8-67353A907BD0} = {9B81A520-A492-437C-B7B6-BE4344413F4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDA55F7E-79F8-4A00-A01B-88B5699308E4}

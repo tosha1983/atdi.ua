@@ -9,7 +9,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 {
     static class Contexts
     {
-        public static readonly EventContext ThisComponent = "Atdi.WcfServices.Sdrn.Server";
+        public static readonly EventContext ThisComponent = "SDRN.Server.WCF";
     }
 
     static class Categories
