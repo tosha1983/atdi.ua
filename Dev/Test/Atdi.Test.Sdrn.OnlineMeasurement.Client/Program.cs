@@ -67,6 +67,23 @@ namespace Atdi.Test.Sdrn.OnlineMeasurement.Client
                     Console.WriteLine($"Wait data from SENSOR");
                     Console.ReadLine();
 
+                    // Отправляем запрос на остановку потока данных
+                    var message2 = new OnlineMeasMessage
+                    {
+                        Kind = OnlineMeasMessageKind.ClientTaskCancellation,
+                        Container = new ClientTaskCancellationData
+                        {
+                            SensorToken = status.SensorToken
+                        }
+                    };
+                    var json2 = JsonConvert.SerializeObject(message2);
+                    context.Send(json2);
+
+                    Console.WriteLine($"Send TaskCancellation message to SENSOR");
+                    Console.ReadLine();
+
+                    Console.WriteLine($"Press any key to close WebSocket with SENSOR.");
+
                     webSocket.Dispose();
                 }
                 else

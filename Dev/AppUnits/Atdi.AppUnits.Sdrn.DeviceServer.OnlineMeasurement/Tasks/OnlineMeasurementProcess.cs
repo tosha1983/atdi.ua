@@ -22,7 +22,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
         {
         }
 
-        public ClientRegistrationData RegistrationData { get; set; }
+        public ClientReadyData RegistrationData { get; set; }
 
         public DeviceServerParametersData Parameters { get; set; }
 

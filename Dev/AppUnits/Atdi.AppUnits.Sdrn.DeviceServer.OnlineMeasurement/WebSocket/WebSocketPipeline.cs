@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DM = Atdi.DataModels.Sdrns.Device;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
@@ -51,14 +52,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
 
                 this._logger.Verbouse(Contexts.WebSocket, Categories.Handling, $"The WebSocket is received client message: Kind = '{message.Kind}'");
 
+                var containerJson = message.Container as JObject; //ClientRegistrationData;
+                if (containerJson == null)
+                {
+                    throw new InvalidOperationException("Incorrect the message data: Container is empty");
+                }
+
                 if (message.Kind == OnlineMeasMessageKind.ClientTaskRegistration)
                 {
-                    var containerJson = message.Container as JObject; //ClientRegistrationData;
-                    if (containerJson == null)
-                    {
-                        throw new InvalidOperationException("Incorrect the registration data: Container is empty");
-                    }
-                    var regData = containerJson.ToObject<ClientRegistrationData>();
+                    
+                    var regData = containerJson.ToObject<ClientReadyData>();
                     if (regData == null)
                     {
                         throw new InvalidOperationException("Incorrect the registration data: Container is invalid");
@@ -95,19 +98,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                 }
                 else if (message.Kind == OnlineMeasMessageKind.ClientReadyTakeMeasResult)
                 {
-                    var containerJson = message.Container as JObject; //ClientRegistrationData;
-                    if (containerJson == null)
-                    {
-                        throw new InvalidOperationException("Incorrect the registration data: Container is empty");
-                    }
                     var clientMeasTask = containerJson.ToObject<ClientMeasTaskData>();
                     if (clientMeasTask == null)
                     {
-                        throw new InvalidOperationException("Incorrect the registration data: Container is invalid");
+                        throw new InvalidOperationException("Incorrect the task data: Container is invalid");
                     }
                     if (!_clientDescriptor.CheckToken(clientMeasTask.SensorToken))
                     {
-                        throw new InvalidOperationException("Incorrect the registration data: token is invalid");
+                        throw new InvalidOperationException("Incorrect the task data: token is invalid");
                     }
 
                     
@@ -122,7 +120,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                     // например он захочет отменить получения результатов измерения
                     _taskStarter.RunParallel(task, _clientDescriptor.Process, _clientDescriptor.TokenSource.Token);
                 }
-                
+                else if (message.Kind == OnlineMeasMessageKind.ClientTaskCancellation)
+                {
+                    var data = containerJson.ToObject<ClientTaskCancellationData>();
+                    if (data == null)
+                    {
+                        throw new InvalidOperationException("Incorrect the task cancellation data: Container is invalid");
+                    }
+                    if (!_clientDescriptor.CheckToken(data.SensorToken))
+                    {
+                        throw new InvalidOperationException("Incorrect the task cancellation data: token is invalid");
+                    }
+
+                    if (_clientDescriptor.TokenSource != null)
+                    {
+                        _clientDescriptor.TokenSource.Cancel();
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -136,7 +150,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
             this._logger.Verbouse(Contexts.WebSocket, Categories.Handling, $"The client is connected");
         }
 
-        public void OnDisconnect(WebSocketContext context)
+        public void OnDisconnect(WebSocketContext context, DM.SensorOnlineMeasurementStatus status, string reason)
         {
             this._logger.Verbouse(Contexts.WebSocket, Categories.Handling, $"The client is disconnected");
             if (_clientDescriptor.TokenSource != null)
@@ -145,7 +159,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
             }
             if (_clientDescriptor.Dispatcher != null)
             {
-                _clientDescriptor.Dispatcher.OnCloseConnect();
+                _clientDescriptor.Dispatcher.OnCloseConnect(status, reason);
             }
         }
     }

@@ -56,6 +56,7 @@ namespace Atdi.DataModels.Sdrns.Device
         /// <summary>
         /// Новый статус
         /// </summary>
+        [DataMember]
         public SensorOnlineMeasurementStatus Status { get; set; }
 
         [DataMember]

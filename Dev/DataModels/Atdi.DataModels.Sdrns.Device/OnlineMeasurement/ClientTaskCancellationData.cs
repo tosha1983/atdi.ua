@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
 {
     [Serializable]
-    public class ClientRegistrationData : ClientData
+    public class ClientTaskCancellationData : ClientData
     {
         
     }

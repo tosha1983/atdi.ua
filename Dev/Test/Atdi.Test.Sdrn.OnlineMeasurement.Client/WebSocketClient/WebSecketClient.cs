@@ -19,6 +19,7 @@ namespace WebSocketClientImpl
 
         private readonly int _connectionTimeout = 5000; // 5 sec
         private readonly int _receiveChunkSize = 64 * 1024; // 64 kb 
+
         public WebSocketClient(Uri uri, WebSocketHandler handler)
         {
             this._uri = uri;
@@ -57,7 +58,7 @@ namespace WebSocketClientImpl
 
                 if (_webSocket.State == WebSocketState.Open)
                 {
-                    _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).GetAwaiter().GetResult();
+                    _webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).GetAwaiter().GetResult();
                 }
                 _isDisposing = true;
                 _thread.Abort();
