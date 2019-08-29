@@ -65,14 +65,43 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
-                        var update = this._dataLayer.GetBuilder<MD.IOnlineMesurement>()
+                        if (data.Status == SensorOnlineMeasurementStatus.CanceledByClient || data.Status == SensorOnlineMeasurementStatus.CanceledBySensor)
+                        {
+                            var update = this._dataLayer.GetBuilder<MD.IOnlineMesurement>()
                                 .Update()
                                 .Where(c => c.Id, ConditionOperator.Equal, data.OnlineMeasId)
                                 .Where(c => c.StatusCode, ConditionOperator.Equal, (byte)4) // SonsorReady 
                                 .SetValue(c => c.StatusCode, (byte)data.Status)
-                                .SetValue(c => c.StatusNote, data.Note);
+                                .SetValue(c => c.StatusNote, $"{data.Status}: {data.Note}")
+                                .SetValue(c => c.FinishTime, DateTimeOffset.Now);
+                                
 
-                        scope.Executor.Execute(update);
+                            scope.Executor.Execute(update);
+                        }
+                        else if (data.Status == SensorOnlineMeasurementStatus.DeniedBySensor)
+                        {
+                            var update = this._dataLayer.GetBuilder<MD.IOnlineMesurement>()
+                                .Update()
+                                .Where(c => c.Id, ConditionOperator.Equal, data.OnlineMeasId)
+                                .SetValue(c => c.StatusCode, (byte)data.Status)
+                                .SetValue(c => c.StatusNote, $"{data.Status}: {data.Note}")
+                                .SetValue(c => c.FinishTime, DateTimeOffset.Now);
+
+                            scope.Executor.Execute(update);
+                        }
+                        else if (data.Status == SensorOnlineMeasurementStatus.SonsorReady)
+                        {
+                            var update = this._dataLayer.GetBuilder<MD.IOnlineMesurement>()
+                                .Update()
+                                .Where(c => c.Id, ConditionOperator.Equal, data.OnlineMeasId)
+                                .Where(c => c.StatusCode, ConditionOperator.NotEqual, (byte)4)
+                                .SetValue(c => c.StatusCode, (byte)data.Status)
+                                .SetValue(c => c.StatusNote, $"{data.Status}: {data.Note}")
+                                .SetValue(c => c.StartTime, DateTimeOffset.Now);
+
+                            scope.Executor.Execute(update);
+                        }
+
                     }
                 }
                 catch (Exception e)
