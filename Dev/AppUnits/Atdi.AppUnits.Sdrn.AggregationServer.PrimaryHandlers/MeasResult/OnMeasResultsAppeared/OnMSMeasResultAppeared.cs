@@ -51,7 +51,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         {
             // Some aggregaton code
 
-            var busEvent = new MSMeasResultAggregated($"MSMeasResultAggregated", "OnMSMeasResultAppeared")
+            var busEvent = new MSMeasResultAggregated($"OnMSMeasResultAggregated", "OnMSMeasResultAppeared")
             {
                 MeasResultId = measResultId
             };

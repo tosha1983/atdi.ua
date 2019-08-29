@@ -487,6 +487,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private bool ValidateGeoLocation<T>(T location, string tableName, HandleContext context)
             where T : GeoLocation
         {
+            if (location == null)
+                return false;
+
             bool result = true;
             if (!(location.Lon >= -180 && location.Lon <= 180))
             {
