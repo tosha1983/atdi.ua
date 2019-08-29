@@ -343,5 +343,28 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
 
         SignalingSysInfo[] GetSignalingSysInfos(long measResultId, double freq_MHz);
+
+        /// <summary>
+        /// Инициирование онлайн измерений.
+        /// Первый метод которы йдолжен вызвать клиент в случаи иницирования попытки оргнизовать онлайн измерение с определнным сенсором.
+        /// В случаи подтверждения сервером иницирования процесса онлайн измерения, клиенту необходимо обеспечить переодический опрос сервера 
+        /// на готовность сенсора(устройства) приступить к непосредственной фазе обмена и начала онлайн измерения
+        /// </summary>
+        [OperationContract]
+        OnlineMeasurementInitiationResult InitOnlineMeasurement(OnlineMeasurementOptions options);
+
+        /// <summary>
+        /// Получения игнформации о готовности сенсора/устройства к процессу оналйн измерения
+        /// Используя этот метод клиент переодически опрашивает сервер на факт получения подтверждения от устройства
+        /// организации онлайн измерения.
+        /// В случаи отказа обмен отменяется.
+        /// В случаи подтверждения клиент получает от сервреа все необходимые инициализациолнные параметры и опции
+        /// для запуска онлайн измерения
+        /// </summary>
+        /// <param name="serverToken"></param>
+        [OperationContract]
+        SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken);
+
+
     }
 }

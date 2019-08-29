@@ -20,7 +20,9 @@ namespace Atdi.Modules.LicenseGenerator
 
             //UpdatePeriod_ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2018");
 
-            UpdatePeriod_ICSControl_ForTest(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2018");
+            //UpdatePeriod_ICSControl_ForTest(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2018");
+
+            ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019");
 
             Console.WriteLine("Process was finished");
             Console.ReadKey();
@@ -320,6 +322,29 @@ namespace Atdi.Modules.LicenseGenerator
             var srvInstancePrefix = "SDRNSV-S";
 
             MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+        }
+
+        static void ICSControl_ForTesting_ClusterServers(string path, int count = 2)
+        {
+            var ownerId = "OID-BD12-A00-N00";
+            var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+            var company = "ТОВ 'Лабораторія інформаційних систем'";
+            var ownerKey = "BD12-A00";
+            var startDate = new DateTime(2019, 8, 20);
+            var stopDate = new DateTime(2021, 8, 20);
+
+            //MakeServerLicense();
+            for (int i = 0; i < count; i++)
+            {
+                var srvLicenseIndex = GetUniqueIntegerKey(3);
+                var instanceIndex = GetUniqueIntegerKey(4);
+                var srvLicPrefix = "LIC-S";
+                var srvInstancePrefix = "SDRNSV-S";
+
+                MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+            }
+
+            
         }
 
         static void ICSControl_ForUDCR(string path)
