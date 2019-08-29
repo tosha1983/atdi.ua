@@ -50,9 +50,7 @@
     <Compile Include="Handlers\Analitics\CalcStationLevelsByTask.cs" />
     <Compile Include="Handlers\Analitics\AnaliticsUnit.cs" />
     <Compile Include="Handlers\MeasTask\LoadMeasTask.cs" />
-    <Compile Include="Handlers\MeasTask\SaveMeasTask.cs" />
     <Compile Include="Handlers\OnlineMeasurement\InitiationOnlineMesurementModel.cs" />
-    <Compile Include="Handlers\Process\MeasTaskProcess.cs" />
     <Compile Include="Handlers\Results\LoadResults.cs" />
     <Compile Include="Handlers\Results\SaveResults.cs" />
     <Compile Include="Handlers\Sensor\LoadSensor.cs" />
