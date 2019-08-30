@@ -25,7 +25,11 @@ namespace WebSocketClientImpl
                 var msg = JsonConvert.DeserializeObject<OnlineMeasMessage>(data);
                 if (msg.Kind == OnlineMeasMessageKind.DeviceServerParameters)
                 {
-                    Console.WriteLine($"Received data: get measurment result parameters");
+                    
+                    var jObject = msg.Container as Newtonsoft.Json.Linq.JObject;
+                    var parameters = jObject.ToObject<DeviceServerParametersData>();
+                    Console.WriteLine($"Received data: get measurment result parameters: Length = #{parameters.Frequencies.Length}");
+
                     var readyMsg = new OnlineMeasMessage
                     {
                         Kind = OnlineMeasMessageKind.ClientReadyTakeMeasResult,

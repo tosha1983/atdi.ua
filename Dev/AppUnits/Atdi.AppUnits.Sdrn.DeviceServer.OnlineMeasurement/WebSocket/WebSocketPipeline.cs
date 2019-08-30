@@ -61,19 +61,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                 if (message.Kind == OnlineMeasMessageKind.ClientTaskRegistration)
                 {
                     
-                    var regData = containerJson.ToObject<ClientReadyData>();
-                    if (regData == null)
+                    var clientMeasTask = containerJson.ToObject<ClientMeasTaskData>();
+                    if (clientMeasTask == null)
                     {
                         throw new InvalidOperationException("Incorrect the registration data: Container is invalid");
                     }
-                    if (!_clientDescriptor.CheckToken(regData.SensorToken))
+                    if (!_clientDescriptor.CheckToken(clientMeasTask.SensorToken))
                     {
                         throw new InvalidOperationException("Incorrect the registration data: token is invalid");
                     }
 
                     var process = _processingDispatcher.Start<OnlineMeasurementProcess>();
                     process.Publisher = new WebSocketPublisher(context);
-                    process.RegistrationData = regData;
+                    process.MeasTask = clientMeasTask;
                     _clientDescriptor.Process = process;
 
 
@@ -98,21 +98,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                 }
                 else if (message.Kind == OnlineMeasMessageKind.ClientReadyTakeMeasResult)
                 {
-                    var clientMeasTask = containerJson.ToObject<ClientMeasTaskData>();
-                    if (clientMeasTask == null)
+                    var clientReadyData = containerJson.ToObject<ClientReadyData>();
+                    if (clientReadyData == null)
                     {
-                        throw new InvalidOperationException("Incorrect the task data: Container is invalid");
+                        throw new InvalidOperationException("Incorrect the ready data: Container is invalid");
                     }
-                    if (!_clientDescriptor.CheckToken(clientMeasTask.SensorToken))
+                    if (!_clientDescriptor.CheckToken(clientReadyData.SensorToken))
                     {
-                        throw new InvalidOperationException("Incorrect the task data: token is invalid");
+                        throw new InvalidOperationException("Incorrect the ready data: token is invalid");
                     }
 
-                    
-                    var task = new ClientReadyTakeMeasResultTask()
-                    {
-                        MeasTaskData = clientMeasTask
-                    };
+                    _clientDescriptor.Process.ReadyData = clientReadyData;
+
+                    var task = new ClientReadyTakeMeasResultTask();
                     _clientDescriptor.TokenSource = new CancellationTokenSource();
                     _clientDescriptor.AsyncTask = task;
 

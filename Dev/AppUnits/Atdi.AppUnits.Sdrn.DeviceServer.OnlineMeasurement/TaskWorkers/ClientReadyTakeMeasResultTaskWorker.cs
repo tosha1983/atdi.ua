@@ -26,7 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                 int i = 0;
 
                 // тут зависит от логики - дял теста меряем пока не вылезет.... или клиент этого попросит сам
-                while (true)
+                while (true) // цыкл измерения - может в реальности быть немного другим но суть есть цыкл
                 {
 
                     // обязательно опрос и выход если отменили - иначе зависним в измерениях на веки вечные!!!! 
@@ -36,7 +36,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                         return;
                     }
 
-                    var floatData = GetFloatArray(10000);
+                    var count = context.Process.Parameters.Frequencies.Length;
+
+                    var floatData = GetFloatArray(count);
                     var measResult = new DeviceServerResult
                     {
                         SensorToken = Guid.NewGuid().ToByteArray(),

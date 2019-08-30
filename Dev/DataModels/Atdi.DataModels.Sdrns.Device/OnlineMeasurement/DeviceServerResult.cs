@@ -24,4 +24,8 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
         /// </summary>
         public float[] Levels_dB { get; set; }
     }
+
+
+
+
 }

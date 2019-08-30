@@ -10,5 +10,7 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
     public class DeviceServerParametersData : DeviceServerData
     {
         public float[] Frequencies { get; set; }
+
+
     }
 }

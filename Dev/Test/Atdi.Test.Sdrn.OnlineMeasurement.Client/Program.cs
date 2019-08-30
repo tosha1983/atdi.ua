@@ -57,7 +57,8 @@ namespace Atdi.Test.Sdrn.OnlineMeasurement.Client
                         Kind = OnlineMeasMessageKind.ClientTaskRegistration,
                         Container = new ClientMeasTaskData
                         {
-                            SensorToken = status.SensorToken
+                            SensorToken = status.SensorToken,
+                            SomeMeasType = 3
                         }
                     };
                     var json = JsonConvert.SerializeObject(message);
