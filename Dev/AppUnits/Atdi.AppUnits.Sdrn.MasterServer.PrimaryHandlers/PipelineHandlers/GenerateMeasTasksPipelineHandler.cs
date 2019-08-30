@@ -139,18 +139,98 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.PipelineHandlers
                                     }
                                     if (listMeasSubTaskSensors.Count > 0)
                                     {
-                                        nextMeasTask = new MeasTask()
+                                        if (data.MeasTaskPipeBox is MeasTaskLevel)
                                         {
-                                            CreatedBy = data.MeasTaskPipeBox.CreatedBy,
-                                            DateCreated = data.MeasTaskPipeBox.DateCreated,
-                                            ExecutionMode = data.MeasTaskPipeBox.ExecutionMode,
-                                            Id = data.MeasTaskPipeBox.Id,
-                                            MeasTimeParamList = data.MeasTaskPipeBox.MeasTimeParamList,
-                                            Name = data.MeasTaskPipeBox.Name,
-                                            Prio = data.MeasTaskPipeBox.Prio,
-                                            Status = data.MeasTaskPipeBox.Status,
-                                            TypeMeasurements = data.MeasTaskPipeBox.TypeMeasurements
-                                        };
+                                            nextMeasTask = new MeasTaskLevel()
+                                            {
+                                                CreatedBy = data.MeasTaskPipeBox.CreatedBy,
+                                                DateCreated = data.MeasTaskPipeBox.DateCreated,
+                                                ExecutionMode = data.MeasTaskPipeBox.ExecutionMode,
+                                                Id = data.MeasTaskPipeBox.Id,
+                                                MeasTimeParamList = data.MeasTaskPipeBox.MeasTimeParamList,
+                                                Name = data.MeasTaskPipeBox.Name,
+                                                Prio = data.MeasTaskPipeBox.Prio,
+                                                Status = data.MeasTaskPipeBox.Status,
+                                                TypeMeasurements = data.MeasTaskPipeBox.TypeMeasurements,
+                                                MeasDtParam = ((MeasTaskLevel)data.MeasTaskPipeBox).MeasDtParam,
+                                                MeasFreqParam = ((MeasTaskLevel)data.MeasTaskPipeBox).MeasFreqParam
+                                            };
+                                        }
+                                        else if (data.MeasTaskPipeBox is MeasTaskBandWidth)
+                                        {
+                                            nextMeasTask = new MeasTaskBandWidth()
+                                            {
+                                                CreatedBy = data.MeasTaskPipeBox.CreatedBy,
+                                                DateCreated = data.MeasTaskPipeBox.DateCreated,
+                                                ExecutionMode = data.MeasTaskPipeBox.ExecutionMode,
+                                                Id = data.MeasTaskPipeBox.Id,
+                                                MeasTimeParamList = data.MeasTaskPipeBox.MeasTimeParamList,
+                                                Name = data.MeasTaskPipeBox.Name,
+                                                Prio = data.MeasTaskPipeBox.Prio,
+                                                Status = data.MeasTaskPipeBox.Status,
+                                                TypeMeasurements = data.MeasTaskPipeBox.TypeMeasurements,
+                                                MeasDtParam = ((MeasTaskBandWidth)data.MeasTaskPipeBox).MeasDtParam,
+                                                MeasFreqParam = ((MeasTaskBandWidth)data.MeasTaskPipeBox).MeasFreqParam
+                                            };
+                                        }
+                                        else if (data.MeasTaskPipeBox is MeasTaskMonitoringStations)
+                                        {
+                                            nextMeasTask = new MeasTaskMonitoringStations()
+                                            {
+                                                CreatedBy = data.MeasTaskPipeBox.CreatedBy,
+                                                DateCreated = data.MeasTaskPipeBox.DateCreated,
+                                                ExecutionMode = data.MeasTaskPipeBox.ExecutionMode,
+                                                Id = data.MeasTaskPipeBox.Id,
+                                                MeasTimeParamList = data.MeasTaskPipeBox.MeasTimeParamList,
+                                                Name = data.MeasTaskPipeBox.Name,
+                                                Prio = data.MeasTaskPipeBox.Prio,
+                                                Status = data.MeasTaskPipeBox.Status,
+                                                TypeMeasurements = data.MeasTaskPipeBox.TypeMeasurements,
+                                                StationsForMeasurements = ((MeasTaskMonitoringStations)data.MeasTaskPipeBox).StationsForMeasurements
+                                            };
+                                        }
+                                        else if (data.MeasTaskPipeBox is MeasTaskSignaling)
+                                        {
+                                            nextMeasTask = new MeasTaskSignaling()
+                                            {
+                                                CreatedBy = data.MeasTaskPipeBox.CreatedBy,
+                                                DateCreated = data.MeasTaskPipeBox.DateCreated,
+                                                ExecutionMode = data.MeasTaskPipeBox.ExecutionMode,
+                                                Id = data.MeasTaskPipeBox.Id,
+                                                MeasTimeParamList = data.MeasTaskPipeBox.MeasTimeParamList,
+                                                Name = data.MeasTaskPipeBox.Name,
+                                                Prio = data.MeasTaskPipeBox.Prio,
+                                                Status = data.MeasTaskPipeBox.Status,
+                                                TypeMeasurements = data.MeasTaskPipeBox.TypeMeasurements,
+                                                MeasFreqParam = ((MeasTaskSignaling)data.MeasTaskPipeBox).MeasFreqParam,
+                                                MeasDtParam = ((MeasTaskSignaling)data.MeasTaskPipeBox).MeasDtParam,
+                                                SignalingMeasTaskParameters = ((MeasTaskSignaling)data.MeasTaskPipeBox).SignalingMeasTaskParameters,
+                                                RefSituation = ((MeasTaskSignaling)data.MeasTaskPipeBox).RefSituation
+                                            };
+                                        }
+                                        else if (data.MeasTaskPipeBox is MeasTaskSpectrumOccupation)
+                                        {
+                                            nextMeasTask = new MeasTaskSpectrumOccupation()
+                                            {
+                                                CreatedBy = data.MeasTaskPipeBox.CreatedBy,
+                                                DateCreated = data.MeasTaskPipeBox.DateCreated,
+                                                ExecutionMode = data.MeasTaskPipeBox.ExecutionMode,
+                                                Id = data.MeasTaskPipeBox.Id,
+                                                MeasTimeParamList = data.MeasTaskPipeBox.MeasTimeParamList,
+                                                Name = data.MeasTaskPipeBox.Name,
+                                                Prio = data.MeasTaskPipeBox.Prio,
+                                                Status = data.MeasTaskPipeBox.Status,
+                                                TypeMeasurements = data.MeasTaskPipeBox.TypeMeasurements,
+                                                MeasFreqParam = ((MeasTaskSpectrumOccupation)data.MeasTaskPipeBox).MeasFreqParam,
+                                                MeasDtParam = ((MeasTaskSpectrumOccupation)data.MeasTaskPipeBox).MeasDtParam,
+                                                SpectrumOccupationParameters = ((MeasTaskSpectrumOccupation)data.MeasTaskPipeBox).SpectrumOccupationParameters
+                                            };
+                                        }
+                                        else
+                                        {
+                                            throw new InvalidOperationException($"Type {data.MeasTaskPipeBox.GetType()} is not supported");
+                                        }
+
 
 
                                         listMeasSubTask.Add(new MeasSubTask()

@@ -343,6 +343,12 @@ into n
 from dual;
 end if;
 
+if inttable_name ='ONLINE_MEAS' then
+select ICSC.ONLINE_MEAS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 
 
 
