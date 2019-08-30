@@ -204,6 +204,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     measTaskSignaling.SignalingMeasTaskParameters.CorrelationFactor = readerMeasTaskSignaling.GetValue(c => c.CorrelationFactor);
                     measTaskSignaling.SignalingMeasTaskParameters.CheckFreqChannel = readerMeasTaskSignaling.GetValue(c => c.CheckFreqChannel);
                     measTaskSignaling.SignalingMeasTaskParameters.triggerLevel_dBm_Hz = readerMeasTaskSignaling.GetValue(c => c.TriggerLevel_dBm_Hz);
+                    measTaskSignaling.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                     measTaskSignaling.SignalingMeasTaskParameters.GroupingParameters = new SignalingGroupingParameters();
                     measTaskSignaling.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForBadSignals);
                     measTaskSignaling.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);

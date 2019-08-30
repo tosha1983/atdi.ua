@@ -22,7 +22,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
         {
         }
 
-        public ClientReadyData RegistrationData { get; set; }
+        // Первая фаза: объект задачи по которой устройство должно сделать измерения
+        //  в ответ устройство в свойство Parameters ложить описание результатов
+        public ClientMeasTaskData MeasTask { get; set; }
+
+        // Фаза готовности клиента получать результаты измерения
+        public ClientReadyData ReadyData { get; set; }
 
         public DeviceServerParametersData Parameters { get; set; }
 

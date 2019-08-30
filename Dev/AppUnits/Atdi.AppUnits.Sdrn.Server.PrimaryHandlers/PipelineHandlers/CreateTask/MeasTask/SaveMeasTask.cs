@@ -924,6 +924,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                             MTSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints;
                                             MTSDR.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess;
                                             MTSDR.SignalingMeasTaskParameters.InterruptionParameters.windowBW = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.windowBW;
+                                            MTSDR.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation;
+                                            MTSDR.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel;
+                                            MTSDR.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW = taskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW;
                                             MTSDR.SignalingMeasTaskParameters.allowableExcess_dB = taskSignaling.SignalingMeasTaskParameters.allowableExcess_dB;
                                         }
 

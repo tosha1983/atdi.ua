@@ -9,5 +9,6 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
     [Serializable]
     public class ClientMeasTaskData : ClientData
     {
+        public int SomeMeasType { get; set; }
     }
 }
