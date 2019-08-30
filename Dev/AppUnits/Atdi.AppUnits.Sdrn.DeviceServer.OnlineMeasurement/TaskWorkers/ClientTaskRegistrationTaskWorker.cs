@@ -16,13 +16,37 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
         {
             try
             {
-                var serverParams = new DeviceServerParametersData
-                {
-                    SensorToken = Guid.NewGuid().ToByteArray(),
-                    Frequencies = new float[3000]
-                };
+                
 
-                context.Process.Parameters = serverParams;
+                if (context.Process.MeasTask.SomeMeasType == 1)
+                {
+                    var serverParams = new DeviceServerParametersData
+                    {
+                        SensorToken = Guid.NewGuid().ToByteArray(),
+                        Frequencies = new float[3000]
+                    };
+                    context.Process.Parameters = serverParams;
+                }
+                else if (context.Process.MeasTask.SomeMeasType == 2)
+                {
+                    var serverParams = new DeviceServerParametersData
+                    {
+                        SensorToken = Guid.NewGuid().ToByteArray(),
+                        Frequencies = new float[10000]
+                    };
+                    context.Process.Parameters = serverParams;
+                }
+                if (context.Process.MeasTask.SomeMeasType == 3)
+                {
+                    var serverParams = new DeviceServerParametersData
+                    {
+                        SensorToken = Guid.NewGuid().ToByteArray(),
+                        Frequencies = new float[100]
+                    };
+                    context.Process.Parameters = serverParams;
+                }
+
+
 
                 context.Finish();
             }
