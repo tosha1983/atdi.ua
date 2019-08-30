@@ -3,7 +3,6 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[MEAS_DT_P
 go
 create table [ICSC].[MEAS_DT_PARAM] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[TYPE_MEASUREMENTS]	[nvarchar](50) null,
 	[DETECT_TYPE]	[nvarchar](50) null,
 	[RF_ATTENUATION]	[float] null,
 	[IF_ATTENUATION]	[float] null,
@@ -13,6 +12,7 @@ create table [ICSC].[MEAS_DT_PARAM] (
 	[MODE]	[nvarchar](50) null,
 	[RBW]	[float] null,
 	[VBW]	[float] null,
+	[SW_NUMBER]	[bigint] null,
 	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_DT_PARAM] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
