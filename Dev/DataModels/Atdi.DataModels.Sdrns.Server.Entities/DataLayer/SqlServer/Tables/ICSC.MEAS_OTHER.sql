@@ -3,8 +3,6 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[ICSC].[MEAS_OTHE
 go
 create table [ICSC].[MEAS_OTHER] (
 	[ID] 	[bigint] identity (1,1) not null,
-	[SW_NUMBER]	[int] null,
-	[TYPE_SPECTRUM_SCAN]	[nvarchar](50) null,
 	[TYPE_SPECTRUM_OCCUPATION]	[nvarchar](50) null,
 	[LEVEL_MIN_OCCUP]	[float] null,
 	[NCHENAL]	[int] null,
