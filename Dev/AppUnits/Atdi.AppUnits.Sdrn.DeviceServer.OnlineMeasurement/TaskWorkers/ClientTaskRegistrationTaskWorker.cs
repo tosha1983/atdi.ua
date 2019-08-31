@@ -16,38 +16,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
         {
             try
             {
-                
-
-                if (context.Process.MeasTask.SomeMeasType == 1)
+                if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
-                    var serverParams = new DeviceServerParametersData
+                    var serverParams = new DeviceServerParametersDataLevel
                     {
                         SensorToken = Guid.NewGuid().ToByteArray(),
-                        Frequencies = new float[3000]
+                        RfAttenuation_dB = context.Process.MeasTask.Att_dB,
+                        Preamplification_dB = context.Process.MeasTask.PreAmp_dB,
+                        RefLevel_dBm = context.Process.MeasTask.RefLevel_dBm,
+                        DetectorType = context.Process.MeasTask.DetectorType,
+                        MinFreq_MHz = context.Process.MeasTask.FreqStart_MHz,
+                        MaxFreq_MHz = context.Process.MeasTask.FreqStop_MHz,
+                        RBW_kHz = context.Process.MeasTask.RBW_kHz,
+                        SweepTime_s = context.Process.MeasTask.SweepTime_s,
+                        TraceCount = context.Process.MeasTask.TraceCount,
+                        TraceType = context.Process.MeasTask.TraceType
                     };
                     context.Process.Parameters = serverParams;
                 }
-                else if (context.Process.MeasTask.SomeMeasType == 2)
+                else
                 {
-                    var serverParams = new DeviceServerParametersData
-                    {
-                        SensorToken = Guid.NewGuid().ToByteArray(),
-                        Frequencies = new float[10000]
-                    };
-                    context.Process.Parameters = serverParams;
+                    throw new NotImplementedException($"Type {context.Process.MeasTask.OnlineMeasType} is not supported");
                 }
-                if (context.Process.MeasTask.SomeMeasType == 3)
-                {
-                    var serverParams = new DeviceServerParametersData
-                    {
-                        SensorToken = Guid.NewGuid().ToByteArray(),
-                        Frequencies = new float[100]
-                    };
-                    context.Process.Parameters = serverParams;
-                }
-
-
-
                 context.Finish();
             }
             catch (Exception e)
