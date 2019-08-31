@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
 {
     [Serializable]
-    public class ClientMeasTaskData : ClientData
+    public class DeviceServerParametersDataLevel : DeviceServerData
     {
-        public OnlineMeasType OnlineMeasType { get; set; }
-        public double FreqStart_MHz { get; set; }
-        public double FreqStop_MHz { get; set; }
+        public double MinFreq_MHz { get; set; }
+        public double MaxFreq_MHz { get; set; }
         public double RBW_kHz { get; set; }
         public double SweepTime_s { get; set; }
-        public int Att_dB { get; set; }
-        public int PreAmp_dB { get; set; }
+        public int RfAttenuation_dB { get; set; }
+        public int Preamplification_dB { get; set; }
         public int RefLevel_dBm { get; set; }
         public DetectorType DetectorType { get; set; }
         public TraceType TraceType { get; set; }
