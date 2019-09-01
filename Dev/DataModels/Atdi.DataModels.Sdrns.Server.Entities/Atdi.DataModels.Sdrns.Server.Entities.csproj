@@ -235,6 +235,7 @@
     <Content Include="DataLayer\SqlServer\Tables\ICSC.LINK_RES_SENSOR.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.LINK_SECTOR_FREQ.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.LINK_SECTOR_MASK.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.ONLINE_MEAS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.VALIDATION_LOGS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_DT_PARAM.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.MEAS_FREQ.sql" />
