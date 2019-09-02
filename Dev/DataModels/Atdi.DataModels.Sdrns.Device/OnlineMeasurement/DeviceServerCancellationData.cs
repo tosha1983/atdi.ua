@@ -9,5 +9,7 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
     [Serializable]
     public class DeviceServerCancellationData : DeviceServerData
     {
+        public string Message { get; set; }
+        public FailureReason FailureCode  { get; set; }
     }
 }

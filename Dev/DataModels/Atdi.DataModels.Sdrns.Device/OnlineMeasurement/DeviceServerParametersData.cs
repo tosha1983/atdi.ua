@@ -9,6 +9,6 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
     [Serializable]
     public class DeviceServerParametersData : DeviceServerData
     {
-        public double[] Freq_Hz { get; set; }
+        
     }
 }

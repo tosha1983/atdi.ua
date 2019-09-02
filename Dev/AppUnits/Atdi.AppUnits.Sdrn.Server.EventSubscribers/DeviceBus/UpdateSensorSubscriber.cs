@@ -15,6 +15,10 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
+using Atdi.DataModels.Sdrns.Server.Events;
+using Atdi.Contracts.Api.EventSystem;
+
+
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -26,6 +30,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IStatistics _statistics;
+        private readonly IEventEmitter _eventEmitter;
 
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _updateSensorHitsCounter;
@@ -37,9 +42,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             IDataLayer<EntityDataOrm> dataLayer, 
             ISdrnServerEnvironment environment,
             IStatistics statistics,
+            IEventEmitter eventEmitter,
             ILogger logger) 
             : base(messagesSite, logger)
         {
+            this._eventEmitter = eventEmitter;
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
             this._environment = environment;
@@ -571,6 +578,20 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         updateSensor.Status = "Error";
                         updateSensor.Message = "Something went wrong on the server during the updating of a new sensor";
                     }
+
+                    ///Отправка уведомления в AggregationServer о необходимости регистрации сенсора
+                    var measTaskEventToAggregationServer = new OnRegisterAggregationServer()
+                    {
+                        EquipmentTechId = deliveryObject.Equipment.TechId,
+                        SensorName = deliveryObject.Name,
+                        Name = $"OnRegisterAggregationServerEvent"
+                    };
+                    this._eventEmitter.Emit(measTaskEventToAggregationServer, new EventEmittingOptions()
+                    {
+                        Rule = EventEmittingRule.Default,
+                        Destination = new string[] { $"SubscriberOnRegisterAggregationServerEvent" }
+                    });
+
 
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendSensorUpdatingResultMessage, SensorUpdatingResult>();
                     envelop.SensorName = sensorName;

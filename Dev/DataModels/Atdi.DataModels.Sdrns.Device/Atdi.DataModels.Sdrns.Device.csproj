@@ -73,10 +73,10 @@
     <Compile Include="OnlineMeasurement\DeviceServerData.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerParametersDataLevel.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerParametersData.cs" />
-    <Compile Include="OnlineMeasurement\DeviceServerReturnFailureReasonAdapter.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerResultLevel.cs" />
     <Compile Include="OnlineMeasurement\DeviceServerResult.cs" />
     <Compile Include="OnlineMeasurement\Enum\DetectorType.cs" />
+    <Compile Include="OnlineMeasurement\Enum\FailureReason.cs" />
     <Compile Include="OnlineMeasurement\Enum\TraceType.cs" />
     <Compile Include="OnlineMeasurement\Enum\OnlineMeasType.cs" />
     <Compile Include="OnlineMeasurement\InitOnlineMeasurementOptions.cs" />

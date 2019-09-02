@@ -9,6 +9,7 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
     [Serializable]
     public class DeviceServerParametersDataLevel : DeviceServerParametersData
     {
+        public double[] Freq_Hz { get; set; }
         public double RBW_kHz { get; set; }
         public bool isChanged_RBW_kHz { get; set; }
         public int Att_dB { get; set; }
