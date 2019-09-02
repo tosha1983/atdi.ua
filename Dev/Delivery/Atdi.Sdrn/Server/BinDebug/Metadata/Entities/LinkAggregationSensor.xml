@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkAggregationSensor"
+  Title       = "LinkAggregationSensor"
+  Desc        = "The LinkAggregationSensor"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_AGGREGATION_SENSOR</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="SENSOR" SourceType="Reference" SourceName="Sensor" Title="Relation LinkAggregationSensor to Sensor"/>
+    <Field Desc="AggregationServerName" Title="AggregationServerName" Name="AggregationServerName" DataType="Text.150" SourceName="AGGR_SERVER_INSTANCE" SourceType="Column" Required="true"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
