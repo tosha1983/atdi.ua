@@ -40,10 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OnMeasTaskToMasterServerEvent.cs" />
-    <Compile Include="OnRegisterAggregationServer.cs" />
-    <Compile Include="OnMeasTaskEvent.cs" />
-    <Compile Include="OnReceivedNewSOResultEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

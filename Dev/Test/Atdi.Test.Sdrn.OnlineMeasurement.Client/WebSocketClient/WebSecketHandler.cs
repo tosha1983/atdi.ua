@@ -28,7 +28,7 @@ namespace WebSocketClientImpl
                     
                     var jObject = msg.Container as Newtonsoft.Json.Linq.JObject;
                     var parameters = jObject.ToObject<DeviceServerParametersData>();
-                    Console.WriteLine($"Received data: get measurment result parameters: Length = #{parameters.Frequencies.Length}");
+                    //Console.WriteLine($"Received data: get measurment result parameters: Length = #{parameters.Frequencies.Length}");
 
                     var readyMsg = new OnlineMeasMessage
                     {
@@ -46,7 +46,7 @@ namespace WebSocketClientImpl
                     Console.WriteLine($"Received data: get measurment result");
                     var jObject = msg.Container as Newtonsoft.Json.Linq.JObject;
                     var result = jObject.ToObject<DeviceServerResult>();
-                    Console.WriteLine($" {result.Index}  -----: {result.Time}; Length {result.Levels_dB.Length}");
+                    //Console.WriteLine($" {result.Index}  -----: {result.Time}; Length {result.Levels_dB.Length}");
                 }
             }
             catch  (Exception e)

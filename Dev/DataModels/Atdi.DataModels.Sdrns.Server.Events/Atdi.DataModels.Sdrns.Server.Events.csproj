@@ -44,6 +44,10 @@
     <Compile Include="DevicesBusEvent.cs" />
     <Compile Include="MeasResultAggregated\MSMeasResultAggregated.cs" />
     <Compile Include="MeasResultAppeared\MSMeasResultAppeared.cs" />
+    <Compile Include="MeasTask\OnMeasTaskEvent.cs" />
+    <Compile Include="MeasTask\OnMeasTaskToMasterServerEvent.cs" />
+    <Compile Include="MeasTask\OnReceivedNewSOResultEvent.cs" />
+    <Compile Include="MeasTask\OnRegisterAggregationServer.cs" />
     <Compile Include="OnlineMeasurement\OnInitOnlineMeasurement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MeasResultAggregated\SGMeasResultAggregated.cs" />

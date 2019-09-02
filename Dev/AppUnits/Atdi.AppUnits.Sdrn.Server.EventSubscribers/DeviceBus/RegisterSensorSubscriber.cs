@@ -16,7 +16,7 @@ using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
 using Atdi.Contracts.Api.EventSystem;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
      
 
 
