@@ -14,17 +14,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
 {
     public static class ConvertToMesureTraceParameterForLevel
     {
-        public static MesureTraceParameter ConvertForLevel(this DeviceServerParametersDataLevel  deviceServerParametersDataLevel)
+        public static MesureTraceParameter ConvertForLevel(this ClientMeasTaskData deviceServerParametersDataLevel)
         {
             MesureTraceParameter mesureTraceParameter = new MesureTraceParameter();
 
-            mesureTraceParameter.FreqStart_Hz = (decimal)(deviceServerParametersDataLevel.MinFreq_MHz * 1000000);
-            mesureTraceParameter.FreqStop_Hz = (decimal)(deviceServerParametersDataLevel.MaxFreq_MHz * 1000000);
+            mesureTraceParameter.FreqStart_Hz = (decimal)(deviceServerParametersDataLevel.FreqStart_MHz * 1000000);
+            mesureTraceParameter.FreqStop_Hz = (decimal)(deviceServerParametersDataLevel.FreqStop_MHz * 1000000);
             mesureTraceParameter.SweepTime_s = deviceServerParametersDataLevel.SweepTime_s;
 
             mesureTraceParameter.RefLevel_dBm = deviceServerParametersDataLevel.RefLevel_dBm;
-            mesureTraceParameter.Att_dB = deviceServerParametersDataLevel.RfAttenuation_dB;    
-            mesureTraceParameter.PreAmp_dB = deviceServerParametersDataLevel.Preamplification_dB;
+            mesureTraceParameter.Att_dB = deviceServerParametersDataLevel.Att_dB;    
+            mesureTraceParameter.PreAmp_dB = deviceServerParametersDataLevel.PreAmp_dB;
             mesureTraceParameter.RBW_Hz = deviceServerParametersDataLevel.RBW_kHz * 1000;
             switch (deviceServerParametersDataLevel.DetectorType)
             {

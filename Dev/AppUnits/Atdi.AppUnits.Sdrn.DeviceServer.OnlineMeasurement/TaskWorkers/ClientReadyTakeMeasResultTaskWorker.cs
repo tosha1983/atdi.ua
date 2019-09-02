@@ -68,7 +68,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                         return;
                     }
 
-                    var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.Parameters);
+                    var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.MeasTask);
 
                     //////////////////////////////////////////////
                     // 
