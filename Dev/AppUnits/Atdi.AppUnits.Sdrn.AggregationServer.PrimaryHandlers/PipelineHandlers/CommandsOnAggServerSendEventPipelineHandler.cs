@@ -12,7 +12,7 @@ using Atdi.Platform.Logging;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.Contracts.Api.DataBus;
 using Atdi.DataModels.Api.DataBus;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.DataModels.Api.EventSystem;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers

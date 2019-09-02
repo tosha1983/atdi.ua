@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.Contracts.Sdrn.Server;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using DEV = Atdi.DataModels.Sdrns.Device;

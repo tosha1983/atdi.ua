@@ -12,6 +12,7 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
         ClientReadyTakeMeasResult,
         DeviceServerParameters,
         DeviceServerMeasResult,
+        DeviceServerCancellation,
         ClientTaskCancellation
     }
 }

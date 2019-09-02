@@ -288,6 +288,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 measTask.SignalingMeasTaskParameters.Standard = task.SignalingMeasTaskParameters.Standard;
                 measTask.SignalingMeasTaskParameters.triggerLevel_dBm_Hz = task.SignalingMeasTaskParameters.triggerLevel_dBm_Hz;
             }
+            measTask.MeasDtParam = task.GetMeasDtParam();
+            measTask.MeasFreqParam = task.GetMeasFreqParam();
             return measTask;
         }
 

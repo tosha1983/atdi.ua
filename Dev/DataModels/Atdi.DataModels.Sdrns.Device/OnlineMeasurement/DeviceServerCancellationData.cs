@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
 {
     [Serializable]
-    public class DeviceServerParametersData : DeviceServerData
+    public class DeviceServerCancellationData : DeviceServerData
     {
-        public double[] Freq_Hz { get; set; }
     }
 }

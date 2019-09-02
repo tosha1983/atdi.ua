@@ -13,7 +13,7 @@ using MD = Atdi.DataModels.Sdrns.Server.Entities;
 using Atdi.DataModels.DataConstraint;
 using Atdi.Platform;
 using Atdi.Contracts.Api.EventSystem;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.DataModels.Sdrns.Server;
 using Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers;
 
