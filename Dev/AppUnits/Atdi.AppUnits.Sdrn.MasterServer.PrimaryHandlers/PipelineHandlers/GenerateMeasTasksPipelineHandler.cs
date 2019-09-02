@@ -11,7 +11,7 @@ using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Platform.Logging;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.Api.EventSystem;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.AppUnits.Sdrn.MasterServer.LoadData;
 
 

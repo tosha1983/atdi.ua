@@ -10,7 +10,7 @@ using Atdi.Contracts.Sdrn.Server;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using DEV = Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.Api.EventSystem;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 
 
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.Sdrn.Server.Events
+namespace Atdi.DataModels.Sdrns.Server.Events
 {
     public class OnRegisterAggregationServer : Event
     {

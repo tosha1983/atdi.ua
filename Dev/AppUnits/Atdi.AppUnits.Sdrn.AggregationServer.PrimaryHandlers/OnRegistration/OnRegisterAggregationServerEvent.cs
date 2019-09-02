@@ -1,7 +1,7 @@
 ﻿using Atdi.Contracts.Api.EventSystem;
 using Atdi.Platform.Logging;
 using System;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.Api.EventSystem;
 using Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers;

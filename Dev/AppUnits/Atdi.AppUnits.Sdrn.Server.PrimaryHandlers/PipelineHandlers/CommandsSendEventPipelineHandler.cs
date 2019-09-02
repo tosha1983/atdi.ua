@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.Api.EventSystem;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 using System.Linq;
 
 

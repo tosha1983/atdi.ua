@@ -5,17 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Modules.Sdrn.Server.Events
+namespace Atdi.DataModels.Sdrns.Server.Events
 {
-    public class OnMeasTaskEvent : Event
+    public class OnMeasTaskToMasterServerEvent : Event
     {
-        public OnMeasTaskEvent()
-            : base("OnNewMeasTask")
+        public OnMeasTaskToMasterServerEvent()
+            : base("OnMeasTaskToMasterServerEvent")
         {
         }
 
-        public OnMeasTaskEvent(string source) 
-            : base("OnNewMeasTask", source)
+        public OnMeasTaskToMasterServerEvent(string source) 
+            : base("OnMeasTaskToMasterServerEvent", source)
         {
         }
 
@@ -24,6 +24,7 @@ namespace Atdi.Modules.Sdrn.Server.Events
         public string MeasTaskIds { get; set; }
         public string SensorName { get; set; }
         public string EquipmentTechId { get; set; }
+        public string AggregationInstance { get; set; }
         public long SubTaskSensorId { get; set; }
 
     }
