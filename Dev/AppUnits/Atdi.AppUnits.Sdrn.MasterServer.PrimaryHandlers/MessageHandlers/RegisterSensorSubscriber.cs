@@ -736,6 +736,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
                                         {
                                             var location = sensorData.Locations[f];
 
+                                            List<long> listSensorLocations = new List<long>();
                                             long idSensorlocation = -1;
                                             var querySensorPolygon = this._dataLayer.GetBuilder<MD.ISensorLocation>()
                                             .From()
@@ -745,21 +746,27 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
                                             .OrderByAsc(c => c.Id);
 
                                             scope.Executor
-                                            .Fetch(querySensorPolygon, reader =>
+                                            .Fetch(querySensorPolygon, readerSensorLocation =>
                                             {
                                                 var result = false;
-                                                while (reader.Read())
+                                                while (readerSensorLocation.Read())
                                                 {
-                                                    idSensorlocation = reader.GetValue(c => c.Id);
-                                                    var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
-                                                    builderUpdateSensLocations.SetValue(c => c.Status, "Z");
-                                                    builderUpdateSensLocations.Where(c => c.Id, ConditionOperator.Equal, idSensorlocation);
-                                                    scope.Executor
-                                                    .Execute(builderUpdateSensLocations);
+                                                    listSensorLocations.Add(readerSensorLocation.GetValue(c => c.Id));
                                                     result = true;
                                                 }
                                                 return result;
                                             });
+
+                                            for (int j = 0; j < listSensorLocations.Count; j++)
+                                            {
+                                                idSensorlocation = listSensorLocations[j];
+                                                var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                                                builderUpdateSensLocations.SetValue(c => c.Status, "Z");
+                                                builderUpdateSensLocations.Where(c => c.Id, ConditionOperator.Equal, idSensorlocation);
+                                                scope.Executor
+                                                .Execute(builderUpdateSensLocations);
+                                            }
+
 
                                             var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                             builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
