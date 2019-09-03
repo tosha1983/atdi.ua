@@ -28,6 +28,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
 
         public int CountMeasurementDone { get; set; }
 
+        public byte[] SensorToken { get; set; }
+
         // Фаза готовности клиента получать результаты измерения
         public ClientReadyData ReadyData { get; set; }
 
