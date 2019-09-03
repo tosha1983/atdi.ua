@@ -124,10 +124,6 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.Server.Events\Atdi.Modules.Sdrn.Server.Events.csproj">
-      <Project>{f06a380a-c156-4e02-a6a0-86dbe4a9a442}</Project>
-      <Name>Atdi.Modules.Sdrn.Server.Events</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>

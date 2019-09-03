@@ -23,7 +23,7 @@ namespace Atdi.Test.Sdrn.OnlineMeasurement.Client
 
             var initResult = sdrnServer.InitOnlineMeasurement(new OnlineMeasurementOptions
             {
-                SensorId = 110,
+                SensorId = 118,
                 Period = new TimeSpan(0, 10, 0)
             });
 
