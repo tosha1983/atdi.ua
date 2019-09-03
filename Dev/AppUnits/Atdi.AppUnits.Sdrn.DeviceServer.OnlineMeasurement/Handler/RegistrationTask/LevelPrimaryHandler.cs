@@ -36,7 +36,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     parametersDataLevel.Freq_Hz = CutArray(result.Freq_Hz, this._config.MaxCountPoint.Value);
                     parametersDataLevel.Att_dB = result.Att_dB;
                     parametersDataLevel.PreAmp_dB = result.PreAmp_dB;
-                    parametersDataLevel.RBW_kHz = result.RBW_Hz;
+                    parametersDataLevel.RBW_kHz = (double)(result.RBW_Hz /1000.0);
                     parametersDataLevel.RefLevel_dBm = result.RefLevel_dBm;
                     taskContext.SetEvent(parametersDataLevel);
                     taskContext.Process.CountMeasurementDone++;
