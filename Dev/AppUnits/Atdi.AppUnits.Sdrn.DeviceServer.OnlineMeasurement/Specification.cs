@@ -54,7 +54,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         public static readonly EventText StartedClientTaskRegistrationTaskWorker = "Started ClientTaskRegistrationTaskWorker...";
         public static readonly EventText FinishClientTaskRegistrationTaskWorker = "Finish ClientTaskRegistrationTaskWorker...";
         public static readonly EventText StartedClientReadyTakeMeasResultTaskWorker = "Started ClientReadyTakeMeasResultTaskWorker...";
-        
+        public static readonly EventText StoppingThreadAnErrorCommunicatingAdapter = "Stopping a thread due to an error communicating with the adapter";
+
+
     }
     static class TraceScopeNames
     {

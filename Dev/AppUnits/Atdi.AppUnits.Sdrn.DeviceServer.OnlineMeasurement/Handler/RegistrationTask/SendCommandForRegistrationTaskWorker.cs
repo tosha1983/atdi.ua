@@ -51,29 +51,114 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 var error = new ExceptionProcessLevel();
                 if (context.WaitEvent<ExceptionProcessLevel>(out error, 1) == true)
                 {
-                    var checkErrorAdapter = new CheckErrorAdapterForRegistrationTaskWorker(this._config, this._controller, this._logger);
-                    var deviceServerCancellationData = checkErrorAdapter.Handle(context, error, out deviceServerParametersDataLevel);
-                    if (deviceServerCancellationData != null)
+                    DeviceServerCancellationData deviceServerCancellationDataValue = new DeviceServerCancellationData();
+                    switch (error._failureReason)
+                    {
+                        // повторяем 50 раз иначе ошибка (повтор через 1/25 сек)
+                        case CommandFailureReason.DeviceIsBusy:
+                            while (context.Process.CountLoopForRegistrationTaskWorkerDeviceIsBusy <= 50)
+                            {
+                                this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                                (
+                                ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                                ) =>
+                                {
+                                    taskContext.SetEvent<ExceptionProcessLevel>(new ExceptionProcessLevel(failureReason, ex));
+                                });
+
+
+                                isDown = context.WaitEvent<DeviceServerParametersDataLevel>(out deviceServerParametersDataLevel, (int)(deviceCommand.Timeout));
+                                if (isDown == true) // таймут - результатов нет
+                                {
+                                    isSuccessOperation = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    System.Threading.Thread.Sleep(this._config.minimumTimeDurationLevel_ms);
+                                    isSuccessOperation = false;
+                                }
+                                context.Process.CountLoopForRegistrationTaskWorkerDeviceIsBusy++;
+                            }
+
+                            if (isSuccessOperation == false)
+                            {
+                                deviceServerCancellationDataValue.FailureCode = FailureReason.DeviceIsBusy;
+                            }
+
+                            break;
+                        case CommandFailureReason.TimeoutExpired:
+                            while (context.Process.CountLoopForRegistrationTaskWorkerTimeoutExpired <= 10)
+                            {
+                                this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                                (
+                                ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                                ) =>
+                                {
+                                    taskContext.SetEvent<ExceptionProcessLevel>(new ExceptionProcessLevel(failureReason, ex));
+                                });
+
+
+                                isDown = context.WaitEvent<DeviceServerParametersDataLevel>(out deviceServerParametersDataLevel, (int)(deviceCommand.Timeout));
+                                if (isDown == true) // таймут - результатов нет
+                                {
+                                    isSuccessOperation = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    System.Threading.Thread.Sleep(this._config.minimumTimeDurationLevel_ms);
+                                    isSuccessOperation = false;
+                                }
+                                context.Process.CountLoopForRegistrationTaskWorkerTimeoutExpired++;
+                            }
+
+                            if (isSuccessOperation == false)
+                            {
+                                deviceServerCancellationDataValue.FailureCode = FailureReason.TimeoutExpired;
+                            }
+
+                           
+                            break;
+
+                        case CommandFailureReason.CanceledBeforeExecution:
+                            deviceServerCancellationDataValue.FailureCode = FailureReason.CanceledBeforeExecution;
+                            break;
+                        case CommandFailureReason.CanceledExecution:
+                            deviceServerCancellationDataValue.FailureCode = FailureReason.CanceledExecution;
+                            break;
+                        case CommandFailureReason.Exception:
+                            deviceServerCancellationDataValue.FailureCode = FailureReason.Exception;
+                            break;
+                        case CommandFailureReason.ExecutionCompleted:
+                            deviceServerCancellationDataValue.FailureCode = FailureReason.ExecutionCompleted;
+                            break;
+                        case CommandFailureReason.NotFoundConvertor:
+                            deviceServerCancellationDataValue.FailureCode = FailureReason.NotFoundConvertor;
+                            break;
+                        case CommandFailureReason.NotFoundDevice:
+                            deviceServerCancellationDataValue.FailureCode = FailureReason.NotFoundDevice;
+                            break;
+                    }
+
+                    if (isSuccessOperation == false)
                     {
                         var message = new OnlineMeasMessage
                         {
                             Kind = OnlineMeasMessageKind.DeviceServerCancellation,
-                            Container = deviceServerCancellationData
+                            Container = deviceServerCancellationDataValue
                         };
 
                         // и  отправляем DeviceServerCancellationData
                         context.Process.Publisher.Send(message);
                         _logger.StartTrace(Contexts.ThisComponent, Categories.SendCommandForRegistrationTaskWorker, Events.ErrorReceivingResult);
-                        isSuccessOperation = false;
-                    }
-                    else
-                    {
-                        isSuccessOperation = true;
                     }
                 }
             }
             else
             {
+                context.Process.CountLoopForRegistrationTaskWorkerDeviceIsBusy = 0;
+                context.Process.CountLoopForRegistrationTaskWorkerTimeoutExpired = 0;
                 isSuccessOperation = true;
             }
 
