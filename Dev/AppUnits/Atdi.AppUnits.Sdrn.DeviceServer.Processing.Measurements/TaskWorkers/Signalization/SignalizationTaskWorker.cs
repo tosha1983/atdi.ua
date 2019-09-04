@@ -145,7 +145,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //////////////////////////////////////////////
                     MeasResults outResultData = null;
                     bool isDown = context.WaitEvent<MeasResults>(out outResultData,  (int)context.Task.maximumTimeForWaitingResultSignalization);
-                    if (isDown == false) // таймут - результатов нет
+                        if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
                         if (context.Task.taskParameters.status == StatusTask.Z.ToString())
