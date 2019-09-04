@@ -141,6 +141,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         case CommandFailureReason.NotFoundDevice:
                             deviceServerCancellationDataValue.FailureCode = FailureReason.NotFoundDevice;
                             break;
+                        default:
+                            throw new Exception($"Not supported type {error._failureReason}");
                     }
 
                     if (isSuccessOperation == false)
