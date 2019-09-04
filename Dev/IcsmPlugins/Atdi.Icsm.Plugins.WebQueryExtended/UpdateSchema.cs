@@ -113,6 +113,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("DOZV_DATE_FROM", "DATE", "Date", null, null);
                 s.DeclareField("DOZV_DATE_TO", "DATE", "Date", null, null);
                 s.DeclareField("DOZV_DATE_CANCEL", "DATE", "Date", null, null);
+                s.DeclareField("STATION_NAME", "VARCHAR(100)", null, null, null);
                 s.DeclareField("EM_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("EQUIP_NAME", "VARCHAR(50)", null, null, null);
                 s.DeclareField("EQUIP_ID", "NUMBER(9,0)", null, null, null);
