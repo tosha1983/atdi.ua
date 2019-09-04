@@ -109,7 +109,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var nullableEmittings = emittingsId.Cast<long?>().ToArray();
 
                         var builderDeleteWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Delete();
-                        builderDeleteWorkTime.Where(c => c.EmittingId, ConditionOperator.In, nullableEmittings);
+                        builderDeleteWorkTime.Where(c => c.EMITTING.Id, ConditionOperator.In, nullableEmittings);
                         var cntDelIWorkTime = scope.Executor.Execute(builderDeleteWorkTime);
 
                         //var builderDeleteSignalMask = this._dataLayer.GetBuilder<MD.ISignalMask>().Delete();

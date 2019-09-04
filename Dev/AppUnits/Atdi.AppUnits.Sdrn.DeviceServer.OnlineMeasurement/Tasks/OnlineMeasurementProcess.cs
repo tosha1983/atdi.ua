@@ -28,6 +28,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
 
         public int CountMeasurementDone { get; set; }
 
+        public int CountLoopForRegistrationTaskWorkerDeviceIsBusy { get; set; }
+        public int CountLoopForRegistrationTaskWorkerTimeoutExpired { get; set; }
+
+
+        public int CountLoopForResultTaskWorkerDeviceIsBusy { get; set; }
+        public int CountLoopForResultTaskWorkerTimeoutExpired { get; set; }
+
+
+        public byte[] SensorToken { get; set; }
+
         // Фаза готовности клиента получать результаты измерения
         public ClientReadyData ReadyData { get; set; }
 

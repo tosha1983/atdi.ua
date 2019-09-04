@@ -81,7 +81,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             {
                 if (deliveryObject.Measurement != MeasurementType.Signaling)
                 {
-                    throw new InvalidOperationException("Incorrect MeasurementType. Expected is SpectrumOccupation");
+                    throw new InvalidOperationException("Incorrect MeasurementType. Expected is Signaling");
                 }
 
                 var status = SdrnMessageHandlingStatus.Unprocessed;
@@ -340,7 +340,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             continue;
 
                                         var builderInsertIWorkTime = this._dataLayer.GetBuilder<MD.IWorkTime>().Insert();
-                                        builderInsertIWorkTime.SetValue(c => c.EmittingId, valInsReferenceEmitting.Id);
+                                        builderInsertIWorkTime.SetValue(c => c.EMITTING.Id, valInsReferenceEmitting.Id);
                                         if (workTime.HitCount >= 0 && workTime.HitCount <= Int32.MaxValue)
                                             builderInsertIWorkTime.SetValue(c => c.HitCount, workTime.HitCount);
                                         builderInsertIWorkTime.SetValue(c => c.PersentAvailability, workTime.PersentAvailability);
