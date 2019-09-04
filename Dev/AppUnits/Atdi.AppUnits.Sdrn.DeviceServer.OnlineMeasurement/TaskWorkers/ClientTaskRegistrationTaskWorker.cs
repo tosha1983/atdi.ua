@@ -44,7 +44,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                     deviceCommand.Timeout = this._config.maximumDurationMeasLevel_ms;
                     deviceCommand.Options = CommandOption.StartImmediately;
                     sendCommandForRegistrationTaskWorker.Handle(context, deviceCommand, out DeviceServerParametersDataLevel deviceServerParametersDataLevel);
-                    
                 }
                 else
                 {

@@ -56,6 +56,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         case DataModels.Sdrn.DeviceServer.Commands.Parameters.TraceType.Unknown:
                             traceType = TraceType.Unknown;
                             break;
+                        default:
+                            throw new Exception($"Not supported type {command.Parameter.TraceType}");
                     }
 
                     levelResult.Level = CutArray(result.Level, traceType, this._config.MaxCountPoint.Value);

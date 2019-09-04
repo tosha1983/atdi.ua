@@ -70,8 +70,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                        
                         deviceCommand.Timeout = this._config.maximumDurationMeasLevel_ms;
                         deviceCommand.Options = CommandOption.StartImmediately;
-                        sendCommandForMeasResultTaskWorker.Handle(context, deviceCommand, out DeviceServerResultLevel deviceServerResultLevel);
-
+                        sendCommandForMeasResultTaskWorker.Handle(context, deviceCommand, out DeviceServerResultLevel deviceServerResultLevel, out bool isCriticalError);
+                        if (isCriticalError==true)
+                        {
+                            context.Cancel();
+                            _logger.Info(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.StoppingThreadAnErrorCommunicatingAdapter);
+                            return;
+                        }
                         //////////////////////////////////////////////
                         // 
                         // Приостановка потока на рассчитаное время 
