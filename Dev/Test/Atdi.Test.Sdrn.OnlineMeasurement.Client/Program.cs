@@ -23,7 +23,7 @@ namespace Atdi.Test.Sdrn.OnlineMeasurement.Client
 
             var initResult = sdrnServer.InitOnlineMeasurement(new OnlineMeasurementOptions
             {
-                SensorId = 2,
+                SensorId = 118,
                 Period = new TimeSpan(0, 10, 0)
             });
 
@@ -58,7 +58,17 @@ namespace Atdi.Test.Sdrn.OnlineMeasurement.Client
                         Container = new ClientMeasTaskData
                         {
                             SensorToken = status.SensorToken,
-                            SomeMeasType = 3
+                            Att_dB = 21,
+                            DetectorType = DetectorType.Auto,
+                            FreqStart_MHz = 935,
+                            FreqStop_MHz = 960,
+                            OnlineMeasType = OnlineMeasType.Level,
+                            PreAmp_dB = 11,
+                            RBW_kHz = 1,
+                            RefLevel_dBm = -1,
+                            SweepTime_s = 0.001,
+                            TraceCount = 10,
+                            TraceType = TraceType.Auto
                         }
                     };
                     var json = JsonConvert.SerializeObject(message);

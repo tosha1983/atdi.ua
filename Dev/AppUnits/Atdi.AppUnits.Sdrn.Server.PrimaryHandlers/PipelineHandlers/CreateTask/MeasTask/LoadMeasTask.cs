@@ -291,6 +291,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             {
                 measTaskSignaling.RefSituation = listReferenceSituation.ToArray();
             }
+            measTaskSignaling.MeasDtParam = GetMeasDtParam(id);
+            measTaskSignaling.MeasFreqParam = GetMeasFreqParam(id);
             return measTaskSignaling;
         }
 

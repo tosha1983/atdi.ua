@@ -27,7 +27,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         public static readonly EventCategory GetMeasTaskFromBus = "Get MeasTask from bus";
         public static readonly EventCategory SendMeasTaskHandlerStart = "Get MeasTask from bus";
         public static readonly EventCategory SendCommandHandlerHandlerStart = "SendCommandHandler started";
+        public static readonly EventCategory ClientReadyTakeMeasResultTaskWorker = "ClientReadyTakeMeasResultTaskWorker";
+        public static readonly EventCategory ClientTaskRegistrationTaskWorker = "ClientTaskRegistrationTaskWorker";
+        public static readonly EventCategory SendCommandForMeasResultTaskWorker = "SendCommandForMeasResultTaskWorker";
+        public static readonly EventCategory SendCommandForRegistrationTaskWorker = "SendCommandForRegistrationTaskWorker";
         
+
+
+
+
     }
 
     static class Events
@@ -39,6 +47,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         public static readonly EventText UpdateTaskParameters = "Update TaskParameters";
         public static readonly EventText StartedEventTask = "Started EventTask Task.Id = {0}";
         public static readonly EventText StartedSendRegistrationResultTask = "Started SendRegistrationResultTask Task.Id = {0}";
+        public static readonly EventText HandlingErrorSendCommandController = "Handling error send command  Id = {0} to controller";
+        public static readonly EventText SleepThread = "Sleep thread for command id = {0} at time {1}";
+        public static readonly EventText OnlineTaskIsCancled = "Online task is canceled";
+        public static readonly EventText ErrorReceivingResult = "An error occurred while receiving the result for Online Measurement. Send cancellation message.";
+        public static readonly EventText StartedClientTaskRegistrationTaskWorker = "Started ClientTaskRegistrationTaskWorker...";
+        public static readonly EventText FinishClientTaskRegistrationTaskWorker = "Finish ClientTaskRegistrationTaskWorker...";
+        public static readonly EventText StartedClientReadyTakeMeasResultTaskWorker = "Started ClientReadyTakeMeasResultTaskWorker...";
+        public static readonly EventText StoppingThreadAnErrorCommunicatingAdapter = "Stopping a thread due to an error communicating with the adapter";
+
+
     }
     static class TraceScopeNames
     {

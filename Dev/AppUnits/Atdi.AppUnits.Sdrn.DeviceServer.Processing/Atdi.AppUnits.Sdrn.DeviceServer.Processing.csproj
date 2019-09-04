@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Hosts\Atdi.AppServer.Sdrn.DeviceServer.Console.SG\bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="Convertors\BandWidth\ConvertTaskParametersToMesureTraceParameterForBandWidth.cs" />
-    <Compile Include="Convertors\Level\ConvertTaskParametersToMesureTraceParameterForLevel.cs" />
     <Compile Include="Convertors\Signaling\ConvertTaskParametersToMesureTraceParameterForSignaling.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertSensorToSensorParameters.cs" />
     <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />

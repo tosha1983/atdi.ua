@@ -7,54 +7,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.DeviceServer.Commands;
+using Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
+using Atdi.DataModels.Sdrn.DeviceServer.Processing;
+using Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results;
+using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
 {
     public class ClientTaskRegistrationTaskWorker : ITaskWorker<ClientTaskRegistrationTask, OnlineMeasurementProcess, PerThreadTaskWorkerLifetime>
     {
+        private readonly AppServerComponentConfig _config;
+        private readonly IController _controller;
+        private readonly ILogger _logger;
+
+        public ClientTaskRegistrationTaskWorker(AppServerComponentConfig config, IController controller, ILogger logger)
+        {
+            this._config = config;
+            this._controller = controller;
+            this._logger = logger;
+        }
+
         public void Run(ITaskContext<ClientTaskRegistrationTask, OnlineMeasurementProcess> context)
         {
             try
             {
-                
+                _logger.Verbouse(Contexts.ThisComponent, Categories.ClientTaskRegistrationTaskWorker, Events.StartedClientTaskRegistrationTaskWorker);
 
-                if (context.Process.MeasTask.SomeMeasType == 1)
+                if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
-                    var serverParams = new DeviceServerParametersData
-                    {
-                        SensorToken = Guid.NewGuid().ToByteArray(),
-                        Frequencies = new float[3000]
-                    };
-                    context.Process.Parameters = serverParams;
+                    var sendCommandForRegistrationTaskWorker = new SendCommandForRegistrationTaskWorker(this._config, this._controller, this._logger);
+                    context.Process.SensorToken = Guid.NewGuid().ToByteArray();
+
+                    var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.MeasTask);
+                    var deviceCommand = new MesureTraceCommand(measTraceParameter);
+                    deviceCommand.Timeout = this._config.maximumDurationMeasLevel_ms;
+                    deviceCommand.Options = CommandOption.StartImmediately;
+                    sendCommandForRegistrationTaskWorker.Handle(context, deviceCommand, out DeviceServerParametersDataLevel deviceServerParametersDataLevel);
                 }
-                else if (context.Process.MeasTask.SomeMeasType == 2)
+                else
                 {
-                    var serverParams = new DeviceServerParametersData
-                    {
-                        SensorToken = Guid.NewGuid().ToByteArray(),
-                        Frequencies = new float[10000]
-                    };
-                    context.Process.Parameters = serverParams;
+                    throw new NotImplementedException($"Type {context.Process.MeasTask.OnlineMeasType} is not supported");
                 }
-                if (context.Process.MeasTask.SomeMeasType == 3)
-                {
-                    var serverParams = new DeviceServerParametersData
-                    {
-                        SensorToken = Guid.NewGuid().ToByteArray(),
-                        Frequencies = new float[100]
-                    };
-                    context.Process.Parameters = serverParams;
-                }
-
-
-
                 context.Finish();
+
+                _logger.Verbouse(Contexts.ThisComponent, Categories.ClientTaskRegistrationTaskWorker, Events.FinishClientTaskRegistrationTaskWorker);
             }
             catch (Exception e)
             {
                 context.Abort(e);
+                _logger.Exception(Contexts.ThisComponent, Categories.ClientTaskRegistrationTaskWorker, e);
             }
-            
         }
     }
 }

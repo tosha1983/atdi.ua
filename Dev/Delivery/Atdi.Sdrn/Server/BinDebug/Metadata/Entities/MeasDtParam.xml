@@ -11,7 +11,6 @@
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Id" Desc="Id"/>
-    <Field Desc="TypeMeasurements" Title="TypeMeasurements" Name="TypeMeasurements" DataType="Text.50" SourceName="TYPE_MEASUREMENTS" SourceType="Column" Required="false"/>
     <Field Desc="DetectType" Title="DetectType" Name="DetectType" DataType="Text.50" SourceName="DETECT_TYPE" SourceType="Column" Required="false"/>
     <Field Desc="Rfattenuation" Title="Rfattenuation" Name="Rfattenuation" DataType="Double.30.10" SourceName="RF_ATTENUATION" SourceType="Column" Required="false"/>
     <Field Desc="Ifattenuation" Title="Ifattenuation" Name="Ifattenuation" DataType="Double.30.10" SourceName="IF_ATTENUATION" SourceType="Column" Required="false"/>
@@ -22,6 +21,7 @@
     <Field Desc="RBW, kHz" Title="RBW, kHz" Name="Rbw" DataType="Double.30.10" SourceName="RBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
     <Field Desc="VBW, kHz" Title="VBW, kHz" Name="Vbw" DataType="Double.30.10" SourceName="VBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
     <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasDtParam to MeasTask"/>
+    <Field Desc="SwNumber" Title="SwNumber" Name="SwNumber" DataType="Integer.32" SourceName="SW_NUMBER" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

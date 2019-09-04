@@ -26,10 +26,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
         //  в ответ устройство в свойство Parameters ложить описание результатов
         public ClientMeasTaskData MeasTask { get; set; }
 
+        public int CountMeasurementDone { get; set; }
+
+        public int CountLoopForRegistrationTaskWorkerDeviceIsBusy { get; set; }
+        public int CountLoopForRegistrationTaskWorkerTimeoutExpired { get; set; }
+
+
+        public int CountLoopForResultTaskWorkerDeviceIsBusy { get; set; }
+        public int CountLoopForResultTaskWorkerTimeoutExpired { get; set; }
+
+
+        public byte[] SensorToken { get; set; }
+
         // Фаза готовности клиента получать результаты измерения
         public ClientReadyData ReadyData { get; set; }
 
-        public DeviceServerParametersData Parameters { get; set; }
+        public DeviceServerParametersDataLevel Parameters { get; set; }
 
         public WebSocketPublisher Publisher { get; set; }
     }

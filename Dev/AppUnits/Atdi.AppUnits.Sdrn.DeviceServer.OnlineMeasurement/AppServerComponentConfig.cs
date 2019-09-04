@@ -27,5 +27,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         [ComponentConfigProperty("WebSocket.BufferSize")]
         public int? WebSocketBufferSize { get; set; }
 
+        /// <summary>
+        /// Максимально допустимое число точек для массивов Level, Freq
+        /// </summary>
+        public int? MaxCountPoint { get; set; }
+
+
+        /// <summary>
+        /// Максимальное время ожидания при получении результата
+        /// </summary>
+        public int maximumDurationMeasLevel_ms { get; set; }
+
+
+        /// <summary>
+        /// Минимально допустимое время,  которое отводится на  получение и отправку одного результата
+        /// </summary>
+        public int minimumTimeDurationLevel_ms { get; set; }
+
     }
 }

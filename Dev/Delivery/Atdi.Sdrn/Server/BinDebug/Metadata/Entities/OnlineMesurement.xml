@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "OnlineMesurement" 
+  Title       = "Online Mesurement" 
+  Desc        = "The info of the online mesurement that inits between a client and a sensor"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>ONLINE_MEAS</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" Title="ID"  Desc="The ID of the record of the online measurement"  DataType="Counter.64" SourceName="ID" SourceType="Column" Required="true"/>
+    <Field Name="CreatedDate" DataType="DateTimeOffset" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="true"/>
+    <Field Name="ServerToken" DataType="Code.Guid" SourceName="SRV_TOKEN" SourceType="Column" Required="true" Desc="The server token" Title="Server Token" />
+    
+    <Field Name="StatusCode" DataType="Code.u08" SourceName="STATUS_CODE" SourceType="Column" Required="true" Desc="The Status Code" Title="Status Code" />
+    <Field Name="StatusNote" DataType="Text.MAX" SourceName="STATUS_NOTE" SourceType="Column" Desc="The note of the status of the message processing" Title="Status note" Required="false"/>
+    
+    <Field Name="SENSOR" SourceName="Sensor" SourceType="Reference" Required="true" Desc="" Title="Relation SubTaskSensor to Sensor"/>
+    <Field Name="PeriodMinutes" DataType="Integer.32" SourceName="PERIOD_MINUTES" SourceType="Column" Desc="The period in minutes during which it is planned to online measure" Title="Period" Required="true"/>
+    <Field Name="StartTime" DataType="DateTimeOffset" SourceName="START_TIME" SourceType="Column" Desc="The start time of online measurement" Title="Start time"/>
+    <Field Name="FinishTime" DataType="DateTimeOffset" SourceName="FINISH_TIME" SourceType="Column" Desc="The finish date of online measurement" Title="Finish time"/>
+
+    <Field Name="SensorToken" DataType="Bytes.MAX" SourceName="SNR_TOKEN" SourceType="Column" Required="false" Desc="The sensore token" Title="Sensor Token" />
+    <Field Name="WebSocketUrl" DataType="Text.MAX" SourceName="WEBSOCKET_URL" SourceType="Column" Required="false" Desc="The WebSocket URL" Title="WebSocket URL" />
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

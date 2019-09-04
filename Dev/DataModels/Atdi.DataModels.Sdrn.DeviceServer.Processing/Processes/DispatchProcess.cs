@@ -19,7 +19,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private object _syncContextSignalization = new object();
         private object _syncContextBandWidth = new object();
         private object _syncContextSysInfo = new object();
-        private object _syncContextLevel = new object();
 
 
 
@@ -32,7 +31,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         private List<ITaskContext<SignalizationTask, SignalizationProcess>> _contextSignalizationTasks;
         private List<ITaskContext<BandWidthTask, BandWidthProcess>> _contextBandWidthTasks;
         private List<ITaskContext<SysInfoTask, SysInfoProcess>> _contextSysInfoTasks;
-        private List<ITaskContext<LevelTask, LevelProcess>> _contextLevelTasks;
 
 
 
@@ -159,19 +157,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             }
         }
 
-        public List<ITaskContext<LevelTask, LevelProcess>> contextLevelTasks
-        {
-            get
-            {
-                lock (_syncContextLevel)
-                    return _contextLevelTasks;
-            }
-            set
-            {
-                lock (_syncContextLevel)
-                    _contextLevelTasks = value;
-            }
-        }
 
         public List<ITaskContext<SysInfoTask, SysInfoProcess>> contextSysInfoTasks
         {
@@ -198,7 +183,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
             contextSignalizationTasks = new List<ITaskContext<SignalizationTask, SignalizationProcess>>();
             contextBandWidthTasks = new List<ITaskContext<BandWidthTask, BandWidthProcess>>();
             contextSysInfoTasks = new List<ITaskContext<SysInfoTask, SysInfoProcess>>();
-            contextLevelTasks = new List<ITaskContext<LevelTask, LevelProcess>>();
         }
     }
 }

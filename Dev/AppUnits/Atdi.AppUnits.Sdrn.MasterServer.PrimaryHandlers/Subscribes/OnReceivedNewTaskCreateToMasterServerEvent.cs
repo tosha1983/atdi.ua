@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.Api.EventSystem;
-using Atdi.Modules.Sdrn.Server.Events;
+using Atdi.DataModels.Sdrns.Server.Events;
 
 
 namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.Subscribes

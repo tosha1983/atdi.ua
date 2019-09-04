@@ -18,11 +18,6 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
         /// Метка времени к которой привязаны результаты
         /// </summary>
         public DateTime Time { get; set; }
-
-        /// <summary>
-        /// Мощность в dB
-        /// </summary>
-        public float[] Levels_dB { get; set; }
     }
 
 
