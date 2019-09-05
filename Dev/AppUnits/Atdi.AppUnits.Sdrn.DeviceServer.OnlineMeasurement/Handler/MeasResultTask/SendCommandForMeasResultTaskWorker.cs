@@ -33,6 +33,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
         public bool Handle(ITaskContext<ClientReadyTakeMeasResultTask, OnlineMeasurementProcess> context, MesureTraceCommand deviceCommand, out DeviceServerResultLevel deviceServerResultLevel, out bool isCriticalError)
         {
+            int countLoopForResultTaskWorkerDeviceIsBusy = 0;
+            int countLoopForResultTaskWorkerTimeoutExpired = 0;
             const int CountLoopTimeoutExpired = 10;
             const int CountLoopDeviceIsBusy = 50;
             isCriticalError = false;
@@ -59,7 +61,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     {
                         // повторяем 50 раз иначе ошибка (повтор через 1/25 сек)
                         case CommandFailureReason.DeviceIsBusy:
-                            while (context.Process.CountLoopForResultTaskWorkerDeviceIsBusy <= CountLoopDeviceIsBusy)
+                            while (countLoopForResultTaskWorkerDeviceIsBusy <= CountLoopDeviceIsBusy)
                             {
                                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                                 (
@@ -71,9 +73,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
 
                                 isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel, (int)(deviceCommand.Timeout));
-                                if (isDown == true) // таймут - результатов нет
+                                if (isDown == true) 
                                 {
                                     isSuccessOperation = true;
+                                    countLoopForResultTaskWorkerDeviceIsBusy = 0;
                                     break;
                                 }
                                 else
@@ -81,7 +84,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                                     System.Threading.Thread.Sleep(this._config.minimumTimeDurationLevel_ms);
                                     isSuccessOperation = false;
                                 }
-                                context.Process.CountLoopForResultTaskWorkerDeviceIsBusy++;
+                                countLoopForResultTaskWorkerDeviceIsBusy++;
                             }
 
                             if (isSuccessOperation == false)
@@ -91,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
                             break;
                         case CommandFailureReason.TimeoutExpired:
-                            while (context.Process.CountLoopForResultTaskWorkerTimeoutExpired <= CountLoopTimeoutExpired)
+                            while (countLoopForResultTaskWorkerTimeoutExpired <= CountLoopTimeoutExpired)
                             {
                                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                                 (
@@ -103,9 +106,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
 
                                 isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel, (int)(deviceCommand.Timeout));
-                                if (isDown == true) // таймут - результатов нет
+                                if (isDown == true) 
                                 {
                                     isSuccessOperation = true;
+                                    countLoopForResultTaskWorkerTimeoutExpired = 0;
                                     break;
                                 }
                                 else
@@ -113,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                                     System.Threading.Thread.Sleep(this._config.minimumTimeDurationLevel_ms);
                                     isSuccessOperation = false;
                                 }
-                                context.Process.CountLoopForResultTaskWorkerTimeoutExpired++;
+                                countLoopForResultTaskWorkerTimeoutExpired++;
                             }
 
                             if (isSuccessOperation == false)
@@ -163,8 +167,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             }
             else
             {
-                context.Process.CountLoopForResultTaskWorkerDeviceIsBusy = 0;
-                context.Process.CountLoopForResultTaskWorkerTimeoutExpired = 0;
+                countLoopForResultTaskWorkerDeviceIsBusy = 0;
+                countLoopForResultTaskWorkerTimeoutExpired = 0;
                 isSuccessOperation = true;
             }
 
