@@ -37,8 +37,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                 if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
                     var sendCommandForRegistrationTaskWorker = new SendCommandForRegistrationTaskWorker(this._config, this._controller, this._logger);
-                    context.Process.SensorToken = Guid.NewGuid().ToByteArray();
-
                     var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.MeasTask);
                     var deviceCommand = new MesureTraceCommand(measTraceParameter);
                     deviceCommand.Timeout = this._config.maximumDurationMeasLevel_ms;

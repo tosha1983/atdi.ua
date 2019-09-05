@@ -174,7 +174,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             {
                 var serverParams = new DeviceServerParametersDataLevel
                 {
-                    SensorToken = context.Process.SensorToken,
                     Att_dB = deviceServerParametersDataLevel.Att_dB,
                     PreAmp_dB = deviceServerParametersDataLevel.PreAmp_dB,
                     RefLevel_dBm = deviceServerParametersDataLevel.RefLevel_dBm,
