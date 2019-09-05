@@ -22,7 +22,7 @@ using Atdi.Contracts.Api.DataBus;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
-    [SubscriptionEvent(EventName = "OnSGMeasResultAggregated", SubscriberName = "MSMeasResultSubscriber")]
+    [SubscriptionEvent(EventName = "OnSGMeasResultAggregated", SubscriberName = "SGMeasResultSubscriber")]
     public class OnSGMeasResultAggregated : IEventSubscriber<SGMeasResultAggregated>
     {
         private readonly ILogger _logger;

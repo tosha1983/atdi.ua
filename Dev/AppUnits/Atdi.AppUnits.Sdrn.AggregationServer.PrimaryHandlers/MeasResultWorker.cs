@@ -32,6 +32,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         private Thread _thread;
         private CancellationTokenSource _tokenSource;
         private readonly int _timeout = 3600000;
+        private readonly int _qtyDayAwaitNextResult = 1;
 
         public MeasResultWorker(AppComponentConfig config, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ILogger logger, ISdrnServerEnvironment environment)
         {
@@ -42,7 +43,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             this._eventEmitter = eventEmitter;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
             this._timeout = config.MeasResultSignalizationWorkerTimeout ?? 3600000;
-            //this._timeout = config.MeasResultSignalizationWorkerTimeout ?? 60000;
+            this._qtyDayAwaitNextResult = config.MeasResultSignalizationWorkerQtyDayAwaitNextResult ?? 1;
             this._tokenSource = new CancellationTokenSource();
         }
         public void Dispose()
@@ -105,7 +106,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 {
                     var timeMeas = (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas));
                     if (timeMeas.HasValue)
-                        measResults.Add(new MyMeasResult() { Id = readerResMeas.GetValue(c => c.RES_MEAS.Id), MeasDate = readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas).Value });
+                        measResults.Add(new MyMeasResult() { Id = readerResMeas.GetValue(c => c.RES_MEAS.Id), MeasDate = timeMeas.Value });
                 }
                 return true;
             });
@@ -114,10 +115,9 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             {
                 if (i == 0)
                     lastDate = measResult.MeasDate.Date;
-
                 i++;
 
-                if (measResult.MeasDate.Date == lastDate || measResult.MeasDate.Date == lastWorkedDate)
+                if ((measResult.MeasDate.Date == lastDate && measResult.MeasDate > DateTime.Now.AddDays(-this._qtyDayAwaitNextResult)) || measResult.MeasDate.Date == lastWorkedDate)
                     continue;
                 else
                 {

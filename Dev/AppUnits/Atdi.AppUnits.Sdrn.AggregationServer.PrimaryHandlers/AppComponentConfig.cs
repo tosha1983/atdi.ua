@@ -11,5 +11,8 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
     {
         [ComponentConfigProperty("MeasResultSignalizationWorker.Timeout")]
         public int? MeasResultSignalizationWorkerTimeout { get; set; }
+
+        [ComponentConfigProperty("MeasResultSignalizationWorker.QtyDayAwaitNextResult")]
+        public int? MeasResultSignalizationWorkerQtyDayAwaitNextResult { get; set; }
     }
 }
