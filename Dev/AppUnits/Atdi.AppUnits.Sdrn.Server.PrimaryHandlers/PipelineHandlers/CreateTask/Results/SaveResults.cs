@@ -32,16 +32,38 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                 using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                 {
                     scope.BeginTran();
-                    var builderUpdateResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Update();
-                    builderUpdateResMeas.Where(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, MeasTaskId);
-                    builderUpdateResMeas.SetValue(c => c.Status, status);
-                    if (scope.Executor.Execute(builderUpdateResMeas) > 0)
+
+                    bool isContainResult = false;
+                    var builderFromResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().From();
+                    builderFromResMeas.Where(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, MeasTaskId);
+                    builderFromResMeas.Select(c => c.Id);
+                    scope.Executor.Fetch(builderFromResMeas, reader =>
                     {
-                        result.State = CommonOperationState.Success;
+                        while (reader.Read())
+                        {
+                            isContainResult = true;
+                            break;
+                        }
+                    return true;
+                    });
+
+                    if (isContainResult == true)
+                    {
+                        var builderUpdateResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Update();
+                        builderUpdateResMeas.Where(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, MeasTaskId);
+                        builderUpdateResMeas.SetValue(c => c.Status, status);
+                        if (scope.Executor.Execute(builderUpdateResMeas) > 0)
+                        {
+                            result.State = CommonOperationState.Success;
+                        }
+                        else
+                        {
+                            result.State = CommonOperationState.Fault;
+                        }
                     }
                     else
                     {
-                        result.State = CommonOperationState.Fault;
+                        result.State = CommonOperationState.Success;
                     }
                     scope.Commit();
                 }
