@@ -24,7 +24,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static bool CorrelationAnalize;
         private static double CorrelationFactor;
         private static double MaxFreqDeviation;
-        private static int CountMaxEmission = 1000; // нужно брать из файла конфигурации
+        private static int CountMaxEmission; // нужно брать из файла конфигурации
         
         // конец констант
 
@@ -35,10 +35,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool CalcGrouping(TaskParameters taskParameters, Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary, ILogger logger, double NoiseLevel_dBm)
+        public static bool CalcGrouping(TaskParameters taskParameters, ref Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary, ILogger logger, double NoiseLevel_dBm, int CountMaxEmissionFromConfig )
         {
             try
             {
+                CountMaxEmission = CountMaxEmissionFromConfig;
                 TimeBetweenWorkTimes_sec = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec.Value;
                 TypeJoinSpectrum = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum.Value;
                 CrossingBWPercentageForGoodSignals = taskParameters.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.Value;
@@ -47,6 +48,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 CorrelationAnalize = taskParameters.SignalingMeasTaskParameters.CorrelationAnalize.Value;
                 CorrelationFactor = taskParameters.SignalingMeasTaskParameters.CorrelationFactor.Value;
                 MaxFreqDeviation = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation.Value;
+
                 // Увеличиваем счетчики у всех излучений
                 if (EmittingsSummary != null)
                 {
