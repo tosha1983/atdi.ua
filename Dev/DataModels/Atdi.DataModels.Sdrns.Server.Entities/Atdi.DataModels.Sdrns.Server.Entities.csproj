@@ -119,9 +119,11 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.ONLINE_MEAS_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_SUBTASK_MASTER_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_AGGREGATION_SENSOR_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.RES_MEAS_SIGNALING_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.SIGN_SYSINFO_WTIMES_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.SIGN_SYSINFO_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Tables\CreateAllTables.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.RES_MEAS_SIGNALING.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.ONLINE_MEAS.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_SUBTASK_SENSOR_MASTER.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_AGGREGATION_SENSOR.sql" />
