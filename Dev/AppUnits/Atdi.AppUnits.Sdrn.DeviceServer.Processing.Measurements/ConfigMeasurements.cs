@@ -12,5 +12,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// Директория для хранения эталонных сигналов
         /// </summary>
         public string FolderSignalGSM { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int CountMaxEmission { get; set; }
+        
     }
 }

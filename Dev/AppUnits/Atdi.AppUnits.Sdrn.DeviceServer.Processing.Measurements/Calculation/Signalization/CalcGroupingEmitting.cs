@@ -23,8 +23,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static bool AnalyzeByChannel;
         private static bool CorrelationAnalize;
         private static double CorrelationFactor;
-
-        private const double MaxFreqDeviation = 0.00001;
+        private static double MaxFreqDeviation;
+        private static int CountMaxEmission; // нужно брать из файла конфигурации
         
         // конец констант
 
@@ -35,10 +35,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool CalcGrouping(TaskParameters taskParameters, Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary, ILogger logger, double NoiseLevel_dBm)
+        public static bool CalcGrouping(TaskParameters taskParameters, ref Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary, ILogger logger, double NoiseLevel_dBm, int CountMaxEmissionFromConfig )
         {
             try
             {
+                CountMaxEmission = CountMaxEmissionFromConfig;
                 TimeBetweenWorkTimes_sec = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec.Value;
                 TypeJoinSpectrum = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum.Value;
                 CrossingBWPercentageForGoodSignals = taskParameters.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.Value;
@@ -46,6 +47,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 AnalyzeByChannel = taskParameters.SignalingMeasTaskParameters.AnalyzeByChannel.Value;
                 CorrelationAnalize = taskParameters.SignalingMeasTaskParameters.CorrelationAnalize.Value;
                 CorrelationFactor = taskParameters.SignalingMeasTaskParameters.CorrelationFactor.Value;
+                MaxFreqDeviation = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation.Value;
 
                 // Увеличиваем счетчики у всех излучений
                 if (EmittingsSummary != null)
@@ -173,6 +175,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
+
+
+                DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission - emittingsSummaryTemp.Count);
                 EmittingsTemp = emittingsTempTemp.ToArray();
                 EmittingsSummary = emittingsSummaryTemp.ToArray();
                 EmittingsRaw = null;
@@ -235,14 +240,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, bool AnalyzeByChannel, bool CorrelationAnalize, double MaxFreqDeviation, double CorrelationFactor)
         {
-            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2);
+            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2); // пересечение полос частот обязательное условие
             if (!TraditionalCheck) { return false; } // выход если нет пересечения 
+            if (CorrelationAnalize) // если требуется корреляция между излучениями
+            {if (ChackCorelationForTwoEmitting(emitting1, emitting2, CorrelationFactor)) { return true; } else { return false; }}
             if (!AnalyzeByChannel) { return true; } // выход если нет анализировать поканально
-            if (!ChackFreqForTwoEmitting(emitting1, emitting2, MaxFreqDeviation)) { return false; }
-            if (CorrelationAnalize)
-            {
-                if (ChackCorelationForTwoEmitting(emitting1, emitting2, CorrelationFactor)) { return true; } else { return false; }
-            }
+            if (!ChackFreqForTwoEmitting(emitting1, emitting2, MaxFreqDeviation)) { return false; }// если необходимо сравнивать частоты
             return true;
         }
         /// <summary>
@@ -602,6 +605,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 double MaxShift = ((emitting1.Spectrum.SpectrumSteps_kHz / (1000 * CentrlFreq1_MHz)) + (emitting2.Spectrum.SpectrumSteps_kHz / (1000 * CentrlFreq2_MHz))) / 2.0;
                 if (FreqDeviation <= MaxShift) { FreqDeviation = 0; } else { FreqDeviation = FreqDeviation - MaxShift; }
                 if (FreqDeviation < MaxFreqDeviation) { return true; } else { return false; }
+            }
+        }
+
+        private static void DeliteRedundantEmission(List<Emitting> emittings, int LostCount)
+        {
+            if (emittings.Count < LostCount) { return; }
+            if (LostCount < 0) { emittings = null; return; }
+            int CurentHitNumber = 1;
+            while ( emittings.Count > LostCount)
+            {
+                for (int i = 0; emittings.Count > i; i++)
+                {
+                    int hit = 0;
+                    for (int j = 0; emittings[i].WorkTimes.Length>j; j++)
+                    {
+                        hit = hit + emittings[i].WorkTimes[j].HitCount;
+                    }
+                    if (hit <= CurentHitNumber)
+                    {// удаление излучения
+                        emittings.RemoveRange(i, 1);
+                        i--;
+                    }
+                }
+                CurentHitNumber++;
             }
         }
     }
