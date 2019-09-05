@@ -31,9 +31,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static bool AutoDivisionEmitting;
         private static double DifferenceMaxMax;
 
-        private static double MaxFreqDeviation = 0.00001;
-        private static bool ChackLevelChannel = true;
-        private static int MinPointForDetailBW = 300;
+        private static double MaxFreqDeviation;// = 0.00001;
+        private static bool ChackLevelChannel;//; = true;
+        private static int MinPointForDetailBW;// = 300;
         
         // Конец констант
 
@@ -61,7 +61,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             CompareTraceJustWithRefLevels = taskParameters.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels.Value;
             AutoDivisionEmitting = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting.Value;
             DifferenceMaxMax = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax.Value;
-
+            MaxFreqDeviation = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation.Value;
+            ChackLevelChannel = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel.Value;
+            MinPointForDetailBW = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW.Value;
 
             if (refLevels.levels.Length != Trace.Level.Length)
             {
@@ -504,7 +506,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     else
                     {
                         int MarkerIndex = CorrelationAnalyzeForEstimationFreq(TempLevelForCorrelation, StartTraceFreq_Hz + start_A * TraceStep_Hz, TraceStep_Hz, out double BestCorr, out double StandardBW_Hz, out string standard);
-                        if (BestCorr >= CorrelationFactor)
+                        if (BestCorr >= 0.75)//CorrelationFactor)
                         {// Супер сигнал идентифицирован частота определена 
                             MarkerIndex = MarkerIndex - start_ + start_A;
                             emitting.Spectrum.MarkerIndex = MarkerIndex;
