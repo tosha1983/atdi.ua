@@ -53,7 +53,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
                 {
 
                     var sendCommandForMeasResultTaskWorker = new SendCommandForMeasResultTaskWorker(this._config, this._controller, this._logger);
-                    context.Process.SensorToken = Guid.NewGuid().ToByteArray();
 
                     while (true)
                     {

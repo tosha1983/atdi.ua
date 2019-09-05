@@ -548,6 +548,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     bool checkcontr = CalcSignalization.CheckContravention(ref spectrum, refLevel);
                     emitting.Spectrum = spectrum;
                 }
+                emitting.ReferenceLevel_dBm = 0;
+                emitting.CurentPower_dBm = 0;
                 for (int j = start; j < stop; j++)
                 {
                     emitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm + Math.Pow(10, refLevel.levels[j] / 10);
@@ -557,8 +559,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.CurentPower_dBm = 10 * Math.Log10(emitting.CurentPower_dBm);
                 emitting.StartFrequency_MHz = trace.Freq_Hz[start] / 1000000.0; // частоты сигнала по каналу
                 emitting.StopFrequency_MHz = trace.Freq_Hz[stop] / 1000000.0; // частоты сигнала по каналу
-                emitting.ReferenceLevel_dBm = 0;
-                emitting.CurentPower_dBm = 0;
                 emitting.WorkTimes = new WorkTime[1];
                 emitting.WorkTimes[0] = new WorkTime();
                 emitting.WorkTimes[0].StartEmitting = DateTime.Now;
