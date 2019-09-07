@@ -46,7 +46,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                 using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                 {
                     scope.BeginTran();
-
+                    var listSubTaskSensorIds = new List<long>();
+                    var listSubTaskIds = new List<long>();
+                    var listMeasTaskIds = new List<long>();
                     var builderSelectMeasTask = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
                     builderSelectMeasTask.Select(c => c.SUBTASK.MEAS_TASK.Id);
                     builderSelectMeasTask.Select(c => c.SUBTASK.Id);
@@ -56,9 +58,20 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     {
                         while (reader.Read())
                         {
+                            listSubTaskSensorIds.Add(reader.GetValue(c => c.Id));
+                            listSubTaskIds.Add(reader.GetValue(c => c.SUBTASK.Id));
+                            listMeasTaskIds.Add(reader.GetValue(c => c.SUBTASK.MEAS_TASK.Id));
+                        }
+                        return true;
+                    });
+
+                    if (listSubTaskSensorIds.Count > 0)
+                    {
+                        for (int i = 0; i < listSubTaskSensorIds.Count; i++)
+                        {
 
                             var builderUpdateMeasSubTaskStaSave = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().Update();
-                            builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.Id));
+                            builderUpdateMeasSubTaskStaSave.Where(c => c.Id, ConditionOperator.Equal, listSubTaskSensorIds[i]);
                             builderUpdateMeasSubTaskStaSave.SetValue(c => c.Status, status);
                             if (scope.Executor.Execute(builderUpdateMeasSubTaskStaSave) > 0)
                             {
@@ -67,10 +80,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                             else
                             {
                                 isSuccess = false;
+                                break;
                             }
 
                             var builderSelectMeasSubTask = this._dataLayer.GetBuilder<MD.ISubTask>().Update();
-                            builderSelectMeasSubTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SUBTASK.Id));
+                            builderSelectMeasSubTask.Where(c => c.Id, ConditionOperator.Equal, listSubTaskIds[i]);
                             builderSelectMeasSubTask.SetValue(c => c.Status, status);
                             if (scope.Executor.Execute(builderSelectMeasSubTask) > 0)
                             {
@@ -79,10 +93,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                             else
                             {
                                 isSuccess = false;
+                                break;
                             }
 
                             var builderMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().Update();
-                            builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SUBTASK.MEAS_TASK.Id));
+                            builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, listMeasTaskIds[i]);
                             builderMeasTask.SetValue(c => c.Status, status);
                             if (scope.Executor.Execute(builderMeasTask) > 0)
                             {
@@ -91,12 +106,18 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                             else
                             {
                                 isSuccess = false;
+                                break;
                             }
-                            
                         }
-                        return true;
-                    });
-                    scope.Commit();
+                    }
+                    if (isSuccess == true)
+                    {
+                        scope.Commit();
+                    }
+                    else
+                    {
+                        throw new Exception("An error occurred while updating the task status");
+                    }
                 }
             }
             catch (Exception e)

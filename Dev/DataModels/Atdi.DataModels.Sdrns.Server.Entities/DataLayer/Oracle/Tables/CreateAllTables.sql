@@ -187,6 +187,15 @@ CREATE SEQUENCE ICSC.MEAS_TASK_SIGNAL_ID_SEQ
   NOORDER;
 
 
+CREATE SEQUENCE ICSC.ONLINE_MEAS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
 CREATE SEQUENCE ICSC.OWNER_DATA_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
@@ -251,6 +260,15 @@ CREATE SEQUENCE ICSC.RES_LOCATION_SENSOR_MEAS_I_SEQ
 
 
 CREATE SEQUENCE ICSC.RES_MEAS_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 1
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+CREATE SEQUENCE ICSC.RES_MEAS_SIGNALING_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
   MINVALUE 1
@@ -484,11 +502,146 @@ CREATE SEQUENCE ICSC.WORK_TIME_ID_SEQ
   NOORDER;
 
 
+CREATE TABLE ICSC.RES_MEAS_SIGNALING
+(
+  ID        NUMBER(15)                          NOT NULL,
+  ISSEND    NUMBER(1),
+  RES_MEAS  NUMBER(15)                          NOT NULL
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.ONLINE_MEAS
+(
+  ID              NUMBER(15)                    NOT NULL,
+  CREATED_DATE    TIMESTAMP(7) WITH TIME ZONE   NOT NULL,
+  SRV_TOKEN       RAW(16)                       NOT NULL,
+  STATUS_CODE     NUMBER(3)                     NOT NULL,
+  STATUS_NOTE     NCLOB,
+  SENSOR_ID       NUMBER(15)                    NOT NULL,
+  PERIOD_MINUTES  NUMBER(9)                     NOT NULL,
+  START_TIME      TIMESTAMP(7) WITH TIME ZONE,
+  FINISH_TIME     TIMESTAMP(7) WITH TIME ZONE,
+  SNR_TOKEN       BLOB,
+  WEBSOCKET_URL   NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (SNR_TOKEN) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (WEBSOCKET_URL) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (STATUS_NOTE) STORE AS 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        RETENTION
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          64K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
 CREATE TABLE ICSC.LINK_SUBTASK_SENSOR_MASTER
 (
   ID                        NUMBER(15)          NOT NULL,
-  SUBTASK_SENSOR_ID         NUMBER(15)			NOT NULL,
-  SUBTASK_SENSOR_MASTER_ID  NUMBER(15)			NOT NULL
+  SUBTASK_SENSOR_ID         NUMBER(15),
+  SUBTASK_SENSOR_MASTER_ID  NUMBER(15)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -513,8 +666,9 @@ MONITORING;
 CREATE TABLE ICSC.LINK_AGGREGATION_SENSOR
 (
   ID                    NUMBER(15)              NOT NULL,
-  SENSOR_ID             NUMBER(15)				NOT NULL,
-  AGGR_SERVER_INSTANCE  VARCHAR2(150 BYTE)		NOT NULL
+  SENSOR_ID             NUMBER(15),
+  AGGR_SERVER_INSTANCE  VARCHAR2(150 BYTE),
+  AGGR_SENSOR_ID        NUMBER(15)
 )
 TABLESPACE USERS
 PCTUSED    0
@@ -1210,8 +1364,6 @@ MONITORING;
 CREATE TABLE ICSC.MEAS_OTHER
 (
   ID                        NUMBER(15)          NOT NULL,
-  SW_NUMBER                 NUMBER(9),
-  TYPE_SPECTRUM_SCAN        NVARCHAR2(50),
   TYPE_SPECTRUM_OCCUPATION  NVARCHAR2(50),
   LEVEL_MIN_OCCUP           NUMBER(30,10),
   NCHENAL                   NUMBER(9),
@@ -1548,7 +1700,7 @@ LOB (FREQ_KHZ) STORE AS SECUREFILE
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (LEVELS_DISTRIBUTION_LVL) STORE AS SECUREFILE 
+  LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -1573,7 +1725,7 @@ LOB (FREQ_KHZ) STORE AS SECUREFILE
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (LEVELS_DISTRIBUTION_COUNT) STORE AS SECUREFILE 
+  LOB (LEVELS_DISTRIBUTION_LVL) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
@@ -3455,6 +3607,24 @@ STORAGE    (
 NOPARALLEL;
 
 
+CREATE UNIQUE INDEX ICSC.RES_MEAS_SIGNALING_PK ON ICSC.RES_MEAS_SIGNALING
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
 CREATE UNIQUE INDEX ICSC.AMQP_EVENTS_ID_PK ON ICSC.AMQP_EVENTS
 (ID)
 LOGGING
@@ -4301,6 +4471,42 @@ STORAGE    (
 NOPARALLEL;
 
 
+CREATE UNIQUE INDEX ICSC.ONLINE_MEAS_PK ON ICSC.ONLINE_MEAS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX ICSC.ONLINE_MEAS_SRV_TOKEN ON ICSC.ONLINE_MEAS
+(SRV_TOKEN)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
 CREATE OR REPLACE PROCEDURE ICSC.CHECKACTIVITY as
 begin
 update ICSC.sensor A set A.status = 'F' WHERE  (TO_CHAR(SYSDATE - A.lastactivity)*24*60)>5;
@@ -4655,7 +4861,17 @@ into n
 from dual;
 end if;
 
+if inttable_name ='ONLINE_MEAS' then
+select ICSC.ONLINE_MEAS_ID_SEQ.nextval
+into n
+from dual;
+end if;
 
+if inttable_name ='RES_MEAS_SIGNALING' then
+select ICSC.RES_MEAS_SIGNALING_ID_SEQ.nextval
+into n
+from dual;
+end if;
 
 
 
@@ -4695,79 +4911,6 @@ SELECT   DISTINCT Tcaz_1.LON AS LON,
             ON Tcaz_4.RES_MEAS_STATION_ID = Tcaz_2.ID;
 
 
-CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT1
-(LON, LAT, LEVELDBM, CENTRALFREQUENCY, TIMEOFMEASUREMENTS, 
- BW, IDSTATION, SPECRUMSTEPS, T1, T2)
-AS 
-SELECT   DISTINCT Tcaz_1.LON AS LON,
-                     Tcaz_1.LAT AS LAT,
-                     Tcaz_1.LEVELDBM AS LEVELDBM,
-                     Tcaz_1.CENTRALFREQUENCY AS CENTRALFREQUENCY,
-                     Tcaz_1.TIMEOFMEASUREMENTS AS TIMEOFMEASUREMENTS,
-                     Tcaz_1.BW AS BW,
-                     Tcaz_2.IDSTATION AS IDSTATION,
-                     Tcaz_4.SPECRUMSTEPS AS SPECRUMSTEPS,
-                     Tcaz_4.T1 AS T1,
-                     Tcaz_4.T2 AS T2
-     FROM            ICSC.XBS_RESSTLEVELCAR Tcaz_1
-                  INNER JOIN
-                     ICSC.XBS_RESMEASSTATION Tcaz_2
-                  ON Tcaz_1.XBS_RESMEASSTATIONID = Tcaz_2.ID
-               INNER JOIN
-                  ICSC.XBS_RESMEAS Tcaz_3
-               ON Tcaz_2.XBSRESMEASID = Tcaz_3.ID
-            INNER JOIN
-               ICSC.XBS_RESSTGENERAL Tcaz_4
-            ON Tcaz_4.RESMEASSTATIONID = Tcaz_2.ID;
-
-
-CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT2
-(LON, LAT, LEVELDBM, CENTRALFREQUENCY, TIMEOFMEASUREMENTS, 
- BW, IDSTATION, SPECRUMSTEPS, T1, T2, 
- ID, MEASGLOBALSID)
-AS 
-SELECT   DISTINCT Tcaz_1.LON AS LON,
-                     Tcaz_1.LAT AS LAT,
-                     Tcaz_1.LEVELDBM AS LEVELDBM,
-                     Tcaz_1.CENTRALFREQUENCY AS CENTRALFREQUENCY,
-                     Tcaz_1.TIMEOFMEASUREMENTS AS TIMEOFMEASUREMENTS,
-                     Tcaz_1.BW AS BW,
-                     Tcaz_2.IDSTATION AS IDSTATION,
-                     Tcaz_4.SPECRUMSTEPS AS SPECRUMSTEPS,
-                     Tcaz_4.T1 AS T1,
-                     Tcaz_4.T2 AS T2,
-                     Tcaz_3.ID AS ID,
-                     Tcaz_2.MEASGLOBALSID AS MEASGLOBALSID
-     FROM            ICSC.XBS_RESSTLEVELCAR Tcaz_1
-                  INNER JOIN
-                     ICSC.XBS_RESMEASSTATION Tcaz_2
-                  ON Tcaz_1.XBS_RESMEASSTATIONID = Tcaz_2.ID
-               INNER JOIN
-                  ICSC.XBS_RESMEAS Tcaz_3
-               ON Tcaz_2.XBSRESMEASID = Tcaz_3.ID
-            INNER JOIN
-               ICSC.XBS_RESSTGENERAL Tcaz_4
-            ON Tcaz_4.RESMEASSTATIONID = Tcaz_2.ID;
-
-
-CREATE OR REPLACE FORCE VIEW ICSC.XV_UNIT3
-(CENTRALFREQUENCYMEAS, MEASGLOBALSID, XBSRESMEASID, IDSECTOR, IDSTATION, 
- ID)
-AS 
-SELECT   DISTINCT Tcaz_4.CENTRALFREQUENCYMEAS AS CENTRALFREQUENCYMEAS,
-                     Tcaz_2.MEASGLOBALSID AS MEASGLOBALSID,
-                     Tcaz_2.XBSRESMEASID AS XBSRESMEASID,
-                     Tcaz_2.IDSECTOR AS IDSECTOR,
-                     Tcaz_2.IDSTATION AS IDSTATION,
-                     Tcaz_2.ID AS ID
-     FROM      ICSC.XBS_RESMEASSTATION Tcaz_2
-            INNER JOIN
-               ICSC.XBS_RESSTGENERAL Tcaz_4
-            ON Tcaz_4.RESMEASSTATIONID = Tcaz_2.ID;
-
-
-CREATE PUBLIC SYNONYM TOAD_PLAN_TABLE FOR ICSC.TOAD_PLAN_TABLE;
-
 
 DECLARE
   X NUMBER;
@@ -4775,7 +4918,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4791,7 +4934,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4807,7 +4950,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4823,7 +4966,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4839,7 +4982,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4855,7 +4998,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4871,7 +5014,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4887,7 +5030,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4903,7 +5046,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4919,7 +5062,7 @@ BEGIN
   SYS.DBMS_JOB.SUBMIT
   ( job       => X 
    ,what      => 'ICSC.CHECKACTIVITY;'
-   ,next_date => to_date('24.08.2019 00:24:29','dd/mm/yyyy hh24:mi:ss')
+   ,next_date => to_date('05.09.2019 13:33:06','dd/mm/yyyy hh24:mi:ss')
    ,interval  => '(SYSDATE) + 1/24/60'
    ,no_parse  => TRUE
   );
@@ -4927,6 +5070,43 @@ COMMIT;
 END;
 /
 
+
+
+
+
+ALTER TABLE ICSC.RES_MEAS_SIGNALING ADD (
+  CONSTRAINT RES_MEAS_SIGNALING_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
+
+ALTER TABLE ICSC.ONLINE_MEAS ADD (
+  CONSTRAINT ONLINE_MEAS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
 
 ALTER TABLE ICSC.LINK_SUBTASK_SENSOR_MASTER ADD (
   CONSTRAINT LINK_SUBTASK_SENSOR_MASTER_PK

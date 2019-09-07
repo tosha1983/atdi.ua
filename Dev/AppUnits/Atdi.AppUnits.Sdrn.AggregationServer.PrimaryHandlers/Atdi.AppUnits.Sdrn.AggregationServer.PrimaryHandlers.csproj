@@ -41,10 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppComponentConfig.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="LoadData\MeasTask\LoadMeasTask.cs" />
     <Compile Include="LoadData\Sensor\LoadSensor.cs" />
     <Compile Include="LoadData\Sensor\SaveSensor.cs" />
+    <Compile Include="MeasResultWorker.cs" />
     <Compile Include="MeasResult\OnMeasResultsAggregated\OnMSMeasResultAggregated.cs" />
     <Compile Include="MeasResult\OnMeasResultsAggregated\OnSGMeasResultAggregated.cs" />
     <Compile Include="MeasResult\OnMeasResultsAggregated\OnSOMeasResultAggregated.cs" />

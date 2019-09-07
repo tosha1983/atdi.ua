@@ -8,18 +8,14 @@ using System.Threading.Tasks;
 namespace Atdi.DataModels.Sdrns.Server.Entities
 {
     [EntityPrimaryKeyAttribute]
-    public interface IWorkTime_PK
+    public interface IResMeasSignaling_PK
     {
         long Id { get; set; }
     }
-
     [Entity]
-    public interface IWorkTime : IWorkTime_PK
+    public interface IResMeasSignaling : IResMeasSignaling_PK
     {
-        DateTime StartEmitting { get; set; }
-        DateTime StopEmitting { get; set; }
-        int HitCount { get; set; }
-        float PersentAvailability { get; set; }
-        IEmitting EMITTING { get; set; }
+        bool IsSend { get; set; }
+        IResMeas RES_MEAS { get; set; }
     }
 }

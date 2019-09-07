@@ -349,7 +349,11 @@ into n
 from dual;
 end if;
 
-
+if inttable_name ='RES_MEAS_SIGNALING' then
+select ICSC.RES_MEAS_SIGNALING_ID_SEQ.nextval
+into n
+from dual;
+end if;
 
 
 

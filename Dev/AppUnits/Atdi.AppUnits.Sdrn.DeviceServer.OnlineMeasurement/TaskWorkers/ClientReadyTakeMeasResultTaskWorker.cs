@@ -20,6 +20,7 @@ using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Platform.DependencyInjection;
 using Atdi.DataModels.EntityOrm;
 using Atdi.DataModels.Sdrns.Device;
+using Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results;
 
 
 
@@ -29,25 +30,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
     {
         private readonly AppServerComponentConfig _config;
         private readonly IController _controller;
-        private readonly IBusGate _busGate;
-        private readonly IProcessingDispatcher _processingDispatcher;
-        private readonly ITimeService _timeService;
-        private readonly ITaskStarter _taskStarter;
         private readonly ILogger _logger;
 
-        public ClientReadyTakeMeasResultTaskWorker(ITimeService timeService,
-           IProcessingDispatcher processingDispatcher,
-           ITaskStarter taskStarter,
+        public ClientReadyTakeMeasResultTaskWorker(
            ILogger logger,
-           IBusGate busGate,
            IController controller,
            AppServerComponentConfig config)
         {
-            this._processingDispatcher = processingDispatcher;
-            this._timeService = timeService;
-            this._taskStarter = taskStarter;
             this._logger = logger;
-            this._busGate = busGate;
             this._controller = controller;
             this._config = config;
         }
@@ -57,114 +47,58 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
         {
             try
             {
-                _logger.Verbouse(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, "Started TaskWorker...");
-                while (true) 
+                _logger.Verbouse(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.StartedClientReadyTakeMeasResultTaskWorker);
+
+                if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
-                    
-                    if (context.Token.IsCancellationRequested)
+
+                    var sendCommandForMeasResultTaskWorker = new SendCommandForMeasResultTaskWorker(this._config, this._controller, this._logger);
+
+                    while (true)
                     {
-                        context.Cancel();
-                        _logger.Info(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.OnlineTaskIsCancled);
-                        return;
-                    }
-
-                    var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.Parameters);
-
-                    //////////////////////////////////////////////
-                    // 
-                    // Отправка команды в контроллер 
-                    //
-                    //////////////////////////////////////////////
-                    DateTime currTime = DateTime.Now;
-                    var deviceCommand = new MesureTraceCommand(measTraceParameter);
-                    deviceCommand.Timeout = this._config.maximumDurationMeasLevel_ms;
-                    deviceCommand.Delay = 0;
-                    deviceCommand.Options = CommandOption.StartImmediately;
-
-                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
-                    (
-                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) =>
-                    {
-                        taskContext.SetEvent<ExceptionProcessLevel>(new ExceptionProcessLevel(failureReason, ex));
-                    });
-
-
-                    //////////////////////////////////////////////
-                    // 
-                    // Получение очередного  результат от Result Handler
-                    //
-                    //////////////////////////////////////////////
-                    ///
-                    DeviceServerResultLevel outResultData = null;
-                    bool isDown = context.WaitEvent<DeviceServerResultLevel>(out outResultData, (int)(deviceCommand.Timeout));
-                    if (isDown == false) // таймут - результатов нет
-                    {
-                     
                         if (context.Token.IsCancellationRequested)
                         {
                             context.Cancel();
+                            _logger.Info(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.OnlineTaskIsCancled);
                             return;
                         }
 
-                        var error = new ExceptionProcessLevel();
-                        if (context.WaitEvent<ExceptionProcessLevel>(out error, 1) == true)
+                        DateTime currTime = DateTime.Now;
+                        var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.MeasTask);
+                        var deviceCommand = new MesureTraceCommand(measTraceParameter);
+                       
+                        deviceCommand.Timeout = this._config.maximumDurationMeasLevel_ms;
+                        deviceCommand.Options = CommandOption.StartImmediately;
+                        sendCommandForMeasResultTaskWorker.Handle(context, deviceCommand, out DeviceServerResultLevel deviceServerResultLevel, out bool isCriticalError);
+                        if (isCriticalError==true)
                         {
-                            if (error._ex != null)
-                            {
-                                /// реакция на ошибку выполнения команды
-                                _logger.Error(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
-                                switch (error._failureReason)
-                                {
-                                    case CommandFailureReason.DeviceIsBusy:
-                                    case CommandFailureReason.CanceledExecution:
-                                    case CommandFailureReason.TimeoutExpired:
-                                    case CommandFailureReason.CanceledBeforeExecution:
-                                        _logger.Error(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.SleepThread.With(deviceCommand.Id, (int)this._config.maximumDurationMeasLevel_ms), error._ex.StackTrace);
-                                        Thread.Sleep(this._config.maximumDurationMeasLevel_ms); // вынести в константу (по умолчанию 1 сек)
-                                        return;
-                                    case CommandFailureReason.NotFoundConvertor:
-                                    case CommandFailureReason.NotFoundDevice:
-                                    case CommandFailureReason.Exception:
-                                        _logger.Error(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.OnlineTaskIsCancled);
-                                        _logger.Error(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, error._ex.StackTrace);
-                                        context.Cancel();
-                                        return;
-                                    default:
-                                        throw new NotImplementedException($"Type {error._failureReason} not supported");
-                                }
-                            }
+                            context.Cancel();
+                            _logger.Info(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.StoppingThreadAnErrorCommunicatingAdapter);
+                            return;
+                        }
+                        //////////////////////////////////////////////
+                        // 
+                        // Приостановка потока на рассчитаное время 
+                        //
+                        //////////////////////////////////////////////
+                        var sleepTime = this._config.minimumTimeDurationLevel_ms - (DateTime.Now - currTime).TotalMilliseconds;
+                        if (sleepTime >= 0)
+                        {
+                            Thread.Sleep((int)sleepTime);
+                            _logger.Info(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
                         }
                     }
-                    else
-                    {
-                        // так оборачиваем результат
-                        var message = new OnlineMeasMessage
-                        {
-                            Kind = OnlineMeasMessageKind.DeviceServerMeasResult,
-                            Container = outResultData
-                        };
-
-                        // и  отправляем его
-                        context.Process.Publisher.Send(message);
-                    }
-                    //////////////////////////////////////////////
-                    // 
-                    // Приостановка потока на рассчитаное время 
-                    //
-                    //////////////////////////////////////////////
-                    var sleepTime = this._config.minimumTimeDurationLevel_ms - (DateTime.Now - currTime).TotalMilliseconds;
-                    if (sleepTime >= 0)
-                    {
-                        Thread.Sleep((int)sleepTime);
-                        _logger.Info(Contexts.ThisComponent, Categories.ClientReadyTakeMeasResultTaskWorker, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
-                    }
                 }
-                //context.Finish();
+                else
+                {
+                    throw new NotImplementedException($"Type {context.Process.MeasTask.OnlineMeasType} is not supported");
+                }
+                
             }
             catch (Exception e)
             {
                 context.Abort(e);
+                _logger.Exception(Contexts.ThisComponent, Categories.ClientTaskRegistrationTaskWorker, e);
             }
         }
     }

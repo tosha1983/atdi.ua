@@ -35,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     Atdi.DataModels.Sdrns.Device.OnlineMeasurement.TraceType traceType = TraceType.Unknown;
                     var levelResult = new DeviceServerResultLevel();
                     levelResult.Index = taskContext.Process.CountMeasurementDone;
+                    levelResult.Time = DateTime.UtcNow;
                     switch (command.Parameter.TraceType)
                     {
                         case DataModels.Sdrn.DeviceServer.Commands.Parameters.TraceType.Auto:
@@ -55,24 +56,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         case DataModels.Sdrn.DeviceServer.Commands.Parameters.TraceType.Unknown:
                             traceType = TraceType.Unknown;
                             break;
+                        default:
+                            throw new Exception($"Not supported type {command.Parameter.TraceType}");
                     }
-                    
 
                     levelResult.Level = CutArray(result.Level, traceType, this._config.MaxCountPoint.Value);
-                    if (taskContext.Process.CountMeasurementDone == 0) { levelResult.Freq_Hz = CutArray(result.Freq_Hz, this._config.MaxCountPoint.Value); }
-                    levelResult.Att_dB = result.Att_dB;
-                    levelResult.PreAmp_dB = result.PreAmp_dB;
-                    levelResult.RBW_kHz = result.RBW_Hz / 1000.0;
-                    levelResult.RefLevel_dBm = result.RefLevel_dBm;
                     if (result.DeviceStatus == DataModels.Sdrn.DeviceServer.Commands.Results.Enums.DeviceStatus.RFOverload) { levelResult.Overload = true; } else { levelResult.Overload = false; }
-                    if (levelResult != null)
-                    {
-                        taskContext.SetEvent(levelResult);
-                    }
-                    else
-                    {
-                        taskContext.SetEvent<ExceptionProcessLevel>(new ExceptionProcessLevel(CommandFailureReason.Exception, new Exception("Level is null")));
-                    }
+                    taskContext.SetEvent(levelResult);
                     taskContext.Process.CountMeasurementDone++;
                 }
                 catch (Exception ex)
@@ -82,25 +72,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             }
         }
 
-        public static double[] CutArray(double[] arr, int CountPoint)
-        {
-            if (arr.Length <= CountPoint)
-            {
-                return arr;
-            }
-            else
-            {
-                var k = (int)Math.Round((double)(arr.Length / CountPoint));
-                var reducedArray = new double[CountPoint];
-                int reducedIndex = 0;
-                for (int i = 0; i < arr.Length; i += k)
-                {
-                    if (reducedIndex > CountPoint - 1) break;
-                    reducedArray[reducedIndex++] = arr[i];
-                }
-                return reducedArray;
-            }
-        }
 
         public static float[] CutArray(float[] arr, TraceType traceType, int CountPoint)
         {

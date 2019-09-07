@@ -49,13 +49,18 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         }
         private void Handle(long measResultId)
         {
-            // Some aggregaton code
-
-            var busEvent = new SGMeasResultAggregated($"OnSGMeasResultAggregated", "OnSGMeasResultAppeared")
+            using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
             {
-                MeasResultId = measResultId
-            };
-            _eventEmitter.Emit(busEvent);
+                var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeasSignaling>().Insert();
+                builderInsertIResMeas.SetValue(c => c.RES_MEAS.Id, measResultId);
+                builderInsertIResMeas.SetValue(c => c.IsSend, false);
+                var resMeasSG = scope.Executor.Execute<MD.IResMeasSignaling_PK>(builderInsertIResMeas);
+            }
+
+            //var busEvent = new SGMeasResultAggregated($"OnSGMeasResultAggregated", "OnSGMeasResultAppeared") { MeasResultId = measResultId };
+            //_eventEmitter.Emit(busEvent);
         }
     }
 }
+
+

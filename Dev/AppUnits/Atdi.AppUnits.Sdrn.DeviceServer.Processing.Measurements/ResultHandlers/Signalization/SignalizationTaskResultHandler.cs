@@ -25,11 +25,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private readonly ITaskStarter _taskStarter;
         private readonly ITimeService _timeService;
         private readonly IWorkScheduler _workScheduler;
+        private readonly ConfigMeasurements _configMeasurements;
+        
 
         public SignalizationTaskResultHandler(ILogger logger,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
             IWorkScheduler workScheduler,
+            ConfigMeasurements configMeasurement,
             ITimeService timeService)
         {
             this._logger = logger;
@@ -37,6 +40,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._taskStarter = taskStarter;
             this._timeService = timeService;
             this._workScheduler = workScheduler;
+            this._configMeasurements = configMeasurement;
         }
 
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
@@ -126,7 +130,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
                 //Групируем сырые данные измерений к существующим
-                bool isSuccessCalcGrouping = CalcGroupingEmitting.CalcGrouping(taskContext.Task.taskParameters, taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsTemp, ref taskContext.Task.EmittingsSummary, _logger, taskContext.Task.NoiseLevel_dBm);
+                bool isSuccessCalcGrouping = CalcGroupingEmitting.CalcGrouping(taskContext.Task.taskParameters, ref taskContext.Task.EmittingsRaw, ref taskContext.Task.EmittingsTemp, ref taskContext.Task.EmittingsSummary, _logger, taskContext.Task.NoiseLevel_dBm, this._configMeasurements.CountMaxEmission);
                 if (isSuccessCalcGrouping == false)
                 {
                     //обработка  ошибка
@@ -152,7 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 // Отправка результата в Task Handler
-                if ((taskContext.Task.EmittingsSummary != null) && (taskContext.Task.EmittingsSummary.Length>0))
+                //if ((taskContext.Task.EmittingsSummary != null) && (taskContext.Task.EmittingsSummary.Length>0))
                 {
                     var allEmitting = new List<Emitting>();
                     allEmitting.AddRange(taskContext.Task.EmittingsSummary);

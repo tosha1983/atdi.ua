@@ -47,11 +47,14 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="Convertors\Level\ConvertToMesureTraceParameterForLevel.cs" />
+    <Compile Include="Handler\MeasResultTask\SendCommandForMeasResultTaskWorker.cs" />
     <Compile Include="DeviceBusHandlers\InitOnlineMeasurementHandler.cs" />
+    <Compile Include="Handler\RegistrationTask\SendCommandForRegistrationTaskWorker.cs" />
+    <Compile Include="Handler\RegistrationTask\LevelPrimaryHandler.cs" />
     <Compile Include="MeasurementDispatcher.cs" />
     <Compile Include="MessageHandlerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Handler\LevelResultHandler.cs" />
+    <Compile Include="Handler\MeasResultTask\LevelResultHandler.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Tasks\OnlineMeasurementProcess.cs" />
     <Compile Include="Tasks\ClientReadyTakeMeasResultTask.cs" />
