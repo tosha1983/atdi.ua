@@ -339,7 +339,27 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show("Unknown error", "Add association station by emitting faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
-        
+
+        public static OnlineMeasurementInitiationResult InitOnlineMeasurement(long sensorId, TimeSpan period)
+        {
+            var options = new OnlineMeasurementOptions
+            {
+                Period = period,
+                SensorId = sensorId
+            };
+
+            var result = Execute(contract => contract.InitOnlineMeasurement(options));
+
+            return result;
+        }
+
+        public static SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
+        {
+            var result = Execute(contract => contract.GetSensorAvailabilityForOnlineMesurement(serverToken));
+            return result;
+        }
+
+
         #endregion
     }
 }

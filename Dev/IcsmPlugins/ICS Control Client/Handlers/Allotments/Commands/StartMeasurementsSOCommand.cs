@@ -163,7 +163,7 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 RfAttenuation = 0,
                 IfAttenuation = 0,
                 MeasTime = 0.003,
-                DetectType = SDR.DetectingType.Avarage,
+                DetectType = SDR.DetectingType.Average,
                 Preamplification = 0
             };
 
