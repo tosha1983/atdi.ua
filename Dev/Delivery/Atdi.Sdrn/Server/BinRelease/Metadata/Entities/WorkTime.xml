@@ -15,12 +15,7 @@
     <Field Desc="StopEmitting" Title="StopEmitting" Name="StopEmitting" DataType="DateTime" SourceName="STOP_EMIT" SourceType="Column" Required="true"/>
     <Field Desc="HitCount" Title="HitCount" Name="HitCount" DataType="Integer.32" SourceName="HIT_COUNT" SourceType="Column" Required="true"/>
     <Field Desc="PersentAvailability" Title="PersentAvailability" Name="PersentAvailability" DataType="Float.22.8" SourceName="PERCENT_AVAILABLE" SourceType="Column" Required="true"/>
-    <Field Desc="EmittingId" Title="EmittingId" Name="EmittingId" DataType="Integer.64" SourceName="EMITTING_ID" SourceType="Column" Required="true"/>
-    <Field Name="EMITTING" SourceType="Reference" SourceName="Emitting" Title="Relation WorkTime to Emitting">
-      <PrimaryKeyMapping>
-        <Mapped KeyFieldName="Id" MatchWith="Field">EmittingId</Mapped>
-      </PrimaryKeyMapping>
-    </Field>
+    <Field Name="EMITTING" SourceType="Reference" SourceName="Emitting" Title="Relation WorkTime to Emitting"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

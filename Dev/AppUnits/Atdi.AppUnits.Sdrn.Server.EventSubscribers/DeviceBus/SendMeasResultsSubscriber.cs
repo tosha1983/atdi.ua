@@ -26,15 +26,15 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
     [SubscriptionEvent(EventName = "OnSendMeasResultsDeviceBusEvent", SubscriberName = "SendMeasResultsSubscriber")]
     public class SendMeasResultsSubscriber : SubscriberBase<DM.MeasResults>
     {
-        class HandleContext
-        {
-            public long messageId;
-            public long resMeasId = 0;
-            public string sensorName;
-            public string sensorTechId;
-            public IDataLayerScope scope;
-            public DM.MeasResults measResult;
-        }
+        //class HandleContext
+        //{
+        //    public long messageId;
+        //    public long resMeasId = 0;
+        //    public string sensorName;
+        //    public string sensorTechId;
+        //    public IDataLayerScope scope;
+        //    public DM.MeasResults measResult;
+        //}
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly IStatistics _statistics;
