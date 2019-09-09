@@ -21,15 +21,15 @@ namespace Atdi.Test.Api.Sdrn.Client.Bus.Testing
     {
         static void Main(string[] args)
         {
-            while (true)
+            //while (true)
             {
                 // Разкоментариваем нужную строку, в зависимости от того что мы хотим делать.
                 // - Если нужно загрузить тестовый результат на основании JSON файлов из каталога - используем LoadJSONMeasResultfromFolder,
                 //      при этом в самой этой функции внутри нужно указать правильный каталог
                 // - Если тестовый результат описанный нами в классе TestMeasResult - используем LoadTestMeasResult
                 
-                //LoadJSONMeasResultfromFolder();
-                LoadTestMeasResult();
+                LoadJSONMeasResultfromFolder();
+                //LoadTestMeasResult();
             }
         }
         static void LoadJSONMeasResultfromFolder()
