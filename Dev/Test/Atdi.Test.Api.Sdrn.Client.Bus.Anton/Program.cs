@@ -29,72 +29,23 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
         }
         static void Test()
         {
-            //Console.WriteLine($"Press [Enter] to start testing ...");
-            //Console.ReadLine();
 
             var gateFactory = BusGateFactory.Create();
             var gate = CreateGate(gateFactory);
-
-            //var dispatcher = gate.CreateDispatcher("main");
-            //dispatcher.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            //dispatcher.RegistryHandler(new Handlers.SendCommandHandler(gate));
-            //dispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
-            //dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
-            //dispatcher.Activate();
-
-
             var publisher = gate.CreatePublisher("main");
-
-            var sensor = new DM.Sensor
-            {
-                Name = "SENSOR-DBD12-A00-8918",
-                Equipment = new DM.SensorEquipment
-                {
-                    TechId = "Atdi.Sdrn.Device.Client.API"
-                },
-                Administration = "Administration",
-                Antenna = new SensorAntenna
-                {
-                    AddLoss = 1,
-                    Category = "Category",
-                    Class = "Class",
-                    Code = "Code",
-                    CustDate1 = DateTime.Now,
-                    Direction = DataModels.Sdrns.AntennaDirectivity.Directional,
-                    GainMax = 1,
-                    GainType = "GainType",
-                    HBeamwidth = 120,
-                    LowerFreq_MHz = 100,
-                    Manufacturer = "Manufacturer",
-                    Name = "SensorAntenna",
-                    Polarization = DataModels.Sdrns.AntennaPolarization.V,
-                    TechId = "SensorAntenna.TechId",
-
-                },
-                Type = "Type",
-                Status = "A",
-                RxLoss = 20
-            };
-
-            //publisher.Send("RegisterSensor", sensor, $"testing ");
-            //Console.ReadLine();
 
             var res = LoadFromFiles(@"C:\Users\Administrator\Desktop\Upload");
             for (int i = 0; i < res.Length; i++)
             {
                 var item = res[i];
-                //  item.Measured = item.Measured.AddDays(i);
                 publisher.Send("SendMeasResults", item, $"MonitoringStations");
                 Console.WriteLine($"TASK ID: {item.TaskId}");
             }
 
             Console.WriteLine($"Test finished ...");
-            Console.ReadLine();
-            var measMSResult = BuildTestMeasResultsMonitoringStations();
 
-
-
-            var measResult = BuildTestMeasResults();
+            var measResult = BuildTestMeasResultsSignaling();
+            //var measResult = BuildTestMeasResultsMonitoringStations()
             var commandResult = new DeviceCommandResult()
             {
                 CommandId = Guid.NewGuid().ToString()
@@ -121,41 +72,24 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             var count = 1;
             for (int i = 0; i < count; i++)
             {
-                publisher.Send("RegisterSensor", sensor, $"ID #{i}");
-                Console.ReadLine();
-                publisher.Send("UpdateSensor", sensor, $"ID #{i}");
-                Console.ReadLine();
-                publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
-                Console.ReadLine();
+                //publisher.Send("RegisterSensor", sensor, $"ID #{i}");
+                //Console.ReadLine();
+                //publisher.Send("UpdateSensor", sensor, $"ID #{i}");
+                //Console.ReadLine();
+                //publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
+                //Console.ReadLine();
 
                 publisher.Send("SendMeasResults", measResult, $"ID #{i}");
-                Console.ReadLine();
+                //Console.ReadLine();
 
 
-                publisher.Send("SendEntity", entity, $"#{i}");
-                publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
+                //publisher.Send("SendEntity", entity, $"#{i}");
+                //publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
 
-                Console.WriteLine(i);
+                //Console.WriteLine(i);
             }
 
 
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    publisher.Send("RegisterSensor", sensor, "Some Correlation ID #" + i.ToString());
-            //    publisher.Send("UpdateSensor", sensor, "Some Correlation ID #" + i.ToString());
-
-            //    publisher.Send("SendCommandResult", new DeviceCommandResult(), "Some Correlation ID #" + i.ToString());
-            //    publisher.Send("SendMeasResults", new MeasResults(), "Some Correlation ID #" + i.ToString());
-            //    publisher.Send("SendEntity", new Entity(), "Some Correlation ID #" + i.ToString());
-            //    publisher.Send("SendEntityPart", new EntityPart(), "Some Correlation ID #" + i.ToString());
-
-            //    //Console.WriteLine($"Press [Enter] to next testing ...");
-            //    //Console.ReadLine();
-
-            //    Console.WriteLine($"Step: #" + i);
-            //}
-
-            // обязательно все почистить
             publisher.Dispose();
             //dispatcher.Deactivate();
             //dispatcher.Dispose();
@@ -169,9 +103,6 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             var gate = gateFactory.CreateGate("MainGate", gateConfig);
             return gate;
         }
-
-
-
         static IBusGateConfig CreateConfig(IBusGateFactory gateFactory)
         {
             var config = gateFactory.CreateConfig();
@@ -214,6 +145,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             }
             return result;
         }
+        #region Monitoring Station
         static MeasResults BuildTestMeasResultsMonitoringStations()
         {
             var result = new MeasResults
@@ -228,9 +160,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 ScansNumber = 1000,
                 SwNumber = 9000,
                 StationResults = BuildStationResults(10)
-
             };
-
             return result;
         }
         static StationMeasResult[] BuildStationResults(int count)
@@ -280,6 +210,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 }
             };
         }
+        #endregion
         static LevelMeasResult[] BuildLevelResults(int count)
         {
             var result = new LevelMeasResult[count];
@@ -315,7 +246,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             return result;
         }
 
-        static MeasResults BuildTestMeasResults()
+        static MeasResults BuildTestMeasResultsSignaling()
         {
             var c = 10; // 50;
             var emottingsCount = c;
@@ -355,7 +286,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Level,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Signaling,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),

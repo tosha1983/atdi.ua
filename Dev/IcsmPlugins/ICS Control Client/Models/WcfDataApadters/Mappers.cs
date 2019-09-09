@@ -144,12 +144,12 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
                 MeasDtParamDemod = source.MeasDtParam.Demod,
                 MeasDtParamDetectType = source.MeasDtParam.DetectType,
-                MeasDtParamIfAttenuation = source.MeasDtParam.IfAttenuation,
+                MeasDtParamIfAttenuation = source.MeasDtParam.IfAttenuation??0,
                 MeasDtParamMeasTime = source.MeasDtParam.MeasTime.ToNull(),
                 MeasDtParamMode = source.MeasDtParam.Mode,
-                MeasDtParamPreamplification = source.MeasDtParam.Preamplification,
+                MeasDtParamPreamplification = source.MeasDtParam.Preamplification??0,
                 MeasDtParamRBW = source.MeasDtParam.RBW.ToNull(),
-                MeasDtParamRfAttenuation = source.MeasDtParam.RfAttenuation,
+                MeasDtParamRfAttenuation = source.MeasDtParam.RfAttenuation.GetValueOrDefault(),
                 MeasDtParamTypeMeasurements = source.MeasDtParam.TypeMeasurements,
                 MeasDtParamVBW = source.MeasDtParam.VBW.ToNull(),
 
