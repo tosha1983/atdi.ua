@@ -68,6 +68,10 @@
       <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
       <Name>Atdi.Api.Sdrn.Device.BusController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement\Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.csproj">
+      <Project>{c140f2d7-3ed4-40c3-a9bf-c8504c760791}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Repositories\Atdi.AppUnits.Sdrn.DeviceServer.Repositories.csproj">
       <Project>{53367a1d-485e-4d43-81e3-d4008a03773b}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Repositories</Name>
@@ -243,6 +247,11 @@ copy "$(TargetDir)Atdi.WebApiServices.*.config" "..\..\..\..\Delivery\Atdi.Sdrn\
 copy "$(TargetDir)Atdi.AppServer.Console.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppServer.Svchost.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.Tools.LicenseAnalyzer.exe" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)"
+
+
 
 copy "$(TargetDir)\Atdi.Build.Sdrn.DeviceServer.Core.exe.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Core\Bin$(ConfigurationName)\template.config.xml"
 

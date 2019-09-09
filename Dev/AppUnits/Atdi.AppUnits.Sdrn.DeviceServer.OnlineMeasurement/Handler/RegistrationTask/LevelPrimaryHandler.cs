@@ -52,7 +52,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
         {
             if (arr.Length <= CountPoint)
             {
-                return arr;
+                double[] arrMhz = new double[arr.Length];
+                for (int i=0; i< arr.Length;i++)
+                {
+                    arrMhz[i] = (double)(arr[i] / 1000000);
+                }
+                return arrMhz;
             }
             else
             {
@@ -63,7 +68,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 for (int i = 0; i < arr.Length; i += k)
                 {
                     if (reducedIndex > newpoint - 1) break;
-                    reducedArray[reducedIndex++] = arr[i];
+                    reducedArray[reducedIndex++] = (double)(arr[i] / 1000000);
                 }
                 return reducedArray;
             }
