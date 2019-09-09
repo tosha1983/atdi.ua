@@ -1,0 +1,308 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
+             xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+      <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+          <Setter Property="HorizontalAlignment" Value="Stretch"/>
+          <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      </Style>
+      <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+          <Setter Property="TextBlock.TextAlignment" Value="Center" />
+      </Style>
+      <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+          <Setter Property="TextBlock.TextAlignment" Value="Right" />
+      </Style>
+
+      <Style TargetType="TextBox">
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self},
+                        Path=(Validation.Errors)[0].ErrorContent}" />
+                <Setter Property="Foreground" Value="Red" />
+            </Trigger>
+            <Trigger Property="Validation.HasError" Value="False">
+                <Setter Property="ToolTip"
+                    Value="" />
+                <Setter Property="Foreground" Value="Black" />
+            </Trigger>
+        </Style.Triggers>
+      </Style>
+
+    </UserControl.Resources>
+
+    <DockPanel LastChildFill="True" MinHeight="30">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="3*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <GroupBox    Grid.Column="0" Grid.Row="0"  Header = "Parameter of sensor" Margin="5,5,5,5">
+          <Grid Margin="5,5,5,5" DataContext="{Binding Sensor}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+
+
+              <RowDefinition Height="*"></RowDefinition>
+
+            </Grid.RowDefinitions>
+            <Label   Grid.Row="0" Grid.Column="0"  Content="Id"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="0" Grid.Column="1"  Text="{Binding Path=Id}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            <Label   Grid.Row="0" Grid.Column="2"  Content="Status"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="0" Grid.Column="3"  Text="{Binding Path=Status}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+
+            <Label   Grid.Row="2" Grid.Column="0"  Content="Name"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="3" Text="{Binding Path=Name}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+
+            <Label   Grid.Row="4" Grid.Column="0"  Content="Administration"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="4" Grid.Column="1"  Text="{Binding Path=Administration}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            <Label   Grid.Row="4" Grid.Column="2"  Content="NetworkId"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="4" Grid.Column="3"  Text="{Binding Path=NetworkId}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+
+            <Label   Grid.Row="6" Grid.Column="0"  Content="Remark"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="6" Grid.Column="1"  Grid.ColumnSpan="3" Text="{Binding Path=Remark}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+
+            <Label   Grid.Row="8" Grid.Column="0"  Grid.ColumnSpan="2" Content="Bring into use date"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="8" Grid.Column="2"  Grid.ColumnSpan="2" Text="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy}'}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            
+            <Label   Grid.Row="10" Grid.Column="0"  Grid.ColumnSpan="2" Content="End of use date"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="10" Grid.Column="2"  Grid.ColumnSpan="2" Text="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy}'}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+
+
+            <Label   Grid.Row="12" Grid.Column="0"  Content="Azimuth, deg"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="12" Grid.Column="1"  Text="{Binding Path=Azimuth}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            <Label   Grid.Row="12" Grid.Column="2"  Content="Elevation, deg"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="12" Grid.Column="3"  Text="{Binding Path=Elevation}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            
+            <Label   Grid.Row="14" Grid.Column="0"  Content="AGL, m"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="14" Grid.Column="1"  Text="{Binding Path=AGL}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            <Label   Grid.Row="14" Grid.Column="2"  Content="Sensor Type"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="14" Grid.Column="3"  Text="{Binding Path=TypeSensor}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            
+
+            <Label   Grid.Row="16" Grid.Column="0"  Content="Created Date"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="16" Grid.Column="1"  Text="{Binding Path=DateCreated}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            <Label   Grid.Row="16" Grid.Column="2"  Content="Created By"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="16" Grid.Column="3"  Text="{Binding Path=CreatedBy}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"/>
+            
+
+
+          </Grid>
+        </GroupBox>
+
+        
+
+        <GroupBox Grid.Column="0" Grid.Row="2"  Header = "Measurement parameters" Margin="5,5,5,5">
+          <Grid Margin="5,5,5,5" DataContext="{Binding MeasParameters}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="80" />
+              <ColumnDefinition Width="75" />
+              <ColumnDefinition Width="35" />
+              <ColumnDefinition Width="70" />
+              <ColumnDefinition Width="70" />
+              <ColumnDefinition Width="35" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="8"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label   Grid.Row="0" Grid.Column="0"  Content="Status"       VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontWeight="Bold"/>
+            <TextBox Grid.Row="0" Grid.Column="1"  Grid.ColumnSpan="7" Text="{Binding CurrentStatus}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="#FFD1CACA" IsReadOnly="True"/>
+
+            <Label   Grid.Row="2" Grid.Column="0"  Content="Freq Start"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="2" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="FreqStart_MHz">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="2" Grid.Column="2"  Content="MHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label   Grid.Row="4" Grid.Column="0"  Content="Freq Stop"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="4" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="FreqStop_MHz">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="4" Grid.Column="2"  Content="MHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label    Grid.Row="6" Grid.Column="0"  Content="Trace Type" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <ComboBox Grid.Row="6" Grid.Column="1"  Grid.ColumnSpan="2" SelectedValue="{Binding TraceType, Mode=TwoWay}" ItemsSource="{Binding TraceTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
+
+            <Label   Grid.Row="6" Grid.Column="3"  Content="Trace Count" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="6" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="TraceCount">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            
+            <Label   Grid.Row="8" Grid.Column="0"  Content="RBW" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="8" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}" >
+              <TextBox.Text>
+                <Binding Path="RBW_kHz">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="8" Grid.Column="2"  Content="kHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label   Grid.Row="10" Grid.Column="0"  Content="Sweep Time" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="10" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}" >
+              <TextBox.Text>
+                <Binding Path="SweepTime_s">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="10" Grid.Column="2"  Content="s" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label    Grid.Row="12" Grid.Column="0"  Content="Detector Type" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <ComboBox Grid.Row="12" Grid.Column="1"  Grid.ColumnSpan="2" SelectedValue="{Binding DetectorType, Mode=TwoWay}" ItemsSource="{Binding DetectorTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
+
+            <Label   Grid.Row="12" Grid.Column="3"  Content="Ref Level" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="12" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}" >
+              <TextBox.Text>
+                <Binding Path="RefLevel_dBm">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="12" Grid.Column="5"  Content="dBm" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label   Grid.Row="14" Grid.Column="0"  Content="Pre Amp" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="14" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}" >
+              <TextBox.Text>
+                <Binding Path="PreAmp_dB">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="14" Grid.Column="2"  Content="dB" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label   Grid.Row="14" Grid.Column="3"  Content="Att" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="14" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}" >
+              <TextBox.Text>
+                <Binding Path="Att_dB">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="14" Grid.Column="5"  Content="dB"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Button Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding ConnectButtonText}"     Command="{Binding Parent.ConnectDisconnect}" Width="120" Height="30" HorizontalAlignment="Left" IsEnabled="{Binding IsEnabledConnectButton}"/>
+            <Button Grid.Row="16" Grid.Column="2" Grid.ColumnSpan="3" Content="{Binding RunButtonText}"  Command="{Binding Parent.RunCancel}" Width="150" Height="30" HorizontalAlignment="Right" IsEnabled="{Binding IsEnabledRunButton}"/>
+            
+            <Expander Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="7" Header="Log" >
+              <Grid >
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Path=Parent.LogRecords}" Margin="3,3,3,3" IsReadOnly="True" HorizontalContentAlignment="Left"/>
+              </Grid>
+            </Expander>
+          </Grid>
+        </GroupBox>
+
+        <GridSplitter Grid.Column="1" Grid.RowSpan="5"   ShowsPreview="True" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FF871313"></GridSplitter>
+
+        <cs:LineChart  Grid.Column="2" Grid.RowSpan="3" Option="{Binding MeasChartOption}" />
+
+        <GridSplitter Grid.Column="3" Grid.RowSpan="5"   ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FF871313"></GridSplitter>
+        
+        <maps:Map     Grid.Column="4" Grid.RowSpan="3"  DrawingData="{Binding CurrentMapData}"/>
+
+
+        <GridSplitter Grid.Row="1" Grid.Column="0" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
+
+        <GridSplitter Grid.Row="3" Grid.ColumnSpan="5" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
+
+        <cs:LineChart  Grid.Column="2" Grid.Row="4" Option="{Binding CurrentChartOption}"  />
+
+
+    </Grid>
+   </DockPanel>
+</UserControl>

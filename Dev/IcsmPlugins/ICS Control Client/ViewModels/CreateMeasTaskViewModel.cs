@@ -201,7 +201,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._currentMeasTask.MeasDtParamRBW = 100;
                 this._currentMeasTask.MeasDtParamVBW = 100;
                 this._currentMeasTask.MeasDtParamMeasTime = 0.001;
-                this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.Avarage;
+                this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.Average;
                 this._currentMeasTask.MeasDtParamRfAttenuation = 0;
                 this._currentMeasTask.MeasDtParamPreamplification = 0;
             }

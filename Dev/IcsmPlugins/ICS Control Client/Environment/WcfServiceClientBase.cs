@@ -113,25 +113,25 @@ namespace XICSM.ICSControlClient.Environment
             {
                 Logger.WriteError(PluginMetadata.Processes.InvokeWcfOperation, $"There was a service problem. {e.Message}");
                 Logger.WriteExeption(PluginMetadata.Processes.InvokeWcfOperation, e);
-                throw new InvalidOperationException("WCF operation call was aborted");
+                throw new InvalidOperationException("WCF operation call was aborted", e);
             }
             catch (CommunicationException e)
             {
                 Logger.WriteError(PluginMetadata.Processes.InvokeWcfOperation, $"There was a communication problem. {e.Message}");
                 Logger.WriteExeption(PluginMetadata.Processes.InvokeWcfOperation, e);
-                throw new InvalidOperationException("WCF operation call was aborted");
+                throw new InvalidOperationException("WCF operation call was aborted", e);
             }
             catch (TimeoutException e)
             {
                 Logger.WriteError(PluginMetadata.Processes.InvokeWcfOperation, $"The service operation timed out. {e.Message}");
                 Logger.WriteExeption(PluginMetadata.Processes.InvokeWcfOperation, e);
-                throw new InvalidOperationException("WCF operation call was aborted");
+                throw new InvalidOperationException("WCF operation call was aborted", e);
             }
             catch (Exception e)
             {
                 Logger.WriteError(PluginMetadata.Processes.InvokeWcfOperation, $"There was a problem. {e.Message}");
                 Logger.WriteExeption(PluginMetadata.Processes.InvokeWcfOperation, e);
-                throw new InvalidOperationException("WCF operation call was aborted");
+                throw new InvalidOperationException("WCF operation call was aborted", e);
             }
             finally
             {

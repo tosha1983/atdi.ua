@@ -21,6 +21,16 @@
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" 
                 Text="{Binding Path=Title}"/>
 
+        <TextBlock Margin="2" x:Name="tbLeftTitle" Grid.Column="1" Grid.Row="0" 
+                RenderTransformOrigin="0.5,0.5" FontSize="14" 
+                HorizontalAlignment="Left" VerticalAlignment="Stretch" TextAlignment="Center" 
+                Text="{Binding Path=LeftTitle}"/>
+        
+        <TextBlock Margin="2" x:Name="tbRightTitle" Grid.Column="1" Grid.Row="0" 
+                RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" Foreground="Red"
+                HorizontalAlignment="Right" VerticalAlignment="Stretch" TextAlignment="Center" 
+                Text="{Binding Path=RightTitle}"/>
+        
         <TextBlock Margin="2" x:Name="tbXLabel" Grid.Column="1" Grid.Row="2" 
                RenderTransformOrigin="0.5,0.5" TextAlignment="Center"  FontWeight="Bold"
                Text="{Binding Path=XLabel}"/>
