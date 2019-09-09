@@ -1,254 +1,17 @@
-﻿using System;
+﻿using Atdi.DataModels.Sdrns.Device;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Api.Sdrn.Device.BusController;
 
-using DM = Atdi.DataModels.Sdrns.Device;
-using Atdi.DataModels.Sdrns.Device;
-using Newtonsoft.Json;
-
-namespace Atdi.Test.Api.Sdrn.Device.BusController
+namespace Atdi.Test.Api.Sdrn.Client.Bus.Testing
 {
-    class JsonData
+    class TestMeasResult
     {
-        public string Type;
-        public string JsonBody;
-    }
-    class Program
-    {
-        static void Main(string[] args)
+        public MeasResults BuildTestMeasResults()
         {
-            while (true)
-            {
-                Test();
-            }
-
-        }
-        static void Test()
-        {
-
-            var gateFactory = BusGateFactory.Create();
-            var gate = CreateGate(gateFactory);
-            var publisher = gate.CreatePublisher("main");
-
-            var res = LoadFromFiles(@"C:\Users\Administrator\Desktop\Upload");
-            for (int i = 0; i < res.Length; i++)
-            {
-                var item = res[i];
-                publisher.Send("SendMeasResults", item, $"MonitoringStations");
-                Console.WriteLine($"TASK ID: {item.TaskId}");
-            }
-
-            Console.WriteLine($"Test finished ...");
-
-            var measResult = BuildTestMeasResultsSignaling();
-            //var measResult = BuildTestMeasResultsMonitoringStations()
-            var commandResult = new DeviceCommandResult()
-            {
-                CommandId = Guid.NewGuid().ToString()
-            };
-
-            var entity = new Entity
-            {
-                EntityId = Guid.NewGuid().ToString(),
-                ContentType = "xml",
-                Description = "The some data",
-                Encoding = "",
-                Name = "Test object",
-                PartIndex = 1,
-                EOF = true,
-                Content = new byte[250]
-            };
-
-            var entityPart = new EntityPart()
-            {
-                EOF = true,
-                EntityId = entity.EntityId,
-                Content = new byte[250]
-            };
-            var count = 1;
-            for (int i = 0; i < count; i++)
-            {
-                //publisher.Send("RegisterSensor", sensor, $"ID #{i}");
-                //Console.ReadLine();
-                //publisher.Send("UpdateSensor", sensor, $"ID #{i}");
-                //Console.ReadLine();
-                //publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
-                //Console.ReadLine();
-
-                publisher.Send("SendMeasResults", measResult, $"ID #{i}");
-                //Console.ReadLine();
-
-
-                //publisher.Send("SendEntity", entity, $"#{i}");
-                //publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
-
-                //Console.WriteLine(i);
-            }
-
-
-            publisher.Dispose();
-            //dispatcher.Deactivate();
-            //dispatcher.Dispose();
-
-            Console.ReadLine();
-        }
-
-        static IBusGate CreateGate(IBusGateFactory gateFactory)
-        {
-            var gateConfig = CreateConfig(gateFactory);
-            var gate = gateFactory.CreateGate("MainGate", gateConfig);
-            return gate;
-        }
-        static IBusGateConfig CreateConfig(IBusGateFactory gateFactory)
-        {
-            var config = gateFactory.CreateConfig();
-
-            config["License.FileName"] = "LIC-DBD12-A00-878.SENSOR-DBD12-A00-8918.lic";
-            config["License.OwnerId"] = "OID-BD12-A00-N00";
-            config["License.ProductKey"] = "0VE1-OCOL-S4S0-C1D1-SEXB";
-
-            config["RabbitMQ.Host"] = "localhost";
-            config["RabbitMQ.VirtualHost"] = "Test.SDRN.Control";
-            config["RabbitMQ.User"] = "guest";
-            config["RabbitMQ.Password"] = "guest";
-
-            config["SDRN.ApiVersion"] = "2.0";
-
-            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-5244";
-            config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
-
-            config["SDRN.Device.SensorTechId"] = "Atdi.Sdrn.Device.Client.API";
-            config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
-            config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
-            config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
-            config["SDRN.MessageConvertor.UseEncryption"] = "false";
-            config["SDRN.MessageConvertor.UseCompression"] = "false";
-
-            return config;
-        }
-
-        static MeasResults[] LoadFromFiles(string folder)
-        {
-            var files = System.IO.Directory.GetFiles(folder, "*.json");
-            var result = new MeasResults[files.Length];
-            for (int i = 0; i < files.Length; i++)
-            {
-                var file = files[i];
-                var json = System.IO.File.ReadAllText(file);
-
-                var body = JsonConvert.DeserializeObject<JsonData>(json);
-                result[i] = JsonConvert.DeserializeObject<MeasResults>(body.JsonBody);
-            }
-            return result;
-        }
-        #region Monitoring Station
-        static MeasResults BuildTestMeasResultsMonitoringStations()
-        {
-            var result = new MeasResults
-            {
-                TaskId = "",
-                Measured = DateTime.Now,
-                Measurement = DataModels.Sdrns.MeasurementType.MonitoringStations,
-                ResultId = $"Client result ID: {Guid.NewGuid()}",
-                StartTime = DateTime.Today,
-                StopTime = DateTime.Today,
-                Status = "A",
-                ScansNumber = 1000,
-                SwNumber = 9000,
-                StationResults = BuildStationResults(10)
-            };
-            return result;
-        }
-        static StationMeasResult[] BuildStationResults(int count)
-        {
-            var result = new StationMeasResult[count];
-            for (int i = 0; i < count; i++)
-            {
-                result[i] = BuildStationResult(i);
-            }
-            return result;
-        }
-        static StationMeasResult BuildStationResult(int index)
-        {
-            return new StationMeasResult
-            {
-                Status = "A",
-                Standard = "Standard",
-                RealGlobalSid = $"RGSID-{index:D4}",
-                TaskGlobalSid = $"TGSID-{index:D4}",
-                SectorId = index.ToString(),
-                StationId = index.ToString(),
-                LevelResults = BuildLevelResults(400),
-                Bearings = BuildBearings(400),
-                GeneralResult = new GeneralMeasResult
-                {
-                    CentralFrequency_MHz = 5000,
-                    CentralFrequencyMeas_MHz = 6000,
-                    LevelsSpectrum_dBm = new float[300],
-                    BandwidthResult = new BandwidthMeasResult
-                    {
-                        Bandwidth_kHz = 120,
-                        MarkerIndex = 25,
-                        T1 = 1,
-                        T2 = 2,
-                        TraceCount = 123,
-                        СorrectnessEstimations = false
-                    },
-                    MeasDuration_sec = 100,
-                    MeasFinishTime = DateTime.Now,
-                    MeasStartTime = DateTime.Today,
-                    OffsetFrequency_mk = 455,
-                    RBW_kHz = 65665,
-                    SpectrumStartFreq_MHz = 5454,
-                    SpectrumSteps_kHz = 25,
-                    VBW_kHz = 55,
-
-                }
-            };
-        }
-        #endregion
-        static LevelMeasResult[] BuildLevelResults(int count)
-        {
-            var result = new LevelMeasResult[count];
-            for (int i = 0; i < count; i++)
-            {
-                result[i] = new LevelMeasResult
-                {
-                    DifferenceTimeStamp_ns = 1000,
-                    Level_dBm = 45,
-                    Level_dBmkVm = 12,
-                    MeasurementTime = DateTime.Now
-                };
-            }
-            return result;
-        }
-        static DirectionFindingData[] BuildBearings(int count)
-        {
-            var result = new DirectionFindingData[count];
-            for (int i = 0; i < count; i++)
-            {
-                result[i] = new DirectionFindingData
-                {
-                    AntennaAzimut = 100,
-                    Bandwidth_kHz = 200,
-                    Bearing = 150,
-                    CentralFrequency_MHz = 350,
-                    Quality = 12,
-                    Level_dBm = 45,
-                    Level_dBmkVm = 12,
-                    MeasurementTime = DateTime.Now
-                };
-            }
-            return result;
-        }
-
-        static MeasResults BuildTestMeasResultsSignaling()
-        {
-            var c = 10; // 50;
+            var c = 20; // параметр регулирует сколько подобъектов (например Emittings[], FrequencySample[] и т.п.) каждого вида нужно созадвать, для увеличения или уменьшения нагрузки на сервер
             var emottingsCount = c;
             var frequenciesCount = c;
             var frequencySamplesCount = c;
@@ -265,6 +28,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             var result = new MeasResults
             {
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Signaling,
+                Measured = DateTime.Now,
                 BandwidthResult = new BandwidthMeasResult
                 {
                     Bandwidth_kHz = double.MaxValue,
@@ -285,8 +50,6 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     Lat = double.MaxValue,
                     Lon = double.MaxValue
                 },
-                Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Signaling,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),
@@ -302,7 +65,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                 Status = Guid.NewGuid().ToString(),
                 StopTime = DateTime.Now,
                 SwNumber = int.MinValue,
-                TaskId = Guid.NewGuid().ToString()
+                TaskId = "SDRN.SubTaskSensorId.2"//Guid.NewGuid().ToString()
             };
 
             return result;
@@ -340,16 +103,16 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             СorrectnessEstimations = true
                         },
                         BWMask = BuildTestBWMask(bwMaskCount),
-                        CentralFrequencyMeas_MHz = double.MaxValue,
+                        CentralFrequencyMeas_MHz = 2222,
                         LevelsSpectrum_dBm = BuildTestLevelsSpectrum(levelsSpectrumCount),
-                        CentralFrequency_MHz = double.MaxValue,
+                        CentralFrequency_MHz = 1111,
                         MeasDuration_sec = double.MaxValue,
                         MeasFinishTime = DateTime.Now,
                         MeasStartTime = DateTime.Now,
                         OffsetFrequency_mk = double.MaxValue,
                         RBW_kHz = double.MinValue,
-                        SpectrumStartFreq_MHz = decimal.MinValue,
-                        SpectrumSteps_kHz = decimal.MaxValue,
+                        SpectrumStartFreq_MHz = 3333,
+                        SpectrumSteps_kHz = 4444,
                         StationSysInfo = new StationSysInfo
                         {
                             BandWidth = double.MaxValue,
@@ -490,7 +253,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                         Lat = r.NextDouble(),
                         Lon = r.NextDouble(),
                     },
-                    MeasurementTime = DateTime.MinValue,
+                    MeasurementTime = DateTime.Now,
                     Quality = r.NextDouble(),
                 };
             }
@@ -514,6 +277,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -521,6 +286,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -528,6 +295,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -535,6 +304,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -542,6 +313,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -549,6 +322,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -556,6 +331,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         },
                         new RoutePoint
                         {
@@ -563,6 +340,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                             ASL = r.NextDouble(),
                             Lat = r.NextDouble(),
                             Lon = r.NextDouble(),
+                            StartTime = DateTime.Now,
+                            FinishTime = DateTime.Now,
                         }
                     }
                 };
@@ -618,10 +397,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     TriggerDeviationFromReference = r.NextDouble(),
                     WorkTimes = new WorkTime[]
                     {
-                        new WorkTime{HitCount = 1},
-                        new WorkTime{HitCount = 1},
-                        new WorkTime{HitCount = 1}
-                    }
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now }
+                    },
+                    SysInfos = BuildTestSignalingSysInfo(count)
                 };
             }
             return result;
@@ -665,6 +445,37 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             for (int i = 0; i < count; i++)
             {
                 result[i] = (float)r.NextDouble();
+            }
+            return result;
+        }
+        static SignalingSysInfo[] BuildTestSignalingSysInfo(int count)
+        {
+            var r = new Random();
+            var result = new SignalingSysInfo[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = new SignalingSysInfo
+                {
+                    BandWidth_Hz = r.NextDouble(),
+                    BSIC = r.Next(),
+                    ChannelNumber = r.Next(),
+                    CID = r.Next(),
+                    CtoI = r.NextDouble(),
+                    Freq_Hz = (decimal)r.NextDouble(),
+                    LAC = r.Next(),
+                    Level_dBm = r.NextDouble(),
+                    MCC = r.Next(),
+                    MNC = r.Next(),
+                    Power = r.NextDouble(),
+                    RNC = r.Next(),
+                    Standard = "111",
+                    WorkTimes = new WorkTime[]
+                    {
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now },
+                        new WorkTime{HitCount = 1, StartEmitting = DateTime.Now, StopEmitting = DateTime.Now }
+                    }
+                };
             }
             return result;
         }
