@@ -380,9 +380,10 @@
             this.cmbConfigType.FormattingEnabled = true;
             this.cmbConfigType.Items.AddRange(new object[] {
             "ICS Control Server  (SDRN App Server)",
-            "ICS Control Device (SDRN Device API)",
+            "ICS Control Device (SDRN Device API, SDRN Device Server)",
             "WebQuery Application Server",
-            "WebQuery Web Portal"});
+            "WebQuery Web Portal",
+            "ICS Control Client (Monitoring or other)"});
             this.cmbConfigType.Location = new System.Drawing.Point(81, 27);
             this.cmbConfigType.Name = "cmbConfigType";
             this.cmbConfigType.Size = new System.Drawing.Size(303, 21);
