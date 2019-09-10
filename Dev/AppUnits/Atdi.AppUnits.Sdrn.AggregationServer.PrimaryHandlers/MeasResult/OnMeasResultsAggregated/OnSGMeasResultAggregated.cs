@@ -76,6 +76,21 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 return true;
             });
 
+            // ILinkSubTaskSensorMasterId
+            var builderResMeasTaskId = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().From();
+            builderResMeasTaskId.Select(c => c.SubtaskSensorMasterId);
+            builderResMeasTaskId.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId);
+            this._queryExecutor.Fetch(builderResMeasTaskId, readerResMeasTaskId =>
+            {
+                while (readerResMeasTaskId.Read())
+                {
+                    var subtaskSensorMasterId = readerResMeasTaskId.GetValue(c => c.SubtaskSensorMasterId);
+                    if (subtaskSensorMasterId.HasValue)
+                        measResult.TaskId = subtaskSensorMasterId.Value.ToString();
+                }
+                return true;
+            });
+
             // IResLocSensorMeas
             var location = new GeoLocation();
             var builderResMeasLocation = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().From();
