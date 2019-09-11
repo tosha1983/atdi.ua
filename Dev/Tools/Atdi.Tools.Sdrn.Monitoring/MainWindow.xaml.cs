@@ -18,6 +18,7 @@ using System.Configuration;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace Atdi.Tools.Sdrn.Monitoring
 {
@@ -40,8 +41,28 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
         public MainWindow()
         {
+            InitializeComponent();
+            Task.Run((Action)LoadEnvironmentDescription);
+        }
+
+        private void UIContext(Action action)
+        {
+            Application.Current.Dispatcher.Invoke(action);
+
+            
+        }
+
+        private void LoadEnvironmentDescription()
+        {
+            int count = 0;
+
             try
             {
+                UIContext(() =>
+                {
+                    this.Title = "SDRN Servers Monitoring: Endpoints Loading ...";
+                });
+
                 foreach (var keySetting in ConfigurationManager.AppSettings.Keys)
                 {
                     var key = keySetting.ToString();
@@ -50,37 +71,61 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         endpointUrls[key] = ConfigurationManager.AppSettings[key];
                     }
                 }
-                InitializeComponent();
+
+                
 
                 foreach (var endpointUrl in endpointUrls)
                 {
-                    var twEndPointItem = new TreeViewItem();
-                    twEndPointItem.Header = endpointUrl.Key + "(" + endpointUrl.Value + ")";
-                    twEndPointItem.Tag = endpointUrl.Key;
-                    twEndPointItem.FontWeight = FontWeights.Bold;
-                    twEndPointItem.IsExpanded = true;
+                    TreeViewItem twEndPointItem = null;
+
+                    UIContext(() =>
+                    {
+                        twEndPointItem = new TreeViewItem();
+                        twEndPointItem.Header = endpointUrl.Key + " (" + endpointUrl.Value + ")";
+                        twEndPointItem.Tag = endpointUrl.Key;
+                        twEndPointItem.FontWeight = FontWeights.Bold;
+                        twEndPointItem.IsExpanded = true;
+                    });
+
+                    while(twEndPointItem == null)
+                    {
+                        Thread.Sleep(100);
+                    }
+                    
 
                     using (var wc = new HttpClient())
                     {
                         // 1.
                         try
                         {
+                            UIContext(() =>
+                            {
+                                this.Title = $"SDRN Servers Monitoring: Endpoints Loading - Getting from '{endpointUrl.Value + "/api/Host/Info"}'. Please wait a moment ...";
+                            });
                             var responseHost = wc.GetAsync(endpointUrl.Value + "/api/Host/Info").Result;
                             if (responseHost.StatusCode == HttpStatusCode.OK)
                             {
-                                var twConfigItem = new TreeViewItem();
-                                twConfigItem.Header = "Config";
-                                twConfigItem.Tag = TAG_CONFIG;
-                                twConfigItem.IsExpanded = true;
-                                twConfigItem.Foreground = Brushes.Green;
-                                twEndPointItem.Items.Add(twConfigItem);
+                                UIContext(() =>
+                                {
+                                    var twConfigItem = new TreeViewItem();
+                                    twConfigItem.Header = "Config";
+                                    twConfigItem.Tag = TAG_CONFIG;
+                                    twConfigItem.IsExpanded = true;
+                                    twConfigItem.Foreground = Brushes.Green;
+                                    twEndPointItem.Items.Add(twConfigItem);
+                                });
+
+                                ++count;
                             }
                         }
                         catch (Exception)
                         {
-                            twEndPointItem.Header = twEndPointItem.Header + " - unavailable";
-                            twEndPointItem.Foreground = Brushes.Gray;
-                            mainTree.Items.Add(twEndPointItem);
+                            UIContext(() =>
+                            {
+                                twEndPointItem.Header = twEndPointItem.Header + " - unavailable";
+                                twEndPointItem.Foreground = Brushes.Gray;
+                                mainTree.Items.Add(twEndPointItem);
+                            });
                             continue;
                         }
 
@@ -88,73 +133,85 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         var responseSdrnConfig = wc.GetAsync(endpointUrl.Value + "/api/SdrnServer/Config").Result;
                         if (responseSdrnConfig.StatusCode == HttpStatusCode.OK)
                         {
-                            var twConfigItem = new TreeViewItem();
-                            twConfigItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<SdrnServerConfigRequestResult>(responseSdrnConfig.Content.ReadAsStringAsync().Result);
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.ServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Server Roles: " + DecodeServerRoles(config.ServerRoles), IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServer Instance: " + config.MasterServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Header = "SDRN Server (" + config.ServerInstance + ")";
-                            twEndPointItem.Items.Add(twConfigItem);
+                            UIContext(() =>
+                            {
+                                var twConfigItem = new TreeViewItem();
+                                twConfigItem.IsExpanded = true;
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.ServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "Server Roles: " + DecodeServerRoles(config.ServerRoles), IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "MasterServer Instance: " + config.MasterServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Header = "SDRN Server (" + config.ServerInstance + ")";
+                                twEndPointItem.Items.Add(twConfigItem);
+                            });
                         }
                         // 3.
                         var responseSdrnDeviceConfig = wc.GetAsync(endpointUrl.Value + "/api/SdrnDeviceServer/Config").Result;
                         if (responseSdrnDeviceConfig.StatusCode == HttpStatusCode.OK)
                         {
-                            var twConfigItem = new TreeViewItem();
-                            twConfigItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<DeviceServerConfigRequestResult>(responseSdrnDeviceConfig.Content.ReadAsStringAsync().Result);
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.SensorName + " : " + config.SensorTechId, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor Name: " + config.SensorName, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor TechId: " + config.SensorTechId, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Header = "SDRN Device Server (" + config.SensorName + " : " + config.SensorTechId + ")";
-                            twEndPointItem.Items.Add(twConfigItem);
+                            UIContext(() =>
+                            {
+                                var twConfigItem = new TreeViewItem();
+                                twConfigItem.IsExpanded = true;
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.SensorName + " : " + config.SensorTechId, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor Name: " + config.SensorName, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "Sensor TechId: " + config.SensorTechId, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Header = "SDRN Device Server (" + config.SensorName + " : " + config.SensorTechId + ")";
+                                twEndPointItem.Items.Add(twConfigItem);
+                            });
                         }
                         // 4.
                         var responseSdrnDeviceWcfConfig = wc.GetAsync(endpointUrl.Value + "/api/SdrnDeviceWcfService/Config").Result;
                         if (responseSdrnDeviceWcfConfig.StatusCode == HttpStatusCode.OK)
                         {
-                            var twConfigItem = new TreeViewItem();
-                            twConfigItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<DeviceWcfServerConfigRequestResult>(responseSdrnDeviceWcfConfig.Content.ReadAsStringAsync().Result);
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.Instance, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
-                            if (config.AllowedSensors.Count > 0)
+                            UIContext(() =>
                             {
-                                var twConfigSensorItem = new TreeViewItem() { Header = "AllowedSensors:", IsExpanded = true };
-                                foreach (var sensor in config.AllowedSensors)
+                                var twConfigItem = new TreeViewItem();
+                                twConfigItem.IsExpanded = true;
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "Instance: " + config.Instance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "SdrnServer Instance: " + config.SdrnServerInstance, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License Number: " + config.LicenseNumber, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License StartDate: " + config.LicenseStartDate, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twConfigItem.Items.Add(new TreeViewItem() { Header = "License StopDate: " + config.LicenseStopDate.ToString(), IsExpanded = true, FontWeight = FontWeights.Normal });
+                                if (config.AllowedSensors.Count > 0)
                                 {
-                                    twConfigSensorItem.Items.Add(new TreeViewItem() { Header = sensor.Key + ": " + sensor.Value, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                    var twConfigSensorItem = new TreeViewItem() { Header = "AllowedSensors:", IsExpanded = true };
+                                    foreach (var sensor in config.AllowedSensors)
+                                    {
+                                        twConfigSensorItem.Items.Add(new TreeViewItem() { Header = sensor.Key + ": " + sensor.Value, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                    }
+                                    twConfigItem.Items.Add(twConfigSensorItem);
                                 }
-                                twConfigItem.Items.Add(twConfigSensorItem);
-                            }
-                            twConfigItem.Header = "SDRN Device WCF Service (" + config.Instance + ")";
-                            twEndPointItem.Items.Add(twConfigItem);
+                                twConfigItem.Header = "SDRN Device WCF Service (" + config.Instance + ")";
+                                twEndPointItem.Items.Add(twConfigItem);
+                            });
                         }
                         // 5.
-                        var responseOrm = wc.GetAsync(endpointUrl.Value + "/api/orm/Config").Result;
                         string ormNamespace = string.Empty;
-
+                        var responseOrm = wc.GetAsync(endpointUrl.Value + "/api/orm/Config").Result;
                         if (responseOrm.StatusCode == HttpStatusCode.OK)
                         {
-                            var twOrmItem = new TreeViewItem();
-                            twOrmItem.Header = "ORM";
-                            twOrmItem.IsExpanded = true;
                             var config = JsonConvert.DeserializeObject<OrmConfigRequestResult>(responseOrm.Content.ReadAsStringAsync().Result);
-                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Name: " + config.Name, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Version: " + config.Version, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twOrmItem.Items.Add(new TreeViewItem() { Header = "Namespace: " + config.Namespace, IsExpanded = true, FontWeight = FontWeights.Normal });
-                            twEndPointItem.Items.Add(twOrmItem);
+                            UIContext(() =>
+                            {
+                                var twOrmItem = new TreeViewItem();
+                                twOrmItem.Header = "ORM";
+                                twOrmItem.IsExpanded = true;
+                                twOrmItem.Items.Add(new TreeViewItem() { Header = "Name: " + config.Name, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twOrmItem.Items.Add(new TreeViewItem() { Header = "Version: " + config.Version, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twOrmItem.Items.Add(new TreeViewItem() { Header = "Namespace: " + config.Namespace, IsExpanded = true, FontWeight = FontWeights.Normal });
+                                twEndPointItem.Items.Add(twOrmItem);
+                                
+                            });
                             ormNamespace = config.Namespace;
                             _namespaces.Add(endpointUrl.Key, ormNamespace);
                         }
@@ -162,28 +219,44 @@ namespace Atdi.Tools.Sdrn.Monitoring
                         var responseLog = wc.GetAsync(endpointUrl.Value + $"/api/orm/metadata/entity/{ormNamespace}.Monitoring/LogEvent").Result;
                         if (responseLog.StatusCode == HttpStatusCode.OK)
                         {
-                            var twLogItem = new TreeViewItem();
-                            twLogItem.Header = "Log Events";
-                            twLogItem.Tag = TAG_LOG_EVENTS;
-                            twLogItem.IsExpanded = true;
-                            twLogItem.Foreground = Brushes.Blue;
-                            twEndPointItem.Items.Add(twLogItem);
+                            UIContext(() =>
+                            {
+                                var twLogItem = new TreeViewItem();
+                                twLogItem.Header = "Log Events";
+                                twLogItem.Tag = TAG_LOG_EVENTS;
+                                twLogItem.IsExpanded = true;
+                                twLogItem.Foreground = Brushes.Blue;
+                                twEndPointItem.Items.Add(twLogItem);
 
-                            var twStatisticItem = new TreeViewItem();
-                            twStatisticItem.Header = "Statistics";
-                            twStatisticItem.Tag = TAG_STATISTICS;
-                            twStatisticItem.IsExpanded = true;
-                            twStatisticItem.Foreground = Brushes.Blue;
-                            twEndPointItem.Items.Add(twStatisticItem);
+                                var twStatisticItem = new TreeViewItem();
+                                twStatisticItem.Header = "Statistics";
+                                twStatisticItem.Tag = TAG_STATISTICS;
+                                twStatisticItem.IsExpanded = true;
+                                twStatisticItem.Foreground = Brushes.Blue;
+                                twEndPointItem.Items.Add(twStatisticItem);
+                            });
                         }
                     }
-                    mainTree.Items.Add(twEndPointItem);
+
+                    UIContext(() => 
+                    {
+                        mainTree.Items.Add(twEndPointItem);
+                    });
+                    
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                UIContext(() =>
+                {
+                    MessageBox.Show(e.Message);
+                });
             }
+
+            UIContext(() =>
+            {
+                this.Title = $"SDRN Servers Monitoring: Available Endpoints - {count}";
+            });
         }
 
         private string DecodeServerRoles(int serverRoles)

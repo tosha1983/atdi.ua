@@ -137,18 +137,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
                 {
                     if (_descriptor != null)
                     {
-                        if (_descriptor.Server != null)
-                        {
-                            _descriptor.Server.Stop();
-                            _descriptor.Server = null;
-                        }
+                        _descriptor.Server = null;
                         _descriptor = null;
                     }
-                    if (_socketThread != null)
-                    {
-                        _socketThread.Abort();
-                        _socketThread = null;
-                    }
+                    _socketThread = null;
                 }
                 catch (Exception e)
                 {
@@ -164,6 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
             {
                 if (_socketThread != null)
                 {
+                    // может зависнут в ожидании соединеняи со стороны клиента а тот никогда на связь не выйдет
                     _socketThread.Abort();
                     _socketThread = null;
                 }
