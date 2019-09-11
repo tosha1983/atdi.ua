@@ -10,5 +10,6 @@ namespace Atdi.DataModels.Sdrns.Server
     {
         public static readonly string ClientMeasTasks = "SDRN.Client.MeasTasks";
         public static readonly string ClientCommands = "SDRN.Client.Commands";
+        public static readonly string ClientInitOnlineMeasurement = "SDRN.Client.InitOnlineMeasurement";
     }
 }

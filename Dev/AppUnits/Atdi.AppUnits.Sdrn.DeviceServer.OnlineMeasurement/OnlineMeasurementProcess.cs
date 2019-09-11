@@ -27,7 +27,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
         public ClientMeasTaskData MeasTask { get; set; }
 
         public int CountMeasurementDone { get; set; }
-      
+
+        public MesureTraceDeviceProperties MeasTraceDeviceProperties { get; set; }
+
+        public float[] LevelResult_dBm { get; set; }
+
         // Фаза готовности клиента получать результаты измерения
         public ClientReadyData ReadyData { get; set; }
 

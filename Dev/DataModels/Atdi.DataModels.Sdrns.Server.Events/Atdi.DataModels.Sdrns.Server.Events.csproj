@@ -48,6 +48,9 @@
     <Compile Include="MeasTask\OnMeasTaskToMasterServerEvent.cs" />
     <Compile Include="MeasTask\OnReceivedNewSOResultEvent.cs" />
     <Compile Include="MeasTask\OnRegisterAggregationServer.cs" />
+    <Compile Include="OnlineMeasurement\OnInitExternalOnlineMeasurement.cs" />
+    <Compile Include="OnlineMeasurement\OnOnlineMeasurementStatusSubscriber.cs" />
+    <Compile Include="OnlineMeasurement\OnOnlineMeasurementResponseDevice.cs" />
     <Compile Include="OnlineMeasurement\OnInitOnlineMeasurement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MeasResultAggregated\SGMeasResultAggregated.cs" />

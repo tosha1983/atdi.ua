@@ -50,7 +50,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
             double SumPow = 0; //int imax = 0;
             // проверка возможности использовать данный метод по уровню 30дБ, а также определение общей суммы 
-            CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
+            CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, 15, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
             // суть метода мы идем от края до края шаг за шагом оценивая сумму эелементов (т.е. площадь елементов) Смысл найти позицию где у нас будет минимальная BW
             double TriggerPowmW = Math.Pow(10, SumPow / 10) * (100 - beta) / 100;
             double currentSummW = 0; int currentT1 = 0; int currentT2 = 0; 
@@ -79,7 +79,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             double SumPow = 0; //int imax = 0;
             // проверка возможности использовать данный метод по уровню 30дБ, а также определение общей суммы 
-            CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
+            CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, x, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
             double TrigerLeveldBm = SpecrtumArrdBm[M1] - x;
             //int cT1, cT2, eT1, eT2;
             if (FindFromCentr)
@@ -91,8 +91,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 GetBandwidthPointMethodXFromTheEdge(ref SpecrtumArrdBm, M1, TrigerLeveldBm, MaximumIgnorPoint, out T1, out T2);
             }
 
-            
-            
         }
         static private void GetBandwidthPointMethodXFromTheCenter(ref float[] SpecrtumArrdBm, int M1, double TrigerLevelmW, int MaximumIgnorPoint, out int T1, out int T2)
         {
@@ -132,10 +130,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
 
         }
-        static private bool CheckCorrectionInputSignalForBandwidthEstimation(ref float[] SpecrtumArrdBm, int MaximumIgnorPoint, double LevelOfSuspiciousJumpdB, out double SumPow, out int imax)
+        static private bool CheckCorrectionInputSignalForBandwidthEstimation(ref float[] SpecrtumArrdBm, double x, int MaximumIgnorPoint, double LevelOfSuspiciousJumpdB, out double SumPow, out int imax)
         {
             // constant 
-            double LevelDiffForChackCorrection = 30;
+            double LevelDiffForChackCorrection = 15;
+            if (LevelDiffForChackCorrection < x) { LevelDiffForChackCorrection = x; }
+
 
             imax = 0; SumPow = 0;
             CalcSumAndMaxFromArry(ref SpecrtumArrdBm, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out imax);
@@ -160,7 +160,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             return false;
         }
         static private void CalcSumAndMaxFromArry(ref float[] SpecrtumArrdBm, int MaximumIgnorPoint, double LevelOfSuspiciousJumpdB, out double SumPow, out int imax)
-        { // не отлаженно на поиск скачков, не отлаженно без скачков
+        { // считаем мощность, ловим скачки
 
             SumPow = Math.Pow(10, SpecrtumArrdBm[0] / 10.0);
             imax = 0;

@@ -39,9 +39,16 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         public static readonly EventCategory MeasTasksOnAggServerSendEventPipelineHandler = "MeasTasksOnAggServerSendEventPipelineHandler";
         public static readonly EventCategory CommandsOnAggServerSendEventPipelineHandler = "CommandsOnAggServerSendEventPipelineHandler";
         public static readonly EventCategory MeasTasksOnAggServerPipelineHandler = "MeasTasksOnAggServerPipelineHandler";
+        public static readonly EventCategory OnlineMeasOnAggServerHandler = "OnlineMeasOnAggServerHandler";
+        
 
         public static readonly EventCategory MessageProcessing = "Message processing";
         public static readonly EventCategory EventProcessing = "Processing";
+        public static readonly EventCategory OnOnlineMeasurementResponseDeviceEvent = "OnOnlineMeasurementResponseDeviceEvent";
+        public static readonly EventCategory OnOnlineMeasurementStatusSubscriberEvent = "OnOnlineMeasurementStatusSubscriberEvent";
+        public static readonly EventCategory OnlineMeasOnAggServerPipelineHandler = "OnlineMeasOnAggServerPipelineHandler";
+        
+
     }
 
     static class Events

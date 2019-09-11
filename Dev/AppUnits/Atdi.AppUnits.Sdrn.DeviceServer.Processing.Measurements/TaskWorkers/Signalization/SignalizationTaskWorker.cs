@@ -115,8 +115,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
                         
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
-                        context.Cancel();
-                        break;
+                        //context.Cancel();
+                        //break;
                     }
 
 
@@ -364,7 +364,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 TaskId = outResultData.TaskId
                             };
 
-                            
+
+                            if (maximumDurationMeas < 0)
+                            {
+                                context.Task.taskParameters.status = StatusTask.C.ToString();
+                                measResultsNew.Status = StatusTask.C.ToString();
+                            }
+
                             this._measResultsByStringRepository.Create(measResultsNew);
 
                             context.Task.MeasResults = null;
@@ -373,7 +379,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     });
 
-                    
+                    if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
+                    {
+                        //реакция на принятые результаты измерения
+                        action.Invoke();
+                        context.Finish();
+                        break;
+                    }
+
 
                     //////////////////////////////////////////////
                     // 

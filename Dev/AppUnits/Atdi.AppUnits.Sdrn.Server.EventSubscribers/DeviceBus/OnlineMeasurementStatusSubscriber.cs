@@ -15,6 +15,8 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
+using Atdi.Contracts.Api.EventSystem;
+using Atdi.DataModels.Sdrns.Server.Events.OnlineMeasurement;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -26,12 +28,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IStatistics _statistics;
+        private readonly IEventEmitter _eventEmitter;
 
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _hitsCounter;
         private readonly IStatisticCounter _errorsCounter;
 
         public OnlineMeasurementStatusSubscriber(
+            IEventEmitter eventEmitter,
             ISdrnMessagePublisher messagePublisher, 
             IMessagesSite messagesSite, 
             IDataLayer<EntityDataOrm> dataLayer, 
@@ -42,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
+            this._eventEmitter = eventEmitter;
             this._environment = environment;
             this._statistics = statistics;
             if (this._statistics != null)
@@ -62,6 +67,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 try
                 {
                     var data = deliveryObject;
+                    bool linkOnlineMesurementExists = false;
 
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
@@ -102,6 +108,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             scope.Executor.Execute(update);
                         }
 
+                        var linkOnlineMesurementQuery = _dataLayer.GetBuilder<MD.ILinkOnlineMesurement>()
+                     .From()
+                     .Select(c => c.Id)
+                     .Select(c => c.ONLINE_MEAS.Id)
+                     .Where(c => c.ONLINE_MEAS.Id, ConditionOperator.Equal, data.OnlineMeasId);
+                        linkOnlineMesurementExists = scope.Executor.ExecuteAndFetch(linkOnlineMesurementQuery, reader =>
+                        {
+                            var exists = reader.Read();
+                            if (exists)
+                            {
+                                exists = reader.GetValue(c => c.ONLINE_MEAS.Id) == data.OnlineMeasId;
+                            }
+                            return exists;
+                        });
+                    }
+
+                    if (linkOnlineMesurementExists == true)
+                    {
+                        var initEvent = new OnOnlineMeasurementStatusSubscriber(this.GetType().FullName)
+                        {
+                            OnlineMeasId = data.OnlineMeasId,
+                            SensorOnlineMeasurementStatus = (byte)data.Status,
+                            Note = data.Note
+                        };
+                        this._eventEmitter.Emit(initEvent);
                     }
                 }
                 catch (Exception e)

@@ -244,9 +244,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             { double temp = DifferencePowerInCoChannel_dB; DifferencePowerInCoChannel_dB = DifferencePowerInCoChannelForJustAnalize_dB; DifferencePowerInCoChannelForJustAnalize_dB = temp; }
 
             // когда или один канал
-            if (ChCentrFreqs_Mhz is null) { return; }
+            if ((ChCentrFreqs_Mhz == null) || (ChCentrFreqs_Mhz.Count==0)) { return; }
 
-            // когда один канал
+            // когда один канал nu
             double step = (Trace.Freq_Hz[Trace.Freq_Hz.Length - 1] - Trace.Freq_Hz[0]) / (Trace.Freq_Hz.Length - 1);
             double Freq_start_Hz = Trace.Freq_Hz[0];
             if (ChCentrFreqs_Mhz.Count == 1)
@@ -489,7 +489,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     if (estimBW)
                     {
                         double corr = CorrelationAnalyzeForCompairWithEtalon(TempLevelForCorrelation, StartTraceFreq_Hz + start_A * TraceStep_Hz, TraceStep_Hz, out double StandardBW_Hz, out string standard);
-                        if (corr >= CorrelationFactor)
+                        if (corr >= 0.75)
                         {
                             emitting.EmittingParameters.StandardBW = StandardBW_Hz;
                             emitting.EmittingParameters.Standard = standard;
@@ -509,16 +509,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if (BestCorr >= 0.75)//CorrelationFactor)
                         {// Супер сигнал идентифицирован частота определена 
                             MarkerIndex = MarkerIndex - start_ + start_A;
-                            emitting.Spectrum.MarkerIndex = MarkerIndex;
-                            emitting.Spectrum.T1 = (int)Math.Floor(MarkerIndex - (StandardBW_Hz / (2.0 * TraceStep_Hz)));
-                            emitting.Spectrum.T2 = (int)Math.Ceiling(MarkerIndex + (StandardBW_Hz / (2.0 * TraceStep_Hz)));
-                            emitting.Spectrum.Bandwidth_kHz = StandardBW_Hz / 1000.0;
+                            int T1 = (int)Math.Floor(MarkerIndex - (StandardBW_Hz / (2.0 * TraceStep_Hz)));
+                            int T2 = (int)Math.Ceiling(MarkerIndex + (StandardBW_Hz / (2.0 * TraceStep_Hz)));
+                            if ((T1 >= 0) && (T2 < TemplevelForAnalize.Length))
+                            {
+                                emitting.Spectrum.MarkerIndex = MarkerIndex;
+                                emitting.Spectrum.T1 = T1;
+                                emitting.Spectrum.T2 = T2;
+                                emitting.Spectrum.Bandwidth_kHz = StandardBW_Hz / 1000.0;
+                                estimBW = true;
+                                estimFreq = true;
+                            }
                             emitting.EmittingParameters.StandardBW = StandardBW_Hz;
                             emitting.EmittingParameters.Standard = standard;
                             emitting.MeanDeviationFromReference = BestCorr;
                             emitting.TriggerDeviationFromReference = CorrelationFactor;
-                            estimBW = true;
-                            estimFreq = true;
                         }
                         else
                         {// Cигнал не идентифицирован частота не определена
@@ -568,6 +573,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.WorkTimes[0].ScanCount = 0;
                 emitting.WorkTimes[0].TempCount = 0;
                 emittings.Add(emitting);
+                //if (emitting.Spectrum.СorrectnessEstimations == true)
+                //{
+                    //int hh = 0;
+                //}
+                //if (!(emitting.Spectrum.T2 >= emitting.Spectrum.T1 && emitting.Spectrum.T2 <= emitting.Spectrum.Levels_dBm.Length))
+                //{
+                 
+              
+                //}
             }
             return emittings.ToArray();
         }
@@ -585,7 +599,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             { // 
                 int numberpoint = (int)Math.Floor(ChannelBW_kHz * 10.0 * persentpoints / step_Hz);
                 if (numberpoint < 1) { numberpoint = 1; }
-                TrigerLevel = NoiseLevel_dBm + allowableExcess_dB + 10*Math.Log10(numberpoint);
+                TrigerLevel = NoiseLevel_dBm + allowableExcess_dB + 10 * Math.Log10(numberpoint);
                 int IndexCenterLastChannel = (int)Math.Round((CentralChannelFreq_MHz * 1000000 - Freq_start_Hz) / step_Hz);
                 int shift = (int)Math.Floor(numberpoint / 2.0);
                 if ((IndexCenterLastChannel + numberpoint - shift >= Level_dBm.Length) || (IndexCenterLastChannel - shift < 0)) { return -999; }

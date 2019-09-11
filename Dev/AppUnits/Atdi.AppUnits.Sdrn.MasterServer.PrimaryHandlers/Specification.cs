@@ -41,6 +41,11 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
         public static readonly EventCategory CommandsMasterServerSendEventPipelineHandler = "CommandsMasterServerSendEventPipelineHandler";
         public static readonly EventCategory MeasTasksMasterServerSendEventPipelineHandler = "MeasTasksMasterServerSendEventPipelineHandler";
         public static readonly EventCategory GenerateMeasTasksPipelineHandler = "GenerateMeasTasksPipelineHandler";
+        public static readonly EventCategory SendEventOnlineMeasurementPipelineHandler = "SendEventOnlineMeasurementPipelineHandler";
+        public static readonly EventCategory OnInitExternalOnlineMeasurementEvent = "OnInitExternalOnlineMeasurementEvent";
+        public static readonly EventCategory OnOnlineMeasResponseDeviceHandler = "OnOnlineMeasResponseDeviceHandler";
+        public static readonly EventCategory OnOnlineMeasStatusSubscriberHandler = "OnOnlineMeasStatusSubscriberHandler";
+        
 
         public static readonly EventCategory OnSendSOMeasResultsHandler = "OnSendSOMeasResultsHandler";
         public static readonly EventCategory OnSendSGMeasResultsHandler = "OnSendSGMeasResultsHandler";

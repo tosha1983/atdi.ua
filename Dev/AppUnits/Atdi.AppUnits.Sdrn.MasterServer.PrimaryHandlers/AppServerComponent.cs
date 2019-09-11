@@ -23,16 +23,20 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
             // регистрация  обрабочика конвеера в DI-окружении
             this.Container.Register<MeasTasksMasterServerSendEventPipelineHandler, MeasTasksMasterServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<CommandsMasterServerSendEventPipelineHandler, CommandsMasterServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<SendEventOnlineMeasurementPipelineHandler, SendEventOnlineMeasurementPipelineHandler>(ServiceLifetime.Singleton);
         }
+
 
         protected override void OnActivateUnit()
         {
             var pipelineSite = this.Resolver.Resolve<IPipelineSite>();
             var tasksPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
+            var InitOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientInitOnlineMeasurement);
             // регистрация обработчика
             tasksPipeline.Register(typeof(MeasTasksMasterServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
             commandsPipeline.Register(typeof(CommandsMasterServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            InitOnlineMeasurementPipeline.Register(typeof(SendEventOnlineMeasurementPipelineHandler), PipelineHandlerRegistrationOptions.Last);
         }
     }
 }
