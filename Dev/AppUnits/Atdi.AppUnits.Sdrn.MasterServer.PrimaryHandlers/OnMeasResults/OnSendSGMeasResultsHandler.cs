@@ -29,12 +29,14 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
         }
         public void Handle(IIncomingEnvelope<SendMeasResultSGToMasterServer, MeasResultContainer> envelope, IHandlingResult result)
         {
+            _logger.Debug(Contexts.ThisComponent, Categories.Processing, "Start processing OnSendSGMeasResultsHandler");
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.OnSendSGMeasResultsHandler, this))
             {
                 var deliveryObject = envelope.DeliveryObject;
                 SaveMeasResult(deliveryObject.MeasResult);
                 result.Status = MessageHandlingStatus.Confirmed;
             }
+            _logger.Debug(Contexts.ThisComponent, Categories.Processing, "Stop processing OnSendSGMeasResultsHandler");
         }
         private bool SaveMeasResult(MeasResults measResult)
         {
@@ -181,6 +183,7 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                         }
                     }
                 }
+                _logger.Debug(Contexts.ThisComponent, Categories.Processing, "OnSendSGMeasResultsHandler - MeasResult saved successfully");
                 return true;
             }
             catch (Exception exp)

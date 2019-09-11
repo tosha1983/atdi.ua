@@ -22,7 +22,9 @@ namespace Atdi.Modules.LicenseGenerator
 
             //UpdatePeriod_ICSControl_ForTest(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2018");
 
-            ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019");
+            //ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019");
+
+            ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\УНИКОМ", 2, 10, 4);
 
             Console.WriteLine("Process was finished");
             Console.ReadKey();
@@ -347,17 +349,19 @@ namespace Atdi.Modules.LicenseGenerator
             
         }
 
-        static void ICSControl_ForUDCR(string path)
+        static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
         {
-            var ownerId = "OID-BD13-G65-N00";
+            //var ownerId = "OID-BD13-G65-N00"; //  Сам УДЦР
+            var ownerId = "OID-BD13-G65-N01"; //  лицензии для УДЦР выданы УНИКОМ
+
             var ownerName = "Державне підприємство «Український державний центр радіочастот»";
             var company = "ТОВ 'Лабораторія інформаційних систем'";
             var ownerKey = "BD13-G65";
-            var startDate = new DateTime(2018, 9, 17);
-            var stopDate = new DateTime(2019, 1, 1);
+            var startDate = new DateTime(2019, 9, 9);
+            var stopDate = new DateTime(2020, 12, 31);
 
             //MakeServerLicense();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < deviceCount; i++)
             {
                 var licenseIndex = GetUniqueIntegerKey(3);
                 var deviceIndex = GetUniqueIntegerKey(4);
@@ -366,12 +370,25 @@ namespace Atdi.Modules.LicenseGenerator
                 MakeLicense(path, licPrefix, instancePrefix, "DeviceLicense", "ICS Control Device", licenseIndex, deviceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
             }
 
-            var srvLicenseIndex = GetUniqueIntegerKey(3);
-            var instanceIndex = GetUniqueIntegerKey(4);
-            var srvLicPrefix = "LIC-S";
-            var srvInstancePrefix = "SDRNSV-S";
+            for (int i = 0; i < serverCount; i++)
+            {
+                var srvLicenseIndex = GetUniqueIntegerKey(3);
+                var instanceIndex = GetUniqueIntegerKey(4);
+                var srvLicPrefix = "LIC-S";
+                var srvInstancePrefix = "SDRNSV-S";
 
-            MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+                MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+            }
+
+            for (int i = 0; i < clientCount; i++)
+            {
+                var srvLicenseIndex = GetUniqueIntegerKey(3);
+                var instanceIndex = GetUniqueIntegerKey(4);
+                var srvLicPrefix = "LIC-C";
+                var srvInstancePrefix = "CLIENT-C";
+
+                MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ClientLicense", "ICS Control Monitoring Client", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+            }
         }
 
         public static string GetProductKey(string productName, string licenseType, string instance, string ownerId, string number)
@@ -477,6 +494,16 @@ namespace Atdi.Modules.LicenseGenerator
             {
                 l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
                 l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+            }
+            else if ("ClientLicense".Equals(licenseType))
+            {
+                l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+                l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+            }
+            else
+            {
+
+                throw new InvalidOperationException($"Invalid the license type '{licenseType}'");
             }
 
             productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);

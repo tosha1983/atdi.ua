@@ -211,7 +211,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             if (!isInner)
             {
                 buffer.Append(Environment.NewLine);
-                buffer.AppendLine(_offset + " -- Exeption detail -- ");
+                buffer.AppendLine(_offset + " -- Exception detail -- ");
             }
             else
             {

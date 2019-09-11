@@ -44,7 +44,9 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         {
             try
             {
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing SGMeasResultAggregated, ResultId = " + @event.MeasResultId.ToString());
                 this.Handle(@event.MeasResultId);
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Stop processing SGMeasResultAggregated, ResultId = " + @event.MeasResultId.ToString());
             }
             catch (Exception e)
             {
@@ -72,6 +74,21 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                     measResult.StopTime = readerResMeas.GetValue(c => c.StopTime).GetValueOrDefault();
                     measResult.ScansNumber = readerResMeas.GetValue(c => c.ScansNumber).GetValueOrDefault();
                     measResult.Measurement = (Enum.TryParse<MeasurementType>(readerResMeas.GetValue(c => c.TypeMeasurements), out MeasurementType outResType)) ? outResType : MeasurementType.SpectrumOccupation;
+                }
+                return true;
+            });
+
+            // ILinkSubTaskSensorMasterId
+            var builderResMeasTaskId = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().From();
+            builderResMeasTaskId.Select(c => c.SubtaskSensorMasterId);
+            builderResMeasTaskId.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId);
+            this._queryExecutor.Fetch(builderResMeasTaskId, readerResMeasTaskId =>
+            {
+                while (readerResMeasTaskId.Read())
+                {
+                    var subtaskSensorMasterId = readerResMeasTaskId.GetValue(c => c.SubtaskSensorMasterId);
+                    if (subtaskSensorMasterId.HasValue)
+                        measResult.TaskId = subtaskSensorMasterId.Value.ToString();
                 }
                 return true;
             });
@@ -259,6 +276,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             envelope.To = this._environment.MasterServerInstance;
             envelope.DeliveryObject = deliveryObject;
             this._publisher.Send(envelope);
+            _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "OnSGMeasResultAggregated - SendEvent SendMeasResultSGToMasterServer, ResultId = " + measResultId.ToString());
         }
     }
 }
