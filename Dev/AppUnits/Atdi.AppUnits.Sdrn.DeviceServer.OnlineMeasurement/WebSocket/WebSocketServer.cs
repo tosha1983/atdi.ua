@@ -30,7 +30,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
         private readonly int _port;
         private readonly int _bufferSize;
         private readonly ILogger _logger;
-        private bool _stopped;
 
         public WebSocketServer(WebSocketPipeline pipeline, int port, ILogger logger, int bufferSize = 65536)
         {
@@ -42,15 +41,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
 
         public void Run()
         {
+            TcpListener tcpListener = null;
             try
             {
-
-                var tcpListener = new TcpListener(IPAddress.Any, this._port);
+                tcpListener = new TcpListener(IPAddress.Any, this._port);
 
                 tcpListener.Start();
-                while (!_stopped)
+                //while (!_stopped)
+                //{
+                using (var client = tcpListener.AcceptTcpClient())
                 {
-                    var client = tcpListener.AcceptTcpClient();
+
+
                     var stream = client.GetStream();
 
                     while (!stream.DataAvailable) ;
@@ -71,24 +73,51 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                     {
                         buffer = BuildForbiddenResponse();
                         stream.Write(buffer, 0, buffer.Length);
+                            
                     }
-                    
+                    if (client.Connected)
+                    {
+                        client.Close();
+                    }
                 }
+                //}
             }
             catch (ThreadAbortException)
             {
                 Thread.ResetAbort();
+                this.CloseSocket(tcpListener);
+                tcpListener = null;
             }
             catch (Exception e)
             {
                 this._logger.Exception(Contexts.WebSocket, Categories.Running, e, this);
             }
+            finally
+            {
+                this.CloseSocket(tcpListener);
+            }
         }
 
-        public void Stop()
+        private void CloseSocket(TcpListener tcpListener)
         {
-            this._stopped = true;
+            if (tcpListener == null)
+            {
+                return;
+            }
+            try
+            {
+                tcpListener.Stop();
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.WebSocket, Categories.Stopping, e, this);
+            }
         }
+
+        //public void Stop()
+        //{
+        //    this._stopped = true;
+        //}
 
         private bool TryDecodeHandshake(string data, out HandshakeRequest request)
         {
@@ -379,14 +408,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
             {
                 reasone = $"Sensor interrupted measurement due to unexpected error: {e.Message}";
                 this._logger.Exception(Contexts.WebSocket, Categories.Processing, e, this);
+            }
+            finally
+            {
                 if (client.Connected)
                 {
                     client.Close();
                 }
-            }
-            finally
-            {
-                client.Dispose();
                 if (isConnected)
                 {
                     _pipeline.OnDisconnect(context, status, reasone);

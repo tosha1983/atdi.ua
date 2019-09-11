@@ -24,7 +24,9 @@ namespace Atdi.Modules.LicenseGenerator
 
             //ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019");
 
-            ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\УНИКОМ", 2, 10, 4);
+            //ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\УНИКОМ", 2, 10, 4);
+
+            ICSControl_ForTesting_ClientMonitoring(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019", 1);
 
             Console.WriteLine("Process was finished");
             Console.ReadKey();
@@ -391,6 +393,25 @@ namespace Atdi.Modules.LicenseGenerator
             }
         }
 
+        static void ICSControl_ForTesting_ClientMonitoring(string path, int clientCount)
+        {
+            var ownerId = "OID-BD12-A00-N00";
+            var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+            var company = "ТОВ 'Лабораторія інформаційних систем'";
+            var ownerKey = "BD12-A00";
+            var startDate = new DateTime(2019, 9, 9);
+            var stopDate = new DateTime(2021, 12, 31);
+
+            for (int i = 0; i < clientCount; i++)
+            {
+                var srvLicenseIndex = GetUniqueIntegerKey(3);
+                var instanceIndex = GetUniqueIntegerKey(4);
+                var srvLicPrefix = "LIC-C";
+                var srvInstancePrefix = "CLIENT-C";
+
+                MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ClientLicense", "ICS Control Monitoring Client", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+            }
+        }
         public static string GetProductKey(string productName, string licenseType, string instance, string ownerId, string number)
         {
             var source = productName + "ZXCV158BNM" + licenseType + "ASD290FGHJKL" + instance + "QWE346RTYU7IOP" + ownerId + number;

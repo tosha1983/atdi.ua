@@ -18,6 +18,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         public static readonly EventCategory Disposing = "Disposing";
         public static readonly EventCategory Processing = "Processing";
         public static readonly EventCategory Running = "Running";
+        public static readonly EventCategory Stopping = "Stopping";
         public static readonly EventCategory Registering = "Registering";
         public static readonly EventCategory Finalizing = "Finalizing";
         public static readonly EventCategory Handling = "Handling";
