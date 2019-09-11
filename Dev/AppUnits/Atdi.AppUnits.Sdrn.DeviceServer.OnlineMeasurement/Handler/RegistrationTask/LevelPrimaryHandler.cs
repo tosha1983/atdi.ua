@@ -34,6 +34,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 {
                     var parametersDataLevel = new DeviceServerParametersDataLevel();
                     parametersDataLevel.Freq_Hz = CutArray(result.Freq_Hz, this._config.MaxCountPoint.Value);
+                    //parametersDataLevel.LevelResult_dBm= CutArray(result.Level, this._config.MaxCountPoint.Value);
                     parametersDataLevel.Att_dB = result.Att_dB;
                     parametersDataLevel.PreAmp_dB = result.PreAmp_dB;
                     parametersDataLevel.RBW_kHz = (double)(result.RBW_Hz /1000.0);
@@ -47,6 +48,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 }
             }
         }
+
+
 
         public static double[] CutArray(double[] arr, int CountPoint)
         {

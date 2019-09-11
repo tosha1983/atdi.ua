@@ -31,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static double CalcCorrelation(float[] arr1, double freq1_Hz, double BW1_Hz, float[] arr2, double freq2_Hz, double BW2_Hz, MethodCalcCorrelation methodCalcCorrelation = MethodCalcCorrelation.Person)
         {// НЕ ТЕСТИРОВАННО
             float[] arr1corr; float[] arr2corr;
-            bool a = ArrAdaptation(arr1, freq1_Hz, BW1_Hz, arr2, freq2_Hz, BW2_Hz, out arr1corr, out arr2corr, 90);
+            bool a = ArrAdaptation(arr1, freq1_Hz, BW1_Hz, arr2, freq2_Hz, BW2_Hz, out arr1corr, out arr2corr, 30);
             if (!a) { return -2; }
             switch (methodCalcCorrelation)
             {

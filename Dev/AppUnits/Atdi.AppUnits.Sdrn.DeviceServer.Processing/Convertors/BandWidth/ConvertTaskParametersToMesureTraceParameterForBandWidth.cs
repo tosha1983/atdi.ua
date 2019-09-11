@@ -31,9 +31,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
             // авто
 
-            mesureTraceParameter.RefLevel_dBm = (int)taskParameters.RefLevel_dBm.Value;
-            mesureTraceParameter.Att_dB = taskParameters.RfAttenuation_dB.Value;    // константа для BandWidth
-            mesureTraceParameter.PreAmp_dB = taskParameters.Preamplification_dB.Value; // константа для BandWidth
+            if (taskParameters.RefLevel_dBm != null)
+            {
+                mesureTraceParameter.RefLevel_dBm = (int)taskParameters.RefLevel_dBm.Value;
+            }
+            else
+            {
+                mesureTraceParameter.RefLevel_dBm = 1000000000;
+            }
+
+            if (taskParameters.RfAttenuation_dB != null)
+            {
+                mesureTraceParameter.Att_dB = taskParameters.RfAttenuation_dB.Value;    // константа для BandWidth
+            }
+            else
+            {
+                mesureTraceParameter.Att_dB = -1;
+            }
+
+            if (taskParameters.Preamplification_dB != null)
+            {
+                mesureTraceParameter.PreAmp_dB = taskParameters.Preamplification_dB.Value; // константа для BandWidth
+            }
+            else
+            {
+                mesureTraceParameter.PreAmp_dB = -1;
+            }
+
+
             switch (taskParameters.DetectType)
             {
                 case DataModels.Sdrns.DetectingType.Average:
