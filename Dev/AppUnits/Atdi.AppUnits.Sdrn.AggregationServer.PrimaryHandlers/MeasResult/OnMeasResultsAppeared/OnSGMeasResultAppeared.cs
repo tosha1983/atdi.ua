@@ -40,7 +40,10 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         {
             try
             {
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing SGMeasResultAppeared, ResultId = " + @event.MeasResultId.ToString());
                 this.Handle(@event.MeasResultId);
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Stop processing SGMeasResultAppeared, ResultId = " + @event.MeasResultId.ToString());
+
             }
             catch (Exception e)
             {
@@ -72,6 +75,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                     {
                         var busEvent = new SGMeasResultAggregated($"OnSGMeasResultAggregated", "OnSGMeasResultAppeared") { MeasResultId = measResultId };
                         _eventEmitter.Emit(busEvent);
+                        _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "SGMeasResultAppeared - Status result is Complete, SendEvent OnSGMeasResultAggregated, ResultId = " + measResultId.ToString());
 
                         using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                         {

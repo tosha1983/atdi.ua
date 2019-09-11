@@ -71,7 +71,9 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             {
                 while (!_tokenSource.Token.IsCancellationRequested)
                 {
+                    _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing MeasResultWorker");
                     this.SendMeasResult();
+                    _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing MeasResultWorker");
                     Thread.Sleep(_timeout);
                 }
             }
@@ -137,6 +139,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 
                     var busEvent = new SGMeasResultAggregated($"OnSGMeasResultAggregated", "OnSGMeasResultAppeared") { MeasResultId = measResult.Id };
                     _eventEmitter.Emit(busEvent);
+                    _logger.Debug(Contexts.ThisComponent, Categories.Processing, "MeasResultWorker - SendEvent OnSGMeasResultAggregated, ResultId = " + measResult.Id.ToString());
 
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {

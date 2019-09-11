@@ -44,7 +44,9 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         {
             try
             {
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing SGMeasResultAggregated, ResultId = " + @event.MeasResultId.ToString());
                 this.Handle(@event.MeasResultId);
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Stop processing SGMeasResultAggregated, ResultId = " + @event.MeasResultId.ToString());
             }
             catch (Exception e)
             {
@@ -274,6 +276,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             envelope.To = this._environment.MasterServerInstance;
             envelope.DeliveryObject = deliveryObject;
             this._publisher.Send(envelope);
+            _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "OnSGMeasResultAggregated - SendEvent SendMeasResultSGToMasterServer, ResultId = " + measResultId.ToString());
         }
     }
 }
