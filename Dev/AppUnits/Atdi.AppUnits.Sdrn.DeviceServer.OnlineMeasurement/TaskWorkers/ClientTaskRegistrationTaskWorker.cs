@@ -36,6 +36,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
 
                 if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
+                    var deviceProperties = this._controller.GetDevicesProperties();
+                    var listTraceDeviceProperties = deviceProperties.Values.ToArray();
+                    for (int i = 0; i < listTraceDeviceProperties.Length; i++)
+                    {
+                        var traceDeviceProperties = listTraceDeviceProperties[i];
+                        for (int j = 0; j < traceDeviceProperties.Length; j++)
+                        {
+                            var trace = traceDeviceProperties[j];
+                            if (trace is MesureTraceDeviceProperties)
+                            {
+                                context.Process.MeasTraceDeviceProperties = (trace as MesureTraceDeviceProperties);
+                                break;
+                            }
+                        }
+                    }
                     var sendCommandForRegistrationTaskWorker = new SendCommandForRegistrationTaskWorker(this._config, this._controller, this._logger);
                     var measTraceParameter = ConvertToMesureTraceParameterForLevel.ConvertForLevel(context.Process.MeasTask);
                     var deviceCommand = new MesureTraceCommand(measTraceParameter);

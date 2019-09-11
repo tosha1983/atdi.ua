@@ -15,6 +15,9 @@ using System.ComponentModel;
 
 
 
+
+
+
 namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 {
     public class LevelResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, ClientReadyTakeMeasResultTask, OnlineMeasurementProcess>
@@ -58,9 +61,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                             break;
                         default:
                             throw new Exception($"Not supported type {command.Parameter.TraceType}");
-                    }
+                    }   
 
                     levelResult.Level = CutArray(result.Level, traceType, this._config.MaxCountPoint.Value);
+                    if (taskContext.Process.LevelResult_dBm == null) { taskContext.Process.LevelResult_dBm = levelResult.Level; }
+                    else
+                    {
+                        var levelTemp = levelResult.Level;
+                        var LevelResult_dBm = taskContext.Process.LevelResult_dBm;
+                        UnionArray(ref levelTemp, ref LevelResult_dBm, traceType);
+                        levelResult.Level = levelTemp;
+                        taskContext.Process.LevelResult_dBm = LevelResult_dBm;
+                    }
                     if (result.DeviceStatus == DataModels.Sdrn.DeviceServer.Commands.Results.Enums.DeviceStatus.RFOverload) { levelResult.Overload = true; } else { levelResult.Overload = false; }
                     taskContext.SetEvent(levelResult);
                     taskContext.Process.CountMeasurementDone++;
@@ -72,6 +84,69 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             }
         }
 
+        public static double SDRGainFromFrequency(MesureTraceDeviceProperties MesureTraceDeviceProperties, double Frequency_Hz)
+        {
+            // Константа с файла конфигурации
+            double GainByDefault = 3;
+            // Конец констант
+
+            if ((Frequency_Hz < 0.009) || (Frequency_Hz > 400000) || (MesureTraceDeviceProperties == null) || (MesureTraceDeviceProperties.StandardDeviceProperties == null) ||
+                (MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters == null)) { return GainByDefault; }
+            if ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[0].Freq_Hz <= Frequency_Hz)
+            { return MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[0].Gain; }
+            if ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length].Freq_Hz >= Frequency_Hz)
+            { return MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length].Gain; }
+            for (int i = 0; i < MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length - 1; i++)
+            {
+                if (((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i].Freq_Hz <= Frequency_Hz) && ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i + 1].Freq_Hz >= Frequency_Hz))
+                {
+                    double G = MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i].Gain +
+                        (Frequency_Hz - (double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i].Freq_Hz) *
+                        (MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i + 1].Gain - MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i].Gain) /
+                        ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i + 1].Freq_Hz - (double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i].Freq_Hz);
+                    return G;
+                }
+            }
+            return GainByDefault;
+        }
+
+        public static void UnionArray(ref float[] CurLevel, ref float[] LevelBufer, TraceType traceType)
+        {
+            if (!((CurLevel.Length != LevelBufer.Length) || (traceType == TraceType.Auto) || (traceType == TraceType.Average) || (traceType == TraceType.ClearWhrite) || (traceType == TraceType.Unknown)))
+            {
+                if (traceType == TraceType.MaxHold)
+                {
+                    for (int i = 0; CurLevel.Length > i; i++)
+                    {
+                        if (LevelBufer[i] > CurLevel[i]) { CurLevel[i] = LevelBufer[i]; }
+                    }
+                }
+                if (traceType == TraceType.MinHold)
+                {
+                    for (int i = 0; CurLevel.Length > i; i++)
+                    {
+                        if (LevelBufer[i] < CurLevel[i]) { CurLevel[i] = LevelBufer[i]; }
+                    }
+                }
+            }
+            LevelBufer = CurLevel;
+            
+        }
+        public static double CalcPow(float[] Levels, MesureTraceDeviceProperties MeasTraceDeviceProperties, double Freq_Hz)
+        {
+            if ((Levels == null)||(Levels.Length < 1)) { return -999;}
+            double pow = 0;
+            for (int i = 0;  Levels.Length>i; i++)
+            {
+                pow = pow + Math.Pow(10,Levels[i]);
+            }
+            pow = 10 * Math.Log10(pow);
+            //if (MeasTraceDeviceProperties != null)
+            //{
+            //    SDRGainFromFrequency(MeasTraceDeviceProperties, Freq_Hz);
+            //}
+            return pow;
+        }
 
         public static float[] CutArray(float[] arr, TraceType traceType, int CountPoint)
         {

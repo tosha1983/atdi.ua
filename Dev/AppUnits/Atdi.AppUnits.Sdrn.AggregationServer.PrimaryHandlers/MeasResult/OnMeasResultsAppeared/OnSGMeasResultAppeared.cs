@@ -40,7 +40,10 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         {
             try
             {
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing SGMeasResultAppeared, ResultId = " + @event.MeasResultId.ToString());
                 this.Handle(@event.MeasResultId);
+                _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Stop processing SGMeasResultAppeared, ResultId = " + @event.MeasResultId.ToString());
+
             }
             catch (Exception e)
             {
@@ -57,8 +60,35 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 var resMeasSG = scope.Executor.Execute<MD.IResMeasSignaling_PK>(builderInsertIResMeas);
             }
 
-            //var busEvent = new SGMeasResultAggregated($"OnSGMeasResultAggregated", "OnSGMeasResultAppeared") { MeasResultId = measResultId };
-            //_eventEmitter.Emit(busEvent);
+            var builderResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().From();
+            builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id, c => c.Status, c => c.TimeMeas);
+            builderResMeas.Where(c => c.Id, ConditionOperator.Equal, measResultId);
+            
+            this._queryExecutor.Fetch(builderResMeas, readerResMeas =>
+            {
+                while (readerResMeas.Read())
+                {
+                    var status = readerResMeas.GetValue(c => c.Status).ToUpper();
+                    var timeMeas = readerResMeas.GetValue(c => c.TimeMeas);
+
+                    if (timeMeas.HasValue && (status == "C" || status == "COMPLETE" || status == "COMPLETED"))
+                    {
+                        var busEvent = new SGMeasResultAggregated($"OnSGMeasResultAggregated", "OnSGMeasResultAppeared") { MeasResultId = measResultId };
+                        _eventEmitter.Emit(busEvent);
+                        _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "SGMeasResultAppeared - Status result is Complete, SendEvent OnSGMeasResultAggregated, ResultId = " + measResultId.ToString());
+
+                        using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                        {
+                            var builderUpdateIResMeas = this._dataLayer.GetBuilder<MD.IResMeasSignaling>().Update();
+                            builderUpdateIResMeas.SetValue(c => c.IsSend, true);
+                            builderUpdateIResMeas.Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.Between, timeMeas.Value.Date, new DateTime(timeMeas.Value.Year, timeMeas.Value.Month, timeMeas.Value.Day, 23, 59, 59));
+                            builderUpdateIResMeas.Where(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Id));
+                            scope.Executor.Execute(builderUpdateIResMeas);
+                        }
+                    }
+                }
+                return true;
+            });
         }
     }
 }
