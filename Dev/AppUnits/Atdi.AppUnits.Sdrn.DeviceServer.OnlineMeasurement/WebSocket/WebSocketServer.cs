@@ -107,6 +107,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
             try
             {
                 tcpListener.Stop();
+                this._logger.Verbouse(Contexts.WebSocket, Categories.Stopping, $"TCP Listener was stopped");
             }
             catch (Exception e)
             {
