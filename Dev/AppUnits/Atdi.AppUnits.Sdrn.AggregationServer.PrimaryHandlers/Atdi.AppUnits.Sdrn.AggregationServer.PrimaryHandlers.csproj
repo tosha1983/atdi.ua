@@ -54,10 +54,14 @@
     <Compile Include="MeasResult\OnMeasResultsAppeared\OnSGMeasResultAppeared.cs" />
     <Compile Include="MeasResult\OnMeasResultsAppeared\OnSOMeasResultAppeared.cs" />
     <Compile Include="MessageHandlers\MeasTaskCommandsOnAggServerHandler.cs" />
+    <Compile Include="MessageHandlers\Online\OnlineMeasOnAggServerHandler.cs" />
+    <Compile Include="MessageHandlers\Subscribers\OnOnlineMeasurementResponseDeviceEvent.cs" />
+    <Compile Include="MessageHandlers\Subscribers\OnOnlineMeasurementStatusSubscriberEvent.cs" />
     <Compile Include="PipelineHandlers\CommandsOnAggServerPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\CommandsOnAggServerSendEventPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\MeasTasksOnAggServerPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\MeasTasksOnAggServerSendEventPipelineHandler.cs" />
+    <Compile Include="PipelineHandlers\Online\OnlineMeasOnAggServerPipelineHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OnRegistration\RegistrationAggregationServer.cs" />
     <Compile Include="Specification.cs" />

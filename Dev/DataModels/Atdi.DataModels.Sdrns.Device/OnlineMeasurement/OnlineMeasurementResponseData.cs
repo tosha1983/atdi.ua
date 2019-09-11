@@ -35,5 +35,9 @@ namespace Atdi.DataModels.Sdrns.Device
         [DataMember]
         public string WebSocketUrl { get; set; }
 
+
+        [DataMember]
+        public byte StatusCode { get; set; }
+
     }
 }

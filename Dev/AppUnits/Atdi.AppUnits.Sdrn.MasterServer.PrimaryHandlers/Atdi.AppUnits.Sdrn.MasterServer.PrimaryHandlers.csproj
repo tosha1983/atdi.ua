@@ -48,10 +48,14 @@
     <Compile Include="PipelineHandlers\GenerateMeasTasksPipelineHandler.cs" />
     <Compile Include="Handlers\TestHandler1.cs" />
     <Compile Include="LoadData\Sensor\LoadSensor.cs" />
-    <Compile Include="MessageHandlers\RegisterSensorSubscriber.cs" />
+    <Compile Include="MessageHandlers\RegisterSensor.cs" />
     <Compile Include="MessageHandlers\RegistrationSensorOnMasterServerHandler.cs" />
     <Compile Include="PipelineHandlers\CommandsMasterServerSendEventPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\MeasTasksMasterServerSendEventPipelineHandler.cs" />
+    <Compile Include="Subscribes\Online\OnOnlineMeasResponseDeviceHandler.cs" />
+    <Compile Include="Subscribes\Online\OnOnlineMeasStatusSubscriberHandler.cs" />
+    <Compile Include="Subscribes\Online\OnInitExternalOnlineMeasurementEvent.cs" />
+    <Compile Include="PipelineHandlers\Online\SendEventOnlineMeasurementPipelineHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Subscribes\OnReceivedStopTaskCreateToMasterServerEvent.cs" />

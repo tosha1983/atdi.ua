@@ -1,24 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using Atdi.DataModels.Sdrns.Server;
 
-namespace Atdi.DataModels.Sdrns.Device
+namespace Atdi.DataModels.Sdrns.Server
 {
     /// <summary>
-    /// Type of measurement
+    /// Directional of antenna
     /// </summary>
-    [DataContract(Namespace = Specification.Namespace)]
     [Serializable]
-    public enum SensorOnlineMeasurementStatus
+    public enum OnlineMeasurementStatus
     {
+        /// <summary>
+        /// Состояни иницирования онлайн измерения клиентом
+        /// Сервре еще не отправил запрос 
+        /// </summary>
+
+        Initiation = 0,
+
+        /// <summary>
+        /// Состояние при котором сервер отпраивл запрос устройству 
+        /// но еще не получил от него подтверждение
+        /// </summary>
+
+        WaitSensor = 1,
+
+        /// <summary>
+        /// Состояние при котором сервер отказал в онлайн измерении 
+        /// Причина будет раскрыта в сообщении
+        /// </summary>
+
+        DeniedByServer = 2,
+
         /// <summary>
         /// Состояние при котором сервер отпраивл хапрос и получил  от сенсора/устройства отказ в онлайн измерении 
         /// Причина будет раскрыта в сообщении
         /// </summary>
-        [EnumMember]
+
         DeniedBySensor = 3,
 
         /// <summary>
@@ -26,41 +47,28 @@ namespace Atdi.DataModels.Sdrns.Device
         /// и получил подтверждение с неогбходимо йинформацией дл яфизического поджключени яклиента 
         /// неполсредственно квебсокету устройства.
         /// </summary>
-        [EnumMember]
+
         SonsorReady = 4,
 
         /// <summary>
         /// Состояние при котором сенсор/устройство иницировало отмену/завершения онлайн измерения
         /// Причина будет раскрыта в сообщении
         /// </summary>
-        [EnumMember]
+
         CanceledBySensor = 5,
 
         /// <summary>
         /// Состояние при котором клиент иницировал отмену/завершения онлайн измерения
         /// Причина будет раскрыта в сообщении
         /// </summary>
-        [EnumMember]
+
         CanceledByClient = 6,
-    }
-
-    [DataContract(Namespace = Specification.Namespace)]
-    [Serializable]
-    public class OnlineMeasurementStatusData
-    {
-        /// <summary>
-        /// The measurement record ID
-        /// </summary>
-        [DataMember]
-        public long OnlineMeasId { get; set; }
 
         /// <summary>
-        /// Новый статус
+        /// Состояние при котором cthdth иницировал отмену/завершения онлайн измерения
+        /// Причина будет раскрыта в сообщении
         /// </summary>
-        [DataMember]
-        public SensorOnlineMeasurementStatus Status { get; set; }
 
-        [DataMember]
-        public string Note { get; set; }
+        CanceledByServer = 7
     }
 }

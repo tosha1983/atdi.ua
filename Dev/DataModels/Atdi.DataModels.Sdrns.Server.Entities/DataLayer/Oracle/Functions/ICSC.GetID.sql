@@ -356,6 +356,12 @@ from dual;
 end if;
 
 
+if inttable_name ='LINK_ONLINE_MEAS' then
+select ICSC.LINK_ONLINE_MEAS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 
 return(n);
 end;

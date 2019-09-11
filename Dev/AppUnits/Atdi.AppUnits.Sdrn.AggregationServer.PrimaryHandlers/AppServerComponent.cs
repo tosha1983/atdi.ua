@@ -28,6 +28,8 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             this.Container.Register<MeasTasksOnAggServerPipelineHandler, MeasTasksOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<CommandsOnAggServerPipelineHandler, CommandsOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<RegistrationAggregationServer, RegistrationAggregationServer>(ServiceLifetime.Singleton);
+            this.Container.Register<OnlineMeasOnAggServerPipelineHandler, OnlineMeasOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
+
 
             this.Container.Register<MeasTasksOnAggServerSendEventPipelineHandler, MeasTasksOnAggServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<ClientCommandsOnAggregationServerSendEventPipelineHandler, ClientCommandsOnAggregationServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
@@ -57,6 +59,10 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 
             var tasksPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
+            var InitOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientInitOnlineMeasurement);
+
+
+
 
             // регистрация обработчика
             tasksPipeline.Register(typeof(MeasTasksOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
@@ -64,6 +70,10 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 
             tasksPipeline.Register(typeof(MeasTasksOnAggServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
             commandsPipeline.Register(typeof(ClientCommandsOnAggregationServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+
+            InitOnlineMeasurementPipeline.Register(typeof(OnlineMeasOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
         }
+
+
     }
 }

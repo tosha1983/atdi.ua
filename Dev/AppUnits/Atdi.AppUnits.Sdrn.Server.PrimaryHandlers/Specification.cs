@@ -25,6 +25,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
         public static readonly EventCategory MeasTasksPipelineHandler = "MeasTasksPipelineHandler";
         public static readonly EventCategory MeasTasksSendPipelineHandler = "MeasTasksSendPipelineHandler";
         public static readonly EventCategory OnInitOnlineMeasurement = "OnInitOnlineMeasurement";
+        public static readonly EventCategory InitOnlineMeasurementPipelineHandler = "InitOnlineMeasurementPipelineHandler";
+        public static readonly EventCategory SendEventOnlineMeasurementPipelineHandler = "SendEventOnlineMeasurementPipelineHandler";
+        
     }
 
     static class Events
