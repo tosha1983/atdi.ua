@@ -353,13 +353,18 @@ namespace Atdi.WpfControls.Charts
                 BottomLegenda = new TextDescriptor { Text = "Bottom Legenda", Forecolor = Brushes.DarkMagenta },
                 LeftLegenda = new TextDescriptor { Text = "Left Legenda", Forecolor = Brushes.Blue },
                 RightLegenda = new TextDescriptor { Text = "Right Legenda", Forecolor = Brushes.Blue },
+                LeftLabelSize = 20,
+                BottomLabelSize = 20,
+                RightLabelSize = 20,
+                TopLabelSize = 20 
             };
 
             this._adapter = new DefaultAdapter();
 
             InitializeComponent();
 
-            ApplyStaticData();
+            this.ApplyStaticData();
+            this.ShowHideLabelCanvase();
         }
 
         public IFastChartData StaticData
@@ -443,7 +448,10 @@ namespace Atdi.WpfControls.Charts
 
         private void ShowHideLabelCanvase()
         {
-
+            LeftDashPanel.Width = this._staticData.LeftLabelSize;
+            RightDashPanel.Width = this._staticData.RightLabelSize;
+            TopDashPanel.Height = this._staticData.TopLabelSize;
+            BottomDashPanel.Height = this._staticData.BottomLabelSize;
         }
 
         //private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
