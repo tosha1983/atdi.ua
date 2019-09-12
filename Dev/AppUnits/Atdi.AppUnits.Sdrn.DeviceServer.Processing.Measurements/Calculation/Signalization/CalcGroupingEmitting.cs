@@ -177,7 +177,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
 
-                DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission - emittingsSummaryTemp.Count);
+                DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission);
+                DeliteRedundantEmission(emittingsSummaryTemp, CountMaxEmission);
                 EmittingsTemp = emittingsTempTemp.ToArray();
                 EmittingsSummary = emittingsSummaryTemp.ToArray();
                 EmittingsRaw = null;
