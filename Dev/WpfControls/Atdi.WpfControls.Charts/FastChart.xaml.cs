@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -21,6 +22,21 @@ namespace Atdi.WpfControls.Charts
         public Brush Forecolor { get; set; }
 
         public string Text { get; set; }
+
+        public TextDescriptor Apply(TextDescriptor? sourceData)
+        {
+            if (!sourceData.HasValue)
+            {
+                return this;
+            }
+            var source = sourceData.Value;
+            var result = new TextDescriptor
+            {
+                Forecolor = source.Forecolor ?? this.Forecolor,
+                Text = source.Text ?? this.Text
+            };
+            return result;
+        }
     }
 
     public interface IFastChartData
@@ -46,6 +62,8 @@ namespace Atdi.WpfControls.Charts
         int TopLabelSize { get; set; }
 
         int BottomLabelSize { get; set; }
+
+        void Apply(IFastChartData source);
     }
 
     public class FastChartData : IFastChartData
@@ -71,6 +89,44 @@ namespace Atdi.WpfControls.Charts
         public int TopLabelSize { get; set; }
 
         public int BottomLabelSize { get; set; }
+
+        public void Apply(IFastChartData source)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            if (this.Title.HasValue)
+            {
+                this.Title = this.Title.Value.Apply(source.Title);
+            }
+            if (this.LeftTitle.HasValue)
+            {
+                this.LeftTitle = this.LeftTitle.Value.Apply(source.LeftTitle);
+            }
+            if (this.RightTitle.HasValue)
+            {
+                this.RightTitle = this.RightTitle.Value.Apply(source.RightTitle);
+            }
+            if (this.TopLegenda.HasValue)
+            {
+                this.TopLegenda = this.TopLegenda.Value.Apply(source.TopLegenda);
+            }
+            if (this.BottomLegenda.HasValue)
+            {
+                this.BottomLegenda = this.BottomLegenda.Value.Apply(source.BottomLegenda);
+            }
+            if (this.LeftLegenda.HasValue)
+            {
+                this.LeftLegenda = this.LeftLegenda.Value.Apply(source.LeftLegenda);
+            }
+            if (this.RightLegenda.HasValue)
+            {
+                this.RightLegenda = this.RightLegenda.Value.Apply(source.RightLegenda);
+            }
+
+        }
     }
 
     public class FastChartData<TData> : FastChartData, IFastChartData<TData>
@@ -338,6 +394,7 @@ namespace Atdi.WpfControls.Charts
         private FastChartContext _workContext;
 
         private bool _notDrawOnResize;
+        private Matrix _matrix;
 
         public FastChart()
         {
@@ -353,18 +410,44 @@ namespace Atdi.WpfControls.Charts
                 BottomLegenda = new TextDescriptor { Text = "Bottom Legenda", Forecolor = Brushes.DarkMagenta },
                 LeftLegenda = new TextDescriptor { Text = "Left Legenda", Forecolor = Brushes.Blue },
                 RightLegenda = new TextDescriptor { Text = "Right Legenda", Forecolor = Brushes.Blue },
-                LeftLabelSize = 20,
+                LeftLabelSize = 50,
                 BottomLabelSize = 20,
-                RightLabelSize = 20,
+                RightLabelSize = 50,
                 TopLabelSize = 20 
             };
 
             this._adapter = new DefaultAdapter();
 
             InitializeComponent();
+            InitMatrix();
 
             this.ApplyStaticData();
             this.ShowHideLabelCanvase();
+        }
+
+        private void InitMatrix()
+        {
+            using (var src = new HwndSource(new HwndSourceParameters()))
+            {
+                _matrix = src.CompositionTarget.TransformToDevice;
+            }
+        }
+
+        private int ToPixelX(double unitX)
+        {
+            return (int)(_matrix.M11 * unitX);
+        }
+        private int ToPixelY(double unitY)
+        {
+            return (int)(_matrix.M22 * unitY);
+        }
+        private double ToUnitX(int pixelX)
+        {
+            return pixelX / _matrix.M11;
+        }
+        private double ToUnitY(int pixelY)
+        {
+            return pixelY / _matrix.M22;
         }
 
         public IFastChartData StaticData
@@ -399,6 +482,8 @@ namespace Atdi.WpfControls.Charts
                 this.RebuildBitmaps();
             }
         }
+
+    
 
         private void ApplyStaticData()
         {
@@ -454,17 +539,6 @@ namespace Atdi.WpfControls.Charts
             BottomDashPanel.Height = this._staticData.BottomLabelSize;
         }
 
-        //private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        //{
-        //    FastChart lcc = sender as FastChart;
-
-        //    if (e.Property == DynamicDataProperty)
-        //        lcc.DynamicData = (IFastChartData)e.NewValue;
-        //}
-
-        //public static DependencyProperty DynamicDataProperty = DependencyProperty.Register("DynamicData", typeof(IFastChartData), typeof(FastChart),
-        //   new FrameworkPropertyMetadata(default(IFastChartData), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
-
         public IFastChartData DynamicData
         {
             get
@@ -474,11 +548,9 @@ namespace Atdi.WpfControls.Charts
             set
             {
                 _dynamicData = value;
+                _staticData.Apply(_dynamicData);
                 this.ApplyStaticData();
                 this.Draw();
-                //ViewportImage.Source = null;
-                //ViewportImage.Source = _workBitmap;
-                //ViewportImage.InvalidateVisual();
             }
         }
 
@@ -496,8 +568,8 @@ namespace Atdi.WpfControls.Charts
 
         private void RebuildBitmaps()
         {
-            var width = (int)ViewPortContainer.ActualWidth;
-            var height = (int)ViewPortContainer.ActualHeight;
+            var width = ToPixelX(ViewPortContainer.ActualWidth);
+            var height = ToPixelY(ViewPortContainer.ActualHeight);
 
             _workBitmap = BitmapFactory.New(width, height);
             _gridBitmap = BitmapFactory.New(width, height);
@@ -533,6 +605,22 @@ namespace Atdi.WpfControls.Charts
                 int w = (int)this._gridBitmap.PixelWidth;
                 int h = (int)this._gridBitmap.PixelHeight;
 
+                if (_staticData.LeftLabelSize > 0)
+                {
+                    LeftDashPanel.Children.Clear();
+                }
+                if (_staticData.TopLabelSize > 0)
+                {
+                    TopDashPanel.Children.Clear();
+                }
+                if (_staticData.RightLabelSize > 0)
+                {
+                    RightDashPanel.Children.Clear();
+                }
+                if (_staticData.BottomLabelSize > 0)
+                {
+                    BottomDashPanel.Children.Clear();
+                }
 
                 // Clear 
                 _gridBitmap.Clear();
@@ -574,11 +662,10 @@ namespace Atdi.WpfControls.Charts
                             for (int j = 0; j < line.Thickness; j++)
                             {
                                 var y2 = y1 - j;
-                                if (x1 >= 0 && x2 >= 0 && y1 >= 0 && y2 >= 0)
+                                if (x1 >= 0 && x2 >= 0 && x1 < w && x2 < w &&  y2 >= 0 && y2 < h)
                                 {
                                     _gridBitmap.DrawLineDotted(x1, y2, x2, y2, line.Space, line.Length, line.Color);
                                 }
-                                
                             }
                         }
                         // черта с лева
@@ -590,6 +677,28 @@ namespace Atdi.WpfControls.Charts
                             var y1 = h - dash.Offset;
                             var y2 = y1 - dash.Thickness;
                             _gridBitmap.FillRectangle(x1, y1, x2, y2, dash.Color);
+
+                            // вывод метки
+                            if (dash.Label.HasValue && _staticData.LeftLabelSize > 0)
+                            {
+                                var label = dash.Label.Value;
+                                var textBox = new TextBlock()
+                                {
+                                    Text = label.Text,
+                                    Foreground = label.Forecolor
+                                };
+
+                                // to determine text layout size:
+                                textBox.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                                //Size size = textBox.DesiredSize.;
+
+                                var textBoxPosX = ToUnitX(_staticData.LeftLabelSize - 2) - textBox.DesiredSize.Width;
+                                Canvas.SetLeft(textBox, textBoxPosX);
+                                var textBoxPosY = ToUnitY(_staticData.TopLabelSize + y2 + Math.Abs(y2 - y1) / 2) - textBox.DesiredSize.Height / 2;
+                                Canvas.SetTop(textBox, textBoxPosY);
+
+                                LeftDashPanel.Children.Add(textBox);
+                            }
                         }
                         // черта с справа
                         if (point.BottomRightDash.HasValue)
@@ -600,6 +709,28 @@ namespace Atdi.WpfControls.Charts
                             var y1 = h - dash.Offset;
                             var y2 = y1 - dash.Thickness;
                             _gridBitmap.FillRectangle(x1, y1, x2, y2, dash.Color);
+
+                            // вывод метки
+                            if (dash.Label.HasValue && _staticData.RightLabelSize > 0)
+                            {
+                                var label = dash.Label.Value;
+                                var textBox = new TextBlock()
+                                {
+                                    Text = label.Text,
+                                    Foreground = label.Forecolor
+                                };
+
+                                // to determine text layout size:
+                                textBox.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+
+                                var textBoxPosX = ToUnitX(2);
+                                var textBoxPosY = ToUnitY(_staticData.TopLabelSize + y2 + Math.Abs(y2 - y1) / 2) - textBox.DesiredSize.Height / 2;
+
+                                Canvas.SetLeft(textBox, textBoxPosX);
+                                Canvas.SetTop(textBox, textBoxPosY);
+
+                                RightDashPanel.Children.Add(textBox);
+                            }
                         }
                     }
                 }
@@ -638,6 +769,28 @@ namespace Atdi.WpfControls.Charts
                             var x1 = dash.Offset;
                             var x2 = x1 + dash.Thickness;
                             _gridBitmap.FillRectangle(x1, y1, x2, y2, dash.Color);
+
+                            // вывод метки
+                            if (dash.Label.HasValue && _staticData.TopLabelSize > 0)
+                            {
+                                var label = dash.Label.Value;
+                                var textBox = new TextBlock()
+                                {
+                                    Text = label.Text,
+                                    Foreground = label.Forecolor
+                                };
+
+                                // to determine text layout size:
+                                textBox.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                                //Size size = textBox.DesiredSize.;
+
+                                var textBoxPosX = ToUnitX(_staticData.LeftLabelSize + x2 + Math.Abs(x2 - x1) / 2) - textBox.DesiredSize.Width / 2;
+                                var textBoxPosY = ToUnitY(_staticData.TopLabelSize - 2) - textBox.DesiredSize.Height;
+                                Canvas.SetLeft(textBox, textBoxPosX);
+                                Canvas.SetTop(textBox, textBoxPosY);
+
+                                TopDashPanel.Children.Add(textBox);
+                            }
                         }
                         // черта в низу
                         if (point.BottomRightDash.HasValue)
@@ -648,6 +801,29 @@ namespace Atdi.WpfControls.Charts
                             var x1 = dash.Offset;
                             var x2 = x1 + dash.Thickness;
                             _gridBitmap.FillRectangle(x1, y1, x2, y2, dash.Color);
+
+                            // вывод метки
+                            if (dash.Label.HasValue && _staticData.BottomLabelSize > 0)
+                            {
+                                var label = dash.Label.Value;
+                                var textBox = new TextBlock()
+                                {
+                                    Text = label.Text,
+                                    Foreground = label.Forecolor
+                                };
+
+                                // to determine text layout size:
+                                textBox.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+
+                                var textBoxPosX = ToUnitY(_staticData.LeftLabelSize + x2 + Math.Abs(x2 - x1) / 2) - textBox.DesiredSize.Width / 2;
+                                var textBoxPosY = ToUnitX(2);
+                                
+                                Canvas.SetLeft(textBox, textBoxPosX);
+                                Canvas.SetTop(textBox, textBoxPosY);
+
+                                BottomDashPanel.Children.Add(textBox);
+                            }
+
                         }
                     }
                 }

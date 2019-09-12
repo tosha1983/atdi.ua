@@ -8,9 +8,18 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="603.896" Width="1351.299" Loaded="Window_Loaded">
     <Grid Margin="0,0,51,22">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Charts:FastChart x:Name="MainChart" Margin="45,29,0,296" />
-        <Charts:FastChart Height="256" Margin="45,0,10,10" VerticalAlignment="Bottom"/>
+        <Charts:FastChart x:Name="MainChart" Grid.Column="0" Grid.Row="0"  />
+        <GridSplitter Grid.Column="0" Grid.Row="1"  ShowsPreview="True" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
+        <Charts:FastChart Grid.Column="0" Grid.Row="2" />
 
     </Grid>
 </Window>

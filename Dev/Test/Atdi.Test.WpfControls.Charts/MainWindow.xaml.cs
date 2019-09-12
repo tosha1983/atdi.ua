@@ -89,6 +89,8 @@ namespace Atdi.Test.WpfControls.Charts
                 LeftTitle = new TextDescriptor { Text = $"Power: {0}", Forecolor = Brushes.DarkGreen },
                 LeftLegenda = new TextDescriptor { Text = "Level (dBm)", Forecolor = Brushes.Gray},
                 BottomLegenda = new TextDescriptor { Text = "Freq (MHz)", Forecolor = Brushes.Gray },
+                LeftLabelSize = 50,
+                BottomLabelSize = 50
             };
 
             return data;
