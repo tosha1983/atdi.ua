@@ -75,6 +75,7 @@ namespace Atdi.Test.WpfControls.Charts
                 DetectorType = DataModels.Sdrns.Device.OnlineMeasurement.DetectorType.MaxPeak,
                 OnlineMeasType = DataModels.Sdrns.Device.OnlineMeasurement.OnlineMeasType.Level,
                 Freq_MHz = GenerateFreqMHz(count),
+                Level = GenerateLevel(count),
                 PreAmp_dB = -1,
                 RefLevel_dBm = 1000000000,
                 RBW_kHz = 1,
@@ -115,7 +116,7 @@ namespace Atdi.Test.WpfControls.Charts
             var data = new double[count];
             for (int i = 0; i < data.Length; i++)
             {
-                data[i] = 935 + 0.001 * i; 
+                data[i] = 935.554 + 0.00001 * i; 
             }
             return data;
         }
@@ -123,10 +124,27 @@ namespace Atdi.Test.WpfControls.Charts
         private float[] GenerateLevel(int count)
         {
             var data = new float[count];
+            int point1 = count / 4;
+            int point2 = count / 2;
+            int point3 = point1+point2;
             var r = new Random();
-            for (int i = 0; i < data.Length; i++)
+            for (int i = 0; i < point1; i++)
             {
-                data[i] = (float)-120 * (float)r.NextDouble();
+                data[i] =-100+ (float)-5 * (float)r.NextDouble();
+            }
+            for (int i = point1; i < point2; i++)
+            {
+                float k = -100 + (-10 + 100) * (i - point1) / (point2 - point1);
+                data[i] = k +(float)-10 * (float)r.NextDouble();
+            }
+            for (int i = point2; i < point3; i++)
+            {
+                float k = -10 + (10 - 100) * (i - point2) / (point3 - point2);
+                data[i] = k + (float)-15 * (float)r.NextDouble();
+            }
+            for (int i = point3; i < data.Length; i++)
+            {
+                data[i] = -100 + (float)-20 * (float)r.NextDouble();
             }
             return data;
         }
