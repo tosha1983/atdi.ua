@@ -163,7 +163,7 @@ namespace Atdi.Test.WpfControls.Charts
             for (int i = 0; i < levels.Length; i++)
             {
                 points[i * 2] = i;
-                points[i * 2  + 1] =  (int)(levels[i] - yMin) * context.Height / (yMax - yMin);
+                points[i * 2 + 1] = (int)(levels[i] - yMin) * context.Height / (yMax - yMin);
 
             }
             context.PushPolyline(points, Colors.YellowGreen);
