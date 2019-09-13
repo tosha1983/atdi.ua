@@ -6,10 +6,59 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XICSM.ICSControlClient.Environment.Wpf;
+using XICSM.ICSControlClient.Handlers.OnlineMeasurement.Calculation;
 using XICSM.ICSControlClient.ViewModels;
 
 namespace XICSM.ICSControlClient.Models.Views
 {
+    public class OnlieneMeasBandwidthResult : WpfViewModelBase
+    {
+        private double? _t1_MHz;
+        private double? _t2_MHz;
+        private double? _marker_MHz;
+        private double? _BW_kHz;
+        private string _correctnessEstimations;
+
+        public double? T1_MHz
+        {
+            get => this._t1_MHz;
+            set => this.Set(ref this._t1_MHz, value, () => { });
+        }
+
+        public double? T2_MHz
+        {
+            get => this._t2_MHz;
+            set => this.Set(ref this._t2_MHz, value, () => { });
+        }
+
+        public double? Marker_MHz
+        {
+            get => this._marker_MHz;
+            set => this.Set(ref this._marker_MHz, value, () => { });
+        }
+
+        public double? BW_kHz
+        {
+            get => this._BW_kHz;
+            set => this.Set(ref this._BW_kHz, value, () => { });
+        }
+
+        public string CorrectnessEstimations
+        {
+            get => this._correctnessEstimations;
+            set => this.Set(ref this._correctnessEstimations, value, () => { });
+        }
+
+        public void Apply(CalcBWForChart.ResultBWForChart result)
+        {
+            this.T1_MHz = result.T1_MHz;
+            this.T2_MHz = result.T2_MHz;
+            this.Marker_MHz = result.Marker_MHz;
+            this.BW_kHz = result.BW_kHz;
+            this.CorrectnessEstimations = result.CorrectnessEstimations ? "TRUE" : "FALSE";
+        }
+    }
+
     public class OnlienrMeasParametersViewModel : WpfViewModelBase, IDataErrorInfo
     {
         private readonly OnlineMeasurementViewModel _parent;
@@ -31,6 +80,9 @@ namespace XICSM.ICSControlClient.Models.Views
         private int _preAmp_dB;
         private int _att_dB;
 
+        private BandWidthEstimation.BandwidthEstimationType _bandwidthEstimationType;
+        private double _xBeta; 
+        private int _maximumIgnorPoint;
 
         public OnlienrMeasParametersViewModel(OnlineMeasurementViewModel parent)
         {
@@ -40,7 +92,30 @@ namespace XICSM.ICSControlClient.Models.Views
             this._isEnabledRunButton = false;
         }
 
-        
+        public BandWidthEstimation.BandwidthEstimationType EstimationType
+        {
+            get => this._bandwidthEstimationType;
+            set => this.Set(ref this._bandwidthEstimationType, value, () => { });
+        }
+        public IList<BandWidthEstimation.BandwidthEstimationType> EstimationTypeValues
+        {
+            get
+            {
+                return Enum.GetValues(typeof(BandWidthEstimation.BandwidthEstimationType)).Cast <BandWidthEstimation.BandwidthEstimationType > ().ToList();
+            }
+        }
+
+        public double X_Beta
+        {
+            get => this._xBeta;
+            set => this.Set(ref this._xBeta, value, () => { });
+        }
+
+        public int MaximumIgnorPoint
+        {
+            get => this._maximumIgnorPoint;
+            set => this.Set(ref this._maximumIgnorPoint, value, () => { });
+        }
 
         public double[] Freq_Hz { get; set; }
 
@@ -253,6 +328,22 @@ namespace XICSM.ICSControlClient.Models.Views
                             error = "The value must be greater or equal to '0 dB' and less than or equal to '50 dB'. Or be '1' in cases of 'Auto'";
                         }
                         break;
+                    case "X_Beta":
+                        if ((X_Beta < 0.01 || X_Beta > 50) && EstimationType == BandWidthEstimation.BandwidthEstimationType.beta)
+                        {
+                            error = "The value must be greater or equal to '0.01%' and less than or equal to '505%'";
+                        }
+                        else if ((X_Beta < 10 || X_Beta > 35) && EstimationType != BandWidthEstimation.BandwidthEstimationType.beta)
+                        {
+                            error = "The value must be greater or equal to '10%' and less than or equal to '35%'";
+                        }
+                        break;
+                    case "MaximumIgnorPoint":
+                        if (MaximumIgnorPoint < 0 || MaximumIgnorPoint > 5)
+                        {
+                            error = "The value must be greater or equal to '0' and less than or equal to '5'";
+                        }
+                        break;
                 }
                 return error;
             }
@@ -271,7 +362,9 @@ namespace XICSM.ICSControlClient.Models.Views
                 "SweepTime_s",
                 "RefLevel_dBm",
                 "Att_dB",
-                "PreAmp_dB"
+                "PreAmp_dB",
+                "X_Beta",
+                "MaximumIgnorPoint"
             };
 
             if (this.TraceType == TraceType.ClearWhrite)

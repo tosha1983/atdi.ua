@@ -28,6 +28,7 @@ using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
 using Atdi.WpfControls.Charts;
 using XICSM.ICSControlClient.ViewModels.ChartAdapters;
 using System.Windows.Media;
+using XICSM.ICSControlClient.Handlers.OnlineMeasurement.Calculation;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -60,7 +61,9 @@ namespace XICSM.ICSControlClient.ViewModels
         }
 
         private readonly SensorViewModel _sensor;
+        private MP.MapDrawingData _sensorMapData;
         private OnlienrMeasParametersViewModel _measParameters;
+        private OnlieneMeasBandwidthResult _measBandwidthResult;
         private MeasProcessStatus _processStatus;
         private MeasurementStatus _measStatus;
         private TimeSpan _measurementPeriod;
@@ -80,6 +83,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public OnlineMeasurementViewModel(ShortSensorViewModel sensor)
         {
             this._sensor = Mappers.Map(DataStore.GetStore().GetSensorById(sensor.Id));
+            this._sensorMapData = this.RebuildMapDataForSensor();
             this._measParameters = new OnlienrMeasParametersViewModel(this)
             {
                 TraceType = TraceType.ClearWhrite,
@@ -94,7 +98,14 @@ namespace XICSM.ICSControlClient.ViewModels
                 PreAmp_dB = -1,
                 RefLevel_dBm = 1000000000,
                 FreqStart_MHz = 935,
-                FreqStop_MHz = 960
+                FreqStop_MHz = 960,
+                EstimationType = BandWidthEstimation.BandwidthEstimationType.beta,
+                X_Beta = 1,
+                MaximumIgnorPoint = 1
+            };
+            this._measBandwidthResult = new OnlieneMeasBandwidthResult
+            {
+                
             };
 
             if (_sensor.Equipment != null)
@@ -126,10 +137,22 @@ namespace XICSM.ICSControlClient.ViewModels
            // set => this.Set(ref this._sensor, value, () => { });
         }
 
+        public MP.MapDrawingData SensorMapData
+        {
+            get => this._sensorMapData;
+            set => this.Set(ref this._sensorMapData, value);
+        }
+
         public OnlienrMeasParametersViewModel MeasParameters
         {
             get => this._measParameters;
             set => this.Set(ref this._measParameters, value, () => { });
+        }
+
+        public OnlieneMeasBandwidthResult MeasBandwidthResult
+        {
+            get => this._measBandwidthResult;
+            set => this.Set(ref this._measBandwidthResult, value, () => { });
         }
 
         public IFastChartDataAdapter MainChartAdapter
@@ -771,21 +794,26 @@ namespace XICSM.ICSControlClient.ViewModels
                 Overload = true,
                 Level = serverResult.Level
             };
-
+            var power = CalcChannelPowForChart.getPow(serverResult.Level, _measParameters.Freq_Hz, _measParameters.RBW_kHz);
             var data = new FastChartData<OnlineMeasLineChartDynamicData>(container)
             {
-                Title = new TextDescriptor { Text = $"Online Measurements  -  {serverResult.Index}" },
+                //Title = new TextDescriptor { Text = $"Online Measurements  -  {serverResult.Index}" },
                 RightTitle = new TextDescriptor { Text = (serverResult.Overload ? "Overload" : ""), Forecolor = Brushes.Red },
-                LeftTitle = new TextDescriptor { Text = $"{serverResult.Time.Hour:D2}:{serverResult.Time.Minute:D2}:{serverResult.Time.Second:D2}.{serverResult.Time.Millisecond:D3} ({delta.TotalMilliseconds}ms)" }
+                LeftTitle = new TextDescriptor { Text = $"Power: {power} dBm" }
              };
 
             this.MainChartDynamicData = data;
+
+            var measBW = CalcBWForChart.getBW(serverResult.Level, _measParameters.Freq_Hz, _measParameters.EstimationType, _measParameters.X_Beta, _measParameters.MaximumIgnorPoint);
+            MeasBandwidthResult.Apply(measBW);
         }
 
         public void OnDeviceServerMeasResult(MessageContainer data, WebSocketContext context)
         {
             try
             {
+                
+
                 if (this._measStatus != MeasurementStatus.ReadyToAccept
                     && this._measStatus != MeasurementStatus.IncomingData)
                 {
@@ -803,9 +831,10 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         throw new InvalidOperationException($"Invalid meas result received from the sensor");
                     }
+                    var delta = DateTime.Now - measResult.Time;
                     UIContext(() =>
                     {
-                        _measParameters.CurrentStatus = $"Incoming Data: {measResult.Index}";
+                        _measParameters.CurrentStatus = $"Incoming Data: {measResult.Index} - {measResult.Time.Hour:D2}:{measResult.Time.Minute:D2}:{measResult.Time.Second:D2}.{measResult.Time.Millisecond:D3} ({delta.TotalMilliseconds}ms)";
                         this.AcceptNextResults(measResult);
                     });
                 }
@@ -885,6 +914,40 @@ namespace XICSM.ICSControlClient.ViewModels
                 
                 this.LogRecords = $"{now.Hour:D2}:{now.Minute:D2}:{now.Second:D2}.{now.Millisecond:D3}: {eventData} \r\n{this.LogRecords}";
             });
+        }
+
+        private MP.MapDrawingData RebuildMapDataForSensor()
+        {
+            var data = new MP.MapDrawingData();
+            var points = new List<MP.MapDrawingDataPoint>();
+
+            if (_sensor.Locations != null && _sensor.Locations.Length > 0)
+            {
+                var sensorPoints = _sensor.Locations
+                    .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+                            || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+                            && l.Lon.HasValue
+                            && l.Lat.HasValue)
+                    .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                    .ToArray();
+
+                points.AddRange(sensorPoints);
+            }
+
+            data.Points = points.ToArray();
+            return data;
+        }
+        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
+        {
+            return new MP.MapDrawingDataPoint
+            {
+                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
+                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
+                Location = new Models.Location(lon, lat),
+                Opacity = 0.85,
+                Width = 10,
+                Height = 10
+            };
         }
     }
 }

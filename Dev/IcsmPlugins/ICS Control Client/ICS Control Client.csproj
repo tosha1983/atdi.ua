@@ -309,6 +309,9 @@
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
     <Compile Include="ViewModels\OnlineMeasurementViewModel.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\Calculation\BandWidthEstimation.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcBWForChart.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcChannelPowForChart.cs" />
     <Compile Include="ViewModels\SignalizationSensorsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationStationsEquipmentsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSysInfoViewModel.cs" />
