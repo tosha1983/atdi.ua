@@ -403,17 +403,17 @@ namespace Atdi.WpfControls.Charts
 
             this._staticData = new FastChartData
             {
-                Title = new TextDescriptor {  Text = "ATDI Fast Chart", Forecolor = Brushes.Gray},
-                LeftTitle = new TextDescriptor { Text = "Left title", Forecolor = Brushes.Green },
-                RightTitle = new TextDescriptor { Text = "Right title", Forecolor = Brushes.Red },
-                TopLegenda = new TextDescriptor { Text = "Top Legenda", Forecolor = Brushes.DarkMagenta },
-                BottomLegenda = new TextDescriptor { Text = "Bottom Legenda", Forecolor = Brushes.DarkMagenta },
-                LeftLegenda = new TextDescriptor { Text = "Left Legenda", Forecolor = Brushes.Blue },
-                RightLegenda = new TextDescriptor { Text = "Right Legenda", Forecolor = Brushes.Blue },
-                LeftLabelSize = 50,
-                BottomLabelSize = 20,
-                RightLabelSize = 50,
-                TopLabelSize = 20 
+                //Title = new TextDescriptor {  Text = "ATDI Fast Chart", Forecolor = Brushes.Gray},
+                //LeftTitle = new TextDescriptor { Text = "Left title", Forecolor = Brushes.Green },
+                //RightTitle = new TextDescriptor { Text = "Right title", Forecolor = Brushes.Red },
+                //TopLegenda = new TextDescriptor { Text = "Top Legenda", Forecolor = Brushes.DarkMagenta },
+                //BottomLegenda = new TextDescriptor { Text = "Bottom Legenda", Forecolor = Brushes.DarkMagenta },
+                //LeftLegenda = new TextDescriptor { Text = "Left Legenda", Forecolor = Brushes.Blue },
+                //RightLegenda = new TextDescriptor { Text = "Right Legenda", Forecolor = Brushes.Blue },
+                //LeftLabelSize = 50,
+                //BottomLabelSize = 20,
+                //RightLabelSize = 50,
+                //TopLabelSize = 20 
             };
 
             this._adapter = new DefaultAdapter();
@@ -450,6 +450,27 @@ namespace Atdi.WpfControls.Charts
             return pixelY / _matrix.M22;
         }
 
+        private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var chart = sender as FastChart;
+
+            if (e.Property == StaticDataProperty)
+                chart.StaticData = (IFastChartData)e.NewValue;
+            else if (e.Property == DynamicDataProperty)
+                chart.DynamicData = (IFastChartData)e.NewValue;
+            else if (e.Property == AdapterProperty)
+                chart.Adapter = (IFastChartDataAdapter)e.NewValue;
+        }
+
+        public static DependencyProperty StaticDataProperty = DependencyProperty.Register("StaticData", typeof(IFastChartData), typeof(FastChart),
+           new FrameworkPropertyMetadata(default(IFastChartData), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
+
+        public static DependencyProperty DynamicDataProperty = DependencyProperty.Register("DynamicData", typeof(IFastChartData), typeof(FastChart),
+           new FrameworkPropertyMetadata(default(IFastChartData), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
+
+        public static DependencyProperty AdapterProperty = DependencyProperty.Register("Adapter", typeof(IFastChartDataAdapter), typeof(FastChart),
+           new FrameworkPropertyMetadata(default(IFastChartDataAdapter), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
+
         public IFastChartData StaticData
         {
             get
@@ -482,8 +503,6 @@ namespace Atdi.WpfControls.Charts
                 this.RebuildBitmaps();
             }
         }
-
-    
 
         private void ApplyStaticData()
         {

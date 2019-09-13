@@ -61,6 +61,8 @@
     <Compile Include="Tasks\ClientTaskRegistrationTask.cs" />
     <Compile Include="TaskWorkers\ClientReadyTakeMeasResultTaskWorker.cs" />
     <Compile Include="TaskWorkers\ClientTaskRegistrationTaskWorker.cs" />
+    <Compile Include="TaskWorkers\DebugMode\DebugClientReadyTakeMeasResultTaskWorker.cs" />
+    <Compile Include="TaskWorkers\DebugMode\DebugClientTaskRegistrationTaskWorker.cs" />
     <Compile Include="WebSocket\ClientDescriptor.cs" />
     <Compile Include="WebSocket\WebSocketContext.cs" />
     <Compile Include="WebSocket\WebSocketMessage.cs" />

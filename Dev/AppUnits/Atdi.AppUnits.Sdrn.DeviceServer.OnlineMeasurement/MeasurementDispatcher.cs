@@ -77,7 +77,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         private void OpenWebSocket()
         {
             _descriptor.Server = new WebSocketServer(
-                    new WebSocketPipeline(_descriptor, _processingDispatcher, _taskStarter, _logger),
+                    new WebSocketPipeline(_descriptor, _processingDispatcher, _taskStarter, _config, _logger),
                     _config.WebSocketLocalPort, _logger, _config.WebSocketBufferSize ?? 65536
                     );
 

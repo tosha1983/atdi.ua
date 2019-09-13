@@ -25,6 +25,9 @@ using XICSM.ICSControlClient.Forms;
 using System.Threading;
 using XICSM.ICSControlClient.OnlineMeasurement;
 using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
+using Atdi.WpfControls.Charts;
+using XICSM.ICSControlClient.ViewModels.ChartAdapters;
+using System.Windows.Media;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -65,7 +68,11 @@ namespace XICSM.ICSControlClient.ViewModels
         private SDR.SensorAvailabilityDescriptor _serverDescriptor;
         private WebSocketContext _webSocketContext;
         private WebSocketClient _webSocket;
-        private CS.ChartOption _measChartOption;
+
+        private IFastChartDataAdapter _mainChartAdapter;
+        private IFastChartData _mainChartStaticData;
+        private IFastChartData _mainChartDynamicData;
+
         private string _logRecords;
 
         private int _attempts = 20;
@@ -105,7 +112,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this._processStatus = MeasProcessStatus.Disconnected;
             this._measStatus = MeasurementStatus.Undefined;
-            this._measChartOption = this.GetDefaultMeasChartOption();
+            this._mainChartAdapter = new OnlineMeasLineChartAdapter();
+            this._mainChartStaticData = this.RebuildMeasChartStaticData();
             this._measurementPeriod = new TimeSpan(0, 10, 0);
             this.InitCommands();
         }
@@ -124,11 +132,22 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._measParameters, value, () => { });
         }
 
-        public CS.ChartOption MeasChartOption
+        public IFastChartDataAdapter MainChartAdapter
         {
-            get => this._measChartOption;
-            set => this.Set(ref this._measChartOption, value);
+            get => this._mainChartAdapter;
+            set => this.Set(ref this._mainChartAdapter, value);
         }
+        public IFastChartData MainChartStaticData
+        {
+            get => this._mainChartStaticData;
+            set => this.Set(ref this._mainChartStaticData, value);
+        }
+        public IFastChartData MainChartDynamicData
+        {
+            get => this._mainChartDynamicData;
+            set => this.Set(ref this._mainChartDynamicData, value);
+        }
+
 
         public string CurrentStatus
         {
@@ -703,103 +722,64 @@ namespace XICSM.ICSControlClient.ViewModels
             }
         }
 
-        private CS.ChartOption GetDefaultMeasChartOption()
+        private IFastChartData<OnlineMeasLineChartStaticData> RebuildMeasChartStaticData()
         {
-            return new CS.ChartOption
+            var container = new OnlineMeasLineChartStaticData()
             {
-                ChartType = CS.ChartType.Line,
-                XLabel = "Freq (Mhz)",
-                XMin = 900,
-                XMax = 960,
-                XTick = 5,
-                XInnerTickCount = 5,
-                YLabel = "Level (dBm)",
-                YMin = -120,
-                YMax = -10,
-                YTick = 10,
-                YInnerTickCount = 5,
-                Title = "Online Measurements"
+                Att_dB = _measParameters.Att_dB, //-1,
+                DetectorType = _measParameters.DetectorType, // DetectorType.MaxPeak,
+                OnlineMeasType = _measParameters.OnlineMeasType, // OnlineMeasType.Level,
+                Freq_MHz = _measParameters.Freq_Hz,
+                PreAmp_dB = _measParameters.PreAmp_dB,
+                RefLevel_dBm = _measParameters.RefLevel_dBm, // 1000000000,
+                RBW_kHz = _measParameters.RBW_kHz, //1,
+                SweepTime_s = _measParameters.SweepTime_s, // -1,
+                TraceCount = _measParameters.TraceCount, // 1,
+                TraceType = _measParameters.TraceType, //TraceType.ClearWhrite
             };
+
+            var data = new FastChartData<OnlineMeasLineChartStaticData>(container)
+            {
+                Title = new TextDescriptor { Text = $"Online Measurement: {container.OnlineMeasType}", Forecolor = Brushes.DarkBlue },
+                LeftTitle = new TextDescriptor { Text = $"Power: {0}", Forecolor = Brushes.DarkGreen },
+                RightTitle = new TextDescriptor { Text = $"", Forecolor = Brushes.Red },
+                LeftLegenda = new TextDescriptor { Text = "Level (dBm)", Forecolor = Brushes.Gray },
+                BottomLegenda = new TextDescriptor { Text = "Freq (MHz)", Forecolor = Brushes.Gray },
+                
+                LeftLabelSize = 50,
+                BottomLabelSize = 30
+            };
+
+            return data;
         }
 
         private void PrepareUIToAcceptResults()
         {
-            var option = GetDefaultMeasChartOption();
-            option.XMin = _measParameters.FreqStart_MHz; //900,
-            option.XMax = _measParameters.FreqStop_MHz; // 960,
-
-            this.MeasChartOption = option;
+            var staticData = RebuildMeasChartStaticData();
+            this.MainChartStaticData = staticData;
         }
+
         private void AcceptNextResults(DeviceServerResultLevel serverResult)
         {
-            var option = GetDefaultMeasChartOption();
-            option.XMin = _measParameters.FreqStart_MHz; //900,
-            option.XMax = _measParameters.FreqStop_MHz;
             var delta = DateTime.Now - serverResult.Time;
-            option.LeftTitle = $"{serverResult.Time.Hour:D2}:{serverResult.Time.Minute:D2}:{serverResult.Time.Second:D2}.{serverResult.Time.Millisecond:D3} ({delta.TotalMilliseconds}ms)";
-            option.Title = $"Online Measurements  -  {serverResult.Index}";
-            option.RightTitle = (serverResult.Overload ? "Overload" : "");
+            //option.LeftTitle = ;
+            //option.Title = 
+            //option.RightTitle = ;
 
-            var count = _measParameters.Freq_Hz.Length;
-            var points = new Point[count];
-
-            var maxX = default(double);
-            var minX = default(double);
-
-            var maxY = default(double);
-            var minY = default(double);
-
-            for (int i = 0; i < count; i++)
+            var container = new OnlineMeasLineChartDynamicData
             {
-                var level = serverResult.Level[i];
-                var valX = _measParameters.Freq_Hz[i];
-                var valY = level;
+                Overload = true,
+                Level = serverResult.Level
+            };
 
-                var point = new Point
-                {
-                    X = valX,
-                    Y = valY
-                };
-                if (i == 0)
-                {
-                    maxX = valX;
-                    minX = valX;
-                    maxY = valY;
-                    minY = valY;
-                }
-                else
-                {
-                    if (maxX < valX)
-                        maxX = valX;
-                    if (minX > valX)
-                        minX = valX;
+            var data = new FastChartData<OnlineMeasLineChartDynamicData>(container)
+            {
+                Title = new TextDescriptor { Text = $"Online Measurements  -  {serverResult.Index}" },
+                RightTitle = new TextDescriptor { Text = (serverResult.Overload ? "Overload" : ""), Forecolor = Brushes.Red },
+                LeftTitle = new TextDescriptor { Text = $"{serverResult.Time.Hour:D2}:{serverResult.Time.Minute:D2}:{serverResult.Time.Second:D2}.{serverResult.Time.Millisecond:D3} ({delta.TotalMilliseconds}ms)" }
+             };
 
-                    if (maxY < valY)
-                        maxY = valY;
-                    if (minY > valY)
-                        minY = valY;
-                }
-                points[i] = point;
-            }
-
-            var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
-            option.YTick = 10;
-            option.YMax = preparedDataY.MaxValue;
-            option.YMin = preparedDataY.MinValue;
-
-            //var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 8);
-            //option.XTick = preparedDataX.Step;
-            //option.XMin = preparedDataX.MinValue;
-            //option.XMax = preparedDataX.MaxValue;
-
-            var preparedDataX = Environment.Utitlity.CalcLevelRange(minX - 5, maxX + 5);
-            option.XTick = 50;
-            option.XMin = preparedDataX.MinValue;
-            option.XMax = preparedDataX.MaxValue;
-
-            option.Points = points;
-
-            this.MeasChartOption = option;
+            this.MainChartDynamicData = data;
         }
 
         public void OnDeviceServerMeasResult(MessageContainer data, WebSocketContext context)
