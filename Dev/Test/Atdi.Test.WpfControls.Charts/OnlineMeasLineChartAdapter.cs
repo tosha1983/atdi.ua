@@ -267,6 +267,9 @@ namespace Atdi.Test.WpfControls.Charts
             if (pointsMax != null) { context.PushPolyline(pointsMax, ColorMaxLine); }
             var pointsMin = getPolyline(staticData.Contaier.MinLevels, staticData);
             if (pointsMin != null) { context.PushPolyline(pointsMin, ColorMinLine); }
+            //только для тестов 
+            //double Pow = CalcChannelPowForChart.getPow(levels, staticData.Contaier.Freq_MHz, staticData.Contaier.RBW_kHz);
+            //var ResultBW = CalcBWForChart.getBW(levels, staticData.Contaier.Freq_MHz, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
         }
         private int[] getPolyline(float[] levels, IFastChartData<OnlineMeasLineChartStaticData> staticData)
         {
