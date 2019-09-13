@@ -234,36 +234,42 @@ namespace Atdi.Test.WpfControls.Charts
                 return;
             }
             var levels = dynamicData.Contaier.Level;
-            //if (staticData.Contaier.Level == null)
-            //{
-            //    staticData.Contaier.Level = levels;
-            //}
-            //if ((staticData.Contaier.MaxLevels == null) || (levels.Length != staticData.Contaier.MaxLevels.Length))
-            //{
-            //    staticData.Contaier.MaxLevels = levels;
-            //}
-            //if ((staticData.Contaier.MinLevels == null) || (levels.Length != staticData.Contaier.MinLevels.Length))
-            //{
-            //    staticData.Contaier.MinLevels = levels;
-            //}
-            //for (int i = 0; i < levels.Length; i++)
-            //{
-            //    if (levels[i] > staticData.Contaier.MaxLevels[i])
-            //    {
-            //        staticData.Contaier.MaxLevels[i] = levels[i] - 25;
-            //    }
-            //    if (levels[i] < staticData.Contaier.MinLevels[i])
-            //    {
-            //        staticData.Contaier.MinLevels[i] = levels[i] + 25;
-            //    }
-            //}
+            if (staticData.Contaier.Level == null)
+            {
+                staticData.Contaier.Level = new float[levels.Length];
+                for (int i = 0; levels.Length > i; i++) { staticData.Contaier.Level[i] = levels[i]; }
+            }
+            if ((staticData.Contaier.MaxLevels == null) || (levels.Length != staticData.Contaier.MaxLevels.Length))
+            {
+                staticData.Contaier.MaxLevels = new float[levels.Length];
+                for (int i = 0; levels.Length > i; i++) { staticData.Contaier.MaxLevels[i] = levels[i]; }
+            }
+            if ((staticData.Contaier.MinLevels == null) || (levels.Length != staticData.Contaier.MinLevels.Length))
+            {
+                staticData.Contaier.MinLevels = new float[levels.Length];
+                for (int i = 0; levels.Length > i; i++) { staticData.Contaier.MinLevels[i] = levels[i]; }
+            }
+            for (int i = 0; i < levels.Length; i++)
+            {
+                if (levels[i] > staticData.Contaier.MaxLevels[i])
+                {
+                    staticData.Contaier.MaxLevels[i] = levels[i];
+                }
+                if (levels[i] < staticData.Contaier.MinLevels[i])
+                {
+                    staticData.Contaier.MinLevels[i] = levels[i];
+                }
+            }
 
             var points = getPolyline(levels, staticData);
             if (points != null) {context.PushPolyline(points, ColorLine);}
-            //var pointsMax = getPolyline(staticData.Contaier.MaxLevels, staticData);
-            //if (pointsMax != null) { context.PushPolyline(pointsMax, ColorMaxLine); }
-            ////var pointsMin = getPolyline(staticData.Contaier.MinLevels, staticData);
-            ////if (pointsMin != null) { context.PushPolyline(pointsMin, ColorMinLine); }
+            var pointsMax = getPolyline(staticData.Contaier.MaxLevels, staticData);
+            if (pointsMax != null) { context.PushPolyline(pointsMax, ColorMaxLine); }
+            var pointsMin = getPolyline(staticData.Contaier.MinLevels, staticData);
+            if (pointsMin != null) { context.PushPolyline(pointsMin, ColorMinLine); }
+            //только для тестов 
+            //double Pow = CalcChannelPowForChart.getPow(levels, staticData.Contaier.Freq_MHz, staticData.Contaier.RBW_kHz);
+            //var ResultBW = CalcBWForChart.getBW(levels, staticData.Contaier.Freq_MHz, BandWidthEstimation.BandwidthEstimationType.beta, 1, 1);
         }
         private int[] getPolyline(float[] levels, IFastChartData<OnlineMeasLineChartStaticData> staticData)
         {
