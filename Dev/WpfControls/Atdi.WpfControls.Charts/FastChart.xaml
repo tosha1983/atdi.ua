@@ -26,29 +26,29 @@
         <TextBlock Margin="2" x:Name="TitleTextBlock" Grid.Column="2" Grid.Row="0" 
                 RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" 
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" 
-                Text="Chart Title"/>
+                Text=""/>
 
         <TextBlock Margin="2" x:Name="LeftTitleTextBlock" Grid.Column="2" Grid.Row="0" 
                 RenderTransformOrigin="0.5,0.5" FontSize="14" 
                 HorizontalAlignment="Left" VerticalAlignment="Stretch" TextAlignment="Center" 
-                Text="Left"/>
+                Text=""/>
 
         <TextBlock Margin="2" x:Name="RightTitleTextBlock" Grid.Column="2" Grid.Row="0" 
                 RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" Foreground="Red"
                 HorizontalAlignment="Right" VerticalAlignment="Stretch" TextAlignment="Center" 
-                Text="Right"/>
+                Text=""/>
 
         <TextBlock Margin="2" x:Name="TopLegendaTextBlock" Grid.Column="2" Grid.Row="1" 
                RenderTransformOrigin="0.5,0.5" TextAlignment="Center"  FontWeight="Bold"
-               Text="X Label"/>
+               Text=""/>
         
         <TextBlock Margin="2" x:Name="BottomLegendaTextBlock" Grid.Column="2" Grid.Row="5" 
                RenderTransformOrigin="0.5,0.5" TextAlignment="Center"  FontWeight="Bold"
-               Text="X Label"/>
+               Text=""/>
 
         <TextBlock Margin="2" Name="LeftLegendaTextBlock" Grid.Column="0" Grid.Row="3" 
                 RenderTransformOrigin="0.5,0.5" TextAlignment="Center" FontWeight="Bold"
-                Text="Y Label">
+                Text="">
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="-90"/>
             </TextBlock.LayoutTransform>
@@ -56,20 +56,20 @@
 
         <TextBlock Margin="2" Name="RightLegendaTextBlock" Grid.Column="4" Grid.Row="3" 
                 RenderTransformOrigin="0.5,0.5" TextAlignment="Center" FontWeight="Bold"
-                Text="Y Label">
+                Text="">
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="90"/>
             </TextBlock.LayoutTransform>
         </TextBlock>
 
-        <Canvas x:Name="LeftDashPanel" Grid.Column="1" Grid.Row="2" Grid.RowSpan="3"    Width="30"  ClipToBounds="True" Background="Beige" />
-        <Canvas x:Name="TopDashPanel"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Height="30" ClipToBounds="True" Background="Beige" />
+        <Canvas x:Name="LeftDashPanel" Grid.Column="1" Grid.Row="2" Grid.RowSpan="3"    Width="30"  ClipToBounds="True" Background="Transparent" />
+        <Canvas x:Name="TopDashPanel"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Height="30" ClipToBounds="True" Background="Transparent" />
 
-        <Grid x:Name="ViewPortContainer" Grid.Column="2" Grid.Row="3" SizeChanged="ViewPortContainer_SizeChanged" Background="Bisque">
+        <Grid x:Name="ViewPortContainer" Grid.Column="2" Grid.Row="3" SizeChanged="ViewPortContainer_SizeChanged" Background="Transparent">
             <Image Name="ViewportImage"  />
         </Grid>
 
-        <Canvas x:Name="RightDashPanel"  Grid.Column="3" Grid.Row="2" Grid.RowSpan="3"    Width="30"  ClipToBounds="True" Background="Beige" />
-        <Canvas x:Name="BottomDashPanel" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" Height="30" ClipToBounds="True" Background="Beige" />
+        <Canvas x:Name="RightDashPanel"  Grid.Column="3" Grid.Row="2" Grid.RowSpan="3"    Width="30"  ClipToBounds="True" Background="Transparent" />
+        <Canvas x:Name="BottomDashPanel" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" Height="30" ClipToBounds="True" Background="Transparent" />
     </Grid>
 </UserControl>

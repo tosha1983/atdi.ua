@@ -12,4 +12,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
     {
         
     }
+
+    public class DebugClientTaskRegistrationTask : TaskBase
+    {
+
+    }
 }

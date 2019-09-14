@@ -6,9 +6,11 @@
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
              xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             xmlns:Charts="clr-namespace:Atdi.WpfControls.Charts;assembly=Atdi.WpfControls.Charts"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+
       <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
           <Setter Property="HorizontalAlignment" Value="Stretch"/>
           <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -48,8 +50,6 @@
           <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="*"></RowDefinition>
-          <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
@@ -131,17 +131,15 @@
           </Grid>
         </GroupBox>
 
-        
-
         <GroupBox Grid.Column="0" Grid.Row="2"  Header = "Measurement parameters" Margin="5,5,5,5">
           <Grid Margin="5,5,5,5" DataContext="{Binding MeasParameters}">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="80" />
               <ColumnDefinition Width="75" />
               <ColumnDefinition Width="35" />
+              <ColumnDefinition Width="90" />
               <ColumnDefinition Width="70" />
-              <ColumnDefinition Width="70" />
-              <ColumnDefinition Width="35" />
+              <ColumnDefinition Width="40" />
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -179,7 +177,10 @@
                 </Binding>
               </TextBox.Text>
             </TextBox>
-            <Label   Grid.Row="2" Grid.Column="2"  Content="MHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <Label    Grid.Row="2" Grid.Column="2"  Content="MHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <Label    Grid.Row="2" Grid.Column="3"  Content="Estimation Type"      VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <ComboBox Grid.Row="2" Grid.Column="4"  Grid.ColumnSpan="2" SelectedValue="{Binding EstimationType, Mode=TwoWay}" ItemsSource="{Binding EstimationTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
+
 
             <Label   Grid.Row="4" Grid.Column="0"  Content="Freq Stop"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
             <TextBox Grid.Row="4" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
@@ -192,6 +193,17 @@
               </TextBox.Text>
             </TextBox>
             <Label   Grid.Row="4" Grid.Column="2"  Content="MHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <Label   Grid.Row="4" Grid.Column="3"  Content="Beta/nDbLevel"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="4" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="X_Beta">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="4" Grid.Column="5"  Content="%/dB" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
 
             <Label    Grid.Row="6" Grid.Column="0"  Content="Trace Type" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
             <ComboBox Grid.Row="6" Grid.Column="1"  Grid.ColumnSpan="2" SelectedValue="{Binding TraceType, Mode=TwoWay}" ItemsSource="{Binding TraceTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
@@ -218,6 +230,17 @@
               </TextBox.Text>
             </TextBox>
             <Label   Grid.Row="8" Grid.Column="2"  Content="kHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <Label   Grid.Row="8" Grid.Column="3"  Content="MaximumIgnorPoint"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="8" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="MaximumIgnorPoint">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+
 
             <Label   Grid.Row="10" Grid.Column="0"  Content="Sweep Time" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
             <TextBox Grid.Row="10" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}" >
@@ -287,20 +310,112 @@
           </Grid>
         </GroupBox>
 
-        <GridSplitter Grid.Column="1" Grid.RowSpan="5"   ShowsPreview="True" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FF871313"></GridSplitter>
+        <GridSplitter Grid.Column="1" Grid.RowSpan="3"   ShowsPreview="True" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FF871313"></GridSplitter>
 
-        <cs:LineChart  Grid.Column="2" Grid.RowSpan="3" Option="{Binding MeasChartOption}" />
+        <Charts:FastChart  Grid.Column="2" Grid.RowSpan="3" Margin="10" Adapter="{Binding MainChartAdapter}" StaticData="{Binding MainChartStaticData}" DynamicData="{Binding MainChartDynamicData}"/>
 
-        <GridSplitter Grid.Column="3" Grid.RowSpan="5"   ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FF871313"></GridSplitter>
+        <GridSplitter Grid.Column="3" Grid.RowSpan="3"   ShowsPreview="True" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#FF871313"></GridSplitter>
         
-        <maps:Map     Grid.Column="4" Grid.RowSpan="3"  DrawingData="{Binding CurrentMapData}"/>
+        <GridSplitter Grid.Row="1" Grid.Column="0" ShowsPreview="True" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
 
+        <Grid Grid.Column="4" Grid.RowSpan="3">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+          </Grid.RowDefinitions>
 
-        <GridSplitter Grid.Row="1" Grid.Column="0" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
+          <maps:Map     Grid.Row="0" Grid.Column="0" DrawingData="{Binding SensorMapData}"/>
+          <GridSplitter Grid.Row="1" Grid.Column="0" ShowsPreview="True" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
+          <GroupBox     Grid.Row="2" Grid.Column="0" Header = "BW Estimation" Margin="5,5,5,5">
+            <Grid DataContext="{Binding MeasBandwidthResult}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90" />
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="90" />
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+              </Grid.RowDefinitions>
 
-        <GridSplitter Grid.Row="3" Grid.ColumnSpan="5" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FF871313"></GridSplitter>
+              <Label   Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Сorrectness Estimations" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+              <TextBox Grid.Row="0" Grid.Column="2"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" >
+                <TextBox.Text>
+                  <Binding Path="CorrectnessEstimations">
+                      <Binding.ValidationRules>
+                          <DataErrorValidationRule/>
+                      </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
 
-        <cs:LineChart  Grid.Column="2" Grid.Row="4" Option="{Binding CurrentChartOption}"  />
+              <Label   Grid.Row="2" Grid.Column="0"  Content="T1" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+              <TextBox Grid.Row="2" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" >
+                <TextBox.Text>
+                  <Binding Path="T1_MHz">
+                      <Binding.ValidationRules>
+                          <DataErrorValidationRule/>
+                      </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
+              <Label   Grid.Row="2" Grid.Column="2"  Content="MHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+              <Label   Grid.Row="4" Grid.Column="0"  Content="T2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+              <TextBox Grid.Row="4" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" >
+                <TextBox.Text>
+                  <Binding Path="T2_MHz">
+                      <Binding.ValidationRules>
+                          <DataErrorValidationRule/>
+                      </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
+              <Label   Grid.Row="4" Grid.Column="2"  Content="MHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+              <Label   Grid.Row="6" Grid.Column="0"  Content="Marker Index" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+              <TextBox Grid.Row="6" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" >
+                <TextBox.Text>
+                  <Binding Path="Marker_MHz">
+                      <Binding.ValidationRules>
+                          <DataErrorValidationRule/>
+                      </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
+              <Label   Grid.Row="6" Grid.Column="2"  Content="MHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+              <Label   Grid.Row="8" Grid.Column="0"  Content="Bandwidth" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+              <TextBox Grid.Row="8" Grid.Column="1"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" >
+                <TextBox.Text>
+                  <Binding Path="BW_kHz">
+                      <Binding.ValidationRules>
+                          <DataErrorValidationRule/>
+                      </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
+              <Label   Grid.Row="8" Grid.Column="2"  Content="kHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            </Grid>
+          </GroupBox>
+        </Grid>
 
 
     </Grid>

@@ -11,4 +11,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
     public class ClientReadyTakeMeasResultTask : TaskBase
     {
     }
+
+    public class DebugClientReadyTakeMeasResultTask : TaskBase
+    {
+    }
 }

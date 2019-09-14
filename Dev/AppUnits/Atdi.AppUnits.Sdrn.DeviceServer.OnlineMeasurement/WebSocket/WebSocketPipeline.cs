@@ -21,17 +21,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
         private readonly ClientDescriptor _clientDescriptor;
         private readonly IProcessingDispatcher _processingDispatcher;
         private readonly ITaskStarter _taskStarter;
+        private readonly AppServerComponentConfig _config;
         private readonly ILogger _logger;
 
         public WebSocketPipeline(
             ClientDescriptor clientDescriptor,
             IProcessingDispatcher processingDispatcher,
             ITaskStarter taskStarter,
+            AppServerComponentConfig config,
             ILogger logger)
         {
             this._clientDescriptor = clientDescriptor;
             this._processingDispatcher = processingDispatcher;
             this._taskStarter = taskStarter;
+            this._config = config;
             this._logger = logger;
         }
 
@@ -76,9 +79,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                     process.MeasTask = clientMeasTask;
                     _clientDescriptor.Process = process;
 
-
-                    var task = new ClientTaskRegistrationTask();
-                    _taskStarter.Run(task, process);
+                    if (!_config.MeasurementDebugMode.GetValueOrDefault(false))
+                    {
+                        var task = new ClientTaskRegistrationTask();
+                        _taskStarter.Run(task, process);
+                    }
+                    else
+                    {
+                        var task = new DebugClientTaskRegistrationTask();
+                        _taskStarter.Run(task, process);
+                    }
+                    
 
                     var msgAsText = JsonConvert.SerializeObject(
                         new OnlineMeasMessage
@@ -110,13 +121,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
 
                     _clientDescriptor.Process.ReadyData = clientReadyData;
 
-                    var task = new ClientReadyTakeMeasResultTask();
-                    _clientDescriptor.TokenSource = new CancellationTokenSource();
-                    _clientDescriptor.AsyncTask = task;
+                    if (!_config.MeasurementDebugMode.GetValueOrDefault(false))
+                    {
+                        var task = new ClientReadyTakeMeasResultTask();
+                        _clientDescriptor.TokenSource = new CancellationTokenSource();
+                        _clientDescriptor.AsyncTask = task;
 
-                    // задачу запсукаем в паралельном потоке - так как в этом нам нужно продолжать слушать сокет и принимать данные от клиента
-                    // например он захочет отменить получения результатов измерения
-                    _taskStarter.RunParallel(task, _clientDescriptor.Process, _clientDescriptor.TokenSource.Token);
+                        // задачу запсукаем в паралельном потоке - так как в этом нам нужно продолжать слушать сокет и принимать данные от клиента
+                        // например он захочет отменить получения результатов измерения
+                        _taskStarter.RunParallel(task, _clientDescriptor.Process, _clientDescriptor.TokenSource.Token);
+                    }
+                    else
+                    {
+                        var task = new DebugClientReadyTakeMeasResultTask();
+                        _clientDescriptor.TokenSource = new CancellationTokenSource();
+                        //_clientDescriptor.AsyncTask = task;
+
+                        // задачу запсукаем в паралельном потоке - так как в этом нам нужно продолжать слушать сокет и принимать данные от клиента
+                        // например он захочет отменить получения результатов измерения
+                        _taskStarter.RunParallel(task, _clientDescriptor.Process, _clientDescriptor.TokenSource.Token);
+                    }
+                       
                 }
                 else if (message.Kind == OnlineMeasMessageKind.ClientTaskCancellation)
                 {

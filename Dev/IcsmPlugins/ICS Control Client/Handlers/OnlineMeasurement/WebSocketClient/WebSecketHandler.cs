@@ -27,6 +27,10 @@ namespace XICSM.ICSControlClient.OnlineMeasurement
         }
         public T GetData<T>()
         {
+            if (_data == null)
+            {
+                return default(T);
+            }
             var result = _data.ToObject<T>();
             return result;
         }

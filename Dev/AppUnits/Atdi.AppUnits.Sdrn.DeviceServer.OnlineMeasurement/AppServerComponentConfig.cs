@@ -44,5 +44,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         /// </summary>
         public int minimumTimeDurationLevel_ms { get; set; }
 
+
+        [ComponentConfigProperty("Measurement.DebugMode")]
+        public bool? MeasurementDebugMode { get; set; }
     }
 }
