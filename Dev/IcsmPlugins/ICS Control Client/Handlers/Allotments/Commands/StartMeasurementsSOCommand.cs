@@ -9,6 +9,7 @@ using DM = XICSM.ICSControlClient.Models.StartMeasurementsSO;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using AAC = Atdi.DataModels.DataConstraint;
+using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
 {
@@ -37,20 +38,35 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 throw new InvalidOperationException($"Not found any FREQ_PLAN_CHAN records by the tour #{allotment.Id}");
             }
 
-            var measTask = PreparedMeasTaskInfo(allotment, freqPlanChens);
-            SaveTaskToLog(measTask);
+            //var measTask = PreparedMeasTaskInfo(allotment, freqPlanChens);
+            //SaveTaskToLog(measTask);
 
-            var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
-            if (measTaskId == IM.NullI)
-            {
-                throw new InvalidOperationException($"Could not create a meas task by the allotment #{allotment.Id}");
-            }
+            //var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
+            //if (measTaskId == IM.NullI)
+            //{
+            //    throw new InvalidOperationException($"Could not create a meas task by the allotment #{allotment.Id}");
+            //}
 
             allotment.Status = MD.Allotments.Statuses.Dur;
-            allotment.MeasTaskId = measTaskId;
+            allotment.MeasTaskId = CreateMeasTask(allotmentId);
             Repository.UpdateEntity(allotment);
 
             return true;
+        }
+        private static long CreateMeasTask(int allotmentId)
+        {
+            try
+            {
+                var measTaskForm = new FM.MeasTaskForm(allotmentId, SDR.MeasurementType.SpectrumOccupation);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+                return measTaskForm.TaskId;
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(e.ToString());
+                return 0;
+            }
         }
 
         private static DM.FreqPlanChan[] FindFreqPlanChens(DM.Allotment allotment)

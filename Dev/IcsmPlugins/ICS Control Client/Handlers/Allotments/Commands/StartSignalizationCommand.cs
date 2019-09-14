@@ -17,18 +17,13 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
     {
         public static bool Handle(IMQueryMenuNode.Context context)
         {
-            return
-                context.ExecuteContextMenuAction(
-                        PluginMetadata.Processes.StartMeasurementsSO,
-                        CreateMeasTask
-                    );
+            return context.ExecuteContextMenuAction(PluginMetadata.Processes.StartMeasurementsSO, CreateMeasTask);
         }
         private static bool CreateMeasTask(int allotmentId)
         {
             try
             {
-                var measTaskForm = new FM.MeasTaskForm();
-                measTaskForm.AllotId = allotmentId;
+                var measTaskForm = new FM.MeasTaskForm(allotmentId, SDR.MeasurementType.Signaling);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
                 return true;

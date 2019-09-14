@@ -14,15 +14,20 @@ using System.Windows.Markup;
 using System.Windows;
 using XICSM.ICSControlClient.ViewModels;
 using System.Reflection;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Forms
 {
     public partial class MeasTaskForm : Form
     {
-        public int? AllotId;
+        private int? _allotId;
+        private long _taskId;
+        private SDR.MeasurementType _measType = SDR.MeasurementType.Signaling;
         private ElementHost _wpfElementHost;
-        public MeasTaskForm()
+        public MeasTaskForm(int? allotId, SDR.MeasurementType measType)
         {
+            _allotId = allotId;
+            _measType = measType;
             InitializeComponent();
         }
         private void MeasTaskForm_Load(object sender, EventArgs e)
@@ -31,18 +36,21 @@ namespace XICSM.ICSControlClient.Forms
             _wpfElementHost.Dock = DockStyle.Fill;
             this.Controls.Add(_wpfElementHost);
 
-
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
             var fileName = Path.Combine(appFolder, "XICSM_ICSControlClient\\Xaml\\MeasTaskForm.xaml");
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new CreateMeasTaskViewModel(AllotId) { _measTaskForm = this};
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new CreateMeasTaskViewModel(_allotId, _measType) { _measTaskForm = this};
             }
             //_wpfControl = new MainFormWpfControl();
             //this._wpfElementHost.Child = _wpfControl;
         }
-
+        public long TaskId
+        {
+            get => this._taskId;
+            set { this._taskId = value; }
+        }
     }
 }

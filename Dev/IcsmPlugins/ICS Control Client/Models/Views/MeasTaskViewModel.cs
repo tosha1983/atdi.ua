@@ -49,14 +49,18 @@ namespace XICSM.ICSControlClient.Models.Views
             get { return new List<MeasurementType>() { MeasurementType.Level, MeasurementType.SpectrumOccupation, MeasurementType.Signaling }; }
         }
 
+        public bool IsAutoMeasDtParamRBW { get; set; }
         public double? MeasDtParamRBW { get; set; }
 
+        public bool IsAutoMeasDtParamVBW { get; set; }
         public double? MeasDtParamVBW { get; set; }
 
+        public bool IsAutoMeasDtParamRfAttenuation { get; set; }
         public double MeasDtParamRfAttenuation { get; set; }
 
         public double MeasDtParamIfAttenuation { get; set; }
 
+        public bool IsAutoMeasDtParamMeasTime { get; set; }
         public double? MeasDtParamMeasTime { get; set; }
 
         public DetectingType MeasDtParamDetectType { get; set; }
@@ -68,7 +72,11 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public string MeasDtParamDemod { get; set; }
 
+        public bool IsAutoMeasDtParamPreamplification { get; set; }
         public int MeasDtParamPreamplification { get; set; }
+
+        public bool IsAutoMeasDtParamReferenceLevel { get; set; }
+        public int? MeasDtParamReferenceLevel { get; set; }
 
         public MeasurementMode MeasDtParamMode { get; set; }
 
@@ -83,6 +91,8 @@ namespace XICSM.ICSControlClient.Models.Views
         public double? MeasFreqParamRgU { get; set; }
 
         public double? MeasFreqParamStep { get; set; }
+
+        public string MeasFreqParams { get; set; }
 
         public double[] MeasFreqParamMeasFreqs { get; set; }
 
@@ -104,6 +114,7 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public double? MeasOtherLevelMinOccup { get; set; }
 
+        public int? MeasOtherNCount { get; set; }
         public int? MeasOtherNChenal { get; set; }
 
 
@@ -125,13 +136,38 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public SignalingMeasTask SignalingMeasTaskParameters { get; set; }
 
+
+        public bool? FiltrationTrace { get; set; }
+        public double? windowBW { get; set; }
+        public double? AllowableExcess_dB { get; set; }
+        public double? triggerLevel_dBm_Hz { get; set; }
+        public double? CrossingBWPercentageForGoodSignals { get; set; }
+        public double? CrossingBWPercentageForBadSignals { get; set; }
+        public double? DiffLevelForCalcBW { get; set; }
+        public bool? CorrelationAnalize { get; set; }
+        public double? CorrelationFactor { get; set; }
+        public int? SignalizationNCount { get; set; }
+        public int? SignalizationNChenal { get; set; }
+        public bool? AnalyzeByChannel { get; set; }
+
         public bool? CompareTraceJustWithRefLevels { get; set; }
         public bool? AutoDivisionEmitting { get; set; }
         public double? DifferenceMaxMax { get; set; }
-        public bool? FiltrationTrace { get; set; }
-        public double? AllowableExcess_dB { get; set; }
-        public int? SignalizationNCount { get; set; }
-        public int? SignalizationNChenal { get; set; }
+        public int? NumberPointForChangeExcess { get; set; }
+        public bool? DetailedMeasurementsBWEmission { get; set; }
+        public int? MinPointForDetailBW { get; set; }
+
+        public bool? CheckFreqChannel { get; set; }
+        public double? MaxFreqDeviation { get; set; }
+        public bool? CheckLevelChannel { get; set; }
+        public string Standard { get; set; }
+
+        public bool? AnalyzeSysInfoEmission { get; set; }
+        public double? nDbLevel_dB { get; set; } 
+        public int? NumberIgnoredPoints { get; set; } 
+        public double? MinExcessNoseLevel_dB { get; set; }
+        public int? TimeBetweenWorkTimes_sec { get; set; }
+        public int? TypeJoinSpectrum { get; set; } 
 
         public string this[string columnName]
         {

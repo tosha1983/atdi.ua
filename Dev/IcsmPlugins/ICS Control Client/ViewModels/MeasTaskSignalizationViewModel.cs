@@ -94,7 +94,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadMeasTasksAndResult()
         {
             var sdrResult = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(_taskId);
-            this._measResults.Source = sdrResult.OrderByDescending(c => c.Id).ToArray();
+            this._measResults.Source = sdrResult.OrderByDescending(c => c.Id.MeasTaskId.Value).ToArray();
             var sdrTasks = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(_taskId);
             var taskViewModel = Mappers.Map(sdrTasks);
             this._currentMeasTask = taskViewModel;

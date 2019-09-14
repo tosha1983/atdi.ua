@@ -763,7 +763,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                var measTaskForm = new FM.MeasTaskForm();
+                var measTaskForm = new FM.MeasTaskForm(0, SDR.MeasurementType.Signaling);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
                 this.ReloadShortMeasTasks();
