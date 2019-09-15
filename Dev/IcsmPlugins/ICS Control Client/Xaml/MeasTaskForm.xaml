@@ -146,7 +146,7 @@
                             <Style TargetType="ComboBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="True"/>
+                                  <Setter  Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="False"/>
@@ -595,7 +595,7 @@
                         <GroupBox  Header=""  Margin="0, 5, 5, 5">
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="250" />
+                              <ColumnDefinition Width="300" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -625,10 +625,10 @@
                             <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Noise Level"  />
                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=triggerLevel_dBm_Hz}" Height="15"/>
 
-                            <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Percentage crossing spectrums for union of emissions"  />
+                            <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions"  />
                             <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=CrossingBWPercentageForGoodSignals}" Height="15"/>
 
-                            <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Percentage crossing spectrums for union of emissions (low level signals)"  />
+                            <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions (low level signals)"  />
                             <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=CrossingBWPercentageForBadSignals}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for estimation  BW"  />
@@ -729,7 +729,7 @@
                             <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Path=CheckLevelChannel}"/>
 
                             <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Standard"  />
-                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=Standard}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=Standard}" Height="15" IsEnabled="False"/>
                           </Grid>
                         </GroupBox>
                       </Grid>

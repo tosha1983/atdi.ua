@@ -26,6 +26,13 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 var measTaskForm = new FM.MeasTaskForm(allotmentId, SDR.MeasurementType.Signaling);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
+
+                var allotment = Repository.ReadEntityById<DM.Allotment>(allotmentId);
+                allotment.Status = MD.Allotments.Statuses.Dur;
+                allotment.MeasTaskId = measTaskForm.TaskId;
+                if (allotment.MeasTaskId > 0)
+                    Repository.UpdateEntity(allotment);
+
                 return true;
             }
             catch (Exception e)
