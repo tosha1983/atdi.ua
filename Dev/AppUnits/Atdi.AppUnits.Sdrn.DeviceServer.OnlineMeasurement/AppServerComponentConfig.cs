@@ -47,5 +47,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
 
         [ComponentConfigProperty("Measurement.DebugMode")]
         public bool? MeasurementDebugMode { get; set; }
+
+        /// <summary>
+        /// Максимальное число попыток отправки команды на сенсор, когда он занят (DeviceIsBusy)
+        /// </summary>
+        public int CountLoopDeviceIsBusy { get; set; }
+
+        /// <summary>
+        /// Максимальное число попыток отправки команды на сенсор, когда возникает ошибка TimeoutExpired
+        /// </summary>
+        public int CountLoopTimeoutExpired { get; set; }
+
+
     }
 }
