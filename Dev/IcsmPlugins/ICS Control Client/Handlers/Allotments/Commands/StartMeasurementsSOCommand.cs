@@ -49,7 +49,8 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
 
             allotment.Status = MD.Allotments.Statuses.Dur;
             allotment.MeasTaskId = CreateMeasTask(allotmentId);
-            Repository.UpdateEntity(allotment);
+            if (allotment.MeasTaskId > 0)
+                Repository.UpdateEntity(allotment);
 
             return true;
         }
@@ -266,17 +267,17 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 result = false;
             }
 
-            if (string.IsNullOrEmpty(allotment.CustText2))
-            {
-                messages.AppendLine($"Undefined a CUST_TXT2 of the allotment #{allotment.Id}");
-                result = false;
-            }
+            //if (string.IsNullOrEmpty(allotment.CustText2))
+            //{
+            //    messages.AppendLine($"Undefined a CUST_TXT2 of the allotment #{allotment.Id}");
+            //    result = false;
+            //}
 
-            if (string.IsNullOrEmpty(allotment.CustText3))
-            {
-                messages.AppendLine($"Undefined a CUST_TXT3 of the allotment #{allotment.Id}");
-                result = false;
-            }
+            //if (string.IsNullOrEmpty(allotment.CustText3))
+            //{
+            //    messages.AppendLine($"Undefined a CUST_TXT3 of the allotment #{allotment.Id}");
+            //    result = false;
+            //}
 
             if (!result)
             {
