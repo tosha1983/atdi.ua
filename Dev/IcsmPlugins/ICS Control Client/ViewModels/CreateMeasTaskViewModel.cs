@@ -464,7 +464,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         break;
                     case SDR.FrequencyMode.FrequencyList:
                         var frqList = new List<SDR.MeasFreq>();
-                        if (_measType == SDR.MeasurementType.SpectrumOccupation)
+                        if (_measType == SDR.MeasurementType.SpectrumOccupation || _measType == SDR.MeasurementType.Signaling)
                         {
                             foreach (var freq in this._currentMeasTask.MeasFreqParamMeasFreqs)
                             {
@@ -472,20 +472,20 @@ namespace XICSM.ICSControlClient.ViewModels
                             }
                             measFreqParam.MeasFreqs = frqList.ToArray();
                         }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(this._currentMeasTask.MeasFreqParams))
-                            {
-                                var freqArray = this._currentMeasTask.MeasFreqParams.Replace(';', ',').Split(',');
-                                foreach (var freq in freqArray)
-                                {
-                                    if (double.TryParse(freq, out double freqD))
-                                    {
-                                        measFreqParam.MeasFreqs = measFreqParam.MeasFreqs.Concat(new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = freqD } }).ToArray();
-                                    }
-                                }
-                            }
-                        }
+                        //else
+                        //{
+                        //    if (!string.IsNullOrEmpty(this._currentMeasTask.MeasFreqParams))
+                        //    {
+                        //        var freqArray = this._currentMeasTask.MeasFreqParams.Replace(';', ',').Split(',');
+                        //        foreach (var freq in freqArray)
+                        //        {
+                        //            if (double.TryParse(freq, out double freqD))
+                        //            {
+                        //                measFreqParam.MeasFreqs = measFreqParam.MeasFreqs.Concat(new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = freqD } }).ToArray();
+                        //            }
+                        //        }
+                        //    }
+                        //}
                         break;
                     case SDR.FrequencyMode.FrequencyRange:
                         measFreqParam.RgL = this._currentMeasTask.MeasFreqParamRgL;
