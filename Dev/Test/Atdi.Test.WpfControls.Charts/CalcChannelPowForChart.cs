@@ -27,9 +27,9 @@ namespace Atdi.Test.WpfControls.Charts
             }
             sum_mW = 10 * Math.Log10(sum_mW);
             if ((freq_MHz == null) || (freq_MHz.Length<2)||(RBW_kHz <0)) {return sum_mW;}
-            double delta_freq = freq_MHz[freq_MHz.Length - 1] - freq_MHz[0]; if (delta_freq < 0) { delta_freq = -delta_freq;}
+            double delta_freq = (freq_MHz[freq_MHz.Length - 1] - freq_MHz[0])/ (freq_MHz.Length - 1); if (delta_freq < 0) { delta_freq = -delta_freq;}
             if (delta_freq == 0) { return sum_mW; }
-            double resizing = 10 * Math.Log10(delta_freq / RBW_kHz);
+            double resizing = 10 * Math.Log10(delta_freq / RBW_kHz)+30;
             sum_mW = sum_mW + resizing;
             return sum_mW;
         }

@@ -118,7 +118,7 @@ namespace Atdi.Test.WpfControls.Charts
             var data = new double[count];
             for (int i = 0; i < data.Length; i++)
             {
-                data[i] = 935.554 + 0.00001 * i; 
+                data[i] = 935.554 + 0.005 * i; 
             }
             return data;
         }
