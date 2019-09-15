@@ -172,16 +172,14 @@ namespace XICSM.ICSControlClient.ViewModels
                     this._currentMeasTask.MeasFreqParamRgU = 1000;
                     this._currentMeasTask.MeasFreqParamStep = 100;
                 }
-                if (_measType == SDR.MeasurementType.SpectrumOccupation)
-                    this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyList;
-                else
-                    this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
+                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyList;
+
             }
             else
             {
                 this._currentMeasTask.MeasTimeParamListPerStart = DateTime.Today;
                 this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
-                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyRange;
+                this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyList;
                 this._currentMeasTask.MeasFreqParamRgL = 900;
                 this._currentMeasTask.MeasFreqParamRgU = 1000;
                 this._currentMeasTask.MeasFreqParamStep = 100;
@@ -619,7 +617,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         TypeMeasurements = this._currentMeasTask.MeasDtParamTypeMeasurements,
                         RBW = this._currentMeasTask.IsAutoMeasDtParamRBW == true ? -1 : this._currentMeasTask.MeasDtParamRBW,
                         VBW = this._currentMeasTask.IsAutoMeasDtParamVBW == true ? -1 : this._currentMeasTask.MeasDtParamVBW,
-                        MeasTime = this._currentMeasTask.IsAutoMeasDtParamMeasTime == true ? -1 : this._currentMeasTask.MeasDtParamMeasTime,
+                        MeasTime = this._currentMeasTask.IsAutoMeasDtParamMeasTime == true ? 0.001 : this._currentMeasTask.MeasDtParamMeasTime,
                         DetectType = this._currentMeasTask.MeasDtParamDetectType,
                         RfAttenuation = this._currentMeasTask.IsAutoMeasDtParamRfAttenuation == true ? -1 : this._currentMeasTask.MeasDtParamRfAttenuation,
                         Preamplification = this._currentMeasTask.IsAutoMeasDtParamPreamplification == true ? -1 : this._currentMeasTask.MeasDtParamPreamplification,
