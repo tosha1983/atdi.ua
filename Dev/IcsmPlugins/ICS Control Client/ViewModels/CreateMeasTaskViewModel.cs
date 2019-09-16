@@ -173,7 +173,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     this._currentMeasTask.MeasFreqParamStep = 100;
                 }
                 this._currentMeasTask.MeasFreqParamMode = SDR.FrequencyMode.FrequencyList;
-
             }
             else
             {
@@ -222,6 +221,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._currentMeasTask.MeasDtParamPreamplification = 0;
             }
 
+            if (_measType == SDR.MeasurementType.Signaling)
+            {
+                this._currentMeasTask.IsAutoTriggerLevel_dBm_Hz = true;
+            }
+
             this._currentMeasTask.MeasOtherTypeSpectrumOccupation = SDR.SpectrumOccupationType.FreqChannelOccupation;
             this._currentMeasTask.MeasOtherLevelMinOccup = -75;
             this._currentMeasTask.MeasOtherSwNumber = 1;
@@ -265,11 +269,6 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MinExcessNoseLevel_dB = 5;
             this._currentMeasTask.TimeBetweenWorkTimes_sec = 60;
             this._currentMeasTask.TypeJoinSpectrum = 0;
-
-
-
-
-
         }
         private void ReloadShortSensors()
         {
@@ -448,7 +447,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 var points = this._currentMeasTask.MeasOtherNChenal * (maxFq - minFq) / this._currentMeasTask.MeasFreqParamStep;
                 if (points > 200)
                 {
-                    MessageBox.Show("Lot of points, please change “ Number of steps for measurements in channel” or number channel in plan");
+                    MessageBox.Show("Lot of points, please change “Number of steps for measurements in channel” or number channel in plan");
                     return;
                 }
 
@@ -670,7 +669,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         CorrelationFactor = this._currentMeasTask.CorrelationFactor,
                         DetailedMeasurementsBWEmission = this._currentMeasTask.DetailedMeasurementsBWEmission,
                         Standard = this._currentMeasTask.Standard,
-                        triggerLevel_dBm_Hz = this._currentMeasTask.triggerLevel_dBm_Hz
+                        triggerLevel_dBm_Hz = this.CurrentMeasTask.IsAutoTriggerLevel_dBm_Hz == true ? -999 : this._currentMeasTask.triggerLevel_dBm_Hz
                     },
                     Sensors = stationsList.ToArray(),
                     Task = SDR.MeasTaskType.Scan,

@@ -140,6 +140,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public bool? FiltrationTrace { get; set; }
         public double? windowBW { get; set; }
         public double? AllowableExcess_dB { get; set; }
+        public bool IsAutoTriggerLevel_dBm_Hz { get; set; }
         public double? triggerLevel_dBm_Hz { get; set; }
         public double? CrossingBWPercentageForGoodSignals { get; set; }
         public double? CrossingBWPercentageForBadSignals { get; set; }
