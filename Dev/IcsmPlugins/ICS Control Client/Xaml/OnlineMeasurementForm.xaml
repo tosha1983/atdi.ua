@@ -134,7 +134,7 @@
         <GroupBox Grid.Column="0" Grid.Row="2"  Header = "Measurement parameters" Margin="5,5,5,5">
           <Grid Margin="5,5,5,5" DataContext="{Binding MeasParameters}">
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="80" />
+              <ColumnDefinition Width="90" />
               <ColumnDefinition Width="75" />
               <ColumnDefinition Width="35" />
               <ColumnDefinition Width="90" />
@@ -158,6 +158,12 @@
               <RowDefinition Height="Auto"></RowDefinition>
               <RowDefinition Height="3"></RowDefinition>
               <RowDefinition Height="Auto"></RowDefinition>
+
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="3"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+
               <RowDefinition Height="8"></RowDefinition>
               <RowDefinition Height="Auto"></RowDefinition>
               <RowDefinition Height="3"></RowDefinition>
@@ -178,8 +184,7 @@
               </TextBox.Text>
             </TextBox>
             <Label    Grid.Row="2" Grid.Column="2"  Content="MHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-            <Label    Grid.Row="2" Grid.Column="3"  Content="Estimation Type"      VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-            <ComboBox Grid.Row="2" Grid.Column="4"  Grid.ColumnSpan="2" SelectedValue="{Binding EstimationType, Mode=TwoWay}" ItemsSource="{Binding EstimationTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
+            
 
 
             <Label   Grid.Row="4" Grid.Column="0"  Content="Freq Stop"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
@@ -193,17 +198,7 @@
               </TextBox.Text>
             </TextBox>
             <Label   Grid.Row="4" Grid.Column="2"  Content="MHz" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-            <Label   Grid.Row="4" Grid.Column="3"  Content="Beta/nDbLevel"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-            <TextBox Grid.Row="4" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
-              <TextBox.Text>
-                <Binding Path="X_Beta">
-                    <Binding.ValidationRules>
-                        <DataErrorValidationRule/>
-                    </Binding.ValidationRules>
-                </Binding>
-              </TextBox.Text>
-            </TextBox>
-            <Label   Grid.Row="4" Grid.Column="5"  Content="%/dB" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            
 
             <Label    Grid.Row="6" Grid.Column="0"  Content="Trace Type" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
             <ComboBox Grid.Row="6" Grid.Column="1"  Grid.ColumnSpan="2" SelectedValue="{Binding TraceType, Mode=TwoWay}" ItemsSource="{Binding TraceTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
@@ -230,16 +225,7 @@
               </TextBox.Text>
             </TextBox>
             <Label   Grid.Row="8" Grid.Column="2"  Content="kHz"   VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-            <Label   Grid.Row="8" Grid.Column="3"  Content="MaximumIgnorPoint"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-            <TextBox Grid.Row="8" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
-              <TextBox.Text>
-                <Binding Path="MaximumIgnorPoint">
-                    <Binding.ValidationRules>
-                        <DataErrorValidationRule/>
-                    </Binding.ValidationRules>
-                </Binding>
-              </TextBox.Text>
-            </TextBox>
+            
 
 
             <Label   Grid.Row="10" Grid.Column="0"  Content="Sweep Time" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
@@ -293,10 +279,37 @@
             </TextBox>
             <Label   Grid.Row="14" Grid.Column="5"  Content="dB"       VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
 
-            <Button Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding ConnectButtonText}"     Command="{Binding Parent.ConnectDisconnect}" Width="120" Height="30" HorizontalAlignment="Left" IsEnabled="{Binding IsEnabledConnectButton}"/>
-            <Button Grid.Row="16" Grid.Column="2" Grid.ColumnSpan="3" Content="{Binding RunButtonText}"  Command="{Binding Parent.RunCancel}" Width="150" Height="30" HorizontalAlignment="Right" IsEnabled="{Binding IsEnabledRunButton}"/>
+            <Label    Grid.Row="16" Grid.Column="0"  Content="Estimation Type"      VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <ComboBox Grid.Row="16" Grid.Column="1"  Grid.ColumnSpan="2" SelectedValue="{Binding EstimationType, Mode=TwoWay}" ItemsSource="{Binding EstimationTypeValues}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}"/>
+
+            <Label   Grid.Row="16" Grid.Column="3"  Content="Beta/nDbLevel"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="16" Grid.Column="4"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="X_Beta">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Label   Grid.Row="16" Grid.Column="5"  Content="%/dB" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+
+            <Label   Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="2"  Content="MaximumIgnorPoint"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+            <TextBox Grid.Row="18" Grid.Column="2"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="{Binding IsReadOnlyProperties}">
+              <TextBox.Text>
+                <Binding Path="MaximumIgnorPoint">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+
+
+            <Button Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding ConnectButtonText}"     Command="{Binding Parent.ConnectDisconnect}" Width="120" Height="30" HorizontalAlignment="Left" IsEnabled="{Binding IsEnabledConnectButton}"/>
+            <Button Grid.Row="20" Grid.Column="2" Grid.ColumnSpan="3" Content="{Binding RunButtonText}"  Command="{Binding Parent.RunCancel}" Width="150" Height="30" HorizontalAlignment="Right" IsEnabled="{Binding IsEnabledRunButton}"/>
             
-            <Expander Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="7" Header="Log" >
+            <Expander Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="7" Header="Log" >
               <Grid >
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="*" />
