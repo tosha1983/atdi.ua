@@ -616,6 +616,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 else
                 {
                     taskParameters.NCount = (int)((double)taskSDR.Interval_sec / (double)taskSDR.DeviceParam.MeasTime_sec);
+                    if (taskSDR.Measurement== DataModels.Sdrns.MeasurementType.SpectrumOccupation)
+                    {
+                        if (taskParameters.NCount> SO_Ncount)
+                        {
+                            taskParameters.NCount = SO_Ncount;
+                        }
+                    }
                 }
                 var sOtype = GetSOTypeFromSpectrumOccupationType(taskSDR.SOParam.Type);
                 if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)

@@ -38,7 +38,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     Atdi.DataModels.Sdrns.Device.OnlineMeasurement.TraceType traceType = TraceType.Unknown;
                     var levelResult = new DeviceServerResultLevel();
                     levelResult.Index = taskContext.Process.CountMeasurementDone;
-                    levelResult.Time = DateTime.UtcNow;
+                    levelResult.Time = DateTime.Now;
                     switch (command.Parameter.TraceType)
                     {
                         case DataModels.Sdrn.DeviceServer.Commands.Parameters.TraceType.Auto:
