@@ -78,11 +78,10 @@
                     <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Name"  />
                     <TextBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding Path=Name}"/>
 
-
                     <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
                     <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}" IsEnabled="False"/>
 
-                    <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="TimeMeas">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="TimeMeas" IsExpanded="true">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="75" />
@@ -127,7 +126,7 @@
                         </TextBox>
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency" IsExpanded="true">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="100" />
@@ -251,7 +250,7 @@
                             <Style TargetType="TextBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="True"/>
+                                  <Setter  Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="False"/>
@@ -329,7 +328,7 @@
                                   <Setter  Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="True"/>
+                                  <Setter  Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="False"/>
@@ -343,7 +342,7 @@
                         </TextBox>                          
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters" IsExpanded="true">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="130" />
@@ -527,7 +526,7 @@
                     </Grid>
                     </Expander>
                     
-                    <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Spectrum Occupation Parameters">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Spectrum Occupation Parameters" IsExpanded="true">
                       <Expander.Style>
                         <Style TargetType="Expander">
                           <Style.Triggers>
@@ -568,7 +567,7 @@
 
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="Monitoring emission parameters">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="Monitoring emission parameters" IsExpanded="true">
                       <Expander.Style>
                         <Style TargetType="Expander">
                           <Style.Triggers>
@@ -596,6 +595,8 @@
                           <Grid>
                             <Grid.ColumnDefinitions>
                               <ColumnDefinition Width="300" />
+                              <ColumnDefinition Width="30" />
+                              <ColumnDefinition Width="25" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -614,40 +615,55 @@
                             </Grid.RowDefinitions>
                             
                             <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Using smoothing for analyze trace"/>
-                            <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=FiltrationTrace}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" IsChecked="{Binding Path=FiltrationTrace}"/>
 
                             <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Coefficient Spectrum from Emission"  />
-                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=windowBW}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Path=windowBW}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Margin for calculation Reference Levels, dB"  />
-                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=AllowableExcess_dB}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=AllowableExcess_dB}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Noise Level"  />
-                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=triggerLevel_dBm_Hz}" Height="15"/>
+                            <Label Grid.Column="1" Grid.Row="3" Padding="5,5,0,0" Content = "Auto"  />
+                            <CheckBox Grid.Column="2" Grid.Row="3" IsChecked="{Binding Path=IsAutoTriggerLevel_dBm_Hz}"/>
+                            <TextBox Grid.Column="3" Grid.Row="3" Text="{Binding Path=triggerLevel_dBm_Hz}" Height="15">
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsAutoTriggerLevel_dBm_Hz}" Value="True">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=IsAutoTriggerLevel_dBm_Hz}" Value="False">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
+                            </TextBox>
 
                             <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions"  />
-                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=CrossingBWPercentageForGoodSignals}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" Text="{Binding Path=CrossingBWPercentageForGoodSignals}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions (low level signals)"  />
-                            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=CrossingBWPercentageForBadSignals}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Text="{Binding Path=CrossingBWPercentageForBadSignals}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for estimation  BW"  />
-                            <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=DiffLevelForCalcBW}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" Text="{Binding Path=DiffLevelForCalcBW}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Use correlation analysis"/>
-                            <CheckBox Grid.Column="1" Grid.Row="7" IsChecked="{Binding Path=CorrelationAnalize}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" IsChecked="{Binding Path=CorrelationAnalize}"/>
 
                             <Label Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "Correlation coefficient"  />
-                            <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Path=CorrelationFactor}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3" Text="{Binding Path=CorrelationFactor}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "Maximum count scan in one day"  />
-                            <TextBox Grid.Column="1" Grid.Row="9" Text="{Binding Path=SignalizationNCount}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" Text="{Binding Path=SignalizationNCount}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "Trace point count in channel"  />
-                            <TextBox Grid.Column="1" Grid.Row="10" Text="{Binding Path=SignalizationNChenal}" Height="15"/>
+                            <TextBox Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Text="{Binding Path=SignalizationNChenal}" Height="15"/>
 
                             <Label Grid.Column="0" Grid.Row="11" Padding="5,0,0,0" Content = "Checking emission in channels"/>
-                            <CheckBox Grid.Column="1" Grid.Row="11" IsChecked="{Binding Path=AnalyzeByChannel}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3" IsChecked="{Binding Path=AnalyzeByChannel}"/>
                           </Grid>
                         </GroupBox>
                         <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">

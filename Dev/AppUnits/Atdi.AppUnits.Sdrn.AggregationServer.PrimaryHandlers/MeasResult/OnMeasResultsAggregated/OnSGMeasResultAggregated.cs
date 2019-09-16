@@ -170,7 +170,6 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             {
                 // IWorkTime
                 var workTimes = new List<WorkTime>();
-                var workTime = new WorkTime();
                 var builderWorkTimes = this._dataLayer.GetBuilder<MD.IWorkTime>().From();
                 builderWorkTimes.Select(c => c.HitCount, c => c.PersentAvailability, c => c.StartEmitting, c => c.StopEmitting);
                 builderWorkTimes.Where(c => c.EMITTING.Id, ConditionOperator.Equal, emittingId);
@@ -178,6 +177,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 {
                     while (readerWorkTimes.Read())
                     {
+                        var workTime = new WorkTime();
                         workTime.HitCount = readerWorkTimes.GetValue(c => c.HitCount);
                         workTime.PersentAvailability = readerWorkTimes.GetValue(c => c.PersentAvailability);
                         workTime.StartEmitting = readerWorkTimes.GetValue(c => c.StartEmitting);
@@ -246,7 +246,6 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 foreach (var sysInfoId in sysInfos.Keys)
                 {
                     var sysWorkTimes = new List<WorkTime>();
-                    var sysWorkTime = new WorkTime();
                     var builderSysWorkTimes = this._dataLayer.GetBuilder<MD.ISignalingSysInfoWorkTime>().From();
                     builderSysWorkTimes.Select(c => c.HitCount, c => c.PersentAvailability, c => c.StartEmitting, c => c.StopEmitting);
                     builderSysWorkTimes.Where(c => c.SYSINFO.Id, ConditionOperator.Equal, sysInfoId);
@@ -254,6 +253,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                     {
                         while (readerSysWorkTimes.Read())
                         {
+                            var sysWorkTime = new WorkTime();
                             sysWorkTime.HitCount = readerSysWorkTimes.GetValue(c => c.HitCount);
                             sysWorkTime.PersentAvailability = readerSysWorkTimes.GetValue(c => c.PersentAvailability);
                             sysWorkTime.StartEmitting = readerSysWorkTimes.GetValue(c => c.StartEmitting);
