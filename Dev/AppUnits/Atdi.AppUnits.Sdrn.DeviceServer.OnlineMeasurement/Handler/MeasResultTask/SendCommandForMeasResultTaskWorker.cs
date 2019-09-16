@@ -35,8 +35,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
         {
             int countLoopForResultTaskWorkerDeviceIsBusy = 0;
             int countLoopForResultTaskWorkerTimeoutExpired = 0;
-            const int CountLoopTimeoutExpired = 10;
-            const int CountLoopDeviceIsBusy = 50;
             isCriticalError = false;
             deviceServerResultLevel = null;
             bool isSuccessOperation = false;
@@ -61,7 +59,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     {
                         // повторяем 50 раз иначе ошибка (повтор через 1/25 сек)
                         case CommandFailureReason.DeviceIsBusy:
-                            while (countLoopForResultTaskWorkerDeviceIsBusy <= CountLoopDeviceIsBusy)
+                            while (countLoopForResultTaskWorkerDeviceIsBusy <= this._config.CountLoopDeviceIsBusy)
                             {
                                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                                 (
@@ -94,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
                             break;
                         case CommandFailureReason.TimeoutExpired:
-                            while (countLoopForResultTaskWorkerTimeoutExpired <= CountLoopTimeoutExpired)
+                            while (countLoopForResultTaskWorkerTimeoutExpired <= this._config.CountLoopTimeoutExpired)
                             {
                                 this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
                                 (
