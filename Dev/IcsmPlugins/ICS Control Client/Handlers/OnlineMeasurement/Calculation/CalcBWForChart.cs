@@ -36,7 +36,7 @@ namespace XICSM.ICSControlClient.Handlers.OnlineMeasurement.Calculation
                     T2_MHz = freq_MHz[bandwidthResult.T2],
                     Marker_MHz = freq_MHz[bandwidthResult.MarkerIndex],
                     CorrectnessEstimations = true,
-                    BW_kHz = freq_MHz[bandwidthResult.T2] - freq_MHz[bandwidthResult.T1]
+                    BW_kHz = (freq_MHz[bandwidthResult.T2] - freq_MHz[bandwidthResult.T1]) * 1000.0
                 };
                 return resultBWForChart;
             }
