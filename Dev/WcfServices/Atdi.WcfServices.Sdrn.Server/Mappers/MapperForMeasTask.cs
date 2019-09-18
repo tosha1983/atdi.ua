@@ -231,7 +231,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measTaskReferenceSignal[j].IcsmId = taskReferenceSignal[j].IcsmId;
                             measTaskReferenceSignal[j].IcsmTable = taskReferenceSignal[j].IcsmTable;
                             measTaskReferenceSignal[j].LevelSignal_dBm = taskReferenceSignal[j].LevelSignal_dBm;
-                            if (measTaskReferenceSignal[j].SignalMask != null)
+                            if (taskReferenceSignal[j].SignalMask != null)
                             {
                                 measTaskReferenceSignal[j].SignalMask = new SdrnsDataModels.SignalMask();
                                 measTaskReferenceSignal[j].SignalMask.Freq_kHz = taskReferenceSignal[j].SignalMask.Freq_kHz;
