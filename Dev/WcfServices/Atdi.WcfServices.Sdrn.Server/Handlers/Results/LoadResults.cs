@@ -940,7 +940,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
 
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -955,6 +955,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
 
                         /*
@@ -1124,7 +1125,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     return true;
                                 });
 
-
+                                /*
                                 builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                                 builderResMeasStation.Select(c => c.Id);
                                 builderResMeasStation.Select(c => c.Status);
@@ -1139,6 +1140,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     }
                                     return true;
                                 });
+                                */
                             }
 
                         }
@@ -1277,7 +1279,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -1292,6 +1294,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
 
                         if ((results.Find(x => x.Id.MeasSdrResultsId == levelmeasurementResults.Id.MeasSdrResultsId)) == null)
@@ -2603,7 +2606,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -2618,6 +2621,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
 
                             /*
                             var builderLinkResSensoT = this._dataLayer.GetBuilder<MD.ILinkResSensor>().From();
@@ -3355,6 +3359,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -3369,6 +3374,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
@@ -3498,7 +3504,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -3513,6 +3519,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }
@@ -3643,7 +3650,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             });
 
 
-
+                            /*
                             builderResMeasStation = this._dataLayer.GetBuilder<MD.IResMeasStation>().From();
                             builderResMeasStation.Select(c => c.Id);
                             builderResMeasStation.Select(c => c.Status);
@@ -3658,6 +3665,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                                 return true;
                             });
+                            */
                         }
                         listlevelmeasurementResults.Add(levelmeasurementResults);
                     }

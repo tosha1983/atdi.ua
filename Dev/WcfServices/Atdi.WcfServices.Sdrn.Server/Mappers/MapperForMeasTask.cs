@@ -96,6 +96,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 measDtParam.RfAttenuation = task.MeasDtParam.RfAttenuation;
                 measDtParam.VBW = task.MeasDtParam.VBW;
             }
+            if (task.MeasOther != null)
+            {
+                measDtParam.SwNumber = task.MeasOther.SwNumber;
+            }
             return measDtParam;
         }
 
@@ -227,7 +231,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measTaskReferenceSignal[j].IcsmId = taskReferenceSignal[j].IcsmId;
                             measTaskReferenceSignal[j].IcsmTable = taskReferenceSignal[j].IcsmTable;
                             measTaskReferenceSignal[j].LevelSignal_dBm = taskReferenceSignal[j].LevelSignal_dBm;
-                            if (measTaskReferenceSignal[j].SignalMask != null)
+                            if (taskReferenceSignal[j].SignalMask != null)
                             {
                                 measTaskReferenceSignal[j].SignalMask = new SdrnsDataModels.SignalMask();
                                 measTaskReferenceSignal[j].SignalMask.Freq_kHz = taskReferenceSignal[j].SignalMask.Freq_kHz;
