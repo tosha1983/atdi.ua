@@ -485,7 +485,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             try
             {
                 var points = this._option.Points;
-                var normolizedPoints = points.Select(p => this.NormalizePoint(p)).ToArray();
+                var normolizedPoints = points.Select(p => this.NormalizePoint(p)).OrderBy(c => c.X).ToArray();
 
                 if (normolizedPoints.Length > 2)
                 {
@@ -543,8 +543,9 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     Canvas.SetTop(rect, posY);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.Print(e.InnerException + ", " + e.Message);
                 //throw;
             }
         }
