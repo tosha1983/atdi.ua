@@ -32,13 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=13.0.40.190, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>dll\NationalInstruments.Common.dll</HintPath>
+      <HintPath>dll\Ivi.Visa.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>dll\NationalInstruments.VisaNS.dll</HintPath>
+      <HintPath>dll\NationalInstruments.Visa.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +54,7 @@
     <Compile Include="AdapterConfig.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AveragedTrace.cs" />
+    <Compile Include="Enums\ConnectionMode.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Optimization.cs" />
     <Compile Include="Enums\PowerRegister.cs" />
@@ -99,11 +100,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dll\NationalInstruments.Common.dll" />
-    <Content Include="dll\NationalInstruments.VisaNS.dll" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Content Include="dll\Ivi.Visa.dll" />
+    <Content Include="dll\NationalInstruments.Visa.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
