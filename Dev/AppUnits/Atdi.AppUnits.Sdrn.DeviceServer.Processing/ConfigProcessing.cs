@@ -187,5 +187,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         /// </summary>
         [ComponentConfigProperty("LatDefault.double")]
         public double LatDefault { get; set; }
+
+        /// <summary>
+        /// Признак, указывающий на включение режима обработки даннsх GPS-->
+        /// </summary>
+        public bool EnableGPS { get; set; }
     }
 }

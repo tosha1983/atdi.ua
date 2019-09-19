@@ -51,8 +51,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             }
             catch (Exception e)
             {
-
                 _logger.Exception(Contexts.ThisComponent, Categories.EventProcessing, e, (object)this);
+                throw;
             }
         }
         protected abstract void Handle(string sensorName, string sensorTechId, TDeliveryObject deliveryObject, long messageId);

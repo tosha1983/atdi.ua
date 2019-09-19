@@ -96,6 +96,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                 measDtParam.RfAttenuation = task.MeasDtParam.RfAttenuation;
                 measDtParam.VBW = task.MeasDtParam.VBW;
             }
+            if (task.MeasOther != null)
+            {
+                measDtParam.SwNumber = task.MeasOther.SwNumber;
+            }
             return measDtParam;
         }
 
@@ -227,7 +231,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             measTaskReferenceSignal[j].IcsmId = taskReferenceSignal[j].IcsmId;
                             measTaskReferenceSignal[j].IcsmTable = taskReferenceSignal[j].IcsmTable;
                             measTaskReferenceSignal[j].LevelSignal_dBm = taskReferenceSignal[j].LevelSignal_dBm;
-                            if (measTaskReferenceSignal[j].SignalMask != null)
+                            if (taskReferenceSignal[j].SignalMask != null)
                             {
                                 measTaskReferenceSignal[j].SignalMask = new SdrnsDataModels.SignalMask();
                                 measTaskReferenceSignal[j].SignalMask.Freq_kHz = taskReferenceSignal[j].SignalMask.Freq_kHz;
@@ -278,6 +282,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                     measTaskInterruption.NumberIgnoredPoints = tskInterruption.NumberIgnoredPoints;
                     measTaskInterruption.NumberPointForChangeExcess = tskInterruption.NumberPointForChangeExcess;
                     measTaskInterruption.windowBW = tskInterruption.windowBW;
+                    measTaskInterruption.MaxFreqDeviation = tskInterruption.MaxFreqDeviation;
+                    measTaskInterruption.CheckLevelChannel = tskInterruption.CheckLevelChannel;
+                    measTaskInterruption.MinPointForDetailBW = tskInterruption.MinPointForDetailBW;
                     measTask.SignalingMeasTaskParameters.InterruptionParameters = measTaskInterruption;
                 }
                 measTask.SignalingMeasTaskParameters.SignalizationNChenal = task.SignalingMeasTaskParameters.SignalizationNChenal;
@@ -285,6 +292,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 measTask.SignalingMeasTaskParameters.Standard = task.SignalingMeasTaskParameters.Standard;
                 measTask.SignalingMeasTaskParameters.triggerLevel_dBm_Hz = task.SignalingMeasTaskParameters.triggerLevel_dBm_Hz;
             }
+            measTask.MeasDtParam = task.GetMeasDtParam();
+            measTask.MeasFreqParam = task.GetMeasFreqParam();
             return measTask;
         }
 

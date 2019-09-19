@@ -284,13 +284,13 @@ namespace Atdi.Platform.Logging.EventsConsumers
             if (!isInner)
             {
                 //this.WriteLine("");
-                this.WriteLine(" -- Exeption detail -- ", ConsoleColor.White);
+                this.WriteLine(" -- Exception detail -- ", ConsoleColor.White);
                 //this.WriteLine("");
             }
             else
             {
                 //this.WriteLine("");
-                this.WriteLine(" -- Inner exeption detail -- ", ConsoleColor.White);
+                this.WriteLine(" -- Inner exception detail -- ", ConsoleColor.White);
                 //this.WriteLine("");
             }
             

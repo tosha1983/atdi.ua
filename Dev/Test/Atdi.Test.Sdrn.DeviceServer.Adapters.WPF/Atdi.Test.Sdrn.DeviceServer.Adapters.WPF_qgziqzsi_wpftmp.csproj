@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D0AC41BD-9A08-493A-AB76-96C5738DCBFF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Atdi.Test.Sdrn.DeviceServer.Adapters.WPF</RootNamespace>
+    <AssemblyName>Atdi.Test.Sdrn.DeviceServer.Adapters.WPF</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Atdi.Test.Sdrn.DeviceServer.Adapters.WPF.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DrawIQ.xaml.cs">
+      <DependentUpon>DrawIQ.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DrawSpectrum.xaml.cs">
+      <DependentUpon>DrawSpectrum.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GNSSNMEA.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MyTime.cs" />
+    <Compile Include="OSInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS.csproj">
+      <Project>{02b46618-04e2-4bc7-b8ad-533338854228}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.csproj">
+      <Project>{744ed6de-49b5-4856-a3a7-cb3f47ad1cc6}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.csproj">
+      <Project>{93f2ca4c-2c15-481c-8ce3-30baa661d1ff}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.csproj">
+      <Project>{e9112886-a82e-449d-bc85-da5831c8de5b}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\Atdi.Contracts.Sdrn.DeviceServer.csproj">
+      <Project>{5e60c638-a65a-408e-b3d9-e7989933346c}</Project>
+      <Name>Atdi.Contracts.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Adapters\Atdi.DataModels.Sdrn.DeviceServer.Adapters.csproj">
+      <Project>{c5092a25-4d63-48b4-94ee-0ad9fde0f6b4}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Adapters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
+      <Project>{fedc8a6e-cb01-412f-a474-8d5ebdd96a08}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer.Commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">
+      <Project>{9bbafb15-0862-48ad-ab81-fe7e894d2573}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UnitTesting\Atdi.UnitTest.Sdrn.DeviceServer\Atdi.UnitTest.Sdrn.DeviceServer.csproj">
+      <Project>{26af07cb-441a-469e-9823-2d2b37fca414}</Project>
+      <Name>Atdi.UnitTest.Sdrn.DeviceServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="dll\SharpGL.dll" />
+    <Content Include="dll\SharpGL.SceneGraph.dll" />
+    <Content Include="dll\SharpGL.WPF.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS\bin\Debug\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx\bin\Debug\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound\bin\Debug\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer\bin\Debug\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Common\Atdi.Common\bin\Debug\Atdi.Common.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeviceServer\bin\Debug\Atdi.Contracts.Sdrn.DeviceServer.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\DataModels\Atdi.DataModels\bin\Debug\Atdi.DataModels.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Adapters\bin\Debug\Atdi.DataModels.Sdrn.DeviceServer.Adapters.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\DataModels\Atdi.DataModels.Sdrn.DeviceServer.Commands\bin\Debug\Atdi.DataModels.Sdrn.DeviceServer.Commands.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\DataModels\Atdi.DataModels.Sdrn.DeviceServer\bin\Debug\Atdi.DataModels.Sdrn.DeviceServer.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Platform\Atdi.Platform\bin\Debug\Atdi.Platform.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\UnitTesting\Atdi.UnitTest.Sdrn.DeviceServer\bin\Debug\Atdi.UnitTest.Sdrn.DeviceServer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\dll\SharpGL.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\dll\SharpGL.SceneGraph.dll" />
+    <ReferencePath Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\dll\SharpGL.WPF.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\obj\Debug\DrawIQ.g.cs" />
+    <Compile Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\obj\Debug\DrawSpectrum.g.cs" />
+    <Compile Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\obj\Debug\MainWindow.g.cs" />
+    <Compile Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\obj\Debug\App.g.cs" />
+    <Compile Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\obj\Debug\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF_Content.g.cs" />
+    <Compile Include="C:\projects\reposApi2_#552_DEVICE_SERVER_REFACTRORING\Dev\Test\Atdi.Test.Sdrn.DeviceServer.Adapters.WPF\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+</Project>

@@ -28,6 +28,9 @@ create table [ICSC].[MEAS_TASK_SIGNAL] (
 	[TYPE_JOIN_SPECTRUM]	[int] null,
 	[CROSSING_BW_PERCENT_GOOD]	[float] null,
 	[CROSSING_BW_PERCENT_BAD]	[float] null,
+	[MAX_FREQ_DEVIATION]	[float] null,
+	[MIN_POINT_DETAIL_BW]	[int] null,
+	[CHECK_LEVEL_CHANNEL]	[bit] null,
 	[MEAS_TASK_ID]	[bigint] null,
 	constraint [PK_MEAS_TASK_SIGNAL] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]

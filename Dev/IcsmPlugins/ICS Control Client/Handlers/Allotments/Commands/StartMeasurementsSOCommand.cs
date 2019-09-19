@@ -9,6 +9,7 @@ using DM = XICSM.ICSControlClient.Models.StartMeasurementsSO;
 using WCF = XICSM.ICSControlClient.WcfServiceClients;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using AAC = Atdi.DataModels.DataConstraint;
+using FM = XICSM.ICSControlClient.Forms;
 
 namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
 {
@@ -37,20 +38,36 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 throw new InvalidOperationException($"Not found any FREQ_PLAN_CHAN records by the tour #{allotment.Id}");
             }
 
-            var measTask = PreparedMeasTaskInfo(allotment, freqPlanChens);
-            SaveTaskToLog(measTask);
+            //var measTask = PreparedMeasTaskInfo(allotment, freqPlanChens);
+            //SaveTaskToLog(measTask);
 
-            var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
-            if (measTaskId == IM.NullI)
-            {
-                throw new InvalidOperationException($"Could not create a meas task by the allotment #{allotment.Id}");
-            }
+            //var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
+            //if (measTaskId == IM.NullI)
+            //{
+            //    throw new InvalidOperationException($"Could not create a meas task by the allotment #{allotment.Id}");
+            //}
 
             allotment.Status = MD.Allotments.Statuses.Dur;
-            allotment.MeasTaskId = measTaskId;
-            Repository.UpdateEntity(allotment);
+            allotment.MeasTaskId = CreateMeasTask(allotmentId);
+            if (allotment.MeasTaskId > 0)
+                Repository.UpdateEntity(allotment);
 
             return true;
+        }
+        private static long CreateMeasTask(int allotmentId)
+        {
+            try
+            {
+                var measTaskForm = new FM.MeasTaskForm(allotmentId, SDR.MeasurementType.SpectrumOccupation);
+                measTaskForm.ShowDialog();
+                measTaskForm.Dispose();
+                return measTaskForm.TaskId;
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(e.ToString());
+                return 0;
+            }
         }
 
         private static DM.FreqPlanChan[] FindFreqPlanChens(DM.Allotment allotment)
@@ -163,7 +180,7 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 RfAttenuation = 0,
                 IfAttenuation = 0,
                 MeasTime = 0.003,
-                DetectType = SDR.DetectingType.Avarage,
+                DetectType = SDR.DetectingType.Average,
                 Preamplification = 0
             };
 
@@ -250,17 +267,17 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 result = false;
             }
 
-            if (string.IsNullOrEmpty(allotment.CustText2))
-            {
-                messages.AppendLine($"Undefined a CUST_TXT2 of the allotment #{allotment.Id}");
-                result = false;
-            }
+            //if (string.IsNullOrEmpty(allotment.CustText2))
+            //{
+            //    messages.AppendLine($"Undefined a CUST_TXT2 of the allotment #{allotment.Id}");
+            //    result = false;
+            //}
 
-            if (string.IsNullOrEmpty(allotment.CustText3))
-            {
-                messages.AppendLine($"Undefined a CUST_TXT3 of the allotment #{allotment.Id}");
-                result = false;
-            }
+            //if (string.IsNullOrEmpty(allotment.CustText3))
+            //{
+            //    messages.AppendLine($"Undefined a CUST_TXT3 of the allotment #{allotment.Id}");
+            //    result = false;
+            //}
 
             if (!result)
             {

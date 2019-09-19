@@ -169,7 +169,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             builderMeasTaskSignaling.Select(c => c.TypeJoinSpectrum);
             builderMeasTaskSignaling.Select(c => c.CrossingBWPercentageForGoodSignals);
             builderMeasTaskSignaling.Select(c => c.CrossingBWPercentageForBadSignals);
-
+            builderMeasTaskSignaling.Select(c => c.MaxFreqDeviation);
+            builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
+            builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
 
 
             builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, id);
@@ -187,6 +189,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints = readerMeasTaskSignaling.GetValue(c => c.NumberIgnoredPoints);
                     measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess = readerMeasTaskSignaling.GetValue(c => c.NumberPointForChangeExcess);
                     measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.windowBW = readerMeasTaskSignaling.GetValue(c => c.WindowBW);
+                    measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation = readerMeasTaskSignaling.GetValue(c => c.MaxFreqDeviation);
+                    measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel = readerMeasTaskSignaling.GetValue(c => c.CheckLevelChannel);
+                    measTaskSignaling.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW = readerMeasTaskSignaling.GetValue(c => c.MinPointForDetailBW);
                     measTaskSignaling.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels = readerMeasTaskSignaling.GetValue(c => c.CompareTraceJustWithRefLevels);
                     measTaskSignaling.SignalingMeasTaskParameters.FiltrationTrace = readerMeasTaskSignaling.GetValue(c => c.FiltrationTrace);
                     measTaskSignaling.SignalingMeasTaskParameters.SignalizationNChenal = readerMeasTaskSignaling.GetValue(c => c.SignalizationNChenal);
@@ -199,6 +204,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     measTaskSignaling.SignalingMeasTaskParameters.CorrelationFactor = readerMeasTaskSignaling.GetValue(c => c.CorrelationFactor);
                     measTaskSignaling.SignalingMeasTaskParameters.CheckFreqChannel = readerMeasTaskSignaling.GetValue(c => c.CheckFreqChannel);
                     measTaskSignaling.SignalingMeasTaskParameters.triggerLevel_dBm_Hz = readerMeasTaskSignaling.GetValue(c => c.TriggerLevel_dBm_Hz);
+                    measTaskSignaling.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
                     measTaskSignaling.SignalingMeasTaskParameters.GroupingParameters = new SignalingGroupingParameters();
                     measTaskSignaling.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForBadSignals);
                     measTaskSignaling.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);
@@ -285,6 +291,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             {
                 measTaskSignaling.RefSituation = listReferenceSituation.ToArray();
             }
+            measTaskSignaling.MeasDtParam = GetMeasDtParam(id);
+            measTaskSignaling.MeasFreqParam = GetMeasFreqParam(id);
             return measTaskSignaling;
         }
 

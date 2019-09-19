@@ -26,15 +26,15 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
     [SubscriptionEvent(EventName = "OnSendMeasResultsDeviceBusEvent", SubscriberName = "SendMeasResultsSubscriber")]
     public class SendMeasResultsSubscriber : SubscriberBase<DM.MeasResults>
     {
-        class HandleContext
-        {
-            public long messageId;
-            public long resMeasId = 0;
-            public string sensorName;
-            public string sensorTechId;
-            public IDataLayerScope scope;
-            public DM.MeasResults measResult;
-        }
+        //class HandleContext
+        //{
+        //    public long messageId;
+        //    public long resMeasId = 0;
+        //    public string sensorName;
+        //    public string sensorTechId;
+        //    public IDataLayerScope scope;
+        //    public DM.MeasResults measResult;
+        //}
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly IStatistics _statistics;
@@ -84,44 +84,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 {
                     using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
-                        var context = new HandleContext()
-                        {
-                            messageId = messageId,
-                            resMeasId = 0,
-                            sensorName = sensorName,
-                            sensorTechId = sensorTechId,
-                            scope = scope,
-                            measResult = deliveryObject
-                        };
+                        DevicesBusEvent busEvent;
 
                         if (deliveryObject.Measurement == MeasurementType.SpectrumOccupation)
                         {
-                            var busEvent = new DevicesBusEvent($"OnSOMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber")
-                            {
-                                BusMessageId = messageId
-                            };
-                            _eventEmitter.Emit(busEvent);
+                            busEvent = new DevicesBusEvent($"OnSOMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber") { BusMessageId = messageId };
                         }
                         else if (deliveryObject.Measurement == MeasurementType.MonitoringStations)
                         {
-                            var busEvent = new DevicesBusEvent($"OnMSMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber")
-                            {
-                                BusMessageId = messageId
-                            };
-                            _eventEmitter.Emit(busEvent);
+                            busEvent = new DevicesBusEvent($"OnMSMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber") { BusMessageId = messageId };
                         }
                         else if (deliveryObject.Measurement == MeasurementType.Signaling)
                         {
-                            var busEvent = new DevicesBusEvent($"OnSGMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber")
-                            {
-                                BusMessageId = messageId
-                            };
-                            _eventEmitter.Emit(busEvent);
+                            busEvent = new DevicesBusEvent($"OnSGMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber") { BusMessageId = messageId };
                         }
                         else
                         {
                             throw new InvalidOperationException($"Unsupported MeasurementType '{deliveryObject.Measurement}'");
                         }
+
+                        var builderUpdateAmqpMessage = this._dataLayer.GetBuilder<MD.IAmqpMessage>().Update();
+                        builderUpdateAmqpMessage.SetValue(c => c.StatusCode, (byte)3);
+                        builderUpdateAmqpMessage.Where(c => c.Id, ConditionOperator.Equal, messageId);
+                        scope.Executor.Execute(builderUpdateAmqpMessage);
+
+                        _eventEmitter.Emit(busEvent);
                     }
                 }
                 catch (Exception e)

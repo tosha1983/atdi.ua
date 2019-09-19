@@ -22,8 +22,8 @@ using Atdi.Contracts.Api.DataBus;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
-    [SubscriptionEvent(EventName = "OnSOMeasResultAggregated", SubscriberName = "MSMeasResultSubscriber")]
-    public class OnSOMeasResultAggregated
+    [SubscriptionEvent(EventName = "OnSOMeasResultAggregated", SubscriberName = "SOMeasResultSubscriber")]
+    public class OnSOMeasResultAggregated : IEventSubscriber<SOMeasResultAggregated>
     {
         private readonly ILogger _logger;
         private readonly IEventEmitter _eventEmitter;
@@ -40,7 +40,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             this._publisher = publisher;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
         }
-        public void Notify(MSMeasResultAggregated @event)
+        public void Notify(SOMeasResultAggregated @event)
         {
             try
             {

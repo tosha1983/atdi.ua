@@ -48,6 +48,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         private double[] _selectedRangeX;
         private Point _mouseClickPoint;
         private ContextMenu _contextMenu;
+        //private int _drawingCounter;
 
         private static ChartOption GetDefaultChartOption()
         {
@@ -327,6 +328,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
 
             // Add title and labels:
             tbTitle.Text = this._option.Title;
+            tbLeftTitle.Text = this._option.LeftTitle;
+            tbRightTitle.Text = this._option.RightTitle;
             tbXLabel.Text = this._option.XLabel;
             tbYLabel.Text = this._option.YLabel;
             tbXLabel.Margin = new Thickness(leftOffset + 2, 2, 2, 2);
@@ -482,7 +485,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
             try
             {
                 var points = this._option.Points;
-                var normolizedPoints = points.Select(p => this.NormalizePoint(p)).ToArray();
+                var normolizedPoints = points.Select(p => this.NormalizePoint(p)).OrderBy(c => c.X).ToArray();
 
                 if (normolizedPoints.Length > 2)
                 {
@@ -540,8 +543,9 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                     Canvas.SetTop(rect, posY);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.Print(e.InnerException + ", " + e.Message);
                 //throw;
             }
         }

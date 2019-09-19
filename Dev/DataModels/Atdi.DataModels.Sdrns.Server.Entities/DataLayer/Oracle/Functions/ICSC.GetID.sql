@@ -343,8 +343,24 @@ into n
 from dual;
 end if;
 
+if inttable_name ='ONLINE_MEAS' then
+select ICSC.ONLINE_MEAS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='RES_MEAS_SIGNALING' then
+select ICSC.RES_MEAS_SIGNALING_ID_SEQ.nextval
+into n
+from dual;
+end if;
 
 
+if inttable_name ='LINK_ONLINE_MEAS' then
+select ICSC.LINK_ONLINE_MEAS_ID_SEQ.nextval
+into n
+from dual;
+end if;
 
 
 return(n);

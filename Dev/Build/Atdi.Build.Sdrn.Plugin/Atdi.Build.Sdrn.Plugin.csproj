@@ -58,6 +58,10 @@
       <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
       <Name>Atdi.DataModels.Api.DataBus</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
       <Name>Atdi.DataModels.Sdrns.Server</Name>
@@ -66,9 +70,17 @@
       <Project>{40ebb60e-fe75-40c7-94fa-ddbada32f58c}</Project>
       <Name>Atdi.DataModels.Sdrns</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\IcsmPlugins\ICS Control Client\ICS Control Client.csproj">
       <Project>{8943c072-6f62-4601-bcda-1295dde93c3a}</Project>
       <Name>ICS Control Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.Charts\Atdi.WpfControls.Charts.csproj">
+      <Project>{895b75e6-83db-41f1-961e-55c6bb578bdb}</Project>
+      <Name>Atdi.WpfControls.Charts</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

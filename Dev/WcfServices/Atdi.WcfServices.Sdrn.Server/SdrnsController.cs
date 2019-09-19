@@ -7,6 +7,9 @@ using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.DataConstraint;
+using DM = Atdi.DataModels.Sdrns.Server.Entities;
+using ES = Atdi.DataModels.Sdrns.Server.Events;
+using System.Collections.Generic;
 using Atdi.Platform.Workflows;
 using SdrnsServer = Atdi.DataModels.Sdrns.Server;
 
@@ -324,6 +327,78 @@ namespace Atdi.WcfServices.Sdrn.Server
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetSignalingSysInfos(measResultId, freq_Hz);
 
+        }
+
+        public OnlineMeasurementInitiationResult InitOnlineMeasurement(OnlineMeasurementOptions options)
+        {
+            var site = this._pipelineSite.GetByName<SdrnsServer.InitOnlineMeasurementPipebox, SdrnsServer.InitOnlineMeasurementPipebox>(SdrnsServer.Pipelines.ClientInitOnlineMeasurement);
+            var resultPipebox = site.Execute(new SdrnsServer.InitOnlineMeasurementPipebox()
+            {
+               Period = options.Period,
+               SensorId = options.SensorId
+            });
+            return new OnlineMeasurementInitiationResult()
+            {
+                Allowed = resultPipebox.Allowed,
+                Message = resultPipebox.Message,
+                ServerToken = resultPipebox.ServerToken
+            };
+        }
+
+        public SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
+        {
+
+            try
+            {
+                if (serverToken == null)
+                {
+                    throw new ArgumentNullException(nameof(serverToken));
+                }
+
+                var tokenGuid = new Guid(serverToken);
+
+                using (var dbScope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    var result = new SensorAvailabilityDescriptor();
+
+                    var query = _dataLayer.GetBuilder<DM.IOnlineMesurement>()
+                        .From()
+                        .Where(c => c.ServerToken, ConditionOperator.Equal, tokenGuid)
+                        .Select(c => c.Id,
+                            c => c.SensorToken,
+                            c => c.StatusCode,
+                            c => c.StatusNote,
+                            c => c.WebSocketUrl);
+
+                    var measExists = dbScope.Executor.ExecuteAndFetch(query, reader =>
+                    {
+                        var exists = reader.Read();
+                        if (exists)
+                        {
+                            result.SensorToken = reader.GetValue(c => c.SensorToken);
+                            result.Status = (OnlineMeasurementStatus)reader.GetValue(c => c.StatusCode);
+                            result.Message = reader.GetValue(c => c.StatusNote);
+                            result.WebSocketUrl = reader.GetValue(c => c.WebSocketUrl);
+                        }
+                        return exists;
+                    });
+
+                    if (!measExists)
+                    {
+                        result.Status = OnlineMeasurementStatus.DeniedByServer;
+                        result.Message = $"Not found a online measurement data by server token";
+                        return result;
+                    }
+
+                    return result;
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Exception(Contexts.ThisComponent, (EventCategory)"GetSensorAvailabilityForOnlineMesurement", e, this);
+                throw;
+            }
         }
     }
    

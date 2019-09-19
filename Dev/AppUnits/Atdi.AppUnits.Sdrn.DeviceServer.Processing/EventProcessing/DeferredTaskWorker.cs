@@ -144,27 +144,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
                                     }
                                 }
-                                else if (taskParameters.MeasurementType == MeasType.Level)
-                                {
-                                    var levelProcess = _processingDispatcher.Start<LevelProcess>(context.Process);
-                                    var levelTask = new LevelTask();
-
-                                    levelTask.durationForSendResultLevel = this._config.durationForSendResultLevel;
-                                    levelTask.durationForMeasLevel_ms = this._config.durationForMeasLevel_ms;
-                                    levelTask.SleepTimePeriodForWaitingStartingMeas = this._config.SleepTimePeriodForWaitingStartingMeas_ms;
-                                    levelTask.KoeffWaitingDevice = this._config.KoeffWaitingDevice;
-                                    levelTask.taskParameters = taskParameters;
-                                    levelTask.taskParameters.status = StatusTask.A.ToString();
-                                    this._repositoryTaskParametersByString.Update(levelTask.taskParameters);
-                                    levelTask.mesureTraceParameter = levelTask.taskParameters.ConvertForLevel();
-                                    _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(levelTask.Id));
-                                    _taskStarter.RunParallel(levelTask, levelProcess, context);
-                                    _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(levelTask.Id));
-                                    if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
-                                    {
-                                        context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
-                                    }
-                                }
                                 else
                                 {
                                     _logger.Error(Contexts.DeferredTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(taskParameters.MeasurementType));

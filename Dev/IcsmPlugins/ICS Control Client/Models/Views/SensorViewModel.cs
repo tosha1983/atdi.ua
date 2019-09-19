@@ -10,56 +10,56 @@ namespace XICSM.ICSControlClient.Models.Views
     public class SensorViewModel
     {
 
-        public long Id;
+        public long Id { get; set; }
 
-        public string Status;
+        public string Status { get; set; }
 
-        public string Name;
+        public string Name { get; set; }
 
-        public string Administration;
+        public string Administration { get; set; }
 
-        public string NetworkId;
+        public string NetworkId { get; set; }
 
-        public string Remark;
+        public string Remark { get; set; }
 
-        public DateTime? BiuseDate;
+        public DateTime? BiuseDate { get; set; }
 
-        public DateTime? EouseDate;
+        public DateTime? EouseDate { get; set; }
 
-        public Double? Azimuth; //degree
+        public Double? Azimuth { get; set; }//degree
 
-        public Double? Elevation; //degree 
+        public Double? Elevation { get; set; } //degree 
 
-        public Double? AGL;
+        public Double? AGL { get; set; }
 
-        public string IdSysARGUS;
+        public string IdSysARGUS { get; set; }
 
-        public string TypeSensor;
+        public string TypeSensor { get; set; }
 
-        public Double? StepMeasTime;
+        public Double? StepMeasTime { get; set; }
 
-        public Double? RxLoss;
+        public Double? RxLoss { get; set; }
 
-        public Double? OpHHFr;
+        public Double? OpHHFr { get; set; }
 
-        public Double? OpHHTo;
+        public Double? OpHHTo { get; set; }
 
-        public string OpDays;
+        public string OpDays { get; set; }
 
-        public string CustTxt1;
+        public string CustTxt1 { get; set; }
 
-        public DateTime? CustData1;
+        public DateTime? CustData1 { get; set; }
 
-        public Double? CustNbr1;
+        public Double? CustNbr1 { get; set; }
 
-        public DateTime? DateCreated;
+        public DateTime? DateCreated { get; set; }
 
-        public string CreatedBy;
+        public string CreatedBy { get; set; }
 
-        public SensorEquip Equipment;
+        public SensorEquip Equipment { get; set; }
 
-        public SensorAntenna Antenna;
+        public SensorAntenna Antenna { get; set; }
 
-        public SensorLocation[] Locations;
+        public SensorLocation[] Locations { get; set; }
     }
 }

@@ -46,6 +46,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IDataCache<string, long> _sensorIdentityCache;
         private readonly IDataCache<string, long> _measResultStationIdentityCache;
         private readonly IDataCache<string, long> _measResultIdentityCache;
+        private readonly IDataCache<string, long> _measTaskIdentityCache;
+        private readonly IDataCache<string, long> _subTaskIdentityCache;
+        private readonly IDataCache<string, long> _subTaskSensorIdentityCache;
 
 
         private readonly IStatisticCounter _monitoringStationsCounter;
@@ -68,10 +71,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             this._eventEmitter = eventEmitter;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
 
+            this._measTaskIdentityCache = cacheSite.Ensure(DataCaches.AutoMeasTaskIdentity);
+            this._subTaskIdentityCache = cacheSite.Ensure(DataCaches.AutoSubTaskIdentity);
+            this._subTaskSensorIdentityCache = cacheSite.Ensure(DataCaches.AutoSubTaskSensorIdentity);
             this._verifiedSubTaskSensorIdentityCache = cacheSite.Ensure(DataCaches.VerifiedSubTaskSensorIdentity);
-            this._sensorIdentityCache = cacheSite.Ensure(DataCaches.SensorIdentity);
             this._measResultStationIdentityCache = cacheSite.Ensure(DataCaches.MeasResultStationIdentity);
             this._measResultIdentityCache = cacheSite.Ensure(DataCaches.MeasResultIdentity);
+            this._sensorIdentityCache = cacheSite.Ensure(DataCaches.SensorIdentity);
 
             if (this._statistics != null)
             {
@@ -502,6 +508,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private bool ValidateGeoLocation<T>(T location, string tableName, HandleContext context)
             where T : GeoLocation
         {
+            if (location == null)
+                return false;
+
             bool result = true;
             if (!(location.Lon >= -180 && location.Lon <= 180))
             {
@@ -635,6 +644,32 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 _verifiedSubTaskSensorIdentityCache.Set(key, subTaskSensorId);
                 return subTaskSensorId;
             }
+
+            // для MonitoringStations идентификатор если нами не определен считается что таска нету и его нужно автоматически создавать
+            // ужасная логика но так уже договрились с клиентами
+            if (measurement == MeasurementType.MonitoringStations)
+            {
+                var autoMeasTaskId = this.EnsureAutoMeasTask(measDate, scope);
+                var autoSubTaskId = this.EnsureAutoSubTask(measDate, autoMeasTaskId, scope);
+                var sensorId = this.EnsureSensor(sensorName, techId, scope);
+
+                var key = $"autoSubTaskId: {autoSubTaskId}, sensorId: {sensorId}";
+
+                if (_subTaskSensorIdentityCache.TryGet(key, out long subTaskSensorId))
+                {
+                    return subTaskSensorId;
+                }
+
+                if (this.TryGetAutoSubTaskSensorFromStorage(autoSubTaskId, sensorId, scope, out subTaskSensorId))
+                {
+                    _subTaskSensorIdentityCache.Set(key, subTaskSensorId);
+                    return subTaskSensorId;
+                }
+                subTaskSensorId = this.CreateAutoSubTaskSensor(autoSubTaskId, sensorId, scope);
+                _subTaskSensorIdentityCache.Set(key, subTaskSensorId);
+                return subTaskSensorId;
+            }
+
             throw new InvalidOperationException($"Incorrect Task ID value '{clientTaskId}'");
         }
         private bool ExistsSubTaskSensorFromStorage(long subTaskSensorId, long sensorId, IDataLayerScope scope)
@@ -692,6 +727,192 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
             sensorId = id;
             return result;
+        }
+        private long EnsureAutoMeasTask(DateTime date, IDataLayerScope scope)
+        {
+            var key = $"year: {date.Year}, month: {date.Month:D2}";
+
+            // поиск в кеше
+            if (_measTaskIdentityCache.TryGet(key, out long measTaskId))
+            {
+                return measTaskId;
+            }
+
+            // поиск в хранилище
+            if (this.TryGetAutoMeasTaskFromStorage(date, scope, out measTaskId))
+            {
+                _measTaskIdentityCache.Set(key, measTaskId);
+                return measTaskId;
+            }
+
+            // нужно создать таск
+            measTaskId = this.CreateAutoMeasTask(date, scope);
+            _measTaskIdentityCache.Set(key, measTaskId);
+
+            return measTaskId;
+        }
+
+        private long EnsureAutoSubTask(DateTime date, long measTaskId, IDataLayerScope scope)
+        {
+            var key = $"task: #{measTaskId}, day: {date.Day}";
+
+            // поиск в кеше
+            if (_subTaskIdentityCache.TryGet(key, out long subTaskId))
+            {
+                return subTaskId;
+            }
+
+            // поиск в хранилище
+            if (this.TryGetAutoSubTaskFromStorage(measTaskId, date, scope, out subTaskId))
+            {
+                _subTaskIdentityCache.Set(key, subTaskId);
+                return subTaskId;
+            }
+
+            // нужно создать таск
+            subTaskId = this.CreateAutoSubTask(measTaskId, date, scope);
+            _subTaskIdentityCache.Set(key, subTaskId);
+
+            return subTaskId;
+        }
+
+        private bool TryGetAutoMeasTaskFromStorage(DateTime date, IDataLayerScope scope, out long measTaskId)
+        {
+            var name = this.BuildAutoMeasTaskName(date);
+            var query = _dataLayer.GetBuilder<MD.IMeasTask>()
+                .From()
+                .OnTop(1)
+                .Select(c => c.Id)
+                .Where(c => c.Name, ConditionOperator.Equal, name)
+                .Where(c => c.ExecutionMode, ConditionOperator.Equal, "Automatic")
+                .Where(c => c.Type, ConditionOperator.Equal, MeasurementType.MonitoringStations.ToString());
+
+            var id = default(long);
+            var result = scope.Executor.ExecuteAndFetch(query, reader =>
+            {
+                var readState = reader.Read();
+                if (readState)
+                {
+                    id = reader.GetValue(c => c.Id);
+                }
+                return readState;
+            });
+
+            measTaskId = id;
+            return result;
+        }
+
+        private string BuildAutoMeasTaskName(DateTime date)
+        {
+            return $"Monitoring Stations: {date.Month:D2} - {date.Year}";
+        }
+
+        private long CreateAutoMeasTask(DateTime date, IDataLayerScope scope)
+        {
+            var query = _dataLayer.GetBuilder<MD.IMeasTask>()
+                .Insert()
+                .SetValue(c => c.Name, this.BuildAutoMeasTaskName(date))
+                .SetValue(c => c.ResultType, "MeasurementResult")
+                .SetValue(c => c.Type, MeasurementType.MonitoringStations.ToString())
+                .SetValue(c => c.PerStart, new DateTime(date.Year, date.Month, 1))
+                .SetValue(c => c.PerStop, new DateTime(date.Year, date.Month, 1).AddMonths(1).AddDays(-1))
+                .SetValue(c => c.Status, $"A")
+                .SetValue(c => c.ExecutionMode, $"Automatic")
+                .SetValue(c => c.DateCreated, DateTime.Now)
+                .SetValue(c => c.CreatedBy, "SDRN Server");
+
+            var pk = scope.Executor.Execute<MD.IMeasTask_PK>(query);
+            if (pk == null)
+            {
+                throw new InvalidOperationException($"Cannot create automatic meas task by date '{date}'");
+            }
+
+            return pk.Id;
+        }
+
+        private bool TryGetAutoSubTaskFromStorage(long measTaskId, DateTime date, IDataLayerScope scope, out long subTaskId)
+        {
+            var dateWOTime = new DateTime(date.Year, date.Month, date.Day);
+            var name = this.BuildAutoMeasTaskName(date);
+            var query = _dataLayer.GetBuilder<MD.ISubTask>()
+                .From()
+                .OnTop(1)
+                .Select(c => c.Id)
+                .Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, measTaskId)
+                .Where(c => c.TimeStart, ConditionOperator.LessEqual, dateWOTime)
+                .Where(c => c.TimeStop, ConditionOperator.GreaterEqual, dateWOTime);
+
+            var id = default(long);
+            var result = scope.Executor.ExecuteAndFetch(query, reader =>
+            {
+                var readState = reader.Read();
+                if (readState)
+                {
+                    id = reader.GetValue(c => c.Id);
+                }
+                return readState;
+            });
+
+            subTaskId = id;
+            return result;
+        }
+
+        private long CreateAutoSubTask(long measTaskId, DateTime date, IDataLayerScope scope)
+        {
+            var query = _dataLayer.GetBuilder<MD.ISubTask>()
+                .Insert()
+                .SetValue(c => c.MEAS_TASK.Id, measTaskId)
+                .SetValue(c => c.Status, "A")
+                .SetValue(c => c.TimeStart, new DateTime(date.Year, date.Month, date.Day, 0, 0, 0))
+                .SetValue(c => c.TimeStop, new DateTime(date.Year, date.Month, date.Day, 23, 59, 59));
+
+            var pk = scope.Executor.Execute<MD.ISubTask_PK>(query);
+            if (pk == null)
+            {
+                throw new InvalidOperationException($"Cannot create automatic sub task by date '{date}' and task #{measTaskId}");
+            }
+
+            return pk.Id;
+        }
+
+        private bool TryGetAutoSubTaskSensorFromStorage(long subTaskId, long sensorId, IDataLayerScope scope, out long subTaskSensorId)
+        {
+            var query = _dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                .From()
+                .OnTop(1)
+                .Select(c => c.Id)
+                .Where(c => c.SUBTASK.Id, ConditionOperator.Equal, subTaskId)
+                .Where(c => c.SENSOR.Id, ConditionOperator.Equal, sensorId);
+
+            var id = default(long);
+            var result = scope.Executor.ExecuteAndFetch(query, reader =>
+            {
+                var readState = reader.Read();
+                if (readState)
+                {
+                    id = reader.GetValue(c => c.Id);
+                }
+                return readState;
+            });
+
+            subTaskSensorId = id;
+            return result;
+        }
+        private long CreateAutoSubTaskSensor(long subTaskId, long sensorId, IDataLayerScope scope)
+        {
+            var query = _dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                .Insert()
+                .SetValue(c => c.SUBTASK.Id, subTaskId)
+                .SetValue(c => c.SENSOR.Id, sensorId)
+                .SetValue(c => c.Status, "A");
+
+            var pk = scope.Executor.Execute<MD.ISubTaskSensor_PK>(query);
+            if (pk == null)
+            {
+                throw new InvalidOperationException($"Cannot create automatic sub task sensor by sub task #{subTaskId} and sensor #{sensorId}");
+            }
+
+            return pk.Id;
         }
         private long EnsureMeasResultStation(long measResultId, StationMeasResult clientStation, decimal clientFrequency, HandleContext context)
         {

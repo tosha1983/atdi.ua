@@ -54,6 +54,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ICSM 6.2.70\NetPlugins2.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OrmCs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ICSM 6.2.70\OrmCs.dll</HintPath>
@@ -119,6 +122,12 @@
     </Compile>
     <Compile Include="Forms\MeasTaskSignalizationForm.Designer.cs">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OnlineMeasurementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OnlineMeasurementForm.Designer.cs">
+      <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SignalizationSensorsForm.cs">
       <SubType>Form</SubType>
@@ -187,6 +196,9 @@
     <Compile Include="Forms\MeasTaskForm.Designer.cs">
       <DependentUpon>MeasTaskForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\OnlineMeasurement\WebSocketClient\WebSecketClient.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\WebSocketClient\WebSecketContext.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\WebSocketClient\WebSecketHandler.cs" />
     <Compile Include="Handlers\OtherTerrestrialStations\Commands\ShowResultMonitoringCommand.cs" />
     <Compile Include="Handlers\OtherTerrestrialStations\OtherTerrestrialStationsContextMenuBuilder.cs" />
     <Compile Include="Handlers\Tour\Forms\SelectAreaForm.cs">
@@ -252,6 +264,7 @@
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
+    <Compile Include="Models\Views\OnlienrMeasParametersViewModel.cs" />
     <Compile Include="Models\Views\ResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\SensorViewModel.cs" />
     <Compile Include="Models\Views\ShortMeasTaskViewModel.cs" />
@@ -287,6 +300,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ChartAdapters\OnlineMeasLineChartAdapter.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
@@ -294,6 +308,10 @@
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
+    <Compile Include="ViewModels\OnlineMeasurementViewModel.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\Calculation\BandWidthEstimation.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcBWForChart.cs" />
+    <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcChannelPowForChart.cs" />
     <Compile Include="ViewModels\SignalizationSensorsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationStationsEquipmentsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSysInfoViewModel.cs" />
@@ -338,6 +356,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OnlineMeasurementForm.resx">
+      <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SignalizationSensorsForm.resx">
       <DependentUpon>SignalizationSensorsForm.cs</DependentUpon>
@@ -409,6 +430,10 @@
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
+      <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
+      <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
       <Name>Atdi.DataModels.Sdrns.Server</Name>
@@ -421,10 +446,15 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.Charts\Atdi.WpfControls.Charts.csproj">
+      <Project>{895b75e6-83db-41f1-961e-55c6bb578bdb}</Project>
+      <Name>Atdi.WpfControls.Charts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager UCRF"
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
 </PostBuildEvent>

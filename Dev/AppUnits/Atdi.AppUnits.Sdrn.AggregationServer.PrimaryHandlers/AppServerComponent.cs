@@ -9,6 +9,7 @@ using Atdi.Platform.Workflows;
 using Atdi.DataModels.Sdrns.Server;
 using Atdi.Platform.AppServer;
 using Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers;
+using Atdi.Platform.AppComponent;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
@@ -22,13 +23,18 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 
         protected override void OnInstallUnit()
         {
+            var serverConfig = this.Config.Extract<AppComponentConfig>();
             // регистрация  обрабочика конвеера в DI-окружении
             this.Container.Register<MeasTasksOnAggServerPipelineHandler, MeasTasksOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<CommandsOnAggServerPipelineHandler, CommandsOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<RegistrationAggregationServer, RegistrationAggregationServer>(ServiceLifetime.Singleton);
+            this.Container.Register<OnlineMeasOnAggServerPipelineHandler, OnlineMeasOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
+
 
             this.Container.Register<MeasTasksOnAggServerSendEventPipelineHandler, MeasTasksOnAggServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<ClientCommandsOnAggregationServerSendEventPipelineHandler, ClientCommandsOnAggregationServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<MeasResultWorker, MeasResultWorker>(ServiceLifetime.Singleton);
+            this.Container.RegisterInstance(serverConfig, ServiceLifetime.Singleton);
         }
 
         protected override void OnActivateUnit()
@@ -41,12 +47,22 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 messagesProcessing.Run();
             });
 
+            hostLoader.RegisterTrigger("Running the procedure aggergation MeasResult", () =>
+            {
+                var measResultProcessing = this.Resolver.Resolve<MeasResultWorker>();
+                measResultProcessing.Run();
+            });
+
             var pipelineSite = this.Resolver.Resolve<IPipelineSite>();
 
             // декларация конвейеров
 
             var tasksPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
+            var InitOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientInitOnlineMeasurement);
+
+
+
 
             // регистрация обработчика
             tasksPipeline.Register(typeof(MeasTasksOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
@@ -54,6 +70,10 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 
             tasksPipeline.Register(typeof(MeasTasksOnAggServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
             commandsPipeline.Register(typeof(ClientCommandsOnAggregationServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+
+            InitOnlineMeasurementPipeline.Register(typeof(OnlineMeasOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
         }
+
+
     }
 }

@@ -81,6 +81,7 @@
     <PostBuildEvent>copy "$(TargetDir)Atdi.AppUnits.Sdrn.AggregationServer.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\AggregationServerRole\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.AggregationServer.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\AggregationServerRole\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\AggregationServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\AggregationServerRole\Bin$(ConfigurationName)"
 
 copy "$(TargetDir)Atdi.Modules.AmqpBroker.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\AggregationServerRole\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.DataModels.Api.DataBus.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\AggregationServerRole\Bin$(ConfigurationName)"

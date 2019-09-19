@@ -80,6 +80,10 @@ namespace Atdi.Tools.LicenseAnalyzer
             {
                 sharedSecret = "Atdi.WebPortal.WebQuery";
             }
+            else if (cmbConfigType.SelectedIndex == 4)
+            {
+                sharedSecret = "Atdi.Tools.Sdrn.Client";
+            }
 
             txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
             txtEncryptedProductKey.Text = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, sharedSecret);

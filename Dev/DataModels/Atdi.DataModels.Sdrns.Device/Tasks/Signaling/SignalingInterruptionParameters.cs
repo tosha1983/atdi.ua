@@ -33,6 +33,11 @@ namespace Atdi.DataModels.Sdrns.Device
         public bool? AutoDivisionEmitting { get; set; } // автоматическое разделение сигналов 
         [DataMember]
         public double? DifferenceMaxMax { get; set; } // разница между максимумом и минимумом для разделения сигналов.
-
+        [DataMember]
+        public double? MaxFreqDeviation { get; set; }
+        [DataMember]
+        public bool? CheckLevelChannel { get; set; }
+        [DataMember]
+        public int? MinPointForDetailBW { get; set; }
     }
 }

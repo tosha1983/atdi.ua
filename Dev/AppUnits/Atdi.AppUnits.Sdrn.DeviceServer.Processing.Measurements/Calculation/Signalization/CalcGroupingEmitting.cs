@@ -23,8 +23,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static bool AnalyzeByChannel;
         private static bool CorrelationAnalize;
         private static double CorrelationFactor;
-
-        private const double MaxFreqDeviation = 0.00001;
+        private static double MaxFreqDeviation;
+        private static int CountMaxEmission; // нужно брать из файла конфигурации
         
         // конец констант
 
@@ -35,10 +35,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="EmittingTemp"></param>
         /// <param name="EmittingSummary"></param>
         /// <returns></returns>
-        public static bool CalcGrouping(TaskParameters taskParameters, Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary, ILogger logger, double NoiseLevel_dBm)
+        public static bool CalcGrouping(TaskParameters taskParameters, ref Emitting[] EmittingsRaw, ref Emitting[] EmittingsTemp, ref Emitting[] EmittingsSummary, ILogger logger, double NoiseLevel_dBm, int CountMaxEmissionFromConfig )
         {
             try
             {
+                CountMaxEmission = CountMaxEmissionFromConfig;
                 TimeBetweenWorkTimes_sec = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec.Value;
                 TypeJoinSpectrum = taskParameters.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum.Value;
                 CrossingBWPercentageForGoodSignals = taskParameters.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.Value;
@@ -46,6 +47,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 AnalyzeByChannel = taskParameters.SignalingMeasTaskParameters.AnalyzeByChannel.Value;
                 CorrelationAnalize = taskParameters.SignalingMeasTaskParameters.CorrelationAnalize.Value;
                 CorrelationFactor = taskParameters.SignalingMeasTaskParameters.CorrelationFactor.Value;
+                MaxFreqDeviation = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation.Value;
 
                 // Увеличиваем счетчики у всех излучений
                 if (EmittingsSummary != null)
@@ -173,6 +175,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
+
+
+                DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission);
+                DeliteRedundantEmission(emittingsSummaryTemp, CountMaxEmission);
                 EmittingsTemp = emittingsTempTemp.ToArray();
                 EmittingsSummary = emittingsSummaryTemp.ToArray();
                 EmittingsRaw = null;
@@ -227,6 +233,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else { return false; }
             }
         }
+
         /// <summary>
         /// Необходимо определить является ли это одним и тем же излучением.
         /// </summary>
@@ -235,14 +242,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, bool AnalyzeByChannel, bool CorrelationAnalize, double MaxFreqDeviation, double CorrelationFactor)
         {
-            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2);
+            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2); // пересечение полос частот обязательное условие
             if (!TraditionalCheck) { return false; } // выход если нет пересечения 
+            if (CorrelationAnalize) // если требуется корреляция между излучениями
+            { if (ChackCorelationForTwoEmitting(emitting1, emitting2, CorrelationFactor)) { return true; } else { return false; } }
             if (!AnalyzeByChannel) { return true; } // выход если нет анализировать поканально
-            if (!ChackFreqForTwoEmitting(emitting1, emitting2, MaxFreqDeviation)) { return false; }
-            if (CorrelationAnalize)
-            {
-                if (ChackCorelationForTwoEmitting(emitting1, emitting2, CorrelationFactor)) { return true; } else { return false; }
-            }
+            if (!ChackFreqForTwoEmitting(emitting1, emitting2, MaxFreqDeviation)) { return false; }// если необходимо сравнивать частоты
             return true;
         }
         /// <summary>
@@ -258,45 +263,74 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
                 // определяем кто к кому присоединяется
-                if ((MasterEmitting.SpectrumIsDetailed) || (AttachableEmitting.SpectrumIsDetailed))
-                {// если уже есть детализация у первого или у второго то это тогда в приоретете 
-                    if ((MasterEmitting.SpectrumIsDetailed) && (AttachableEmitting.SpectrumIsDetailed))
-                    {// Если оба хороши выбираем лучший по критерию мощности 
-                        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
-                        {
-                            JoinAttachableEmittingToMasterEmitting = false;
-                        }
-                    }
-                    else if (AttachableEmitting.SpectrumIsDetailed)
+                if (MasterEmitting.SpectrumIsDetailed != AttachableEmitting.SpectrumIsDetailed)
+                {
+                    if (!MasterEmitting.SpectrumIsDetailed) { JoinAttachableEmittingToMasterEmitting = false; }
+                }
+                else if (MasterEmitting.Spectrum.СorrectnessEstimations != AttachableEmitting.Spectrum.СorrectnessEstimations)
+                {
+                    if (!MasterEmitting.Spectrum.СorrectnessEstimations) { JoinAttachableEmittingToMasterEmitting = false; }
+                }
+                else if (false)//MasterEmitting.MeanDeviationFromReference != AttachableEmitting.MeanDeviationFromReference)
+                {
+                    if (AttachableEmitting.MeanDeviationFromReference > MasterEmitting.MeanDeviationFromReference) { JoinAttachableEmittingToMasterEmitting = false; }
+                }
+                else if ((AnalyzeByChannel))
+                {
+                    int k = CompareTwoEmittingCenterWithStartEnd(MasterEmitting, AttachableEmitting);
+                    if (k == 0)
                     {
-                        JoinAttachableEmittingToMasterEmitting = false;
+                        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm) { JoinAttachableEmittingToMasterEmitting = false; }
+                    }
+                    else
+                    {
+                        if (k == -1) { JoinAttachableEmittingToMasterEmitting = false; }
                     }
                 }
                 else
-                { // если детализации нет
-                  // определяем есть ли корректное измерение 
-                    if ((MasterEmitting.Spectrum.СorrectnessEstimations) || (AttachableEmitting.Spectrum.СorrectnessEstimations))
-                    {
-                        if ((MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations))
-                        {// Если оба хороши выбираем лучший по критерию мощности 
-                            if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
-                            {
-                                JoinAttachableEmittingToMasterEmitting = false;
-                            }
-                        }
-                        else if (AttachableEmitting.Spectrum.СorrectnessEstimations)
-                        {
-                            JoinAttachableEmittingToMasterEmitting = false;
-                        }
-                    }
-                    else
-                    {// если оба излучения не коректны выбираем с максимальной мощностью
-                        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
-                        {
-                            JoinAttachableEmittingToMasterEmitting = false;
-                        }
-                    }
+                {
+                    if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm){JoinAttachableEmittingToMasterEmitting = false;}
                 }
+
+                //if ((MasterEmitting.SpectrumIsDetailed) || (AttachableEmitting.SpectrumIsDetailed))
+                //{// если уже есть детализация у первого или у второго то это тогда в приоретете 
+                //    if ((MasterEmitting.SpectrumIsDetailed) && (AttachableEmitting.SpectrumIsDetailed))
+                //    {// Если оба хороши выбираем лучший по критерию мощности 
+                //        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
+                //        {
+                //            JoinAttachableEmittingToMasterEmitting = false;
+                //        }
+                //    }
+                //    else if (AttachableEmitting.SpectrumIsDetailed)
+                //    {
+                //        JoinAttachableEmittingToMasterEmitting = false;
+                //    }
+                //}
+                //else
+                //{ // если детализации нет
+                //  // определяем есть ли корректное измерение 
+                //    if ((MasterEmitting.Spectrum.СorrectnessEstimations) || (AttachableEmitting.Spectrum.СorrectnessEstimations))
+                //    {
+                //        if ((MasterEmitting.Spectrum.СorrectnessEstimations) && (AttachableEmitting.Spectrum.СorrectnessEstimations))
+                //        {// Если оба хороши выбираем лучший по критерию мощности 
+                //            if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
+                //            {
+                //                JoinAttachableEmittingToMasterEmitting = false;
+                //            }
+                //        }
+                //        else if (AttachableEmitting.Spectrum.СorrectnessEstimations)
+                //        {
+                //            JoinAttachableEmittingToMasterEmitting = false;
+                //        }
+                //    }
+                //    else
+                //    {// если оба излучения не коректны выбираем с максимальной мощностью
+                //        if (MasterEmitting.CurentPower_dBm < AttachableEmitting.CurentPower_dBm)
+                //        {
+                //            JoinAttachableEmittingToMasterEmitting = false;
+                //        }
+                //    }
+                //}
                 // собственно само присоединение одного к другому
                 if (JoinAttachableEmittingToMasterEmitting)
                 {// присоединяем к мастеру
@@ -542,67 +576,129 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static bool ChackCorelationForTwoEmitting(Emitting emitting1, Emitting emitting2, double CorrelationFactor)
         { // НЕ ПРОВЕРЕННО
-            bool Corr1; bool Corr2;
+          //bool Corr1; bool Corr2;
 
 
-            if (emitting1.TriggerDeviationFromReference == 0) { Corr1 = false; }
-            else { Corr1 = emitting1.MeanDeviationFromReference <= emitting1.TriggerDeviationFromReference; }
-            if (emitting2.TriggerDeviationFromReference == 0) { Corr2 = false; }
-            else { Corr2 = emitting2.MeanDeviationFromReference <= emitting2.TriggerDeviationFromReference; }
-            if ((Corr1) && (Corr2))
-            {
-                return true;
-            }
-            else if ((Corr1) || (Corr2))
-            {
-                return false;
-            }
-            else
-            {
-                int index1Start = (int)Math.Round(1000.0 * (emitting1.StartFrequency_MHz - emitting1.Spectrum.SpectrumStartFreq_MHz) / emitting1.Spectrum.SpectrumSteps_kHz);
-                int index1Stop = (int)Math.Round(1000.0 * (emitting1.StopFrequency_MHz - emitting1.Spectrum.SpectrumStartFreq_MHz) / emitting1.Spectrum.SpectrumSteps_kHz);
-                int index2Start = (int)Math.Round(1000.0 * (emitting2.StartFrequency_MHz - emitting2.Spectrum.SpectrumStartFreq_MHz) / emitting2.Spectrum.SpectrumSteps_kHz);
-                int index2Stop = (int)Math.Round(1000.0 * (emitting2.StopFrequency_MHz - emitting2.Spectrum.SpectrumStartFreq_MHz) / emitting2.Spectrum.SpectrumSteps_kHz);
-                if (index1Start < 0) { index1Start = 0; }
-                if (index2Start < 0) { index2Start = 0; }
-                if (index1Stop >= emitting1.Spectrum.Levels_dBm.Length) { index1Stop = emitting1.Spectrum.Levels_dBm.Length - 1; }
-                if (index2Stop >= emitting2.Spectrum.Levels_dBm.Length) { index2Stop = emitting2.Spectrum.Levels_dBm.Length - 1; }
-                float[] arr1 = new float[index1Stop - index1Start];
-                Array.Copy(emitting1.Spectrum.Levels_dBm, index1Start, arr1, 0, index1Stop - index1Start);
-                arr1 = SmoothTrace.blackman(arr1);
-                float[] arr2 = new float[index2Stop - index2Start];
-                arr2 = SmoothTrace.blackman(arr2);
+            //if (emitting1.TriggerDeviationFromReference == 0) { Corr1 = false; }
+            //else { Corr1 = emitting1.MeanDeviationFromReference <= emitting1.TriggerDeviationFromReference; }
+            //if (emitting2.TriggerDeviationFromReference == 0) { Corr2 = false; }
+            //else { Corr2 = emitting2.MeanDeviationFromReference <= emitting2.TriggerDeviationFromReference; }
+            //if ((Corr1) && (Corr2))
+            //{
+            //    return true;
+            //}
+            //else if ((Corr1) || (Corr2))
+            //{
+            //    return false;
+            //}
+            //else
+            //{
 
-                Array.Copy(emitting2.Spectrum.Levels_dBm, index2Start, arr2, 0, index2Stop - index2Start);
+            int index1Start = (int)Math.Round(1000.0 * (emitting1.StartFrequency_MHz - emitting1.Spectrum.SpectrumStartFreq_MHz) / emitting1.Spectrum.SpectrumSteps_kHz);
+            int index1Stop = (int)Math.Round(1000.0 * (emitting1.StopFrequency_MHz - emitting1.Spectrum.SpectrumStartFreq_MHz) / emitting1.Spectrum.SpectrumSteps_kHz);
+            int index2Start = (int)Math.Round(1000.0 * (emitting2.StartFrequency_MHz - emitting2.Spectrum.SpectrumStartFreq_MHz) / emitting2.Spectrum.SpectrumSteps_kHz);
+            int index2Stop = (int)Math.Round(1000.0 * (emitting2.StopFrequency_MHz - emitting2.Spectrum.SpectrumStartFreq_MHz) / emitting2.Spectrum.SpectrumSteps_kHz);
+            if (index1Start < 0) { index1Start = 0; }
+            if (index2Start < 0) { index2Start = 0; }
+            if (index1Stop >= emitting1.Spectrum.Levels_dBm.Length) { index1Stop = emitting1.Spectrum.Levels_dBm.Length - 1; }
+            if (index2Stop >= emitting2.Spectrum.Levels_dBm.Length) { index2Stop = emitting2.Spectrum.Levels_dBm.Length - 1; }
+            float[] arr1 = new float[index1Stop - index1Start];
+            Array.Copy(emitting1.Spectrum.Levels_dBm, index1Start, arr1, 0, index1Stop - index1Start);
+            arr1 = SmoothTrace.blackman(arr1);
+            float[] arr2 = new float[index2Stop - index2Start];
+            Array.Copy(emitting2.Spectrum.Levels_dBm, index2Start, arr2, 0, index2Stop - index2Start);
+            arr2 = SmoothTrace.blackman(arr2);
 
-                double freq1_Hz = emitting1.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting1.Spectrum.SpectrumSteps_kHz * index1Start * 1000.0;
-                double freq2_Hz = emitting2.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting2.Spectrum.SpectrumSteps_kHz * index2Start * 1000.0;
-                double BW1_Hz = emitting1.Spectrum.SpectrumSteps_kHz * 1000.0;
-                double BW2_Hz = emitting2.Spectrum.SpectrumSteps_kHz * 1000.0;
-                double corr = СorrelationСoefficient.CalcCorrelation(arr1, freq1_Hz, BW1_Hz, arr2, freq2_Hz, BW2_Hz, СorrelationСoefficient.MethodCalcCorrelation.Person);
-                if (corr >= CorrelationFactor) { return true; } else { return false; }
-            }
+            double freq1_Hz = emitting1.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting1.Spectrum.SpectrumSteps_kHz * index1Start * 1000.0;
+            double freq2_Hz = emitting2.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting2.Spectrum.SpectrumSteps_kHz * index2Start * 1000.0;
+            double BW1_Hz = emitting1.Spectrum.SpectrumSteps_kHz * 1000.0;
+            double BW2_Hz = emitting2.Spectrum.SpectrumSteps_kHz * 1000.0;
+            double corr = СorrelationСoefficient.CalcCorrelation(arr1, freq1_Hz, BW1_Hz, arr2, freq2_Hz, BW2_Hz, СorrelationСoefficient.MethodCalcCorrelation.Person);
+            if (corr >= CorrelationFactor) { return true; } else { return false; }
+            ////}
         }
         private static bool ChackFreqForTwoEmitting(Emitting emitting1, Emitting emitting2, double MaxFreqDeviation)
         { // НЕ ПРОВЕРЕННО
+
             bool Freq1; bool Freq2;
             if (emitting1.EmittingParameters.TriggerFreqDeviation == 0) { Freq1 = false; }
             else { Freq1 = emitting1.EmittingParameters.FreqDeviation <= emitting1.EmittingParameters.TriggerFreqDeviation; }
             if (emitting2.EmittingParameters.TriggerFreqDeviation == 0) { Freq2 = false; }
             else { Freq2 = emitting1.EmittingParameters.FreqDeviation <= emitting1.EmittingParameters.TriggerFreqDeviation; }
-            if ((Freq1) && (Freq2)) {
-                return true; }
-            else if ((Freq1) || (Freq2)) {
-                return false; }
+            if ((Freq1) && (Freq2))
+            {
+                return true;
+            }
+            else if ((Freq1) || (Freq2))
+            {
+                return false;
+            }
             else
             {
-                double CentrlFreq1_MHz = (emitting1.StartFrequency_MHz + emitting1.StopFrequency_MHz)/2;
-                double CentrlFreq2_MHz = (emitting2.StartFrequency_MHz + emitting2.StopFrequency_MHz)/2;
+                double CentrlFreq1_MHz = (emitting1.StartFrequency_MHz + emitting1.StopFrequency_MHz) / 2;
+                double CentrlFreq2_MHz = (emitting2.StartFrequency_MHz + emitting2.StopFrequency_MHz) / 2;
                 double FreqDeviation = Math.Abs(CentrlFreq1_MHz - CentrlFreq2_MHz) / ((CentrlFreq1_MHz + CentrlFreq2_MHz) / 2.0);
                 double MaxShift = ((emitting1.Spectrum.SpectrumSteps_kHz / (1000 * CentrlFreq1_MHz)) + (emitting2.Spectrum.SpectrumSteps_kHz / (1000 * CentrlFreq2_MHz))) / 2.0;
                 if (FreqDeviation <= MaxShift) { FreqDeviation = 0; } else { FreqDeviation = FreqDeviation - MaxShift; }
                 if (FreqDeviation < MaxFreqDeviation) { return true; } else { return false; }
             }
+        }
+        private static void DeliteRedundantEmission(List<Emitting> emittings, int LostCount)
+        {
+            if (emittings.Count < LostCount) { return; }
+            if (LostCount < 0) { emittings = null; return; }
+            int CurentHitNumber = 1;
+            while ( emittings.Count > LostCount)
+            {
+                for (int i = 0; emittings.Count > i; i++)
+                {
+                    int hit = 0;
+                    for (int j = 0; emittings[i].WorkTimes.Length>j; j++)
+                    {
+                        hit = hit + emittings[i].WorkTimes[j].HitCount;
+                    }
+                    if (hit <= CurentHitNumber)
+                    {// удаление излучения
+                        emittings.RemoveRange(i, 1);
+                        i--;
+                    }
+                }
+                CurentHitNumber++;
+            }
+        }
+        private static int CompareTwoEmittingCenterWithStartEnd(Emitting emitting1, Emitting emitting2)
+        {// Не проверенно 
+         // 1 первое лучше
+         // -1 второе
+         // 0 не смог сравнить
+            if ((emitting1.Spectrum == null) || (emitting1.Spectrum.Levels_dBm.Length < 50)) { return 0; }
+            if ((emitting2.Spectrum == null) || (emitting2.Spectrum.Levels_dBm.Length < 50)) { return 0; }
+            if (CompareCenterWithStartEnd(emitting1) > CompareCenterWithStartEnd(emitting2)) { return 1; } else { return -1;}
+        }
+        private static double CompareCenterWithStartEnd(Emitting emitting)
+        { 
+            const double persent = 5;
+            if ((emitting.Spectrum == null)||(emitting.Spectrum.Levels_dBm.Length <50)) { return 0;}
+            int CountPointForAnalize = (int)Math.Ceiling(persent*emitting.Spectrum.Levels_dBm.Length / 100.0);
+            int centrIndexSt = (int)Math.Ceiling((emitting.Spectrum.Levels_dBm.Length - CountPointForAnalize) / 2.0);
+            double Center = CalcPartialPow(emitting.Spectrum.Levels_dBm, centrIndexSt, centrIndexSt + CountPointForAnalize);
+            double Start = CalcPartialPow(emitting.Spectrum.Levels_dBm, 0, CountPointForAnalize);
+            double Stop = CalcPartialPow(emitting.Spectrum.Levels_dBm, emitting.Spectrum.Levels_dBm.Length-1 - CountPointForAnalize, emitting.Spectrum.Levels_dBm.Length - 1);
+            return (Center - Math.Max(Start,Stop));
+        }
+        private static double CalcPartialPow(float[] arr, int start, int stop)
+        {  
+            if (start > stop) { int k = start; start = stop; stop = k;}
+            if (start < 0) { start = 0;}
+            if (stop >= arr.Length) { stop = arr.Length - 1;}
+            double Pow = 0;
+            for (int i = start; stop >= i; i++)
+            {
+                Pow = Pow + Math.Pow(10, arr[i] / 10);
+            }
+            Pow = Pow / (stop - start + 1);
+            Pow = 10 * Math.Log10(Pow);
+            return Pow;
         }
     }
 }

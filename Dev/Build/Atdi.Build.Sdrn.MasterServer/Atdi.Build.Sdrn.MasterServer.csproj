@@ -81,6 +81,7 @@
     <PostBuildEvent>copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
 
 copy "$(TargetDir)Atdi.Modules.AmqpBroker.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.DataModels.Api.DataBus.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Server\Components\MasterServerRole\Bin$(ConfigurationName)"

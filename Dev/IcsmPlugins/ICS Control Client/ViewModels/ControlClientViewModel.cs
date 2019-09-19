@@ -22,6 +22,7 @@ using System.Collections;
 using XICSM.ICSControlClient.Models;
 using System.Timers;
 using XICSM.ICSControlClient.Forms;
+using System.Windows.Input;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -52,6 +53,33 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasTasks), new PropertyMetadata(null));
     }
+
+    public class ShortSensorsCustomDataGrid : DataGrid
+    {
+        public ShortSensorsCustomDataGrid()
+        {
+            this.MouseDoubleClick += DoubleClick;
+        }
+        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
+            foreach (ShortSensorViewModel item in this.SelectedItemsList)
+            {
+                var dlgForm = new FM.OnlineMeasurementForm(item);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+                return;
+            }
+        }
+        public IList SelectedItemsList
+        {
+            get { return (IList)GetValue(SelectedItemsListProperty); }
+            set { SetValue(SelectedItemsListProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(ShortSensorsCustomDataGrid), new PropertyMetadata(null));
+    }
+
     public class ControlClientViewModel : WpfViewModelBase
     {
         public enum ModelType
@@ -735,7 +763,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                var measTaskForm = new FM.MeasTaskForm();
+                var measTaskForm = new FM.MeasTaskForm(0, SDR.MeasurementType.Signaling);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
                 this.ReloadShortMeasTasks();
@@ -1600,6 +1628,12 @@ namespace XICSM.ICSControlClient.ViewModels
                 SpecLabelText = (_selectedSpectrum + 1).ToString() + " of " + this.CurrentResultsMeasurementsStationData.GeneralResults.Length.ToString();
             else
                 SpecLabelText = "0 of 0";
+        }
+
+
+        private void ShortSensorsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            MessageBox.Show($"ShortSensorsDataGrid_MouseDoubleClick: {e.ClickCount}");
         }
     }
 }
