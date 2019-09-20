@@ -162,10 +162,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     {
                         Gain = LPC.Gain(command.Parameter.PreAmp_dB);
                         StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
+
                     }
 
                     if (command.Parameter.RBW_Hz < 0)
                     {
+                        //decimal[] natrbw = new decimal[] { 0.301m, 0.602m, 1.204m, 2.4m, 4.81m, 9.63m, 19.26m, 38.52m, 77.05m, 154.11m, 308.22m, 616.45m, 1232, 2465, 4931, 9863, 19720, 39450, 78900, 157100, 315600, 631200, 1262000, 2525000, 5050000, 10100000};
                         decimal[] ar = new decimal[] { 0.0078125m, 0.015625m, 0.03125m, 0.0625m, 0.125m, 0.25m, 0.5m, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
                         decimal magic = 38.146966101334357m; //9.536741525333588m;
                         decimal m1 = FreqSpan / command.Parameter.TracePoint;//хотим
@@ -192,7 +194,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             rbw = RBWMax;
                         }
                         decimal vbw = 0;
-                        if (command.Parameter.RBW_Hz < 0)
+                        if (command.Parameter.VBW_Hz < 0)
                         {
                             vbw = rbw;
                         }
@@ -260,13 +262,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 }
                                 result.Freq_Hz = new double[FreqArr.Length];
                                 result.Level = new float[FreqArr.Length];
-                                for (int j = 0; j < FreqArr.Length; j++)
+                                if (command.Parameter.RBW_Hz == -2)
                                 {
-                                    result.Freq_Hz[j] = FreqArr[j];
-                                    result.Level[j] = LevelArr[j];
+                                    float adj = (float)(10 * Math.Log10((FreqArr[5] - FreqArr[4]) / (double)RBW));
+                                    for (int j = 0; j < FreqArr.Length; j++)
+                                    {
+                                        result.Freq_Hz[j] = FreqArr[j];
+                                        result.Level[j] = LevelArr[j] + adj;
+                                    }
                                 }
-                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                else
+                                {
+                                    for (int j = 0; j < FreqArr.Length; j++)
+                                    {
+                                        result.Freq_Hz[j] = FreqArr[j];
+                                        result.Level[j] = LevelArr[j];
+                                    }
+                                }
+                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                                                   //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                                 result.Att_dB = LPC.Attenuator(Attenuator);
                                 result.PreAmp_dB = LPC.Gain(Gain);
                                 result.RefLevel_dBm = (int)RefLevel;
@@ -354,13 +368,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 Level = new float[FreqArr.Length],
                                 DeviceStatus = COMR.Enums.DeviceStatus.Normal
                             };
-                            for (int j = 0; j < FreqArr.Length; j++)
+                            if (command.Parameter.RBW_Hz == -2)
                             {
-                                result.Freq_Hz[j] = FreqArr[j];
-                                result.Level[j] = LevelArr[j];
+                                float adj = (float)(10 * Math.Log10((FreqArr[5] - FreqArr[4]) / (double)RBW));
+                                for (int j = 0; j < FreqArr.Length; j++)
+                                {
+                                    result.Freq_Hz[j] = FreqArr[j];
+                                    result.Level[j] = LevelArr[j] + adj;
+                                }
                             }
-                            result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                            //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            else
+                            {
+                                for (int j = 0; j < FreqArr.Length; j++)
+                                {
+                                    result.Freq_Hz[j] = FreqArr[j];
+                                    result.Level[j] = LevelArr[j];
+                                }
+                            }
+                            
+                            result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                                               //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                             result.Att_dB = LPC.Attenuator(Attenuator);
                             result.PreAmp_dB = LPC.Gain(Gain);
                             result.RefLevel_dBm = (int)RefLevel;
@@ -585,7 +612,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         }
         #region Param
-
+        private long UTCOffset = 621355968000000000;
         public EN.Status Status = EN.Status.NoError;
         private EN.Mode DeviceMode = EN.Mode.Sweeping;
         private EN.Flag FlagMode = EN.Flag.StreamIQ;
@@ -1500,7 +1527,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             tempIQStream.IQData = new float[tempIQStream.BlocksCount][];
             tempIQStream.dataRemainings = new int[tempIQStream.BlocksCount];
             tempIQStream.sampleLosses = new int[tempIQStream.BlocksCount];
-            
+
             tempIQStream.OneSempleDuration = 1000000000 / samples_per_sec;
             OneSempleDuration = ((decimal)tempIQStream.OneSempleDuration) / 1000000000;
             tempIQStream.BlockTime = new long[100000];
@@ -1524,9 +1551,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
 
             // Константы
-            float noise = 0.000001f; // уровень шума в mW^2
+            float noise = 0.0000004f; // уровень шума в mW^2
             float SN = 10; // превышение шума в разах 
-            float TrigerLevel = noise * SN;
+            float TrigerLevelPL = noise * SN;
+            float TrigerLevelMN = 0 - TrigerLevelPL;
             // Конец констант 
 
             bool SignalFound = false; //был ли сигнал
@@ -1628,8 +1656,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                 }
 
-
-
                 if (GetBlockOnTime)
                 {
                     //проверяем наличие сигнала пока его не обнаружили
@@ -1637,11 +1663,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     {
                         for (int j = 0; tempIQStream.IQData[NecessaryBlockIndex].Length - 6 > j; j += step)
                         {
-                            if ((tempIQStream.IQData[NecessaryBlockIndex][j] >= TrigerLevel) || (tempIQStream.IQData[NecessaryBlockIndex][j + 1] >= TrigerLevel))
+                            if (tempIQStream.IQData[NecessaryBlockIndex][j] > TrigerLevelPL || tempIQStream.IQData[NecessaryBlockIndex][j + 1] > TrigerLevelPL ||
+                                tempIQStream.IQData[NecessaryBlockIndex][j] < TrigerLevelMN || tempIQStream.IQData[NecessaryBlockIndex][j + 1] < TrigerLevelMN)
                             {
-                                if ((tempIQStream.IQData[NecessaryBlockIndex][j + 2] >= TrigerLevel) || (tempIQStream.IQData[NecessaryBlockIndex][j + 3] >= TrigerLevel))
+                                if (tempIQStream.IQData[NecessaryBlockIndex][j + 2] > TrigerLevelPL || tempIQStream.IQData[NecessaryBlockIndex][j + 3] > TrigerLevelPL ||
+                                    tempIQStream.IQData[NecessaryBlockIndex][j + 2] < TrigerLevelMN || tempIQStream.IQData[NecessaryBlockIndex][j + 3] < TrigerLevelMN)
                                 {
-                                    if ((tempIQStream.IQData[NecessaryBlockIndex][j + 4] >= TrigerLevel) || (tempIQStream.IQData[NecessaryBlockIndex][j + 5] >= TrigerLevel))
+                                    if (tempIQStream.IQData[NecessaryBlockIndex][j + 4] > TrigerLevelPL || tempIQStream.IQData[NecessaryBlockIndex][j + 5] > TrigerLevelPL ||
+                                        tempIQStream.IQData[NecessaryBlockIndex][j + 4] > TrigerLevelMN || tempIQStream.IQData[NecessaryBlockIndex][j + 5] > TrigerLevelMN)
                                     {
                                         SignalFound = true;//Есть сигнал 
                                         IQStartIndex = AllBlockIndex;
@@ -1734,19 +1763,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     IQStreamResult.iq_samples = tempIQStream.IQData;
                 }
-                ////del from
-                float[] _IQArr = new float[IQStreamResult.iq_samples.Length * IQStreamResult.iq_samples[0].Length];
-                for (int k = 0; k < IQStreamResult.iq_samples.Length; k++)
-                {
-                    Array.Copy(IQStreamResult.iq_samples[k], 0, _IQArr, k * IQStreamResult.iq_samples[k].Length, IQStreamResult.iq_samples[k].Length);
-                    //for (int j = 0; j < IQStreamResult.iq_samples[0].Length; j++)
-                    //{
-                    //    _IQArr[k * j] = IQStreamResult.iq_samples[k][j];
-                    //}
-                }
-                IQArr = _IQArr;
-
-                ////del to
+                
                 IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
                 IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
@@ -1761,14 +1778,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         IQStreamResult.PPSTimeDifference_ns = TimeToStartBlockWithPPS;
                         if (dTPPSIndex < IQStartIndex)
                         {
-                            for (int t = dTPPSIndex; t < IQStartIndex; t++)
+                            for (int t = dTPPSIndex - 1; t < IQStartIndex; t++)
                             {
                                 IQStreamResult.PPSTimeDifference_ns -= tempIQStream.BlockTimeDelta[t];
                             }
                         }
                         else if (IQStartIndex < dTPPSIndex)
                         {
-                            for (int t = IQStartIndex; t < dTPPSIndex; t++)
+                            for (int t = IQStartIndex; t < dTPPSIndex + 1; t++)
                             {
                                 IQStreamResult.PPSTimeDifference_ns += tempIQStream.BlockTimeDelta[t];
                             }
@@ -1779,7 +1796,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         throw new Exception("No PPS signal was detected during reception.");
                     }
                 }
-                TriggerOffset = ((decimal)IQStreamResult.PPSTimeDifference_ns) / 1000000000;
                 #endregion обработка полученных данных  
                 done = true;
 

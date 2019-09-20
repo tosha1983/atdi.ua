@@ -9,11 +9,41 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid x:Name="glo">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="Auto"/>
             <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <gl:OpenGLControl Name="openGLControl" OpenGLDraw="openGLControl_OpenGLDraw" Resized="openGLControl_Resized"  OpenGLInitialized="openGLControl_OpenGLInitialized"                         
-                          DrawFPS="True" FrameRate="60" OpenGLVersion="OpenGL2_0" Grid.Row="1" MinHeight="10" MinWidth="10"/>
-        <Slider Orientation="Vertical" Grid.Column="1" Minimum="0.0000001" Maximum="0.03" Value="{Binding RefLevel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.0000001" />
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Slider Orientation="Vertical" Minimum="0.0000001" Maximum="0.5" Value="{Binding RefLevel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.00000001" />
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <gl:OpenGLControl Name="openGLControl" OpenGLDraw="openGLControl_OpenGLDraw" Resized="openGLControl_Resized"  OpenGLInitialized="openGLControl_OpenGLInitialized"                         
+                          DrawFPS="True" FrameRate="60" OpenGLVersion="OpenGL2_0" MinHeight="10" MinWidth="10"/>
+            <gl:OpenGLControl Name="CircleGLControl" OpenGLDraw="CircleGLControl_OpenGLDraw" Resized="CircleGLControl_Resized"  OpenGLInitialized="CircleGLControl_OpenGLInitialized"                         
+                          Width="{Binding ElementName=CircleGLControl,Path=ActualHeight}"
+                              DrawFPS="True" FrameRate="60" OpenGLVersion="OpenGL2_0" MinHeight="10" MinWidth="10" Grid.Column="1"/>
+            <Slider Orientation="Vertical" Minimum="0.000001" Maximum="0.5" Value="{Binding CircleRefLevel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.00000001" Grid.Column="2" />
+        </Grid>
+        
+       
+        <Slider Orientation="Horizontal" Grid.Column="1" Minimum="0" Maximum="{Binding HMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                Value="{Binding HMarkerDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="1" Grid.Row="2" Margin="0,0,100,0" />
+        <TextBox Text="{Binding HMarkerDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" HorizontalAlignment="Right" Width="100" Grid.Column="1"/>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Slider Orientation="Horizontal" Minimum="0" Maximum="{Binding HMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="{Binding HMinDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="1" />
+            <Slider Orientation="Horizontal" Minimum="0" Maximum="{Binding HMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="{Binding HMaxDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="1" Grid.Column="1" />
+        </Grid>
     </Grid>
 </UserControl>

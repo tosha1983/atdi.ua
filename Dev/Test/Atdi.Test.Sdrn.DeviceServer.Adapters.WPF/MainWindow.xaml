@@ -53,8 +53,13 @@
             <RepeatButton Click="SetMeas3_Click" Content="GET Trace3" />
             <RepeatButton Click="SetMeas1800_Click" Content="GET Trace 1800" />
             <RepeatButton Click="SetMeas1800AVG_Click" Content="GET Trace 1800 AVG" />
+            <RepeatButton Click="SetMeas9352AVG_Click" Content="GET Trace 9352 AVG" />
+            <RepeatButton Click="SetMeasAVG1350_Click" Content="GET Trace 1350 AVG SH" />
+            <TextBox Name="RBW"  Text="800"/>
             <RepeatButton Click="SetMeasIQ_Click" Content="GET IQ" />
             <RepeatButton Click="SetMeasIQ2_Click" Content="GET IQ2" />
+            <RepeatButton Click="SetMeasIQ3_Click" Content="GET IQ3" />
+            <RepeatButton Click="SetMeasIQ4_Click" Content="GET IQ4" />
             
             <RepeatButton Click="SetMeas21_Click" Content="Set Meas 21" Margin="0,20,0,0" Delay="10"/>
             <RepeatButton Click="SetMeas22_Click" Content="Set Meas 22" Delay="10"/>

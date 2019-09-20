@@ -39,7 +39,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         #region Property
         public double TriggerOffset = 1;
         public double SampleTimeLength = 1;
-
+        double RefLevel2 = 0.02;
         public double RefLevel
         {
             get { return (double)GetValue(RefLevelProperty); }
@@ -106,7 +106,45 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         public static readonly DependencyProperty TracePointsProperty = DependencyProperty.Register("TracePoints", typeof(int), typeof(DrawIQ), new PropertyMetadata(1601, null));
         public static readonly DependencyProperty LevelUnitProperty = DependencyProperty.Register("LevelUnit", typeof(string), typeof(DrawIQ), new PropertyMetadata("dBm", null));
 
+        public int HMax
+        {
+            get { return (int)GetValue(HMaxProperty); }
+            set { SetValue(HMaxProperty, value); }
+        }
+        public static readonly DependencyProperty HMaxProperty = DependencyProperty.Register("HMax", typeof(int), typeof(DrawIQ), new PropertyMetadata(1601, null));
+        public int HMin
+        {
+            get { return (int)GetValue(HMinProperty); }
+            set { SetValue(HMinProperty, value); }
+        }
+        public static readonly DependencyProperty HMinProperty = DependencyProperty.Register("HMin", typeof(int), typeof(DrawIQ), new PropertyMetadata(1601, null));
 
+        public int HMaxDraw
+        {
+            get { return (int)GetValue(HMaxDrawProperty); }
+            set { SetValue(HMaxDrawProperty, value); }
+        }
+        public static readonly DependencyProperty HMaxDrawProperty = DependencyProperty.Register("HMaxDraw", typeof(int), typeof(DrawIQ), new PropertyMetadata(1601, null));
+        public int HMinDraw
+        {
+            get { return (int)GetValue(HMinDrawProperty); }
+            set { SetValue(HMinDrawProperty, value); }
+        }
+        public static readonly DependencyProperty HMinDrawProperty = DependencyProperty.Register("HMinDraw", typeof(int), typeof(DrawIQ), new PropertyMetadata(1601, null));
+        public int HMarkerDraw
+        {
+            get { return (int)GetValue(HMarkerDrawProperty); }
+            set { SetValue(HMarkerDrawProperty, value); }
+        }
+        public static readonly DependencyProperty HMarkerDrawProperty = DependencyProperty.Register("HMarkerDraw", typeof(int), typeof(DrawIQ), new PropertyMetadata(1601, null));
+
+        double CircleRefLevel2 = 0.02;
+        public double CircleRefLevel
+        {
+            get { return (double)GetValue(CircleRefLevelProperty); }
+            set { SetValue(CircleRefLevelProperty, value); }
+        }
+        public static readonly DependencyProperty CircleRefLevelProperty = DependencyProperty.Register("CircleRefLevel", typeof(double), typeof(DrawIQ), new PropertyMetadata(0.000004d, null));
         #endregion
         public DrawIQ()
         {
@@ -124,8 +162,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             InitializeComponent();
 
             glo.DataContext = this;
+            HMin = 0;
+            HMax = 1600;
         }
-
+        public float MAP(float x, float inMin, float inMax, float outMin, float outMax)
+        {
+            float d = (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+            if (d > outMax) d = outMax;
+            if (d < outMin) d = outMin;
+            return d;
+        }
         private void openGLControl_Resized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
             //  Get the OpenGL instance.
@@ -135,23 +181,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             gl.LoadIdentity();
             double wGrid = 0.1;
             if (openGLControl.ActualWidth > 0)
-                wGrid = (IQ.Length / 2 - 0) / openGLControl.ActualWidth;
+                wGrid = (HMaxDraw - 0) / openGLControl.ActualWidth;
             //gl.Ortho(0 - wGrid, IQ.Length / 2 + wGrid, LowestLevel - 0.01, RefLevel + 0.01, 1, -1);
-            gl.Ortho(0 - wGrid, IQ.Length / 2 + wGrid, LowestLevel, RefLevel, 1, -1);
+            gl.Ortho(HMinDraw - wGrid, HMaxDraw + wGrid, LowestLevel, RefLevel2, 1, -1);
         }
         private void openGLControl_OpenGLInitialized(object sender, OpenGLEventArgs args)
         {
             args.OpenGL.Enable(OpenGL.GL_DEPTH_TEST);
             args.OpenGL.ClearColor(0, 0, 0, 0);
 
-        }
-        public float MAP(float x, float inMin, float inMax, float outMin, float outMax)
-        {
-            float d = (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-            if (d > outMax) d = outMax;
-            if (d < outMin) d = outMin;
-            return d;
-        }
+        }       
         private void openGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
             double w = 10, h = 10;
@@ -181,18 +220,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     IQ = ANAdapter.IQArr;
                     TriggerOffset = (double)ANAdapter.TriggerOffset;
                     SampleTimeLength = (double)ANAdapter.SampleTimeLength;
+                    HMin = 0;
+                    HMax = IQ.Length / 2;
                 }
                 if (this.Name == "SHIQ" && SHAdapter != null)
                 {
                     IQ = SHAdapter.IQArr;
                     TriggerOffset = (double)SHAdapter.TriggerOffset;
                     SampleTimeLength = (double)SHAdapter.OneSempleDuration;
+                    HMin = 0;
+                    HMax = IQ.Length / 2;
                 }
                 //IQ = ANAdapter.IQArr;
                 //Level = ANAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
                 //Freq = ANAdapter.FreqArr;
 
-
+                RefLevel2 = RefLevel * RefLevel;
                 #endregion
 
 
@@ -203,28 +246,28 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
             try
             {
-                double wGrid = (IQ.Length / 2 - 0) / w;
+                double wGrid = (HMaxDraw - 0) / w;
                 //OpenGL gl = openGLControl.OpenGL;
                 var gl = args.OpenGL;
                 gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
 
                 gl.LoadIdentity();
-                gl.Ortho2D(0 - wGrid * 0.1, IQ.Length / 2 + wGrid * 0.1, LowestLevel, RefLevel);
+                gl.Ortho2D(HMinDraw - wGrid * 0.1, HMaxDraw + wGrid * 0.1, LowestLevel, RefLevel2);
                 //gl.Ortho2D(0 - wGrid * 0.1, IQ.Length / 2 + wGrid * 0.1, LowestLevel - 0.01, RefLevel + 0.01);
 
                 //gl.Enable(OpenGL.GL_BLEND);
                 gl.ClearColor(BackgroundRGB[0], BackgroundRGB[1], BackgroundRGB[2], 1.0f);//0.89453f, 0.89453f, 0.89453f, 0.0f); //
 
 
-                double gridW = IQ.Length / 20;
+                double gridW = HMaxDraw / 20;
                 gl.Begin(BeginMode.Lines);
                 //float fcol = 0.3098f; //((i % 10) == 0) ? 0.3f : 0.15f;
                 gl.Color(ForegroundRGB[0], ForegroundRGB[1], ForegroundRGB[2]);
                 for (int i = 0; i <= 10; i++)
                 {
-                    gl.Vertex(0 + i * gridW, RefLevel);
-                    gl.Vertex(0 + i * gridW, LowestLevel);
+                    gl.Vertex(HMinDraw + i * gridW, RefLevel2);
+                    gl.Vertex(HMinDraw + i * gridW, LowestLevel);
                 }
                 gl.End();
 
@@ -232,27 +275,27 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 gl.Begin(BeginMode.Lines);
                 gl.Color(ForegroundRGB[0], ForegroundRGB[1], ForegroundRGB[2]);
                 //верхняя линия
-                gl.Vertex(0, RefLevel);
-                gl.Vertex(IQ.Length / 2, RefLevel);
+                gl.Vertex(HMinDraw, RefLevel2);
+                gl.Vertex(HMaxDraw / 2, RefLevel2);
 
-                for (double i = (((int)RefLevel) / 10) * 10; i >= (int)LowestLevel; i -= (RefLevel - LowestLevel) / 10)
+                for (double i = (((int)RefLevel2) / 10) * 10; i >= (int)LowestLevel; i -= (RefLevel2 - LowestLevel) / 10)
                 {
-                    double shift = 0 + wGrid * String.Concat((int)i, LevelUnit).Length * 7.5;
+                    double shift = HMinDraw + wGrid * String.Concat((int)i, LevelUnit).Length * 7.5;
                     gl.Vertex(shift, i);
-                    gl.Vertex(IQ.Length / 2, i);
+                    gl.Vertex(HMaxDraw / 2, i);
                 }
                 //нижняя линия
-                gl.Vertex(0, LowestLevel);
-                gl.Vertex(IQ.Length / 2, LowestLevel);
+                gl.Vertex(HMinDraw, LowestLevel);
+                gl.Vertex(HMaxDraw / 2, LowestLevel);
                 gl.End();
 
                 //подписи шкалы
                 for (int i = 0; i < 11; i++)
                 {
-                    int y = (int)(((int)RefLevel / 10) * 10 - (Range / 10) * i);
-                    if (y < RefLevel - Range / 50 && y > RefLevel - Range + Range / 50)
+                    int y = (int)(((int)RefLevel2 / 10) * 10 - (Range / 10) * i);
+                    if (y < RefLevel2 - Range / 50 && y > RefLevel2 - Range + Range / 50)
                     {
-                        double y1 = MAP(y, (float)LowestLevel, (float)RefLevel, 0, (float)h);
+                        double y1 = MAP(y, (float)LowestLevel, (float)RefLevel2, 0, (float)h);
                         gl.DrawText(2, (int)y1 - 3, ForegroundRGB[0], ForegroundRGB[1], ForegroundRGB[2], "Segoe UI", 10.0f, string.Format(String.Concat((int)(RefLevel / 10) * 10 - (Range / 10) * i, LevelUnit), 10, 8));
                         //gl.End();
                         gl.Flush();
@@ -260,8 +303,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     }
                 }
                 gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, (IQ.Length / 2).ToString());
-                gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, TriggerOfset);
-                gl.DrawText((int)w - 210, (int)h - 70, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, RefLevel.ToString());
+                gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, TriggerOffset.ToString());
+                gl.DrawText((int)w - 210, (int)h - 70, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, RefLevel2.ToString());
+                gl.DrawText((int)w - 210, (int)h - 90, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, (IQ.Length * SampleTimeLength / 2).ToString());
+                gl.DrawText((int)w - 210, (int)h - 130, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, (TriggerOffset - HMarkerDraw * SampleTimeLength).ToString());
                 //gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
                 //    Math.Round(Adapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
                 gl.Flush();
@@ -270,24 +315,35 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     double d = 0;
                     gl.Begin(BeginMode.LineStrip);
                     gl.Color(Trace1RGB[0], Trace1RGB[1], Trace1RGB[2]);
-                    for (int i = 0; i < IQ.Length / 2; i++)
+                    for (int i = HMinDraw; i < HMaxDraw; i++)
                     {
                         d = Math.Sqrt(Math.Pow(IQ[0 + i * 2], 2) + Math.Pow(IQ[1 + i * 2], 2));
                         gl.Vertex(i, d);
 
                     }
                     gl.End();
+
                 }
                 gl.Flush();
 
                 if (this.Name == "ANIQ" && ANAdapter != null)
                 {
+                    //double d = 0;
+                    //gl.Begin(BeginMode.LineStrip);
+                    //gl.Color(Trace1RGB[1], Trace1RGB[0], Trace1RGB[2]);
+                    //for (int i = 0; i < IQ.Length / 2; i++)
+                    //{
+                    //    d = Math.Sqrt(IQ[0 + i * 2]);
+                    //    gl.Vertex(i, d);
+
+                    //}
+                    //gl.End();
                     gl.Begin(BeginMode.Lines);
                     //float fcol = 0.3098f; //((i % 10) == 0) ? 0.3f : 0.15f;
                     gl.Color(1f, 0f, 0f);
 
 
-                    gl.Vertex(TriggerOffset / SampleTimeLength, RefLevel);
+                    gl.Vertex(TriggerOffset / SampleTimeLength, RefLevel2);
                     gl.Vertex(TriggerOffset / SampleTimeLength, LowestLevel);
                     gl.End();
                     gl.DrawText(0, (int)h - 70, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, "12332132");
@@ -297,12 +353,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 }
                 else if (this.Name == "SHIQ" && SHAdapter != null)
                 {
+                    //double d = 0;
+                    //gl.Begin(BeginMode.LineStrip);
+                    //gl.Color(Trace1RGB[1], Trace1RGB[0], Trace1RGB[2]);
+                    //for (int i = 0; i < IQ.Length / 2; i++)
+                    //{
+                    //    d = Math.Sqrt(IQ[1 + i * 2]);
+                    //    gl.Vertex(i, d);
+
+                    //}
+                    //gl.End();
                     gl.Begin(BeginMode.Lines);
                     //float fcol = 0.3098f; //((i % 10) == 0) ? 0.3f : 0.15f;
                     gl.Color(1f, 0f, 0f);
 
 
-                    gl.Vertex(TriggerOffset / SampleTimeLength, RefLevel);
+                    gl.Vertex(TriggerOffset / SampleTimeLength, RefLevel2);
                     gl.Vertex(TriggerOffset / SampleTimeLength, LowestLevel);
                     gl.End();
                     gl.DrawText(0, (int)h - 70, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, "12332132");
@@ -310,7 +376,104 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                     gl.Flush();
                 }
-               
+                gl.Begin(BeginMode.Lines);
+                //float fcol = 0.3098f; //((i % 10) == 0) ? 0.3f : 0.15f;
+                gl.Color(1f, 0f, 0f);
+                    gl.Vertex(HMarkerDraw, RefLevel2);
+                    gl.Vertex(HMarkerDraw, LowestLevel);
+                gl.End();
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+
+
+        private void CircleGLControl_Resized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
+        {
+            //  Get the OpenGL instance.
+            var gl = args.OpenGL;
+
+
+            gl.LoadIdentity();
+            gl.Ortho(0 - CircleRefLevel2, CircleRefLevel2, 0 - CircleRefLevel2, CircleRefLevel2, 1, -1);
+        }
+        private void CircleGLControl_OpenGLInitialized(object sender, OpenGLEventArgs args)
+        {
+            args.OpenGL.Enable(OpenGL.GL_DEPTH_TEST);
+            args.OpenGL.ClearColor(0, 0, 0, 0);
+
+        }
+
+        private void CircleGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
+        {
+            double w = 10, h = 10;
+            try
+            {
+                //Color bg = (Color)this.FindResource("Background_NormalColor");
+                //BackgroundRGB[0] = ((float)bg.R) / 256;
+                //BackgroundRGB[1] = ((float)bg.G) / 256;
+                //BackgroundRGB[2] = ((float)bg.B) / 256;
+                //Color fg = (Color)this.FindResource("Foreground_NormalColor");
+                //ForegroundRGB[0] = ((float)fg.R) / 256;
+                //ForegroundRGB[1] = ((float)fg.G) / 256;
+                //ForegroundRGB[2] = ((float)fg.B) / 256;
+
+                if (openGLControl.ActualWidth > 0)
+                    w = openGLControl.ActualWidth;
+                if (openGLControl.ActualHeight > 0)
+                    h = openGLControl.ActualHeight;
+            }
+            catch { }
+            try
+            {
+                #region Device Drawing
+
+                //IQ = ANAdapter.IQArr;
+                //Level = ANAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
+                //Freq = ANAdapter.FreqArr;
+
+                CircleRefLevel2 =  CircleRefLevel;
+
+
+                #endregion
+            }
+            catch (Exception e)
+            {
+            }
+            try
+            {
+                double wGrid = (HMaxDraw - 0) / w;
+                //OpenGL gl = openGLControl.OpenGL;
+                var gl = args.OpenGL;
+                gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+
+
+                gl.LoadIdentity();
+                gl.Ortho(0 - CircleRefLevel2, CircleRefLevel2, 0 - CircleRefLevel2, CircleRefLevel2, 1, -1);
+                //gl.Ortho2D(0 - wGrid * 0.1, IQ.Length / 2 + wGrid * 0.1, LowestLevel - 0.01, RefLevel + 0.01);
+
+                //gl.Enable(OpenGL.GL_BLEND);
+                gl.ClearColor(BackgroundRGB[0], BackgroundRGB[1], BackgroundRGB[2], 1.0f);//0.89453f, 0.89453f, 0.89453f, 0.0f); //
+
+
+                
+                if (IQ != null && IQ.Length > 0)
+                {
+                    double d = 0;
+                    gl.Begin(BeginMode.LineStrip);
+                    gl.Color(Trace1RGB[0], Trace1RGB[1], Trace1RGB[2]);
+                    for (int i = HMinDraw; i < HMaxDraw; i++)
+                    {
+                        gl.Vertex(IQ[0 + i * 2], IQ[1 + i * 2]);
+                    }
+                    gl.End();
+
+                }
+                gl.Flush();
+
+                
             }
             catch (Exception e)
             {

@@ -187,7 +187,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                         LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnits.Id).ToString();
 
                         RefLevel = (double)ANAdapter.RefLevelSpec;
-                        
+
                         Range = (double)ANAdapter.RangeSpec;
                         LowestLevel = RefLevel - Range;
                     }
@@ -208,7 +208,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                         Range = (double)SHAdapter.Range;
                         LowestLevel = RefLevel - Range;
-                    }                    
+                    }
                 }
                 #endregion
 
@@ -278,17 +278,20 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 {
                     gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
                     Math.Round(ANAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
+                    gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, MeasChannelPower(Freq, Level, FreqCentr, 10000000, (double)ANAdapter.RBW).ToString());
                     gl.Flush();
                 }
                 if (this.Name == "DS_SH" && SHAdapter != null)
                 {
                     gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
                        Math.Round(SHAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
+
+                    gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, MeasChannelPower(Freq, Level, FreqCentr, 10000000, (double)SHAdapter.RBW).ToString());
                     gl.Flush();
                 }
-                    //gl.DrawText(10, (int)13, 1.0f, 0.0f, 0.0f, "Segoe UI Mono", 10.0f, string.Format(String.Concat((int)(RefLevel / 10) * 10 - (Range / 10) *1, LevelUnit), 10, 8));
-                    //gl.Flush();
-                    if (Freq != null && Freq.Length > 0 && Level != null && Level.Length > 0)
+                //gl.DrawText(10, (int)13, 1.0f, 0.0f, 0.0f, "Segoe UI Mono", 10.0f, string.Format(String.Concat((int)(RefLevel / 10) * 10 - (Range / 10) *1, LevelUnit), 10, 8));
+                //gl.Flush();
+                if (Freq != null && Freq.Length > 0 && Level != null && Level.Length > 0)
                 {
                     gl.Begin(BeginMode.LineStrip);
                     gl.Color(Trace1RGB[0], Trace1RGB[1], Trace1RGB[2]);
@@ -334,6 +337,89 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 gl.Flush();
             }
             catch { }
+        }
+        public double MeasChannelPower(double[] freqs, float[] level, double freqCentrMeas, double BW, double RBW)
+        {
+            double pow = 0;
+            try
+            {
+                if (freqs.Length > 0)
+                {
+                    double mf = freqCentrMeas - BW / 2;
+                    double pf = freqCentrMeas + BW / 2;
+                    if (mf < freqs[0]) { mf = freqs[0]; }
+                    if (pf > freqs[freqs.Length - 1]) { pf = freqs[freqs.Length - 1]; }
+
+                    int start = FindMarkerIndOnTrace(freqs, level, mf);
+                    int stop = FindMarkerIndOnTrace(freqs, level, pf);
+                    if (start != stop)
+                    {
+                        double powsum = 0;//W
+                        for (int i = start; i <= stop; i++)
+                        {
+                            if (i == start) { powsum = Math.Pow(10, level[i] / 10); }
+                            else powsum += Math.Pow(10, level[i] / 10);
+                        }
+                        pow = 10 * Math.Log10((powsum * BW) / (RBW * (stop - start)));
+                        //pow = 10 * Math.Log10(powsum * 1000);
+                    }
+                    else
+                    {
+                        pow = level[start];
+                    }
+
+                    //if (LevelUnit == 1/*"dBµV"*/) pow += 106.98m;// + kf;
+                }
+                //if (freqs.Length > 0)
+                //{
+                //    double mf = freqCentrMeas - BW / 2;
+                //    double pf = freqCentrMeas + BW / 2;
+                //    if (mf < freqs[0]) { mf = freqs[0]; }
+                //    if (pf > freqs[freqs.Length - 1]) { pf = freqs[freqs.Length - 1]; }
+
+                //    int start = FindMarkerIndOnTrace(freqs, level, mf);
+                //    int stop = FindMarkerIndOnTrace(freqs, level, pf);
+                //    if (start != stop)
+                //    {
+                //        double powsum = 0;//W
+                //        for (int i = start; i < stop; i++)
+                //        {
+                //            if (i == start) { powsum = 0.001 * Math.Pow(10, level[i] / 10); }
+                //            else powsum += 0.001 * Math.Pow(10, level[i] / 10);
+                //        }
+                //        pow = 10 * Math.Log10(powsum *1000);
+                //    }
+                //    else
+                //    {
+                //        pow = level[start];
+                //    }
+
+                //    //if (LevelUnit == 1/*"dBµV"*/) pow += 106.98m;// + kf;
+                //}
+            }
+            catch { }
+            return pow;
+        }
+        public int FindMarkerIndOnTrace(double[] freqs, float[] level, double freq)
+        {
+            int ind = -1;
+            if (freq >= freqs[0] && freq <= freqs[freqs.Length - 1])
+            {
+                double deviation = double.MaxValue;
+                for (int i = 0; i < freqs.Length; i++)
+                {
+                    if (Math.Abs(freqs[i] - freq) < deviation)
+                    {
+                        deviation = Math.Abs(freqs[i] - freq);
+                        ind = i;
+                    }
+                }
+            }
+            else if (freq < freqs[0])
+            { ind = 0; }
+            else if (freq > freqs[freqs.Length - 1])
+            { ind = freqs.Length - 1; }
+            return ind;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         private double[] Freqs;
         //данные на усреднение, хранятся в миливатах
-        private List<float[]> TracesToAverage;
+        private List<double[]> TracesToAverage;
 
         /// <summary>
         /// Количевство на усреднение меньше двух нечего усреднять, больше 500 долго
@@ -57,7 +57,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             TracePoints = 1601;
             CalcAfterAdd = false;
             Freqs = new double[] { };
-            TracesToAverage = new List<float[]> { };
+            TracesToAverage = new List<double[]> { };//В W
             InputlevelUnit = MEN.LevelUnit.dBm;
             OutputlevelUnit = MEN.LevelUnit.dBm;
             NumberOfSweeps = 0;
@@ -89,54 +89,96 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 }
                 NumberOfSweeps = 0;
                 //добавить в TracesToAverage новый элемент пересчитаный
-                float[] tr = new float[TracePoints];
+                double[] tr = new double[TracePoints];
                 if (inputLevelUnit == MEN.LevelUnit.dBm)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = (float)Math.Pow(10, NewTraceLevels[i] / 10);
+                        tr[i] = (double)(Math.Pow(10, NewTraceLevels[i] / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.dBµV)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = (float)Math.Pow(10, (NewTraceLevels[i] - 107) / 10);
+                        tr[i] = (double)(Math.Pow(10, (NewTraceLevels[i] - 107) / 10)/1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.Watt)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = NewTraceLevels[i] * 1000;
+                        tr[i] = NewTraceLevels[i];
                     }
                 }
+                //if (inputLevelUnit == MEN.LevelUnit.dBm)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = (float)Math.Pow(10, NewTraceLevels[i] / 10);
+                //    }
+                //}
+                //else if (inputLevelUnit == MEN.LevelUnit.dBµV)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = (float)Math.Pow(10, (NewTraceLevels[i] - 107) / 10);
+                //    }
+                //}
+                //else if (inputLevelUnit == MEN.LevelUnit.Watt)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = NewTraceLevels[i] * 1000;
+                //    }
+                //}
                 TracesToAverage.Add(tr);
             }
             else if (TracesToAverage.Count < _AveragingCount)
             {
-                float[] tr = new float[TracePoints];
+                double[] tr = new double[TracePoints];
                 if (inputLevelUnit == MEN.LevelUnit.dBm)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = (float)Math.Pow(10, NewTraceLevels[i] / 10);
+                        tr[i] = (double)(Math.Pow(10, NewTraceLevels[i] / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.dBµV)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = (float)Math.Pow(10, (NewTraceLevels[i] - 107) / 10);
+                        tr[i] = (double)(Math.Pow(10, (NewTraceLevels[i] - 107) / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.Watt)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = NewTraceLevels[i] * 1000;
+                        tr[i] = NewTraceLevels[i];
                     }
                 }
+                //if (inputLevelUnit == MEN.LevelUnit.dBm)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = (float)Math.Pow(10, NewTraceLevels[i] / 10);
+                //    }
+                //}
+                //else if (inputLevelUnit == MEN.LevelUnit.dBµV)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = (float)Math.Pow(10, (NewTraceLevels[i] - 107) / 10);
+                //    }
+                //}
+                //else if (inputLevelUnit == MEN.LevelUnit.Watt)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = NewTraceLevels[i] * 1000;
+                //    }
+                //}
                 TracesToAverage.Add(tr);
                 if (CalcAfterAdd || TracesToAverage.Count == _AveragingCount)
                 {
@@ -149,28 +191,49 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
                     TracesToAverage.RemoveAt(0);
                 }
-                float[] tr = new float[TracePoints];
+                double[] tr = new double[TracePoints];
                 if (inputLevelUnit == MEN.LevelUnit.dBm)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = (float)Math.Pow(10, NewTraceLevels[i] / 10);
+                        tr[i] = (double)(Math.Pow(10, NewTraceLevels[i] / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.dBµV)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = (float)Math.Pow(10, (NewTraceLevels[i] - 107) / 10);
+                        tr[i] = (double)(Math.Pow(10, (NewTraceLevels[i] - 107) / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.Watt)
                 {
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        tr[i] = NewTraceLevels[i] * 1000;
+                        tr[i] = NewTraceLevels[i];
                     }
                 }
+                //if (inputLevelUnit == MEN.LevelUnit.dBm)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = (float)Math.Pow(10, NewTraceLevels[i] / 10);
+                //    }
+                //}
+                //else if (inputLevelUnit == MEN.LevelUnit.dBµV)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = (float)Math.Pow(10, (NewTraceLevels[i] - 107) / 10);
+                //    }
+                //}
+                //else if (inputLevelUnit == MEN.LevelUnit.Watt)
+                //{
+                //    for (int i = 0; i < TracePoints; i++)
+                //    {
+                //        tr[i] = NewTraceLevels[i] * 1000;
+                //    }
+                //}
                 TracesToAverage.Add(tr);
                 if (CalcAfterAdd || TracesToAverage.Count == _AveragingCount)
                 {
@@ -206,14 +269,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             tl += TracesToAverage[i][x];
                         }
                     }
+                    tl = tl / TracesToAverage.Count;
                     if (OutputlevelUnit == MEN.LevelUnit.dBm)
                     {
-                        AveragedLevels[x] = (float)(10 * Math.Log10(tl / TracesToAverage.Count));
+                        AveragedLevels[x] = (float)(10 * Math.Log10(1000.0 * tl));
                     }
                     else if (OutputlevelUnit == MEN.LevelUnit.dBµV)
                     {
-                        AveragedLevels[x] = (float)(107 + 10 * Math.Log10(tl / TracesToAverage.Count));
+                        AveragedLevels[x] = (float)(107 + 10 * Math.Log10(1000.0 * tl));
                     }
+                    //if (OutputlevelUnit == MEN.LevelUnit.dBm)
+                    //{
+                    //    AveragedLevels[x] = (float)(10 * Math.Log10(tl / TracesToAverage.Count));
+                    //}
+                    //else if (OutputlevelUnit == MEN.LevelUnit.dBµV)
+                    //{
+                    //    AveragedLevels[x] = (float)(107 + 10 * Math.Log10(tl / TracesToAverage.Count));
+                    //}
                 }
             }
         }
