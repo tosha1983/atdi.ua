@@ -21,6 +21,7 @@ using fm = System.Windows.Forms;
 using Atdi.Common;
 using System.Globalization;
 using System.IO;
+using System.ComponentModel;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -51,6 +52,7 @@ namespace XICSM.ICSControlClient.ViewModels
     {
         #region Current Objects
         private int? _allotId;
+        private int planId = IM.NullI;
         private SDR.MeasurementType _measType = SDR.MeasurementType.Signaling;
         private MeasTaskViewModel _currentMeasTask;
         private IList _currentShortSensor;
@@ -96,20 +98,20 @@ namespace XICSM.ICSControlClient.ViewModels
                 RedrawMap();
             }
         }
-        public double? FreqParam
-        {
-            get => this._FreqParam;
-            set => this.Set(ref this._FreqParam, value);
-        }
+        //public double? FreqParam
+        //{
+        //    get => this._FreqParam;
+        //    set => this.Set(ref this._FreqParam, value);
+        //}
         
         #region Sources (Adapters)
         public ShortSensorDataAdatper ShortSensors => this._shortSensors;
+
         #endregion
         private void SetDefaultVaues()
         {
             if (_allotId.HasValue && (_measType == SDR.MeasurementType.Signaling || _measType == SDR.MeasurementType.SpectrumOccupation)) 
             {
-                int planId = IM.NullI;
                 IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadOnly);
                 rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
                 rsAllot.Select("ID,CUST_TXT1,CUST_DAT1,CUST_DAT2,PLAN_ID,Plan.BANDWIDTH,Plan.CHANNEL_SEP");
@@ -197,10 +199,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._currentMeasTask.IsAutoMeasDtParamReferenceLevel = true;
                 this._currentMeasTask.IsAutoMeasDtParamRfAttenuation = true;
 
-                this._currentMeasTask.MeasDtParamRBW = -1;
-                this._currentMeasTask.MeasDtParamVBW = -1;
-                this._currentMeasTask.MeasDtParamMeasTime = null;
-                this._currentMeasTask.MeasDtParamMeasTime = 0.001;
+                //this._currentMeasTask.MeasDtParamRBW = -1;
+                //this._currentMeasTask.MeasDtParamVBW = -1;
+                //this._currentMeasTask.MeasDtParamMeasTime = 0.001;
                 this._currentMeasTask.MeasDtParamDetectType = SDR.DetectingType.MaxPeak;
                 //this._currentMeasTask.MeasDtParamRfAttenuation = 0;
                 //this._currentMeasTask.MeasDtParamPreamplification = 0;
@@ -241,7 +242,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.FiltrationTrace = false;
             this._currentMeasTask.windowBW = 1.1;
             this._currentMeasTask.AllowableExcess_dB = 10;
-            this._currentMeasTask.triggerLevel_dBm_Hz = -999;
+            //this._currentMeasTask.triggerLevel_dBm_Hz = -999;
             this._currentMeasTask.CrossingBWPercentageForGoodSignals = 70;
             this._currentMeasTask.CrossingBWPercentageForBadSignals = 40;
             this._currentMeasTask.DiffLevelForCalcBW = 25;
@@ -279,11 +280,8 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                if (this._currentShortSensor == null)
-                {
-                    MessageBox.Show("Undefined sensor!");
+                if (!this.CurrentMeasTask.ValidateStateModel())
                     return;
-                }
 
                 if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
@@ -295,160 +293,21 @@ namespace XICSM.ICSControlClient.ViewModels
                     MessageBox.Show("Time Stop should be great of the Time Start!");
                     return;
                 }
-                //if (this._currentMeasTask.MeasTimeParamListPerInterval <= 0 || this._currentMeasTask.MeasTimeParamListPerInterval >= 3600)
-                //{
-                //    MessageBox.Show("Incorrect value Duration!");
-                //    return;
-                //}
-                if (this._currentMeasTask.MeasFreqParamRgL > this._currentMeasTask.MeasFreqParamRgU)
+
+                if (this._currentShortSensor == null)
                 {
-                    MessageBox.Show("Stop freq should be great of the Start freq!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasFreqParamRgL <= 1 || this._currentMeasTask.MeasFreqParamRgL >= 6000)
-                {
-                    MessageBox.Show("Incorrect value Start freq!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasFreqParamRgU <= 1 || this._currentMeasTask.MeasFreqParamRgU >= 6000)
-                {
-                    MessageBox.Show("Incorrect value Stop freq!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasFreqParamStep <= 0 || this._currentMeasTask.MeasFreqParamStep >= 20000)
-                {
-                    MessageBox.Show("Incorrect value Step whith!");
-                    return;
-                }
-                //if (this._currentMeasTask.MeasDtParamRBW <= 0.001 || this._currentMeasTask.MeasDtParamRBW >= 10000)
-                //{
-                //    MessageBox.Show("Incorrect value RBW!");
-                //    return;
-                //}
-                //if (this._currentMeasTask.MeasDtParamVBW <= 0.001 || this._currentMeasTask.MeasDtParamVBW >= 10000)
-                //{
-                //    MessageBox.Show("Incorrect value VBW!");
-                //    return;
-                //}
-                //if (this._currentMeasTask.MeasDtParamVBW > this._currentMeasTask.MeasDtParamRBW)
-                //{
-                //    MessageBox.Show("VBW should be great of the RBW!");
-                //    return;
-                //}
-                if (this._currentMeasTask.MeasDtParamMeasTime < 0.001 || this._currentMeasTask.MeasDtParamMeasTime > 1)
-                {
-                    MessageBox.Show("Incorrect value Sweep time!");
-                    return;
-                }
-                //if (this._currentMeasTask.MeasDtParamRfAttenuation != 0 && this._currentMeasTask.MeasDtParamRfAttenuation != 10 && this._currentMeasTask.MeasDtParamRfAttenuation != 20 && this._currentMeasTask.MeasDtParamRfAttenuation != 30)
-                if (Math.Round(this._currentMeasTask.MeasDtParamRfAttenuation, 0) != this._currentMeasTask.MeasDtParamRfAttenuation || this._currentMeasTask.MeasDtParamRfAttenuation < 0 || this._currentMeasTask.MeasDtParamRfAttenuation > 40)
-                {
-                    MessageBox.Show("Incorrect value Attenuation!");
-                    return;
-                }
-                //if (this._currentMeasTask.MeasDtParamPreamplification != 0 && this._currentMeasTask.MeasDtParamPreamplification != 10 && this._currentMeasTask.MeasDtParamPreamplification != 20 && this._currentMeasTask.MeasDtParamPreamplification != 30)
-                if (this._currentMeasTask.MeasDtParamPreamplification < 0 || this._currentMeasTask.MeasDtParamPreamplification > 40)
-                {
-                    MessageBox.Show("Incorrect value Gain of preamplifier!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasOtherLevelMinOccup < -160 || this._currentMeasTask.MeasOtherLevelMinOccup > -30)
-                {
-                    MessageBox.Show("Incorrect value Level occupation!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasDtParamReferenceLevel < -200 || this._currentMeasTask.MeasDtParamReferenceLevel >= 10)
-                {
-                    MessageBox.Show("Incorrect value Reference Level!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasOtherSwNumber < 1)
-                {
-                    MessageBox.Show("Incorrect value Sweep number!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasOtherNCount < 1 || this._currentMeasTask.MeasOtherNCount > 1000000)
-                {
-                    MessageBox.Show("Incorrect value Number total scan!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasOtherNChenal < 10 || this._currentMeasTask.MeasOtherNChenal > 400)
-                {
-                    MessageBox.Show("Incorrect value Number of steps for measurements in channel!");
+                    MessageBox.Show("Undefined sensor!");
                     return;
                 }
 
-                if (this._currentMeasTask.windowBW < 1 || this._currentMeasTask.windowBW > 2)
+                if (planId != IM.NullI)
                 {
-                    MessageBox.Show("Incorrect value Coefficient Spectrum from Emission!");
-                    return;
-                }
-                if (this._currentMeasTask.AllowableExcess_dB < 0 || this._currentMeasTask.AllowableExcess_dB > 50)
-                {
-                    MessageBox.Show("Incorrect value Margin for calculation Reference Levels, dB!");
-                    return;
-                }
-                if (this._currentMeasTask.triggerLevel_dBm_Hz != -999 && (this._currentMeasTask.triggerLevel_dBm_Hz < -200 || this._currentMeasTask.triggerLevel_dBm_Hz > -100))
-                {
-                    MessageBox.Show("Incorrect value Noise Level!");
-                    return;
-                }
-                if (this._currentMeasTask.CrossingBWPercentageForGoodSignals < 1 || this._currentMeasTask.CrossingBWPercentageForGoodSignals > 99)
-                {
-                    MessageBox.Show("Incorrect value Percentage crossing spectrums for union of emissions!");
-                    return;
-                }
-                if (this._currentMeasTask.CrossingBWPercentageForBadSignals < 1 || this._currentMeasTask.CrossingBWPercentageForBadSignals > 99)
-                {
-                    MessageBox.Show("Incorrect value Percentage crossing spectrums for union of emissions (low level signals)!");
-                    return;
-                }
-                if (this._currentMeasTask.DiffLevelForCalcBW < 6 || this._currentMeasTask.DiffLevelForCalcBW > 36)
-                {
-                    MessageBox.Show("Incorrect value Level for estimation  BW!");
-                    return;
-                }
-                if (this._currentMeasTask.CorrelationFactor < 0 || this._currentMeasTask.CorrelationFactor > 1)
-                {
-                    MessageBox.Show("Incorrect value Correlation coefficient!");
-                    return;
-                }
-                if (this._currentMeasTask.SignalizationNCount < 1 || this._currentMeasTask.SignalizationNCount > 1000000)
-                {
-                    MessageBox.Show("Incorrect value Maximum count scan in one day!");
-                    return;
-                }
-                if (this._currentMeasTask.SignalizationNChenal < 2 || this._currentMeasTask.SignalizationNChenal > 2000)
-                {
-                    MessageBox.Show("Incorrect value Trace point count in channel!");
-                    return;
-                }
-                if (this._currentMeasTask.DifferenceMaxMax < 5 || this._currentMeasTask.DifferenceMaxMax > 40)
-                {
-                    MessageBox.Show("Incorrect value Levels difference for emission division, dB!");
-                    return;
-                }
-                if (this._currentMeasTask.NumberPointForChangeExcess < 0 || this._currentMeasTask.NumberPointForChangeExcess > 100)
-                {
-                    MessageBox.Show("Incorrect value Minimum points in emissions!");
-                    return;
-                }
-                if (this._currentMeasTask.MaxFreqDeviation < 0.000000001 || this._currentMeasTask.MaxFreqDeviation > 0.0001)
-                {
-                    MessageBox.Show("Incorrect value Maximum frequency deviation!");
-                    return;
-                }
-                if (this._currentMeasTask.Standard.ToUpper() != "GSM")
-                {
-                    MessageBox.Show("Incorrect value Standard!");
-                    return;
-                }
-                
-                var points = this._currentMeasTask.MeasOtherNChenal * (maxFq - minFq) / this._currentMeasTask.MeasFreqParamStep;
-                if (points > 200)
-                {
-                    MessageBox.Show("Lot of points, please change “Number of steps for measurements in channel” or number channel in plan");
-                    return;
+                    var points = this._currentMeasTask.MeasOtherNChenal * (maxFq - minFq) / this._currentMeasTask.MeasFreqParamStep;
+                    if (points > 200)
+                    {
+                        MessageBox.Show("Lot of points, please change “Number of steps for measurements in channel” or number channel in plan");
+                        return;
+                    }
                 }
 
                 var measFreqParam = new SDR.MeasFreqParam() { Mode = this._currentMeasTask.MeasFreqParamMode, Step = this._currentMeasTask.MeasFreqParamStep };
@@ -456,20 +315,23 @@ namespace XICSM.ICSControlClient.ViewModels
                 switch (measFreqParam.Mode)
                 {
                     case SDR.FrequencyMode.SingleFrequency:
-                        if (FreqParam.HasValue)
+                        if (this.CurrentMeasTask.MeasFreqParam.HasValue)
                         {
-                            measFreqParam.MeasFreqs = new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = FreqParam.Value } };
+                            measFreqParam.MeasFreqs = new SDR.MeasFreq[] { new SDR.MeasFreq() { Freq = this.CurrentMeasTask.MeasFreqParam.Value } };
                         }
                         break;
                     case SDR.FrequencyMode.FrequencyList:
                         var frqList = new List<SDR.MeasFreq>();
                         if (_measType == SDR.MeasurementType.SpectrumOccupation || _measType == SDR.MeasurementType.Signaling)
                         {
-                            foreach (var freq in this._currentMeasTask.MeasFreqParamMeasFreqs)
+                            if (this._currentMeasTask.MeasFreqParamMeasFreqs != null)
                             {
-                                frqList.Add(new SDR.MeasFreq() { Freq = freq });
+                                foreach (var freq in this._currentMeasTask.MeasFreqParamMeasFreqs)
+                                {
+                                    frqList.Add(new SDR.MeasFreq() { Freq = freq });
+                                }
+                                measFreqParam.MeasFreqs = frqList.ToArray();
                             }
-                            measFreqParam.MeasFreqs = frqList.ToArray();
                         }
                         //else
                         //{
@@ -679,22 +541,25 @@ namespace XICSM.ICSControlClient.ViewModels
                     RefSituation = listRef.ToArray()
                 };
 
-        var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
+                var measTaskId = WCF.SdrnsControllerWcfClient.CreateMeasTask(measTask);
                 if (measTaskId == IM.NullI)
                 {
                     throw new InvalidOperationException($"Could not create a meas task");
                 }
                 else
                 {
-                    IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadWrite);
-                    rsAllot.Select("ID,STATUS,CUST_NBR1");
-                    rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
-                    using (rsAllot.OpenWithScope())
+                    if (_allotId.HasValue && _allotId.Value > 0)
                     {
-                        rsAllot.Edit();
-                        rsAllot.Put("STATUS", "dur");
-                        rsAllot.Put("CUST_NBR1", measTaskId);
-                        rsAllot.Update();
+                        IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadWrite);
+                        rsAllot.Select("ID,STATUS,CUST_NBR1");
+                        rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
+                        using (rsAllot.OpenWithScope())
+                        {
+                            rsAllot.Edit();
+                            rsAllot.Put("STATUS", "dur");
+                            rsAllot.Put("CUST_NBR1", measTaskId);
+                            rsAllot.Update();
+                        }
                     }
                 }
                 _measTaskForm.TaskId = measTaskId;
@@ -835,5 +700,6 @@ namespace XICSM.ICSControlClient.ViewModels
             data.Points = points.ToArray();
             this.CurrentMapData = data;
         }
+
     }
 }
