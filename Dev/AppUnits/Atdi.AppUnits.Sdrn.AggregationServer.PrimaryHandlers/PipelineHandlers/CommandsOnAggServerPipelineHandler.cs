@@ -118,6 +118,27 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.PipelineHandlers
                     }
                 }
 
+                if (data.MeasTaskPipeBox is MeasTaskSignaling)
+                {
+                    var measTaskSignaling = data.MeasTaskPipeBox as MeasTaskSignaling;
+                    if (measTaskSignaling != null)
+                    {
+                        if ((measTaskSignaling.RefSituation != null) && (measTaskSignaling.RefSituation.Length > 0))
+                        {
+                            for (int i = 0; i < measTaskSignaling.RefSituation.Length; i++)
+                            {
+                                var dicSensors = dic.ToList();
+                                var findaggregationSensorId = dicSensors.Find(x => x.Key == measTaskSignaling.RefSituation[i].SensorId);
+                                if (findaggregationSensorId.Value != null)
+                                {
+                                    measTaskSignaling.RefSituation[i].SensorId = findaggregationSensorId.Value.Value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
                 if (listNotFoundSensorsTxt.Count > 0)
                 {
                     string allSensorNotFoundInAggregationServer = string.Join(";", listNotFoundSensorsTxt);
