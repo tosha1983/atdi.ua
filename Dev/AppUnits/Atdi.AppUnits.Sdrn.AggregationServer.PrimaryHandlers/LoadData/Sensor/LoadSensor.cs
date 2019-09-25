@@ -198,7 +198,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
 
                                 queryExecuter.Fetch(builderSelectAntennaPattern, readerAntennaPattern =>
                                 {
-                                    while (readerIAntennaPattern.Read())
+                                    while (readerAntennaPattern.Read())
                                     {
                                         var patt = new AntennaPattern();
                                         patt.DiagA = readerAntennaPattern.GetValue(c => c.DiagA);
