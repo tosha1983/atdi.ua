@@ -45,7 +45,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 {
                     Manufacturer = equipmentValue.AntennaManufacturer,
                     Code = equipmentValue.AntennaCode,
-                    Name = equipmentValue.AntennaName
+                    Name = equipmentValue.AntennaName,
+                    Patterns = antennaPattern
                 }
             };
             return sensor;
