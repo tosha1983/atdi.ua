@@ -46,14 +46,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 taskContext.SetEvent<ExceptionProcessLevel>(new ExceptionProcessLevel(failureReason, ex));
             });
 
-      
+
             bool isDown = context.WaitEvent<DeviceServerParametersDataLevel>(out deviceServerParametersDataLevel, (int)(deviceCommand.Timeout));
             if (isDown == false) // таймут - результатов нет
             {
                 var error = new ExceptionProcessLevel();
+                DeviceServerCancellationData deviceServerCancellationDataValue = new DeviceServerCancellationData();
                 if (context.WaitEvent<ExceptionProcessLevel>(out error, 1) == true)
                 {
-                    DeviceServerCancellationData deviceServerCancellationDataValue = new DeviceServerCancellationData();
                     switch (error._failureReason)
                     {
                         // повторяем 50 раз иначе ошибка (повтор через 1/25 сек)
@@ -70,7 +70,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
 
                                 isDown = context.WaitEvent<DeviceServerParametersDataLevel>(out deviceServerParametersDataLevel, (int)(deviceCommand.Timeout));
-                                if (isDown == true) 
+                                if (isDown == true)
                                 {
                                     isSuccessOperation = true;
                                     countLoopForRegistrationTaskWorkerDeviceIsBusy = 0;
@@ -103,7 +103,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
 
 
                                 isDown = context.WaitEvent<DeviceServerParametersDataLevel>(out deviceServerParametersDataLevel, (int)(deviceCommand.Timeout));
-                                if (isDown == true) 
+                                if (isDown == true)
                                 {
                                     isSuccessOperation = true;
                                     countLoopForRegistrationTaskWorkerTimeoutExpired = 0;
@@ -122,7 +122,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                                 deviceServerCancellationDataValue.FailureCode = FailureReason.TimeoutExpired;
                             }
 
-                           
+
                             break;
 
                         case CommandFailureReason.CanceledBeforeExecution:
@@ -160,6 +160,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         _logger.StartTrace(Contexts.ThisComponent, Categories.SendCommandForRegistrationTaskWorker, Events.ErrorReceivingResult);
                     }
                 }
+                else
+                {
+                    while (countLoopForRegistrationTaskWorkerTimeoutExpired <= this._config.CountLoopTimeoutExpired)
+                    {
+                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        (
+                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            taskContext.SetEvent<ExceptionProcessLevel>(new ExceptionProcessLevel(failureReason, ex));
+                        });
+
+
+                        isDown = context.WaitEvent<DeviceServerParametersDataLevel>(out deviceServerParametersDataLevel, (int)(deviceCommand.Timeout));
+                        if (isDown == true)
+                        {
+                            isSuccessOperation = true;
+                            countLoopForRegistrationTaskWorkerTimeoutExpired = 0;
+                            break;
+                        }
+                        else
+                        {
+                            System.Threading.Thread.Sleep(this._config.minimumTimeDurationLevel_ms);
+                            isSuccessOperation = false;
+                        }
+                        countLoopForRegistrationTaskWorkerTimeoutExpired++;
+                    }
+
+                    if (isSuccessOperation == false)
+                    {
+                        deviceServerCancellationDataValue.FailureCode = FailureReason.TimeoutExpired;
+                    }
+                }
             }
             else
             {
@@ -168,7 +201,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 isSuccessOperation = true;
             }
 
-            if ((deviceServerParametersDataLevel != null) && (isSuccessOperation==true))
+            if ((deviceServerParametersDataLevel != null) && (isSuccessOperation == true))
             {
                 var serverParams = new DeviceServerParametersDataLevel
                 {

@@ -64,5 +64,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public MeasurementMode Mode;
+        /// <summary>
+        /// Reference Level
+        /// </summary>
+        [DataMember]
+        public double? ReferenceLevel { get; set; }
+        /// <summary>
+        /// Number total scan
+        /// </summary>
+        [DataMember]
+        public int? NumberTotalScan { get; set; }
     }
 }

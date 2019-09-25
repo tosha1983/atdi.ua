@@ -551,7 +551,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 {
                     taskParameters.VBW_Hz = taskSDR.DeviceParam.VBW_kHz * 1000;
                 }
-                    
+
+                if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
+                {
+                    if (taskSDR.DeviceParam.NumberTotalScan != null)
+                    {
+                        taskParameters.NCount = taskSDR.DeviceParam.NumberTotalScan.Value;
+                    }
+                }
                 taskParameters.DetectType = taskSDR.DeviceParam.DetectType;
             }
 
@@ -603,7 +610,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     switch (taskSDR.Measurement)
                     {
                         case DataModels.Sdrns.MeasurementType.SpectrumOccupation:
-                            taskParameters.NCount = SO_Ncount;
+                            if (taskParameters.NCount<=0)
+                            {
+                                taskParameters.NCount = SO_Ncount;
+                            }
                             break;
                         case DataModels.Sdrns.MeasurementType.Signaling:
                             taskParameters.NCount = taskParameters.SignalingMeasTaskParameters.SignalizationNCount.Value;
@@ -616,14 +626,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 else
                 {
                     taskParameters.NCount = (int)((double)taskSDR.Interval_sec / (double)taskSDR.DeviceParam.MeasTime_sec);
-                    if (taskSDR.Measurement== DataModels.Sdrns.MeasurementType.SpectrumOccupation)
-                    {
-                        if (taskParameters.NCount> SO_Ncount)
-                        {
-                            taskParameters.NCount = SO_Ncount;
-                        }
-                    }
                 }
+
                 var sOtype = GetSOTypeFromSpectrumOccupationType(taskSDR.SOParam.Type);
                 if (taskSDR.Measurement == DataModels.Sdrns.MeasurementType.SpectrumOccupation)
                 {

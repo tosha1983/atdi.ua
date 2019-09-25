@@ -501,9 +501,11 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             _sql.AppendLine(")");
         }
 
-        public void Delete(string schema, string source, string from, string[][] joins = null, string where = null)
+        public void Delete(string schema, string source, string from, string[][] joins = null, string where = null, string sourceAliasName = null)
         {
             _sql.AppendLine($"DELETE FROM {from}");
+            _sql.AppendLine($"WHERE rowid in (");
+            _sql.AppendLine($"SELECT {sourceAliasName}.rowid FROM {from}");
             if (joins != null && joins.Length > 0)
             {
                 for (int i = 0; i < joins.Length; i++)
@@ -518,6 +520,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
                 _sql.AppendLine($"WHERE");
                 _sql.AppendLine($"    {where}");
             }
+            _sql.AppendLine(")");
         }
 
         public string CreateSetClause(string alias, string name, string valueExpression)

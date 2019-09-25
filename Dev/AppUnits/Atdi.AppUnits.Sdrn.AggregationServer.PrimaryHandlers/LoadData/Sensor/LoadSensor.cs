@@ -196,16 +196,16 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
                                 builderSelectAntennaPattern.Select(c => c.Gain);
                                 builderSelectAntennaPattern.Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.Equal, readerSensorAntenna.GetValue(c => c.Id));
 
-                                queryExecuter.Fetch(builderSelectAntennaPattern, readerIAntennaPattern =>
+                                queryExecuter.Fetch(builderSelectAntennaPattern, readerAntennaPattern =>
                                 {
                                     while (readerIAntennaPattern.Read())
                                     {
                                         var patt = new AntennaPattern();
-                                        patt.DiagA = readerIAntennaPattern.GetValue(c => c.DiagA);
-                                        patt.DiagH = readerIAntennaPattern.GetValue(c => c.DiagH);
-                                        patt.DiagV = readerIAntennaPattern.GetValue(c => c.DiagV);
-                                        if (readerIAntennaPattern.GetValue(c => c.Freq) != null) patt.Freq = readerIAntennaPattern.GetValue(c => c.Freq).Value;
-                                        if (readerIAntennaPattern.GetValue(c => c.Gain) != null) patt.Freq = readerIAntennaPattern.GetValue(c => c.Gain).Value;
+                                        patt.DiagA = readerAntennaPattern.GetValue(c => c.DiagA);
+                                        patt.DiagH = readerAntennaPattern.GetValue(c => c.DiagH);
+                                        patt.DiagV = readerAntennaPattern.GetValue(c => c.DiagV);
+                                        if (readerAntennaPattern.GetValue(c => c.Freq) != null) patt.Freq = readerAntennaPattern.GetValue(c => c.Freq).Value;
+                                        if (readerAntennaPattern.GetValue(c => c.Gain) != null) patt.Gain = readerAntennaPattern.GetValue(c => c.Gain).Value;
                                         antennaPattern.Add(patt);
                                     }
                                     return true;
@@ -523,7 +523,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
                                         patt.DiagH = readerIAntennaPattern.GetValue(c => c.DiagH);
                                         patt.DiagV = readerIAntennaPattern.GetValue(c => c.DiagV);
                                         if (readerIAntennaPattern.GetValue(c => c.Freq) != null) patt.Freq = readerIAntennaPattern.GetValue(c => c.Freq).Value;
-                                        if (readerIAntennaPattern.GetValue(c => c.Gain) != null) patt.Freq = readerIAntennaPattern.GetValue(c => c.Gain).Value;
+                                        if (readerIAntennaPattern.GetValue(c => c.Gain) != null) patt.Gain = readerIAntennaPattern.GetValue(c => c.Gain).Value;
                                         antennaPattern.Add(patt);
                                     }
                                     return true;

@@ -112,7 +112,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         sensor = mesureSysInfoDeviceProperties.Convert(this._deviceServerConfig.SensorName, this._deviceServerConfig.SensorTechId);
                         isFindDeviceProps = true;
                         */
-                        
+
                     }
                     else if (trace is MesureRealTimeDeviceProperties)
                     {
@@ -197,6 +197,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else
                 {
+                    if (_config.EnableGPS == false)
+                    {
+                        var location = new DM.SensorLocation()
+                        {
+                            ASL = _config.AslDefault,
+                            Lon = _config.LonDefault,
+                            Lat = _config.LatDefault,
+                            Status = "A",
+                            Created = DateTime.Now,
+                            From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
+                            To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
+                        };
+                        sensor.Locations = new DM.SensorLocation[1] { location };
+                    }
                     sensor.Status = "A";
                     var publisher = this._busGate.CreatePublisher("main");
                     publisher.Send<DM.Sensor>("RegisterSensor", sensor);
