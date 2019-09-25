@@ -994,6 +994,7 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             SVC.SdrnsControllerWcfClient.DeleteMeasTaskById(taskId);
+            this.ReloadShortMeasTasks();
         }
         private void OnRunMeasTaskCommand(object parameter)
         {

@@ -24,8 +24,39 @@
         <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>
-      
-        <!--<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type System:Enum}" x:Key="TypeMeasurementsValues">
+
+        <Style TargetType="TextBox">
+          <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+              <Setter Property="ToolTip"
+                  Value="{Binding RelativeSource={RelativeSource Self},
+                          Path=(Validation.Errors)[0].ErrorContent}" />
+              <Setter Property="Foreground" Value="Red" />
+            </Trigger>
+            <Trigger Property="Validation.HasError" Value="False">
+              <Setter Property="ToolTip"
+                  Value="" />
+              <Setter Property="Foreground" Value="Black" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+        <Style TargetType="DatePicker">
+          <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+              <Setter Property="ToolTip"
+                  Value="{Binding RelativeSource={RelativeSource Self},
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+              <Setter Property="Foreground" Value="Red" />
+            </Trigger>
+            <Trigger Property="Validation.HasError" Value="False">
+              <Setter Property="ToolTip"
+                  Value="" />
+              <Setter Property="Foreground" Value="Black" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+
+      <!--<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type System:Enum}" x:Key="TypeMeasurementsValues">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="StyleAlias:MeasDtParamTypeMeasurements" />
             </ObjectDataProvider.MethodParameters>
@@ -33,9 +64,6 @@
     
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
-        <!--<Menu DockPanel.Dock="Top">
-            <MenuItem Header="Create Meas Task" Command="{Binding CreateMeasTaskCommand}"/>
-        </Menu>-->
         <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -75,10 +103,10 @@
                       <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Name"  />
+                    <Label Height="18" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Name"  />
                     <TextBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding Path=Name}"/>
 
-                    <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
+                    <Label Height="18" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
                     <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}" IsEnabled="False"/>
 
                     <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="TimeMeas" IsExpanded="true">
@@ -91,22 +119,38 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                           <RowDefinition Height="Auto"></RowDefinition>
-                          <RowDefinition Height="Auto"></RowDefinition>
+                          <!--<RowDefinition Height="Auto"></RowDefinition>-->
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Date Start"  />
-                        <DatePicker Grid.Column="1" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=MeasTimeParamListPerStart, StringFormat='{}{0:dd.MM.yyyy}'}"/>                        
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Date Start"  />
+                        <DatePicker x:Name="MeasTimeParamListPerStart" Grid.Column="1" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
+                          <DatePicker.SelectedDate>
+                            <Binding Path="MeasTimeParamListPerStart" StringFormat='{}{0:dd.MM.yyyy}'>
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </DatePicker.SelectedDate>
+                        </DatePicker>                          
 
-                        <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "Date Stop"  />
-                        <DatePicker Grid.Column="3" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=MeasTimeParamListPerStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>                        
+                        <Label Height="18" Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "Date Stop"  />
+                        <DatePicker x:Name="MeasTimeParamListPerStop" Grid.Column="3" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
+                          <DatePicker.SelectedDate>
+                            <Binding Path="MeasTimeParamListPerStop" StringFormat='{}{0:dd.MM.yyyy}'>
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </DatePicker.SelectedDate>
+                        </DatePicker>
 
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Time Start"  />
-                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStart, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Time Start"  />
+                        <TextBox x:Name="MeasTimeParamListTimeStart" Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStart, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
 
-                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Time Stop"  />
-                        <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
+                        <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Time Stop"  />
+                        <TextBox x:Name="MeasTimeParamListTimeStop" Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
 
-                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Duration, s"  />
+                        <!--<Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Duration, s"  />
                         <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=MeasTimeParamListPerInterval}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -123,10 +167,10 @@
                               </Style.Triggers>
                             </Style>
                           </TextBox.Style>
-                        </TextBox>
+                        </TextBox>-->
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency" IsExpanded="true">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency" IsExpanded="false">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="100" />
@@ -139,7 +183,7 @@
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mode"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mode"  />
                         <ComboBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" SelectedValue="{Binding MeasFreqParamMode, Mode=TwoWay}" ItemsSource="{Binding MeasFreqParamModeValues}">
                           <ComboBox.Style>
                             <Style TargetType="ComboBox">
@@ -158,7 +202,7 @@
                           </ComboBox.Style>                          
                         </ComboBox>
 
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Start freq, MHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Start freq, MHz">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -193,7 +237,7 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Stop freq, MHz">
+                        <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Stop freq, MHz">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -228,7 +272,7 @@
                           </TextBox.Style>
                         </TextBox>
                         
-                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Step whith, kHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Step whith, kHz">
                           <!--<Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -263,7 +307,7 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq, MHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq, MHz">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -297,7 +341,7 @@
                             </Style>
                           </TextBox.Style>
                         </TextBox>
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq list, MHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq list, MHz">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -342,11 +386,11 @@
                         </TextBox>                          
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters" IsExpanded="true">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters" IsExpanded="false">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="130" />
-                          <ColumnDefinition Width="25" />
+                          <ColumnDefinition Width="30" />
                           <ColumnDefinition Width="25" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -361,13 +405,13 @@
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         
-                        <Label Grid.Column="1" Grid.Row="0" Padding="5,5,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="0" Padding="5,0,0,0" Content = "Auto"  />
                         <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding Path=IsAutoMeasDtParamRBW, Mode=TwoWay}">
                           <CheckBox.Style>
                             <Style TargetType="CheckBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="True"/>
+                                  <Setter  Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="False"/>
@@ -379,7 +423,7 @@
                             </Style>
                           </CheckBox.Style>
                         </CheckBox>
-                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
                         <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -395,13 +439,13 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Grid.Column="1" Grid.Row="1" Padding="5,5,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="1" Padding="5,0,0,0" Content = "Auto"  />
                         <CheckBox Grid.Column="2" Grid.Row="1" IsChecked="{Binding Path=IsAutoMeasDtParamVBW}">
                           <CheckBox.Style>
                             <Style TargetType="CheckBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="Signaling">
-                                  <Setter  Property="IsEnabled" Value="True"/>
+                                  <Setter  Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=MeasDtParamTypeMeasurements}" Value="SpectrumOccupation">
                                   <Setter  Property="IsEnabled" Value="False"/>
@@ -413,7 +457,7 @@
                             </Style>
                           </CheckBox.Style>
                         </CheckBox>
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"/>
                         <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -429,10 +473,10 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Grid.Column="1" Grid.Row="2" Padding="5,5,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="2" Padding="5,0,0,0" Content = "Auto"  />
                         <CheckBox Grid.Column="2" Grid.Row="2" IsChecked="{Binding Path=IsAutoMeasDtParamMeasTime}"/>
-                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"/>
-                        <TextBox Grid.Column="3" Grid.Row="2" Text="{Binding Path=MeasDtParamMeasTime}">
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"/>
+                        <TextBox x:Name="MeasDtParamMeasTime" Grid.Column="3" Grid.Row="2">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
                               <Style.Triggers>
@@ -442,12 +486,29 @@
                                 <DataTrigger Binding="{Binding Path=IsAutoMeasDtParamMeasTime}" Value="False">
                                   <Setter  Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                  <Setter Property="ToolTip"
+                                      Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                  <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                  <Setter Property="ToolTip"
+                                      Value="" />
+                                  <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
                               </Style.Triggers>
                             </Style>
                           </TextBox.Style>
+                          <TextBox.Text>
+                            <Binding Path="MeasDtParamMeasTime">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
                         </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"/>
                         <ComboBox Grid.Column="3" Grid.Row="3" SelectedValue="{Binding MeasDtParamDetectType, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamDetectTypeValues}">
                           <ComboBox.Style>
                             <Style TargetType="ComboBox">
@@ -466,10 +527,10 @@
                           </ComboBox.Style>
                         </ComboBox>
 
-                        <Label Grid.Column="1" Grid.Row="4" Padding="5,5,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="4" Padding="5,0,0,0" Content = "Auto"  />
                         <CheckBox Grid.Column="2" Grid.Row="4" IsChecked="{Binding Path=IsAutoMeasDtParamRfAttenuation}"/>
-                        <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"/>
-                        <TextBox Grid.Column="3" Grid.Row="4" Text="{Binding Path=MeasDtParamRfAttenuation}">
+                        <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"/>
+                        <TextBox x:Name="MeasDtParamRfAttenuation" Grid.Column="3" Grid.Row="4">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
                               <Style.Triggers>
@@ -479,15 +540,32 @@
                                 <DataTrigger Binding="{Binding Path=IsAutoMeasDtParamRfAttenuation}" Value="False">
                                   <Setter  Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                  <Setter Property="ToolTip"
+                                      Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                  <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                  <Setter Property="ToolTip"
+                                      Value="" />
+                                  <Setter Property="Foreground" Value="Black" />
+                                </Trigger>                                
                               </Style.Triggers>
                             </Style>
                           </TextBox.Style>
+                          <TextBox.Text>
+                            <Binding Path="MeasDtParamRfAttenuation">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>                          
                         </TextBox>
 
-                        <Label Grid.Column="1" Grid.Row="5" Padding="5,5,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="5" Padding="5,0,0,0" Content = "Auto"  />
                         <CheckBox Grid.Column="2" Grid.Row="5" IsChecked="{Binding Path=IsAutoMeasDtParamPreamplification}"/>
-                        <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"/>
-                        <TextBox Grid.Column="3" Grid.Row="5" Text="{Binding Path=MeasDtParamPreamplification}">
+                        <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"/>
+                        <TextBox x:Name="MeasDtParamPreamplification" Grid.Column="3" Grid.Row="5">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
                               <Style.Triggers>
@@ -497,15 +575,32 @@
                                 <DataTrigger Binding="{Binding Path=IsAutoMeasDtParamPreamplification}" Value="False">
                                   <Setter  Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                  <Setter Property="ToolTip"
+                                      Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                  <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                  <Setter Property="ToolTip"
+                                      Value="" />
+                                  <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
                               </Style.Triggers>
                             </Style>
                           </TextBox.Style>
+                          <TextBox.Text>
+                            <Binding Path="MeasDtParamPreamplification">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
                         </TextBox>
 
-                        <Label Grid.Column="1" Grid.Row="6" Padding="5,5,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="6" Padding="5,0,0,0" Content = "Auto"  />
                         <CheckBox Grid.Column="2" Grid.Row="6" IsChecked="{Binding Path=IsAutoMeasDtParamReferenceLevel}"/>
-                        <Label Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Reference Level"/>
-                        <TextBox Grid.Column="3" Grid.Row="6" Text="{Binding Path=MeasDtParamReferenceLevel}">
+                        <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Reference Level, dBm"/>
+                        <TextBox x:Name="MeasDtParamReferenceLevel" Grid.Column="3" Grid.Row="6">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
                               <Style.Triggers>
@@ -515,14 +610,38 @@
                                 <DataTrigger Binding="{Binding Path=IsAutoMeasDtParamReferenceLevel}" Value="False">
                                   <Setter  Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                  <Setter Property="ToolTip"
+                                      Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                  <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                  <Setter Property="ToolTip"
+                                      Value="" />
+                                  <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
                               </Style.Triggers>
                             </Style>
                           </TextBox.Style>
+                          <TextBox.Text>
+                            <Binding Path="MeasDtParamReferenceLevel">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
                         </TextBox>
                         
-                        <Label Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Sweep number"/>
-                        <TextBox Grid.Column="3" Grid.Row="7" Text="{Binding Path=MeasOtherSwNumber}" Height="15">
-                        </TextBox>                        
+                        <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Sweep number"/>
+                        <TextBox x:Name="MeasOtherSwNumber" Grid.Column="3" Grid.Row="7" >
+                          <TextBox.Text>
+                            <Binding Path="MeasOtherSwNumber">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
+                        </TextBox>
                     </Grid>
                     </Expander>
                     
@@ -553,17 +672,41 @@
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TypeSpectrumOccupation"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TypeSpectrumOccupation"  />
                         <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasOtherTypeSpectrumOccupation, Mode=TwoWay}" ItemsSource="{Binding MeasOtherTypeSpectrumOccupationValues}"/>
 
-                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Level of min. occupation, dBm"  />
-                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasOtherLevelMinOccup}"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Level of min. occupation, dBm"  />
+                        <TextBox x:Name="MeasOtherLevelMinOccup" Grid.Column="1" Grid.Row="1">
+                          <TextBox.Text>
+                            <Binding Path="MeasOtherLevelMinOccup">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
+                        </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Number total scan"  />
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=MeasOtherNCount}"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Number total scan"  />
+                        <TextBox x:Name="MeasOtherNCount" Grid.Column="1" Grid.Row="2">
+                          <TextBox.Text>
+                            <Binding Path="MeasOtherNCount">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
+                        </TextBox>
 
-                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Number of steps for measurements in channel"  />
-                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasOtherNChenal}"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Number of steps for measurements in channel"  />
+                        <TextBox x:Name="MeasOtherNChenal" Grid.Column="1" Grid.Row="3">
+                          <TextBox.Text>
+                            <Binding Path="MeasOtherNChenal">
+                              <Binding.ValidationRules>
+                                <DataErrorValidationRule/>
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
+                        </TextBox>
 
                       </Grid>
                     </Expander>
@@ -594,7 +737,7 @@
                         <GroupBox  Header=""  Margin="0, 5, 5, 5">
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="300" />
+                              <ColumnDefinition Width="340" />
                               <ColumnDefinition Width="30" />
                               <ColumnDefinition Width="25" />
                               <ColumnDefinition Width="*" />
@@ -614,19 +757,35 @@
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             
-                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Using smoothing for analyze trace"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Using smoothing for analyze trace"/>
                             <CheckBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" IsChecked="{Binding Path=FiltrationTrace}"/>
 
-                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Coefficient Spectrum from Emission"  />
-                            <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Path=windowBW}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Coefficient Spectrum from Emission"  />
+                            <TextBox x:Name="windowBW" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="windowBW">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Margin for calculation Reference Levels, dB"  />
-                            <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=AllowableExcess_dB}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Margin for calculation Reference Levels, dB"  />
+                            <TextBox x:Name="AllowableExcess_dB" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="AllowableExcess_dB">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Noise Level"  />
-                            <Label Grid.Column="1" Grid.Row="3" Padding="5,5,0,0" Content = "Auto"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Noise Level"  />
+                            <Label Height="18" Grid.Column="1" Grid.Row="3" Padding="5,0,0,0" Content = "Auto"  />
                             <CheckBox Grid.Column="2" Grid.Row="3" IsChecked="{Binding Path=IsAutoTriggerLevel_dBm_Hz}"/>
-                            <TextBox Grid.Column="3" Grid.Row="3" Text="{Binding Path=triggerLevel_dBm_Hz}" Height="15">
+                            <TextBox x:Name="triggerLevel_dBm_Hz" Grid.Column="3" Grid.Row="3" >
                               <TextBox.Style>
                                 <Style TargetType="TextBox">
                                   <Style.Triggers>
@@ -636,33 +795,120 @@
                                     <DataTrigger Binding="{Binding Path=IsAutoTriggerLevel_dBm_Hz}" Value="False">
                                       <Setter  Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                      <Setter Property="ToolTip"
+                                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                      <Setter Property="Foreground" Value="Red" />
+                                    </Trigger>
+                                    <Trigger Property="Validation.HasError" Value="False">
+                                      <Setter Property="ToolTip"
+                                          Value="" />
+                                      <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>
                                   </Style.Triggers>
                                 </Style>
                               </TextBox.Style>
+                              <TextBox.Text>
+                                <Binding Path="triggerLevel_dBm_Hz">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
                             </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions"  />
-                            <TextBox Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" Text="{Binding Path=CrossingBWPercentageForGoodSignals}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions"  />
+                            <TextBox x:Name="CrossingBWPercentageForGoodSignals" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="CrossingBWPercentageForGoodSignals">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions (low level signals)"  />
-                            <TextBox Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Text="{Binding Path=CrossingBWPercentageForBadSignals}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions (low level signals)"  />
+                            <TextBox x:Name="CrossingBWPercentageForBadSignals" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="MeasOtherNCount">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for estimation  BW"  />
-                            <TextBox Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" Text="{Binding Path=DiffLevelForCalcBW}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for estimation  BW"  />
+                            <TextBox x:Name="DiffLevelForCalcBW" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="DiffLevelForCalcBW">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Use correlation analysis"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Use correlation analysis"/>
                             <CheckBox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" IsChecked="{Binding Path=CorrelationAnalize}"/>
 
-                            <Label Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "Correlation coefficient"  />
-                            <TextBox Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3" Text="{Binding Path=CorrelationFactor}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "Correlation coefficient"  />
+                            <TextBox x:Name="CorrelationFactor" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3" >
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CorrelationAnalize}" Value="True">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CorrelationAnalize}" Value="False">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                      <Setter Property="ToolTip"
+                                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                      <Setter Property="Foreground" Value="Red" />
+                                    </Trigger>
+                                    <Trigger Property="Validation.HasError" Value="False">
+                                      <Setter Property="ToolTip"
+                                          Value="" />
+                                      <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
+                              <TextBox.Text>
+                                <Binding Path="CorrelationFactor">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "Maximum count scan in one day"  />
-                            <TextBox Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" Text="{Binding Path=SignalizationNCount}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "Maximum count scan in one day"  />
+                            <TextBox x:Name="SignalizationNCount" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="SignalizationNCount">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "Trace point count in channel"  />
-                            <TextBox Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Text="{Binding Path=SignalizationNChenal}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "Trace point count in channel"  />
+                            <TextBox x:Name="SignalizationNChenal" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" >
+                              <TextBox.Text>
+                                <Binding Path="SignalizationNChenal">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="11" Padding="5,0,0,0" Content = "Checking emission in channels"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="11" Padding="5,0,0,0" Content = "Checking emission in channels"/>
                             <CheckBox Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3" IsChecked="{Binding Path=AnalyzeByChannel}"/>
                           </Grid>
                         </GroupBox>
@@ -676,12 +922,22 @@
                                 <DataTrigger Binding="{Binding Path=AnalyzeByChannel}" Value="False">
                                   <Setter  Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                  <Setter Property="ToolTip"
+                                      Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                  <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError" Value="False">
+                                  <Setter Property="ToolTip"
+                                      Value="" />
+                                  <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
                               </Style.Triggers>
                             </Style>
                           </GroupBox.Style>
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="200" />
+                              <ColumnDefinition Width="300" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -692,23 +948,74 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analize just contravention of Reference Levels"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analize just contravention of Reference Levels"/>
                             <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CompareTraceJustWithRefLevels}"/>
 
-                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Automatic division of emissions"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Automatic division of emissions"  />
                             <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding Path=AutoDivisionEmitting}"/>
 
-                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Levels difference for emission division, dB"  />
-                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=DifferenceMaxMax}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Levels difference for emission division, dB"  />
+                            <TextBox x:Name="DifferenceMaxMax" Grid.Column="1" Grid.Row="2" >
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=AutoDivisionEmitting}" Value="True">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=AutoDivisionEmitting}" Value="False">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                      <Setter Property="ToolTip"
+                                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                      <Setter Property="Foreground" Value="Red" />
+                                    </Trigger>
+                                    <Trigger Property="Validation.HasError" Value="False">
+                                      <Setter Property="ToolTip"
+                                          Value="" />
+                                      <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
+                              <TextBox.Text>
+                                <Binding Path="DifferenceMaxMax">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Minimum points in emissions"  />
-                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=NumberPointForChangeExcess}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Minimum points in emissions"  />
+                            <TextBox x:Name="NumberPointForChangeExcess" Grid.Column="1" Grid.Row="3" >
+                              <TextBox.Text>
+                                <Binding Path="NumberPointForChangeExcess">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>
+                            </TextBox>
 
-                            <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Detailed Measurements BW of Emission"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Detailed Measurements BW of Emission"  />
                             <CheckBox Grid.Column="1" Grid.Row="4" IsChecked="{Binding Path=DetailedMeasurementsBWEmission}"/>
 
-                            <Label Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Max number points on spectrum for detail Meas BW"  />
-                            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MinPointForDetailBW}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Max number points on spectrum for detail Meas BW"  />
+                            <TextBox x:Name="MinPointForDetailBW" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MinPointForDetailBW}" >
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DetailedMeasurementsBWEmission}" Value="True">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=DetailedMeasurementsBWEmission}" Value="False">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
+                            </TextBox>
                           </Grid>
                         </GroupBox>
                         <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">
@@ -726,7 +1033,7 @@
                           </GroupBox.Style>
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="150" />
+                              <ColumnDefinition Width="200" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -735,16 +1042,46 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Channel Frequency Check"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Channel Frequency Check"  />
                             <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CheckFreqChannel}"/>
 
-                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Maximum frequency deviation"  />
-                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MaxFreqDeviation}" Height="15"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Maximum frequency deviation"  />
+                            <TextBox x:Name="MaxFreqDeviation" Grid.Column="1" Grid.Row="1" >
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CheckFreqChannel}" Value="True">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CheckFreqChannel}" Value="False">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                      <Setter Property="ToolTip"
+                                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                      <Setter Property="Foreground" Value="Red" />
+                                    </Trigger>
+                                    <Trigger Property="Validation.HasError" Value="False">
+                                      <Setter Property="ToolTip"
+                                          Value="" />
+                                      <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>                                    
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
+                              <TextBox.Text>
+                                <Binding Path="MaxFreqDeviation">
+                                  <Binding.ValidationRules>
+                                    <DataErrorValidationRule/>
+                                  </Binding.ValidationRules>
+                                </Binding>
+                              </TextBox.Text>                              
+                            </TextBox>                            
 
-                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Check Level of Channel"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Check Level of Channel"  />
                             <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Path=CheckLevelChannel}"/>
 
-                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Standard"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Standard"  />
                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=Standard}" Height="15" IsEnabled="False"/>
                           </Grid>
                         </GroupBox>
@@ -761,7 +1098,48 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                   </Grid.RowDefinitions>
-                  <Button Grid.Row="1" Content="Start" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40"/>
+                  <Button Grid.Row="1" Content="Start" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40">
+                    <Button.Style>
+                      <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                          <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListPerStart}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListPerStop}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListTimeStart}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListTimeStop}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamMeasTime}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamRfAttenuation}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamPreamplification}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamReferenceLevel}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasOtherSwNumber}" Value="False"/>
+
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasOtherLevelMinOccup}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasOtherNCount}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasOtherNChenal}" Value="False"/>
+
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=windowBW}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=AllowableExcess_dB}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=triggerLevel_dBm_Hz}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CrossingBWPercentageForGoodSignals}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CrossingBWPercentageForBadSignals}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=DiffLevelForCalcBW}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CorrelationFactor}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=SignalizationNCount}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=SignalizationNChenal}" Value="False"/>
+
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=DifferenceMaxMax}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=NumberPointForChangeExcess}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MaxFreqDeviation}" Value="False"/>
+
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="True"/>
+                          </MultiDataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Button.Style>
+                  </Button>
                 </Grid> 
               </Grid>
             </GroupBox>

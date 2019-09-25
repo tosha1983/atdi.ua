@@ -9,7 +9,8 @@ using COM = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using COMR = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer.Enums;
 using MEN = Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums;
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 using System.Diagnostics;
 using System.Threading;
 
@@ -66,6 +67,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 FreqArr[i] = (double)(FreqStart + 1000 * i);
                 LevelArr[i] = -100;
+            }
+            if (adapterConfig.ConnectionMode == 0)
+            {
+                ConnectionMode = EN.ConnectionMode.Standard;
+            }
+            else if (adapterConfig.ConnectionMode == 1)
+            {
+                ConnectionMode = EN.ConnectionMode.HiSpeed;
+            }
+            else
+            {
+                throw new Exception("ConnectionMode parameter is not set in the AdapterConfig");
             }
         }
 
@@ -370,23 +383,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     }
 
                     //если надо изменяем размер буфера
-                    int length = SweepPoints * 4 + SweepPoints.ToString().Length + 100;
-                    if (session.DefaultBufferSize != length)
-                    {
-                        session.DefaultBufferSize = length;
-                    }
-
+                    //int length = SweepPoints * 4 + SweepPoints.ToString().Length + 100;
+                    //if (session.DefaultBufferSize != length)
+                    //{
+                    //    session.DefaultBufferSize = length;
+                    //}
+                    int dsfgsdg = 0;
+                    long ddddddd = _timeService.TimeStamp.Ticks;
                     //Меряем
                     //Если TraceType ClearWrite то пушаем каждый результат                    
                     if (TraceTypeResult == EN.TraceType.ClearWrite)
                     {
                         bool newres = false;
 
+
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
+                            dsfgsdg++;
+                            //long ddddddd = _timeService.TimeStamp.Ticks;
                             newres = GetTrace();
                             if (newres)
                             {
+
                                 // пушаем результат
                                 var result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Next);
                                 TraceCount++;
@@ -406,8 +424,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                                     result.Freq_Hz[j] = FreqArr[j];
                                     result.Level[j] = LevelArr[j];
                                 }
-                                //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                                 if (PowerRegister != EN.PowerRegister.Normal)
                                 {
                                     result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
@@ -436,6 +454,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             }
                         }
 
+
                     }
                     //Если TraceType Average/MinHold/MaxHold то делаем измерений сколько сказали и пушаем только готовый результат
                     else
@@ -449,6 +468,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         bool newres = false;
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
+                            dsfgsdg++;
                             newres = GetTrace();
                             if (newres)
                             {
@@ -496,8 +516,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             result.PreAmp_dB = PreAmpSpec ? 1 : 0;
                             result.RBW_Hz = (double)RBW;
                             result.VBW_Hz = (double)VBW;
-                            //result.TimeStamp = _timeService.TimeStamp.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                            result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                             if (_RFOverload)
                             {
                                 result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
@@ -505,7 +525,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             context.PushResult(result);
                         }
                     }
-
                     context.Unlock();
 
                     // что то делаем еще 
@@ -616,41 +635,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
 
 
-                long time = _timeService.GetGnssTime().Ticks;
-                long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
+                //long time = command.Parameter.TimeStart;// _timeService.GetGnssTime().Ticks;
+                //long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
 
-                //IQMeasTime
-                decimal delay = Math.Abs(((decimal)ToNextSecond) / 10000000) - 0.03m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
-                //ищем ближайшее целое по отношени к длительности семпла
-                int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
+                ////IQMeasTime
+                //decimal delay = Math.Abs(((decimal)ToNextSecond) / 10000000);// - 0.03m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
+                ////ищем ближайшее целое по отношени к длительности семпла
+                //int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
 
 
-                IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s;
-                IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
-                SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
-                //SetSampleLength(SampleLength);
-                SetTriggerOffsetAndSampleLength(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
-                //SetIQMeasTime(IQMeasTimeAll);
+                //IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s;
+                //IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
+                //SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
+                //SetTriggerOffsetAndSampleLength(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
 
                 COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final)
                 {
                     DeviceStatus = COMR.Enums.DeviceStatus.Normal
                 };
-                if (GetIQStream(ref result, IQMeasTimeAll, SampleLength, command))
+                if (GetIQStream(ref result, command))
                 {
                     context.PushResult(result);
-                    //Debug.WriteLine("\r\n" + new TimeSpan(_timeService.GetGnssTime().Ticks).ToString() + " Result");
                 }
                 /////////////
                 //////////long timestop = _timeService.GetGnssTime().Ticks;
-                Debug.WriteLine("\r\n" + TriggerOffset.ToString() + " delay2");
-                //////////Debug.WriteLine(new TimeSpan(time).ToString(@"hh\:mm\:ss\.fffffff") + " delay2");
-                //////////long dddd = (long)(Math.Abs(delay2) * 10000000);
-                //////////Debug.WriteLine(new TimeSpan(time + dddd).ToString(@"hh\:mm\:ss\.fffffff") + " delay2");
-                //////////Debug.WriteLine(new TimeSpan((time / 10000000) * 10000000 + 10000000).ToString(@"hh\:mm\:ss\.fffffff") + " delay2");
-
-
-                //////////Debug.WriteLine("\r\n" + new TimeSpan(timestop).ToString(@"hh\:mm\:ss\.fffffff") + " Result");
                 context.Unlock();
                 context.Finish();
             }
@@ -667,8 +675,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
 
         #region Param
+        ResourceManager rm = null;
+        private EN.ConnectionMode ConnectionMode = EN.ConnectionMode.HiSpeed;
+        private long UTCOffset = 621355968000000000;
         private string decimalSeparator = System.Globalization.NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator;
-        private TcpipSession session;
+        private TcpipSession session = null;
         private LocalSpectrumAnalyzerInfo UniqueData { get; set; } = new LocalSpectrumAnalyzerInfo { };
         private List<LocalSpectrumAnalyzerInfo> AllUniqueData = new List<LocalSpectrumAnalyzerInfo>
         {
@@ -1707,6 +1718,55 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         #endregion Param
         #region Private Method
+
+        #region NI Visa
+        private void WriteString(string Input)
+        {
+            session.FormattedIO.WriteLine(Input);
+            //session.RawIO.Write(Input);
+        }
+        private string ReadString()
+        {
+            return session.FormattedIO.ReadString();
+        }
+        private string QueryString(string Input)
+        {
+            session.FormattedIO.WriteLine(Input);
+            return session.FormattedIO.ReadString();
+            //session.RawIO.Write(Input);
+            //return session.RawIO.ReadString().TrimEnd();
+        }
+        private byte[] ReadByte()
+        {
+            return session.FormattedIO.ReadBinaryBlockOfByte();
+        }
+        private byte[] QueryByte(string Input)
+        {
+            session.FormattedIO.WriteLine(Input);
+            return session.FormattedIO.ReadBinaryBlockOfByte();
+        }
+        private float[] QueryFloat(string Input)
+        {
+            session.FormattedIO.WriteLine(Input);
+            byte[] byteArray = session.FormattedIO.ReadBinaryBlockOfByte();
+            float[] temp = new float[byteArray.Length / 4];
+            for (int j = 0; j < temp.Length / 4; j++)
+            {
+                temp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
+            }
+            return temp;
+        }
+        private decimal QueryDecimal(string Input)
+        {
+            session.FormattedIO.WriteLine(Input);
+            return decimal.Parse(session.FormattedIO.ReadString().Replace(".", decimalSeparator).Replace(",", decimalSeparator));
+        }
+        private int QueryInt(string Input)
+        {
+            session.FormattedIO.WriteLine(Input);
+            return int.Parse(session.FormattedIO.ReadString());
+        }
+        #endregion NI Visa
         private decimal DecimalParse(string str)
         {
             return decimal.Parse(str.Replace(".", decimalSeparator).Replace(",", decimalSeparator));
@@ -1714,207 +1774,200 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         private bool SetConnect()
         {
             bool res = false;
-            try
+            rm = new ResourceManager();
+            if (ConnectionMode == EN.ConnectionMode.Standard)
             {
-                session = (TcpipSession)ResourceManager.GetLocalManager().Open(String.Concat("TCPIP0::", _adapterConfig.IPAddress, "::inst0::INSTR"));
-
-                string[] temp = session.Query("*IDN?").Trim('"').Split(',');
-                int InstrManufacrure = 0;
-                string InstrModel = "", SerialNumber = "";
-                if (temp[0].Contains("Rohde&Schwarz")) InstrManufacrure = 1;
-                else if (temp[0].Contains("Keysight")) InstrManufacrure = 2;
-                else if (temp[0].Contains("Anritsu")) InstrManufacrure = 3;
-                InstrModel = temp[1];
-                SerialNumber = temp[2];
-                for (int i = 0; i < AllUniqueData.Count; i++)
+                session = (TcpipSession)rm.Open(String.Concat("TCPIP::", _adapterConfig.IPAddress, "::INSTR"));//, AccessModes.None, 20000);
+            }
+            else if (ConnectionMode == EN.ConnectionMode.HiSpeed)
+            {
+                session = (TcpipSession)rm.Open(String.Concat("TCPIP::", _adapterConfig.IPAddress, "::hislip"));//, AccessModes.None, 20000);
+            }
+            string[] temp = QueryString("*IDN?").Trim('"').Split(',');
+            int InstrManufacrure = 0;
+            string InstrModel = "", SerialNumber = "";
+            if (temp[0].Contains("Rohde&Schwarz")) InstrManufacrure = 1;
+            else if (temp[0].Contains("Keysight")) InstrManufacrure = 2;
+            else if (temp[0].Contains("Anritsu")) InstrManufacrure = 3;
+            InstrModel = temp[1];
+            SerialNumber = temp[2];
+            for (int i = 0; i < AllUniqueData.Count; i++)
+            {
+                #region
+                if (AllUniqueData[i].InstrManufacture == InstrManufacrure)
                 {
-                    #region
-                    if (AllUniqueData[i].InstrManufacture == InstrManufacrure)
+                    if (InstrModel.Contains(AllUniqueData[i].InstrModel))
                     {
-                        if (InstrModel.Contains(AllUniqueData[i].InstrModel))
+                        UniqueData = AllUniqueData[i];
+                        List<DeviceOption> Loaded = new List<DeviceOption>() { };
+                        UniqueData.LoadedInstrOption = new List<DeviceOption>();
+                        foreach (DeviceOption dop in UniqueData.DefaultInstrOption)
                         {
-                            UniqueData = AllUniqueData[i];
-                            List<DeviceOption> Loaded = new List<DeviceOption>() { };
-                            UniqueData.LoadedInstrOption = new List<DeviceOption>();
-                            foreach (DeviceOption dop in UniqueData.DefaultInstrOption)
+                            Loaded.Add(dop);
+                        }
+                        string[] op = QueryString("*OPT?").ToUpper().Split(',');
+                        if (op.Length > 0 && op[0] != "0")
+                        {
+                            bool findDemoOption = false;
+                            foreach (string s in op)
                             {
-                                Loaded.Add(dop);
+                                if (s.ToUpper() == "K0")
+                                {
+                                    findDemoOption = true;
+                                    Loaded = UniqueData.InstrOption;
+                                }
                             }
-                            string[] op = session.Query("*OPT?").TrimEnd().ToUpper().Split(',');
-                            if (op.Length > 0 && op[0] != "0")
+                            if (findDemoOption == false)
                             {
-                                bool findDemoOption = false;
                                 foreach (string s in op)
                                 {
-                                    if (s.ToUpper() == "K0")
+                                    foreach (DeviceOption so in UniqueData.InstrOption)
                                     {
-                                        findDemoOption = true;
-                                        Loaded = UniqueData.InstrOption;
-                                    }
-                                }
-                                if (findDemoOption == false)
-                                {
-                                    foreach (string s in op)
-                                    {
-                                        foreach (DeviceOption so in UniqueData.InstrOption)
+                                        if (so.Type == s)
                                         {
-                                            if (so.Type == s)
-                                            {
-                                                Loaded.Add(so);
-                                            }
+                                            Loaded.Add(so);
                                         }
-
                                     }
+
                                 }
                             }
-                            UniqueData.LoadedInstrOption = Loaded;
                         }
+                        UniqueData.LoadedInstrOption = Loaded;
                     }
-                    #endregion
                 }
-
-                SetPreset();
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    #region
-                    session.Write("FORMat:DEXPort:DSEParator COMM");// POIN");//разделитель дробной части
-                    if (UniqueData.HiSpeed == true)
-                    {
-                        session.Write(":FORM:DATA REAL,32");// ASC");//передавать трейс в ASCII
-                    }
-                    else if (UniqueData.HiSpeed == false)
-                    {
-                        session.Write("FORM:DATA REAL,32"); session.Write("INST SAN");
-                    }
-                    if (_adapterConfig.DisplayUpdate)
-                    {
-                        session.Write(":SYST:DISP:UPD ON");
-                    }
-                    else
-                    {
-                        session.Write(":SYST:DISP:UPD OFF");
-                    }
-                    if (UniqueData.HiSpeed == true)
-                    {
-                        SweepPoints = int.Parse(session.Query(":SWE:POIN?"));
-                    }
-                    else if (UniqueData.HiSpeed == false)
-                    {
-                        SweepPoints = UniqueData.DefaultSweepPoint;
-                        TracePoints = SweepPoints;
-                    }
-                    session.DefaultBufferSize = SweepPoints * 18 + 25; //увеличиваем буфер чтобы влезло 32001 точка трейса
-                    UniqueData.FreqMin = DecimalParse(session.Query(":SENSe:FREQuency:STAR? MIN"));
-                    UniqueData.FreqMax = DecimalParse(session.Query(":SENSe:FREQuency:STOP? MAX"));
-
-                    UniqueData.PreAmp = false;
-                    if (UniqueData.LoadedInstrOption != null && UniqueData.LoadedInstrOption.Count > 0)
-                    {
-                        for (int i = 0; i < UniqueData.LoadedInstrOption.Count; i++)
-                        {
-                            if (UniqueData.LoadedInstrOption[i].GlobalType == "Preamplifier") { UniqueData.PreAmp = true; }
-                            if (UniqueData.LoadedInstrOption[i].Type == "B25") { UniqueData.AttStep = 1; }
-                        }
-                    }
-                    if (!UniqueData.SweepPointFix)
-                    {
-                        SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
-                    }
-                    #endregion
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    #region
-                    session.Write("FORM:DATA REAL,32"); //передавать трейс побайтово //в ASCII
-                    SweepPoints = int.Parse(session.Query(":SENS:SWE:POIN?").Replace('.', ','));
-                    SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
-
-                    TracePoints = SweepPoints;
-                    session.DefaultBufferSize = SweepPoints * 4 + 20;
-                    if (_adapterConfig.DisplayUpdate)
-                    {
-                        session.Write(":DISP:ENAB 1");
-                    }
-                    else
-                    {
-                        session.Write(":DISP:ENAB 0");
-                    }
-
-                    #endregion
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    #region
-                    session.Write("FORM:DATA REAL,32"); //передавать трейс побайтово
-                    SweepPoints = 551;
-                    TracePoints = 551;
-                    SweepPointsIndex = 0;
-                    session.DefaultBufferSize = 2204 + 20;
-                    session.Write(":MMEMory:MSIS INT");
-                    if (_adapterConfig.DisplayUpdate)
-                    {
-                        session.Write(":DISP:ENAB 1");
-                    }
-                    else
-                    {
-                        session.Write(":DISP:ENAB 0");
-                    }
-                    SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
-                    #endregion
-                }
-                #region
-
-                GetLevelUnit();
-                GetFreqCentr();
-                GetFreqSpan();
-                GetRBW();
-                GetAutoRBW();
-                GetVBW();
-                GetAutoVBW();
-
-                GetOptimization();
-                SetOptimization((EN.Optimization)_adapterConfig.Optimization);
-
-                GetSweepTime();
-                GetAutoSweepTime();
-                GetSweepType();
-                GetSweepPoints();
-
-                GetRefLevel();
-                GetRange();
-                GetAttLevel();
-                GetAutoAttLevel();
-                GetPreAmp();
-                GetTraceType();
-                GetDetectorType();
-
-
-                SetIQWindow();
-                SetWindowType(EN.Mode.IQAnalyzer);
-                GetRefLevel();
-                GetRange();
-                GetAttLevel();
-                GetAutoAttLevel();
-                GetPreAmp();
-                SetWindowType(EN.Mode.SpectrumAnalyzer);
-
-
-                res = true;
-                IsRuning = true;
                 #endregion
             }
-            #region Exception
-            catch (VisaException v_exp)
+
+            SetPreset();
+            if (UniqueData.InstrManufacture == 1)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                #region
+                WriteString("FORMat:DEXPort:DSEParator COMM");// POIN");//разделитель дробной части
+                if (UniqueData.HiSpeed == true)
+                {
+                    WriteString(":FORM:DATA REAL,32");// ASC");//передавать трейс в ASCII
+                }
+                else if (UniqueData.HiSpeed == false)
+                {
+                    WriteString("FORM:DATA REAL,32"); WriteString("INST SAN");
+                }
+                if (_adapterConfig.DisplayUpdate)
+                {
+                    WriteString(":SYST:DISP:UPD ON");
+                }
+                else
+                {
+                    WriteString(":SYST:DISP:UPD OFF");
+                }
+                if (UniqueData.HiSpeed == true)
+                {
+                    SweepPoints = QueryInt(":SWE:POIN?");
+                }
+                else if (UniqueData.HiSpeed == false)
+                {
+                    SweepPoints = UniqueData.DefaultSweepPoint;
+                    TracePoints = SweepPoints;
+                }
+                //session.DefaultBufferSize = SweepPoints * 18 + 25; //увеличиваем буфер чтобы влезло 32001 точка трейса
+                UniqueData.FreqMin = QueryDecimal(":SENSe:FREQuency:STAR? MIN");
+                UniqueData.FreqMax = QueryDecimal(":SENSe:FREQuency:STOP? MAX");
+
+                UniqueData.PreAmp = false;
+                if (UniqueData.LoadedInstrOption != null && UniqueData.LoadedInstrOption.Count > 0)
+                {
+                    for (int i = 0; i < UniqueData.LoadedInstrOption.Count; i++)
+                    {
+                        if (UniqueData.LoadedInstrOption[i].GlobalType == "Preamplifier") { UniqueData.PreAmp = true; }
+                        if (UniqueData.LoadedInstrOption[i].Type == "B25") { UniqueData.AttStep = 1; }
+                    }
+                }
+                if (!UniqueData.SweepPointFix)
+                {
+                    SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
+                }
+                #endregion
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString("FORM:DATA REAL,32"); //передавать трейс побайтово //в ASCII
+                SweepPoints = QueryInt(":SENS:SWE:POIN?");
+                SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
+
+                TracePoints = SweepPoints;
+                //session.DefaultBufferSize = SweepPoints * 4 + 20;
+                if (_adapterConfig.DisplayUpdate)
+                {
+                    WriteString(":DISP:ENAB 1");
+                }
+                else
+                {
+                    WriteString(":DISP:ENAB 0");
+                }
             }
-            #endregion   
+            else if (UniqueData.InstrManufacture == 3)
+            {
+                WriteString("FORM:DATA REAL,32"); //передавать трейс побайтово
+                SweepPoints = 551;
+                TracePoints = 551;
+                SweepPointsIndex = 0;
+                //session.DefaultBufferSize = 2204 + 20;
+                WriteString(":MMEMory:MSIS INT");
+                if (_adapterConfig.DisplayUpdate)
+                {
+                    WriteString(":DISP:ENAB 1");
+                }
+                else
+                {
+                    WriteString(":DISP:ENAB 0");
+                }
+                SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
+            }
+            #region
+
+            GetLevelUnit();
+            GetFreqCentr();
+            GetFreqSpan();
+            GetRBW();
+            GetAutoRBW();
+            GetVBW();
+            GetAutoVBW();
+
+            GetOptimization();
+            SetOptimization((EN.Optimization)_adapterConfig.Optimization);
+
+            GetSweepTime();
+            GetAutoSweepTime();
+            GetSweepType();
+            GetSweepPoints();
+
+            GetRefLevel();
+            GetRange();
+            GetAttLevel();
+            GetAutoAttLevel();
+            GetPreAmp();
+            GetTraceType();
+            GetDetectorType();
+
+
+            SetIQWindow();
+            SetWindowType(EN.Mode.IQAnalyzer);
+            GetRefLevel();
+            GetRange();
+            GetAttLevel();
+            GetAutoAttLevel();
+            GetPreAmp();
+            SetWindowType(EN.Mode.SpectrumAnalyzer);
+
+
+            res = true;
+            IsRuning = true;
+            #endregion
             return res;
         }
+
+
+
+
 
         #region AN To Command
         /// <summary>
@@ -1922,31 +1975,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         /// </summary>
         private void GetFreqCentr()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    FreqCentr = DecimalParse(session.Query(":FREQ:CENT?"));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
-                }
+                FreqCentr = QueryDecimal(":SENSe:FREQuency:CENTer?");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                FreqCentr = QueryDecimal(":FREQ:CENT?");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                FreqCentr = QueryDecimal(":SENSe:FREQuency:CENTer?");
             }
-            #endregion
             GetFreqArr();
         }
         /// <summary>
@@ -1954,31 +1994,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         /// </summary>
         private void GetFreqSpan()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    FreqSpan = DecimalParse(session.Query(":SENSe:FREQuency:SPAN?"));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    FreqSpan = DecimalParse(session.Query(":FREQuency:SPAN?"));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    FreqSpan = DecimalParse(session.Query(":SENSe:FREQuency:SPAN?"));
-                }
+                FreqSpan = QueryDecimal(":SENSe:FREQuency:SPAN?");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                FreqSpan = QueryDecimal(":FREQuency:SPAN?");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                FreqSpan = QueryDecimal(":SENSe:FREQuency:SPAN?");
             }
-            #endregion
             GetFreqArr();
         }
         /// <summary>
@@ -1987,36 +2014,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         private bool SetFreqStart(decimal freqStart)
         {
             bool res = false;
-            try
+            FreqStart = freqStart;
+            if (UniqueData.InstrManufacture == 1)
             {
-                FreqStart = freqStart;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SENSe:FREQ:STAR " + FreqStart.ToString().Replace(',', '.'));
-                    FreqStart = DecimalParse(session.Query(":SENSe:FREQ:STAR?"));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write("FREQ:STAR " + FreqStart.ToString().Replace(',', '.'));
-                    FreqStart = DecimalParse(session.Query(":FREQ:STAR?"));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write("FREQ:STAR " + FreqStart.ToString().Replace(',', '.'));
-                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
-                }
-                res = true;
+                WriteString(":SENSe:FREQ:STAR " + FreqStart.ToString().Replace(decimalSeparator, "."));
+                FreqStart = QueryDecimal(":SENSe:FREQ:STAR?");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString("FREQ:STAR " + FreqStart.ToString().Replace(decimalSeparator, "."));
+                FreqStart = QueryDecimal(":FREQ:STAR?");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString("FREQ:STAR " + FreqStart.ToString().Replace(decimalSeparator, "."));
+                FreqCentr = QueryDecimal(":SENSe:FREQuency:CENTer?");
             }
-            #endregion
+            res = true;
+
             GetFreqArr();
             if (AutoRBW == true) { GetRBW(); }
             if (AutoVBW == true) { GetVBW(); }
@@ -2031,36 +2046,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         private bool SetFreqStop(decimal freqStop)
         {
             bool res = false;
-            try
+            FreqStop = freqStop;
+            if (UniqueData.InstrManufacture == 1)
             {
-                FreqStop = freqStop;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SENSe:FREQ:STOP " + FreqStop.ToString().Replace(',', '.'));
-                    FreqStop = DecimalParse(session.Query(":SENSe:FREQ:STOP?"));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":FREQ:STOP " + FreqStop.ToString().Replace(',', '.'));
-                    FreqStop = DecimalParse(session.Query(":FREQ:STOP?"));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write(":SENSe:FREQ:STOP " + FreqStop.ToString().Replace(',', '.'));
-                    FreqCentr = DecimalParse(session.Query(":SENSe:FREQuency:CENTer?"));
-                }
-                res = true;
+                WriteString(":SENSe:FREQ:STOP " + FreqStop.ToString().Replace(decimalSeparator, "."));
+                FreqStop = QueryDecimal(":SENSe:FREQ:STOP?");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":FREQ:STOP " + FreqStop.ToString().Replace(decimalSeparator, "."));
+                FreqStop = QueryDecimal(":FREQ:STOP?");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString(":SENSe:FREQ:STOP " + FreqStop.ToString().Replace(decimalSeparator, "."));
+                FreqCentr = QueryDecimal(":SENSe:FREQuency:CENTer?");
             }
-            #endregion
+            res = true;
             GetFreqArr();
             if (AutoRBW == true) { GetRBW(); }
             if (AutoVBW == true) { GetVBW(); }
@@ -2071,54 +2073,52 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         private void GetFreqArr()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
+                if (UniqueData.HiSpeed == true)
                 {
-                    if (UniqueData.HiSpeed == true)
+                    //WriteString("TRAC1:X? TRACE1");
+                    byte[] byteArray = QueryByte("TRAC1:X? TRACE1");
+
+                    double[] temp = new double[byteArray.Length / 4 + 2];
+                    for (int j = 0; j < byteArray.Length / 4; j++)
                     {
-                        session.Write("TRAC1:X? TRACE1");
-                        byte[] byteArray = session.ReadByteArray();
-                        if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                        {
-                            int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                            int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                            double[] temp = new double[lengthData / 4 + 2];
-                            for (int j = 0; j < lengthData / 4; j++)
-                            {
-                                temp[j + 1] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
-                            }
-                            temp[0] = (double)FreqStart;
-                            temp[temp.Length - 1] = (double)FreqStop;
-                            FreqArr = temp;
-                            LevelArr = new float[FreqArr.Length];
-                            LevelArrTemp = new float[FreqArr.Length];
-                            for (int i = 0; i < FreqArr.Length; i++)
-                            {
-                                LevelArr[i] = -1000;
-                                LevelArrTemp[i] = -1000;
-                            }
-                        }
+                        temp[j + 1] = System.BitConverter.ToSingle(byteArray, j * 4);
                     }
-                    else if (UniqueData.HiSpeed == false)
+                    temp[0] = (double)FreqStart;
+                    temp[temp.Length - 1] = (double)FreqStop;
+                    FreqArr = temp;
+                    LevelArr = new float[FreqArr.Length];
+                    LevelArrTemp = new float[FreqArr.Length];
+                    for (int i = 0; i < FreqArr.Length; i++)
                     {
-                        #region
-                        FreqArr = new double[TracePoints];
-                        LevelArr = new float[TracePoints];
-                        LevelArrTemp = new float[LevelArr.Length];
-                        decimal step = (decimal)FreqSpan / (TracePoints - 1);
-                        for (int i = 0; i < TracePoints; i++)
-                        {
-                            FreqArr[i] = (double)(FreqStart + step * i);
-                            LevelArr[i] = -1000;
-                            LevelArrTemp[i] = -1000;
-                        }
-                        #endregion
+                        LevelArr[i] = -1000;
+                        LevelArrTemp[i] = -1000;
                     }
+
+                    //if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
+                    //{
+                    //    int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
+                    //    int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
+                    //    double[] temp = new double[lengthData / 4 + 2];
+                    //    for (int j = 0; j < lengthData / 4; j++)
+                    //    {
+                    //        temp[j + 1] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
+                    //    }
+                    //    temp[0] = (double)FreqStart;
+                    //    temp[temp.Length - 1] = (double)FreqStop;
+                    //    FreqArr = temp;
+                    //    LevelArr = new float[FreqArr.Length];
+                    //    LevelArrTemp = new float[FreqArr.Length];
+                    //    for (int i = 0; i < FreqArr.Length; i++)
+                    //    {
+                    //        LevelArr[i] = -1000;
+                    //        LevelArrTemp[i] = -1000;
+                    //    }
+                    //}
                 }
-                else if (UniqueData.InstrManufacture == 2)
+                else if (UniqueData.HiSpeed == false)
                 {
-                    #region
                     FreqArr = new double[TracePoints];
                     LevelArr = new float[TracePoints];
                     LevelArrTemp = new float[LevelArr.Length];
@@ -2129,624 +2129,492 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         LevelArr[i] = -1000;
                         LevelArrTemp[i] = -1000;
                     }
-
-                    #endregion
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    #region
-                    FreqArr = new double[TracePoints];
-                    LevelArr = new float[TracePoints];
-                    LevelArrTemp = new float[LevelArr.Length];
-                    decimal step = (decimal)FreqSpan / (TracePoints - 1);
-                    for (int i = 0; i < TracePoints; i++)
-                    {
-                        FreqArr[i] = (double)(FreqStart + step * i);
-                        LevelArr[i] = -1000;
-                        LevelArrTemp[i] = -1000;
-                    }
-
-                    #endregion
                 }
             }
-            #region Exception
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                FreqArr = new double[TracePoints];
+                LevelArr = new float[TracePoints];
+                LevelArrTemp = new float[LevelArr.Length];
+                decimal step = (decimal)FreqSpan / (TracePoints - 1);
+                for (int i = 0; i < TracePoints; i++)
+                {
+                    FreqArr[i] = (double)(FreqStart + step * i);
+                    LevelArr[i] = -1000;
+                    LevelArrTemp[i] = -1000;
+                }
             }
-            #endregion
+            else if (UniqueData.InstrManufacture == 3)
+            {
+                FreqArr = new double[TracePoints];
+                LevelArr = new float[TracePoints];
+                LevelArrTemp = new float[LevelArr.Length];
+                decimal step = (decimal)FreqSpan / (TracePoints - 1);
+                for (int i = 0; i < TracePoints; i++)
+                {
+                    FreqArr[i] = (double)(FreqStart + step * i);
+                    LevelArr[i] = -1000;
+                    LevelArrTemp[i] = -1000;
+                }
+            }
         }
         /// <summary>
         /// Установка Центральной частоты просмотра IQ
         /// </summary>
-        private bool SetFreqCentrIQ(decimal freqCentrIQ)
+        private void SetFreqCentrIQ(decimal freqCentrIQ)
         {
-            bool res = false;
-            try
+            FreqCentrIQ = freqCentrIQ;
+            if (UniqueData.InstrManufacture == 1)
             {
-                FreqCentrIQ = freqCentrIQ;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write($"FREQ:CENT {FreqCentrIQ.ToString().Replace(",", ".")}");
-                    FreqCentrIQ = DecimalParse(session.Query(":FREQ:CENT?"));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
+                WriteString($"FREQ:CENT {FreqCentrIQ.ToString().Replace(decimalSeparator, ".")}");
+                FreqCentrIQ = QueryDecimal(":FREQ:CENT?");
+            }
+            else if (UniqueData.InstrManufacture == 2)
+            {
 
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
+            }
+            else if (UniqueData.InstrManufacture == 3)
+            {
 
-                }
-                res = true;
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-            return res;
         }
 
         private void SetAutoAttLevel(bool attAuto)
         {
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                AttAutoSpec = attAuto;
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    AttAutoSpec = attAuto;
-                    if (UniqueData.InstrManufacture == 1)
+                    if (AttAutoSpec == true)
                     {
-                        if (AttAutoSpec == true)
-                        {
-                            session.Write(":INP:ATT:AUTO 1");
-                        }
-                        else
-                        {
-                            session.Write(":INP:ATT:AUTO 0");
-                        }
-                        AttLevelSpec = DecimalParse(session.Query(":INP:ATT?"));
+                        WriteString(":INP:ATT:AUTO 1");
                     }
-                    else if (UniqueData.InstrManufacture == 2)
+                    else
                     {
-                        if (AttAutoSpec == true)
-                        {
-                            session.Write(":POW:ATT:AUTO 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:ATT:AUTO 0");
-                        }
-                        AttLevelSpec = DecimalParse(session.Query(":POW:ATT?"));
+                        WriteString(":INP:ATT:AUTO 0");
                     }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        if (AttAutoSpec == true)
-                        {
-                            session.Write(":POW:ATT:AUTO 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:ATT:AUTO 0");
-                        }
-                        AttLevelSpec = DecimalParse(session.Query(":POW:ATT?"));
-                    }
+                    AttLevelSpec = QueryDecimal(":INP:ATT?");
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    AttAutoIQ = attAuto;
-                    if (UniqueData.InstrManufacture == 1)
+                    if (AttAutoSpec == true)
                     {
-                        if (AttAutoIQ == true)
-                        {
-                            session.Write(":INP:ATT:AUTO 1");
-                        }
-                        else
-                        {
-                            session.Write(":INP:ATT:AUTO 0");
-                        }
-                        AttLevelIQ = DecimalParse(session.Query(":INP:ATT?"));
+                        WriteString(":POW:ATT:AUTO 1");
                     }
-                    else if (UniqueData.InstrManufacture == 2)
+                    else
                     {
-                        if (AttAutoIQ == true)
-                        {
-                            session.Write(":POW:ATT:AUTO 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:ATT:AUTO 0");
-                        }
-                        AttLevelIQ = DecimalParse(session.Query(":POW:ATT?"));
+                        WriteString(":POW:ATT:AUTO 0");
                     }
-                    else if (UniqueData.InstrManufacture == 3)
+                    AttLevelSpec = QueryDecimal(":POW:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    if (AttAutoSpec == true)
                     {
-                        if (AttAutoIQ == true)
-                        {
-                            session.Write(":POW:ATT:AUTO 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:ATT:AUTO 0");
-                        }
-                        AttLevelIQ = DecimalParse(session.Query(":POW:ATT?"));
+                        WriteString(":POW:ATT:AUTO 1");
                     }
+                    else
+                    {
+                        WriteString(":POW:ATT:AUTO 0");
+                    }
+                    AttLevelSpec = QueryDecimal(":POW:ATT?");
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                AttAutoIQ = attAuto;
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    if (AttAutoIQ == true)
+                    {
+                        WriteString(":INP:ATT:AUTO 1");
+                    }
+                    else
+                    {
+                        WriteString(":INP:ATT:AUTO 0");
+                    }
+                    AttLevelIQ = QueryDecimal(":INP:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    if (AttAutoIQ == true)
+                    {
+                        WriteString(":POW:ATT:AUTO 1");
+                    }
+                    else
+                    {
+                        WriteString(":POW:ATT:AUTO 0");
+                    }
+                    AttLevelIQ = QueryDecimal(":POW:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    if (AttAutoIQ == true)
+                    {
+                        WriteString(":POW:ATT:AUTO 1");
+                    }
+                    else
+                    {
+                        WriteString(":POW:ATT:AUTO 0");
+                    }
+                    AttLevelIQ = QueryDecimal(":POW:ATT?");
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
         /// <summary>
         /// Вкл/Выкл атоматического аттенюатора зависящего от опорного уровня, при выкл
         /// АвтоАТТ изменяем настройку аттенюатора
         /// </summary>
-        private bool SetAttLevel(decimal attLevel)
+        private void SetAttLevel(decimal attLevel)
         {
-            bool res = false;
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                AttLevelSpec = attLevel;
+                if (AttAutoSpec)
                 {
-                    AttLevelSpec = attLevel;
-                    if (AttAutoSpec)
-                    {
-                        AttAutoSpec = false;
-                    }
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        session.Write(":INP:ATT " + AttLevelSpec.ToString().Replace(',', '.')); //INP:ATT:AUTO
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        session.Write(":POW:ATT " + AttLevelSpec.ToString().Replace(',', '.'));
-                    }
+                    AttAutoSpec = false;
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    AttLevelIQ = attLevel;
-                    if (AttAutoIQ)
-                    {
-                        AttAutoIQ = false;
-                    }
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        session.Write(":INP:ATT " + AttLevelIQ.ToString().Replace(',', '.')); //INP:ATT:AUTO
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        session.Write(":POW:ATT " + AttLevelIQ.ToString().Replace(',', '.'));
-                    }
+                    WriteString(":INP:ATT " + AttLevelSpec.ToString().Replace(decimalSeparator, ".")); //INP:ATT:AUTO
                 }
-                res = true;
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    WriteString(":POW:ATT " + AttLevelSpec.ToString().Replace(decimalSeparator, "."));
+                }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                AttLevelIQ = attLevel;
+                if (AttAutoIQ)
+                {
+                    AttAutoIQ = false;
+                }
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    WriteString(":INP:ATT " + AttLevelIQ.ToString().Replace(decimalSeparator, ".")); //INP:ATT:AUTO
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    WriteString(":POW:ATT " + AttLevelIQ.ToString().Replace(decimalSeparator, "."));
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-
-            return res;
         }
         /// <summary>
         /// Получаем настройку аттенюатора
         /// </summary>
         private void GetAttLevel()
         {
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        AttLevelSpec = DecimalParse(session.Query(":INP:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        AttLevelSpec = DecimalParse(session.Query(":POW:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        string t = session.Query(":POW:ATT?");
-                        if (t != "0.0") { AttLevelSpec = DecimalParse(t); }
-                        else AttLevelSpec = 0;
-                    }
+                    AttLevelSpec = QueryDecimal(":INP:ATT?");
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        AttLevelIQ = DecimalParse(session.Query(":INP:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        AttLevelIQ = DecimalParse(session.Query(":POW:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        string t = session.Query(":POW:ATT?");
-                        if (t != "0.0") { AttLevelIQ = DecimalParse(t); }
-                        else AttLevelIQ = 0;
-                    }
+                    AttLevelSpec = QueryDecimal(":POW:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    string t = QueryString(":POW:ATT?");
+                    if (t != "0.0") { AttLevelSpec = DecimalParse(t); }
+                    else AttLevelSpec = 0;
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    AttLevelIQ = QueryDecimal(":INP:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    AttLevelIQ = QueryDecimal(":POW:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    string t = QueryString(":POW:ATT?");
+                    if (t != "0.0") { AttLevelIQ = DecimalParse(t); }
+                    else AttLevelIQ = 0;
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
-        private bool SetAutoAtt(bool attauto)
+        private void SetAutoAtt(bool attauto)
         {
-            bool res = false;
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                AttAutoSpec = attauto;
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    AttAutoSpec = attauto;
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        if (AttAutoSpec == true) session.Write(":INP:ATT:AUTO 1");
-                        else session.Write(":INP:ATT:AUTO 0");
-                        AttLevelSpec = DecimalParse(session.Query(":INP:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        if (AttAutoSpec == true) session.Write(":POW:ATT:AUTO 1");
-                        else session.Write(":POW:ATT:AUTO 0");
-                        AttLevelSpec = DecimalParse(session.Query(":POW:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        if (AttAutoSpec == true) session.Write(":POW:ATT:AUTO 1");
-                        else session.Write(":POW:ATT:AUTO 0");
-                        AttLevelSpec = DecimalParse(session.Query(":POW:ATT?"));
-                    }
+                    if (AttAutoSpec == true) WriteString(":INP:ATT:AUTO 1");
+                    else WriteString(":INP:ATT:AUTO 0");
+                    AttLevelSpec = QueryDecimal(":INP:ATT?");
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    AttAutoIQ = attauto;
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        if (AttAutoIQ == true) session.Write(":INP:ATT:AUTO 1");
-                        else session.Write(":INP:ATT:AUTO 0");
-                        AttLevelIQ = DecimalParse(session.Query(":INP:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        if (AttAutoIQ == true) session.Write(":POW:ATT:AUTO 1");
-                        else session.Write(":POW:ATT:AUTO 0");
-                        AttLevelIQ = DecimalParse(session.Query(":POW:ATT?"));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        if (AttAutoIQ == true) session.Write(":POW:ATT:AUTO 1");
-                        else session.Write(":POW:ATT:AUTO 0");
-                        AttLevelIQ = DecimalParse(session.Query(":POW:ATT?"));
-                    }
+                    if (AttAutoSpec == true) WriteString(":POW:ATT:AUTO 1");
+                    else WriteString(":POW:ATT:AUTO 0");
+                    AttLevelSpec = QueryDecimal(":POW:ATT?");
                 }
-                res = true;
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    if (AttAutoSpec == true) WriteString(":POW:ATT:AUTO 1");
+                    else WriteString(":POW:ATT:AUTO 0");
+                    AttLevelSpec = QueryDecimal(":POW:ATT?");
+                }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                AttAutoIQ = attauto;
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    if (AttAutoIQ == true) WriteString(":INP:ATT:AUTO 1");
+                    else WriteString(":INP:ATT:AUTO 0");
+                    AttLevelIQ = QueryDecimal(":INP:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    if (AttAutoIQ == true) WriteString(":POW:ATT:AUTO 1");
+                    else WriteString(":POW:ATT:AUTO 0");
+                    AttLevelIQ = QueryDecimal(":POW:ATT?");
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    if (AttAutoIQ == true) WriteString(":POW:ATT:AUTO 1");
+                    else WriteString(":POW:ATT:AUTO 0");
+                    AttLevelIQ = QueryDecimal(":POW:ATT?");
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-            return res;
         }
         private void GetAutoAttLevel()
         {
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                string temp = "";
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    string temp = "";
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        temp = session.Query(":INP:ATT:AUTO?").TrimEnd();
-                        if (temp.Contains("1")) { AttAutoSpec = true; }
-                        else if (temp.Contains("0")) { AttAutoSpec = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        temp = session.Query(":POW:ATT:AUTO?").TrimEnd();
-                        if (temp.Contains("1")) { AttAutoSpec = true; }
-                        else if (temp.Contains("0")) { AttAutoSpec = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        temp = session.Query(":POW:ATT:AUTO?").TrimEnd();
-                        if (temp.Contains("1")) { AttAutoSpec = true; }
-                        else if (temp.Contains("0")) { AttAutoSpec = false; }
-                    }
+                    temp = QueryString(":INP:ATT:AUTO?");
+                    if (temp.Contains("1")) { AttAutoSpec = true; }
+                    else if (temp.Contains("0")) { AttAutoSpec = false; }
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    string temp = "";
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        temp = session.Query(":INP:ATT:AUTO?");
-                        if (temp.Contains("1")) { AttAutoIQ = true; }
-                        else if (temp.Contains("0")) { AttAutoIQ = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        temp = session.Query(":POW:ATT:AUTO?");
-                        if (temp.Contains("1")) { AttAutoIQ = true; }
-                        else if (temp.Contains("0")) { AttAutoIQ = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        temp = session.Query(":POW:ATT:AUTO?");
-                        if (temp.Contains("1")) { AttAutoIQ = true; }
-                        else if (temp.Contains("0")) { AttAutoIQ = false; }
-                    }
+                    temp = QueryString(":POW:ATT:AUTO?");
+                    if (temp.Contains("1")) { AttAutoSpec = true; }
+                    else if (temp.Contains("0")) { AttAutoSpec = false; }
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    temp = QueryString(":POW:ATT:AUTO?");
+                    if (temp.Contains("1")) { AttAutoSpec = true; }
+                    else if (temp.Contains("0")) { AttAutoSpec = false; }
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                string temp = "";
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    temp = QueryString(":INP:ATT:AUTO?");
+                    if (temp.Contains("1")) { AttAutoIQ = true; }
+                    else if (temp.Contains("0")) { AttAutoIQ = false; }
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    temp = QueryString(":POW:ATT:AUTO?");
+                    if (temp.Contains("1")) { AttAutoIQ = true; }
+                    else if (temp.Contains("0")) { AttAutoIQ = false; }
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    temp = QueryString(":POW:ATT:AUTO?");
+                    if (temp.Contains("1")) { AttAutoIQ = true; }
+                    else if (temp.Contains("0")) { AttAutoIQ = false; }
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
         /// <summary>
         /// Вкл/Выкл предусилителя 
         /// </summary>
-        private bool SetPreAmp(bool preAmp)
+        private void SetPreAmp(bool preAmp)
         {
-            bool res = false;
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                PreAmpSpec = preAmp;
+                if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
                 {
-                    PreAmpSpec = preAmp;
-                    if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
+                    if (PreAmpSpec == true)
                     {
-                        if (PreAmpSpec == true)
-                        {
-                            session.Write(":INP:GAIN:STAT 1");
-                        }
-                        else
-                        {
-                            session.Write(":INP:GAIN:STAT 0");
-                        }
+                        WriteString(":INP:GAIN:STAT 1");
                     }
-                    else if (UniqueData.InstrManufacture == 2)
+                    else
                     {
-                        if (PreAmpSpec == true)
-                        {
-                            session.Write(":POW:GAIN 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:GAIN 0");
-                        }
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        if (PreAmpSpec == true)
-                        {
-                            session.Write(":POW:GAIN 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:GAIN 0");
-                        }
+                        WriteString(":INP:GAIN:STAT 0");
                     }
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    PreAmpIQ = preAmp;
-                    if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
+                    if (PreAmpSpec == true)
                     {
-                        if (PreAmpIQ == true)
-                        {
-                            session.Write(":INP:GAIN:STAT 1");
-                        }
-                        {
-                            session.Write(":INP:GAIN:STAT 0");
-                        }
+                        WriteString(":POW:GAIN 1");
                     }
-                    else if (UniqueData.InstrManufacture == 2)
+                    else
                     {
-                        if (PreAmpIQ == true)
-                        {
-                            session.Write(":POW:GAIN 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:GAIN 0");
-                        }
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        if (PreAmpIQ == true)
-                        {
-                            session.Write(":POW:GAIN 1");
-                        }
-                        else
-                        {
-                            session.Write(":POW:GAIN 0");
-                        }
+                        WriteString(":POW:GAIN 0");
                     }
                 }
-                res = true;
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    if (PreAmpSpec == true)
+                    {
+                        WriteString(":POW:GAIN 1");
+                    }
+                    else
+                    {
+                        WriteString(":POW:GAIN 0");
+                    }
+                }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                PreAmpIQ = preAmp;
+                if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
+                {
+                    if (PreAmpIQ == true)
+                    {
+                        WriteString(":INP:GAIN:STAT 1");
+                    }
+                    {
+                        WriteString(":INP:GAIN:STAT 0");
+                    }
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    if (PreAmpIQ == true)
+                    {
+                        WriteString(":POW:GAIN 1");
+                    }
+                    else
+                    {
+                        WriteString(":POW:GAIN 0");
+                    }
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    if (PreAmpIQ == true)
+                    {
+                        WriteString(":POW:GAIN 1");
+                    }
+                    else
+                    {
+                        WriteString(":POW:GAIN 0");
+                    }
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-            return res;
         }
         /// <summary>
         /// Узнаем состояние предусилителя 
         /// </summary>
         private void GetPreAmp()
         {
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
                 {
-                    if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
-                    {
-                        string temp = session.Query(":INP:GAIN:STAT?").TrimEnd();
-                        if (temp.Contains("1")) { PreAmpSpec = true; }
-                        else if (temp.Contains("0")) { PreAmpSpec = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        string temp = session.Query(":POW:GAIN:STAT?").TrimEnd();
-                        if (temp.Contains("1")) { PreAmpSpec = true; }
-                        else if (temp.Contains("0")) { PreAmpSpec = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        string temp = session.Query(":POW:GAIN:STAT?").TrimEnd();
-                        if (temp.Contains("1")) { PreAmpSpec = true; }
-                        else if (temp.Contains("0")) { PreAmpSpec = false; }
-                    }
+                    string temp = QueryString(":INP:GAIN:STAT?");
+                    if (temp.Contains("1")) { PreAmpSpec = true; }
+                    else if (temp.Contains("0")) { PreAmpSpec = false; }
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
-                    {
-                        string temp = session.Query(":INP:GAIN:STAT?").TrimEnd();
-                        if (temp.Contains("1")) { PreAmpIQ = true; }
-                        else if (temp.Contains("0")) { PreAmpIQ = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        string temp = session.Query(":POW:GAIN:STAT?").TrimEnd();
-                        if (temp.Contains("1")) { PreAmpIQ = true; }
-                        else if (temp.Contains("0")) { PreAmpIQ = false; }
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        string temp = session.Query(":POW:GAIN:STAT?").TrimEnd();
-                        if (temp.Contains("1")) { PreAmpIQ = true; }
-                        else if (temp.Contains("0")) { PreAmpIQ = false; }
-                    }
+                    string temp = QueryString(":POW:GAIN:STAT?");
+                    if (temp.Contains("1")) { PreAmpSpec = true; }
+                    else if (temp.Contains("0")) { PreAmpSpec = false; }
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    string temp = QueryString(":POW:GAIN:STAT?");
+                    if (temp.Contains("1")) { PreAmpSpec = true; }
+                    else if (temp.Contains("0")) { PreAmpSpec = false; }
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (UniqueData.InstrManufacture == 1 && UniqueData.PreAmp == true)
+                {
+                    string temp = QueryString(":INP:GAIN:STAT?");
+                    if (temp.Contains("1")) { PreAmpIQ = true; }
+                    else if (temp.Contains("0")) { PreAmpIQ = false; }
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    string temp = QueryString(":POW:GAIN:STAT?");
+                    if (temp.Contains("1")) { PreAmpIQ = true; }
+                    else if (temp.Contains("0")) { PreAmpIQ = false; }
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    string temp = QueryString(":POW:GAIN:STAT?");
+                    if (temp.Contains("1")) { PreAmpIQ = true; }
+                    else if (temp.Contains("0")) { PreAmpIQ = false; }
+                }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
         /// <summary>
         /// Установка опорного уровня 
         /// </summary>
-        private bool SetRefLevel(decimal refLevel)
+        private void SetRefLevel(decimal refLevel)
         {
-            bool res = false;
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                RefLevelSpec = refLevel;
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    RefLevelSpec = refLevel;
-                    if (UniqueData.InstrManufacture == 1)
+                    if (UniqueData.HiSpeed)
                     {
-                        if (UniqueData.HiSpeed)
-                        {
-                            session.Write(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelSpec.ToString().Replace(',', '.'));
-                        }
-                        else
-                        {
-                            session.Write(":DISP:TRAC:Y:RLEV " + RefLevelSpec.ToString().Replace(',', '.'));
-                        }
+                        WriteString(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelSpec.ToString().Replace(decimalSeparator, "."));
                     }
-                    else if (UniqueData.InstrManufacture == 2)
+                    else
                     {
-                        session.Write("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevelSpec.ToString().Replace(',', '.'));
+                        WriteString(":DISP:TRAC:Y:RLEV " + RefLevelSpec.ToString().Replace(decimalSeparator, "."));
                     }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        session.Write(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelSpec.ToString());
-                    }
-                    if (AttAutoSpec == true) { GetAttLevel(); }
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    RefLevelIQ = refLevel;
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        if (UniqueData.HiSpeed)
-                        {
-                            session.Write(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelIQ.ToString().Replace(',', '.'));
-                        }
-                        else
-                        {
-                            session.Write(":DISP:TRAC:Y:RLEV " + RefLevelIQ.ToString().Replace(',', '.'));
-                        }
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        session.Write("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevelIQ.ToString().Replace(',', '.'));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        session.Write(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelIQ.ToString());
-                    }
-                    if (AttAutoIQ == true) { GetAttLevel(); }
+                    WriteString("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevelSpec.ToString().Replace(decimalSeparator, "."));
                 }
-                res = true;
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    WriteString(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelSpec.ToString());
+                }
+                if (AttAutoSpec == true) { GetAttLevel(); }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                RefLevelIQ = refLevel;
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    if (UniqueData.HiSpeed)
+                    {
+                        WriteString(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelIQ.ToString().Replace(decimalSeparator, "."));
+                    }
+                    else
+                    {
+                        WriteString(":DISP:TRAC:Y:RLEV " + RefLevelIQ.ToString().Replace(decimalSeparator, "."));
+                    }
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    WriteString("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevelIQ.ToString().Replace(decimalSeparator, "."));
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    WriteString(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevelIQ.ToString().Replace(decimalSeparator, "."));
+                }
+                if (AttAutoIQ == true) { GetAttLevel(); }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-
-            return res;
         }
         /// <summary>
         /// Получаем опорный уровнь 
@@ -2759,17 +2627,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
                     if (UniqueData.HiSpeed)
                     {
-                        RefLevelSpec = Math.Round(DecimalParse(session.Query(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel?")));
+                        RefLevelSpec = Math.Round(QueryDecimal(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel?"));
                     }
-                    else { RefLevelSpec = Math.Round(DecimalParse(session.Query(":DISP:TRAC:Y:RLEV?"))); }
+                    else { RefLevelSpec = Math.Round(QueryDecimal(":DISP:TRAC:Y:RLEV?")); }
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    RefLevelSpec = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    RefLevelSpec = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    RefLevelSpec = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    RefLevelSpec = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
             }
             else if (Mode == EN.Mode.IQAnalyzer)
@@ -2778,68 +2646,54 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
                     if (UniqueData.HiSpeed)
                     {
-                        RefLevelIQ = Math.Round(DecimalParse(session.Query(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel?")));
+                        RefLevelIQ = Math.Round(QueryDecimal(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel?"));
                     }
-                    else { RefLevelIQ = Math.Round(DecimalParse(session.Query(":DISP:TRAC:Y:RLEV?"))); }
+                    else { RefLevelIQ = Math.Round(QueryDecimal(":DISP:TRAC:Y:RLEV?")); }
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    RefLevelIQ = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    RefLevelIQ = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    RefLevelIQ = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    RefLevelIQ = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
             }
         }
         private void SetRange()
         {
-            try
+            if (Mode == EN.Mode.SpectrumAnalyzer)
             {
-                if (Mode == EN.Mode.SpectrumAnalyzer)
+                if (UniqueData.InstrManufacture == 1)
                 {
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        session.Write(":DISP:TRAC:Y " + RangeSpec.ToString().Replace(',', '.'));
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        //session.Write("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevel.ToString().Replace(',', '.'));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        //session.Write(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevel.ToString());
-                    }
-                    if (AttAutoSpec == true) { GetAttLevel(); }
+                    WriteString(":DISP:TRAC:Y " + RangeSpec.ToString().Replace(decimalSeparator, "."));
                 }
-                else if (Mode == EN.Mode.IQAnalyzer)
+                else if (UniqueData.InstrManufacture == 2)
                 {
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        session.Write(":DISP:TRAC:Y " + RangeIQ.ToString().Replace(',', '.'));
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-                        //session.Write("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevel.ToString().Replace(',', '.'));
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-                        //session.Write(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevel.ToString());
-                    }
-                    if (AttAutoIQ == true) { GetAttLevel(); }
+                    //WriteString("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevel.ToString().Replace(decimalSeparator, "."));
                 }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    //WriteString(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevel.ToString().Replace(decimalSeparator, "."));
+                }
+                if (AttAutoSpec == true) { GetAttLevel(); }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (Mode == EN.Mode.IQAnalyzer)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (UniqueData.InstrManufacture == 1)
+                {
+                    WriteString(":DISP:TRAC:Y " + RangeIQ.ToString().Replace(decimalSeparator, "."));
+                }
+                else if (UniqueData.InstrManufacture == 2)
+                {
+                    //WriteString("DISP:WIND:TRAC:Y:SCAL:RLEV " + RefLevel.ToString().Replace(decimalSeparator, "."));
+                }
+                else if (UniqueData.InstrManufacture == 3)
+                {
+                    //WriteString(":DISPlay:WINDow:TRACe:Y:SCALe:RLEVel " + RefLevel.ToString().Replace(decimalSeparator, "."));
+                }
+                if (AttAutoIQ == true) { GetAttLevel(); }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-
         }
         private void GetRange()
         {
@@ -2847,291 +2701,214 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    RangeSpec = Math.Round(DecimalParse(session.Query(":DISP:TRAC:Y?")));
+                    RangeSpec = Math.Round(QueryDecimal(":DISP:TRAC:Y?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    //Range = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    //Range = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    //Range = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    //Range = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
             }
             else if (Mode == EN.Mode.IQAnalyzer)
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    RangeIQ = Math.Round(DecimalParse(session.Query(":DISP:TRAC:Y?")));
+                    RangeIQ = Math.Round(QueryDecimal(":DISP:TRAC:Y?"));
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    //Range = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    //Range = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    //Range = Math.Round(DecimalParse(session.Query(":DISP:WIND:TRAC:Y:SCAL:RLEV?")));
+                    //Range = Math.Round(QueryDecimal(":DISP:WIND:TRAC:Y:SCAL:RLEV?"));
                 }
             }
-
         }
 
 
         /// <summary>
         /// Установка Units
         /// </summary>
-        private bool SetLevelUnit(ParamWithId levelunits)
+        private void SetLevelUnit(ParamWithId levelunits)
         {
-            bool res = false;
-            try
+            LevelUnits = levelunits;
+            if (UniqueData.InstrManufacture == 1)
             {
-                LevelUnits = levelunits;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":UNIT:POWer " + LevelUnits.Parameter);
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":AMPL:UNIT " + LevelUnits.Parameter);
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write(":UNIT:POWer " + LevelUnits.Parameter);
-                }
-                res = true;
+                WriteString(":UNIT:POWer " + LevelUnits.Parameter);
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":AMPL:UNIT " + LevelUnits.Parameter);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString(":UNIT:POWer " + LevelUnits.Parameter);
             }
-            #endregion
-            finally
-            {
-                //GetRefLevel();//хай будит потом разберусь                
-            }
-            return res;
         }
         /// <summary>
         /// Получаем Units 
         /// </summary>
         private void GetLevelUnit()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
+                string temp = QueryString(":UNIT:POWer?");
+                for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
                 {
-                    string temp = session.Query(":UNIT:POWer?").TrimEnd();
-                    for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
+                    if (temp.ToLower() == UniqueData.LevelUnits[i].Parameter.ToLower())
                     {
-                        if (temp.ToLower() == UniqueData.LevelUnits[i].Parameter.ToLower())
-                        {
-                            LevelUnits = UniqueData.LevelUnits[i];
-                        }
+                        LevelUnits = UniqueData.LevelUnits[i];
                     }
-                    //if (UniqueData.HiSpeed)
-                    //{
-                    //    for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
-                    //    {
-                    //        if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "DBM"; }
-                    //        else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "DBMV"; }
-                    //        else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "DBUV"; }
-                    //        else if (LevelUnits[i].ind == 3) { LevelUnits[i].AnParameter = "DBUV/M"; }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    for (int i = 0; i < LevelUnits.Count(); i++)
-                    //    {
-                    //        if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "DBM"; }
-                    //        else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "DBMV"; }
-                    //        else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "DBUV"; }
-                    //        else if (LevelUnits[i].ind == 3) { LevelUnits[i].AnParameter = "DUVM"; }
-                    //    }
-                    //}
+                }
+                //if (UniqueData.HiSpeed)
+                //{
+                //    for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
+                //    {
+                //        if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "DBM"; }
+                //        else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "DBMV"; }
+                //        else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "DBUV"; }
+                //        else if (LevelUnits[i].ind == 3) { LevelUnits[i].AnParameter = "DBUV/M"; }
+                //    }
+                //}
+                //else
+                //{
+                //    for (int i = 0; i < LevelUnits.Count(); i++)
+                //    {
+                //        if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "DBM"; }
+                //        else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "DBMV"; }
+                //        else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "DBUV"; }
+                //        else if (LevelUnits[i].ind == 3) { LevelUnits[i].AnParameter = "DUVM"; }
+                //    }
+                //}
 
-                    //string temp = session.Query(":UNIT:POWer?").TrimEnd();
-                    //for (int i = 0; i < LevelUnits.Count(); i++)
-                    //{
-                    //    if (temp.ToLower() == LevelUnits[i].AnParameter.ToLower())
-                    //    {
-                    //        LevelUnitIndex = i;
-                    //        if (LevelUnits[i].ind == 3) { LevelUnits[i].IsEnabled = true; }
-                    //        else { LevelUnits[3].IsEnabled = false; }
-                    //    }
-                    //}
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    string temp = session.Query(":AMPL:UNIT?").TrimEnd();
-                    for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
-                    {
-                        if (temp.ToLower() == UniqueData.LevelUnits[i].Parameter.ToLower())
-                        {
-                            LevelUnits = UniqueData.LevelUnits[i];
-                        }
-                    }
-                    //for (int i = 0; i < LevelUnits.Count(); i++)
-                    //{
-                    //    if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "DBM"; }
-                    //    else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "DBMV"; }
-                    //    else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "DBUV"; }
-                    //    else if (LevelUnits[i].ind == 3) { LevelUnits[i].IsEnabled = false; }
-                    //}
-                    //string temp = session.Query(":AMPL:UNIT?").TrimEnd();
-                    //for (int i = 0; i < LevelUnits.Count(); i++)
-                    //{
-                    //    if (temp.ToLower() == LevelUnits[i].AnParameter.ToLower()) { LevelUnitIndex = i; }
-                    //}
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    string temp = session.Query(":UNIT:POWer?").TrimEnd();
-                    for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
-                    {
-                        if (temp.ToLower() == UniqueData.LevelUnits[i].Parameter.ToLower())
-                        {
-                            LevelUnits = UniqueData.LevelUnits[i];
-                        }
-                    }
-                    //for (int i = 0; i < LevelUnits.Count(); i++)
-                    //{
-                    //    if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "dBm"; }
-                    //    else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "dBmV"; }
-                    //    else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "dBuV"; }
-                    //    else if (LevelUnits[i].ind == 3) { LevelUnits[i].IsEnabled = false; }
-                    //}
-                    //string temp = session.Query(":UNIT:POWer?").TrimEnd();
-                    //for (int i = 0; i < LevelUnits.Count(); i++)
-                    //{
-                    //    if (temp.ToLower() == LevelUnits[i].AnParameter.ToLower()) { LevelUnitIndex = i; }
-                    //}
-                }
+                //string temp = session.Query(":UNIT:POWer?").TrimEnd();
+                //for (int i = 0; i < LevelUnits.Count(); i++)
+                //{
+                //    if (temp.ToLower() == LevelUnits[i].AnParameter.ToLower())
+                //    {
+                //        LevelUnitIndex = i;
+                //        if (LevelUnits[i].ind == 3) { LevelUnits[i].IsEnabled = true; }
+                //        else { LevelUnits[3].IsEnabled = false; }
+                //    }
+                //}
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                string temp = QueryString(":AMPL:UNIT?");
+                for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
+                {
+                    if (temp.ToLower() == UniqueData.LevelUnits[i].Parameter.ToLower())
+                    {
+                        LevelUnits = UniqueData.LevelUnits[i];
+                    }
+                }
+                //for (int i = 0; i < LevelUnits.Count(); i++)
+                //{
+                //    if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "DBM"; }
+                //    else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "DBMV"; }
+                //    else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "DBUV"; }
+                //    else if (LevelUnits[i].ind == 3) { LevelUnits[i].IsEnabled = false; }
+                //}
+                //string temp = session.Query(":AMPL:UNIT?").TrimEnd();
+                //for (int i = 0; i < LevelUnits.Count(); i++)
+                //{
+                //    if (temp.ToLower() == LevelUnits[i].AnParameter.ToLower()) { LevelUnitIndex = i; }
+                //}
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                string temp = QueryString(":UNIT:POWer?");
+                for (int i = 0; i < UniqueData.LevelUnits.Count; i++)
+                {
+                    if (temp.ToLower() == UniqueData.LevelUnits[i].Parameter.ToLower())
+                    {
+                        LevelUnits = UniqueData.LevelUnits[i];
+                    }
+                }
+                //for (int i = 0; i < LevelUnits.Count(); i++)
+                //{
+                //    if (LevelUnits[i].ind == 0) { LevelUnits[i].AnParameter = "dBm"; }
+                //    else if (LevelUnits[i].ind == 1) { LevelUnits[i].AnParameter = "dBmV"; }
+                //    else if (LevelUnits[i].ind == 2) { LevelUnits[i].AnParameter = "dBuV"; }
+                //    else if (LevelUnits[i].ind == 3) { LevelUnits[i].IsEnabled = false; }
+                //}
+                //string temp = session.Query(":UNIT:POWer?").TrimEnd();
+                //for (int i = 0; i < LevelUnits.Count(); i++)
+                //{
+                //    if (temp.ToLower() == LevelUnits[i].AnParameter.ToLower()) { LevelUnitIndex = i; }
+                //}
             }
-            #endregion            
         }
 
         /// <summary>
         /// Установка RBW 
         /// </summary>
-        private bool SetRBW(decimal rbw)
+        private void SetRBW(decimal rbw)
         {
-            bool res = false;
-            try
+            RBW = rbw;
+            if (UniqueData.InstrManufacture == 1)
             {
-                RBW = rbw;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SENSe:BWIDth:RESolution " + RBW.ToString().Replace(',', '.'));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":SENS:BAND:RES " + RBW.ToString().Replace(',', '.'));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write(":SENSe:BWIDth:RESolution " + RBW.ToString().Replace(',', '.'));
-                }
-                res = true;
+                WriteString(":SENSe:BWIDth:RESolution " + RBW.ToString().Replace(decimalSeparator, "."));
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":SENS:BAND:RES " + RBW.ToString().Replace(decimalSeparator, "."));
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString(":SENSe:BWIDth:RESolution " + RBW.ToString().Replace(decimalSeparator, "."));
             }
-            #endregion
+
             AutoRBW = false;
             if (AutoSweepTime == true) { GetSweepTime(); }
             if (AutoVBW == true) { GetVBW(); }
             GetSweepType();
-            return res;
         }
         /// <summary>
         /// Получение RBW 
         /// </summary>
         private void GetRBW()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    RBW = DecimalParse(session.Query(":SENSe:BWIDth:RESolution?"));
-                    RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    RBW = DecimalParse(session.Query(":SENS:BAND:RES?"));
-                    RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    RBW = DecimalParse(session.Query(":SENSe:BWIDth:RESolution?"));
-                    RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
-                }
+                RBW = QueryDecimal(":SENSe:BWIDth:RESolution?");
+                RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                RBW = QueryDecimal(":SENS:BAND:RES?");
+                RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                RBW = QueryDecimal(":SENSe:BWIDth:RESolution?");
+                RBWIndex = System.Array.IndexOf(UniqueData.RBWArr, RBW);
             }
-            #endregion
-            //if (AutoSWT == true) { GetSWT(); }
-            //if (AutoVBW == true) { GetVBW(); }
         }
         /// <summary>
         /// Вкл/Выкл Auto RBW хай пока будит
         /// </summary>
         private void SetAutoRBW()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    if (AutoRBW == true) session.Write(":SENSe:BWIDth:RESolution:AUTO 1");
-                    if (AutoRBW == false) session.Write(":SENSe:BWIDth:RESolution:AUTO 0");
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    if (AutoRBW == true) session.Write(":SENS:BWID:RES:AUTO 1");
-                    if (AutoRBW == false) session.Write(":SENS:BWID:RES:AUTO 0");
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    if (AutoRBW == true) session.Write(":SENSe:BWIDth:RESolution:AUTO 1");
-                    if (AutoRBW == false) session.Write(":SENSe:BWIDth:RESolution:AUTO 0");
-                }
+                if (AutoRBW == true) WriteString(":SENSe:BWIDth:RESolution:AUTO 1");
+                if (AutoRBW == false) WriteString(":SENSe:BWIDth:RESolution:AUTO 0");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (AutoRBW == true) WriteString(":SENS:BWID:RES:AUTO 1");
+                if (AutoRBW == false) WriteString(":SENS:BWID:RES:AUTO 0");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                if (AutoRBW == true) WriteString(":SENSe:BWIDth:RESolution:AUTO 1");
+                if (AutoRBW == false) WriteString(":SENSe:BWIDth:RESolution:AUTO 0");
             }
-            #endregion
             if (AutoSweepTime == true) { GetSweepTime(); }
             GetRBW();
             GetVBW();
@@ -3142,143 +2919,87 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         /// </summary>
         private void GetAutoRBW()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    string s = session.Query(":SENSe:BWIDth:RESolution:AUTO?").TrimEnd();
-                    if (s.Contains("1")) { AutoRBW = true; }
-                    else { AutoRBW = false; }
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    //    if (session.Query(":SENS:BWID:RES:AUTO?") == "0\n") { AutoRBW = false; }
-                    //    else { AutoRBW = true; }
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    AutoRBW = Boolean.Parse(session.Query(":SENSe:BWIDth:RESolution:AUTO?"));
-                }
+                string s = QueryString(":SENSe:BWIDth:RESolution:AUTO?");
+                if (s.Contains("1")) { AutoRBW = true; }
+                else { AutoRBW = false; }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                //    if (session.Query(":SENS:BWID:RES:AUTO?") == "0\n") { AutoRBW = false; }
+                //    else { AutoRBW = true; }
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                AutoRBW = Boolean.Parse(QueryString(":SENSe:BWIDth:RESolution:AUTO?"));
             }
-            #endregion
             if (AutoSweepTime == true) { GetSweepTime(); }
         }
 
         /// <summary>
         /// Установка VBW 
         /// </summary>
-        private bool SetVBW(decimal vbw)
+        private void SetVBW(decimal vbw)
         {
-            bool res = false;
-            try
+            VBW = vbw;
+            if (UniqueData.InstrManufacture == 1)
             {
-                VBW = vbw;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SENSe:BANDwidth:VIDeo " + VBW.ToString());
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":SENSe:BANDwidth:VIDeo " + VBW.ToString().Replace(',', '.'));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write(":SENSe:BANDwidth:VIDeo " + VBW.ToString());
-                }
-                res = true;
+                WriteString(":SENSe:BANDwidth:VIDeo " + VBW.ToString().Replace(decimalSeparator, "."));
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":SENSe:BANDwidth:VIDeo " + VBW.ToString().Replace(decimalSeparator, "."));
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString(":SENSe:BANDwidth:VIDeo " + VBW.ToString().Replace(decimalSeparator, "."));
             }
-            #endregion
             AutoVBW = false;
             if (AutoSweepTime == true && RBWIndex - VBWIndex > 0) { GetSweepTime(); }
             GetSweepType();
-            return res;
         }
         /// <summary>
         /// Получение VBW 
         /// </summary>
         private void GetVBW()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    VBW = DecimalParse(session.Query(":SENSe:BANDwidth:VIDeo?"));
-                    VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    VBW = DecimalParse(session.Query(":SENS:BAND:VID?"));
-                    VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    VBW = DecimalParse(session.Query(":SENSe:BANDwidth:VIDeo?"));
-                    VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
-                }
+                VBW = QueryDecimal(":SENSe:BANDwidth:VIDeo?");
+                VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                VBW = QueryDecimal(":SENS:BAND:VID?");
+                VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                VBW = QueryDecimal(":SENSe:BANDwidth:VIDeo?");
+                VBWIndex = System.Array.IndexOf(UniqueData.VBWArr, VBW);
             }
-            #endregion
-            //if (AutoSWT == true && RBWIndex - VBWIndex > 0) { GetSWT(); }
         }
         /// <summary>
         /// Вкл Auto RBW 
         /// </summary>
         private void SetAutoVBW()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    if (AutoVBW == true) session.Write(":SENSe:BANDwidth:VIDeo:AUTO 1");
-                    if (AutoVBW == false) session.Write(":SENSe:BANDwidth:VIDeo:AUTO 0");
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    if (AutoVBW == true) session.Write(":SENS:BAND:VID:AUTO 1");
-                    if (AutoVBW == false) session.Write(":SENS:BAND:VID:AUTO 0");
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    if (AutoVBW == true) session.Write(":SENSe:BWIDth:VIDeo:AUTO 1");
-                    if (AutoVBW == false) session.Write(":SENSe:BWIDth:VIDeo:AUTO 0");
-                }
+                if (AutoVBW) WriteString(":SENSe:BANDwidth:VIDeo:AUTO 1");
+                else WriteString(":SENSe:BANDwidth:VIDeo:AUTO 0");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (AutoVBW) WriteString(":SENS:BAND:VID:AUTO 1");
+                else WriteString(":SENS:BAND:VID:AUTO 0");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                if (AutoVBW) WriteString(":SENSe:BWIDth:VIDeo:AUTO 1");
+                else WriteString(":SENSe:BWIDth:VIDeo:AUTO 0");
             }
-            #endregion
             if (AutoVBW == true) { GetVBW(); }
             if (AutoSweepTime == true) { GetSweepTime(); }
             GetSweepType();
@@ -3290,34 +3011,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         /// </summary>
         private void GetAutoVBW()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    if (session.Query(":SENSe:BANDwidth:VIDeo:AUTO?").Contains("1")) { AutoVBW = true; }
-                    else { AutoVBW = false; }
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    if (session.Query(":SENS:BAND:VID:AUTO?") == "0\n") { AutoVBW = false; }
-                    else { AutoVBW = true; }
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    AutoVBW = Boolean.Parse(session.Query(":SENSe:BWIDth:VIDeo:AUTO?"));
-                }
+                if (QueryString(":SENSe:BANDwidth:VIDeo:AUTO?").Contains("1")) { AutoVBW = true; }
+                else { AutoVBW = false; }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (QueryString(":SENS:BAND:VID:AUTO?").Contains("0")) { AutoVBW = false; }
+                else { AutoVBW = true; }
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                AutoVBW = Boolean.Parse(QueryString(":SENSe:BWIDth:VIDeo:AUTO?"));
             }
-            #endregion
-            //if (AutoSWT == true) { GetSWT(); }
         }
 
 
@@ -3326,249 +3033,143 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         /// </summary>        
         private void SetSweepType()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SWE:TYPE " + SweepTypeSelected.Parameter);
-                    //if (SweepType == 0) { session.Write(":SWE:TYPE Auto"); SweepTypeStr = "Auto"; }
-                    //else if (SweepType == 1) { session.Write(":SWE:TYPE Sweep"); SweepTypeStr = "Sweep"; }
-                    //else if (SweepType == 2) { session.Write(":SWE:TYPE FFT"); SweepTypeStr = "FFT"; }
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":SWE:TYPE " + SweepTypeSelected.Parameter);
-                    //if (SweepType == 0) { session.Write(":SWE:TYPE AUTO"); SweepTypeStr = "Auto"; }
-                    //else if (SweepType == 1) { session.Write(":SWE:TYPE STEP"); SweepTypeStr = "STEP"; }
-                    //else if (SweepType == 2) { session.Write(":SWE:TYPE FFT"); SweepTypeStr = "FFT"; }
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write(":SWE:MODE " + SweepTypeSelected.Parameter);
-                }
+                WriteString(":SWE:TYPE " + SweepTypeSelected.Parameter);
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":SWE:TYPE " + SweepTypeSelected.Parameter);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString(":SWE:MODE " + SweepTypeSelected.Parameter);
             }
-            #endregion
         }
         /// <summary>
         /// Получаем метод свиптайма 
         /// </summary> 
         private void GetSweepType()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                //if (UniqueData.InstrManufacture == 1)
-                //{
-                //    if (UniqueData.HiSpeed == true)
-                //    {
-                //        string t = session.Query(":SWE:TYPE?");
-                //        foreach (SwpType ST in UniqueData.SweepType)
-                //        {
-                //            if (t.TrimEnd().ToLower() == ST.Parameter.ToLower()) { SweepTypeSelected = ST; }
-                //        }
-                //    }
-                //    else { SweepTypeSelected = new SwpType { UI = "FFT", Parameter = "FFT" }; }
-                //}
-                //else if (UniqueData.InstrManufacture == 2)
-                //{
-                //    string temp = session.Query(":SWE:TYPE?");
-                //    foreach (SwpType ST in UniqueData.SweepType)
-                //    {
-                //        if (temp.Contains(ST.Parameter)) { SweepTypeSelected = ST; }
-                //    }
-                //}
-                //else if (UniqueData.InstrManufacture == 3)
-                //{
-                //    string temp = session.Query(":SWE:MODE?");
-                //    foreach (SwpType ST in UniqueData.SweepType)
-                //    {
-                //        if (temp.Contains(ST.Parameter)) { SweepTypeSelected = ST; }
-                //    }
-                //}
+                if (UniqueData.HiSpeed == true)
+                {
+                    string t = QueryString(":SWE:TYPE?");
+                    foreach (ParamWithId ST in UniqueData.SweepType)
+                    {
+                        if (t.TrimEnd().ToLower() == ST.Parameter.ToLower()) { SweepTypeSelected = ST; }
+                    }
+                }
+                else { SweepTypeSelected = new ParamWithId { Id = (int)EN.SweepType.FFT, Parameter = "FFT" }; }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                string temp = QueryString(":SWE:TYPE?");
+                foreach (ParamWithId ST in UniqueData.SweepType)
+                {
+                    if (temp.Contains(ST.Parameter)) { SweepTypeSelected = ST; }
+                }
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                string temp = QueryString(":SWE:MODE?");
+                foreach (ParamWithId ST in UniqueData.SweepType)
+                {
+                    if (temp.Contains(ST.Parameter)) { SweepTypeSelected = ST; }
+                }
             }
-            #endregion
         }
         /// <summary>
         /// Получаем свиптайм 
         /// </summary>
         private void GetSweepTime()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    SweepTime = DecimalParse(session.Query(":SWE:TIME?"));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    SweepTime = DecimalParse(session.Query(":SWE:MTIM?"));
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    SweepTime = DecimalParse(session.Query(":SWE:TIME:ACT?"));
-                }
+                SweepTime = QueryDecimal(":SWE:TIME?");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                SweepTime = QueryDecimal(":SWE:MTIM?");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                SweepTime = QueryDecimal(":SWE:TIME:ACT?");
             }
-            #endregion
         }
-        private bool SetSweepTime(decimal sweeptime)
+        private void SetSweepTime(decimal sweeptime)
         {
-            bool res = false;
-            try
+            SweepTime = sweeptime;
+            if (UniqueData.InstrManufacture == 1)
             {
-                SweepTime = sweeptime;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SWE:TIME " + SweepTime.ToString());
-                    SweepTime = DecimalParse(session.Query(":SWE:TIME?"));
-                    AutoSweepTime = false;
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":SWE:TIME " + SweepTime.ToString().Replace(',', '.'));
-                    SweepTime = DecimalParse(session.Query(":SWE:TIME?"));
-                    AutoSweepTime = false;
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    session.Write(":SWE:TIME:ACT " + SweepTime.ToString().Replace(',', '.'));
-                    SweepTime = DecimalParse(session.Query(":SWE:TIME:ACT?"));
-                    AutoSweepTime = false;
-                }
-                res = true;
+                WriteString(":SWE:TIME " + SweepTime.ToString());
+                SweepTime = QueryDecimal(":SWE:TIME?");
+                AutoSweepTime = false;
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":SWE:TIME " + SweepTime.ToString().Replace(',', '.'));
+                SweepTime = QueryDecimal(":SWE:TIME?");
+                AutoSweepTime = false;
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                WriteString(":SWE:TIME:ACT " + SweepTime.ToString().Replace(',', '.'));
+                SweepTime = QueryDecimal(":SWE:TIME:ACT?");
+                AutoSweepTime = false;
             }
-            #endregion
-            return res;
         }
-        private bool SetAutoSweepTime(bool autosweeptime)
+        private void SetAutoSweepTime(bool autosweeptime)
         {
-            bool res = false;
-            try
+            AutoSweepTime = autosweeptime;
+            if (UniqueData.InstrManufacture == 1)
             {
-                AutoSweepTime = autosweeptime;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    if (AutoSweepTime == true) session.Write(":SWE:TIME:AUTO 1");
-                    else session.Write(":SWE:TIME:AUTO 0");
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    if (AutoSweepTime == true) session.Write(":SENS:SWE:ACQ:AUTO 1");
-                    else session.Write(":SENS:SWE:ACQ:AUTO 0");
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    if (AutoSweepTime == true) session.Write(":SENS:SWE:AUTO ON");
-                    else session.Write(":SENS:SWE:AUTO OFF");
-                }
-                res = true;
+                if (AutoSweepTime) WriteString(":SWE:TIME:AUTO 1");
+                else WriteString(":SWE:TIME:AUTO 0");
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (AutoSweepTime) WriteString(":SENS:SWE:ACQ:AUTO 1");
+                else WriteString(":SENS:SWE:ACQ:AUTO 0");
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                if (AutoSweepTime) WriteString(":SENS:SWE:AUTO ON");
+                else WriteString(":SENS:SWE:AUTO OFF");
             }
-            #endregion
             GetSweepTime();
-            return res;
         }
         /// <summary>
         /// Получаем состояние Auto SWT 
         /// </summary>
         private void GetAutoSweepTime()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    if (session.Query(":SWE:TIME:AUTO?") == "0\n") { AutoSweepTime = false; }
-                    else { AutoSweepTime = true; }
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    if (session.Query(":SENS:SWE:ACQ:AUTO?") == "0\n") { AutoSweepTime = false; }
-                    else { AutoSweepTime = true; }
-                }
+                if (QueryString(":SWE:TIME:AUTO?").Contains("0")) { AutoSweepTime = false; }
+                else { AutoSweepTime = true; }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                if (QueryString(":SENS:SWE:ACQ:AUTO?").Contains("0")) { AutoSweepTime = false; }
+                else { AutoSweepTime = true; }
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
 
-        private bool SetSweepPoints(int sweeppoints)
+        private void SetSweepPoints(int sweeppoints)
         {
-            bool res = false;
-            try
+            SweepPoints = sweeppoints;
+            if (UniqueData.InstrManufacture == 1)
             {
-                SweepPoints = sweeppoints;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write(":SWE:POIN " + SweepPoints.ToString());
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":SENS:SWE:POIN " + SweepPoints.ToString());
-                }
-                session.DefaultBufferSize = SweepPoints * 4 + SweepPoints.ToString().Length + 100;
-                res = true;
+                WriteString(":SWE:POIN " + SweepPoints.ToString());
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":SENS:SWE:POIN " + SweepPoints.ToString());
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
+            //session.DefaultBufferSize = SweepPoints * 4 + SweepPoints.ToString().Length + 100;
             GetFreqArr();
-            return res;
         }
 
 
@@ -3577,455 +3178,285 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         /// </summary>
         private void GetSweepPoints()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
+                if (UniqueData.SweepPointFix == false)
                 {
-                    if (UniqueData.SweepPointFix == false)
-                    {
-                        SweepPoints = int.Parse(session.Query(":SWE:POIN?").Replace('.', ','));
-                        SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
-                    }
-                    if (UniqueData.HiSpeed == true) { TracePoints = SweepPoints + 2; }
-                    if (UniqueData.HiSpeed == false) { TracePoints = SweepPoints; }
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    SweepPoints = int.Parse(session.Query(":SENS:SWE:POIN?").Replace('.', ','));
+                    SweepPoints = QueryInt(":SWE:POIN?");
                     SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
-                    session.DefaultBufferSize = SweepPoints * 4 + 20;
-                    TracePoints = SweepPoints;
                 }
+                if (UniqueData.HiSpeed == true) { TracePoints = SweepPoints + 2; }
+                if (UniqueData.HiSpeed == false) { TracePoints = SweepPoints; }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                SweepPoints = QueryInt(":SENS:SWE:POIN?");
+                SweepPointsIndex = System.Array.IndexOf(UniqueData.SweepPointArr, SweepPoints);
+                //session.DefaultBufferSize = SweepPoints * 4 + 20;
+                TracePoints = SweepPoints;
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
             GetFreqArr();
         }
 
 
 
-        private bool SetOptimization(EN.Optimization optimization)
+        private void SetOptimization(EN.Optimization optimization)
         {
-            bool res = false;
-            try
+            if (UniqueData.OptimizationAvailable)
             {
-                if (UniqueData.OptimizationAvailable)
-                {
-                    Optimization = optimization;
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        session.Write("SENSe:SWEep:OPTimize " + OptimizationSelected.Parameter);
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-
-                    }
-                }
-                res = true;
-            }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-            return res;
-        }
-        private void GetOptimization()
-        {
-            try
-            {
-                if (UniqueData.OptimizationAvailable)
-                {
-                    if (UniqueData.InstrManufacture == 1)
-                    {
-                        string temp1 = string.Empty;
-                        temp1 = session.Query("SENSe:SWEep:OPTimize?");
-                        foreach (ParamWithId TT in UniqueData.Optimization)
-                        {
-                            if (temp1.Contains(TT.Parameter))
-                            {
-                                Optimization = (EN.Optimization)TT.Id;
-                            }
-                        }
-                    }
-                    else if (UniqueData.InstrManufacture == 2)
-                    {
-
-                    }
-                    else if (UniqueData.InstrManufacture == 3)
-                    {
-
-                    }
-                }
-            }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-        }
-
-        private bool SetTraceType(ParamWithId trace1type)
-        {
-            bool res = false;
-            try
-            {
-                Trace1Type = trace1type;
+                Optimization = optimization;
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    session.Write(":DISP:TRAC1:MODE " + Trace1Type.Parameter);
+                    WriteString("SENSe:SWEep:OPTimize " + OptimizationSelected.Parameter);
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    session.Write(":TRAC1:TYPE " + Trace1Type.Parameter);
+
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    session.Write(":TRACe1:OPERation " + Trace1Type.Parameter);
+
                 }
-                res = true;
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-            return res;
         }
-        private void GetTraceType()
+        private void GetOptimization()
         {
-            try
+            if (UniqueData.OptimizationAvailable)
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
                     string temp1 = string.Empty;
-                    if (UniqueData.HiSpeed == true)
+                    temp1 = QueryString("SENSe:SWEep:OPTimize?");
+                    foreach (ParamWithId TT in UniqueData.Optimization)
                     {
-                        if (session.Query(":DISP:TRAC1?").Contains("1")) { temp1 = session.Query(":DISP:TRAC1:MODE?"); }
-                        else { Trace1Type = new ParamWithId { Id = (int)EN.TraceType.Blank, Parameter = "BLAN" }; }
-                    }
-                    else if (UniqueData.HiSpeed == false)
-                    {
-                        temp1 = session.Query(":DISP:TRAC1:MODE?");
-                    }
-                    foreach (ParamWithId TT in UniqueData.TraceType)
-                    {
-                        if (temp1.Contains(TT.Parameter)) { Trace1Type = TT; }
+                        if (temp1.Contains(TT.Parameter))
+                        {
+                            Optimization = (EN.Optimization)TT.Id;
+                        }
                     }
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    string temp1 = session.Query(":TRACe1:TYPE?");
-                    foreach (ParamWithId TT in UniqueData.TraceType)
-                    {
-                        if (temp1.Contains(TT.Parameter)) { Trace1Type = TT; }
-                    }
+
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    string temp1 = session.Query(":TRACe1:OPERation?");
-                    foreach (ParamWithId TT in UniqueData.TraceType)
-                    {
-                        if (temp1.Contains(TT.Parameter)) { Trace1Type = TT; }
-                    }
+
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
-        private bool SetDetectorType(ParamWithId trace1detector)
+
+        private void SetTraceType(ParamWithId trace1type)
         {
-            bool res = false;
-            try
+            Trace1Type = trace1type;
+            if (UniqueData.InstrManufacture == 1)
             {
-                Trace1Detector = trace1detector;
-                if (UniqueData.InstrManufacture == 1)
+                WriteString(":DISP:TRAC1:MODE " + Trace1Type.Parameter);
+            }
+            else if (UniqueData.InstrManufacture == 2)
+            {
+                WriteString(":TRAC1:TYPE " + Trace1Type.Parameter);
+            }
+            else if (UniqueData.InstrManufacture == 3)
+            {
+                WriteString(":TRACe1:OPERation " + Trace1Type.Parameter);
+            }
+        }
+        private void GetTraceType()
+        {
+            if (UniqueData.InstrManufacture == 1)
+            {
+                string temp1 = string.Empty;
+                if (UniqueData.HiSpeed == true)
                 {
-                    if (Trace1Detector.Parameter == "Auto Select") session.Write(":SENSe:DETector1:AUTO 1");
-                    else
-                    {
-                        session.Write(":SENSe:DETector1 " + Trace1Detector.Parameter);
-                    }
+                    if (QueryString(":DISP:TRAC1?").Contains("1")) { temp1 = QueryString(":DISP:TRAC1:MODE?"); }
+                    else { Trace1Type = new ParamWithId { Id = (int)EN.TraceType.Blank, Parameter = "BLAN" }; }
+                }
+                else if (UniqueData.HiSpeed == false)
+                {
+                    temp1 = QueryString(":DISP:TRAC1:MODE?");
+                }
+                foreach (ParamWithId TT in UniqueData.TraceType)
+                {
+                    if (temp1.Contains(TT.Parameter)) { Trace1Type = TT; }
+                }
+            }
+            else if (UniqueData.InstrManufacture == 2)
+            {
+                string temp1 = QueryString(":TRACe1:TYPE?");
+                foreach (ParamWithId TT in UniqueData.TraceType)
+                {
+                    if (temp1.Contains(TT.Parameter)) { Trace1Type = TT; }
+                }
+            }
+            else if (UniqueData.InstrManufacture == 3)
+            {
+                string temp1 = QueryString(":TRACe1:OPERation?");
+                foreach (ParamWithId TT in UniqueData.TraceType)
+                {
+                    if (temp1.Contains(TT.Parameter)) { Trace1Type = TT; }
+                }
+            }
+        }
+        private void SetDetectorType(ParamWithId trace1detector)
+        {
+            Trace1Detector = trace1detector;
+            if (UniqueData.InstrManufacture == 1)
+            {
+                if (Trace1Detector.Parameter == "Auto Select") WriteString(":SENSe:DETector1:AUTO 1");
+                else
+                {
+                    WriteString(":SENSe:DETector1 " + Trace1Detector.Parameter);
+                }
 
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                    session.Write(":SENSe:DETector:FUNCtion " + Trace1Detector.Parameter);
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                    if (Trace1Detector.Parameter == "Auto Select") session.Write(":SENSe:DETector1:AUTO 1");
-                    else
-                    {
-                        session.Write(":SENSe:DETector:FUNCtion " + Trace1Detector.Parameter);
-                    }
-                }
-                res = true;
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                WriteString(":SENSe:DETector:FUNCtion " + Trace1Detector.Parameter);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                if (Trace1Detector.Parameter == "Auto Select") WriteString(":SENSe:DETector1:AUTO 1");
+                else
+                {
+                    WriteString(":SENSe:DETector:FUNCtion " + Trace1Detector.Parameter);
+                }
             }
-            #endregion
-
-            return res;
         }
         /// <summary>
         /// Получение типа Trace Detecror 
         /// </summary>
         private void GetDetectorType()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
 
-                    string temp1 = string.Empty;
-                    if (UniqueData.HiSpeed == true)
-                    {
-                        temp1 = session.Query(":SENSe:DETector1?").TrimEnd();
-                    }
-                    else if (UniqueData.HiSpeed == false)
-                    {
-                        temp1 = session.Query(":SENSe:DETector1?").TrimEnd();
-                    }
-                    foreach (ParamWithId TT in UniqueData.TraceDetector)
-                    {
-                        if (temp1.Contains(TT.Parameter)) { Trace1Detector = TT; }
-                    }
-                }
-                else if (UniqueData.InstrManufacture == 2)
+                string temp1 = string.Empty;
+                if (UniqueData.HiSpeed == true)
                 {
-                    string temp1 = session.Query(":SENSe:DETector:FUNCtion?").TrimEnd();
-                    foreach (ParamWithId TT in UniqueData.TraceDetector)
-                    {
-                        if (temp1.Contains(TT.Parameter)) { Trace1Detector = TT; }
-                    }
+                    temp1 = QueryString(":SENSe:DETector1?");
                 }
-                else if (UniqueData.InstrManufacture == 3)
+                else if (UniqueData.HiSpeed == false)
                 {
-                    string temp1 = session.Query(":SENSe:DETector:FUNCtion?").TrimEnd();
-                    foreach (ParamWithId TT in UniqueData.TraceDetector)
-                    {
-                        if (temp1.Contains(TT.Parameter)) { Trace1Detector = TT; }
-                    }
+                    temp1 = QueryString(":SENSe:DETector1?");
+                }
+                foreach (ParamWithId TT in UniqueData.TraceDetector)
+                {
+                    if (temp1.Contains(TT.Parameter)) { Trace1Detector = TT; }
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                string temp1 = QueryString(":SENSe:DETector:FUNCtion?");
+                foreach (ParamWithId TT in UniqueData.TraceDetector)
+                {
+                    if (temp1.Contains(TT.Parameter)) { Trace1Detector = TT; }
+                }
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                string temp1 = QueryString(":SENSe:DETector:FUNCtion?");
+                foreach (ParamWithId TT in UniqueData.TraceDetector)
+                {
+                    if (temp1.Contains(TT.Parameter)) { Trace1Detector = TT; }
+                }
             }
-            #endregion
         }
 
 
 
 
-        private bool SetIQBW(decimal iqbw)
+        private void SetIQBW(decimal iqbw)
         {
-            bool res = false;
-            try
+            IQBW = iqbw;
+            if (UniqueData.InstrManufacture == 1)
             {
-                IQBW = iqbw;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    SampleSpeed = 1.25m * IQBW;
-                    SampleTimeLength = 1 / SampleSpeed;
-                    string s = $"TRAC:IQ:BWID " + IQBW.ToString().Replace(',', '.');
-                    session.Write(s);
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
+                SampleSpeed = 1.25m * IQBW;
+                SampleTimeLength = 1 / SampleSpeed;
+                string s = "TRAC:IQ:BWID " + IQBW.ToString().Replace(decimalSeparator, ".");
+                WriteString(s);
+            }
+            else if (UniqueData.InstrManufacture == 2)
+            {
 
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
+            }
+            else if (UniqueData.InstrManufacture == 3)
+            {
 
-                }
-                res = true;
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion            
-            return res;
         }
-        private bool SetSampleSpeed(decimal samplespeed)
+        private void SetSampleSpeed(decimal samplespeed)
         {
-            bool res = false;
-            try
+            SampleSpeed = samplespeed;
+            if (UniqueData.InstrManufacture == 1)
             {
-                SampleSpeed = samplespeed;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    IQBW = 0.8m * SampleSpeed;
-                    SampleTimeLength = 1 / SampleSpeed;
-                    session.Write($"TRAC:IQ:SRAT " + SampleSpeed.ToString().Replace(',', '.'));
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                }
-                res = true;
+                IQBW = 0.8m * SampleSpeed;
+                SampleTimeLength = 1 / SampleSpeed;
+                WriteString("TRAC:IQ:SRAT " + SampleSpeed.ToString().Replace(decimalSeparator, "."));
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
             }
-            #endregion            
-            return res;
         }
-        private bool SetSampleLength(int samplelength)
+        private void SetSampleLength(int samplelength)
         {
-            bool res = false;
-            try
+            SampleLength = samplelength;
+            if (UniqueData.InstrManufacture == 1)
             {
-                SampleLength = samplelength;
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    session.Write($"TRAC:IQ:RLEN " + SampleLength.ToString());
-                }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                }
-                res = true;
+                WriteString("TRAC:IQ:RLEN " + SampleLength.ToString());
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
             }
-            #endregion            
-            return res;
         }
 
-        private bool SetTriggerOffset(decimal triggeroffset)
+        private void SetTriggerOffset(decimal triggeroffset)
         {
-            bool res = false;
-            try
+            TriggerOffset = triggeroffset;
+            if (UniqueData.InstrManufacture == 1)
             {
-                TriggerOffset = triggeroffset;
-                if (UniqueData.InstrManufacture == 1)
+                if (Math.Abs(TriggerOffset) < UniqueData.TriggerOffsetMax)
                 {
-                    if (Math.Abs(TriggerOffset) < UniqueData.TriggerOffsetMax)
-                    {
-                        session.Write($"TRIG:HOLD " + TriggerOffset.ToString().Replace(',', '.'));
-                    }
+                    WriteString("TRIG:HOLD " + TriggerOffset.ToString().Replace(decimalSeparator, "."));
                 }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                }
-                res = true;
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
             }
-            #endregion            
-            return res;
         }
-        private bool SetTriggerOffsetAndSampleLength(decimal triggeroffset, int samplelength)
+        private void SetTriggerOffsetAndSampleLengthAndStartCollection(decimal triggeroffset, int samplelength)
         {
-            bool res = false;
-            try
+            TriggerOffset = triggeroffset;
+            SampleLength = samplelength;
+            if (UniqueData.InstrManufacture == 1)
             {
-                TriggerOffset = triggeroffset;
-                SampleLength = samplelength;
-                if (UniqueData.InstrManufacture == 1)
+                if (Math.Abs(TriggerOffset) < UniqueData.TriggerOffsetMax)
                 {
-                    if (Math.Abs(TriggerOffset) < UniqueData.TriggerOffsetMax)
-                    {
-                        session.Write("TRIG:HOLD " + TriggerOffset.ToString().Replace(',', '.') + ";:TRAC:IQ:RLEN " + SampleLength.ToString());
-                    }
+                    int length = (SampleLength * 4) * 2 + SampleLength.ToString().Length + 100;
+                    //if (session.DefaultBufferSize != length)
+                    //{
+                    //    session.DefaultBufferSize = length;
+                    //}
+                    WriteString("TRIG:HOLD " + TriggerOffset.ToString().Replace(decimalSeparator, ".") + ";:TRAC:IQ:RLEN " + SampleLength.ToString() + ";:INIT;*WAI;");
+
+                    //session.Write("INIT;*WAI;");
                 }
-                else if (UniqueData.InstrManufacture == 2)
-                {
-                }
-                else if (UniqueData.InstrManufacture == 3)
-                {
-                }
-                res = true;
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
             }
-            catch (Exception exp)
+            else if (UniqueData.InstrManufacture == 3)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
             }
-            #endregion            
-            return res;
         }
 
         private bool GetTrace()
@@ -4039,96 +3470,64 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
                     if (UniqueData.HiSpeed == true)
                     {
-                        //string sss = session.Query("TRAC1:X? TRACE1");
-                        session.Write(":STAT:QUES:POW?;:TRAC:DATA? TRACE1");
-                        byte[] byteArray = session.ReadByteArray();
-                        int tracedataoffset = 0;
-                        for (int i = 0; i < 10; i++)
-                        {
-                            if (byteArray[i] == 59)
-                            {
-                                tracedataoffset = i + 1;
-                                break;
-                            }
-                        }
-                        int pr = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 0, 1));
+                        WriteString(":TRAC:DATA? TRACE1;:STAT:QUES:POW?");
+
+                        byte[] byteArray = ReadByte();
+                        string pow = ReadString().Replace(";", "");
+
+                        int pr = int.Parse(pow);
                         if (pr == 0 || pr == 2) { PowerRegister = EN.PowerRegister.Normal; }
                         else if (pr == 4) { PowerRegister = EN.PowerRegister.IFOverload; }
                         else if (pr == 1) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
-                        if (System.Text.Encoding.ASCII.GetString(byteArray, tracedataoffset, 1) == "#")
-                        {
-                            int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, tracedataoffset + 1, 1));
-                            int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, tracedataoffset + 2, lengthPreamb));
-                            temp = new float[lengthData / 4 + 2];
 
-                            for (int j = 0; j < lengthData / 4; j++)
-                            {
-                                temp[j + 1] = System.BitConverter.ToSingle(byteArray, tracedataoffset + lengthPreamb + 2 + j * 4);
-                            }
-                            temp[0] = temp[1];
-                            temp[temp.Length - 1] = temp[temp.Length - 2];
+                        temp = new float[byteArray.Length / 4 + 2];
+                        for (int j = 0; j < byteArray.Length / 4; j++)
+                        {
+                            temp[j + 1] = System.BitConverter.ToSingle(byteArray, j * 4);
                         }
+                        temp[0] = temp[1];
+                        temp[temp.Length - 1] = temp[temp.Length - 2];
+
                     }
                     else
                     {
-                        session.Write("TRAC:DATA? TRACE1");
-                        byte[] byteArray = session.ReadByteArray();
-                        if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                        {
-                            int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                            int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                            temp = new float[lengthData / 4];
-
-                            for (int j = 0; j < temp.Length; j++)
-                            {
-                                temp[j] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
-                            }
-                        }
+                        //WriteString("TRAC:DATA? TRACE1");
+                        //byte[] byteArray = ReadByte();
+                        //temp = new float[byteArray.Length / 4];
+                        //for (int j = 0; j < temp.Length / 4; j++)
+                        //{
+                        //    temp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
+                        //}
+                        temp = QueryFloat("TRAC:DATA? TRACE1");
                     }
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
-                    session.Write("TRAC1:DATA?");
-                    byte[] byteArray = session.ReadByteArray();
-                    if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                    {
-                        int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                        int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                        temp = new float[lengthData / 4];
-
-                        for (int j = 0; j < temp.Length; j++)
-                        {
-                            temp[j] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
-                        }
-                    }
+                    temp = QueryFloat("TRAC1:DATA?");
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    session.Write("TRAC1:DATA?");
-                    byte[] byteArray = session.ReadByteArray();
-                    if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                    {
-                        int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                        int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                        temp = new float[lengthData / 4];
-
-                        for (int j = 0; j < temp.Length; j++)
-                        {
-                            temp[j] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
-                        }
-                    }
+                    temp = QueryFloat("TRAC1:DATA?");
                 }
 
                 if (temp.Length > 0)
                 {
                     //т.к. используем только ClearWhrite то проверяем полученный трейс с предыдущим временным на предмет полного отличия и полноценен он или нет
-                    for (int i = 0; i < temp.Length; i++)
+                    if (!float.IsNaN(temp[0]) && temp[0] % 1 != 0 &&
+                        !float.IsNaN(temp[temp.Length - 1]) && temp[temp.Length - 1] % 1 != 0)
                     {
-                        if (LevelArrTemp[i] == temp[i] || float.IsNaN(temp[i]) || temp[i] == -200 || temp[i] == -145)
+                        for (int i = 0; i < temp.Length; i++)
                         {
-                            newdata = false;
-                            break;
+                            if (LevelArrTemp[i] == temp[i])
+                            {
+                                newdata = false;
+                                break;
+                            }
                         }
+                    }
+                    else
+                    {
+                        newdata = false;
                     }
                     //таки новый трейс полностью
                     if (newdata)
@@ -4218,30 +3617,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         }
 
 
-        private bool GetIQStream(ref COMR.MesureIQStreamResult result, decimal meastime, int sample, COM.MesureIQStreamCommand command)
+        private bool GetIQStream(ref COMR.MesureIQStreamResult result, COM.MesureIQStreamCommand command)
         {
             bool res = false;
             if (UniqueData.InstrManufacture == 1)
             {
-                
-                //ели надо изменяем размер буфера
-                int length = (SampleLength * 4) * 2 + SampleLength.ToString().Length + 100;
-                if (session.DefaultBufferSize != length)
-                {
-                    session.DefaultBufferSize = length;
-                }
-                session.Write("INIT;*WAI;");
+                long time = command.Parameter.TimeStart;// _timeService.GetGnssTime().Ticks;
+                long NextSecond = (time / 10000000) * 10000000 + 10000000;
+                long ToNextSecond = NextSecond - time;
 
-                
-                
-                int sleep = (int)(meastime * 1000 - 250);
+                //IQMeasTime
+                decimal delay = Math.Abs(((decimal)ToNextSecond) / 10000000);// - 0.03m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
+                //ищем ближайшее целое по отношени к длительности семпла
+                int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
+
+
+                IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s;
+                IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
+                SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
+                SetTriggerOffsetAndSampleLengthAndStartCollection(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
+
+                if (command.Parameter.TimeStart < _timeService.GetGnssUtcTime().Ticks - UTCOffset)
+                {
+                    //Debug.WriteLine("ВСе плохо");
+                }
+                //Debug.WriteLine(new TimeSpan(command.Parameter.TimeStart + UTCOffset - _timeService.GetGnssUtcTime().Ticks).ToString());
+                int sleep = (int)(IQMeasTimeAll * 1000 - 150);
                 if (sleep < 1)
                 {
                     sleep = 1;
                 }
                 Thread.Sleep(sleep);
 
-                int step = sample / 10;
+                int step = SampleLength / 10;
                 if (step > 50000)
                 {
                     step = 50000;
@@ -4251,77 +3659,94 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     step = 1000;
                 }
 
-                float[] temp = new float[sample * 2];
+                float[] temp = new float[SampleLength * 2];
                 long ddd = _timeService.TimeStamp.Ticks;
                 int pos = 0;
-                for (int i = 0; i < sample; i += step)
+                for (int i = 0; i < SampleLength; i += step)
                 {
                     int from = i, to = i + step;
-                    if (to > sample) to = sample;
-                    session.Write($"TRAC:IQ:DATA:MEM? {from},{to - from}");
-                    byte[] byteArray = session.ReadByteArray();
-                    if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
+                    if (to > SampleLength) to = SampleLength;
+                    WriteString($"TRAC:IQ:DATA:MEM? {from},{to - from}");
+                    byte[] byteArray = session.FormattedIO.ReadBinaryBlockOfByte();// ReadByte();
+                    //if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
+                    //{
+                    //    int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
+                    //    int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
+                    float[] temp2 = new float[byteArray.Length / 4];//QueryFloat($"TRAC:IQ:DATA:MEM? {from},{to - from}");// 
+                    //if (temp2[0] == 0)
+                    //{
+
+                    //}
+                    for (int j = 0; j < temp2.Length; j++)
                     {
-                        int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                        int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                        float[] temp2 = new float[lengthData / 4];
-
-                        for (int j = 0; j < temp2.Length; j++)
-                        {
-                            temp2[j] = System.BitConverter.ToSingle(byteArray, lengthPreamb + 2 + j * 4);
-                        }
-                        //Debug.WriteLine(temp2.Length);
-                        Array.Copy(temp2, 0, temp, pos, temp2.Length);
-                        pos += temp2.Length;
-
+                        temp2[j] = System.BitConverter.ToSingle(byteArray, j * 4);
                     }
+                    Array.Copy(temp2, 0, temp, pos, temp2.Length);
+                    pos += temp2.Length;
+
                 }
-                string dfghkjdp = session.Query("TRACe:IQ:TPISample?").TrimEnd();
+                string dfghkjdp = QueryString("TRACe:IQ:TPISample?");
                 TriggerOffsetInSample = DecimalParse(dfghkjdp);
                 //Посчитаем когда точно был триггер относительно первого семпла
                 TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
-                Debug.WriteLine(TriggerOffset);
-                Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString());
 
-                float noise = 2f / 10000000f; // уровень шума 
+                float noise = 1.5f / 10000000f; // уровень шума 
                 float SN = 10; // превышение шума в разах 
-                float TrigerLevel = noise * SN;
+                float TrigerLevelPL = noise * SN;
+                float TrigerLevelMN = 0 - TrigerLevelPL;
                 int IQStartIndex = 0;
                 int IQStopIndex = temp.Length;
                 bool SignalFound = false; //был ли сигнал
                 int stepf = temp.Length / 1000;//шаг проверки уровней на предмет детектирования сигнала
-                if (step < 1)
+                if (stepf < 1)
                 {
-                    step = 1;
+                    stepf = 1;
                 }
                 if (command.Parameter.MandatorySignal)
                 {
                     for (int j = 0; temp.Length - 6 > j; j += stepf)
                     {
-                        if ((temp[j] >= TrigerLevel) || (temp[j + 1] >= TrigerLevel))
+                        if (temp[j] >= TrigerLevelPL || temp[j + 1] >= TrigerLevelPL ||
+                            temp[j] <= TrigerLevelMN || temp[j + 1] <= TrigerLevelMN)
                         {
-                            if ((temp[j + 2] >= TrigerLevel) || (temp[j + 3] >= TrigerLevel))
+                            if (temp[j + 2] >= TrigerLevelPL || temp[j + 3] >= TrigerLevelPL ||
+                                temp[j + 2] <= TrigerLevelMN || temp[j + 3] <= TrigerLevelMN)
                             {
-                                if ((temp[j + 4] >= TrigerLevel) || (temp[j + 5] >= TrigerLevel))
+                                if (temp[j + 4] >= TrigerLevelPL || temp[j + 5] >= TrigerLevelPL ||
+                                    temp[j + 4] <= TrigerLevelMN || temp[j + 5] <= TrigerLevelMN)
                                 {
                                     SignalFound = true;//Есть сигнал 
-                                    IQStartIndex = j - stepf;
+                                    IQStartIndex = j - (int)(((double)stepf) * 3.0);
+                                    if (IQStartIndex % 2 != 0) IQStartIndex = (IQStartIndex / 2) * 2 + 2;
                                     if (IQStartIndex < 0)
                                         IQStartIndex = 0;
+
                                     break;
                                 }
                             }
                         }
                     }
+                    if (!SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
+                    {
+                        throw new Exception("Signal not detected");
+                    }
                 }
 
-                
-                result.PPSTimeDifference_ns = (long)(TriggerOffset / 1000000000);
+                int dddddddd = 2 * (int)Math.Ceiling(((decimal)command.Parameter.IQBlockDuration_s) / SampleTimeLength);
+                if (dddddddd % 2 != 0) dddddddd = (dddddddd / 2) * 2 + 2;
+                IQStopIndex = IQStartIndex + dddddddd;
+                if (IQStopIndex > temp.Length) IQStopIndex = temp.Length;
+                result.OneSempleDuration_ns = (long)(SampleTimeLength * 1000000000);
+                result.PPSTimeDifference_ns = (long)(TriggerOffset * 1000000000 - IQStartIndex * SampleTimeLength * 500000000);
+                result.TimeStamp = (NextSecond * 100 - result.PPSTimeDifference_ns)/100;
+                TriggerOffset = ((decimal)result.PPSTimeDifference_ns) / 1000000000;
                 result.iq_samples = new float[1][];
+                result.iq_samples[0] = new float[IQStopIndex - IQStartIndex];
+
                 Array.Copy(temp, IQStartIndex, result.iq_samples[0], 0, IQStopIndex - IQStartIndex);
                 //result.iq_samples[0] = temp;
                 IQArr = result.iq_samples[0];
-                result.OneSempleDuration_ns = (long)(SampleTimeLength / 1000000000);
+
                 //result.TimeStamp = ;
                 //result.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// надыбать время первого семпла
                 //result.PPSTimeDifference_ns = TimeToStartBlockWithPPS;// когда был ппс точно относительно первого семпла
@@ -4340,61 +3765,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         public void SetIQWindow()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
-                {
-                    string str = "INST:CRE IQ, 'IQ Analyzer'";
-                    session.Write(str);
-                    session.Write("INIT:CONT OFF");
-                    session.Write("TRIG:SOUR EXT");
-                    session.Write("TRACe:IQ:DATA:FORMat IQPair");
-                }
+                string str = "INST:CRE IQ, 'IQ Analyzer'";
+                WriteString(str);
+                WriteString("INIT:CONT OFF");
+                WriteString("TRIG:SOUR EXT");
+                WriteString("TRACe:IQ:DATA:FORMat IQPair");
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
 
         public void SetWindowType(EN.Mode mode)
         {
-            try
+            Mode = mode;
+            if (UniqueData.InstrManufacture == 1)
             {
-                Mode = mode;
-                if (UniqueData.InstrManufacture == 1)
+                string str = ""; //MAGN                    
+                if (Mode == EN.Mode.IQAnalyzer)
                 {
-                    string str = ""; //MAGN                    
-                    if (Mode == EN.Mode.IQAnalyzer)
-                    {
-                        str = "INST IQ";// "INST:CRE:REPL 'Spectrum',IQ,'IQAnalyzer'";//SANALYZER   IQANALYZER
-                    }
-                    else if (Mode == EN.Mode.SpectrumAnalyzer)
-                    {
-                        str = "INST SAN";// "INST:CRE:REPL 'IQAnalyzer',SANALYZER,'Spectrum'";//SANALYZER   IQANALYZER
-                        session.DefaultBufferSize = SweepPoints * 18 + 25;
-                    }
-                    session.Write(str);
-                    session.Write("FORM:DATA REAL,32");//так надо
-                    //string res = session.Query(str);
+                    str = "INST IQ";// "INST:CRE:REPL 'Spectrum',IQ,'IQAnalyzer'";//SANALYZER   IQANALYZER
                 }
+                else if (Mode == EN.Mode.SpectrumAnalyzer)
+                {
+                    str = "INST SAN";// "INST:CRE:REPL 'IQAnalyzer',SANALYZER,'Spectrum'";//SANALYZER   IQANALYZER
+                                     //session.DefaultBufferSize = SweepPoints * 18 + 25;
+                }
+                WriteString(str);
+                WriteString("FORM:DATA REAL,32");//так надо
+                                                 //string res = session.Query(str);
             }
-            #region Exception
-            catch (VisaException v_exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
         public float[] IQArr = new float[] { -1, -1, -1, -1 };
 
@@ -4674,40 +4073,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
         private void GetDeviceInfo()
         {
-            try
+            if (UniqueData.InstrManufacture == 1)
             {
-                if (UniqueData.InstrManufacture == 1)
+                if (UniqueData.Battery)
                 {
-                    if (UniqueData.Battery)
-                    {
-                        string[] st = session.Query(":STAT:QUES:POW?;:SYSTem:POWer:STATus?").TrimEnd().Split(';');
-                        //PowerRegister = int.Parse(st[0]);
-                        double d = double.Parse(st[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                        if (d > 100) { BatteryCharging = true; }
-                        else if (d > 0 && d <= 100) { BatteryCharging = false; BatteryCharge = (decimal)d; }
-                    }
-                    else
-                    {
-                        //PowerRegister = int.Parse(session.Query(":STAT:QUES:POW?"));
-                    }
+                    string[] st = QueryString(":STAT:QUES:POW?;:SYSTem:POWer:STATus?").Split(';');
+                    //PowerRegister = int.Parse(st[0]);
+                    double d = double.Parse(st[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                    if (d > 100) { BatteryCharging = true; }
+                    else if (d > 0 && d <= 100) { BatteryCharging = false; BatteryCharge = (decimal)d; }
                 }
-                else if (UniqueData.InstrManufacture == 2)
+                else
                 {
-                    string t = session.Query(":SYST:BATT:ARTT?");
-                    //BatteryAbsoluteCharge = int.Parse(session.Query(":SYST:BATT:ACUR?").Replace('.', ','));
-                    //System.Windows.MessageBox.Show(t);
+                    //PowerRegister = int.Parse(session.Query(":STAT:QUES:POW?"));
                 }
             }
-            #region Exception
-            catch (VisaException v_exp)
+            else if (UniqueData.InstrManufacture == 2)
             {
-                _logger.Exception(Contexts.ThisComponent, v_exp);
+                string t = QueryString(":SYST:BATT:ARTT?");
+                //BatteryAbsoluteCharge = int.Parse(session.Query(":SYST:BATT:ACUR?").Replace('.', ','));
+                //System.Windows.MessageBox.Show(t);
             }
-            catch (Exception exp)
-            {
-                _logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
         }
         private void InstrShutdown()
         {
@@ -4746,7 +4132,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    session.Write(":SYSTem:PRES");
+                    WriteString(":SYSTem:PRES");
                 }
                 else if (UniqueData.InstrManufacture == 2)
                 {
@@ -4754,7 +4140,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 }
                 else if (UniqueData.InstrManufacture == 3)
                 {
-                    session.Write(":SYSTem:PRES");
+                    WriteString(":SYSTem:PRES");
                 }
                 //GetLevelUnit();
                 //GetFreqCentr();
@@ -4801,15 +4187,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             {
                 if (UniqueData.InstrManufacture == 1)
                 {
-                    string[] d = session.Query("SYST:DATE?").TrimEnd().Trim(' ').Split(',');
-                    string[] t = session.Query("SYST:TIME?").TrimEnd().Trim(' ').Split(',');
+                    string[] d = QueryString("SYST:DATE?").TrimEnd().Trim(' ').Split(',');
+                    string[] t = QueryString("SYST:TIME?").TrimEnd().Trim(' ').Split(',');
                     string time = d[0] + "-" + d[1] + "-" + d[2] + " " +
                         t[0] + ":" + t[1] + ":" + t[2];
                     DateTime andt = DateTime.Parse(time);
                     if (new TimeSpan(DateTime.Now.Ticks - andt.Ticks) > new TimeSpan(0, 0, 1, 0, 0))
                     {
-                        session.Write("SYST:DATE " + DateTime.Now.Year.ToString() + "," + DateTime.Now.Month.ToString() + "," + DateTime.Now.Day.ToString());
-                        session.Write("SYST:TIME " + DateTime.Now.Hour.ToString() + "," + DateTime.Now.Minute.ToString() + "," + DateTime.Now.Second.ToString());
+                        WriteString("SYST:DATE " + DateTime.Now.Year.ToString() + "," + DateTime.Now.Month.ToString() + "," + DateTime.Now.Day.ToString());
+                        WriteString("SYST:TIME " + DateTime.Now.Hour.ToString() + "," + DateTime.Now.Minute.ToString() + "," + DateTime.Now.Second.ToString());
                     }
                 }
                 else if (UniqueData.InstrManufacture == 2)
@@ -4834,6 +4220,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         }
         #endregion AN Method
 
+
+        #endregion Private Method
         #region Adapter Properties
         private void SetDefaulConfig(ref CFG.AdapterMainConfig config)
         {
@@ -4943,8 +4331,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             return rpps;
         }
         #endregion Adapter Properties
-        #endregion Private Method
-
 
 
     }

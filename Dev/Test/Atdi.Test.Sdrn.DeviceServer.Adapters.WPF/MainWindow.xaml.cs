@@ -38,10 +38,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         //ADP.SignalHound.Adapter adapter;
         ADP.SpectrumAnalyzer.Adapter ANadapter;
         ADP.SignalHound.Adapter SHadapter;
-        ADP.RSTSMx.Adapter TSMxadapter;
 
         ADP.GPS.GPSAdapter GPSadapter;
-        GNSSNMEA gnss;
+        //GNSSNMEA gnss;
 
         private delegate void AnyDelegate();
         private Thread TimeThread;
@@ -53,8 +52,6 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         private Thread GPSThread;
         private AnyDelegate GPSD;
 
-        private Thread TSMxThread;
-        private AnyDelegate TSMxD;
         public MainWindow()
         {
             InitializeComponent();
@@ -79,10 +76,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         }
         private void StartTime_Click(object sender, RoutedEventArgs e)
         {
-            //TimeThread = new Thread(GetGPSData);
-            //TimeThread.Name = "GPSThread";
-            //TimeThread.IsBackground = true;
-            //TimeThread.Start();
+            ////////////TimeThread = new Thread(GetGPSData);
+            ////////////TimeThread.Name = "GPSThread";
+            ////////////TimeThread.IsBackground = true;
+            ////////////TimeThread.Start();
 
             ANThread = new Thread(ANWorks);
             ANThread.Name = "ANThread";
@@ -96,34 +93,34 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             SHThread.Start();
             SHD += SHConnect;
 
-            GPSThread = new Thread(GPSWorks);
-            GPSThread.Name = "GPSThread";
-            GPSThread.IsBackground = true;
-            GPSThread.Start();
-            GPSD += GPSConnect;
+            //GPSThread = new Thread(GPSWorks);
+            //GPSThread.Name = "GPSThread";
+            //GPSThread.IsBackground = true;
+            //GPSThread.Start();
+            //GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
         private void GetGPSData()
         {
-            while (true)
-            {
-                if ((((double)gnss.LocalTime.Ticks) / 10000000 - (double)(gnss.LocalTime.Ticks / 10000000)) < 0.00001)
-                {
-                    //Debug.WriteLine(gnss.LocalTime.Ticks);
-                    //Debug.WriteLine("GNSS " + new DateTime(gnss.LocalTime.Ticks).ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
-                    //NextSecond = gnss.LocalTime.Ticks + 10000000;
-                    //Debug.WriteLine("Time " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
-                    //Debug.WriteLine("Next " + new DateTime(NextSecond).ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
-                    if (add)
-                    {
-                        SHD += SHGetIQ;
-                        AND += ANGetIQ;
-                        add = false;
-                    }
-                }
-                Thread.Sleep(new TimeSpan(10000));
-            }
+            //while (true)
+            //{
+            //    if ((((double)gnss.LocalTime.Ticks) / 10000000 - (double)(gnss.LocalTime.Ticks / 10000000)) < 0.00001)
+            //    {
+            //        //Debug.WriteLine(gnss.LocalTime.Ticks);
+            //        //Debug.WriteLine("GNSS " + new DateTime(gnss.LocalTime.Ticks).ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
+            //        //NextSecond = gnss.LocalTime.Ticks + 10000000;
+            //        //Debug.WriteLine("Time " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
+            //        //Debug.WriteLine("Next " + new DateTime(NextSecond).ToString("yyyy-MM-dd HH:mm:ss.fffffffK"));
+            //        if (add)
+            //        {
+            //            SHD += SHGetIQ;
+            //            AND += ANGetIQ;
+            //            add = false;
+            //        }
+            //    }
+            Thread.Sleep(new TimeSpan(10000));
+            //}
 
         }
 
@@ -148,7 +145,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     IPAddress = "192.168.2.110",
                     DisplayUpdate = true,
                     OnlyAutoSweepTime = true,
-                    Optimization = 2
+                    Optimization = 2,
+                    ConnectionMode = 1,
                 };
 
                 ANadapter = new ADP.SpectrumAnalyzer.Adapter(adapterConfig, logger, TimeService);
@@ -195,7 +193,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 var adapterConfig = new ADP.SignalHound.AdapterConfig()
                 {
-                    SerialNumber = "16319373",
+                    SerialNumber = "16319373",//"18250087",// "16319373",
                     GPSPPSConnected = true,
                     Reference10MHzConnected = false,
                     //SyncCPUtoGPS = true,
@@ -293,51 +291,51 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
         private void TSMxWorks()
         {
-            TimeSpan ts = new TimeSpan(10000);
-            bool Cycle = true;
-            while (Cycle)
-            {
-                if (TSMxD != null) { TSMxD(); }
-                Thread.Sleep(ts);
-            }
+            //TimeSpan ts = new TimeSpan(10000);
+            //bool Cycle = true;
+            //while (Cycle)
+            //{
+            //    if (TSMxD != null) { TSMxD(); }
+            //    Thread.Sleep(ts);
+            //}
         }
         private void TSMxConnect()
         {
-            try
-            {
-                var adapterConfig = new ADP.RSTSMx.AdapterConfig()
-                {
-                    DeviceType = 2,
-                    IPAddress = "192.168.2.50",
-                    RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
-                };
-                //TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
+            //try
+            //{
+            //    var adapterConfig = new ADP.RSTSMx.AdapterConfig()
+            //    {
+            //        DeviceType = 2,
+            //        IPAddress = "192.168.2.50",
+            //        RSViComPath = @"c:\RuS\RS-ViCom-Pro-16.25.0.743"
+            //    };
+            //    //TSMxadapter = new ADP.RSTSMx.Adapter(adapterConfig, logger, TimeService);
 
 
 
 
-                //SHIQ.ANAdapter = ANadapter;
-                TSMxadapter.Connect(adapterHost);
+            //    //SHIQ.ANAdapter = ANadapter;
+            //    TSMxadapter.Connect(adapterHost);
 
-                
-            }
-            finally
-            {
-                TSMxD -= TSMxConnect;
-            }
+
+            //}
+            //finally
+            //{
+            //    TSMxD -= TSMxConnect;
+            //}
         }
 
         private void TSMxDisconnect()
         {
-            try
-            {
-                TSMxadapter.Disconnect();
-            }
-            finally
-            {
-                TSMxThread.Abort();
-                TSMxD -= TSMxDisconnect;
-            }
+            //try
+            //{
+            //    TSMxadapter.Disconnect();
+            //}
+            //finally
+            //{
+            //    TSMxThread.Abort();
+            //    TSMxD -= TSMxDisconnect;
+            //}
         }
 
         private void Connect_Click(object sender, RoutedEventArgs e)
@@ -418,8 +416,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = -1;
-                command.Parameter.VBW_Hz = -1;
+                command.Parameter.RBW_Hz = 5000;
+                command.Parameter.VBW_Hz = 5000;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
@@ -491,6 +489,67 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 AND -= GetTraceAN1800AVG;
             }
         }
+        private void GetTraceAN9352()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureTraceCommand();
+                command.Parameter.Att_dB = 0;
+                command.Parameter.FreqStart_Hz = 934.95m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 935.45m * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RBW_Hz = 1000;
+                command.Parameter.VBW_Hz = 1000;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.SweepTime_s = 0.00001;
+                command.Parameter.TraceCount = 100;
+                command.Parameter.TracePoint = 2000;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
+                command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
+
+                ANadapter.MesureTraceCommandHandler(command, context);
+            }
+            finally
+            {
+                AND -= GetTraceAN9352;
+            }
+        }
+        private void GetTraceAN1350()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureTraceCommand();
+                command.Parameter.Att_dB = 0;
+                command.Parameter.FreqStart_Hz = 1340m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 1360m * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.PreAmp_dB = 0;
+                double rbw = 1;
+                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                {
+                    rbw = double.Parse(RBW.Text);
+                });
+                command.Parameter.RBW_Hz = rbw;
+                command.Parameter.VBW_Hz = command.Parameter.RBW_Hz;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.SweepTime_s = 0.00001;
+                command.Parameter.TraceCount = 100;
+                command.Parameter.TracePoint = 4000;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.RMS;
+                command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
+
+                ANadapter.MesureTraceCommandHandler(command, context);
+            }
+            finally
+            {
+                AND -= GetTraceAN1350;
+            }
+        }
 
         private void GetTraceSH()
         {
@@ -503,12 +562,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStart_Hz = 1805000000;
                 command.Parameter.FreqStop_Hz = 1880000000;
                 command.Parameter.PreAmp_dB = -1;
-                command.Parameter.RBW_Hz = -1;
+                command.Parameter.RBW_Hz = -2;
                 command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -1;
                 command.Parameter.SweepTime_s = 0.003;
                 command.Parameter.TraceCount = 1;
-                command.Parameter.TracePoint = 3750;
+                int point = 1;
+                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                {
+                    point = int.Parse(points.Text);
+                });
+                command.Parameter.TracePoint = point;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
@@ -579,8 +643,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 30;
-                command.Parameter.RBW_Hz = -1;
-                command.Parameter.VBW_Hz = -1;
+                command.Parameter.RBW_Hz = 5000;
+                command.Parameter.VBW_Hz = 5000;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
@@ -653,6 +717,69 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
         }
 
+        private void GetTraceSH9352()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureTraceCommand();
+                command.Parameter.Att_dB = 20;
+                command.Parameter.FreqStart_Hz = 934.95m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 935.45m * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.SweepTime_s = 0.00001;
+                command.Parameter.TraceCount = 100;
+                command.Parameter.TracePoint = 4000;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
+                command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
+
+                SHadapter.MesureTraceCommandHandler(command, context);
+            }
+            finally
+            {
+                SHD -= GetTraceSH9352;
+            }
+        }
+        private void GetTraceSH1350()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureTraceCommand();
+                command.Parameter.Att_dB = 0;
+                command.Parameter.FreqStart_Hz = 1340m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 1360m * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.PreAmp_dB = 0;
+                double rbw = 1;
+                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                {
+                    rbw = double.Parse(RBW.Text);
+                });
+                command.Parameter.RBW_Hz = rbw;
+                command.Parameter.VBW_Hz = command.Parameter.RBW_Hz;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.SweepTime_s = 0.00001;
+                command.Parameter.TraceCount = 100;
+                command.Parameter.TracePoint = 4000;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
+                command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
+
+                SHadapter.MesureTraceCommandHandler(command, context);
+            }
+            finally
+            {
+                SHD -= GetTraceSH1350;
+            }
+        }
+
+        long UTCOffset = 621355968000000000;
         private void GetIQAN()
         {
             try
@@ -680,13 +807,13 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = 0;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.BitRate_MBs = 0.6;
-                command.Parameter.IQBlockDuration_s = 1.0;
-                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.IQBlockDuration_s = 0.5;
+                command.Parameter.IQReceivTime_s = 0.6;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = true;
 
-                long offset = (long)(0.025 * 10000000);
-                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                long offset = (long)(0.04 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 ////////Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
                 ////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
 
@@ -720,12 +847,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = 30;
 
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.IQBlockDuration_s = 1.0;
-                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.IQBlockDuration_s = 0.5;
+                command.Parameter.IQReceivTime_s = 0.6;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = true;
-                long offset = (long)(0.025 * 10000000);
-                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                long offset = (long)(0.04 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
                 //command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 ////////long offset = DateTime.Now.Ticks - NextSecond;
@@ -770,13 +897,13 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = 0;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.BitRate_MBs = 0.6;
-                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQBlockDuration_s = 0.9;
                 command.Parameter.IQReceivTime_s = 1.0;
                 command.Parameter.MandatoryPPS = false;
-                command.Parameter.MandatorySignal = false;
+                command.Parameter.MandatorySignal = true;
 
-                long offset = (long)(0.025 * 10000000);
-                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                long offset = (long)(0.04 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 ////////Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
                 ////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
 
@@ -810,12 +937,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //command.Parameter.PreAmp_dB = 30;
 
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQBlockDuration_s = 0.9;
                 command.Parameter.IQReceivTime_s = 1.0;
                 command.Parameter.MandatoryPPS = true;
-                command.Parameter.MandatorySignal = false;
-                long offset = (long)(0.025 * 10000000);
-                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                command.Parameter.MandatorySignal = true;
+                long offset = (long)(0.04 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
                 //command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 ////////long offset = DateTime.Now.Ticks - NextSecond;
@@ -833,6 +960,186 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
         }
 
+
+        private void GetIQAN3()
+        {
+            try
+            {
+                //до следующей секунды
+                //long time = TimeService.GetGnssTime().Ticks;
+                //long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
+                //long NextSecond = time + ToNextSecond;
+                //long NextSecond2 = time + ToNextSecond - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //Debug.WriteLine("\r\n" + new TimeSpan(ToNextSecond).ToString() + " Next");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssTime().Ticks).ToString() + " NOW");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond2).ToString() + " Set Param");
+
+
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureIQStreamCommand();
+                //135,5
+                //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.FreqStart_Hz = 422.275m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = 422.325m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.Att_dB = 0;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.BitRate_MBs = 0.6;
+                command.Parameter.IQBlockDuration_s = 0.6;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatorySignal = true;
+
+                long offset = (long)(0.03 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
+                ////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                ANadapter.MesureIQStreamCommandHandler(command, context);
+
+            }
+            finally
+            {
+                AND -= GetIQAN3;
+            }
+        }
+        private void GetIQSH3()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureIQStreamCommand();
+                //135,5
+                //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
+                //command.Parameter.BitRate_MBs = 0.9;
+                //command.Parameter.Att_dB = 10;
+                //command.Parameter.PreAmp_dB = 10;
+                command.Parameter.FreqStart_Hz = 422.275m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = 422.325m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.BitRate_MBs = 0.1;
+                command.Parameter.Att_dB = 0;
+                command.Parameter.PreAmp_dB = 30;
+
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.IQBlockDuration_s = 0.6;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatorySignal = true;
+                long offset = (long)(0.03 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
+                //command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////long offset = DateTime.Now.Ticks - NextSecond;
+                ////////command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+
+                //Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                SHadapter.MesureIQStreamCommandHandler(command, context);
+            }
+            finally
+            {
+                SHD -= GetIQSH3;
+            }
+        }
+
+        private void GetIQAN4()
+        {
+            try
+            {
+                //до следующей секунды
+                //long time = TimeService.GetGnssTime().Ticks;
+                //long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
+                //long NextSecond = time + ToNextSecond;
+                //long NextSecond2 = time + ToNextSecond - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //Debug.WriteLine("\r\n" + new TimeSpan(ToNextSecond).ToString() + " Next");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssTime().Ticks).ToString() + " NOW");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(NextSecond2).ToString() + " Set Param");
+
+
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureIQStreamCommand();
+                //135,5
+                command.Parameter.FreqStart_Hz = 1805.1m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = 1805.7m * 1000000;//930*1000000;//424.675m * 1000000;
+                //command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.Att_dB = 0;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.BitRate_MBs = 0.6;
+                command.Parameter.IQBlockDuration_s = 0.9;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = false;
+                command.Parameter.MandatorySignal = true;
+
+                long offset = (long)(0.04 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////Debug.WriteLine("\r\n" + (new TimeSpan(command.Parameter.TimeStart)).ToString(@"hh\:mm\:ss\.fffffff") + " Start");
+                ////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                ////////Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                ANadapter.MesureIQStreamCommandHandler(command, context);
+
+            }
+            finally
+            {
+                AND -= GetIQAN4;
+            }
+        }
+        private void GetIQSH4()
+        {
+            try
+            {
+                // send command
+                var context = new DummyExecutionContextMy(logger);
+                var command = new CMD.MesureIQStreamCommand();
+                //135,5
+                command.Parameter.FreqStart_Hz = 1805.1m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = 1805.7m * 1000000;//930*1000000;//424.675m * 1000000;
+                command.Parameter.BitRate_MBs = 1.2;
+                command.Parameter.Att_dB = 10;
+                command.Parameter.PreAmp_dB = 10;
+                //command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
+                //command.Parameter.BitRate_MBs = 0.1;
+                //command.Parameter.Att_dB = 0;
+                //command.Parameter.PreAmp_dB = 30;
+
+                command.Parameter.RefLevel_dBm = -40;
+                command.Parameter.IQBlockDuration_s = 0.9;
+                command.Parameter.IQReceivTime_s = 1.0;
+                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatorySignal = true;
+                long offset = (long)(0.04 * 10000000);
+                command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
+                //command.Parameter.TimeStart = 1000000 + tttt - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                ////////long offset = DateTime.Now.Ticks - NextSecond;
+                ////////command.Parameter.TimeStart = DateTime.UtcNow.Ticks + offset - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                //////////command.Parameter.TimeStart += (long)(0.1 * 10000000);
+
+                //Debug.WriteLine("\r\n" + new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(TimeService.GetGnssUtcTime().Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks).ToString() + " Set Param");
+                //Debug.WriteLine("\r\n" + new TimeSpan(command.Parameter.TimeStart).ToString() + " Set Param");
+                SHadapter.MesureIQStreamCommandHandler(command, context);
+            }
+            finally
+            {
+                SHD -= GetIQSH4;
+            }
+        }
         private void GetTime_Click(object sender, RoutedEventArgs e)
         {
 
@@ -865,18 +1172,40 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             AND += GetTraceAN1800AVG;
             SHD += GetTraceSH1800AVG;
         }
+        private void SetMeas9352AVG_Click(object sender, RoutedEventArgs e)
+        {
+            AND += GetTraceAN9352;
+            SHD += GetTraceSH9352;
+        }
+        private void SetMeasAVG1350_Click(object sender, RoutedEventArgs e)
+        {
+            AND += GetTraceAN1350;
+            SHD += GetTraceSH1350;
+        }
         private void SetMeasIQ_Click(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("=======================================================================================================");
             AND += GetIQAN;
             SHD += GetIQSH;
         }
         private void SetMeasIQ2_Click(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("=======================================================================================================");
             AND += GetIQAN2;
             SHD += GetIQSH2;
         }
-
-
+        private void SetMeasIQ3_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("=======================================================================================================");
+            AND += GetIQAN3;
+            SHD += GetIQSH3;
+        }
+        private void SetMeasIQ4_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("=======================================================================================================");
+            AND += GetIQAN4;
+            SHD += GetIQSH4;
+        }
 
 
         private void SetMeas1_Click(object sender, RoutedEventArgs e)

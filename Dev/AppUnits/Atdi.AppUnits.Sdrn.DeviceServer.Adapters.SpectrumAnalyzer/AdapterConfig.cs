@@ -12,6 +12,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
     {
         public string SerialNumber { get; set; }
         public string IPAddress { get; set; }
+        public int ConnectionMode { get; set; }
         public bool DisplayUpdate { get; set; }
         public bool OnlyAutoSweepTime { get; set; }
         public int Optimization { get; set; }
