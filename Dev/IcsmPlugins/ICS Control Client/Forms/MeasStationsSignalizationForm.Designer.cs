@@ -39,6 +39,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ICS Control Client - Stations";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MeasStationsSignalizationForm_FormClosed);
             this.Load += new System.EventHandler(this.MeasStationsSignalizationForm_Load);
             this.ResumeLayout(false);
 

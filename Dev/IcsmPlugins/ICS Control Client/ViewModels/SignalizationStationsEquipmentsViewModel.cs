@@ -46,7 +46,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #endregion
     }
-    public class SignalizationStationsEquipmentsViewModel : WpfViewModelBase
+    public class SignalizationStationsEquipmentsViewModel : WpfViewModelBase, IDisposable
     {
         private EmittingViewModel _currentEmitting;
         private StationsEquipmentViewModel _currentEquipment;
@@ -413,6 +413,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 res = Math.Round(rbw, 4).ToString();
 
             return "RBW = " + res + " kHz";
+        }
+
+        public void Dispose()
+        {
+            _form = null;
         }
     }
 }

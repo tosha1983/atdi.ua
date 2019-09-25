@@ -26,7 +26,7 @@ using XICSM.ICSControlClient.Forms;
 namespace XICSM.ICSControlClient.ViewModels
 {
    
-    public class MeasResultSignalizationViewViewModel : WpfViewModelBase
+    public class MeasResultSignalizationViewViewModel : WpfViewModelBase, IDisposable
     {
         private long[] _stations;
         private readonly string _tableName;
@@ -1013,6 +1013,15 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             return option;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+            _waitForm?.Dispose();
+            
+            this._dataStore.OnBeginInvoke -= _dataStore_OnBeginInvoke;
+            this._dataStore.OnEndInvoke -= _dataStore_OnEndInvoke;
         }
     }
 }

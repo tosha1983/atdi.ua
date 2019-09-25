@@ -38,6 +38,7 @@
             this.Name = "MeasResultSignalizationViewForm";
             this.Text = "Result Monitoring (Fix Sensor) Station:";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MeasResultSignalizationViewForm_FormClosed);
             this.ResumeLayout(false);
 
         }

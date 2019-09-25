@@ -12,7 +12,9 @@ using XICSM.ICSControlClient.Models;
 using System.IO;
 using System.Windows.Markup;
 using System.Windows;
+using System.Windows.Media;
 using XICSM.ICSControlClient.ViewModels;
+using XICSM.ICSControlClient.WpfControls.Maps;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Forms
@@ -24,6 +26,7 @@ namespace XICSM.ICSControlClient.Forms
         private bool _buttonAssociatedVisible;
         private long? _emittingId;
         private ElementHost _wpfElementHost;
+        private MeasStationsSignalizationFormViewModel _model;
         public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, long? emittingId, string captionAdd)
         {
             this._stationData = stationData;
@@ -47,9 +50,49 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emittingId) { _form = this };
-            }
+                this._model = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emittingId) { _form = this };
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = this._model;
+            };
 
+        }
+
+        private void MeasStationsSignalizationForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            var maps = FindVisualChildren<Map>(_wpfElementHost.Child);
+            foreach (var map in maps)
+            {
+                map.Dispose();
+            }
+            if (_wpfElementHost.Child is FrameworkElement fe)
+            {
+                // Memory leak workaround: elementHost.Child.SizeChanged -= elementHost.childFrameworkElement_SizeChanged;
+                var handler = (SizeChangedEventHandler)Delegate.CreateDelegate(typeof(SizeChangedEventHandler), _wpfElementHost, "childFrameworkElement_SizeChanged");
+                fe.SizeChanged -= handler;
+            }
+            _wpfElementHost.Visible = false;
+            _wpfElementHost.Child = null;
+            _wpfElementHost.Dispose();
+            _wpfElementHost.Parent = null;
+            _model._form = null;
+        }
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
     }
 }

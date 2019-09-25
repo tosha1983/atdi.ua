@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XICSM.ICSControlClient.Environment.Wpf;
 using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Models.Views
 {
-    public class ShortMeasTaskViewModel
+    public sealed class ShortMeasTaskViewModel
     {
         [WpfColumn("ID", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public long Id { get; set; }
@@ -48,5 +44,7 @@ namespace XICSM.ICSControlClient.Models.Views
 
         [WpfColumn("Created By", WidthRule = ColumnWidthRule.AutoSize, Width = 150)]
         public string CreatedBy { get; set; }
+
+
     }
 }
