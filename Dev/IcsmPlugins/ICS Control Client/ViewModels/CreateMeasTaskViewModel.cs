@@ -484,8 +484,10 @@ namespace XICSM.ICSControlClient.ViewModels
                         Preamplification = this._currentMeasTask.IsAutoMeasDtParamPreamplification == true ? -1 : this._currentMeasTask.MeasDtParamPreamplification,
                         Mode = this._currentMeasTask.MeasDtParamMode,
                         Demod = this._currentMeasTask.MeasDtParamDemod,
-                        //Reflevel = this._currentMeasTask.IsAutoMeasDtParamReferenceLevel == true ? 1000000000 : this._currentMeasTask.MeasDtParamReferenceLevel,
-                        IfAttenuation = this._currentMeasTask.MeasDtParamIfAttenuation
+                        ReferenceLevel = this._currentMeasTask.IsAutoMeasDtParamReferenceLevel == true ? 1000000000 : this._currentMeasTask.MeasDtParamReferenceLevel,
+                        IfAttenuation = this._currentMeasTask.MeasDtParamIfAttenuation,
+                        NumberTotalScan = this._currentMeasTask.MeasOtherNCount,
+                        
                     },
                     MeasTimeParamList = new SDR.MeasTimeParamList()
                     {

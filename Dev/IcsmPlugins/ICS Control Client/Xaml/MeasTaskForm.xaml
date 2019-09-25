@@ -831,7 +831,7 @@
                             <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions (low level signals)"  />
                             <TextBox x:Name="CrossingBWPercentageForBadSignals" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" >
                               <TextBox.Text>
-                                <Binding Path="MeasOtherNCount">
+                                <Binding Path="CrossingBWPercentageForBadSignals">
                                   <Binding.ValidationRules>
                                     <DataErrorValidationRule/>
                                   </Binding.ValidationRules>

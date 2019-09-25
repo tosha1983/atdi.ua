@@ -203,7 +203,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasurementsResults = source.MeasurementsResults,
                 N = source.N.ToNull(),
                 ResultsMeasStation = source.ResultsMeasStation,
-                StationMeasurementsStationId = source.StationMeasurements.StationId.Value,
+                StationMeasurementsStationId = source.StationMeasurements == null ? 0 : source.StationMeasurements.StationId.Value,
                 SubMeasTaskId = source.Id.SubMeasTaskId,
                 SubMeasTaskStationId = source.Id.SubMeasTaskStationId,
                 TimeMeas = source.TimeMeas,
