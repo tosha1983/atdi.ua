@@ -12,9 +12,12 @@ using XICSM.ICSControlClient.Models;
 using System.IO;
 using System.Windows.Markup;
 using System.Windows;
+using System.Windows.Media;
 using XICSM.ICSControlClient.ViewModels;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using XICSM.ICSControlClient.Models.Views;
+using XICSM.ICSControlClient.WpfControls.Maps;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -26,6 +29,7 @@ namespace XICSM.ICSControlClient.Forms
         private EmittingViewModel[] _emittings;
         private double[] _selectedRangeX;
         private Stack<double[]> _zoomHistory = new Stack<double[]>();
+        private SignalizationStationsEquipmentsViewModel _model;
 
         public SignalizationStationsEquipments(StationsEquipment[] stationData, EmittingViewModel[] emittings, SDR.MeasurementResults measResult, Stack<double[]> zoomHistory, double[] selectedRangeX)
         {
@@ -50,7 +54,54 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new SignalizationStationsEquipmentsViewModel(this._stationData, this._emittings, this._measResult, this._zoomHistory, this._selectedRangeX, this);
+                _model = new SignalizationStationsEquipmentsViewModel(this._stationData,
+                    this._emittings,
+                    this._measResult,
+                    this._zoomHistory,
+                    this._selectedRangeX,
+                    this);
+                ((UserControl) this._wpfElementHost.Child).DataContext = _model;
+            }
+        }
+
+        private void SignalizationStationsEquipments_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            var maps = FindVisualChildren<Map>(_wpfElementHost.Child);
+            foreach (var map in maps)
+            {
+                map.Dispose();
+            }
+            if (_wpfElementHost.Child is FrameworkElement fe)
+            {
+                // Memory leak workaround: elementHost.Child.SizeChanged -= elementHost.childFrameworkElement_SizeChanged;
+                var handler = (SizeChangedEventHandler)Delegate.CreateDelegate(typeof(SizeChangedEventHandler), _wpfElementHost, "childFrameworkElement_SizeChanged");
+                fe.SizeChanged -= handler;
+            }
+            _wpfElementHost.Visible = false;
+            _wpfElementHost.Child = null;
+            _wpfElementHost.Dispose();
+            _wpfElementHost.Parent = null;
+
+            _model.Dispose();
+        }
+
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
             }
         }
     }

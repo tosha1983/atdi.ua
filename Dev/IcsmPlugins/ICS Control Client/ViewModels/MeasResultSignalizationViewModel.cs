@@ -48,7 +48,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #endregion
     }
-    public class MeasResultSignalizationViewModel : WpfViewModelBase
+    public class MeasResultSignalizationViewModel : WpfViewModelBase, IDisposable
     {
         private long _resultId;
 
@@ -1271,6 +1271,15 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             return option;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+            _waitForm?.Dispose();
+
+            this._dataStore.OnBeginInvoke -= _dataStore_OnBeginInvoke;
+            this._dataStore.OnEndInvoke -= _dataStore_OnEndInvoke;
         }
     }
 }

@@ -14,6 +14,8 @@ create table [ICSC].[MEAS_DT_PARAM] (
 	[VBW]	[float] null,
 	[SW_NUMBER]	[bigint] null,
 	[MEAS_TASK_ID]	[bigint] null,
+	[REF_LEVEL] [float] null,
+	[NUM_TOTAL_SCAN] [int] null,
 	constraint [PK_MEAS_DT_PARAM] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

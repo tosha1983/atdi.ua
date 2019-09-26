@@ -58,6 +58,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.PipelineHandlers
                         listNotFoundSensorsTxt.Add($"Name: {val.SensorName}  TechId: {val.SensorTechId}");
                     }
                 }
+                var dicSensors = dic.ToList();
 
                 var allListSensors = data.MeasTaskPipeBox.Sensors.ToList();
                 for (int i = 0; i < listNotFoundSensors.Count; i++)
@@ -99,11 +100,29 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.PipelineHandlers
                             for (int j = 0; j < measSubTask.MeasSubTaskSensors.Length; j++)
                             {
                                 var MeasSubTaskSensor = measSubTask.MeasSubTaskSensors[j];
-                                var dicSensors = dic.ToList();
                                 var findaggregationSensorId = dicSensors.Find(x => x.Key == MeasSubTaskSensor.SensorId);
                                 if (findaggregationSensorId.Value != null)
                                 {
                                     MeasSubTaskSensor.SensorId = findaggregationSensorId.Value.Value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (data.MeasTaskPipeBox is MeasTaskSignaling)
+                {
+                    var measTaskSignaling = data.MeasTaskPipeBox as MeasTaskSignaling;
+                    if (measTaskSignaling != null)
+                    {
+                        if ((measTaskSignaling.RefSituation != null) && (measTaskSignaling.RefSituation.Length > 0))
+                        {
+                            for (int i = 0; i < measTaskSignaling.RefSituation.Length; i++)
+                            {
+                                var findaggregationSensorId = dicSensors.Find(x => x.Key == measTaskSignaling.RefSituation[i].SensorId);
+                                if (findaggregationSensorId.Value != null)
+                                {
+                                    measTaskSignaling.RefSituation[i].SensorId = findaggregationSensorId.Value.Value;
                                 }
                             }
                         }

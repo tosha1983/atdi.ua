@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using XICSM.ICSControlClient.Environment.Wpf;
@@ -8,7 +10,7 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Models.Views
 {
-    public class MeasurementResultsViewModel
+    public class MeasurementResultsViewModel 
     {
         public long MeasSdrResultsId { get; set; }
         public long MeasTaskId { get; set; }
@@ -37,5 +39,6 @@ namespace XICSM.ICSControlClient.Models.Views
         public DateTime StartTime { get; set; }
         public DateTime StopTime { get; set; }
         public int? ScansNumber { get; set; }
+
     }
 }

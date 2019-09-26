@@ -80,10 +80,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск задачи включения GPS
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    if (this._configProcessing.EnableGPS)
-                    {
-                        _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
-                    }
+                    _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
+                    
 
 
                     ////////////////////////////////////////////////////////////////////////

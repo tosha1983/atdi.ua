@@ -34,7 +34,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             var gate = CreateGate(gateFactory);
             var publisher = gate.CreatePublisher("main");
 
-            var res = LoadFromFiles(@"C:\Users\Administrator\Desktop\Upload");
+            var res = LoadFromFiles(@"C:\Users\Administrator\Desktop\UploadMS");
             for (int i = 0; i < res.Length; i++)
             {
                 var item = res[i];

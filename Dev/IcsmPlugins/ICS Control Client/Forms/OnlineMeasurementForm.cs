@@ -11,8 +11,10 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using System.Windows.Media;
 using XICSM.ICSControlClient.ViewModels;
 using XICSM.ICSControlClient.Models.Views;
+using XICSM.ICSControlClient.WpfControls.Maps;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -73,11 +75,46 @@ namespace XICSM.ICSControlClient.Forms
                     this._viewModel.Dispose();
                     this._viewModel = null;
 
+                    var maps = FindVisualChildren<Map>(_wpfElementHost.Child);
+                    foreach (var map in maps)
+                    {
+                        map.Dispose();
+                    }
+                    if (_wpfElementHost.Child is FrameworkElement fe)
+                    {
+                        // Memory leak workaround: elementHost.Child.SizeChanged -= elementHost.childFrameworkElement_SizeChanged;
+                        var handler = (SizeChangedEventHandler)Delegate.CreateDelegate(typeof(SizeChangedEventHandler), _wpfElementHost, "childFrameworkElement_SizeChanged");
+                        fe.SizeChanged -= handler;
+                    }
+                    _wpfElementHost.Visible = false;
+                    _wpfElementHost.Child = null;
+                    _wpfElementHost.Dispose();
+                    _wpfElementHost.Parent = null;
+
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"OnlineMeasurementForm_FormClosed: {ex.ToString()}");
                     throw;
+                }
+            }
+        }
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
                 }
             }
         }

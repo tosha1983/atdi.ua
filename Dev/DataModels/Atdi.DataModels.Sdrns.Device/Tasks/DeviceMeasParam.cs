@@ -61,5 +61,10 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public int? RfAttenuation_dB { get; set; }
+        /// <summary>
+        /// Number total scan
+        /// </summary>
+        [DataMember]
+        public int? NumberTotalScan { get; set; }
     }
 }

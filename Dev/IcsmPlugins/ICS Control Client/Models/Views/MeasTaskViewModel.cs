@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using XICSM.ICSControlClient.Environment.Wpf;
 using Atdi.Contracts.WcfServices.Sdrn.Server;
+using System.Windows.Forms;
 
 namespace XICSM.ICSControlClient.Models.Views
 {
@@ -56,9 +57,9 @@ namespace XICSM.ICSControlClient.Models.Views
         public double? MeasDtParamVBW { get; set; }
 
         public bool IsAutoMeasDtParamRfAttenuation { get; set; }
-        public double MeasDtParamRfAttenuation { get; set; }
+        public double? MeasDtParamRfAttenuation { get; set; }
 
-        public double MeasDtParamIfAttenuation { get; set; }
+        public double? MeasDtParamIfAttenuation { get; set; }
 
         public bool IsAutoMeasDtParamMeasTime { get; set; }
         public double? MeasDtParamMeasTime { get; set; }
@@ -73,7 +74,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public string MeasDtParamDemod { get; set; }
 
         public bool IsAutoMeasDtParamPreamplification { get; set; }
-        public int MeasDtParamPreamplification { get; set; }
+        public int? MeasDtParamPreamplification { get; set; }
 
         public bool IsAutoMeasDtParamReferenceLevel { get; set; }
         public int? MeasDtParamReferenceLevel { get; set; }
@@ -92,6 +93,7 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public double? MeasFreqParamStep { get; set; }
 
+        public double? MeasFreqParam { get; set; }
         public string MeasFreqParams { get; set; }
 
         public double[] MeasFreqParamMeasFreqs { get; set; }
@@ -168,7 +170,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public int? NumberIgnoredPoints { get; set; } 
         public double? MinExcessNoseLevel_dB { get; set; }
         public int? TimeBetweenWorkTimes_sec { get; set; }
-        public int? TypeJoinSpectrum { get; set; } 
+        public int? TypeJoinSpectrum { get; set; }
 
         public string this[string columnName]
         {
@@ -177,22 +179,148 @@ namespace XICSM.ICSControlClient.Models.Views
                 string error = String.Empty;
                 switch (columnName)
                 {
-                    case "MeasTimeParamListPerInterval":
-                        if ((MeasTimeParamListPerInterval < 0) || (MeasTimeParamListPerInterval > 3600))
+                    case "MeasOtherSwNumber":
+                        if ((MeasOtherSwNumber < 1))
                         {
-                            error = "The value must be greater than 0 and less than 3600";
+                            error = "The value must be greater than zero";
                         }
                         break;
-                    case "MeasFreqParamRgL":
-                        if ((MeasFreqParamRgL < 1) || (MeasFreqParamRgL > 6000))
+                    case "MeasTimeParamListPerStart":
+                        if (MeasTimeParamListPerStart < DateTime.Today)
                         {
-                            error = "The value must be greater than 1 and less than 6000";
+                            error = "Date cannot be less than current";
+                        }
+                        //if (MeasTimeParamListPerStart > MeasTimeParamListPerStop)
+                        //{
+                        //    error = "Start date cannot be greater than end date";
+                        //}
+                        break;
+                    case "MeasTimeParamListPerStop":
+                        if (MeasTimeParamListPerStop < DateTime.Today)
+                        {
+                            error = "Date cannot be less than current";
+                        }
+                        //if (MeasTimeParamListPerStart > MeasTimeParamListPerStop)
+                        //{
+                        //    error = "Start date cannot be greater than end date";
+                        //}
+                        break;
+                    case "MeasDtParamMeasTime":
+                        if (MeasDtParamMeasTime.HasValue && (MeasDtParamMeasTime.Value < 0.001 || MeasDtParamMeasTime.Value > 1))
+                        {
+                            error = "The value must be in the range from 0.001 to 1";
                         }
                         break;
-                    case "MeasFreqParamRgU":
-                        if ((MeasFreqParamRgU < 1) || (MeasFreqParamRgU > 6000))
+                    case "MeasDtParamRfAttenuation":
+                        if (MeasDtParamRfAttenuation.HasValue && (MeasDtParamRfAttenuation.Value < 0 || MeasDtParamRfAttenuation.Value > 40))
                         {
-                            error = "The value must be greater than 1 and less than 6000";
+                            error = "The value must be in the range from 0 to 40";
+                        }
+                        if (MeasDtParamRfAttenuation.HasValue && (MeasDtParamRfAttenuation.Value != Math.Round(MeasDtParamRfAttenuation.Value, 0)))
+                        {
+                            error = "The value must be an integer";
+                        }
+                        break;
+                    case "MeasDtParamPreamplification":
+                        if (MeasDtParamPreamplification.HasValue && (MeasDtParamPreamplification.Value < 0 || MeasDtParamPreamplification.Value > 40))
+                        {
+                            error = "The value must be in the range from 0 to 40";
+                        }
+                        break;
+                    case "MeasDtParamReferenceLevel":
+                        if (MeasDtParamReferenceLevel.HasValue && (MeasDtParamReferenceLevel.Value < -200 || MeasDtParamReferenceLevel.Value > 10))
+                        {
+                            error = "The value must be in the range from -200 to 10";
+                        }
+                        break;
+                    case "MeasOtherLevelMinOccup":
+                        if (MeasOtherLevelMinOccup.HasValue && (MeasOtherLevelMinOccup.Value < -160 || MeasOtherLevelMinOccup.Value > -30))
+                        {
+                            error = "The value must be in the range from -160 to -30";
+                        }
+                        break;
+                    case "MeasOtherNCount":
+                        if (MeasOtherNCount.HasValue && (MeasOtherNCount.Value < 1 || MeasOtherNCount.Value > 1000000))
+                        {
+                            error = "The value must be in the range from 1 to 1000000";
+                        }
+                        break;
+                    case "MeasOtherNChenal":
+                        if (MeasOtherNChenal.HasValue && (MeasOtherNChenal.Value < 10 || MeasOtherNChenal.Value > 400))
+                        {
+                            error = "The value must be in the range from 10 to 400";
+                        }
+                        break;
+                    case "windowBW":
+                        if (windowBW.HasValue && (windowBW.Value < 1 || windowBW.Value > 2))
+                        {
+                            error = "The value must be in the range from 1 to 2";
+                        }
+                        break;
+                    case "AllowableExcess_dB":
+                        if (AllowableExcess_dB.HasValue && (AllowableExcess_dB.Value < 0 || AllowableExcess_dB.Value > 50))
+                        {
+                            error = "The value must be in the range from 0 to 50";
+                        }
+                        break;
+                    case "triggerLevel_dBm_Hz":
+                        if (triggerLevel_dBm_Hz.HasValue && (triggerLevel_dBm_Hz.Value < -200 || triggerLevel_dBm_Hz.Value > -100))
+                        {
+                            error = "The value must be in the range from -200 to -100";
+                        }
+                        break;
+                    case "CrossingBWPercentageForGoodSignals":
+                        if (CrossingBWPercentageForGoodSignals.HasValue && (CrossingBWPercentageForGoodSignals.Value < 1 || CrossingBWPercentageForGoodSignals.Value > 99))
+                        {
+                            error = "The value must be in the range from 1 to 99";
+                        }
+                        break;
+                    case "CrossingBWPercentageForBadSignals":
+                        if (MeasOtherNChenal.HasValue && (CrossingBWPercentageForBadSignals.Value < 1 || CrossingBWPercentageForBadSignals.Value > 99))
+                        {
+                            error = "The value must be in the range from 1 to 99";
+                        }
+                        break;
+                    case "DiffLevelForCalcBW":
+                        if (DiffLevelForCalcBW.HasValue && (DiffLevelForCalcBW.Value < 6 || DiffLevelForCalcBW.Value > 36))
+                        {
+                            error = "The value must be in the range from 6 to 36";
+                        }
+                        break;
+                    case "CorrelationFactor":
+                        if (CorrelationFactor.HasValue && (CorrelationFactor.Value < 0 || CorrelationFactor.Value > 1))
+                        {
+                            error = "The value must be in the range from 0 to 1";
+                        }
+                        break;
+                    case "SignalizationNCount":
+                        if (SignalizationNCount.HasValue && (SignalizationNCount.Value < 1 || SignalizationNCount.Value > 1000000))
+                        {
+                            error = "The value must be in the range from 1 to 1000000";
+                        }
+                        break;
+                    case "SignalizationNChenal":
+                        if (SignalizationNChenal.HasValue && (SignalizationNChenal.Value < 2 || SignalizationNChenal.Value > 5000))
+                        {
+                            error = "The value must be in the range from 2 to 5000";
+                        }
+                        break;
+                    case "DifferenceMaxMax":
+                        if (DifferenceMaxMax.HasValue && (DifferenceMaxMax.Value < 5 || DifferenceMaxMax.Value > 40))
+                        {
+                            error = "The value must be in the range from 5 to 40";
+                        }
+                        break;
+                    case "NumberPointForChangeExcess":
+                        if (NumberPointForChangeExcess.HasValue && (NumberPointForChangeExcess.Value < 0 || NumberPointForChangeExcess.Value > 100))
+                        {
+                            error = "The value must be in the range from 0 to 100";
+                        }
+                        break;
+                    case "MaxFreqDeviation":
+                        if (MaxFreqDeviation.HasValue && (MaxFreqDeviation.Value < 0.000000001 || MaxFreqDeviation.Value > 0.0001))
+                        {
+                            error = "The value must be in the range from 0.000000001 to 0.0001";
                         }
                         break;
                 }
@@ -203,6 +331,58 @@ namespace XICSM.ICSControlClient.Models.Views
         {
             get { throw new NotImplementedException(); }
         }
+        public bool ValidateStateModel()
+        {
+            var errors = new StringBuilder();
 
+            var properties = new string[]
+            {
+                "MeasTimeParamListPerStart",
+                "MeasTimeParamListPerStop",
+                "MeasTimeParamListTimeStart",
+                "MeasTimeParamListTimeStop",
+                "MeasDtParamMeasTime",
+                "MeasDtParamRfAttenuation",
+                "MeasDtParamPreamplification",
+                "MeasDtParamReferenceLevel",
+                "MeasOtherSwNumber",
+                "MeasOtherLevelMinOccup",
+                "MeasOtherNCount",
+                "MeasOtherNChenal",
+                "windowBW",
+                "AllowableExcess_dB",
+                "triggerLevel_dBm_Hz",
+                "CrossingBWPercentageForGoodSignals",
+                "CrossingBWPercentageForBadSignals",
+                "DiffLevelForCalcBW",
+                "CorrelationFactor",
+                "SignalizationNCount",
+                "SignalizationNChenal",
+                "DifferenceMaxMax",
+                "NumberPointForChangeExcess",
+                "MaxFreqDeviation"
+            };
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                var propertyName = properties[i];
+                var error = this[propertyName];
+                if (!string.IsNullOrEmpty(error))
+                {
+                    errors.AppendLine($" - invalid value of the {propertyName}: {error}");
+                }
+            }
+
+            if (errors.Length > 0)
+            {
+                //throw new InvalidOperationException("Invalid input task properties: \n" + errors.ToString());
+                MessageBox.Show("Invalid input task properties: \n" + errors.ToString());
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

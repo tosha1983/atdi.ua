@@ -95,6 +95,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                 measDtParam.RBW = task.MeasDtParam.RBW;
                 measDtParam.RfAttenuation = task.MeasDtParam.RfAttenuation;
                 measDtParam.VBW = task.MeasDtParam.VBW;
+                measDtParam.ReferenceLevel = task.MeasDtParam.ReferenceLevel;
+                measDtParam.NumberTotalScan = task.MeasDtParam.NumberTotalScan;
             }
             if (task.MeasOther != null)
             {

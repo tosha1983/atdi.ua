@@ -11,7 +11,9 @@
   RBW               NUMBER(30,10),
   VBW               NUMBER(30,10),
   MEAS_TASK_ID      NUMBER(15),
-  SW_NUMBER         NUMBER(9)
+  SW_NUMBER         NUMBER(9),
+  REF_LEVEL         NUMBER(30,10),
+  NUM_TOTAL_SCAN    NUMBER(9)
 )
 TABLESPACE USERS
 PCTUSED    0
