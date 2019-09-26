@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace XICSM.ICSControlClient.Handlers.OnlineMeasurement.Calculation
 {
@@ -32,6 +29,12 @@ namespace XICSM.ICSControlClient.Handlers.OnlineMeasurement.Calculation
             double resizing = 10 * Math.Log10(delta_freq / RBW_kHz) + 30;
             sum_mW = sum_mW + resizing;
             return sum_mW;
+        }
+
+        public static double CalclIntensity(double power, double antennaFactor)
+        {
+            // E = P + AntennaFactor – 106.99 
+            return power + antennaFactor + 106.99;
         }
     }
 }

@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Atdi.Test.Platform
 {
-    static class LoggerTest
+    internal static class LoggerTest
     {
         public static void Run(ILogger logger)
         {
             logger.Info((EventContext)"LoggerTest", (EventCategory)"Running", "Start test");
-            var count = 20000;
+            const int count = 20000;
 
             Task.Run(() =>
             {
@@ -28,11 +29,39 @@ namespace Atdi.Test.Platform
             });
         }
 
-        static private void TestIteration(ILogger logger, int count, int number)
+        private static void TestIteration(ILogger logger, int count, int number)
         {
-            for (int i = 0; i < 20000; i++)
+            for (var i = 0; i < count; i++)
             {
-                logger.Info((EventContext)"LoggerTest", (EventCategory)$"Testing #{number}", $"Test iteration #{i}");
+                logger.Info((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Info - Test iteration #{i}");
+
+                Thread.Sleep(1);
+
+                logger.Verbouse((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Verbose - Test iteration #{i}");
+
+                Thread.Sleep(1);
+
+                logger.Debug((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Debug - Test iteration #{i}");
+
+                Thread.Sleep(1);
+
+                logger.Warning((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Warning - Test iteration #{i}");
+
+                Thread.Sleep(1);
+
+                logger.Error((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Error - Test iteration #{i}");
+
+                Thread.Sleep(1);
+
+                using (logger.StartTrace((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Trace - Test iteration #{i}"))
+                {
+                    Thread.Sleep(5);
+                }
+
+                Thread.Sleep(1);
+
+                logger.Exception((EventContext)"LoggerTest", (EventCategory)string.Intern($"Testing #{number}"), $"Error - Test iteration #{i}", new InvalidCastException());
+
             }
         }
     }

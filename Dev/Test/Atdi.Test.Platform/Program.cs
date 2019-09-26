@@ -24,10 +24,11 @@ namespace Atdi.Test.Platform
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
                     var logger = resolver.Resolve<ILogger>();
-                    //DataLayerTest.Run(resolver);
-                    EntityOrmTest.Run(resolver);
+                    
+                    // DataLayerTest.Run(resolver);
+                    // EntityOrmTest.Run(resolver);
 
-                   //LoggerTest.Run(logger);
+                    LoggerTest.Run(logger);
 
                 }
                 catch (Exception e)

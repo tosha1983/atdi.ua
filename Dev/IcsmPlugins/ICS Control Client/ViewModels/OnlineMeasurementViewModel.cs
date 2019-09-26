@@ -672,7 +672,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     var parameters = data.GetData<DeviceServerParametersDataLevel>();
                     if (parameters == null)
                     {
-                        throw new InvalidOperationException($"Invalid parameters received from the sensor");
+                        throw new InvalidOperationException("Invalid parameters received from the sensor");
                     }
                     if (parameters.isChanged_Att_dB)
                     {
@@ -699,8 +699,11 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                     else
                     {
-                        throw new InvalidOperationException($"Incorrect parameters received from the device: no frequency");
+                        throw new InvalidOperationException("Incorrect parameters received from the device: no frequency");
                     }
+
+                    _measParameters.AntennaFactor = parameters.AntennaFactor;
+
                     var p = _measParameters;
                     this.MeasParameters = null;
                     this.MeasParameters = p;
@@ -795,11 +798,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 Level = serverResult.Level
             };
             var power = CalcChannelPowForChart.getPow(serverResult.Level, _measParameters.Freq_Hz, _measParameters.RBW_kHz);
+            var intensity = CalcChannelPowForChart.CalclIntensity(power, _measParameters.AntennaFactor);
+
             var data = new FastChartData<OnlineMeasLineChartDynamicData>(container)
             {
                 //Title = new TextDescriptor { Text = $"Online Measurements  -  {serverResult.Index}" },
                 RightTitle = new TextDescriptor { Text = (serverResult.Overload ? "Overload" : ""), Forecolor = Brushes.Red },
-                LeftTitle = new TextDescriptor { Text = $"Power: {power} dBm" }
+                LeftTitle = new TextDescriptor { Text = $"Power/FS: {Math.Round(power, 1)}/{Math.Round(intensity, 1)} dBm/dBmkV/m" }
              };
 
             this.MainChartDynamicData = data;
