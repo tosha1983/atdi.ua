@@ -14,13 +14,13 @@ namespace Atdi.Platform.Caching
         private readonly IDataCacheDescriptor<TKey, TData> _descriptor;
         private readonly ConcurrentDictionary<TKey, DataCacheEntry<TData>> _cache;
 
-        private readonly IStatisticCounterKey _getShotsCounterKey;
-        private readonly IStatisticCounterKey _getHitsCounterKey;
-        private readonly IStatisticCounterKey _getMissesCounterKey;
+        //private readonly IStatisticCounterKey _getShotsCounterKey;
+        //private readonly IStatisticCounterKey _getHitsCounterKey;
+        //private readonly IStatisticCounterKey _getMissesCounterKey;
 
-        private readonly IStatisticCounterKey _setShotsCounterKey;
-        private readonly IStatisticCounterKey _setHitsCounterKey;
-        private readonly IStatisticCounterKey _setMissesCounterKey;
+        //private readonly IStatisticCounterKey _setShotsCounterKey;
+        //private readonly IStatisticCounterKey _setHitsCounterKey;
+        //private readonly IStatisticCounterKey _setMissesCounterKey;
 
         private readonly IStatisticCounter _getShotsCounter;
         private readonly IStatisticCounter _getHitsCounter;
@@ -30,15 +30,15 @@ namespace Atdi.Platform.Caching
         private readonly IStatisticCounter _setHitsCounter;
         private readonly IStatisticCounter _setMissesCounter;
 
-        private long _getShots = 0;
-        private long _getHits = 0;
-        private long _getMisses = 0;
+        private long _getShots;
+        private long _getHits;
+        private long _getMisses;
 
-        private long _setShots = 0;
-        private long _setHits = 0;
-        private long _setMisses = 0;
+        private long _setShots;
+        private long _setHits;
+        private long _setMisses;
 
-        private Stopwatch _timer;
+        private readonly Stopwatch _timer;
 
         public DataCache(IDataCacheDescriptor<TKey, TData> descriptor, IStatistics statistics)
         {
@@ -46,23 +46,23 @@ namespace Atdi.Platform.Caching
             this._cache = new ConcurrentDictionary<TKey, DataCacheEntry<TData>>();
             this._timer = Stopwatch.StartNew();
 
-            this._getShotsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Getting.Shots");
-            this._getHitsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Getting.Hits");
-            this._getMissesCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Getting.Misses");
+            var getShotsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Getting.Shots");
+            var getHitsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Getting.Hits");
+            var getMissesCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Getting.Misses");
 
-            this._setShotsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Setting.Shots");
-            this._setHitsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Setting.Hits");
-            this._setMissesCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Setting.Misses");
+            var setShotsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Setting.Shots");
+            var setHitsCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Setting.Hits");
+            var setMissesCounterKey = STS.DefineCounterKey($"DataCache.{descriptor.Name}.Setting.Misses");
 
             if (statistics != null)
             {
-                this._getShotsCounter = statistics.Counter(this._getShotsCounterKey);
-                this._getHitsCounter = statistics.Counter(this._getHitsCounterKey);
-                this._getMissesCounter = statistics.Counter(this._getMissesCounterKey);
+                this._getShotsCounter = statistics.Counter(getShotsCounterKey);
+                this._getHitsCounter = statistics.Counter(getHitsCounterKey);
+                this._getMissesCounter = statistics.Counter(getMissesCounterKey);
 
-                this._setShotsCounter = statistics.Counter(this._setShotsCounterKey);
-                this._setHitsCounter = statistics.Counter(this._setHitsCounterKey);
-                this._setMissesCounter = statistics.Counter(this._setMissesCounterKey);
+                this._setShotsCounter = statistics.Counter(setShotsCounterKey);
+                this._setHitsCounter = statistics.Counter(setHitsCounterKey);
+                this._setMissesCounter = statistics.Counter(setMissesCounterKey);
             }
             
         }
@@ -71,7 +71,7 @@ namespace Atdi.Platform.Caching
 
         public void Remove(TKey key)
         {
-            _cache.TryRemove(key, out DataCacheEntry<TData> entry);
+            _cache.TryRemove(key, out _);
         }
 
         public void Set(TKey key, TData data)

@@ -8,9 +8,9 @@ namespace Atdi.Platform.Logging
 {
     public struct EventText : IEquatable<EventText>
     {
-        public string Text { get; private set; }
+        public string Text { get; }
 
-        public object[] Args { get; private set; }
+        public object[] Args { get; }
 
         public EventText(string text)
         {

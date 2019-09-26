@@ -13,10 +13,10 @@ namespace Atdi.Platform
         object Value { get; }
     }
 
-    interface IConfigParameter<TValue>
-    {
-        string Name { get; }
+    //interface IConfigParameter<TValue>
+    //{
+    //    string Name { get; }
 
-        TValue Value { get; }
-    }
+    //    TValue Value { get; }
+    //}
 }

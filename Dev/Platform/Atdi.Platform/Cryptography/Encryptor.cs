@@ -12,7 +12,7 @@ namespace Atdi.Platform.Cryptography
     public class Encryptor
     {
 
-        private static byte[] _salt = new byte[] { 23, 63, 98, 4, 78, 39, 23, 14, 68, 77, 6, 33, 17, 93 };
+        private static readonly byte[] Salt = new byte[] { 23, 63, 98, 4, 78, 39, 23, 14, 68, 77, 6, 33, 17, 93 };
 
         /// <summary>
         /// Encrypt the given string using AES.  The string can be decrypted using 
@@ -25,7 +25,7 @@ namespace Atdi.Platform.Cryptography
             //if (string.IsNullOrEmpty(plainText))
             //    throw new ArgumentNullException("plainText");
             if (string.IsNullOrEmpty(sharedSecret))
-                throw new ArgumentNullException("sharedSecret");
+                throw new ArgumentNullException(nameof(sharedSecret));
 
             string outStr = null;                       // Encrypted string to return
             RijndaelManaged aesAlg = null;              // RijndaelManaged object used to encrypt the data.
@@ -33,7 +33,7 @@ namespace Atdi.Platform.Cryptography
             try
             {
                 // generate the key from the shared secret and the salt
-                Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+                Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, Salt);
 
                 // Create a RijndaelManaged object
                 aesAlg = new RijndaelManaged();
@@ -62,8 +62,7 @@ namespace Atdi.Platform.Cryptography
             finally
             {
                 // Clear the RijndaelManaged object.
-                if (aesAlg != null)
-                    aesAlg.Clear();
+                aesAlg?.Clear();
             }
 
             // Return the encrypted bytes from the memory stream.
@@ -79,9 +78,9 @@ namespace Atdi.Platform.Cryptography
         public static string DecryptStringAES(string cipherText, string sharedSecret)
         {
             if (string.IsNullOrEmpty(cipherText))
-                throw new ArgumentNullException("cipherText");
+                throw new ArgumentNullException(nameof(cipherText));
             if (string.IsNullOrEmpty(sharedSecret))
-                throw new ArgumentNullException("sharedSecret");
+                throw new ArgumentNullException(nameof(sharedSecret));
 
             // Declare the RijndaelManaged object
             // used to decrypt the data.
@@ -94,7 +93,7 @@ namespace Atdi.Platform.Cryptography
             try
             {
                 // generate the key from the shared secret and the salt
-                Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+                Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, Salt);
 
                 // Create the streams used for decryption.                
                 byte[] bytes = Convert.FromBase64String(cipherText);
@@ -121,8 +120,7 @@ namespace Atdi.Platform.Cryptography
             finally
             {
                 // Clear the RijndaelManaged object.
-                if (aesAlg != null)
-                    aesAlg.Clear();
+                aesAlg?.Clear();
             }
 
             return plaintext;

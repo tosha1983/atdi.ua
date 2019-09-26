@@ -15,17 +15,17 @@ namespace Atdi.Platform.AppComponent
         private IComponentConfig _config;
         private ILogger _logger;
 
-        public ComponentBase(string name, ComponentType type, ComponentBehavior behavior)
+        protected ComponentBase(string name, ComponentType type, ComponentBehavior behavior)
         {
             this.Name = name;
             this.Type = type;
             this.Behavior = behavior;
         }
-        public ComponentBehavior Behavior { get; private set; }
+        public ComponentBehavior Behavior { get; }
 
-        public ComponentType Type { get; private set; }
+        public ComponentType Type { get; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public void Activate()
         {

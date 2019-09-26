@@ -8,13 +8,11 @@ namespace Atdi.Platform.Logging
 {
     public abstract class LoggedObject : ILoggedObject
     {
-        private readonly ILogger _logger;
-
-        public LoggedObject(ILogger logger)
+        protected LoggedObject(ILogger logger)
         {
-            this._logger = logger;
+            this.Logger = logger;
         }
 
-        public ILogger Logger => this._logger;
+        public ILogger Logger { get; }
     }
 }
