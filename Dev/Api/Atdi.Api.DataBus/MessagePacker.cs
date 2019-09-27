@@ -1,13 +1,9 @@
 ﻿using Atdi.DataModels.Api.DataBus;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Atdi.Api.DataBus
@@ -16,7 +12,7 @@ namespace Atdi.Api.DataBus
     {
         object Serialize(object source, Type type, bool useCompression = false, bool useEncryption = false);
 
-        object Deserialize(object source, Type type, bool UseCompression = false, bool useEncryption = false);
+        object Deserialize(object source, Type type, bool useCompression = false, bool useEncryption = false);
     }
 
     internal sealed class JsonContentTypeConvertor : IContentTypeConvertor
@@ -48,7 +44,10 @@ namespace Atdi.Api.DataBus
                 return null;
             }
 
-            return JsonConvert.DeserializeObject(json, type);
+            return JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            });
         }
 
         public object Serialize(object source, Type type, bool useCompression = false, bool useEncryption = false)
@@ -57,7 +56,10 @@ namespace Atdi.Api.DataBus
 
             if (source != null)
             {
-                json = JsonConvert.SerializeObject(source);
+                json = JsonConvert.SerializeObject(source, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All 
+                });
             }
             
 
