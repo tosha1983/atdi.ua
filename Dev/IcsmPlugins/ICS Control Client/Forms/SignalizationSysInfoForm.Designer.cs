@@ -39,6 +39,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ICS Control Client - SysInfo";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SignalizationSysInfoForm_FormClosed);
             this.Load += new System.EventHandler(this.SignalizationSysInfoForm_Load);
             this.ResumeLayout(false);
 

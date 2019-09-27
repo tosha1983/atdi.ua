@@ -8,9 +8,9 @@ namespace Atdi.Platform.Logging
 {
     public struct TraceScopeName : IEquatable<TraceScopeName>
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public object[] Args { get; private set; }
+        public object[] Args { get; }
 
         public TraceScopeName(string name)
         {

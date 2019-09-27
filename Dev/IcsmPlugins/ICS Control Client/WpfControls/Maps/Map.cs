@@ -145,5 +145,10 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
             this.MapProvider = GMapProviders.GoogleMap;
             this.Zoom = 2;
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
     }
 }

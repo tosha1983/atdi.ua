@@ -14,9 +14,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         where TProcess : IProcess
     {
         private readonly TaskBase _taskBase;
-        private CancellationTokenSource _tokenSource;
-        private ConcurrentDictionary<Type, EventWaitHandle> _waiters;
-        private ConcurrentDictionary<Type, object> _events;
+        private readonly CancellationTokenSource _tokenSource;
+        private readonly ConcurrentDictionary<Type, EventWaitHandle> _waiters;
+        private readonly ConcurrentDictionary<Type, object> _events;
 
         public TaskContext(ITaskDescriptor descriptor)
         {
@@ -103,7 +103,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private bool TryTakeEvent<TEvent>(out TEvent @event)
         {
             @event = default(TEvent);
-            if (!_events.TryGetValue(typeof(TEvent), out object value))
+            if (!_events.TryGetValue(typeof(TEvent), out var value))
             {
                 return false;
             }
@@ -115,7 +115,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private ConcurrentQueue<TEvent> GetEventQueue<TEvent>()
         {
             var type = typeof(TEvent);
-            if (!this._events.TryGetValue(type, out object eventQueue))
+            if (!this._events.TryGetValue(type, out var eventQueue))
             {
                 eventQueue = new ConcurrentQueue<TEvent>();
                 if (!this._events.TryAdd(type, eventQueue))

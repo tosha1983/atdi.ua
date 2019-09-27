@@ -11,7 +11,6 @@ namespace Atdi.Platform.Workflows
         private readonly object _locker = new object();
 
         private readonly TResult _default;
-        private readonly IPipelineHandlerFactory _handlerFactory;
         private PipelineContext<TData, TResult> _firstContext;
         private PipelineContext<TData, TResult> _lastContext;
 
@@ -19,14 +18,14 @@ namespace Atdi.Platform.Workflows
         {
             this.Name = name;
             this._default = @default;
-            this._handlerFactory = handlerFactory;
+            this.HandlerFactory = handlerFactory;
         }
 
         public TResult Default => _default;
 
         public string Name { get; }
 
-        public IPipelineHandlerFactory HandlerFactory => this._handlerFactory;
+        public IPipelineHandlerFactory HandlerFactory { get; }
 
         public TResult Execute(TData data)
         {

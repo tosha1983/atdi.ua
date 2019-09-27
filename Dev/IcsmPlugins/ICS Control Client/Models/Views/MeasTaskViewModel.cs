@@ -58,11 +58,20 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public bool IsAutoMeasDtParamRfAttenuation { get; set; }
         public double? MeasDtParamRfAttenuation { get; set; }
-
         public double? MeasDtParamIfAttenuation { get; set; }
 
+        //bool _IsAutoMeasDtParamMeasTime;
         public bool IsAutoMeasDtParamMeasTime { get; set; }
-        public double? MeasDtParamMeasTime { get; set; }
+        //{
+        //    get => this._IsAutoMeasDtParamMeasTime;
+        //    set 
+        //    {
+        //        this._IsAutoMeasDtParamMeasTime = value;
+        //        if (value)
+        //            this.MeasDtParamMeasTime = null;
+        //    }
+        //}
+    public double? MeasDtParamMeasTime { get; set; }
 
         public DetectingType MeasDtParamDetectType { get; set; }
 
@@ -206,29 +215,29 @@ namespace XICSM.ICSControlClient.Models.Views
                         //}
                         break;
                     case "MeasDtParamMeasTime":
-                        if (MeasDtParamMeasTime.HasValue && (MeasDtParamMeasTime.Value < 0.001 || MeasDtParamMeasTime.Value > 1))
+                        if (IsAutoMeasDtParamMeasTime == false && MeasDtParamMeasTime.HasValue && (MeasDtParamMeasTime.Value < 0.001 || MeasDtParamMeasTime.Value > 1))
                         {
                             error = "The value must be in the range from 0.001 to 1";
                         }
                         break;
                     case "MeasDtParamRfAttenuation":
-                        if (MeasDtParamRfAttenuation.HasValue && (MeasDtParamRfAttenuation.Value < 0 || MeasDtParamRfAttenuation.Value > 40))
+                        if (IsAutoMeasDtParamRfAttenuation == false && MeasDtParamRfAttenuation.HasValue && (MeasDtParamRfAttenuation.Value < 0 || MeasDtParamRfAttenuation.Value > 40))
                         {
                             error = "The value must be in the range from 0 to 40";
                         }
-                        if (MeasDtParamRfAttenuation.HasValue && (MeasDtParamRfAttenuation.Value != Math.Round(MeasDtParamRfAttenuation.Value, 0)))
+                        if (IsAutoMeasDtParamRfAttenuation == false && MeasDtParamRfAttenuation.HasValue && (MeasDtParamRfAttenuation.Value != Math.Round(MeasDtParamRfAttenuation.Value, 0)))
                         {
                             error = "The value must be an integer";
                         }
                         break;
                     case "MeasDtParamPreamplification":
-                        if (MeasDtParamPreamplification.HasValue && (MeasDtParamPreamplification.Value < 0 || MeasDtParamPreamplification.Value > 40))
+                        if (IsAutoMeasDtParamPreamplification == false && MeasDtParamPreamplification.HasValue && (MeasDtParamPreamplification.Value < 0 || MeasDtParamPreamplification.Value > 40))
                         {
                             error = "The value must be in the range from 0 to 40";
                         }
                         break;
                     case "MeasDtParamReferenceLevel":
-                        if (MeasDtParamReferenceLevel.HasValue && (MeasDtParamReferenceLevel.Value < -200 || MeasDtParamReferenceLevel.Value > 10))
+                        if (IsAutoMeasDtParamReferenceLevel == false && MeasDtParamReferenceLevel.HasValue && (MeasDtParamReferenceLevel.Value < -200 || MeasDtParamReferenceLevel.Value > 10))
                         {
                             error = "The value must be in the range from -200 to 10";
                         }
@@ -264,7 +273,7 @@ namespace XICSM.ICSControlClient.Models.Views
                         }
                         break;
                     case "triggerLevel_dBm_Hz":
-                        if (triggerLevel_dBm_Hz.HasValue && (triggerLevel_dBm_Hz.Value < -200 || triggerLevel_dBm_Hz.Value > -100))
+                        if (IsAutoTriggerLevel_dBm_Hz == false && triggerLevel_dBm_Hz.HasValue && (triggerLevel_dBm_Hz.Value < -200 || triggerLevel_dBm_Hz.Value > -100))
                         {
                             error = "The value must be in the range from -200 to -100";
                         }

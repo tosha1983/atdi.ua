@@ -25,17 +25,17 @@
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Refersh Meas Tasks" Command="{Binding RefreshShortTasksCommand}"/>
+            <MenuItem Header="Refresh Meas Tasks" Command="{Binding RefreshShortTasksCommand}"/>
 
             <MenuItem Header="Create Meas Task" Command="{Binding CreateMeasTaskCommand}"/>
             <MenuItem Header="Run Meas Task" Command="{Binding RunMeasTaskCommand}"/>
             <MenuItem Header="Stop Meas Task" Command="{Binding StopMeasTaskCommand}"/>
             <MenuItem Header="Delete Meas Task" Command="{Binding DeleteMeasTaskCommand}"/>
 
-            <MenuItem Header="Refersh Sensors" Command="{Binding RefreshShortSensorsCommand}"/>
+            <MenuItem Header="Refresh Sensors" Command="{Binding RefreshShortSensorsCommand}"/>
             <MenuItem Header="Show/Hide Meas Task Detail" Command="{Binding ShowHideMeasTaskDetailCommand}"/>
             <MenuItem Header="Show/Hide Meas Results Detail" Command="{Binding ShowHideMeasResultsDetailCommand}"/>
-            <MenuItem Header="Meas. result" Command="{Binding MeasResultCommand}"/>
+            <MenuItem Header="Meas Results" Command="{Binding MeasResultCommand}"/>
         </Menu>
         
         <StatusBar DockPanel.Dock="Bottom">
@@ -324,7 +324,7 @@
                                           <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of spectrums scan"  />
                                           <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasOtherTypeSpectrumScan}"  IsReadOnly="True"/>
                                     
-                                          <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "TypeMeasurements"  />
+                                          <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Type of Measurement"  />
                                           <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MeasDtParamTypeMeasurements}"  IsReadOnly="True"/>
                                        </Grid>
                                   </Expander>                              

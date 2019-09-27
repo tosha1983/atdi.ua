@@ -481,10 +481,11 @@
                             <Style TargetType="TextBox">
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsAutoMeasDtParamMeasTime}" Value="True">
-                                  <Setter  Property="IsEnabled" Value="False"/>
+                                  <!--<Setter Property="Text" Value=""/>-->
+                                  <Setter Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsAutoMeasDtParamMeasTime}" Value="False">
-                                  <Setter  Property="IsEnabled" Value="True"/>
+                                  <Setter Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
                                 <Trigger Property="Validation.HasError" Value="True">
                                   <Setter Property="ToolTip"
@@ -757,10 +758,10 @@
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             
-                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Using smoothing for analyze trace"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Using smoothing trace for analysis"/>
                             <CheckBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" IsChecked="{Binding Path=FiltrationTrace}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Coefficient Spectrum from Emission"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Spectrum coefficient from Emission"  />
                             <TextBox x:Name="windowBW" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="windowBW">
@@ -771,7 +772,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Margin for calculation Reference Levels, dB"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Margin for Reference Level calculation, dB"  />
                             <TextBox x:Name="AllowableExcess_dB" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="AllowableExcess_dB">
@@ -817,7 +818,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. of intersection of spectrums to combine emissions"  />
                             <TextBox x:Name="CrossingBWPercentageForGoodSignals" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="CrossingBWPercentageForGoodSignals">
@@ -828,7 +829,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. crossing spectrums for union of emissions (low level signals)"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. of intersection of spectrums to combine emissions (low level signals)"  />
                             <TextBox x:Name="CrossingBWPercentageForBadSignals" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="CrossingBWPercentageForBadSignals">
@@ -839,7 +840,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for estimation  BW"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for Bandwith estimation"  />
                             <TextBox x:Name="DiffLevelForCalcBW" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="DiffLevelForCalcBW">
@@ -850,7 +851,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Use correlation analysis"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Using correlation analysis"/>
                             <CheckBox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" IsChecked="{Binding Path=CorrelationAnalize}"/>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "Correlation coefficient"  />
@@ -886,7 +887,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "Maximum count scan in one day"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "The maximum number of scan per day"  />
                             <TextBox x:Name="SignalizationNCount" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="SignalizationNCount">
@@ -897,7 +898,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "Trace point count in channel"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "The number of points in the channel during scanning"  />
                             <TextBox x:Name="SignalizationNChenal" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="SignalizationNChenal">
@@ -948,7 +949,7 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analize just contravention of Reference Levels"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analysis only with contravention of Reference Level"/>
                             <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CompareTraceJustWithRefLevels}"/>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Automatic division of emissions"  />
@@ -987,7 +988,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Minimum points in emissions"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "The minimum number of points for finding emissions"  />
                             <TextBox x:Name="NumberPointForChangeExcess" Grid.Column="1" Grid.Row="3" >
                               <TextBox.Text>
                                 <Binding Path="NumberPointForChangeExcess">
@@ -998,10 +999,10 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Detailed Measurements BW of Emission"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Detailed measurements of the emission bandwith"  />
                             <CheckBox Grid.Column="1" Grid.Row="4" IsChecked="{Binding Path=DetailedMeasurementsBWEmission}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Max number points on spectrum for detail Meas BW"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "The minimum number of points a spectrum must contain in order not to measure bandwith"  />
                             <TextBox x:Name="MinPointForDetailBW" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MinPointForDetailBW}" >
                               <TextBox.Style>
                                 <Style TargetType="TextBox">
@@ -1042,7 +1043,7 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Channel Frequency Check"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Checking the frequency channel"  />
                             <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CheckFreqChannel}"/>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Maximum frequency deviation"  />
@@ -1078,7 +1079,7 @@
                               </TextBox.Text>                              
                             </TextBox>                            
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Check Level of Channel"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Checking level in the channel"  />
                             <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Path=CheckLevelChannel}"/>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Standard"  />
@@ -1109,10 +1110,10 @@
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListPerStop}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListTimeStart}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasTimeParamListTimeStop}" Value="False"/>
-                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamMeasTime}" Value="False"/>
+                              <!--<Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamMeasTime}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamRfAttenuation}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamPreamplification}" Value="False"/>
-                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamReferenceLevel}" Value="False"/>
+                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasDtParamReferenceLevel}" Value="False"/>-->
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasOtherSwNumber}" Value="False"/>
 
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MeasOtherLevelMinOccup}" Value="False"/>
@@ -1121,7 +1122,7 @@
 
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=windowBW}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=AllowableExcess_dB}" Value="False"/>
-                              <Condition Binding="{Binding Path=(Validation.HasError), ElementName=triggerLevel_dBm_Hz}" Value="False"/>
+                              <!--<Condition Binding="{Binding Path=(Validation.HasError), ElementName=triggerLevel_dBm_Hz}" Value="False"/>-->
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CrossingBWPercentageForGoodSignals}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CrossingBWPercentageForBadSignals}" Value="False"/>
                               <Condition Binding="{Binding Path=(Validation.HasError), ElementName=DiffLevelForCalcBW}" Value="False"/>

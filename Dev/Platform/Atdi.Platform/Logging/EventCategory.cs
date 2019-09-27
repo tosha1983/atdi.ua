@@ -8,7 +8,7 @@ namespace Atdi.Platform.Logging
 {
     public struct EventCategory : IEquatable<EventCategory>
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public EventCategory(string name)
         {

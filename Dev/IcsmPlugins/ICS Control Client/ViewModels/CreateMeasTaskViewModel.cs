@@ -22,6 +22,7 @@ using Atdi.Common;
 using System.Globalization;
 using System.IO;
 using System.ComponentModel;
+using INP = System.Windows.Input;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -30,13 +31,26 @@ namespace XICSM.ICSControlClient.ViewModels
         public CustomDataGridSensors()
         {
             this.SelectionChanged += CustomDataGrid_SelectionChanged;
+            this.MouseDoubleClick += DoubleClick;
         }
 
         void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.SelectedItemsList = this.SelectedItems;
         }
-        #region SelectedItemsList
+
+        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
+            foreach (ShortSensorViewModel item in this.SelectedItemsList)
+            {
+                var param = new OnlineMeasurementParameters();
+                var dlgForm = new FM.OnlineMeasurementForm(item, null);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+                return;
+            }
+        }
 
         public IList SelectedItemsList
         {
@@ -45,8 +59,6 @@ namespace XICSM.ICSControlClient.ViewModels
         }
 
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridSensors), new PropertyMetadata(null));
-
-        #endregion
     }
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
@@ -61,7 +73,6 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public FM.MeasTaskForm _measTaskForm;
         private ShortSensorDataAdatper _shortSensors;
-        private double? _FreqParam;
         private double? minFq = null;
         private double? maxFq = null;
 
@@ -98,12 +109,17 @@ namespace XICSM.ICSControlClient.ViewModels
                 RedrawMap();
             }
         }
-        //public double? FreqParam
+        //public bool IsAutoMeasDtParamMeasTimeProp
         //{
-        //    get => this._FreqParam;
-        //    set => this.Set(ref this._FreqParam, value);
+        //    get => this._currentMeasTask.IsAutoMeasDtParamMeasTime;
+        //    set 
+        //    {
+        //        this._currentMeasTask.IsAutoMeasDtParamMeasTime = value;
+        //        if (value)
+        //            this._currentMeasTask.MeasDtParamMeasTime = null;
+        //    }
         //}
-        
+
         #region Sources (Adapters)
         public ShortSensorDataAdatper ShortSensors => this._shortSensors;
 
@@ -280,17 +296,21 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
+                var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
+                var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
+
+                if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
+                    dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+                if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
+                    dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
+
+
                 if (!this.CurrentMeasTask.ValidateStateModel())
                     return;
 
-                if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
+                if (dateBg > dateEd)
                 {
                     MessageBox.Show("Date Stop should be great of the Date Start!");
-                    return;
-                }
-                if (this._currentMeasTask.MeasTimeParamListTimeStart > this._currentMeasTask.MeasTimeParamListTimeStop)
-                {
-                    MessageBox.Show("Time Stop should be great of the Time Start!");
                     return;
                 }
 
@@ -331,6 +351,8 @@ namespace XICSM.ICSControlClient.ViewModels
                                     frqList.Add(new SDR.MeasFreq() { Freq = freq });
                                 }
                                 measFreqParam.MeasFreqs = frqList.ToArray();
+                                measFreqParam.RgL = this._currentMeasTask.MeasFreqParamRgL;
+                                measFreqParam.RgU = this._currentMeasTask.MeasFreqParamRgU;
                             }
                         }
                         //else

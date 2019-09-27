@@ -65,7 +65,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.SelectedItemsList = this.SelectedItems;
             foreach (ShortSensorViewModel item in this.SelectedItemsList)
             {
-                var dlgForm = new FM.OnlineMeasurementForm(item);
+                var dlgForm = new FM.OnlineMeasurementForm(item, null);
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
                 return;
@@ -80,7 +80,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(ShortSensorsCustomDataGrid), new PropertyMetadata(null));
     }
 
-    public class ControlClientViewModel : WpfViewModelBase
+    public class ControlClientViewModel : WpfViewModelBase, IDisposable
     {
         public enum ModelType
         {
@@ -1635,6 +1635,17 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ShortSensorsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             MessageBox.Show($"ShortSensorsDataGrid_MouseDoubleClick: {e.ClickCount}");
+        }
+
+        public void Dispose()
+        {
+            this._dataStore.OnBeginInvoke -= _dataStore_OnBeginInvoke;
+            this._dataStore.OnEndInvoke -= _dataStore_OnEndInvoke;
+
+            _timer?.Dispose();
+            _waitForm?.Dispose();
+            _userActionTask?.Dispose();
+
         }
     }
 }
