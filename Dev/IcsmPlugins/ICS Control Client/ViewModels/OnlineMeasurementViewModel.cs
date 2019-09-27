@@ -61,6 +61,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
 
         private readonly SensorViewModel _sensor;
+        private readonly OnlineMeasurementParameters _param;
         private MP.MapDrawingData _sensorMapData;
         private OnlienrMeasParametersViewModel _measParameters;
         private OnlieneMeasBandwidthResult _measBandwidthResult;
@@ -80,9 +81,10 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private int _attempts = 20;
 
-        public OnlineMeasurementViewModel(ShortSensorViewModel sensor)
+        public OnlineMeasurementViewModel(ShortSensorViewModel sensor, OnlineMeasurementParameters param)
         {
             this._sensor = Mappers.Map(DataStore.GetStore().GetSensorById(sensor.Id));
+            this._param = param;
             this._sensorMapData = this.RebuildMapDataForSensor();
             this._measParameters = new OnlienrMeasParametersViewModel(this)
             {
@@ -103,6 +105,18 @@ namespace XICSM.ICSControlClient.ViewModels
                 X_Beta = 1,
                 MaximumIgnorPoint = 1
             };
+
+            if (param != null)
+            {
+                this._measParameters.DetectorType = param.DetectorType;
+                this._measParameters.SweepTime_s = param.SweepTime_s;
+                this._measParameters.Att_dB = param.Att_dB;
+                this._measParameters.PreAmp_dB = param.PreAmp_dB;
+                this._measParameters.RefLevel_dBm = param.RefLevel_dBm;
+                this._measParameters.FreqStart_MHz = param.FreqStart_MHz;
+                this._measParameters.FreqStop_MHz = param.FreqStop_MHz;
+            }
+
             this._measBandwidthResult = new OnlieneMeasBandwidthResult
             {
                 

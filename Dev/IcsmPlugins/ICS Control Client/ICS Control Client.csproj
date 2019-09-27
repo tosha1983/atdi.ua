@@ -236,6 +236,7 @@
     <Compile Include="Metadata\Employee.cs" />
     <Compile Include="Metadata\MobStationFrequencies.cs" />
     <Compile Include="Metadata\MobStations.cs" />
+    <Compile Include="Models\OnlineMeasurementParameters.cs" />
     <Compile Include="Models\Processes\BuildInspections\Inspection.cs" />
     <Compile Include="Models\Processes\BuildInspections\AllStation.cs" />
     <Compile Include="Models\Processes\BuildInspections\NfraApplication.cs" />

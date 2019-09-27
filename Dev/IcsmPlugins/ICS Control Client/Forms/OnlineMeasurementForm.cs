@@ -25,11 +25,12 @@ namespace XICSM.ICSControlClient.Forms
         private readonly ShortSensorViewModel _sensor;
         private ElementHost _wpfElementHost;
         private OnlineMeasurementViewModel _viewModel;
+        private OnlineMeasurementParameters _param;
 
-        public OnlineMeasurementForm(ShortSensorViewModel sensor)
+        public OnlineMeasurementForm(ShortSensorViewModel sensor, OnlineMeasurementParameters param)
         {
             this._sensor = sensor;
-            this._viewModel = new OnlineMeasurementViewModel(this._sensor);
+            this._viewModel = new OnlineMeasurementViewModel(this._sensor, this._param);
             InitializeComponent();
             this.Text = $"ICS Control Client - Online Measurement - Sensor ID #{sensor.Id} '{_sensor.Name}'";
         }

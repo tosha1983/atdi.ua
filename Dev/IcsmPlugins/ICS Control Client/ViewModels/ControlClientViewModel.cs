@@ -65,7 +65,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.SelectedItemsList = this.SelectedItems;
             foreach (ShortSensorViewModel item in this.SelectedItemsList)
             {
-                var dlgForm = new FM.OnlineMeasurementForm(item);
+                var dlgForm = new FM.OnlineMeasurementForm(item, null);
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
                 return;
