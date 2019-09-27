@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StatisticCounterRecord"
+  Title       = "Statistic Counter Record"
+  Desc        = "The counter record of statistic"
+  Type        = "Simple"
+  BaseEntity  = "Monitoring.StatisticCounter"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="ClrObject" Object="Service">
+    <Name>Atdi.Contracts.CoreServices.Monitoring.IStatisticCounters, Atdi.Contracts.CoreServices.Monitoring, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Name>
+  </DataSource>
+</Entity>

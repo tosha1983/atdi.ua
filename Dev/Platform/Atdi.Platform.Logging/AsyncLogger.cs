@@ -27,7 +27,10 @@ namespace Atdi.Platform.Logging
                     {
                         _consumer.Push(events);
                     }
-                    catch (Exception){ }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 });
             }
         }
@@ -94,7 +97,7 @@ namespace Atdi.Platform.Logging
                 var cancel = false;
                 while (!cancel)
                 {
-                    if (this._events.TryTake(out IEvent entry, 1000))
+                    if (this._events.TryTake(out var entry, 1000))
                     {
                         tookEntries.Add(entry);
                         cancel = tookEntries.Count >= 1000; // _taskCapacity;
@@ -141,6 +144,7 @@ namespace Atdi.Platform.Logging
             }
             catch (Exception)
             {
+                // ignored
             }
         }
 
@@ -242,6 +246,7 @@ namespace Atdi.Platform.Logging
                 @event.Data = ConvertEventData(data);
             }
             this.WriteEvent(@event);
+            _statistics.Increment(EventCriticalsCounter);
         }
 
         public void Debug(EventContext context, EventCategory category, EventText eventText, string source, IReadOnlyDictionary<string, object> data)

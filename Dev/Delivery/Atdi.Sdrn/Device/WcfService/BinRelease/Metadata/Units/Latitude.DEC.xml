@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Unit Name="Latitude.DEC"
+xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <Dimension>DEC</Dimension>
+  <Category>Latitude</Category>
+</Unit>
