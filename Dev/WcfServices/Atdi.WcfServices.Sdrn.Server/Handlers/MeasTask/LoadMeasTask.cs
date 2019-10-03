@@ -508,6 +508,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasDtParam.Select(c => c.Preamplification);
                         builderMeasDtParam.Select(c => c.Rbw);
                         builderMeasDtParam.Select(c => c.Rfattenuation);
+                        builderMeasDtParam.Select(c => c.ReferenceLevel);
+                        builderMeasDtParam.Select(c => c.NumberTotalScan);
                         builderMeasDtParam.Select(c => c.Vbw);
                         builderMeasDtParam.Select(c => c.SwNumber);
                         builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
@@ -521,6 +523,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
                                     dtx.DetectType = detectType;
 
+                                dtx.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
+                                dtx.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
                                 dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
                                 dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
                                 MeasurementMode mode;
@@ -901,6 +905,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasDtParam.Select(c => c.Rfattenuation);
                         builderMeasDtParam.Select(c => c.Vbw);
                         builderMeasDtParam.Select(c => c.SwNumber);
+                        builderMeasDtParam.Select(c => c.ReferenceLevel);
+                        builderMeasDtParam.Select(c => c.NumberTotalScan);
                         builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
                         {
@@ -912,6 +918,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
                                     dtx.DetectType = detectType;
 
+                                dtx.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
+                                dtx.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
                                 dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
                                 dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
                                 MeasurementMode mode;
