@@ -541,7 +541,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         });
 
                         
-                        measTask.MeasDtParam = new MeasDtParam();
+                        //measTask.MeasDtParam = new MeasDtParam();
                         MeasurementType typeMeasurements;
                         if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
                         {
@@ -930,7 +930,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             return true;
                         });
                         
-                         measTask.MeasDtParam = new MeasDtParam();
+                         //measTask.MeasDtParam = new MeasDtParam();
                          MeasurementType typeMeasurements;
                          if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
                          {
