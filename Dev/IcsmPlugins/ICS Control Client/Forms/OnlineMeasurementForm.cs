@@ -30,6 +30,7 @@ namespace XICSM.ICSControlClient.Forms
         public OnlineMeasurementForm(ShortSensorViewModel sensor, OnlineMeasurementParameters param)
         {
             this._sensor = sensor;
+            this._param = param;
             this._viewModel = new OnlineMeasurementViewModel(this._sensor, this._param);
             InitializeComponent();
             this.Text = $"ICS Control Client - Online Measurement - Sensor ID #{sensor.Id} '{_sensor.Name}'";
