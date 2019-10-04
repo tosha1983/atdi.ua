@@ -295,7 +295,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 param.PreAmp_dB = this.CurrentMeasTask.MeasDtParamPreamplification;
 
             if (!this.CurrentMeasTask.IsAutoMeasDtParamReferenceLevel)
-                param.RefLevel_dBm = this.CurrentMeasTask.MeasDtParamReferenceLevel;
+                param.RefLevel_dBm = (int?)this.CurrentMeasTask.MeasDtParamReferenceLevel;
 
             param.DetectorType = (Enum.TryParse<DetectorType>(this.CurrentMeasTask.MeasDtParamDetectType.ToString(), out DetectorType outResType)) ? outResType : DetectorType.MaxPeak;
 
@@ -311,10 +311,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
 
                 if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
-                    dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+                    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
                 if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
-                    dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
-
+                    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
                 if (!this.CurrentMeasTask.ValidateStateModel())
                     return;
@@ -323,6 +322,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     MessageBox.Show("Date Stop should be great of the Date Start!");
                     return;
+                }
+
+                if (this.CurrentMeasTask.MinPointForDetailBW.HasValue && this.CurrentMeasTask.SignalizationNChenal.HasValue && (this.CurrentMeasTask.MinPointForDetailBW.Value < this.CurrentMeasTask.SignalizationNChenal.Value || this.CurrentMeasTask.MinPointForDetailBW.Value > 5000))
+                {
+                    MessageBox.Show("The value “The minimum number of points a spectrum must contain in order not to measure bandwith” must be in the range from " + this.CurrentMeasTask.SignalizationNChenal.Value + " to 5000!");
+                    return;
+
                 }
 
                 if (this._currentShortSensor == null)
@@ -410,7 +416,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id);
                             SDR.SensorLocation sensorLocation = null;
-                            if (svcSensor.Locations != null)
+                            if (svcSensor.Locations != null && svcSensor.Locations.Length > 0)
                                 sensorLocation = svcSensor.Locations[svcSensor.Locations.Length - 1];
 
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))

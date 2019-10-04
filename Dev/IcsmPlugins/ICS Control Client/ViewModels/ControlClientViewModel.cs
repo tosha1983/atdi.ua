@@ -23,6 +23,11 @@ using XICSM.ICSControlClient.Models;
 using System.Timers;
 using XICSM.ICSControlClient.Forms;
 using System.Windows.Input;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Configuration;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -153,6 +158,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #region Commands
         public WpfCommand GetCSVCommand { get; set; }
+        public WpfCommand GetSOCSVCommand { get; set; }
         public WpfCommand SearchStationCommand { get; set; }
         public WpfCommand PrevSpecCommand { get; set; }
         public WpfCommand NextSpecCommand { get; set; }
@@ -207,6 +213,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentChartOption = this.GetDefaultChartOption();
 
             this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
+            this.GetSOCSVCommand = new WpfCommand(this.OnGetSOCSVCommand);
             this.SearchStationCommand = new WpfCommand(this.OnSearchStationCommand);
             this.PrevSpecCommand = new WpfCommand(this.OnPrevSpecCommand);
             this.NextSpecCommand = new WpfCommand(this.OnNextSpecCommand);
@@ -767,6 +774,78 @@ namespace XICSM.ICSControlClient.ViewModels
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
                 this.ReloadShortMeasTasks();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        } 
+        private void OnGetSOCSVCommand(object parameter)
+        {
+            try
+            {
+                using (var wc = new HttpClient())
+                {
+                    {
+                        var appSettings = ConfigurationManager.AppSettings;
+                        string endpointUrls = appSettings["SrdnServerRestEndpoint"] ;
+
+                        if (string.IsNullOrEmpty(endpointUrls))
+                        {
+                            MessageBox.Show("Undefined value for SrdnServerRestEndpoint in file ICSM3.exe.config.");
+                            return;
+                        }
+
+                        if (this._currentMeasurementResults == null)
+                            return;
+
+                        var response = wc.GetAsync(endpointUrls + "api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/ResLevels?select=RES_MEAS.Id,FreqMeas,OccupancySpect,VMinLvl,VMMaxLvl,RES_MEAS.StartTime,RES_MEAS.StopTime,RES_MEAS.ScansNumber&filter=(RES_MEAS.Id eq " + this._currentMeasurementResults.MeasSdrResultsId + ")").Result;
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = "FS_Meas_Res_" + this._currentMeasurementResults.MeasSdrResultsId + ".csv" };
+                            if (sfd.ShowDialog() == FRM.DialogResult.OK)
+                            {
+                                //MessageBox.Show("Data will be exported and you will be notified when it is ready.");
+                                if (File.Exists(sfd.FileName))
+                                {
+                                    try
+                                    {
+                                        File.Delete(sfd.FileName);
+                                    }
+                                    catch (IOException ex)
+                                    {
+                                        MessageBox.Show("It wasn't possible to write the data to the disk." + ex.Message);
+                                    }
+                                }
+
+                                var output = new List<string>();
+                                output.Add("FREQ_MEAS;OCCUPANCY_SPECT;VMIN_LVL;VMAX_LVL;START_TIME;STOP_TIME;SCANS_NUMBER");
+
+                                var dicFields = new Dictionary<string, int>();
+                                var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+                                foreach (var field in data.Fields)
+                                    dicFields[field.Path] = field.Index;
+
+                                foreach (object[] record in data.Records)
+                                {
+                                    var FREQ_MEAS = (double)record[dicFields["FreqMeas"]];
+                                    var OCCUPANCY_SPECT = (double)record[dicFields["OccupancySpect"]];
+                                    var VMIN_LVL = (double)record[dicFields["VMinLvl"]];
+                                    var VMAX_LVL = (double)record[dicFields["VMMaxLvl"]];
+                                    var START_TIME = (DateTime)record[dicFields["RES_MEAS.StartTime"]];
+                                    var STOP_TIME = (DateTime)record[dicFields["RES_MEAS.StopTime"]];
+                                    var SCANS_NUMBER = Convert.ToInt32(record[dicFields["RES_MEAS.ScansNumber"]]);
+                                    output.Add($"{FREQ_MEAS};{OCCUPANCY_SPECT};{VMIN_LVL};{VMAX_LVL};{START_TIME};{STOP_TIME};{SCANS_NUMBER}");
+                                }
+
+                                System.IO.File.WriteAllLines(sfd.FileName, output.ToArray(), System.Text.Encoding.UTF8);
+                                MessageBox.Show("Your file was generated and its ready for use.");
+                            }
+                        }
+                    }
+                }
+
             }
             catch (Exception e)
             {

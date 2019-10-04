@@ -56,6 +56,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private Visibility _resFreq2Visibility = Visibility.Hidden;
         private Visibility _resIdStationVisibility = Visibility.Hidden;
         private Visibility _resSpecVisibility = Visibility.Hidden;
+        private Visibility _resTimeMeasVisibility = Visibility.Hidden;
         private Visibility _resLevelMes1Visibility = Visibility.Hidden;
         #endregion
 
@@ -184,6 +185,11 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._resSpecVisibility;
             set => this.Set(ref this._resSpecVisibility, value);
         }
+        public Visibility ResTimeMeasVisibility
+        {
+            get => this._resTimeMeasVisibility;
+            set => this.Set(ref this._resTimeMeasVisibility, value);
+        }
         public Visibility ResLevelMes1Visibility
         {
             get => this._resLevelMes1Visibility;
@@ -215,6 +221,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResFreq2Visibility = Visibility.Visible;
                 this.ResIdStationVisibility = Visibility.Visible;
                 this.ResSpecVisibility = Visibility.Visible;
+                this.ResTimeMeasVisibility = Visibility.Visible;
                 this.ResLevelMes1Visibility = Visibility.Visible;
             }
             else if (this._measDtParamTypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
@@ -223,6 +230,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResFreq2Visibility = Visibility.Collapsed;
                 this.ResIdStationVisibility = Visibility.Collapsed;
                 this.ResSpecVisibility = Visibility.Collapsed;
+                this.ResTimeMeasVisibility = Visibility.Visible;
                 this.ResLevelMes1Visibility = Visibility.Collapsed;
             }
             else if (this._measDtParamTypeMeasurements == SDR.MeasurementType.Level)
@@ -231,6 +239,16 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResFreq2Visibility = Visibility.Collapsed;
                 this.ResIdStationVisibility = Visibility.Collapsed;
                 this.ResSpecVisibility = Visibility.Collapsed;
+                this.ResTimeMeasVisibility = Visibility.Visible;
+                this.ResLevelMes1Visibility = Visibility.Collapsed;
+            }
+            else if (this._measDtParamTypeMeasurements == SDR.MeasurementType.Signaling)
+            {
+                this.ResFreq1Visibility = Visibility.Visible;
+                this.ResFreq2Visibility = Visibility.Collapsed;
+                this.ResIdStationVisibility = Visibility.Collapsed;
+                this.ResSpecVisibility = Visibility.Collapsed;
+                this.ResTimeMeasVisibility = Visibility.Collapsed;
                 this.ResLevelMes1Visibility = Visibility.Collapsed;
             }
             else
@@ -239,6 +257,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResFreq2Visibility = Visibility.Visible;
                 this.ResIdStationVisibility = Visibility.Visible;
                 this.ResSpecVisibility = Visibility.Visible;
+                this.ResTimeMeasVisibility = Visibility.Visible;
                 this.ResLevelMes1Visibility = Visibility.Visible;
             }
 
