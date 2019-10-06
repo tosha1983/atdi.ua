@@ -25,6 +25,7 @@ namespace Atdi.Test.Platform
 
                     var logger = resolver.Resolve<ILogger>();
                     
+                    //var calc = new CalclCrowed(logger);
                     // DataLayerTest.Run(resolver);
                     // EntityOrmTest.Run(resolver);
 

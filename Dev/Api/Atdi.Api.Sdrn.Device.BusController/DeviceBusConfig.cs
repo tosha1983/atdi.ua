@@ -2,73 +2,116 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Atdi.Modules.Sdrn.DeviceBus;
 
 namespace Atdi.Api.Sdrn.Device.BusController
 {
-    internal class EnvironmentDescriptor
+    
+
+    internal sealed class BusBufferConfig 
+    {
+        public BusBufferConfig()
+        {
+            this.Type = BufferType.None;
+        }
+
+        public BufferType Type { get; set; }
+
+        public string OutboxFolder { get; set; }
+
+        public string ConnectionString { get; set; }
+
+        public ContentType ContentType { get; set; }
+
+        public override string ToString()
+        {
+            return $"Type = '{Type}', ContentType = '{ContentType}', OutboxFolder = '{OutboxFolder}'";
+        }
+    }
+
+    internal class DeviceBusConfig
     {
         private string  _messagesBindingsValue;
-        internal EnvironmentDescriptor(IBusGateConfig gateConfig)
+
+        internal DeviceBusConfig(IBusGateConfig gateConfig)
         {
             this.GateConfig = gateConfig;
+            this.BufferConfig = new BusBufferConfig();
         }
 
         public IBusGateConfig GateConfig { get; private set; }
 
-        public string RabbitMQHost { get; set; }
-        public string RabbitMQPort { get; set; }
-        public string RabbitMQVirtualHost { get; set; }
-        public string RabbitMQUser { get; set; }
-        public string RabbitMQPassword { get; set; }
+        public string RabbitMqHost { get; set; }
+
+        public int? RabbitMqPort { get; set; }
+
+        public string RabbitMqVirtualHost { get; set; }
+
+        public string RabbitMqUser { get; set; }
+
+        public string RabbitMqPassword { get; set; }
+
         public string SdrnApiVersion { get; set; }
+
         public string SdrnServerInstance { get; set; }
+
         public string SdrnServerQueueNamePart { get; set; }
+
         public string SdrnDeviceSensorName { get; set; }
+
         public string SdrnDeviceSensorTechId { get; set; }
+
         public string SdrnDeviceExchange { get; set; }
+
         public string SdrnDeviceQueueNamePart { get; set; }
 
         public bool SdrnMessageConvertorUseEncryption { get; set; }
+
         public bool SdrnMessageConvertorUseCompression { get; set; }
+
+        public ContentType DeviceBusContentType { get; set; }
+
+        public string DeviceBusSharedSecretKey { get; set; }
+
+        public string DeviceBusClient { get; set; }
+
+        public string DeviceBusProtocol { get; set; } = "DeviceBus 3.0";
 
         public string SdrnDeviceMessagesBindings
         {
-            get
-            {
-                return this._messagesBindingsValue;
-            }
+            get => this._messagesBindingsValue;
             set
             {
                 this._messagesBindingsValue = value;
 
-                var bindings = new Dictionary<string, MessagesBindingDecriptor>();
+                var bindings = new Dictionary<string, MessagesBindingDescriptor>();
 
                 if (!string.IsNullOrEmpty(this._messagesBindingsValue))
                 {
-                    var bindingParts = this._messagesBindingsValue.Split(new string[] { "; ", ";" }, StringSplitOptions.RemoveEmptyEntries);
+                    var bindingParts = this._messagesBindingsValue.Split(new[] { "; ", ";" }, StringSplitOptions.RemoveEmptyEntries);
                     if (bindingParts.Length > 0)
                     {
-                        bindings = bindingParts.Select(es => new MessagesBindingDecriptor(es)).ToDictionary(k => k.MessageType, v => v);
+                        bindings = bindingParts.Select(es => new MessagesBindingDescriptor(es)).ToDictionary(k => k.MessageType, v => v);
                     }
                 }
                 this.MessagesBindings = bindings;
             }
         }
 
-        public IDictionary<string, MessagesBindingDecriptor> MessagesBindings { get; set; }
+        public IDictionary<string, MessagesBindingDescriptor> MessagesBindings { get; private set; }
 
+        public BusBufferConfig BufferConfig { get; }
 
         public override string ToString()
         {
-            return $"{this.SdrnApiVersion}: {this.SdrnDeviceSensorName} <=({this.RabbitMQHost}({this.RabbitMQVirtualHost}))=> {this.SdrnServerInstance}";
+            return $"Client='{this.DeviceBusClient}', Protocol='{DeviceBusProtocol}', ContentType={this.DeviceBusContentType}, Buffer={this.BufferConfig?.Type}, SdrnServer='{this.SdrnServerInstance}'";
         }
 
         public string BuildDeviceExchangeName()
         {
             return $"{this.SdrnDeviceExchange}.[v{this.SdrnApiVersion}]";
         }
+
         //ServerQueueName
         public string BuildServerQueueName(string routingKey)
         {
@@ -95,5 +138,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             return $"[{this.SdrnServerInstance}].[{context}]";
         }
+
+       
     }
 }

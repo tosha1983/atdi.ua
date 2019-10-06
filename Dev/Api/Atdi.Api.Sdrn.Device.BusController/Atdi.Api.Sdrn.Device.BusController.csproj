@@ -32,15 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -52,12 +43,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionMessageHandler.cs" />
+    <Compile Include="AmqpDeliveryHandler.cs" />
+    <Compile Include="AmqpPublisher.cs" />
     <Compile Include="BusEvent.cs" />
     <Compile Include="BusEvents.cs" />
     <Compile Include="BusGate.cs" />
     <Compile Include="BusGateConfig.cs" />
     <Compile Include="BusGateFactory.cs" />
     <Compile Include="BusLogger.cs" />
+    <Compile Include="FileSystemBufferProcessing.cs" />
+    <Compile Include="IBufferProcessing.cs" />
     <Compile Include="IMessageResult.cs" />
     <Compile Include="MessageDispatcher.cs" />
     <Compile Include="MessageHandlerDescriptor.cs" />
@@ -65,8 +60,8 @@
     <Compile Include="MessageResult.cs" />
     <Compile Include="MessageToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EnvironmentDescriptor.cs" />
-    <Compile Include="MessagesBindingDecriptor.cs" />
+    <Compile Include="DeviceBusConfig.cs" />
+    <Compile Include="MessagesBindingDescriptor.cs" />
     <Compile Include="QueueConsumer.cs" />
     <Compile Include="QueueDescriptor.cs" />
     <Compile Include="RabbitMQBus.cs" />
@@ -77,6 +72,10 @@
       <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
       <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Atdi.Modules.AmqpBroker\Atdi.Modules.AmqpBroker.csproj">
+      <Project>{714f342f-3838-4088-80e5-a54c4173b0ea}</Project>
+      <Name>Atdi.Modules.AmqpBroker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Atdi.Modules.Licensing\Atdi.Modules.Licensing.csproj">
       <Project>{829d7ff8-518c-4844-b3e0-dc8ffe091775}</Project>
       <Name>Atdi.Modules.Licensing</Name>
@@ -85,9 +84,6 @@
       <Project>{b44eaf91-883a-4bb5-b9e8-fea420afcca3}</Project>
       <Name>Atdi.Modules.Sdrn.MessageBus</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 var gate = gateFactory.CreateGate(gateTag, gateConfig, busEventObserver);
                 this.Container.RegisterInstance<IBusGate>(gate, ServiceLifetime.Singleton);
 
-                Logger.Verbouse(Contexts.ThisComponent, Categories.Initilazing, Events.GateFactoryWasCreated.With(gateTag));
+                Logger.Verbouse(Contexts.ThisComponent, Categories.Initilazing, Events.GateWasCreated.With(gateTag));
             }
             catch(Exception e)
             {
@@ -281,6 +281,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             gateConfig[ConfigParams.SdrnDeviceMessagesBindings] = this.Config.GetParameterAsString(ConfigParams.SdrnDeviceMessagesBindings);
             gateConfig[ConfigParams.SdrnMessageConvertorUseEncryption] = this.Config.GetParameterAsString(ConfigParams.SdrnMessageConvertorUseEncryption);
             gateConfig[ConfigParams.SdrnMessageConvertorUseCompression] = this.Config.GetParameterAsString(ConfigParams.SdrnMessageConvertorUseCompression);
+
+            gateConfig[ConfigParams.DeviceBusBufferContentType] = this.Config.GetParameterAsString(ConfigParams.DeviceBusBufferContentType);
+            gateConfig[ConfigParams.DeviceBusBufferOutboxFolder] = this.Config.GetParameterAsString(ConfigParams.DeviceBusBufferOutboxFolder);
+            gateConfig[ConfigParams.DeviceBusContentType] = this.Config.GetParameterAsString(ConfigParams.DeviceBusContentType);
+            gateConfig[ConfigParams.DeviceBusUseBuffer] = this.Config.GetParameterAsString(ConfigParams.DeviceBusUseBuffer);
+            gateConfig[ConfigParams.DeviceBusSharedSecretKey] = this.Config.GetParameterAsString(ConfigParams.DeviceBusSharedSecretKey);
+
+            gateConfig[ConfigParams.DeviceBusClient] =
+                "DeviceServer: " + Assembly.GetAssembly(this.GetType()).GetName().Version;
 
             return gateConfig;
         }

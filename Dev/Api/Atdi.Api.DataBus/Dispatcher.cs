@@ -157,10 +157,10 @@ namespace Atdi.Api.DataBus
                     if (this.TryToEstablishChannel(out Channel channel))
                     {
                         var exchangeName = $"E.DataBus.[{_config.Name}].Common.[v{_config.ApiVersion}]";
-                        if (this.TryDeclareExchenge(channel, exchangeName))
+                        if (this.TryDeclareExchange(channel, exchangeName))
                         {
                             var localExchangeName = $"E.DataBus.[{_config.Name}].Local.[{_config.Address}].[v{_config.ApiVersion}]";
-                            if (this.TryDeclareExchenge(channel, localExchangeName))
+                            if (this.TryDeclareExchange(channel, localExchangeName))
                             {
                                 var rejectedQueueName = $"Q.DataBus.[{_config.Name}].[{_config.Address}].Rejected.[v{_config.ApiVersion}]";
                                 if (this.TryDeclareQueue(channel, rejectedQueueName, "RK.[Rejected]", localExchangeName))
@@ -183,17 +183,19 @@ namespace Atdi.Api.DataBus
                             }
                             else
                             {
-                                this._logger.Error(0, BusContexts.ConsumerProcessing, $"The local exchenge of the Data Hub is not established: {_amqpConfig}", this);
+                                this._logger.Error(0, BusContexts.ConsumerProcessing, $"The local exchange of the Data Hub is not established: {_amqpConfig}", this);
                             }
                         }
                         else
                         {
-                            this._logger.Error(0, BusContexts.ConsumerProcessing, $"The common exchenge of the Data Hub is not established: {_amqpConfig}", this);
+                            this._logger.Error(0, BusContexts.ConsumerProcessing, $"The common exchange of the Data Hub is not established: {_amqpConfig}", this);
                         }
+
+                        channel?.Dispose();
                     }
                     else
                     {
-                        channel.Dispose();
+                        channel?.Dispose();
                         this._logger.Error(0, BusContexts.ConsumerProcessing, $"The channel of the Data Hub is not established: {_amqpConfig}", this);
                     }
                 }
@@ -254,17 +256,17 @@ namespace Atdi.Api.DataBus
             var state = this._amqpConnection.IsOpen;
             return state;
         }
-        private bool TryDeclareExchenge(Channel channel, string exchegeName)
+        private bool TryDeclareExchange(Channel channel, string exchangeName)
         {
             var result = false;
             try
             {
-                channel.DeclareDurableDirectExchange(exchegeName);
+                channel.DeclareDurableDirectExchange(exchangeName);
                 result = true;
             }
             catch (Exception e)
             {
-                this._logger.Exception(BusContexts.ConsumerProcessing, $"An error occurred during the configuration of the Data Bus: Declaring Exchange = '{exchegeName}'", e, this);
+                this._logger.Exception(BusContexts.ConsumerProcessing, $"An error occurred during the configuration of the Data Bus: Declaring Exchange = '{exchangeName}'", e, this);
                 result = false;
             }
             return result;

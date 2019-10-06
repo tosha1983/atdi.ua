@@ -177,6 +177,15 @@ namespace Atdi.Test.Platform
         ServerRole ISdrnServerEnvironment.ServerRoles => throw new NotImplementedException();
 
         string ISdrnServerEnvironment.MasterServerInstance => throw new NotImplementedException();
+        public string GetSharedSecretKey(string context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddSharedSecretKey(string context, string key)
+        {
+            throw new NotImplementedException();
+        }
     }
     class LoggerFake : ILogger
     {

@@ -11,5 +11,7 @@ namespace Atdi.Contracts.Sdrn.Server
         void AddServerRole(ServerRole serverRole);
 
         string MasterServerInstance { get; set; }
+
+        void AddSharedSecretKey(string context, string key);
     }
 }

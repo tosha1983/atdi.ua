@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RBC = RabbitMQ.Client;
 using RBE = RabbitMQ.Client.Events;
 
@@ -51,12 +46,20 @@ namespace Atdi.Modules.AmqpBroker
             this.EstablishConnection();
         }
 
-        internal ConnectionConfig Config { get => _config;  }
-        internal RBC.IConnection RealConnection { get => _connection; }
+        internal ConnectionConfig Config => _config;
 
         public Channel CreateChannel()
         {
             return new Channel(this, _logger);
+        }
+
+        public RBC.IModel CreateAmqpChannel()
+        {
+            if (_connection == null)
+            {
+                throw new InvalidOperationException($"The connection is not opened: {_config}");
+            }
+            return _connection.CreateModel();
         }
 
         public bool IsOpen
@@ -71,7 +74,23 @@ namespace Atdi.Modules.AmqpBroker
             }
         }
 
-        public void EstablishConnection()
+        public override string ToString()
+        {
+            if (IsOpen)
+            {
+                try
+                {
+                    return $"{_config}, Opened={this.IsOpen} LocalPort=#{_connection?.LocalPort}, RemotePort=#{_connection?.RemotePort}";
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+            return $"{_config}, Opened={this.IsOpen}";
+        }
+
+        private void EstablishConnection()
         {
             if (this._connection != null)
             {
@@ -85,6 +104,7 @@ namespace Atdi.Modules.AmqpBroker
             try
             {
                 this._connection = this._connectionFactory.CreateConnection(_config.ConnectionName);
+
                 this._connection.ConnectionRecoveryError += _connection_ConnectionRecoveryError;
                 this._connection.CallbackException += _connection_CallbackException;
                 this._connection.ConnectionShutdown += _connection_ConnectionShutdown;
@@ -92,45 +112,45 @@ namespace Atdi.Modules.AmqpBroker
                 this._connection.ConnectionBlocked += _connection_ConnectionBlocked;
                 this._connection.ConnectionUnblocked += _connection_ConnectionUnblocked;
 
-                this._logger.Verbouse("RabbitMQ.EstablishConnection", $"The connection '{this._config.ConnectionName}' is established successfully", this);
+                this._logger.Info("AmqpBroker.ConnectionEstablishment", $"The connection is established successfully: {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.EstablishConnectionException, "RabbitMQ.EstablishConnection", e, this);
-                throw new InvalidOperationException($"The connection '{this._config.ConnectionName}' to RabbitMQ is not established", e);
+                this._logger.Exception(BrokerEvents.EstablishConnectionException, "AmqpBroker.ConnectionEstablishment", e, this);
+                throw new InvalidOperationException($"The connection is not established: {_config}", e);
             }
         }
 
         private void _connection_ConnectionUnblocked(object sender, EventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ConnectionUnblocked", $"The connection '{this._config.ConnectionName}' is unblocked", this);
+            this._logger.Verbouse("AmqpBroker.ConnectionUnblocked", $"The connection is unblocked: {this}", this);
         }
 
         private void _connection_ConnectionBlocked(object sender, RBE.ConnectionBlockedEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ConnectionBlocked", $"The connection '{this._config.ConnectionName}' is blocked", this);
+            this._logger.Verbouse("AmqpBroker.ConnectionBlocked", $"The connection is blocked: {this}", this);
         }
 
         private void _connection_ConnectionRecoveryError(object sender, RBE.ConnectionRecoveryErrorEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ConnectionRecoveryError", $"The exception is occurred: Connection: '{this._config.ConnectionName}', Message: '{e.Exception.Message}'", this);
-            this._logger.Exception(BrokerEvents.ExceptionEvent, "RabbitMQ.ConnectionRecoveryError", e.Exception, this);
+            this._logger.Verbouse("AmqpBroker.ConnectionRecoveryError", $"The exception is occurred: {this}, Message = '{e.Exception.Message}'", this);
+            this._logger.Exception(BrokerEvents.ExceptionEvent, "AmqpBroker.ConnectionRecoveryError", e.Exception, this);
         }
 
         private void _connection_CallbackException(object sender, RBE.CallbackExceptionEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.CallbackException", $"The exception is occurred: Connection: '{this._config.ConnectionName}', Message: '{e.Exception.Message}'", this);
-            this._logger.Exception(BrokerEvents.ExceptionEvent, "RabbitMQ.CallbackException", e.Exception, this);
+            this._logger.Verbouse("AmqpBroker.CallbackException", $"The exception is occurred: {_config}, Message = '{e.Exception.Message}'", this);
+            this._logger.Exception(BrokerEvents.ExceptionEvent, "AmqpBroker.CallbackException", e.Exception, this);
         }
 
         private void _connection_RecoverySucceeded(object sender, EventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.RecoveryConnection", $"The connection '{this._config.ConnectionName}' is recovered successfully", this);
+            this._logger.Info("AmqpBroker.ConnectionRecovery", $"The connection is recovered successfully: {this}", this);
         }
 
         private void _connection_ConnectionShutdown(object sender, RBC.ShutdownEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ShutdownConnection", $"The connection '{this._config.ConnectionName}' is shutted down: Initiator: '{e.Initiator}', Reasone: '{e.ReplyText}', Code: #{e.ReplyCode}", this);
+            this._logger.Info("AmqpBroker.ConnectionShutdown", $"The connection is shutdown: Initiator='{e.Initiator}', Reason='{e.ReplyText}', Code=#{e.ReplyCode}, {this}", this);
         }
 
         private void CloseConnection(string reason)
@@ -142,10 +162,11 @@ namespace Atdi.Modules.AmqpBroker
                     try
                     {
                         this._connection.Close(200, reason);
+                        this._logger.Info("AmqpBroker.ConnectionClosing", $"The connection is closed successfully: {this}", this);
                     }
                     catch (Exception e)
                     {
-                        this._logger.Exception(BrokerEvents.CloseConnectionException, "RabbitMQ.CloseConnection", e, this);
+                        this._logger.Exception(BrokerEvents.CloseConnectionException, "AmqpBroker.ConnectionClosing", e, this);
                     }
                 }
             }
@@ -157,11 +178,19 @@ namespace Atdi.Modules.AmqpBroker
             {
                 try
                 {
+                    this._connection.ConnectionRecoveryError -= _connection_ConnectionRecoveryError;
+                    this._connection.CallbackException -= _connection_CallbackException;
+                    this._connection.ConnectionShutdown -= _connection_ConnectionShutdown;
+                    this._connection.RecoverySucceeded -= _connection_RecoverySucceeded;
+                    this._connection.ConnectionBlocked -= _connection_ConnectionBlocked;
+                    this._connection.ConnectionUnblocked -= _connection_ConnectionUnblocked;
                     this._connection.Dispose();
+
+                    this._logger.Verbouse("AmqpBroker.ConnectionDisposing", $"The connection is disposed successfully: {_config}", this);
                 }
                 catch (Exception e)
                 {
-                    this._logger.Exception(BrokerEvents.DisposeConnectionException, "RabbitMQ.DisposeConnection", e, this);
+                    this._logger.Exception(BrokerEvents.DisposeConnectionException, "AmqpBroker.ConnectionDisposing", e, this);
                 }
                 this._connection = null;
             }

@@ -34,6 +34,7 @@ namespace Atdi.Api.EventSystem
             
             this._observer = observer;
             this._tag = $"[@{_eventName}].[#{_subscriberName}]";
+           
 
             var subscriberInterface = _subscriberType.GetInterface(SubscriberInterfaceType.FullName);
             this._subscriberEventType = subscriberInterface.GenericTypeArguments[0];
@@ -43,7 +44,7 @@ namespace Atdi.Api.EventSystem
 
         public void Join()
         {
-            _channel.JoinConsumer(_sysConfig.BuildEventQueueName(_eventName, _subscriberName), _tag, this);
+            _channel.AttachConsumer(_sysConfig.BuildEventQueueName(_eventName, _subscriberName), _tag, this);
         }
 
         public void Dispose()
@@ -52,7 +53,7 @@ namespace Atdi.Api.EventSystem
             {
                 try
                 {
-                    _channel.UnjoinConsumer(_tag);
+                    _channel.DetachConsumer(_tag);
                 }
                 catch (Exception e)
                 {
@@ -97,7 +98,8 @@ namespace Atdi.Api.EventSystem
         }
         public HandlingResult Handle(IDeliveryMessage message, IDeliveryContext deliveryContext)
         {
-            this._observer.Verbouse("EventSystem.EventDeliveryHandling", $"The event notification is received: {message.CorrelationId}, DeliveryTag='{deliveryContext.DeliveryTag}', RoutingKey='{deliveryContext.RoutingKey},' ConsumerTag='{deliveryContext.ConsumerTag}', Exchange='{deliveryContext.Exchange}'", this);
+            this._observer.Verbouse("EventSystem.EventHandling", $"The event notification is received: {message.CorrelationId}, {deliveryContext}", this);
+
             var innerProcess = "Verify";
             try
             {
@@ -134,7 +136,7 @@ namespace Atdi.Api.EventSystem
             }
             catch(Exception e)
             {
-                _observer.Exception(EventSystemEvents.ExceptionEvent, "EventSystem.EventDeliveryHandling", e, this);
+                _observer.Exception(EventSystemEvents.ExceptionEvent, "EventSystem.EventHandling", e, this);
                 message.CorrelationId = message.Id;
 
                 message.Headers["Message.Id"] = message.Id;
@@ -154,8 +156,8 @@ namespace Atdi.Api.EventSystem
                 message.Headers["Subscriber.ExpectedEvent"] = _eventName;
                 message.Headers["Subscriber.Tag"] = _tag;
 
-                message.Headers["Excepation.Message"] = e.Message;
-                message.Headers["Excepation.StackTrace"] = e.StackTrace;
+                message.Headers["Exception.Message"] = e.Message;
+                message.Headers["Exception.StackTrace"] = e.StackTrace;
 
                 message.Headers["Code.ManagedThreadId"] = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
                 message.Headers["Code.InternalProcess"] = innerProcess;
@@ -172,7 +174,7 @@ namespace Atdi.Api.EventSystem
                 }
                 catch(Exception e2)
                 {
-                    _observer.Exception(EventSystemEvents.ExceptionEvent, "EventSystem.EventDeliveryHandling", e2, this);
+                    _observer.Exception(EventSystemEvents.ExceptionEvent, "EventSystem.EventHandling", e2, this);
                     return HandlingResult.Ignore;
                 }
                 

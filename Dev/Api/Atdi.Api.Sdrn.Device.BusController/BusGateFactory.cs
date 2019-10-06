@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Atdi.Contracts.Api.Sdrn.MessageBus;
+﻿using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Modules.Licensing;
 using Atdi.Modules.Sdrn.MessageBus;
+using System;
+using System.IO;
+using System.Reflection;
+using Atdi.Modules.Sdrn.DeviceBus;
 
 namespace Atdi.Api.Sdrn.Device.BusController
 {
     public sealed class BusGateFactory : IBusGateFactory
     {
-        internal BusGateFactory()
+        private BusGateFactory()
         {
-
         }
 
         public IBusGateConfig CreateConfig()
@@ -27,9 +23,9 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             get
             {
-                string codeBase = Assembly.GetAssembly(this.GetType()).CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
+                var codeBase = Assembly.GetAssembly(this.GetType()).CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var path = Uri.UnescapeDataString(uri.Path);
                 return Path.GetDirectoryName(path);
             }
         }
@@ -38,17 +34,17 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             if (string.IsNullOrEmpty(licenseFileName))
             {
-                throw new ArgumentException("message", nameof(licenseFileName));
+                throw new ArgumentException("Undefined value", nameof(licenseFileName));
             }
 
             if (string.IsNullOrEmpty(ownerId))
             {
-                throw new ArgumentException("message", nameof(ownerId));
+                throw new ArgumentException("Undefined value", nameof(ownerId));
             }
 
             if (string.IsNullOrEmpty(productKey))
             {
-                throw new ArgumentException("message", nameof(productKey));
+                throw new ArgumentException("Undefined value", nameof(productKey));
             }
 
             try
@@ -75,39 +71,32 @@ namespace Atdi.Api.Sdrn.Device.BusController
             }
         }
 
-        private EnvironmentDescriptor PrepareEnvironmentDescriptor(IBusGateConfig gateConfig, BusLogger logger)
+        private DeviceBusConfig PrepareEnvironmentDescriptor(IBusGateConfig gateConfig, BusLogger logger)
         {
-            var descriptor = new EnvironmentDescriptor(gateConfig);
-            var hasParamError = false;
+            var descriptor = new DeviceBusConfig(gateConfig);
 
-            var licenseFileName = string.Empty;
-            if (!this.TryGetyConfigParameter(gateConfig, ConfigParams.LicenseFileName, out licenseFileName, logger))
+            var hasParamError = !this.TryGetConfigParameter(gateConfig, ConfigParams.LicenseFileName, out var licenseFileName, logger);
+
+            if (!this.TryGetConfigParameter(gateConfig, ConfigParams.LicenseOwnerId, out var licenseOwnerId, logger))
             {
                 hasParamError = true;
             }
-            var licenseOwnerId = string.Empty;
-            if (!this.TryGetyConfigParameter(gateConfig, ConfigParams.LicenseOwnerId, out licenseOwnerId, logger))
-            {
-                hasParamError = true;
-            }
-            var licensePoductKey = string.Empty;
-            if (!this.TryGetyConfigParameter(gateConfig, ConfigParams.LicenseProductKey, out licensePoductKey, logger))
+
+            if (!this.TryGetConfigParameter(gateConfig, ConfigParams.LicenseProductKey, out var licenseProductKey, logger))
             {
                 hasParamError = true;
             }
 
             if (!hasParamError)
             {
-                descriptor.SdrnDeviceSensorName = this.VerifyLicense(licenseFileName, licenseOwnerId, licensePoductKey);
+                descriptor.SdrnDeviceSensorName = this.VerifyLicense(licenseFileName, licenseOwnerId, licenseProductKey);
             }
-
-            var paramValue = string.Empty;
 
             // Rabbit MQ
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQHost, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.RabbitMQHost, out var paramValue, logger))
             {
-                descriptor.RabbitMQHost = paramValue;
+                descriptor.RabbitMqHost = paramValue;
             }
             else
             {
@@ -116,21 +105,21 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
             if (gateConfig.TryGetValue(ConfigParams.RabbitMQPort, out paramValue))
             {
-                descriptor.RabbitMQPort = paramValue;
+                descriptor.RabbitMqPort = string.IsNullOrEmpty(paramValue) ? (int?)null : Convert.ToInt32(paramValue) ;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQVirtualHost, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.RabbitMQVirtualHost, out paramValue, logger))
             {
-                descriptor.RabbitMQVirtualHost = paramValue;
+                descriptor.RabbitMqVirtualHost = paramValue;
             }
             else
             {
-                descriptor.RabbitMQVirtualHost = "/";
+                descriptor.RabbitMqVirtualHost = "/";
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.RabbitMQUser, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.RabbitMQUser, out paramValue, logger))
             {
-                descriptor.RabbitMQUser = paramValue;
+                descriptor.RabbitMqUser = paramValue;
             }
             else
             {
@@ -139,11 +128,11 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
             if (gateConfig.TryGetValue(ConfigParams.RabbitMQPassword, out paramValue))
             {
-                descriptor.RabbitMQPassword = paramValue;
+                descriptor.RabbitMqPassword = paramValue;
             }
 
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnApiVersion, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnApiVersion, out paramValue, logger))
             {
                 descriptor.SdrnApiVersion = paramValue;
             }
@@ -152,7 +141,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnDeviceExchange, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnDeviceExchange, out paramValue, logger))
             {
                 descriptor.SdrnDeviceExchange = paramValue;
             }
@@ -161,7 +150,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnDeviceMessagesBindings, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnDeviceMessagesBindings, out paramValue, logger))
             {
                 descriptor.SdrnDeviceMessagesBindings = paramValue;
             }
@@ -170,7 +159,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnDeviceQueueNamePart, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnDeviceQueueNamePart, out paramValue, logger))
             {
                 descriptor.SdrnDeviceQueueNamePart = paramValue;
             }
@@ -179,7 +168,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnDeviceSensorTechId, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnDeviceSensorTechId, out paramValue, logger))
             {
                 descriptor.SdrnDeviceSensorTechId = paramValue;
             }
@@ -188,7 +177,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnServerInstance, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnServerInstance, out paramValue, logger))
             {
                 descriptor.SdrnServerInstance = paramValue;
             }
@@ -197,7 +186,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnServerQueueNamePart, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnServerQueueNamePart, out paramValue, logger))
             {
                 descriptor.SdrnServerQueueNamePart = paramValue;
             }
@@ -206,13 +195,81 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 hasParamError = true;
             }
 
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnMessageConvertorUseEncryption, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnMessageConvertorUseEncryption, out paramValue, logger))
             {
                 descriptor.SdrnMessageConvertorUseEncryption = "true".Equals(paramValue, StringComparison.OrdinalIgnoreCase);
             }
-            if (this.TryGetyConfigParameter(gateConfig, ConfigParams.SdrnMessageConvertorUseCompression, out paramValue, logger))
+            if (this.TryGetConfigParameter(gateConfig, ConfigParams.SdrnMessageConvertorUseCompression, out paramValue, logger))
             {
                 descriptor.SdrnMessageConvertorUseCompression = "true".Equals(paramValue, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (gateConfig.TryGetValue(ConfigParams.DeviceBusUseBuffer, out paramValue))
+            {
+                if (BufferType.Filesystem.ToString().Equals(paramValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    descriptor.BufferConfig.Type = BufferType.Filesystem;
+                   
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferContentType, out paramValue, logger))
+                    {
+                        descriptor.BufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferOutboxFolder, out paramValue, logger))
+                    {
+                        descriptor.BufferConfig.OutboxFolder = paramValue;
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                }
+                else if (BufferType.Database.ToString().Equals(paramValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    descriptor.BufferConfig.Type = BufferType.Database;
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferContentType, out paramValue, logger))
+                    {
+                        descriptor.BufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferConnectionString, out paramValue, logger))
+                    {
+                        descriptor.BufferConfig.ConnectionString = paramValue;
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                }
+
+            }
+            else
+            {
+                descriptor.BufferConfig.Type = BufferType.None;
+            }
+
+            if (gateConfig.TryGetValue(ConfigParams.DeviceBusContentType, out paramValue))
+            {
+                descriptor.DeviceBusContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+            }
+            else
+            {
+                descriptor.DeviceBusContentType = ContentType.Sdrn;
+            }
+
+            if (gateConfig.TryGetValue(ConfigParams.DeviceBusClient, out paramValue))
+            {
+                descriptor.DeviceBusClient = paramValue;
+            }
+            if (gateConfig.TryGetValue(ConfigParams.DeviceBusSharedSecretKey, out paramValue))
+            {
+                descriptor.DeviceBusSharedSecretKey = paramValue;
             }
 
             if (hasParamError)
@@ -222,91 +279,39 @@ namespace Atdi.Api.Sdrn.Device.BusController
             return descriptor;
         }
 
-        private bool TryGetyConfigParameter(IBusGateConfig gateConfig, string paramName, out string result, BusLogger logger)
+        private bool TryGetConfigParameter(IBusGateConfig gateConfig, string paramName, out string result, BusLogger logger)
         {
             result = string.Empty;
             if (!gateConfig.TryGetValue(paramName, out result))
             {
-                logger.Error(BusEvents.ConfigParameterError, "SDRN.Bus: ValidateParameter", $"Parameter with name '{paramName}' was undefined", this);
+                logger.Error(BusEvents.ConfigParameterError, "DeviceBus.Validation", $"The parameter with name '{paramName}' is undefined", this);
                 return false;
             }
             if (string.IsNullOrEmpty(result))
             {
-                logger.Error(BusEvents.ConfigParameterError, "SDRN.Bus: ValidateParameter", $"Parameter with name '{paramName}' is empty", this);
+                logger.Error(BusEvents.ConfigParameterError, "DeviceBus.Validation", $"The parameter with name '{paramName}' is empty", this);
                 return false;
             }
             return true;
         }
-        private void DeclareRabbitMQEnvironment(EnvironmentDescriptor descriptor, BusLogger logger)
-        {
-            using (var rabbitBus = new RabbitMQBus("Declaring", descriptor, logger))
-            {
-                logger.Verbouse("Rabbit MQ: Declaring", $"The connection to Rabbit MQ Server was checked successfully: Host = '{descriptor.RabbitMQHost}', VirtualHost = {descriptor.RabbitMQVirtualHost}", this);
-
-                var deviceExchangeName = descriptor.BuildDeviceExchangeName();
-                rabbitBus.DeclareDurableDirectExchange(deviceExchangeName);
-
-                var bindings = descriptor.MessagesBindings.Values;
-                foreach (var binding in bindings)
-                {
-                    var queueDescriptor = new QueueDescriptor
-                    {
-                        Exchange = deviceExchangeName,
-                        Name = descriptor.BuildServerQueueName(binding.RoutingKey),
-                        RoutingKey = $"[{descriptor.SdrnServerInstance}].[{binding.RoutingKey}]"
-                    };
-
-                    rabbitBus.DeclareDurableQueue(queueDescriptor);
-                }
-
-                var trashQueueDescriptor = new QueueDescriptor
-                {
-                    Exchange = deviceExchangeName,
-                    Name = descriptor.BuildServerQueueName("trash"),
-                    RoutingKey = $"[{descriptor.SdrnServerInstance}].[trash]"
-                };
-
-                rabbitBus.DeclareDurableQueue(trashQueueDescriptor);
-
-                var errorsQueueDescriptor = new QueueDescriptor
-                {
-                    Exchange = deviceExchangeName,
-                    Name = descriptor.BuildServerQueueName("errors"),
-                    RoutingKey = $"[{descriptor.SdrnServerInstance}].[errors]"
-                };
-
-                rabbitBus.DeclareDurableQueue(errorsQueueDescriptor);
-
-                var deviceQueueName = descriptor.BuildDeviceQueueName();
-                rabbitBus.DeclareDurableQueue(deviceQueueName);
-            }
-        }
+        
 
         public IBusGate CreateGate(string gateTag, IBusGateConfig gateConfig, IBusEventObserver eventObserver = null)
         {
             try
             {
                 var logger = new BusLogger(eventObserver);
-                var descriptor = this.PrepareEnvironmentDescriptor(gateConfig, logger);
-                this.DeclareRabbitMQEnvironment(descriptor, logger);
+                var deviceBusConfig = this.PrepareEnvironmentDescriptor(gateConfig, logger);
 
-                var convertorSettings = new MessageConvertSettings
-                {
-                    UseEncryption = descriptor.SdrnMessageConvertorUseEncryption,
-                    UseCompression = descriptor.SdrnMessageConvertorUseCompression
-                };
-                //var typeResolver = MessageObjectTypeResolver.CreateForApi20();
-                var messageConvertor = new MessageConverter(convertorSettings);
+                var gate = new BusGate(gateTag, deviceBusConfig, logger);
 
-                var gate = new BusGate(gateTag, descriptor, messageConvertor, logger);
-
-                logger.Info(0, "SDRN.Bus: CreateGate", "The Gate Object was created saccessfully", this);
+                logger.Info(0, "DeviceBus.GateCreation", $"The bus gate is created successfully: {gate}, {deviceBusConfig}", this);
 
                 return gate;
             }
             catch(Exception e)
             {
-                throw new InvalidOperationException("SDRN.Bus: The Gate Object was not created", e);
+                throw new InvalidOperationException($"The bus gate is not created: Tag='{gateTag}", e);
             }
         }
 
