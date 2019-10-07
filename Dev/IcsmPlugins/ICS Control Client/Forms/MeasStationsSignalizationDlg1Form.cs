@@ -14,6 +14,7 @@ namespace XICSM.ICSControlClient.Forms
     {
         double _distance;
         double _bw;
+        public bool IsPresOK = false;
         public MeasStationsSignalizationDlg1Form(double defaultDistance, double defaultBw, bool isHideBw)
         {
             InitializeComponent();
@@ -43,6 +44,7 @@ namespace XICSM.ICSControlClient.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            IsPresOK = true;
             this.Close();
         }
 

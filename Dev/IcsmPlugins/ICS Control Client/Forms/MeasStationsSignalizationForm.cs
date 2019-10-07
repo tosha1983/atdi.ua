@@ -16,6 +16,7 @@ using System.Windows.Media;
 using XICSM.ICSControlClient.ViewModels;
 using XICSM.ICSControlClient.WpfControls.Maps;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using XICSM.ICSControlClient.Models.Views;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -24,15 +25,15 @@ namespace XICSM.ICSControlClient.Forms
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
         private bool _buttonAssociatedVisible;
-        private long? _emittingId;
+        private EmittingViewModel _emitting;
         private ElementHost _wpfElementHost;
         private MeasStationsSignalizationFormViewModel _model;
-        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, long? emittingId, string captionAdd)
+        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting, string captionAdd)
         {
             this._stationData = stationData;
             this._measResult = measResult;
             this._buttonAssociatedVisible = buttonAssociatedVisible;
-            this._emittingId = emittingId;
+            this._emitting = emitting;
             InitializeComponent();
             this.Text = this.Text + captionAdd;
         }
@@ -50,7 +51,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                this._model = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emittingId) { _form = this };
+                this._model = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emitting) { _form = this };
                 (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = this._model;
             };
 

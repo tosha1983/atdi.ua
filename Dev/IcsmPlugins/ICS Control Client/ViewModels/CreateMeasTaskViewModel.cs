@@ -307,20 +307,31 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
-                var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
+                //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
+                //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
 
-                if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
-                    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
-                if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
-                    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
+                //if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
+                //    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+                //if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
+                //    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
-                if (!this.CurrentMeasTask.ValidateStateModel())
-                    return;
+                //if (!this.CurrentMeasTask.ValidateStateModel())
+                //    return;
 
-                if (dateBg > dateEd)
+                //if (dateBg > dateEd)
+                //{
+                //    MessageBox.Show("Date Stop should be great of the Date Start!");
+                //    return;
+                //}
+
+                if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
                     MessageBox.Show("Date Stop should be great of the Date Start!");
+                    return;
+                }
+                if (this._currentMeasTask.MeasTimeParamListTimeStart > this._currentMeasTask.MeasTimeParamListTimeStop)
+                {
+                    MessageBox.Show("Time Stop should be great of the Time Start!");
                     return;
                 }
 

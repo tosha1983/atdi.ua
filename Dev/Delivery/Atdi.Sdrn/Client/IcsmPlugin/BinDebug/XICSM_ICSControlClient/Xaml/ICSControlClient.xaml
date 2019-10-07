@@ -692,11 +692,75 @@
                                         <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "IdMeasDevice"  />
                                         <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDeviceId}" IsReadOnly="True"/>
 
-                                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "StationsNumber"  />
-                                        <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=StationsNumber}" IsReadOnly="True"/>
+                                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "StationsNumber">
+                                          <Label.Style>
+                                            <Style TargetType="Label">
+                                              <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="MonitoringStations">
+                                                  <Setter  Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="SpectrumOccupation">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="Signaling">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                              </Style.Triggers>
+                                            </Style>
+                                          </Label.Style>
+                                        </Label>
+                                        <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=StationsNumber}" IsReadOnly="True">
+                                          <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                              <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="MonitoringStations">
+                                                  <Setter  Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="SpectrumOccupation">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="Signaling">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                              </Style.Triggers>
+                                            </Style>
+                                          </TextBox.Style>
+                                        </TextBox>
                                         
-                                        <Label Grid.Column="4" Grid.Row="1" Padding="5,0,0,0" Content = "PointsNumber"  />
-                                        <TextBox Grid.Column="5" Grid.Row="1" Text="{Binding Path=PointsNumber}" IsReadOnly="True"/>
+                                        <Label Grid.Column="4" Grid.Row="1" Padding="5,0,0,0" Content = "PointsNumber">
+                                          <Label.Style>
+                                            <Style TargetType="Label">
+                                              <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="MonitoringStations">
+                                                  <Setter  Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="SpectrumOccupation">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="Signaling">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                              </Style.Triggers>
+                                            </Style>
+                                          </Label.Style>
+                                        </Label>
+                                        <TextBox Grid.Column="5" Grid.Row="1" Text="{Binding Path=PointsNumber}" IsReadOnly="True">
+                                          <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                              <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="MonitoringStations">
+                                                  <Setter  Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="SpectrumOccupation">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=TypeMeasurements}" Value="Signaling">
+                                                  <Setter  Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                              </Style.Triggers>
+                                            </Style>
+                                          </TextBox.Style>
+                                        </TextBox>
                                   
                                         <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "TimeMeas"  />
                                         <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="5" Text="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}" IsReadOnly="True"/>
@@ -842,12 +906,12 @@
                                             <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MarkerIndex}" IsReadOnly="True"/>
                                          </Grid>
                                     </Expander>
-                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5,0,0" Content="&lt;" Width="15" Height="15" Command="{Binding PrevSpecCommand}"/>
-                                    <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100"/>
-                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}"/>
-                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="50" Margin="150,5,0,0" Content="Get CSV" Command="{Binding GetSOCSVCommand}"/>
+                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5,0,0" Content="&lt;" Width="15" Height="15" Command="{Binding PrevSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
+                                    <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100" Visibility="{Binding ResIdStationVisibility}"/>
+                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
+                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="50" Margin="150,5,0,0" Content="Get CSV" Command="{Binding GetSOCSVCommand}" Visibility="{Binding ResGetSOCSVVisibility}"/>
                                   
-                                    <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas">
+                                    <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas" Visibility="{Binding ResTimeMeasVisibility}">
                                         <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
