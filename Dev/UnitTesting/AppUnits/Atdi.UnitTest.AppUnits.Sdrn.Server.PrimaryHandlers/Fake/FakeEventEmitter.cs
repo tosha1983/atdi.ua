@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.Logging;
+using Atdi.DataModels.Api.EventSystem;
+using IEvent = Atdi.DataModels.Api.EventSystem.IEvent;
 
 namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
 {
@@ -14,25 +17,30 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
             throw new NotImplementedException();
         }
 
-        public Guid Emit(IEvent @event, EventEmittingOptions options)
-        {
-            if (@event == null)
-            {
-                throw new ArgumentNullException(nameof(@event));
-            }
+        //public void Emit(IEvent @event, EventEmittingOptions options)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-            if (string.IsNullOrEmpty(@event.Name))
-            {
-                throw new ArgumentNullException("@event.Name");
-            }
+        //public Guid Emit(IEvent @event, EventEmittingOptions options)
+        //{
+        //    if (@event == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(@event));
+        //    }
 
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+        //    if (string.IsNullOrEmpty(@event.Name))
+        //    {
+        //        throw new ArgumentNullException("@event.Name");
+        //    }
 
-            return @event.Id;
-        }
+        //    if (options == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(options));
+        //    }
+
+        //    return @event.Id;
+        //}
 
         void IEventEmitter.Emit(IEvent @event, EventEmittingOptions options)
         {

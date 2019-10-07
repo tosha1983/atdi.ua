@@ -12,6 +12,8 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         public string ServerInstance => "TestInstance";
 
         public string LicenseNumber => throw new NotImplementedException();
+        public DateTime LicenseStopDate { get; }
+        public DateTime LicenseStartDate { get; }
 
         public DateTime LicenseDateStop => throw new NotImplementedException();
 
