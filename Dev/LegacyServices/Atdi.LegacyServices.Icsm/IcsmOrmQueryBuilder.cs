@@ -250,20 +250,28 @@ namespace Atdi.LegacyServices.Icsm
         {
             try
             {
+                string fromStatement = "";
                 var columns = new List<ColumnOperand>();
                 AppendColumnsFromConditions(statement.Conditions, columns);
                 var columnsArray = columns.ToArray();
 
                 var sourceExpression = this._syntax.EncodeTableName(this._schemasMetadata.DbSchema, statement.TableName);
                 var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
-                var fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out Orm.DbField[] dbFields);
 
-                for (int i = 0; i < columnsArray.Length; i++)
+                if (columnsArray.Length!=0)
                 {
-                    var column = columnsArray[i];
-                    var dbField = dbFields[i];
-                    column.ColumnName = dbField.m_logFld;
-                    column.Source = dbField.m_idxTable.Tcaz;
+                    fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out Orm.DbField[] dbFields);
+                    for (int i = 0; i < columnsArray.Length; i++)
+                    {
+                        var column = columnsArray[i];
+                        var dbField = dbFields[i];
+                        column.ColumnName = dbField.m_logFld;
+                        column.Source = dbField.m_idxTable.Tcaz;
+                    }
+                }
+                else
+                {
+                    fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, statement.ColumnsValues.Select(c => c.Source).ToArray(), out Orm.DbField[] dbFields);
                 }
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
 

@@ -753,6 +753,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                     checkedSetValues.Add(new DateTimeColumnValue() { Source = (GetNameColumnInDb(linkValues[j].Name) == linkValues[j].SourceColumnName) ? linkValues[j].Name : linkValues[j].SourceColumnName, Name = linkValues[j].SourceColumnName, Value = linkValues[j].Value as DateTime? });
                                 }
                             }
+                            else if (linkValues[j].typeValue == DataType.Bytes)
+                            {
+                                if (checkedSetValues.Find(y => y.Name == linkValues[j].SourceColumnName) == null)
+                                {
+                                    checkedSetValues.Add(new BytesColumnValue() { Source = (GetNameColumnInDb(linkValues[j].Name) == linkValues[j].SourceColumnName) ? linkValues[j].Name : linkValues[j].SourceColumnName, Name = linkValues[j].SourceColumnName, Value = linkValues[j].Value as byte[] });
+                                }
+                            }
                             else
                             {
                                 throw new InvalidOperationException($"Unsupported data type for column value '{linkValues[j].typeValue}'");
@@ -784,7 +791,10 @@ namespace Atdi.AppServices.WebQuery.Handlers
                             {
                                 linkColumnUpdate.TypeColumn = typeof(float);
                             }
-
+                            else if (linkValues[j].typeValue == DataType.Bytes)
+                            {
+                                linkColumnUpdate.TypeColumn = typeof(byte[]);
+                            }
 
                             if (listLinkColumn.Find(x => x.LinkFieldName == linkValues[j].SourceColumnName && x.TableName == columnProperties.NameTableTo && FullColumnName.Contains(x.FullSourceName)) == null)
                             {
@@ -913,6 +923,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                             checkedSetValues.Add(new DoubleColumnValue() { Source = (GetNameColumnInDb(LinkColumnFindedNew.FullSourceName) == columnProperties.FieldJoinFrom) ? LinkColumnFindedNew.FullSourceName : columnProperties.FieldJoinFrom, Name = columnProperties.FieldJoinFrom, Value = idValueFieldJoinFrom as double? });
                                         }
                                     }
+                                    else if (columnProperties.TypeColumn == typeof(byte[]))
+                                    {
+                                        if (checkedSetValues.Find(y => y.Name == columnProperties.FieldJoinFrom) == null)
+                                        {
+                                            checkedSetValues.Add(new BytesColumnValue() { Source = (GetNameColumnInDb(LinkColumnFindedNew.FullSourceName) == columnProperties.FieldJoinFrom) ? LinkColumnFindedNew.FullSourceName : columnProperties.FieldJoinFrom, Name = columnProperties.FieldJoinFrom, Value = idValueFieldJoinFrom as byte[] });
+                                        }
+                                    }
                                     else
                                     {
                                         throw new InvalidOperationException($"Unsupported data type for column value '{columnProperties.TypeColumn}'");
@@ -943,6 +960,10 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                     else if (columnProperties.TypeColumn == typeof(float))
                                     {
                                         linkColumnUpdate.TypeColumn = typeof(float);
+                                    }
+                                    else if (columnProperties.TypeColumn == typeof(byte[]))
+                                    {
+                                        linkColumnUpdate.TypeColumn = typeof(byte[]);
                                     }
                                     else
                                     {
@@ -1552,6 +1573,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                         listColumnValue.Add(new FloatColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = val.Value as float? });
                                     }
                                 }
+                                else if (val.typeValue == DataType.Bytes)
+                                {
+                                    if (listColumnValue.Find(z => z.Name == findedColumnMeta.columnProperties[j].NameField) == null)
+                                    {
+                                        listColumnValue.Add(new BytesColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = val.Value as byte[] });
+                                    }
+                                }
 
                                 if (findedColumnMeta.columnProperties[j].Name != null)
                                 {
@@ -1665,6 +1693,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                             if (listColumnValue.Find(z => z.Name == findedColumnMeta.columnProperties[j].NameField) == null)
                             {
                                 listColumnValue.Add(new FloatColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = linkValue.Value as float? });
+                            }
+                        }
+                        else if (linkValue.typeValue == DataType.Bytes)
+                        {
+                            if (listColumnValue.Find(z => z.Name == findedColumnMeta.columnProperties[j].NameField) == null)
+                            {
+                                listColumnValue.Add(new BytesColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = linkValue.Value as byte[] });
                             }
                         }
 
@@ -1975,15 +2010,16 @@ namespace Atdi.AppServices.WebQuery.Handlers
         private int PerformCreationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, CreationAction action)
         {
             int recordsAffected = 0;
-            this._queryExecutor.BeginTransaction();
+            var scope = this._dataLayer.CreateScope<IcsmDataContext>();
+            scope.BeginTran();
             try
             {
                  recordsAffected = UpdateData(userTokenData, queryDescriptor, null, action);
-                this._queryExecutor.CommitTransaction();
+                scope.Commit();
             }
             catch (Exception e)
             {
-                this._queryExecutor.RollbackTransaction();
+                scope.Rollback();
                 this.Logger.Exception(Contexts.ErrorInsertOperation, Categories.Handling, e, this);
                 throw new InvalidOperationException("Failed to insert data :" +e.Message, e);
             }
@@ -1993,15 +2029,16 @@ namespace Atdi.AppServices.WebQuery.Handlers
         private int PerformUpdationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, UpdationAction action)
         {
             int recordsAffected = 0;
-            this._queryExecutor.BeginTransaction();
+            var scope = this._dataLayer.CreateScope<IcsmDataContext>();
+            scope.BeginTran();
             try
             {
                 recordsAffected = UpdateData(userTokenData, queryDescriptor,action, null);
-                this._queryExecutor.CommitTransaction();
+                scope.Commit();
             }
             catch (Exception e)
             {
-                this._queryExecutor.RollbackTransaction();
+                scope.Rollback();
                 this.Logger.Exception(Contexts.ErrorUpdateOperation, Categories.Handling, e, this);
                 throw new InvalidOperationException("Failed to update data: "+e.Message, e);
             }

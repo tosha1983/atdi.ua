@@ -1619,6 +1619,90 @@ namespace Atdi.LegacyServices.Icsm
             throw new NotImplementedException();
         }
 
+        public int[] GetValue(Expression<Func<TModel, int[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float[] GetValue(Expression<Func<TModel, float[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double[] GetValue(Expression<Func<TModel, double[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal[] GetValue(Expression<Func<TModel, decimal[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool[] GetValue(Expression<Func<TModel, bool[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string[] GetValue(Expression<Func<TModel, string[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime[] GetValue(Expression<Func<TModel, DateTime[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Guid[] GetValue(Expression<Func<TModel, Guid[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public char[] GetValue(Expression<Func<TModel, char[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short[] GetValue(Expression<Func<TModel, short[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort[] GetValue(Expression<Func<TModel, ushort[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint[] GetValue(Expression<Func<TModel, uint[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long[] GetValue(Expression<Func<TModel, long[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong[] GetValue(Expression<Func<TModel, ulong[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte[] GetValue(Expression<Func<TModel, sbyte[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan[] GetValue(Expression<Func<TModel, TimeSpan[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset[] GetValue(Expression<Func<TModel, DateTimeOffset[]>> columnExpression)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     //public static class DataReaderExtenstions
