@@ -23,11 +23,18 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
         {
             try
             {
+                var allotment = Repository.ReadEntityById<DM.Allotment>(allotmentId);
+
+                if (!allotment.IsNewState)
+                {
+                    Logger.WriteWarning(PluginMetadata.Processes.CreateMeasTask, $"Incorrect the status of the allotment #{allotment.Id}", true);
+                    return false;
+                }
+
                 var measTaskForm = new FM.MeasTaskForm(allotmentId, SDR.MeasurementType.Signaling);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
-
-                var allotment = Repository.ReadEntityById<DM.Allotment>(allotmentId);
+                
                 allotment.Status = MD.Allotments.Statuses.Dur;
                 allotment.MeasTaskId = measTaskForm.TaskId;
                 if (allotment.MeasTaskId > 0)

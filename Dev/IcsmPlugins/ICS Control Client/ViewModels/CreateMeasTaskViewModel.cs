@@ -23,6 +23,7 @@ using System.Globalization;
 using System.IO;
 using System.ComponentModel;
 using INP = System.Windows.Input;
+using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -31,27 +32,11 @@ namespace XICSM.ICSControlClient.ViewModels
         public CustomDataGridSensors()
         {
             this.SelectionChanged += CustomDataGrid_SelectionChanged;
-            this.MouseDoubleClick += DoubleClick;
         }
-
         void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.SelectedItemsList = this.SelectedItems;
         }
-
-        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-            foreach (ShortSensorViewModel item in this.SelectedItemsList)
-            {
-                var param = new OnlineMeasurementParameters();
-                var dlgForm = new FM.OnlineMeasurementForm(item, null);
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
-                return;
-            }
-        }
-
         public IList SelectedItemsList
         {
             get { return (IList)GetValue(SelectedItemsListProperty); }
@@ -78,11 +63,13 @@ namespace XICSM.ICSControlClient.ViewModels
 
         #region Commands
         public WpfCommand CreateMeasTaskCommand { get; set; }
+        public WpfCommand DoubleClickSensorCommand { get; set; }
         #endregion
 
         public CreateMeasTaskViewModel(int? allotId, SDR.MeasurementType measType)
         {
             this.CreateMeasTaskCommand = new WpfCommand(this.OnCreateMeasTaskCommand);
+            this.DoubleClickSensorCommand = new WpfCommand(this.OnDoubleClickSensorCommand);
             this._shortSensors = new ShortSensorDataAdatper();
             this._currentMeasTask = new MeasTaskViewModel();
             this._allotId = allotId;
@@ -292,26 +279,67 @@ namespace XICSM.ICSControlClient.ViewModels
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
         }
+        private void OnDoubleClickSensorCommand(object parameter)
+        {
+            var param = new OnlineMeasurementParameters();
+            if (!this.CurrentMeasTask.IsAutoMeasDtParamMeasTime)
+                param.SweepTime_s = this.CurrentMeasTask.MeasDtParamMeasTime;
+
+            param.FreqStart_MHz = this.CurrentMeasTask.MeasFreqParamRgL;
+            param.FreqStop_MHz = this.CurrentMeasTask.MeasFreqParamRgU;
+
+            if (!this.CurrentMeasTask.IsAutoMeasDtParamRfAttenuation)
+                param.Att_dB = (int?)this.CurrentMeasTask.MeasDtParamRfAttenuation;
+
+            if (!this.CurrentMeasTask.IsAutoMeasDtParamPreamplification)
+                param.PreAmp_dB = this.CurrentMeasTask.MeasDtParamPreamplification;
+
+            if (!this.CurrentMeasTask.IsAutoMeasDtParamReferenceLevel)
+                param.RefLevel_dBm = (int?)this.CurrentMeasTask.MeasDtParamReferenceLevel;
+
+            param.DetectorType = (Enum.TryParse<DetectorType>(this.CurrentMeasTask.MeasDtParamDetectType.ToString(), out DetectorType outResType)) ? outResType : DetectorType.MaxPeak;
+
+            var dlgForm = new FM.OnlineMeasurementForm(parameter as ShortSensorViewModel, param);
+            dlgForm.ShowDialog();
+            dlgForm.Dispose();
+        }
         private void OnCreateMeasTaskCommand(object parameter)
         {
             try
             {
-                var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
-                var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
+                //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
+                //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
 
-                if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
-                    dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
-                if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
-                    dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
+                //if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
+                //    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+                //if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
+                //    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
+                //if (!this.CurrentMeasTask.ValidateStateModel())
+                //    return;
 
-                if (!this.CurrentMeasTask.ValidateStateModel())
-                    return;
+                //if (dateBg > dateEd)
+                //{
+                //    MessageBox.Show("Date Stop should be great of the Date Start!");
+                //    return;
+                //}
 
-                if (dateBg > dateEd)
+                if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
                     MessageBox.Show("Date Stop should be great of the Date Start!");
                     return;
+                }
+                if (this._currentMeasTask.MeasTimeParamListTimeStart > this._currentMeasTask.MeasTimeParamListTimeStop)
+                {
+                    MessageBox.Show("Time Stop should be great of the Time Start!");
+                    return;
+                }
+
+                if (this.CurrentMeasTask.MinPointForDetailBW.HasValue && this.CurrentMeasTask.SignalizationNChenal.HasValue && (this.CurrentMeasTask.MinPointForDetailBW.Value < this.CurrentMeasTask.SignalizationNChenal.Value || this.CurrentMeasTask.MinPointForDetailBW.Value > 5000))
+                {
+                    MessageBox.Show("The value “The minimum number of points a spectrum must contain in order not to measure bandwith” must be in the range from " + this.CurrentMeasTask.SignalizationNChenal.Value + " to 5000!");
+                    return;
+
                 }
 
                 if (this._currentShortSensor == null)
@@ -399,7 +427,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id);
                             SDR.SensorLocation sensorLocation = null;
-                            if (svcSensor.Locations != null)
+                            if (svcSensor.Locations != null && svcSensor.Locations.Length > 0)
                                 sensorLocation = svcSensor.Locations[svcSensor.Locations.Length - 1];
 
                             using (TextFieldParser parser = new TextFieldParser(openFile.FileName))

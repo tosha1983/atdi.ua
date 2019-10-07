@@ -104,7 +104,7 @@
                     </Grid.RowDefinitions>
 
                     <Label Height="18" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Name"  />
-                    <TextBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding Path=Name}"/>
+                    <TextBox Height="18" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding Path=Name}"/>
 
                     <Label Height="18" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
                     <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}" IsEnabled="False"/>
@@ -923,22 +923,12 @@
                                 <DataTrigger Binding="{Binding Path=AnalyzeByChannel}" Value="False">
                                   <Setter  Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
-                                <Trigger Property="Validation.HasError" Value="True">
-                                  <Setter Property="ToolTip"
-                                      Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-                                  <Setter Property="Foreground" Value="Red" />
-                                </Trigger>
-                                <Trigger Property="Validation.HasError" Value="False">
-                                  <Setter Property="ToolTip"
-                                      Value="" />
-                                  <Setter Property="Foreground" Value="Black" />
-                                </Trigger>
                               </Style.Triggers>
                             </Style>
                           </GroupBox.Style>
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="300" />
+                              <ColumnDefinition Width="340" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -1157,7 +1147,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
+                    <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
                       <DataGrid.Columns>
                           <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
@@ -1173,7 +1163,10 @@
                             <DataGridTextColumn Header="Gain" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Bring into use" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
                             <DataGridTextColumn Header="End of use" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
-                        </DataGrid.Columns>                      
+                        </DataGrid.Columns>
+                        <DataGrid.InputBindings>
+                          <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickSensorCommand}" CommandParameter="{Binding ShortSensors/}"/>
+                        </DataGrid.InputBindings>
                     </cdg:CustomDataGridSensors>
                     <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
                     <maps:Map Grid.Column="0" Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>

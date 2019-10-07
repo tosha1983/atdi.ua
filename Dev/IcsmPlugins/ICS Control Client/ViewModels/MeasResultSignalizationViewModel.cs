@@ -340,6 +340,9 @@ namespace XICSM.ICSControlClient.ViewModels
                             
                     }
 
+                    if (MessageBox.Show("Are you sure?", "Delete Emission", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        return;
+
                     this.StatusBarTitle = $"Deleting emissions ({emitings.Count}) ...";
                     this.StatusBarIsIndeterminate = true;
 
@@ -658,6 +661,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
 
+                if (!dlgForm.IsPresOK)
+                    return;
+                
                 double distance = dlgForm.Distance;
 
                 string sqlQuery = "[TX_FREQ] - " + (bw / 2000).ToString().Replace(sep, ".") + " - [Station.BW] / 2000 <= " + freq.ToString().Replace(sep, ".");
@@ -736,9 +742,11 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
                 string caption = ", Frequency - " + Math.Round(freq, 6).ToString() + ", MHz, Pow of Emission - " + Math.Round(this._currentEmitting.CurentPower_dBm, 1).ToString() + ", dBm";
-                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.OrderBy(c => c.Distance).ToArray(), this._currentMeasResult, true, this._currentEmitting.Id, caption);
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.OrderBy(c => c.Distance).ToArray(), this._currentMeasResult, true, this._currentEmitting, caption);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
+                this._emittings.Source = this._currentMeasResult.Emittings;
+                MessageBox.Show("Success");
             }
             catch (Exception e)
             {
@@ -1105,17 +1113,17 @@ namespace XICSM.ICSControlClient.ViewModels
                             if (emitting.Spectrum.T1 != 0)
                             {
                                 var val = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000;
-                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val,6).ToString() });
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val,6).ToString(), LabelLeft = 5, LabelTop = -25 });
                             }
                             if (emitting.Spectrum.T2 != 0)
                             {
                                 var val = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000;
-                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -45 });
                             }
                             if (emitting.Spectrum.MarkerIndex != 0)
                             {
                                 var val = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000;
-                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -35 });
                             }
                         }
                         else

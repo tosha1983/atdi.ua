@@ -109,12 +109,12 @@ namespace XICSM.ICSControlClient.ViewModels
             if (param != null)
             {
                 this._measParameters.DetectorType = param.DetectorType;
-                this._measParameters.SweepTime_s = param.SweepTime_s;
-                this._measParameters.Att_dB = param.Att_dB;
-                this._measParameters.PreAmp_dB = param.PreAmp_dB;
-                this._measParameters.RefLevel_dBm = param.RefLevel_dBm;
-                this._measParameters.FreqStart_MHz = param.FreqStart_MHz;
-                this._measParameters.FreqStop_MHz = param.FreqStop_MHz;
+                if (param.SweepTime_s.HasValue) this._measParameters.SweepTime_s = param.SweepTime_s.Value;
+                if (param.Att_dB.HasValue) this._measParameters.Att_dB = param.Att_dB.Value;
+                if (param.PreAmp_dB.HasValue) this._measParameters.PreAmp_dB = param.PreAmp_dB.Value;
+                if (param.RefLevel_dBm.HasValue) this._measParameters.RefLevel_dBm = param.RefLevel_dBm.Value;
+                if (param.FreqStart_MHz.HasValue) this._measParameters.FreqStart_MHz = param.FreqStart_MHz.Value;
+                if (param.FreqStop_MHz.HasValue) this._measParameters.FreqStop_MHz = param.FreqStop_MHz.Value;
             }
 
             this._measBandwidthResult = new OnlieneMeasBandwidthResult
