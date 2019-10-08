@@ -23,7 +23,7 @@ namespace Atdi.Platform.AppServer
             this._triggers.Enqueue((context, triggerCallback));
         }
 
-        public void ExecuteTruggers()
+        public void ExecuteTriggers()
         {
             while(this._triggers.Count > 0)
             {

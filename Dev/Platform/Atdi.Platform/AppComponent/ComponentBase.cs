@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
 
@@ -29,17 +25,17 @@ namespace Atdi.Platform.AppComponent
 
         public void Activate()
         {
-            _logger.Debug("AppServer Host", "Activating", (EventText)$"The server component is activating: Name = '{this.Name}'");
+            //_logger.Debug("ServerHost", "Activating", (EventText)$"The component is being activated: {this}");
 
             this.OnActivate();
 
-            _logger.Debug("AppServer Host", "Activating", (EventText)$"The server component was activated: Name = '{this.Name}'");
+            _logger.Info("Component", "Activating", (EventText)$"The component has activated: {this}");
         }
 
         public void Deactivate()
         {
             this.OnDeactivate();
-            _logger.Debug("AppServer Host", "Deactivating", (EventText)$"The component {this.Name} was deactivated.");
+            _logger.Info("Component", "Deactivating", (EventText)$"The component has deactivated: {this}");
         }
 
         public void Install(IServicesContainer container, IComponentConfig config)
@@ -49,17 +45,24 @@ namespace Atdi.Platform.AppComponent
             this._resolver = container.GetResolver<IServicesResolver>();
             this._logger = this._resolver.Resolve<ILogger>();
 
-            _logger.Debug("AppServer Host", "Installation", (EventText)$"The server component is installing: Name = '{this.Name}', Type = '{this.Type.ToString()}'");
+
+            _logger.Info("Component", "Loading", (EventText)$"The component has loaded: {this}");
+            _logger.Debug("Component", "Loading", (EventText)$"The component data", new Dictionary<string, object>
+            {
+                ["Assembly"] = this.GetType().Assembly.FullName,
+                ["Type"] = this.Type,
+                ["Name"] = this.Name,
+                ["Behavior"] = this.Behavior
+            });
 
             this.OnInstall();
-
-            _logger.Debug("AppServer Host", "Installation", (EventText)$"The server component was installed: Name = '{this.Name}', Type = '{this.Type.ToString()}'");
         }
 
         public void Uninstall()
         {
             this.OnUninstall();
-            _logger.Debug("AppServer Host", "Uninstallation", (EventText)$"The component {this.Name} was uninstalled.");
+            _logger.Info("Component", "Unloading", (EventText)$"The component has unloaded: {this}");
+
             this._config = null;
             this._container = null;
         }
@@ -74,5 +77,10 @@ namespace Atdi.Platform.AppComponent
         protected ILogger Logger => this._logger;
         protected IComponentConfig Config => this._config;
 
+        public override string ToString()
+        {
+            var name = this.GetType().Assembly.GetName();
+            return $"Name='{name.Name}', Version='{name.Version}'";
+        }
     }
 }
