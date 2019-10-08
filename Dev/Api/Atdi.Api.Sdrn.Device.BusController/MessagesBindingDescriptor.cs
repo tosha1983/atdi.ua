@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.Sdrn.Device.BusController
 {
-    internal sealed class MessagesBindingDecriptor
+    internal sealed class MessagesBindingDescriptor
     {
-        public MessagesBindingDecriptor(string bindingPart)
+        public MessagesBindingDescriptor(string bindingPart)
         {
             if (string.IsNullOrEmpty(bindingPart))
             {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using RabbitMQ.Client.Exceptions;
 using RBC = RabbitMQ.Client;
 using RBE = RabbitMQ.Client.Events;
 
@@ -24,7 +24,7 @@ namespace Atdi.Modules.AmqpBroker
         private readonly IBrokerObserver _logger;
         private RBC.IModel _channel;
         private int _channelNumber;
-        private Dictionary<string, ConsumerDescriptor> _consumers;
+        private readonly Dictionary<string, ConsumerDescriptor> _consumers;
         private MessageSendingState _messageSendingState;
 
         internal Channel(Connection connection, IBrokerObserver logger)
@@ -34,11 +34,11 @@ namespace Atdi.Modules.AmqpBroker
             this._consumers = new Dictionary<string, ConsumerDescriptor>();
         }
 
-        internal RBC.IModel RealChannel { get => _channel; }
+        internal RBC.IModel RealChannel => _channel;
 
-        public Connection Connection { get => _connection; }
+        public Connection Connection => _connection;
 
-        public int Number { get => _channelNumber; }
+        public int Number => _channelNumber;
 
         public bool IsOpen
         {
@@ -50,6 +50,11 @@ namespace Atdi.Modules.AmqpBroker
                 }
                 return false;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Num=#{_channelNumber}, Opened={this.IsOpen}, State={_messageSendingState}";
         }
 
         public void EstablishChannel(bool onlyInstance = false)
@@ -66,7 +71,7 @@ namespace Atdi.Modules.AmqpBroker
                     this.DisposeChannel();
                 }
 
-                this._channel = this._connection.RealConnection.CreateModel();
+                this._channel = this._connection.CreateAmqpChannel();
                 _channel.ConfirmSelect();
                 _channel.BasicQos(0, 1, false);
 
@@ -78,18 +83,18 @@ namespace Atdi.Modules.AmqpBroker
                 this._channel.BasicNacks += _channel_BasicNacks;
                 this._channel.BasicReturn += _channel_BasicReturn;
 
-                this._logger.Verbouse("RabbitMQ.EstablishChannel", $"The channel #{_channelNumber} is established successfully", this);
+                this._logger.Info("AmqpBroker.ChannelEstablishment", $"The channel is established successfully: {this}, {_connection}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.EstablishChannelException, "RabbitMQ.EstablishChannel", e, this);
-                throw new InvalidOperationException("The channel to RabbitMQ is not established", e);
+                this._logger.Exception(BrokerEvents.EstablishChannelException, "AmqpBroker.ChannelEstablishment", e, this);
+                throw new InvalidOperationException($"The channel is not established: {this}", e);
             }
         }
 
         private void _channel_BasicReturn(object sender, RBE.BasicReturnEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.Channel.BasicReturn", $"The message was returned: ReplyText = '{e.ReplyText}', RoutingKey = '{e.RoutingKey}', Exchange = '{e.Exchange}', MessageId = '{e.BasicProperties.MessageId}'", this);
+            this._logger.Verbouse("AmqpBroker.ChannelEvent", $"The Basic Return Event occurred: {this}, ReplyText='{e.ReplyText}', RoutingKey='{e.RoutingKey}', Exchange='{e.Exchange}', MessageId='{e.BasicProperties.MessageId}'", this);
             if (this._messageSendingState == MessageSendingState.Sending)
             {
                 this._messageSendingState = MessageSendingState.Returned;
@@ -98,7 +103,7 @@ namespace Atdi.Modules.AmqpBroker
 
         private void _channel_BasicNacks(object sender, RBE.BasicNackEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.Channel.BasicNacks", $"The message was Nacks: DeliveryTag = '{e.DeliveryTag}', Multiple = '{e.Multiple}', Requeue = '{e.Requeue}'", this);
+            this._logger.Verbouse("AmqpBroker.ChannelEvent", $"The Basic Nacks Event occurred: {this}, DeliveryTag='{e.DeliveryTag}', Multiple='{e.Multiple}', Requeue='{e.Requeue}'", this);
             if (this._messageSendingState == MessageSendingState.Sending)
             {
                 this._messageSendingState = MessageSendingState.Nacks;
@@ -107,7 +112,7 @@ namespace Atdi.Modules.AmqpBroker
 
         private void _channel_BasicAcks(object sender, RBE.BasicAckEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.Channel.BasicAcks", $"The message was Acks: DeliveryTag = '{e.DeliveryTag}', Multiple = '{e.Multiple}'", this);
+            this._logger.Verbouse("AmqpBroker.ChannelEvent", $"The Basic Acks Event occurred: {this}, DeliveryTag='{e.DeliveryTag}', Multiple='{e.Multiple}'", this);
             if (this._messageSendingState == MessageSendingState.Sending)
             {
                 this._messageSendingState = MessageSendingState.Sent;
@@ -116,7 +121,7 @@ namespace Atdi.Modules.AmqpBroker
 
         private void _channel_ModelShutdown(object sender, RBC.ShutdownEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.ShutdownChannel", $"The channel #'{this._channelNumber}' is shutted down: Connection: '{_connection.Config.ConnectionName}', Initiator: '{e.Initiator}', Reasone: '{e.ReplyText}', Code: #{e.ReplyCode}", this);
+            this._logger.Verbouse("AmqpBroker.ChannelShutdown", $"The channel is shutdown: {this}, Initiato='{e.Initiator}', Reason='{e.ReplyText}', Code=#{e.ReplyCode}, {_connection}", this);
             if (this._messageSendingState == MessageSendingState.Sending)
             {
                 this._messageSendingState = MessageSendingState.Aborted;
@@ -125,8 +130,8 @@ namespace Atdi.Modules.AmqpBroker
 
         private void _channel_CallbackException(object sender, RBE.CallbackExceptionEventArgs e)
         {
-            this._logger.Verbouse("RabbitMQ.CallbackExceptionChannel", $"The exception is occurred: Connection: '{this._connection.Config.ConnectionName}', Channel: #{_channelNumber}, Message: '{e.Exception.Message}'", this);
-            this._logger.Exception(BrokerEvents.ExceptionEvent, "RabbitMQ.CallbackExceptionChannel", e.Exception, this);
+            this._logger.Verbouse("AmqpBroker.ChannelEvent", $"The Callback Exception Event occurred: {this}, Exception='{e.Exception.Message}', {this._connection}", this);
+            this._logger.Exception(BrokerEvents.ExceptionEvent, "AmqpBroker.ChannelEvent", e.Exception, this);
         }
 
         private void CloseChannel(string reason)
@@ -138,11 +143,12 @@ namespace Atdi.Modules.AmqpBroker
                     if (_channel.IsOpen)
                     {
                         _channel.Close(200, reason);
+                        this._logger.Info("AmqpBroker.ChannelClosing", $"The channel is closed successfully: {this}, {_connection}", this);
                     }
                 }
                 catch (Exception e)
                 {
-                    this._logger.Exception(BrokerEvents.CloseChannelException, "RabbitMQ.CloseChannel", e, this);
+                    this._logger.Exception(BrokerEvents.CloseChannelException, "AmqpBroker.ChannelClosing", e, this);
                 }
             }
         }
@@ -153,11 +159,17 @@ namespace Atdi.Modules.AmqpBroker
             {
                 try
                 {
+                    this._channel.CallbackException -= _channel_CallbackException;
+                    this._channel.ModelShutdown -= _channel_ModelShutdown;
+                    this._channel.BasicAcks -= _channel_BasicAcks;
+                    this._channel.BasicNacks -= _channel_BasicNacks;
+                    this._channel.BasicReturn -= _channel_BasicReturn;
                     _channel.Dispose();
+                    this._logger.Verbouse("AmqpBroker.ChannelDisposing", $"The channel is disposed successfully: {this}, {_connection}", this);
                 }
                 catch (Exception e)
                 {
-                    this._logger.Exception(BrokerEvents.DisposeChannelException, "RabbitMQ.DisposeChannel", e, this);
+                    this._logger.Exception(BrokerEvents.DisposeChannelException, "AmqpBroker.ChannelDisposing", e, this);
                 }
                 _channel = null;
             }
@@ -165,21 +177,20 @@ namespace Atdi.Modules.AmqpBroker
 
 
 
-        private void UnjoinConsumers()
+        private void DetachConsumers()
         {
             if (_consumers != null && _consumers.Count > 0)
             {
                 var descriptors = _consumers.Values.ToArray();
                 foreach (var descriptor in descriptors)
                 {
-                    var consumer = descriptor.Consumer;
                     try
                     {
-                        this.UnjoinConsumer(descriptor.Tag);
+                        this.DetachConsumer(descriptor.Tag);
                     }
                     catch (Exception e)
                     {
-                        this._logger.Exception(BrokerEvents.UnjoinConsumersException, "RabbitMQ.UnjoinConsumers", e, this);
+                        this._logger.Exception(BrokerEvents.UnjoinConsumersException, "AmqpBroker.ConsumersDetaching", e, this);
                     }
                 }
             }
@@ -187,7 +198,7 @@ namespace Atdi.Modules.AmqpBroker
 
         public void Dispose()
         {
-            this.UnjoinConsumers();
+            this.DetachConsumers();
             this.CloseChannel("Channel.Dispose");
             this.DisposeChannel();
         }
@@ -206,12 +217,12 @@ namespace Atdi.Modules.AmqpBroker
                         arguments: null
                     );
 
-                this._logger.Verbouse("RabbitMQ.DeclareExchange", $"The exchange with name '{exchangeName}' is declared successfully: Type = 'Direct', Durable: true", this);
+                this._logger.Verbouse("AmqpBroker.ExchangeDeclaration", $"The exchange is declared successfully: Exchange='{exchangeName}', {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.DeclareExchangeException, "RabbitMQ.DeclareExchange", e, this);
-                throw new InvalidOperationException($"The exchange with name '{exchangeName}' is not declared", e);
+                this._logger.Exception(BrokerEvents.DeclareExchangeException, "AmqpBroker.ExchangeDeclaration", e, this);
+                throw new InvalidOperationException($"The exchange is not declared: Exchange='{exchangeName}', {this}", e);
             }
         }
 
@@ -230,12 +241,12 @@ namespace Atdi.Modules.AmqpBroker
 
                 _channel.QueueBind(queue, exchange, routingKey, null);
 
-                this._logger.Verbouse("RabbitMQ.DeclareQueue", $"The queue with name '{queue}' is declared successfully: Routing key = '{routingKey}', Exchange name: '{exchange}'", this);
+                this._logger.Verbouse("AmqpBroker.QueueDeclaration", $"The queue and binding are declared successfully: Queue='{queue}', Routing='{routingKey}', Exchange='{exchange}', {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.DeclareQueueException, "RabbitMQ.DeclareQueue", e, this);
-                throw new InvalidOperationException($"The queue with name '{queue}' is not declared", e);
+                this._logger.Exception(BrokerEvents.DeclareQueueException, "AmqpBroker.QueueDeclaration", e, this);
+                throw new InvalidOperationException($"The queue and binding are not declared: Queue='{queue}', Routing='{routingKey}', Exchange='{exchange}', {this}", e);
             }
         }
 
@@ -247,12 +258,12 @@ namespace Atdi.Modules.AmqpBroker
 
                 _channel.QueueBind(queue, exchange, routingKey, null);
 
-                this._logger.Verbouse("RabbitMQ.DeclareBinding", $"The queue with name '{queue}' is declared successfully: Routing key = '{routingKey}', Exchange name: '{exchange}'", this);
+                this._logger.Verbouse("AmqpBroker.BindingDeclaration", $"The binding is declared successfully: Queue='{queue}', Routing='{routingKey}', Exchange='{exchange}', {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.DeclareQueueBindingException, "RabbitMQ.DeclareBinding", e, this);
-                throw new InvalidOperationException($"The queue binding is not declared: Queue name ='{queue}', Routing key = '{routingKey}', Exchange name = '{exchange}'", e);
+                this._logger.Exception(BrokerEvents.DeclareQueueBindingException, "AmqpBroker.BindingDeclaration", e, this);
+                throw new InvalidOperationException($"The binding is not declared: Queue='{queue}', Routing='{routingKey}', Exchange='{exchange}', {this}", e);
             }
         }
 
@@ -268,20 +279,19 @@ namespace Atdi.Modules.AmqpBroker
                            exclusive: false,
                            autoDelete: false,
                            arguments: null);
-
-                this._logger.Verbouse("RabbitMQ.DeclareQueue", $"The queue with name '{queueName}' is declared successfully", this);
+                this._logger.Verbouse("AmqpBroker.QueueDeclaration", $"The queue is declared successfully: Queue='{queueName}', {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.DeclareQueueException, "RabbitMQ.DeclareQueue", e, this);
-                throw new InvalidOperationException($"The queue with name '{queueName}' is not declared", e);
+                this._logger.Exception(BrokerEvents.DeclareQueueException, "AmqpBroker.DeclareQueue", e, this);
+                throw new InvalidOperationException($"he queue is not declared successfully: Queue='{queueName}', {this}", e);
             }
         }
 
         private static long DateTimeToUnixTimestamp(DateTime dateTime)
         {
             return Convert.ToInt64((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
-                   new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds);
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
         }
 
         public IDeliveryMessage CreateMessage()
@@ -301,55 +311,66 @@ namespace Atdi.Modules.AmqpBroker
                 {
                     props.MessageId = message.Id;
                 }
+
                 if (!string.IsNullOrEmpty(message.AppId))
                 {
                     props.AppId = message.AppId;
                 }
+
                 if (!string.IsNullOrEmpty(message.Type))
                 {
                     props.Type = message.Type;
                 }
+
                 if (!string.IsNullOrEmpty(message.ContentType))
                 {
                     props.ContentType = message.ContentType;
                 }
+
                 if (!string.IsNullOrEmpty(message.ContentEncoding))
                 {
                     props.ContentEncoding = message.ContentEncoding;
                 }
+
                 if (!string.IsNullOrEmpty(message.CorrelationId))
                 {
                     props.CorrelationId = message.CorrelationId;
                 }
+
                 props.Timestamp = new RBC.AmqpTimestamp(DateTimeToUnixTimestamp(DateTime.Now));
                 props.Headers = message.Headers;
 
                 this._messageSendingState = MessageSendingState.Sending;
+
                 this._channel.BasicPublish(exchange, routingKey, false, props, message.Body);
                 this._channel.WaitForConfirmsOrDie();
-                if (this._messageSendingState != MessageSendingState.Sent)
-                {
-                    switch (this._messageSendingState)
-                    {
-                        case MessageSendingState.Returned:
-                            throw new InvalidOperationException("The message was returned");
-                        case MessageSendingState.Nacks:
-                            throw new InvalidOperationException("The message was rejected");
-                        case MessageSendingState.Aborted:
-                            throw new InvalidOperationException("The message sending was aborted");
-                        default:
-                            throw new InvalidOperationException("The message was not sent");
-                    }
-                }
 
-                this._logger.Verbouse("RabbitMQ.PublisheMessage", $"The message '{message.Type}' is published successfully: Exchange: '{exchange}', Routing= '{routingKey}', Id = '{message.Id}'", this);
+
+                this._logger.Verbouse("AmqpBroker.MessagePublication",
+                    $"The message is published successfully: {this}, Type='{message.Type}', Exchange='{exchange}', Routing='{routingKey}', Id='{message.Id}'",
+                    this);
 
                 return message.Id;
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.PublishException, "RabbitMQ.PublisheMessage", e, this);
-                throw new InvalidOperationException($"The message with type '{message.Type}' is not published", e);
+                this._logger.Exception(BrokerEvents.PublishException, "AmqpBroker.MessagePublication", e, this);
+
+                switch (this._messageSendingState)
+                {
+                    case MessageSendingState.Returned:
+                        throw new InvalidOperationException($"The message is not published. It was returned by AMQP Broker: {this}, Type='{message?.Type}', Exchange='{exchange}', Routing='{routingKey}', Id='{message?.Id}'");
+                    case MessageSendingState.Nacks:
+                        throw new InvalidOperationException($"The message is not published. It was rejected by AMQP Broker: {this}, Type='{message?.Type}', Exchange='{exchange}', Routing='{routingKey}', Id='{message?.Id}'");
+                    case MessageSendingState.Aborted:
+                        throw new InvalidOperationException($"The message is not published. It sending was aborted: {this}, Type='{message?.Type}', Exchange='{exchange}', Routing='{routingKey}', Id='{message?.Id}'");
+                    default:
+                        throw new InvalidOperationException($"The message is not published. It was not sent: {this}, Type='{message?.Type}', Exchange='{exchange}', Routing='{routingKey}', Id='{message?.Id}'");
+                }
+            }
+            finally
+            {
+                this._messageSendingState = MessageSendingState.None;
             }
         }
 
@@ -389,7 +410,7 @@ namespace Atdi.Modules.AmqpBroker
             return deliveryObject;
         }
 
-        public void JoinConsumer(string queue, string tag, IDeliveryHandler handler)
+        public void AttachConsumer(string queue, string tag, IDeliveryHandler handler)
         {
             try
             {
@@ -410,16 +431,16 @@ namespace Atdi.Modules.AmqpBroker
                 this._consumers.Add(tag, descriptor);
                 _channel.BasicConsume(queue, false, tag, false, false, null, descriptor.Consumer);
 
-                this._logger.Verbouse("RabbitMQ.JoinConsumer", $"The consumer '{tag}' is joined successfully: Channel: #{_channelNumber}, Queue: '{queue}', Handler: '{handler.GetType().FullName}'", this);
+                this._logger.Verbouse("AmqpBroker.ConsumerAttachment", $"The consumer is attached successfully: {descriptor}, {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.JoinConsumerException, "RabbitMQ.JoinConsumer", e, this);
-                throw new InvalidOperationException($"The consumer '{tag}' is not joined fully", e);
+                this._logger.Exception(BrokerEvents.JoinConsumerException, "AmqpBroker.ConsumerAttachment", e, this);
+                throw new InvalidOperationException($"The consumer is not attached fully: Tag='{tag}', Queue='{queue}', Handler='{handler?.GetType().FullName}', {this}", e);
             }
         }
 
-        public void UnjoinConsumer(string tag)
+        public void DetachConsumer(string tag)
         {
             try
             {
@@ -438,12 +459,12 @@ namespace Atdi.Modules.AmqpBroker
                 }
                 this._consumers.Remove(tag);
                 
-                this._logger.Verbouse("RabbitMQ.UnjoinConsumer", $"The consumer '{tag}' is unjoined successfully: Channel: #{_channelNumber}, Queue: '{descriptor.Queue}', Handler: '{descriptor.Handler.GetType().FullName}'", this);
+                this._logger.Verbouse("AmqpBroker.ConsumerDetaching", $"The consumer is detached successfully: {descriptor}, {this}", this);
             }
             catch (Exception e)
             {
-                this._logger.Exception(BrokerEvents.UnjoinConsumerException, "RabbitMQ.UnjoinConsumer", e, this);
-                throw new InvalidOperationException($"The consumer '{tag}' is not unjoined fully", e);
+                this._logger.Exception(BrokerEvents.UnjoinConsumerException, "AmqpBroker.ConsumerDetaching", e, this);
+                throw new InvalidOperationException($"The consumer is not detached fully: Tag='{tag}', {this}", e);
             }
         }
     }

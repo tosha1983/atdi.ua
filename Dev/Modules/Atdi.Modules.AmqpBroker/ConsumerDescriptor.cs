@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Atdi.Modules.AmqpBroker
+﻿namespace Atdi.Modules.AmqpBroker
 {
     internal class ConsumerDescriptor
     {
@@ -15,5 +9,10 @@ namespace Atdi.Modules.AmqpBroker
         public string Queue { get; set; }
 
         public Consumer Consumer { get; set; }
+
+        public override string ToString()
+        {
+            return $"Tag='{this.Tag}', Queue='{this.Queue}', Handler='{this.Handler?.GetType().FullName}', AmqpTag='{this.Consumer?.ConsumerTag}'";
+        }
     }
 }

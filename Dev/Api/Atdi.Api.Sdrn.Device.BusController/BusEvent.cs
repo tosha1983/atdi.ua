@@ -15,7 +15,14 @@ namespace Atdi.Api.Sdrn.Device.BusController
             this.Created = DateTime.Now;
             this.ManagedThread = System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
-        
+
+        internal BusEvent(Guid id, DateTime created, int managedThread)
+        {
+            this.Id = id;
+            this.Created = created;
+            this.ManagedThread = managedThread;
+        }
+
         public Guid Id { get; private set; }
 
         public int Code { get; set; }
