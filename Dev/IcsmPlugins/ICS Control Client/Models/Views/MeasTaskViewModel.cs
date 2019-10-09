@@ -86,7 +86,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public int? MeasDtParamPreamplification { get; set; }
 
         public bool IsAutoMeasDtParamReferenceLevel { get; set; }
-        public int? MeasDtParamReferenceLevel { get; set; }
+        public double? MeasDtParamReferenceLevel { get; set; }
 
         public MeasurementMode MeasDtParamMode { get; set; }
 
@@ -144,9 +144,6 @@ namespace XICSM.ICSControlClient.Models.Views
         public StationDataForMeasurements[] StationsForMeasurements { get; set; }
 
         public MeasSensor[] Sensors { get; set; }
-
-        public SignalingMeasTask SignalingMeasTaskParameters { get; set; }
-
 
         public bool? FiltrationTrace { get; set; }
         public double? windowBW { get; set; }

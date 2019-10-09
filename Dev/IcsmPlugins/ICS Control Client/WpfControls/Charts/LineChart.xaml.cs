@@ -424,8 +424,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                         };
                         tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                         chartCanvas.Children.Add(tb);
-                        Canvas.SetLeft(tb, 5);
-                        Canvas.SetTop(tb, point.Y + 5);
+                        Canvas.SetLeft(tb, lines.LabelLeft);
+                        Canvas.SetTop(tb, point.Y + lines.LabelTop);
                     }
                 }
                 if (lines.IsVertical)
@@ -448,8 +448,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                         };
                         tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                         chartCanvas.Children.Add(tb);
-                        Canvas.SetLeft(tb, point.X + 5);
-                        Canvas.SetTop(tb, chartCanvas.ActualHeight - 25);
+                        Canvas.SetLeft(tb, point.X + lines.LabelLeft);
+                        Canvas.SetTop(tb, chartCanvas.ActualHeight + lines.LabelTop);
                     }
                 }
             }

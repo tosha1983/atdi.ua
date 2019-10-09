@@ -319,17 +319,17 @@ namespace XICSM.ICSControlClient.ViewModels
                     if (this._currentEmitting.Spectrum.T1 != 0)
                     {
                         var val = (this._currentEmitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + this._currentEmitting.Spectrum.SpectrumSteps_kHz * 1000 * this._currentEmitting.Spectrum.T1) / 1000000;
-                        linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                        linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -25 });
                     }
                     if (this._currentEmitting.Spectrum.T2 != 0)
                     {
                         var val = (this._currentEmitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + this._currentEmitting.Spectrum.SpectrumSteps_kHz * 1000 * this._currentEmitting.Spectrum.T2) / 1000000;
-                        linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                        linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -45 });
                     }
                     if (this._currentEmitting.Spectrum.MarkerIndex != 0)
                     {
                         var val = (this._currentEmitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + this._currentEmitting.Spectrum.SpectrumSteps_kHz * 1000 * this._currentEmitting.Spectrum.MarkerIndex) / 1000000;
-                        linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                        linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -35 });
                     }
                 }
             }

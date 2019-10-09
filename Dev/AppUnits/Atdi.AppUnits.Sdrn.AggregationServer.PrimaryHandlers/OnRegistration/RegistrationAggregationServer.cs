@@ -19,13 +19,13 @@ using Atdi.DataModels.Sdrns.Server;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
-    public class RegistrationAggregationServer : IDisposable
+    public class RegistrationAggregationServer 
     {
         private readonly ILogger _logger;
         private readonly ISdrnServerEnvironment _environment;
         private readonly IPublisher _publisher;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
-        private Thread _processingThread;
+
 
         public RegistrationAggregationServer(IPublisher publisher, IDataLayer<EntityDataOrm> dataLayer, ILogger logger, ISdrnServerEnvironment environment)
         {
@@ -35,17 +35,8 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             this._dataLayer = dataLayer;
         }
 
+
         public void Run()
-        {
-            this._processingThread = new Thread(this.Process)
-            {
-                Name = $"RegistrationAggregationServerOnMasterServer"
-            };
-
-            this._processingThread.Start();
-        }
-
-        private void Process()
         {
             try
             {
@@ -72,14 +63,6 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             {
                 this._logger.StartTrace(Contexts.ThisComponent, Categories.RegistrationAggregationServer, e);
             }
-        }
-
-      
-       
-
-        public void Dispose()
-        {
-
         }
     }
 }

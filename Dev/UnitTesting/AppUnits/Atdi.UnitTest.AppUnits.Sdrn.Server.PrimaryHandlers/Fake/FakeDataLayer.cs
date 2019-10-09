@@ -188,6 +188,16 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
                 return 0;
             }
 
+            public object Execute(IQueryStatement statement, Type resultType)
+            {
+                throw new NotImplementedException();
+            }
+
+            TResult IQueryExecutor.Execute<TResult>(IQueryStatement statement)
+            {
+                throw new NotImplementedException();
+            }
+
             public int Execute<TModel>(IQueryStatement statement)
             {
                 throw new NotImplementedException();
@@ -368,6 +378,11 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         {
             public IDataEngineConfig Config => throw new NotImplementedException();
 
+            public IEngineExecuter CreateExecuter()
+            {
+                throw new NotImplementedException();
+            }
+
             public IEngineSyntax Syntax => throw new  NotImplementedException();
 
             public void BeginTransaction()
@@ -411,6 +426,16 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         public IQueryBuilder<TModel> GetBuilder<TModel>()
         {
             return new FakeQueryBuilder<TModel>();
+        }
+
+        public IDataLayerScope CreateScope<TContext>() where TContext : IDataContext, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataLayerScope CreateScope(IDataContext dataContext)
+        {
+            throw new NotImplementedException();
         }
 
         public IDataEngine GetDataEngine<TContext>() where TContext : IDataContext, new()

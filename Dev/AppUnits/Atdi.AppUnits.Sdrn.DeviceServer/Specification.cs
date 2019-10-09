@@ -61,7 +61,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly EventCategory Creating = "Creating";
         public static readonly EventCategory Finishing = "Finishing";
 
-        public static readonly EventCategory Initilazing = "Initilazing";
+        public static readonly EventCategory Initializing = "Initializing";
         public static readonly EventCategory Callbacking = "Callbacking";
 
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Atdi.Modules.AmqpBroker
+﻿namespace Atdi.Modules.AmqpBroker
 {
     public enum HandlingResult
     {
@@ -12,8 +6,6 @@ namespace Atdi.Modules.AmqpBroker
         Confirm,
         Reject
     }
-
-    
 
     public interface IDeliveryHandler
     {

@@ -73,7 +73,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 {
                     _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing MeasResultWorker");
                     this.SendMeasResult();
-                    _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Start processing MeasResultWorker");
+                    _logger.Debug(Contexts.ThisComponent, Categories.EventProcessing, "Stop processing MeasResultWorker");
                     Thread.Sleep(_timeout);
                 }
             }

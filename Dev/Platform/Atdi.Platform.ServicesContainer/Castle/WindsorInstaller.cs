@@ -68,6 +68,18 @@ namespace Atdi.Platform.ServicesContainer.Castle
                         .LifeStyle.Singleton
                 );
 
+            container.Register(
+                Component.For<IJobExecutorResolver>()
+                    .ImplementedBy<JobExecutorResolver>()
+                    .LifeStyle.Singleton
+            );
+
+            container.Register(
+                Component.For<IJobBroker>()
+                    .ImplementedBy<JobBroker>()
+                    .LifeStyle.Singleton
+            );
+
         }
     }
 }

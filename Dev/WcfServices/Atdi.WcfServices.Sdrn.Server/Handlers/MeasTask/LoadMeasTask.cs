@@ -383,7 +383,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.CheckFreqChannel = readerMeasTaskSignaling.GetValue(c => c.CheckFreqChannel);
                                 measTask.SignalingMeasTaskParameters.triggerLevel_dBm_Hz = readerMeasTaskSignaling.GetValue(c => c.TriggerLevel_dBm_Hz);
 
-                                
+
 
                                 measTask.SignalingMeasTaskParameters.GroupingParameters = new SignalingGroupingParameters();
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForBadSignals);
@@ -392,7 +392,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(c => c.TypeJoinSpectrum);
                                 measTask.SignalingMeasTaskParameters.allowableExcess_dB = readerMeasTaskSignaling.GetValue(c => c.allowableExcess_dB);
 
-                                
+
                             }
                             return resultMeasTaskSignaling;
                         });
@@ -411,7 +411,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerReferenceSituationRaw.Read())
                             {
                                 var refSituation = new ReferenceSituation();
-                                
+
                                 refSituation.SensorId = readerReferenceSituationRaw.GetValue(c => c.SENSOR.Id);
 
                                 var referenceSignals = new List<ReferenceSignal>();
@@ -495,63 +495,71 @@ namespace Atdi.WcfServices.Sdrn.Server
                         measTask.MeasTimeParamList = timeParamList;
 
 
-                    int? swNumber = null;
-                        
-                    var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
-                        builderMeasDtParam.Select(c => c.Id);
-                        builderMeasDtParam.Select(c => c.Demod);
-                        builderMeasDtParam.Select(c => c.DetectType);
-                        builderMeasDtParam.Select(c => c.Ifattenuation);
-                        builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
-                        builderMeasDtParam.Select(c => c.MeasTime);
-                        builderMeasDtParam.Select(c => c.Mode);
-                        builderMeasDtParam.Select(c => c.Preamplification);
-                        builderMeasDtParam.Select(c => c.Rbw);
-                        builderMeasDtParam.Select(c => c.Rfattenuation);
-                        builderMeasDtParam.Select(c => c.Vbw);
-                        builderMeasDtParam.Select(c => c.SwNumber);
-                        builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
-                        {
-                            while (readerMeasDtParam.Read())
-                            {
-                                var dtx = new MeasDtParam();
-                                dtx.Demod = readerMeasDtParam.GetValue(c => c.Demod);
-                                DetectingType detectType;
-                                if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
-                                    dtx.DetectType = detectType;
+                        int? swNumber = null;
 
-                                dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
-                                dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
-                                MeasurementMode mode;
-                                if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out mode))
-                                    dtx.Mode = mode;
-
-                                dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
-                                dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
-                                swNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
-
-                                dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
-
-                                dtx.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
-                                measTask.MeasDtParam = dtx;
-
-                            }
-                            return true;
-                        });
-
-                        
-                        measTask.MeasDtParam = new MeasDtParam();
+                        //measTask.MeasDtParam = new MeasDtParam();
                         MeasurementType typeMeasurements;
                         if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
                         {
+                            measTask.MeasDtParam = new MeasDtParam();
                             measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
                         }
                         else
                         {
                             throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
                         }
-                       
+
+
+                        if (measTask.MeasDtParam.TypeMeasurements!= MeasurementType.MonitoringStations)
+                        {
+                            var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
+                            builderMeasDtParam.Select(c => c.Id);
+                            builderMeasDtParam.Select(c => c.Demod);
+                            builderMeasDtParam.Select(c => c.DetectType);
+                            builderMeasDtParam.Select(c => c.Ifattenuation);
+                            builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
+                            builderMeasDtParam.Select(c => c.MeasTime);
+                            builderMeasDtParam.Select(c => c.Mode);
+                            builderMeasDtParam.Select(c => c.Preamplification);
+                            builderMeasDtParam.Select(c => c.Rbw);
+                            builderMeasDtParam.Select(c => c.Rfattenuation);
+                            builderMeasDtParam.Select(c => c.ReferenceLevel);
+                            builderMeasDtParam.Select(c => c.NumberTotalScan);
+                            builderMeasDtParam.Select(c => c.Vbw);
+                            builderMeasDtParam.Select(c => c.SwNumber);
+                            builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
+                            {
+                                while (readerMeasDtParam.Read())
+                                {
+                                    var dtx = new MeasDtParam();
+                                    dtx.TypeMeasurements = measTask.MeasDtParam.TypeMeasurements;
+                                    dtx.Demod = readerMeasDtParam.GetValue(c => c.Demod);
+                                    DetectingType detectType;
+                                    if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
+                                        dtx.DetectType = detectType;
+
+                                    dtx.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
+                                    dtx.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
+                                    dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
+                                    dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
+                                    MeasurementMode mode;
+                                    if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out mode))
+                                        dtx.Mode = mode;
+
+                                    dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
+                                    dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
+                                    swNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
+
+                                    dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
+
+                                    dtx.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
+                                    measTask.MeasDtParam = dtx;
+
+                                }
+                                return true;
+                            });
+                        }
 
 
                         // IMeasFreqParam
@@ -605,9 +613,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                         });
 
 
-                    // IMeasLocationParam
+                        // IMeasLocationParam
 
-                    var measLocParams = new List<MeasLocParam>();
+                        var measLocParams = new List<MeasLocParam>();
                         var builderMeasLocationParam = this._dataLayer.GetBuilder<MD.IMeasLocationParam>().From();
                         builderMeasLocationParam.Select(c => c.Id);
                         builderMeasLocationParam.Select(c => c.Asl);
@@ -653,7 +661,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 {
                                     measOther.TypeSpectrumOccupation = typeSpectrumOccupation;
                                 }
-                                
+
                             }
                             return true;
                         });
@@ -887,61 +895,69 @@ namespace Atdi.WcfServices.Sdrn.Server
       
                         // IMeasDtParam
                         int? swNumber = null;
-
-                        var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
-                        builderMeasDtParam.Select(c => c.Id);
-                        builderMeasDtParam.Select(c => c.Demod);
-                        builderMeasDtParam.Select(c => c.DetectType);
-                        builderMeasDtParam.Select(c => c.Ifattenuation);
-                        builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
-                        builderMeasDtParam.Select(c => c.MeasTime);
-                        builderMeasDtParam.Select(c => c.Mode);
-                        builderMeasDtParam.Select(c => c.Preamplification);
-                        builderMeasDtParam.Select(c => c.Rbw);
-                        builderMeasDtParam.Select(c => c.Rfattenuation);
-                        builderMeasDtParam.Select(c => c.Vbw);
-                        builderMeasDtParam.Select(c => c.SwNumber);
-                        builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
-                        queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
-                        {
-                            while (readerMeasDtParam.Read())
-                            {
-                                var dtx = new MeasDtParam();
-                                dtx.Demod = readerMeasDtParam.GetValue(c => c.Demod);
-                                DetectingType detectType;
-                                if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
-                                    dtx.DetectType = detectType;
-
-                                dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
-                                dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
-                                MeasurementMode mode;
-                                if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out mode))
-                                    dtx.Mode = mode;
-
-                                dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
-                                dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
-                                swNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
-                                dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
-                                
-                                dtx.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
-                                measTask.MeasDtParam = dtx;
-
-                            }
-                            return true;
-                        });
+                    
                         
-                         measTask.MeasDtParam = new MeasDtParam();
+                         //measTask.MeasDtParam = new MeasDtParam();
                          MeasurementType typeMeasurements;
                          if (Enum.TryParse<MeasurementType>(readerMeasTask.GetValue(c => c.Type), out typeMeasurements))
                          {
+                               measTask.MeasDtParam = new MeasDtParam();
                                measTask.MeasDtParam.TypeMeasurements = typeMeasurements;
                          }
                          else
                          {
                                throw new InvalidOperationException("NOT set 'MeasurementType' for task Task!");
                          }
-                        
 
+                        if (measTask.MeasDtParam.TypeMeasurements != MeasurementType.MonitoringStations)
+                        {
+                            var builderMeasDtParam = this._dataLayer.GetBuilder<MD.IMeasDtParam>().From();
+                            builderMeasDtParam.Select(c => c.Id);
+                            builderMeasDtParam.Select(c => c.Demod);
+                            builderMeasDtParam.Select(c => c.DetectType);
+                            builderMeasDtParam.Select(c => c.Ifattenuation);
+                            builderMeasDtParam.Select(c => c.MEAS_TASK.Id);
+                            builderMeasDtParam.Select(c => c.MeasTime);
+                            builderMeasDtParam.Select(c => c.Mode);
+                            builderMeasDtParam.Select(c => c.Preamplification);
+                            builderMeasDtParam.Select(c => c.Rbw);
+                            builderMeasDtParam.Select(c => c.Rfattenuation);
+                            builderMeasDtParam.Select(c => c.Vbw);
+                            builderMeasDtParam.Select(c => c.SwNumber);
+                            builderMeasDtParam.Select(c => c.ReferenceLevel);
+                            builderMeasDtParam.Select(c => c.NumberTotalScan);
+                            builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
+                            {
+                                while (readerMeasDtParam.Read())
+                                {
+                                    var dtx = new MeasDtParam();
+                                    dtx.TypeMeasurements = measTask.MeasDtParam.TypeMeasurements;
+                                    dtx.Demod = readerMeasDtParam.GetValue(c => c.Demod);
+                                    DetectingType detectType;
+                                    if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectType))
+                                        dtx.DetectType = detectType;
+
+                                    dtx.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
+                                    dtx.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
+                                    dtx.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Ifattenuation).Value : 0;
+                                    dtx.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
+                                    MeasurementMode mode;
+                                    if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out mode))
+                                        dtx.Mode = mode;
+
+                                    dtx.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification).HasValue ? readerMeasDtParam.GetValue(c => c.Preamplification).Value : -1;
+                                    dtx.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
+                                    swNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
+                                    dtx.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation).HasValue ? readerMeasDtParam.GetValue(c => c.Rfattenuation).Value : 0;
+
+                                    dtx.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
+                                    measTask.MeasDtParam = dtx;
+
+                                }
+                                return true;
+                            });
+                        }
 
                         // IMeasFreqParam
 

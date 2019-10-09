@@ -9,6 +9,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
 {
     public static class BusEvents
     {
+        public static readonly int InfoEvent = 1;
         public static readonly int VebouseEvent = 1;
         public static readonly int ExceptionEvent = 1;
         public static readonly int ConfigParameterError = 2;
@@ -43,6 +44,15 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public static readonly string SdrnMessageConvertorUseEncryption = "SDRN.MessageConvertor.UseEncryption";
         public static readonly string SdrnMessageConvertorUseCompression = "SDRN.MessageConvertor.UseCompression";
+
+        public static readonly string DeviceBusContentType = "DeviceBus.ContentType";
+        public static readonly string DeviceBusUseBuffer = "DeviceBus.UseBuffer";
+        public static readonly string DeviceBusBufferOutboxFolder = "DeviceBus.Buffer.OutboxFolder";
+        public static readonly string DeviceBusBufferContentType = "DeviceBus.Buffer.ContentType";
+        public static readonly string DeviceBusBufferConnectionString = "DeviceBus.Buffer.ConnectionString";
+
+        public static readonly string DeviceBusSharedSecretKey = "DeviceBus.SharedSecretKey";
+        public static readonly string DeviceBusClient = "DeviceBus.Client";
     }
 
     public static class BusGateConfigExtensions

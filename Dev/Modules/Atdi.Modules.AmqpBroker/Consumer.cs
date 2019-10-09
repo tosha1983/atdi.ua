@@ -1,9 +1,5 @@
 ﻿using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Atdi.Modules.AmqpBroker
 {
@@ -22,10 +18,17 @@ namespace Atdi.Modules.AmqpBroker
             public string RoutingKey { get; set; }
 
             public Channel Channel { get; set; }
+
+            public string Queue { get; set; }
+
+            public override string ToString()
+            {
+                return
+                    $"Delivery='{this.DeliveryTag}', Routing='{this.RoutingKey},' Consumer='{this.ConsumerTag}', Exchange='{this.Exchange}', Queue='{this.Queue}', Channel=#{this.Channel?.Number}";
+            }
         }
 
         private readonly string _queue;
-        private readonly string _tag;
         private readonly Channel _channel;
         private IDeliveryHandler _handler;
 
@@ -43,17 +46,16 @@ namespace Atdi.Modules.AmqpBroker
             }
 
             this._queue = queue;
-            this._tag = tag;
+            this.Tag = tag;
             this._channel = channel ?? throw new ArgumentNullException(nameof(channel));
             this._handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
+        public string Tag { get; }
+
         public void Dispose()
         {
-            if (_handler != null)
-            {
-                _handler = null;
-            }
+            _handler = null;
         }
 
         public override void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, byte[] body)
@@ -96,7 +98,8 @@ namespace Atdi.Modules.AmqpBroker
                 Exchange = exchange,
                 Redelivered = redelivered,
                 RoutingKey = routingKey,
-                Channel = this._channel
+                Channel = this._channel,
+                Queue = this._queue
             };
 
             var result = this._handler.Handle(message, context);

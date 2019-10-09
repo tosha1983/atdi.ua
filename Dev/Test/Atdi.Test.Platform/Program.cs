@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.Workflows;
 
 namespace Atdi.Test.Platform
 {
@@ -23,12 +24,16 @@ namespace Atdi.Test.Platform
                     host.Start();
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
+                    var jobBroker = resolver.Resolve<IJobBroker>();
                     var logger = resolver.Resolve<ILogger>();
                     
+                    JobsTest.Run(jobBroker, host.Container, logger);
+
+                    //var calc = new CalclCrowed(logger);
                     // DataLayerTest.Run(resolver);
                     // EntityOrmTest.Run(resolver);
 
-                    LoggerTest.Run(logger);
+                    // LoggerTest.Run(logger);
 
                 }
                 catch (Exception e)

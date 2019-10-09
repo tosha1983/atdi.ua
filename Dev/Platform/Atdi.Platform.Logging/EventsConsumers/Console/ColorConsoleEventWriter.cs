@@ -36,7 +36,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
 
         private void WriteEventRow(IEvent @event)
         {
-            this.Write($"({Thread.CurrentThread.ManagedThreadId}) ", ConsoleColor.Red);
+            //this.Write($"({Thread.CurrentThread.ManagedThreadId}) ", ConsoleColor.Red);
 
             // the part of time
             var timeFormat = "HH:mm:ss";
@@ -49,21 +49,21 @@ namespace Atdi.Platform.Logging.EventsConsumers
 
             var timeFormat3 = "FFFFFFF";
             var timeString3 = @event.Time.ToString(timeFormat3).PadRight(timeFormat3.Length, '0');
-            this.Write($".{timeString3.Substring(3)}", ConsoleColor.DarkGray);
+            this.Write($"{timeString3.Substring(3)}", ConsoleColor.DarkGray);
 
             //var ticksString = @event.Time.Ticks.ToString();
             //this.Write($" {ticksString.Substring(ticksString.Length - 12)}", ConsoleColor.Gray);
 
             // the part of thread
-            var treadString = $" #{@event.ManagedThread:D4}";
+            var treadString = $" #{@event.ManagedThread:D3}";
             this.Write(treadString, ConsoleColor.DarkGray);
 
             // the part of event level
             var levelColor = GetColorbyEventLevel(@event.Level);
             var levelTitle = GetTitleByEventLevel(@event.Level);
-            this.Write($" [");
+            //this.Write($" [");
             this.Write($"{levelTitle}", levelColor);
-            this.Write($"]");
+           // this.Write($"]");
 
             // the part of context
             var contextCategorySectionSize = 35;

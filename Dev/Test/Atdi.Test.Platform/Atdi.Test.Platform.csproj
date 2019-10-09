@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="DataLayerTest.cs" />
     <Compile Include="EntityOrmTest.cs" />
+    <Compile Include="JobsTest.cs" />
     <Compile Include="LoggerTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

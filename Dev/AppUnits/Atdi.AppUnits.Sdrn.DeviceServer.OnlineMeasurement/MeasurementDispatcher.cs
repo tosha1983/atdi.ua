@@ -83,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
 
             _socketThread = new Thread(() => _descriptor.Server.Run())
             {
-                Name = "Atdi.SDRN.DeviceServer.WebSocket"
+                Name = "ATDI.DeviceServer.SocketProcessing"
             };
 
             _socketThread.Start();

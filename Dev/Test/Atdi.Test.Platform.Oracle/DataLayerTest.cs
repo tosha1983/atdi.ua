@@ -59,7 +59,6 @@ namespace Atdi.Test.Platform
                                 //var path = reader.GetPath(i);
                                 //var ordinalByPath = reader.GetOrdinalByAlias(path);
                                 var state = reader.ToString();
-                                var valIsNull = false;
                                 var len = 0;
 
 
@@ -95,7 +94,6 @@ namespace Atdi.Test.Platform
                                 //var len = 0;
                                 if (reader.IsDBNull(i))
                                 {
-                                    valIsNull = true;
                                 }
                                 else if (type == typeof(long))
                                 {

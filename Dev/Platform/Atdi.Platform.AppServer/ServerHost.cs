@@ -75,13 +75,13 @@ namespace Atdi.Platform.AppServer
 
         private ComponentDescriptor InstallComponent(IComponentConfig config)
         {
-            this.Logger.Verbouse(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentIsInstalling.With(config.Type, config.Instance, config.Assembly));
-            IComponent component = null;
+            this.Logger.Info(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentIsInstalling.With(config.Type, config.Instance, config.Assembly));
             try
             {
-                component = this._typeResolver.CreateInstance<IComponent>(new AssemblyName(config.Assembly));
+                var component = this._typeResolver.CreateInstance<IComponent>(new AssemblyName(config.Assembly));
                 component.Install(this._container, config);
-                this.Logger.Verbouse(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentInstalled);
+                this.Logger.Info(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentInstalled.With(config.Type, config.Instance, config.Assembly));
+
                 return new ComponentDescriptor(component, config);
             }
             catch(Exception e)
@@ -294,7 +294,7 @@ namespace Atdi.Platform.AppServer
                 return;
             }
 
-            this.Logger.Info(Contexts.AppServerHost, Categories.Disposabling, Events.ServerHostIsDisposabling);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerHostIsDisposing);
             var curState = this._state;
             this._state = HostState.Disposing;
             if (this._components != null)
@@ -307,7 +307,7 @@ namespace Atdi.Platform.AppServer
                 this._components = null;
             }
             this._state = HostState.Disposed;
-            this.Logger.Info(Contexts.AppServerHost, Categories.Disposabling, Events.ServerHostDisposabled);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerHostDisposed);
             
 
             if (this._container != null)
@@ -332,7 +332,7 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerHostIsStarting);
             this._state = HostState.Starting;
             this.ActivateComponents();
-            this._loader.ExecuteTruggers();
+            this._loader.ExecuteTriggers();
             this._state = HostState.Started;
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerHostStarted);
 
@@ -351,7 +351,7 @@ namespace Atdi.Platform.AppServer
                 throw new InvalidOperationException(Exceptions.IncorrectStateForStopping);
             }
 
-            this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerHostIsStoping);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerHostIsStopping);
             this._state = HostState.Stopping;
             this.DeactivateComponents();
             this._state = HostState.Stopped;
@@ -416,7 +416,7 @@ namespace Atdi.Platform.AppServer
 
         private void UninstallComponents()
         {
-            this.Logger.Info(Contexts.AppServerHost, Categories.Disposabling, Events.ServerComponentsIsUninstalling);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerComponentsIsUninstalling);
            
             foreach (var descriptor in this._components)
             {
@@ -430,7 +430,7 @@ namespace Atdi.Platform.AppServer
                 }
             }
 
-            this.Logger.Info(Contexts.AppServerHost, Categories.Disposabling, Events.ServerComponentsUninstalled);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerComponentsUninstalled);
         }
 
         public IServicesContainer Container { get => this._container; }
