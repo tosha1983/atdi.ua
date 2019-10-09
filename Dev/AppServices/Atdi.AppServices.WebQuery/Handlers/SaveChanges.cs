@@ -753,6 +753,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                     checkedSetValues.Add(new DateTimeColumnValue() { Source = (GetNameColumnInDb(linkValues[j].Name) == linkValues[j].SourceColumnName) ? linkValues[j].Name : linkValues[j].SourceColumnName, Name = linkValues[j].SourceColumnName, Value = linkValues[j].Value as DateTime? });
                                 }
                             }
+                            else if (linkValues[j].typeValue == DataType.Bytes)
+                            {
+                                if (checkedSetValues.Find(y => y.Name == linkValues[j].SourceColumnName) == null)
+                                {
+                                    checkedSetValues.Add(new BytesColumnValue() { Source = (GetNameColumnInDb(linkValues[j].Name) == linkValues[j].SourceColumnName) ? linkValues[j].Name : linkValues[j].SourceColumnName, Name = linkValues[j].SourceColumnName, Value = linkValues[j].Value as byte[] });
+                                }
+                            }
                             else
                             {
                                 throw new InvalidOperationException($"Unsupported data type for column value '{linkValues[j].typeValue}'");
@@ -784,7 +791,10 @@ namespace Atdi.AppServices.WebQuery.Handlers
                             {
                                 linkColumnUpdate.TypeColumn = typeof(float);
                             }
-
+                            else if (linkValues[j].typeValue == DataType.Bytes)
+                            {
+                                linkColumnUpdate.TypeColumn = typeof(byte[]);
+                            }
 
                             if (listLinkColumn.Find(x => x.LinkFieldName == linkValues[j].SourceColumnName && x.TableName == columnProperties.NameTableTo && FullColumnName.Contains(x.FullSourceName)) == null)
                             {
@@ -913,6 +923,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                             checkedSetValues.Add(new DoubleColumnValue() { Source = (GetNameColumnInDb(LinkColumnFindedNew.FullSourceName) == columnProperties.FieldJoinFrom) ? LinkColumnFindedNew.FullSourceName : columnProperties.FieldJoinFrom, Name = columnProperties.FieldJoinFrom, Value = idValueFieldJoinFrom as double? });
                                         }
                                     }
+                                    else if (columnProperties.TypeColumn == typeof(byte[]))
+                                    {
+                                        if (checkedSetValues.Find(y => y.Name == columnProperties.FieldJoinFrom) == null)
+                                        {
+                                            checkedSetValues.Add(new BytesColumnValue() { Source = (GetNameColumnInDb(LinkColumnFindedNew.FullSourceName) == columnProperties.FieldJoinFrom) ? LinkColumnFindedNew.FullSourceName : columnProperties.FieldJoinFrom, Name = columnProperties.FieldJoinFrom, Value = idValueFieldJoinFrom as byte[] });
+                                        }
+                                    }
                                     else
                                     {
                                         throw new InvalidOperationException($"Unsupported data type for column value '{columnProperties.TypeColumn}'");
@@ -943,6 +960,10 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                     else if (columnProperties.TypeColumn == typeof(float))
                                     {
                                         linkColumnUpdate.TypeColumn = typeof(float);
+                                    }
+                                    else if (columnProperties.TypeColumn == typeof(byte[]))
+                                    {
+                                        linkColumnUpdate.TypeColumn = typeof(byte[]);
                                     }
                                     else
                                     {
@@ -1552,6 +1573,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                                         listColumnValue.Add(new FloatColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = val.Value as float? });
                                     }
                                 }
+                                else if (val.typeValue == DataType.Bytes)
+                                {
+                                    if (listColumnValue.Find(z => z.Name == findedColumnMeta.columnProperties[j].NameField) == null)
+                                    {
+                                        listColumnValue.Add(new BytesColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = val.Value as byte[] });
+                                    }
+                                }
 
                                 if (findedColumnMeta.columnProperties[j].Name != null)
                                 {
@@ -1665,6 +1693,13 @@ namespace Atdi.AppServices.WebQuery.Handlers
                             if (listColumnValue.Find(z => z.Name == findedColumnMeta.columnProperties[j].NameField) == null)
                             {
                                 listColumnValue.Add(new FloatColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = linkValue.Value as float? });
+                            }
+                        }
+                        else if (linkValue.typeValue == DataType.Bytes)
+                        {
+                            if (listColumnValue.Find(z => z.Name == findedColumnMeta.columnProperties[j].NameField) == null)
+                            {
+                                listColumnValue.Add(new BytesColumnValue() { Name = findedColumnMeta.columnProperties[j].NameField, Value = linkValue.Value as byte[] });
                             }
                         }
 
@@ -1929,40 +1964,43 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
             // Запуск процедуры обновления
 
-            listLinkColumn.Clear();
-            var primaryKeys = primaryColumns.Find(z => z.NameTableTo == queryDescriptor.TableName);
-            var linkColumn = new LinkColumn();
-            linkColumn.LinkFieldName = primaryKeys.FieldJoinTo;
-            linkColumn.TableName = queryDescriptor.TableName;
-            linkColumn.ValueLinkId = idValue;
-            linkColumn.TypeColumn = primaryKeys.TypeColumn;
-            linkColumn.FullSourceName = primaryKeys.FieldJoinTo;
-            listLinkColumn.Add(linkColumn);
-
-            for (int i = maxLevelsByValues; i >= 1; i--)
+            //if ((maxLevelsByValues > 1) || (updateAction != null))
             {
-                var findValuesByLevel = valuesFromColumns.FindAll(z => z.Level == i);
-                foreach (var val in findValuesByLevel)
-                {
-                    var value = irpDescrColumns.ToList();
-                    var findedColumnMeta = value.Find(z => z.columnMeta.Name == val.Name);
-                    if ((findedColumnMeta != null) && (findedColumnMeta.columnProperties != null))
-                    {
-                        for (int j = 0; j < findedColumnMeta.columnProperties.Length; j++)
-                        {
-                            string findPrefix = val.Name;
-                            if (!string.IsNullOrEmpty(findedColumnMeta.columnProperties[j].Name))
-                            {
-                                if (findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) != -1)
-                                {
-                                    int idx = findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) + findedColumnMeta.columnProperties[j].Name.Length;
-                                    findPrefix = findPrefix.Substring(0, idx);
-                                }
-                            }
+                listLinkColumn.Clear();
+                var primaryKeys = primaryColumns.Find(z => z.NameTableTo == queryDescriptor.TableName);
+                var linkColumn = new LinkColumn();
+                linkColumn.LinkFieldName = primaryKeys.FieldJoinTo;
+                linkColumn.TableName = queryDescriptor.TableName;
+                linkColumn.ValueLinkId = idValue;
+                linkColumn.TypeColumn = primaryKeys.TypeColumn;
+                linkColumn.FullSourceName = primaryKeys.FieldJoinTo;
+                listLinkColumn.Add(linkColumn);
 
-                            GetValueColumnByTableFrom(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findPrefix);
-                            var listColumnValuesUpdIns = GetColumnValuesFromLevel(findValuesByLevel, irpDescrColumns, findedColumnMeta.columnProperties[j].NameTableTo, findPrefix);
-                            GetLinkColumnByTableTo(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findValuesByLevel, listColumnValuesUpdIns, findPrefix, updateAction, creationAction, userTokenData);
+                for (int i = maxLevelsByValues; i >= 1; i--)
+                {
+                    var findValuesByLevel = valuesFromColumns.FindAll(z => z.Level == i);
+                    foreach (var val in findValuesByLevel)
+                    {
+                        var value = irpDescrColumns.ToList();
+                        var findedColumnMeta = value.Find(z => z.columnMeta.Name == val.Name);
+                        if ((findedColumnMeta != null) && (findedColumnMeta.columnProperties != null))
+                        {
+                            for (int j = 0; j < findedColumnMeta.columnProperties.Length; j++)
+                            {
+                                string findPrefix = val.Name;
+                                if (!string.IsNullOrEmpty(findedColumnMeta.columnProperties[j].Name))
+                                {
+                                    if (findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) != -1)
+                                    {
+                                        int idx = findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) + findedColumnMeta.columnProperties[j].Name.Length;
+                                        findPrefix = findPrefix.Substring(0, idx);
+                                    }
+                                }
+
+                                GetValueColumnByTableFrom(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findPrefix);
+                                var listColumnValuesUpdIns = GetColumnValuesFromLevel(findValuesByLevel, irpDescrColumns, findedColumnMeta.columnProperties[j].NameTableTo, findPrefix);
+                                GetLinkColumnByTableTo(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findValuesByLevel, listColumnValuesUpdIns, findPrefix, updateAction, creationAction, userTokenData);
+                            }
                         }
                     }
                 }
@@ -1975,15 +2013,16 @@ namespace Atdi.AppServices.WebQuery.Handlers
         private int PerformCreationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, CreationAction action)
         {
             int recordsAffected = 0;
-            this._queryExecutor.BeginTransaction();
+            var scope = this._dataLayer.CreateScope<IcsmDataContext>();
+            scope.BeginTran();
             try
             {
                  recordsAffected = UpdateData(userTokenData, queryDescriptor, null, action);
-                this._queryExecutor.CommitTransaction();
+                scope.Commit();
             }
             catch (Exception e)
             {
-                this._queryExecutor.RollbackTransaction();
+                scope.Rollback();
                 this.Logger.Exception(Contexts.ErrorInsertOperation, Categories.Handling, e, this);
                 throw new InvalidOperationException("Failed to insert data :" +e.Message, e);
             }
@@ -1993,15 +2032,16 @@ namespace Atdi.AppServices.WebQuery.Handlers
         private int PerformUpdationAction(UserTokenData userTokenData, QueryDescriptor queryDescriptor, UpdationAction action)
         {
             int recordsAffected = 0;
-            this._queryExecutor.BeginTransaction();
+            var scope = this._dataLayer.CreateScope<IcsmDataContext>();
+            scope.BeginTran();
             try
             {
                 recordsAffected = UpdateData(userTokenData, queryDescriptor,action, null);
-                this._queryExecutor.CommitTransaction();
+                scope.Commit();
             }
             catch (Exception e)
             {
-                this._queryExecutor.RollbackTransaction();
+                scope.Rollback();
                 this.Logger.Exception(Contexts.ErrorUpdateOperation, Categories.Handling, e, this);
                 throw new InvalidOperationException("Failed to update data: "+e.Message, e);
             }

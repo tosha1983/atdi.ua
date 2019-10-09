@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E3B1D980-9A8D-4A82-807D-56A4336826DF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.AppServer.CoverageCalculation.Console</RootNamespace>
+    <AssemblyName>Atdi.AppServer.CoverageCalculation.Console</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="gdalconst_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\gdalconst_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdal_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\gdal_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ogr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\ogr_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="osr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GDAL.2.4.2\lib\net40\osr_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataModels\Config\ArgumentConfig.cs" />
+    <Compile Include="DataModels\Config\CommandConfig.cs" />
+    <Compile Include="DataModels\Config\ArgumentsConfig.cs" />
+    <Compile Include="DataModels\Config\CommandsConfig.cs" />
+    <Compile Include="DataModels\Config\ProvinceConfig.cs" />
+    <Compile Include="DataModels\Config\IdentityWcfServicesBindingConfig.cs" />
+    <Compile Include="DataModels\Config\WebQueryWcfServicesConfig.cs" />
+    <Compile Include="DataModels\Config\DirectoryConfig.cs" />
+    <Compile Include="DataModels\Config\StandardConfig.cs" />
+    <Compile Include="DataModels\Config\CodeOperatorConfig.cs" />
+    <Compile Include="DataModels\Config\ColorConfig.cs" />
+    <Compile Include="DataModels\Config\DataConfig.cs" />
+    <Compile Include="DataModels\Config\CodeOperatorAndStatusConfig.cs" />
+    <Compile Include="DataModels\Station\EwxData.cs" />
+    <Compile Include="DataModels\Station\Header.cs" />
+    <Compile Include="DataModels\Station\Station.cs" />
+    <Compile Include="DataModels\TFW\Coordinate.cs" />
+    <Compile Include="DataModels\TFW\TFWParameter.cs" />
+    <Compile Include="EWX\CreateFileEwx.cs" />
+    <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="Gdal\GdalCalc.cs" />
+    <Compile Include="Manage\StartTask.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="WebQuery\CopyStationsToEwxFile.cs" />
+    <Compile Include="WebQuery\InitWebQuery.cs" />
+    <Compile Include="WebQuery\CreateCondition.cs" />
+    <Compile Include="WebQuery\SaveResultCalcCoverageIntoDB.cs" />
+    <Compile Include="WebQuery\LoadStations.cs" />
+    <Compile Include="LoadConfig\Config.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Identity\Atdi.Contracts.WcfServices.Identity.csproj">
+      <Project>{cae762ce-a933-426c-9e31-656eb66a0f9a}</Project>
+      <Name>Atdi.Contracts.WcfServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.WebQuery\Atdi.Contracts.WcfServices.WebQuery.csproj">
+      <Project>{773a95ce-0a1c-4629-849d-23f65d6c59e4}</Project>
+      <Name>Atdi.Contracts.WcfServices.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Identity\Atdi.DataModels.Identity.csproj">
+      <Project>{b0a9f81c-cf24-4899-a069-cbf63c4483e6}</Project>
+      <Name>Atdi.DataModels.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
+      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
+      <Name>Atdi.DataModels.WebQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GdalConfiguration.vb" />
+    <Content Include="XML\CalcCovConfig2.xml" />
+    <Content Include="XML\CalcCovConfig.xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets" Condition="Exists('..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets'))" />
+  </Target>
+</Project>

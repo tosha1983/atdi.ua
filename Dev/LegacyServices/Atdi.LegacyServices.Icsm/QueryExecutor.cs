@@ -689,12 +689,14 @@ namespace Atdi.LegacyServices.Icsm
 
         public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
         {
-            throw new NotImplementedException();
+            var objectStatment = statement as QuerySelectStatement;
+            return Fetch(objectStatment, handler);
         }
 
         public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
-            throw new NotImplementedException();
+            var objectStatment = statement as QuerySelectStatement<TModel>;
+            return Fetch(objectStatment, handler);
         }
 
         public TResult ExecuteAndFetch<TResult>(IQueryStatement[] statements, Func<Contracts.CoreServices.DataLayer.IDataReader, TResult> handler)
