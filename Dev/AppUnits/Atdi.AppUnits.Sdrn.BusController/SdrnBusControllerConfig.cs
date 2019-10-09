@@ -48,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.UseEncryption = config.GetParameterAsBoolean("MessageConvertor.UseEncryption");
             this.UseCompression = config.GetParameterAsBoolean("MessageConvertor.UseCompression");
 
-            this._environmentModifier.AddSharedSecretKey("DeviceBus", config.GetParameterAsString("MessageConvertor.SharedSecretKey"));
+            this._environmentModifier.AddSharedSecretKey("DeviceBus", config.GetParameterAsString("DeviceBus.SharedSecretKey"));
             
 
         }
