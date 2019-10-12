@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.Platform.Logging;
 using Atdi.Platform.DependencyInjection;
 using System.Reflection;
@@ -16,7 +14,7 @@ namespace Atdi.Platform.AppServer
         private IServerContext _serverContext;
         private List<ComponentDescriptor> _components;
         private HostState _state;
-        private ITypeResolver _typeResolver;
+        private readonly ITypeResolver _typeResolver;
         private ServerHostLoader _loader;
 
         public ServerHost(ILogger logger, IServicesContainer container, IServerConfig config, ITypeResolver typeResolver) : base(logger)
@@ -78,6 +76,10 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentIsInstalling.With(config.Type, config.Instance, config.Assembly));
             try
             {
+                var parameters = config.Parameters.ToDictionary(k=>k.Name, v=>(object)v.Value);
+
+                this.Logger.Debug(Contexts.AppServerHost, Categories.Installation, (EventText)$"Config parameters ({parameters.Count})", parameters);
+
                 var component = this._typeResolver.CreateInstance<IComponent>(new AssemblyName(config.Assembly));
                 component.Install(this._container, config);
                 this.Logger.Info(Contexts.AppServerHost, Categories.Installation, Events.ServerComponentInstalled.With(config.Type, config.Instance, config.Assembly));
@@ -331,12 +333,13 @@ namespace Atdi.Platform.AppServer
 
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerHostIsStarting);
             this._state = HostState.Starting;
+
             this.ActivateComponents();
-            this._loader.ExecuteTriggers();
+            
             this._state = HostState.Started;
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerHostStarted);
 
-
+            this._loader.ExecuteTriggers();
         }
 
         public void Stop()

@@ -254,6 +254,25 @@ namespace Atdi.Api.Sdrn.Device.BusController
             _observer.OnEvent(@event);
         }
 
+        public void Exception(string context, Exception e, object source)
+        {
+            if (_observer == null)
+            {
+                return;
+            }
+
+            var @event = new BusEvent
+            {
+                Code = BusEvents.ExceptionEvent,
+                Level = BusEventLevel.Exception,
+                Context = context,
+                Source = source?.GetType().Name,
+                Text = e.Message
+            };
+
+            _observer.OnEvent(@event);
+        }
+
         public void Exception(string context, string text, Exception e, object source)
         {
             if (_observer == null)

@@ -2,6 +2,7 @@
 using Atdi.Modules.Sdrn.MessageBus;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -40,6 +41,8 @@ namespace Atdi.Api.Sdrn.Device.BusController
         /// </summary>
         private int _consumerAttachmentProcessingTimeout = 20 * 1000;
 
+        private int _objectWaitingTimeout = 1000 * 60 * 1;
+        private int _objectGettingTimeout = 1000 * 1;
 
         internal MessageDispatcher(string tag, DeviceBusConfig config, ConnectionFactory amqpConnectionFactory, BusMessagePacker messagePacker, BusLogger logger)
         {
@@ -124,7 +127,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         private void Process()
         {
-            this._logger.Info("DeviceBus.ConsumerProcessing", $"The Consumer Processing Thread starting ...", this);
+            this._logger.Info("DeviceBus.ConsumerProcessing", $"The consumer processing thread was started: Name='{Thread.CurrentThread.Name}'", this);
 
             try
             {
@@ -136,20 +139,20 @@ namespace Atdi.Api.Sdrn.Device.BusController
             }
             catch (OperationCanceledException)
             {
-                this._logger.Verbouse("DeviceBus.ConsumerProcessing", $"The Consumers Processing Thread was canceled",
+                this._logger.Verbouse("DeviceBus.ConsumerProcessing", $"The consumers processing thread was canceled: Name='{Thread.CurrentThread.Name}'",
                     this);
             }
             catch (ThreadAbortException e)
             {
                 Thread.ResetAbort();
                 this._logger.Exception("DeviceBus.ConsumerProcessing",
-                    "Abort the thread of the Consumer Processing. Please fix the problem and restart the service.", e,
+                    $"Abort the thread of the Consumer Processing. Please fix the problem and restart the service: Name='{Thread.CurrentThread.Name}'", e,
                     this);
             }
             catch (Exception e)
             {
                 this._logger.Exception("DeviceBus.ConsumerProcessing",
-                    "Abort the thread of the Consumer Processing. Please fix the problem and restart the service.", e,
+                    $"Abort the thread of the Consumer Processing. Please fix the problem and restart the service: Name='{Thread.CurrentThread.Name}'", e,
                     this);
             }
             finally
@@ -331,33 +334,214 @@ namespace Atdi.Api.Sdrn.Device.BusController
             }
         }
 
-        
+        public void TryAckMessage(IMessageToken token)
+        {
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
 
-        //private object DeserializeObjectFromByteArray(byte[] source, Type type)
-        //{
-        //    if (source == null)
-        //    {
-        //        return null;
-        //    }
+            try
+            {
+                var files = this.ReadFiles(token.Type);
+                foreach (var fileName in files)
+                {
+                    var message = this.ReadMessageFromFile(fileName);
+                    if (message == null)
+                    {
+                        continue;
+                    }
+                    if (!token.Type.Equals(message.Type, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!token.Id.Equals(message.Id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!_config.SdrnDeviceSensorName.Equals(message.Sensor, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!_config.SdrnDeviceSensorName.Equals(message.TechId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!_config.SdrnServerInstance.Equals(message.Server, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    File.Delete(fileName);
+                }
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception("DeviceBus.Acknowledgment", e, this);
+                throw new InvalidOperationException("The message was not acknowledged", e);
+            }
+        }
 
-        //    var json = Encoding.UTF8.GetString(source);
-        //    var result = JsonConvert.DeserializeObject(json, type);
+        public IReceivedMessage<TObject> TryGetObject<TObject>(string messageType, string correlationId = null, bool isAutoAck = false)
+        {
+            if (string.IsNullOrEmpty(messageType))
+            {
+                throw new ArgumentException("Invalid argument", nameof(messageType));
+            }
 
-        //    return result;
-        //}
+            try
+            {
+                var files = this.ReadFiles(messageType);
+                foreach (var fileName in files)
+                {
+                    var source = this.ReadMessageFromFile(fileName);
+                    if (source == null)
+                    {
+                        continue;
+                    }
+                    if (!messageType.Equals(source.Type, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!_config.SdrnDeviceSensorName.Equals(source.Sensor, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!_config.SdrnDeviceSensorTechId.Equals(source.TechId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!_config.SdrnServerInstance.Equals(source.Server, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
 
-        //private static string GetHeaderValue(IBasicProperties properties, string key)
-        //{
-        //    var headers = properties.Headers;
-        //    if (headers == null)
-        //    {
-        //        return null;
-        //    }
-        //    if (!headers.ContainsKey(key))
-        //    {
-        //        return null;
-        //    }
-        //    return Convert.ToString(Encoding.UTF8.GetString(((byte[])headers[key])));
-        //}
+                    if (!string.IsNullOrEmpty(correlationId))
+                    {
+                        if (!correlationId.Equals(source.CorrelationId))
+                        {
+                            continue;
+                        }
+                    }
+
+                    var messageObject = BusMessagePacker.Unpack(source.ContentType, source.ContentEncoding, source.Protocol,
+                        source.Body, source.BodyAqName, _config.DeviceBusSharedSecretKey);
+
+                    var messageToken = new MessageToken(source.Id, source.Type);
+
+                    var result = (IReceivedMessage<TObject>)Activator.CreateInstance(
+                        MessageHandlerDescriptor.MakeReceivedMessageGenericType<TObject>(),
+                        new[]
+                        {
+                            messageToken,
+                            messageObject,
+                            DateTime.Now,
+                            source.CorrelationId
+                        });
+
+                    if (isAutoAck)
+                    {
+                        File.Delete(fileName);
+                    }
+
+                    return result;
+                }
+
+                return default(IReceivedMessage<TObject>);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception("DeviceBus.Pulling", e, this);
+                throw new InvalidOperationException("The object was not gotten from server", e);
+            }
+        }
+
+        private BufferedMessage ReadMessageFromFile(string fileName)
+        {
+            if (!File.Exists(fileName))
+            {
+                this._logger.Error(0, "DeviceBus.Pulling", $"The file not found: Name='{fileName}'", this);
+                return null;
+            }
+
+            try
+            {
+                var fileExtenstion = Path.GetExtension(fileName);
+                if (string.IsNullOrEmpty(fileExtenstion))
+                {
+                    this._logger.Error(0, "DeviceBus.Pulling", $"The file does not contains an extension: Name='{fileName}'", this);
+                    return null;
+                }
+
+                BufferedMessage message;
+                IContentTypeConvertor convertor;
+
+                switch (fileExtenstion.ToLower())
+                {
+                    case ".json":
+                        var json = File.ReadAllText(fileName);
+                        convertor = BusMessagePacker.GetConvertor(ContentType.Json);
+                        message = (BufferedMessage)convertor.Deserialize(json, typeof(BufferedMessage));
+                        break;
+                    case ".xml":
+                        var xml = File.ReadAllText(fileName);
+                        convertor = BusMessagePacker.GetConvertor(ContentType.Xml);
+                        message = (BufferedMessage)convertor.Deserialize(xml, typeof(BufferedMessage));
+                        break;
+                    case ".bin":
+                        var binary = File.ReadAllBytes(fileName);
+                        convertor = BusMessagePacker.GetConvertor(ContentType.Binary);
+                        message = (BufferedMessage)convertor.Deserialize(binary, typeof(BufferedMessage));
+                        break;
+                    default:
+                        this._logger.Error(0, "DeviceBus.Pulling", $"The file contains an unsupported extension: Name='{fileName}'", this);
+                        return null;
+                }
+
+                return message;
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception("DeviceBus.Pulling", $"An error occurred while reading the file: Name='{fileName}'", e, this);
+                throw;
+            }
+        }
+
+        private string[] ReadFiles(string typeName)
+        {
+            var path = string.Intern(Path.Combine(this._config.InboxBufferConfig.Folder, AmqpDeliveryHandler.PrepareTypeForFolderName(typeName)));
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            var files = Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly);
+            return files.Length > 0 ? files.OrderBy(s => s).ToArray() : new string[] { };
+        }
+
+        public IReceivedMessage<TObject> WaitObject<TObject>(string messageType, string correlationId = null)
+        {
+            if (string.IsNullOrEmpty(messageType))
+            {
+                throw new ArgumentException("message", nameof(messageType));
+            }
+
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            while (true)
+            {
+                var result = this.TryGetObject<TObject>(messageType, correlationId, true);
+                timer.Stop();
+
+                if (result != null)
+                {
+                    return result;
+                }
+                if (timer.ElapsedMilliseconds >= this._objectWaitingTimeout)
+                {
+                    throw new TimeoutException();
+                }
+
+                timer.Start();
+                Thread.Sleep(this._objectGettingTimeout);
+            }
+        }
     }
 }

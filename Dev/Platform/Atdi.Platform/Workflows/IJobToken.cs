@@ -15,5 +15,7 @@ namespace Atdi.Platform.Workflows
 
         long RecoveryAttempts { get; }
 
+        JobDefinition Definition { get; }
+
     }
 }

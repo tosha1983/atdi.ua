@@ -1,13 +1,10 @@
 ﻿using Atdi.Contracts.WcfServices.Sdrn.Device;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Atdi.WcfServices.Sdrn.Device
 {
-    class ServiceEnvironment : IServiceEnvironment
+    internal class ServiceEnvironment : IServiceEnvironment
     {
         private readonly SdrnServerDescriptor _serverDescriptor;
         private readonly Modules.Licensing.VerificationResult _licensing;
@@ -18,9 +15,9 @@ namespace Atdi.WcfServices.Sdrn.Device
             this._licensing = licensing;
         }
 
-        public string Instance => _serverDescriptor.Instance;
+        public string Instance => _serverDescriptor.SensorName;
 
-        public string SdrnServerInstance => _serverDescriptor.ServerInstance;
+        public string SdrnServerInstance => _serverDescriptor.SdrnServer;
 
         public string LicenseNumber => _licensing.LicenseNumber;
 

@@ -53,7 +53,7 @@ namespace Atdi.Test.Platform
     public class Test1JobExecutor : IJobExecutor
     {
         private readonly ILogger _logger;
-        private int _counter;
+       // private int _counter;
 
         public Test1JobExecutor(ILogger logger)
         {
@@ -71,7 +71,7 @@ namespace Atdi.Test.Platform
     public class Test2JobExecutor : IJobExecutor<string>
     {
         private readonly ILogger _logger;
-        private int _counter;
+        //private int _counter;
 
         public Test2JobExecutor(ILogger logger)
         {
@@ -89,7 +89,7 @@ namespace Atdi.Test.Platform
     public class Test3JobExecutor : IJobExecutor
     {
         private readonly ILogger _logger;
-        private int _counter;
+       // private int _counter;
 
         public Test3JobExecutor(ILogger logger)
         {

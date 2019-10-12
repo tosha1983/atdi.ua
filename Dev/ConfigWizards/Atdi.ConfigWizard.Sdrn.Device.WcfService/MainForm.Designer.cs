@@ -36,6 +36,8 @@
             this.txtLicenseFileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtRabbitMQPort = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.txtRabbitMQVirtualHost = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.txtRabbitMQPassword = new System.Windows.Forms.TextBox();
@@ -45,6 +47,10 @@
             this.txtRabbitMQHost = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtOutboxPath = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtInboxPath = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.txtSdrnDeviceQueueNamePart = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.txtSdrnServerQueueNamePart = new System.Windows.Forms.TextBox();
@@ -57,12 +63,20 @@
             this.txtWcfBindings = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.txtOutboxPath = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txtInboxPath = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.txtRabbitMQPort = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtMessagesBindings = new System.Windows.Forms.TextBox();
+            this.txtSensorTechId = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.txtContentType = new System.Windows.Forms.ComboBox();
+            this.txtSharedSecretKey = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.txtUseCompression = new System.Windows.Forms.CheckBox();
+            this.txtUseEncryption = new System.Windows.Forms.CheckBox();
+            this.txtInboxContentType = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtOutboxContentType = new System.Windows.Forms.ComboBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -151,6 +165,22 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "  Rabbit MQ Server  ";
             // 
+            // txtRabbitMQPort
+            // 
+            this.txtRabbitMQPort.Location = new System.Drawing.Point(289, 19);
+            this.txtRabbitMQPort.Name = "txtRabbitMQPort";
+            this.txtRabbitMQPort.Size = new System.Drawing.Size(91, 20);
+            this.txtRabbitMQPort.TabIndex = 15;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(257, 22);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(26, 13);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Port";
+            // 
             // txtRabbitMQVirtualHost
             // 
             this.txtRabbitMQVirtualHost.Location = new System.Drawing.Point(77, 45);
@@ -218,6 +248,18 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.txtOutboxContentType);
+            this.groupBox3.Controls.Add(this.label20);
+            this.groupBox3.Controls.Add(this.txtInboxContentType);
+            this.groupBox3.Controls.Add(this.label19);
+            this.groupBox3.Controls.Add(this.txtUseEncryption);
+            this.groupBox3.Controls.Add(this.txtUseCompression);
+            this.groupBox3.Controls.Add(this.txtSharedSecretKey);
+            this.groupBox3.Controls.Add(this.label18);
+            this.groupBox3.Controls.Add(this.txtContentType);
+            this.groupBox3.Controls.Add(this.label17);
+            this.groupBox3.Controls.Add(this.txtMessagesBindings);
+            this.groupBox3.Controls.Add(this.label15);
             this.groupBox3.Controls.Add(this.txtOutboxPath);
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.txtInboxPath);
@@ -228,85 +270,117 @@
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Controls.Add(this.txtSdrnMessagesExchange);
             this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.txtSdrnServerInstance);
-            this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Location = new System.Drawing.Point(12, 262);
+            this.groupBox3.Location = new System.Drawing.Point(12, 290);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(397, 178);
+            this.groupBox3.Size = new System.Drawing.Size(536, 227);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "  SDRN Bus Settings  ";
+            this.groupBox3.Text = "  SDRN Device Bus Settings  ";
+            // 
+            // txtOutboxPath
+            // 
+            this.txtOutboxPath.Location = new System.Drawing.Point(102, 172);
+            this.txtOutboxPath.Name = "txtOutboxPath";
+            this.txtOutboxPath.Size = new System.Drawing.Size(426, 20);
+            this.txtOutboxPath.TabIndex = 17;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(8, 175);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(73, 13);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "Outbox Folder";
+            // 
+            // txtInboxPath
+            // 
+            this.txtInboxPath.Location = new System.Drawing.Point(102, 146);
+            this.txtInboxPath.Name = "txtInboxPath";
+            this.txtInboxPath.Size = new System.Drawing.Size(426, 20);
+            this.txtInboxPath.TabIndex = 15;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(8, 149);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(65, 13);
+            this.label13.TabIndex = 14;
+            this.label13.Text = "Inbox Folder";
             // 
             // txtSdrnDeviceQueueNamePart
             // 
-            this.txtSdrnDeviceQueueNamePart.Location = new System.Drawing.Point(138, 97);
+            this.txtSdrnDeviceQueueNamePart.Location = new System.Drawing.Point(397, 44);
             this.txtSdrnDeviceQueueNamePart.Name = "txtSdrnDeviceQueueNamePart";
-            this.txtSdrnDeviceQueueNamePart.Size = new System.Drawing.Size(242, 20);
+            this.txtSdrnDeviceQueueNamePart.Size = new System.Drawing.Size(131, 20);
             this.txtSdrnDeviceQueueNamePart.TabIndex = 13;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 100);
+            this.label10.Location = new System.Drawing.Point(278, 47);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(129, 13);
+            this.label10.Size = new System.Drawing.Size(98, 13);
             this.label10.TabIndex = 12;
-            this.label10.Text = "Device Queue Name Part";
+            this.label10.Text = "Device Queue Part";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
             // txtSdrnServerQueueNamePart
             // 
-            this.txtSdrnServerQueueNamePart.Location = new System.Drawing.Point(138, 71);
+            this.txtSdrnServerQueueNamePart.Location = new System.Drawing.Point(122, 44);
             this.txtSdrnServerQueueNamePart.Name = "txtSdrnServerQueueNamePart";
-            this.txtSdrnServerQueueNamePart.Size = new System.Drawing.Size(242, 20);
+            this.txtSdrnServerQueueNamePart.Size = new System.Drawing.Size(150, 20);
             this.txtSdrnServerQueueNamePart.TabIndex = 11;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 74);
+            this.label7.Location = new System.Drawing.Point(8, 47);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(126, 13);
+            this.label7.Size = new System.Drawing.Size(95, 13);
             this.label7.TabIndex = 10;
-            this.label7.Text = "Server Queue Name Part";
+            this.label7.Text = "Server Queue Part";
             // 
             // txtSdrnMessagesExchange
             // 
-            this.txtSdrnMessagesExchange.Location = new System.Drawing.Point(120, 45);
+            this.txtSdrnMessagesExchange.Location = new System.Drawing.Point(122, 18);
             this.txtSdrnMessagesExchange.Name = "txtSdrnMessagesExchange";
-            this.txtSdrnMessagesExchange.Size = new System.Drawing.Size(260, 20);
+            this.txtSdrnMessagesExchange.Size = new System.Drawing.Size(150, 20);
             this.txtSdrnMessagesExchange.TabIndex = 9;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 48);
+            this.label8.Location = new System.Drawing.Point(8, 21);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(108, 13);
+            this.label8.Size = new System.Drawing.Size(92, 13);
             this.label8.TabIndex = 8;
-            this.label8.Text = "Exchange Name Part";
+            this.label8.Text = "Device Exchange";
             // 
             // txtSdrnServerInstance
             // 
-            this.txtSdrnServerInstance.Location = new System.Drawing.Point(120, 19);
+            this.txtSdrnServerInstance.Location = new System.Drawing.Point(126, 264);
             this.txtSdrnServerInstance.Name = "txtSdrnServerInstance";
-            this.txtSdrnServerInstance.Size = new System.Drawing.Size(260, 20);
+            this.txtSdrnServerInstance.Size = new System.Drawing.Size(154, 20);
             this.txtSdrnServerInstance.TabIndex = 7;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 22);
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label9.Location = new System.Drawing.Point(9, 267);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(82, 13);
+            this.label9.Size = new System.Drawing.Size(116, 13);
             this.label9.TabIndex = 6;
-            this.label9.Text = "Server Instance";
+            this.label9.Text = "SDRN Server Instance";
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.txtWcfBindings);
-            this.groupBox4.Location = new System.Drawing.Point(12, 446);
+            this.groupBox4.Location = new System.Drawing.Point(12, 523);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(507, 139);
+            this.groupBox4.Size = new System.Drawing.Size(536, 139);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "  WCF Service Bindings  ";
@@ -317,78 +391,162 @@
             this.txtWcfBindings.Multiline = true;
             this.txtWcfBindings.Name = "txtWcfBindings";
             this.txtWcfBindings.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtWcfBindings.Size = new System.Drawing.Size(495, 114);
+            this.txtWcfBindings.Size = new System.Drawing.Size(524, 114);
             this.txtWcfBindings.TabIndex = 1;
             // 
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(428, 30);
+            this.button1.Location = new System.Drawing.Point(447, 12);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(91, 23);
             this.button1.TabIndex = 4;
-            this.button1.Text = "Ok";
+            this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
             this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(428, 59);
+            this.button2.Location = new System.Drawing.Point(447, 41);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(91, 23);
             this.button2.TabIndex = 5;
             this.button2.Text = "Close";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // txtOutboxPath
+            // label15
             // 
-            this.txtOutboxPath.Location = new System.Drawing.Point(98, 149);
-            this.txtOutboxPath.Name = "txtOutboxPath";
-            this.txtOutboxPath.Size = new System.Drawing.Size(282, 20);
-            this.txtOutboxPath.TabIndex = 17;
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(6, 124);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(98, 13);
+            this.label15.TabIndex = 18;
+            this.label15.Text = "Messages Bindings";
             // 
-            // label12
+            // txtMessagesBindings
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 152);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(94, 13);
-            this.label12.TabIndex = 16;
-            this.label12.Text = "Outbox folder path";
+            this.txtMessagesBindings.Location = new System.Drawing.Point(102, 121);
+            this.txtMessagesBindings.Name = "txtMessagesBindings";
+            this.txtMessagesBindings.Size = new System.Drawing.Size(426, 20);
+            this.txtMessagesBindings.TabIndex = 19;
             // 
-            // txtInboxPath
+            // txtSensorTechId
             // 
-            this.txtInboxPath.Location = new System.Drawing.Point(98, 123);
-            this.txtInboxPath.Name = "txtInboxPath";
-            this.txtInboxPath.Size = new System.Drawing.Size(282, 20);
-            this.txtInboxPath.TabIndex = 15;
+            this.txtSensorTechId.Location = new System.Drawing.Point(367, 264);
+            this.txtSensorTechId.Name = "txtSensorTechId";
+            this.txtSensorTechId.Size = new System.Drawing.Size(179, 20);
+            this.txtSensorTechId.TabIndex = 21;
             // 
-            // label13
+            // label16
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 126);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(86, 13);
-            this.label13.TabIndex = 14;
-            this.label13.Text = "Inbox folder path";
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(284, 267);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(82, 13);
+            this.label16.TabIndex = 20;
+            this.label16.Text = "Sensor Tech ID";
             // 
-            // txtRabbitMQPort
+            // label17
             // 
-            this.txtRabbitMQPort.Location = new System.Drawing.Point(289, 19);
-            this.txtRabbitMQPort.Name = "txtRabbitMQPort";
-            this.txtRabbitMQPort.Size = new System.Drawing.Size(91, 20);
-            this.txtRabbitMQPort.TabIndex = 15;
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(278, 21);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(71, 13);
+            this.label17.TabIndex = 22;
+            this.label17.Text = "Content Type";
             // 
-            // label14
+            // txtContentType
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(257, 22);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(26, 13);
-            this.label14.TabIndex = 14;
-            this.label14.Text = "Port";
+            this.txtContentType.FormattingEnabled = true;
+            this.txtContentType.Items.AddRange(new object[] {
+            "Sdrn",
+            "Json",
+            "Xml",
+            "Binary"});
+            this.txtContentType.Location = new System.Drawing.Point(397, 17);
+            this.txtContentType.Name = "txtContentType";
+            this.txtContentType.Size = new System.Drawing.Size(131, 21);
+            this.txtContentType.TabIndex = 23;
+            // 
+            // txtSharedSecretKey
+            // 
+            this.txtSharedSecretKey.Location = new System.Drawing.Point(122, 70);
+            this.txtSharedSecretKey.Name = "txtSharedSecretKey";
+            this.txtSharedSecretKey.Size = new System.Drawing.Size(406, 20);
+            this.txtSharedSecretKey.TabIndex = 25;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(8, 73);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(96, 13);
+            this.label18.TabIndex = 24;
+            this.label18.Text = "Shared Secret Key";
+            // 
+            // txtUseCompression
+            // 
+            this.txtUseCompression.AutoSize = true;
+            this.txtUseCompression.Location = new System.Drawing.Point(122, 96);
+            this.txtUseCompression.Name = "txtUseCompression";
+            this.txtUseCompression.Size = new System.Drawing.Size(108, 17);
+            this.txtUseCompression.TabIndex = 28;
+            this.txtUseCompression.Text = "Use Compression";
+            this.txtUseCompression.UseVisualStyleBackColor = true;
+            // 
+            // txtUseEncryption
+            // 
+            this.txtUseEncryption.AutoSize = true;
+            this.txtUseEncryption.Location = new System.Drawing.Point(397, 96);
+            this.txtUseEncryption.Name = "txtUseEncryption";
+            this.txtUseEncryption.Size = new System.Drawing.Size(98, 17);
+            this.txtUseEncryption.TabIndex = 29;
+            this.txtUseEncryption.Text = "Use Encryption";
+            this.txtUseEncryption.UseVisualStyleBackColor = true;
+            // 
+            // txtInboxContentType
+            // 
+            this.txtInboxContentType.FormattingEnabled = true;
+            this.txtInboxContentType.Items.AddRange(new object[] {
+            ".Json",
+            "Xml",
+            "Binary"});
+            this.txtInboxContentType.Location = new System.Drawing.Point(102, 198);
+            this.txtInboxContentType.Name = "txtInboxContentType";
+            this.txtInboxContentType.Size = new System.Drawing.Size(131, 21);
+            this.txtInboxContentType.TabIndex = 31;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 201);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(97, 13);
+            this.label19.TabIndex = 30;
+            this.label19.Text = "Inbox ContentType";
+            // 
+            // txtOutboxContentType
+            // 
+            this.txtOutboxContentType.FormattingEnabled = true;
+            this.txtOutboxContentType.Items.AddRange(new object[] {
+            "Json",
+            "Xml",
+            "Binary"});
+            this.txtOutboxContentType.Location = new System.Drawing.Point(397, 198);
+            this.txtOutboxContentType.Name = "txtOutboxContentType";
+            this.txtOutboxContentType.Size = new System.Drawing.Size(131, 21);
+            this.txtOutboxContentType.TabIndex = 33;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(278, 202);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(108, 13);
+            this.label20.TabIndex = 32;
+            this.label20.Text = "Outbox Content Type";
             // 
             // MainForm
             // 
@@ -396,13 +554,17 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button2;
-            this.ClientSize = new System.Drawing.Size(531, 592);
+            this.ClientSize = new System.Drawing.Size(557, 669);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.txtSensorTechId);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.txtSdrnServerInstance);
+            this.Controls.Add(this.label16);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -418,6 +580,7 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -458,6 +621,20 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txtRabbitMQPort;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txtSensorTechId;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox txtMessagesBindings;
+        private System.Windows.Forms.ComboBox txtContentType;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox txtSharedSecretKey;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.CheckBox txtUseEncryption;
+        private System.Windows.Forms.CheckBox txtUseCompression;
+        private System.Windows.Forms.ComboBox txtOutboxContentType;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox txtInboxContentType;
+        private System.Windows.Forms.Label label19;
     }
 }
 

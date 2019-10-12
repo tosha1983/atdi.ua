@@ -246,13 +246,13 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             if (!this.TryToEstablishConnection())
             {
-                this._logger.Error("DeviceBus.MessageSending", $"The connection to the Device Bus is not established: {_amqpConfig}", this);
+                this._logger.Error("DeviceBus.MessageSending", $"The connection to the Device Bus was not established: {_amqpConfig}", this);
                 return false;
             }
 
             if (!this.TryGetChannelForCurrentThread(out var channel))
             {
-                this._logger.Error("DeviceBus.MessageSending", $"The channel of the Device Bus is not established: {_amqpConfig}", this);
+                this._logger.Error("DeviceBus.MessageSending", $"The channel of the Device Bus was not established: {_amqpConfig}", this);
                 return false;
             }
 

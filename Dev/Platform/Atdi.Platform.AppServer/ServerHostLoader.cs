@@ -30,9 +30,11 @@ namespace Atdi.Platform.AppServer
                 var (context, callback) = this._triggers.Dequeue();
                 try
                 {
-                    this._logger.Verbouse(Contexts.AppServerHost, Categories.Triggering, Events.TriggerExecuting.With(context));
+                    this._logger.Info(Contexts.AppServerHost, Categories.Triggering, Events.TriggerExecuting.With(context));
+
                     callback();
-                    this._logger.Verbouse(Contexts.AppServerHost, Categories.Triggering, Events.TriggerExecuted.With(context));
+
+                    this._logger.Info(Contexts.AppServerHost, Categories.Triggering, Events.TriggerExecuted.With(context));
                 }
                 catch (Exception e)
                 {

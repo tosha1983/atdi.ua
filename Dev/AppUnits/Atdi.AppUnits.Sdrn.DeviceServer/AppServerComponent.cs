@@ -281,11 +281,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             gateConfig[ConfigParams.SdrnDeviceMessagesBindings] = this.Config.GetParameterAsString(ConfigParams.SdrnDeviceMessagesBindings);
             gateConfig[ConfigParams.SdrnMessageConvertorUseEncryption] = this.Config.GetParameterAsString(ConfigParams.SdrnMessageConvertorUseEncryption);
             gateConfig[ConfigParams.SdrnMessageConvertorUseCompression] = this.Config.GetParameterAsString(ConfigParams.SdrnMessageConvertorUseCompression);
-
-            gateConfig[ConfigParams.DeviceBusBufferContentType] = this.Config.GetParameterAsString(ConfigParams.DeviceBusBufferContentType);
-            gateConfig[ConfigParams.DeviceBusBufferOutboxFolder] = this.Config.GetParameterAsString(ConfigParams.DeviceBusBufferOutboxFolder);
             gateConfig[ConfigParams.DeviceBusContentType] = this.Config.GetParameterAsString(ConfigParams.DeviceBusContentType);
-            gateConfig[ConfigParams.DeviceBusUseBuffer] = this.Config.GetParameterAsString(ConfigParams.DeviceBusUseBuffer);
+
+            gateConfig[ConfigParams.DeviceBusOutboxBufferContentType] = this.Config.GetParameterAsString(ConfigParams.DeviceBusOutboxBufferContentType);
+            gateConfig[ConfigParams.DeviceBusOutboxBufferFolder] = this.Config.GetParameterAsString(ConfigParams.DeviceBusOutboxBufferFolder);
+            gateConfig[ConfigParams.DeviceBusOutboxUseBuffer] = this.Config.GetParameterAsString(ConfigParams.DeviceBusOutboxUseBuffer);
+
             gateConfig[ConfigParams.DeviceBusSharedSecretKey] = this.Config.GetParameterAsString(ConfigParams.DeviceBusSharedSecretKey);
 
             gateConfig[ConfigParams.DeviceBusClient] =

@@ -17,7 +17,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public BufferType Type { get; set; }
 
-        public string OutboxFolder { get; set; }
+        public string Folder { get; set; }
 
         public string ConnectionString { get; set; }
 
@@ -25,7 +25,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public override string ToString()
         {
-            return $"Type = '{Type}', ContentType = '{ContentType}', OutboxFolder = '{OutboxFolder}'";
+            return $"Type = '{Type}', ContentType = '{ContentType}', OutboxFolder = '{Folder}'";
         }
     }
 
@@ -36,7 +36,8 @@ namespace Atdi.Api.Sdrn.Device.BusController
         internal DeviceBusConfig(IBusGateConfig gateConfig)
         {
             this.GateConfig = gateConfig;
-            this.BufferConfig = new BusBufferConfig();
+            this.OutboxBufferConfig = new BusBufferConfig();
+            this.InboxBufferConfig = new BusBufferConfig();
         }
 
         public IBusGateConfig GateConfig { get; private set; }
@@ -100,11 +101,13 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public IDictionary<string, MessagesBindingDescriptor> MessagesBindings { get; private set; }
 
-        public BusBufferConfig BufferConfig { get; }
+        public BusBufferConfig OutboxBufferConfig { get; }
+
+        public BusBufferConfig InboxBufferConfig { get; }
 
         public override string ToString()
         {
-            return $"Client='{this.DeviceBusClient}', Protocol='{DeviceBusProtocol}', ContentType={this.DeviceBusContentType}, Buffer={this.BufferConfig?.Type}, SdrnServer='{this.SdrnServerInstance}'";
+            return $"Client='{this.DeviceBusClient}', Protocol='{DeviceBusProtocol}', ContentType={this.DeviceBusContentType}, Buffer={this.OutboxBufferConfig?.Type}, SdrnServer='{this.SdrnServerInstance}'";
         }
 
         public string BuildDeviceExchangeName()

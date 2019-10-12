@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Atdi.Platform.Logging;
 
 namespace Atdi.Platform.Workflows
@@ -38,11 +34,11 @@ namespace Atdi.Platform.Workflows
             }
         }
 
-        protected readonly JobDefinition _jobDefinition;
-        protected readonly ILogger _logger;
-        protected readonly JobToken _jobToken;
-        protected readonly JobBroker _broker;
-        protected readonly IJobExecutorResolver _executorResolver;
+        private readonly JobDefinition _jobDefinition;
+        private readonly ILogger _logger;
+        private readonly JobToken _jobToken;
+        private readonly JobBroker _broker;
+        private readonly IJobExecutorResolver _executorResolver;
         protected readonly JobExecutionContext _executionContext;
         private Thread _thread;
 
@@ -56,7 +52,7 @@ namespace Atdi.Platform.Workflows
             this._executionContext = new JobExecutionContext(this._jobToken);
         }
 
-        protected void StartExecution()
+        private void StartExecution()
         {
             this._thread = new Thread(this.Process)
             {
@@ -67,7 +63,7 @@ namespace Atdi.Platform.Workflows
 
         private void Process()
         {
-            _logger.Verbouse("JobWorker", "Processing", $"The job thread is starting: {_jobToken}");
+            _logger.Verbouse("JobWorker", "Processing", $"The job thread started: Name='{Thread.CurrentThread.Name}', {_jobToken}");
 
             bool loop;
             var delay = _jobDefinition.StartDelay;
@@ -103,7 +99,7 @@ namespace Atdi.Platform.Workflows
                     else if (result == JobExecutionResult.Canceled)
                     {
                         _jobToken.Status = JobExecutionStatus.Canceled;
-                        loop = false;
+                        //loop = false;
                     }
                     else if (result == JobExecutionResult.Failure)
                     {
@@ -146,7 +142,7 @@ namespace Atdi.Platform.Workflows
 
             } while (loop);
 
-            _logger.Verbouse("JobWorker", "Processing", $"The job thread is finished: {_jobToken}");
+            _logger.Verbouse("JobWorker", "Processing", $"The job thread finished: Name='{Thread.CurrentThread.Name}', {_jobToken}");
 
             _broker.OnFinishJobProcessing(this);
             _thread = null;
@@ -181,7 +177,7 @@ namespace Atdi.Platform.Workflows
 
         private readonly IJobExecutor _executor;
 
-        public JobWorker(JobDefinition<TExecutor> jobDefinition, JobBroker broker, IJobExecutorResolver executorResolver, ILogger logger)
+        public JobWorker(JobDefinition jobDefinition, JobBroker broker, IJobExecutorResolver executorResolver, ILogger logger)
             : base(jobDefinition, broker, executorResolver, logger)
         {
             this._executor = executorResolver.Resolve<TExecutor>();
@@ -200,7 +196,7 @@ namespace Atdi.Platform.Workflows
         private readonly TState _jobState;
         private readonly IJobExecutor<TState> _executor;
 
-        public JobWorker(JobDefinition<TExecutor, TState> jobDefinition, TState jobState, JobBroker broker, IJobExecutorResolver executorResolver, ILogger logger) 
+        public JobWorker(JobDefinition jobDefinition, TState jobState, JobBroker broker, IJobExecutorResolver executorResolver, ILogger logger) 
             : base(jobDefinition, broker, executorResolver,  logger)
         {
             this._jobState = jobState;

@@ -32,13 +32,15 @@ namespace Atdi.Api.EventSystem
             this._activator = activator;
             this._observer = observer;
             this._connectionFactory = new ConnectionFactory(new AmqpBrokerObserver(observer));
-            this._observer.Verbouse("EventSystem.Initialize", $"The event system is initialized successfully", this);
+            
 
-            using (var declaratorChannel = this.DeclaratorConnection.CreateChannel())
+            using (var declarationChannel = this.DeclaratorConnection.CreateChannel())
             {
-                declaratorChannel.DeclareDurableDirectExchange(this._sysConfig.BuildEventExchangeName());
-                declaratorChannel.DeclareDurableQueue(this._sysConfig.BuildCommonLogQueueName());
+                declarationChannel.DeclareDurableDirectExchange(this._sysConfig.BuildEventExchangeName());
+                declarationChannel.DeclareDurableQueue(this._sysConfig.BuildCommonLogQueueName());
             }
+
+            this._observer.Info("EventSystem.Initialize", $"The event system initialized", this);
         }
 
         public void Dispose()
@@ -114,7 +116,7 @@ namespace Atdi.Api.EventSystem
                     {
                         if (_emitterConnection == null)
                         {
-                            var c = CreateConnection("EventEmmitter");
+                            var c = CreateConnection("EventEmitter");
                             _emitterConnection = c;
                         }
                     }

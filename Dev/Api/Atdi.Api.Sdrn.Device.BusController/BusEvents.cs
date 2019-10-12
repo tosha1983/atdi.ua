@@ -45,11 +45,20 @@ namespace Atdi.Api.Sdrn.Device.BusController
         public static readonly string SdrnMessageConvertorUseEncryption = "SDRN.MessageConvertor.UseEncryption";
         public static readonly string SdrnMessageConvertorUseCompression = "SDRN.MessageConvertor.UseCompression";
 
+
+        //public static readonly string DeviceBusUseBuffer = "DeviceBus.UseBuffer";
+
         public static readonly string DeviceBusContentType = "DeviceBus.ContentType";
-        public static readonly string DeviceBusUseBuffer = "DeviceBus.UseBuffer";
-        public static readonly string DeviceBusBufferOutboxFolder = "DeviceBus.Buffer.OutboxFolder";
-        public static readonly string DeviceBusBufferContentType = "DeviceBus.Buffer.ContentType";
-        public static readonly string DeviceBusBufferConnectionString = "DeviceBus.Buffer.ConnectionString";
+
+        public static readonly string DeviceBusOutboxUseBuffer              = "DeviceBus.Outbox.UseBuffer";
+        public static readonly string DeviceBusOutboxBufferFolder           = "DeviceBus.Outbox.Buffer.Folder";
+        public static readonly string DeviceBusOutboxBufferContentType      = "DeviceBus.Outbox.Buffer.ContentType";
+        public static readonly string DeviceBusOutboxBufferConnectionString = "DeviceBus.Outbox.Buffer.ConnectionString";
+
+        public static readonly string DeviceBusInboxUseBuffer               = "DeviceBus.Inbox.UseBuffer";
+        public static readonly string DeviceBusInboxBufferFolder            = "DeviceBus.Inbox.Buffer.Folder";
+        public static readonly string DeviceBusInboxBufferContentType       = "DeviceBus.Inbox.Buffer.ContentType";
+        public static readonly string DeviceBusInboxBufferConnectionString  = "DeviceBus.Inbox.Buffer.ConnectionString";
 
         public static readonly string DeviceBusSharedSecretKey = "DeviceBus.SharedSecretKey";
         public static readonly string DeviceBusClient = "DeviceBus.Client";
