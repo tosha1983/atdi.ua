@@ -36,13 +36,13 @@ namespace Atdi.Api.Sdrn.Device.BusController
             this._amqpConnectionFactory = new ConnectionFactory(this._logger);
             this._amqpPublisher = new AmqpPublisher(config, this._amqpConnectionFactory, this._logger);
 
-            if (_config.BufferConfig.Type == BufferType.Filesystem)
+            if (_config.OutboxBufferConfig.Type == BufferType.Filesystem)
             {
                 _bufferProcessing = new FileSystemBufferProcessing(this._config, this._amqpPublisher, this._messagePacker, this._logger);
             }
-            else if (_config.BufferConfig.Type != BufferType.None)
+            else if (_config.OutboxBufferConfig.Type != BufferType.None)
             {
-                throw new InvalidOperationException($"Unsupported the buffer type with name '{_config.BufferConfig.Type}'");
+                throw new InvalidOperationException($"Unsupported the buffer type with name '{_config.OutboxBufferConfig.Type}'");
             }
 
             _bufferProcessing?.Start();

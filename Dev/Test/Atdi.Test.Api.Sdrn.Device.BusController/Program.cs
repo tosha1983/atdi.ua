@@ -15,10 +15,10 @@ using Newtonsoft.Json;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
-    class JsonData
+    internal class JsonData
     {
-        public string Type;
-        public string JsonBody;
+        public string Type { get; set; } = null;
+        public string JsonBody { get; set; } = null;
 
     }
     class Program
@@ -377,67 +377,67 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             return;
 
 
-            Console.ReadLine();
-            //source.Cancel();
+            //Console.ReadLine();
+            ////source.Cancel();
 
-            var res = LoadFromFiles(@"C:\Users\andrey\Downloads\2019-May-28_11.35_queue_Q.SDRN.Server");
-            for (int i = 0; i < res.Length; i++)
-            {
-                var item = res[i];
-              //  item.Measured = item.Measured.AddDays(i);
-                publisher.Send("SendMeasResults", item, $"MonitoringStations");
-                Console.WriteLine($"TASK ID: {item.TaskId}");
-            }
+            //var res = LoadFromFiles(@"C:\Users\andrey\Downloads\2019-May-28_11.35_queue_Q.SDRN.Server");
+            //for (int i = 0; i < res.Length; i++)
+            //{
+            //    var item = res[i];
+            //  //  item.Measured = item.Measured.AddDays(i);
+            //    publisher.Send("SendMeasResults", item, $"MonitoringStations");
+            //    Console.WriteLine($"TASK ID: {item.TaskId}");
+            //}
 
-            Console.WriteLine($"Test finished ...");
-            Console.ReadLine();
-            var measMSResult = BuildTestMeasResultsMonitoringStations();
+            //Console.WriteLine($"Test finished ...");
+            //Console.ReadLine();
+            //var measMSResult = BuildTestMeasResultsMonitoringStations();
             
 
 
-            var measResult = BuildTestMeasResults();
-            var commandResult = new DeviceCommandResult()
-            {
-                CommandId = Guid.NewGuid().ToString()
-            };
+            //var measResult = BuildTestMeasResults();
+            //var commandResult = new DeviceCommandResult()
+            //{
+            //    CommandId = Guid.NewGuid().ToString()
+            //};
 
-            var entity = new Entity
-            {
-                EntityId = Guid.NewGuid().ToString(),
-                ContentType = "xml",
-                Description = "The some data",
-                Encoding = "",
-                Name = "Test object",
-                PartIndex = 1,
-                EOF = true,
-                Content = new byte[250]
-            };
+            //var entity = new Entity
+            //{
+            //    EntityId = Guid.NewGuid().ToString(),
+            //    ContentType = "xml",
+            //    Description = "The some data",
+            //    Encoding = "",
+            //    Name = "Test object",
+            //    PartIndex = 1,
+            //    EOF = true,
+            //    Content = new byte[250]
+            //};
 
-            var entityPart = new EntityPart()
-            {
-                EOF = true,
-                EntityId = entity.EntityId,
-                Content = new byte[250]
-            };
-            var count = 1;
-            for (int i = 0; i < count; i++)
-            {
-                publisher.Send("RegisterSensor", sensor, $"ID #{i}");
-                Console.ReadLine();
-                publisher.Send("UpdateSensor", sensor, $"ID #{i}");
-                Console.ReadLine();
-                publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
-                Console.ReadLine();
+            //var entityPart = new EntityPart()
+            //{
+            //    EOF = true,
+            //    EntityId = entity.EntityId,
+            //    Content = new byte[250]
+            //};
+            //var count = 1;
+            //for (int i = 0; i < count; i++)
+            //{
+            //    publisher.Send("RegisterSensor", sensor, $"ID #{i}");
+            //    Console.ReadLine();
+            //    publisher.Send("UpdateSensor", sensor, $"ID #{i}");
+            //    Console.ReadLine();
+            //    publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
+            //    Console.ReadLine();
 
-                publisher.Send("SendMeasResults", measResult, $"ID #{i}");
-                Console.ReadLine();
+            //    publisher.Send("SendMeasResults", measResult, $"ID #{i}");
+            //    Console.ReadLine();
 
 
-                publisher.Send("SendEntity", entity, $"#{i}");
-                publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
+            //    publisher.Send("SendEntity", entity, $"#{i}");
+            //    publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
 
-                Console.WriteLine(i);
-            }
+            //    Console.WriteLine(i);
+            //}
 
 
             //for (int i = 0; i < 5; i++)
@@ -457,11 +457,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             //}
 
             // обязательно все почистить
-            publisher.Dispose();
+            //publisher.Dispose();
             //dispatcher.Deactivate();
             //dispatcher.Dispose();
 
-            Console.ReadLine();
+           // Console.ReadLine();
         }
 
         private static void EnableNetworkInterface(string interfaceName)
@@ -522,10 +522,11 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["SDRN.MessageConvertor.UseEncryption"] = encrypted;
             config["SDRN.MessageConvertor.UseCompression"] = compress;
 
-            config["DeviceBus.ContentType"] = contentType;
-            config["DeviceBus.UseBuffer"] = "FileSystem";
-            config["DeviceBus.Buffer.OutboxFolder"] = "C:\\Temp\\DeviceBus\\" + index;
-            config["DeviceBus.Buffer.ContentType"] = "Binary";
+            config["DeviceBus.Outbox.ContentType"] = contentType;
+            config["DeviceBus.Outbox.UseBuffer"] = "FileSystem";
+            config["DeviceBus.Outbox.Buffer.OutboxFolder"] = "C:\\Temp\\DeviceBus\\" + index;
+            config["DeviceBus.Outbox.Buffer.ContentType"] = "Binary";
+
             config["DeviceBus.SharedSecretKey"] = "SHDLLKDJKWXXKSDLCJKIWHJKH";
             config["DeviceBus.Client"] = "Test Client " + Assembly.GetAssembly(typeof(Program)).GetName().Version;
 

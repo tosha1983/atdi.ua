@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ServiceModel;
+using Atdi.Api.Sdrn.Device.BusController;
+using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Contracts.WcfServices.Sdrn.Device;
 using Atdi.DataModels.CommonOperation;
 using Atdi.DataModels.Sdrns.Device;
@@ -16,15 +14,36 @@ namespace Atdi.WcfServices.Sdrn.Device
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class MeasTasksBus : WcfServiceBase<IMeasTasksBus>, IMeasTasksBus
     {
-        private readonly MessagesBus _bus;
-        private readonly BusConsumers _busConsumers;
+        private readonly IMessageDispatcher _dispatcher;
+        private readonly IMessagePublisher _publisher;
+        private readonly IServiceEnvironment _environment;
+        private readonly SdrnServerDescriptor _descriptor;
         private readonly ILogger _logger;
         
-        public MeasTasksBus(MessagesBus bus, BusConsumers busConsumers, ILogger logger)
+        public MeasTasksBus(IMessageDispatcher dispatcher, IMessagePublisher publisher, IServiceEnvironment environment, SdrnServerDescriptor descriptor, ILogger logger)
         {
-            this._bus = bus;
-            this._busConsumers = busConsumers;
+            this._dispatcher = dispatcher;
+            this._publisher = publisher;
+            this._environment = environment;
+            _descriptor = descriptor;
             this._logger = logger;
+            _logger.Verbouse(Contexts.ThisComponent, Categories.Creating, "The meas task service was created");
+        }
+
+        public void CheckSensorName(string name)
+        {
+            if (!_environment.AllowedSensors.ContainsKey(name))
+            {
+                throw new InvalidOperationException("Attempting to use an unlicensed device");
+            }
+        }
+
+        public void CheckSensorTechId(string name)
+        {
+            if (!_descriptor.SensorTechId.Equals(name, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Attempting to use an unlicensed device");
+            }
         }
 
         private void Verify(SensorDescriptor sensorDescriptor)
@@ -49,9 +68,10 @@ namespace Atdi.WcfServices.Sdrn.Device
                 throw new ArgumentOutOfRangeException(nameof(sensorDescriptor.EquipmentTechId));
             }
 
-            this._bus.CheckSensorName(sensorDescriptor.SensorName);
+            this.CheckSensorName(sensorDescriptor.SensorName);
+            this.CheckSensorTechId(sensorDescriptor.EquipmentTechId);
 
-            this._busConsumers.DeclareSensor(sensorDescriptor.SensorName, sensorDescriptor.EquipmentTechId);
+            //this._busConsumers.DeclareSensor(sensorDescriptor.SensorName, sensorDescriptor.EquipmentTechId);
 
         }
         public Result AckCommand(SensorDescriptor sensorDescriptor, byte[] token)
@@ -59,9 +79,9 @@ namespace Atdi.WcfServices.Sdrn.Device
             try
             {
                 this.Verify(sensorDescriptor);
-
+                
                 //this._bus.AckMessage(sensorDescriptor, token);
-                this._busConsumers.TryAckMessage("SendCommand", token);
+                this._dispatcher.TryAckMessage(MessageToken.FromBytes(token));
 
                 var result = new Result
                 {
@@ -72,6 +92,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -87,7 +108,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 //this._bus.AckMessage(sensorDescriptor, token);
-                this._busConsumers.TryAckMessage("SendEntity", token);
+                this._dispatcher.TryAckMessage(MessageToken.FromBytes(token));
 
                 var result = new Result
                 {
@@ -98,6 +119,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -113,7 +135,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 //this._bus.AckMessage(sensorDescriptor, token);
-                this._busConsumers.TryAckMessage("SendEntityPart", token);
+                this._dispatcher.TryAckMessage(MessageToken.FromBytes(token));
 
                 var result = new Result
                 {
@@ -124,6 +146,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -139,7 +162,7 @@ namespace Atdi.WcfServices.Sdrn.Device
                 this.Verify(sensorDescriptor);
 
                 //this._bus.AckMessage(sensorDescriptor, token);
-                this._busConsumers.TryAckMessage("SendMeasTask", token);
+                this._dispatcher.TryAckMessage(MessageToken.FromBytes(token));
 
                 var result = new Result
                 {
@@ -150,6 +173,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -164,20 +188,20 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                var token = string.Empty;
-                var data = this._busConsumers.TryGetObject<DeviceCommand>(sensorDescriptor, "SendCommand", out token);
+                var data = this._dispatcher.TryGetObject<DeviceCommand>("SendCommand");
 
                 var result = new BusResult<DeviceCommand>
                 {
                     State = OperationState.Success,
-                    Data = data,
-                    Token = Encoding.UTF8.GetBytes(token)
+                    Data = data?.Data,
+                    Token = MessageToken.ToBytes(data?.Token)
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new BusResult<DeviceCommand>
                 {
                     FaultCause = e.Message,
@@ -192,20 +216,20 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                var token = string.Empty;
-                var data = this._busConsumers.TryGetObject<Entity>(sensorDescriptor, "SendEntity", out token);
+                var data = this._dispatcher.TryGetObject<Entity>("SendEntity");
 
                 var result = new BusResult<Entity>
                 {
                     State = OperationState.Success,
-                    Data = data,
-                    Token = Encoding.UTF8.GetBytes(token)
+                    Data = data?.Data,
+                    Token = MessageToken.ToBytes(data?.Token)
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new BusResult<Entity>
                 {
                     FaultCause = e.Message,
@@ -220,20 +244,20 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                var token = string.Empty;
-                var data = this._busConsumers.TryGetObject<EntityPart>(sensorDescriptor, "SendEntityPart", out token);
+                var data = this._dispatcher.TryGetObject<EntityPart>("SendEntityPart");
 
                 var result = new BusResult<EntityPart>
                 {
                     State = OperationState.Success,
-                    Data = data,
-                    Token = Encoding.UTF8.GetBytes(token)
+                    Data = data?.Data,
+                    Token = MessageToken.ToBytes(data?.Token)
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new BusResult<EntityPart>
                 {
                     FaultCause = e.Message,
@@ -247,21 +271,21 @@ namespace Atdi.WcfServices.Sdrn.Device
             try
             {
                 this.Verify(sensorDescriptor);
-
-                var token = string.Empty;
-                var data = this._busConsumers.TryGetObject<MeasTask>(sensorDescriptor, "SendMeasTask", out token);
+                
+                var data = this._dispatcher.TryGetObject<MeasTask>("SendMeasTask");
 
                 var result = new BusResult<MeasTask>
                 {
                     State = OperationState.Success,
-                    Data = data,
-                    Token = Encoding.UTF8.GetBytes(token)
+                    Data = data?.Data,
+                    Token = MessageToken.ToBytes(data?.Token)
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new BusResult<MeasTask>
                 {
                     FaultCause = e.Message,
@@ -283,21 +307,21 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 this.Verify(descriptor);
 
-                var correlationId = Guid.NewGuid().ToString();
-                var messageId = this._bus.SaveObject(descriptor, "RegisterSensor", sensor, correlationId);
+                var messageToken = this._publisher.Send("RegisterSensor", sensor);
 
-                var data = this._busConsumers.WaitObject<SensorRegistrationResult>(descriptor, "SendRegistrationResult");
+                var data = this._dispatcher.WaitObject<SensorRegistrationResult>("SendRegistrationResult");
 
                 var result = new Result<SensorRegistrationResult>
                 {
                     State = OperationState.Success,
-                    Data = data
+                    Data = data.Data
                 };
 
                 return result;
             }
             catch(Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result<SensorRegistrationResult>
                 {
                     FaultCause = e.Message,
@@ -312,7 +336,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SaveObject(sensorDescriptor, "SendCommandResult", commandResult);
+                this._publisher.Send("SendCommandResult", commandResult);
 
                 var result = new Result
                 {
@@ -323,6 +347,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -337,7 +362,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SaveObject(sensorDescriptor, "SendEntity", entity);
+                this._publisher.Send("SendEntity", entity);
 
                 var result = new Result
                 {
@@ -348,6 +373,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -362,7 +388,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SaveObject(sensorDescriptor, "SendEntityPart", entityPart);
+                this._publisher.Send("SendEntityPart", entityPart);
 
                 var result = new Result
                 {
@@ -373,6 +399,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -387,7 +414,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._bus.SaveObject(sensorDescriptor, "SendMeasResults", results);
+                this._publisher.Send("SendMeasResults", results);
 
                 var result = new Result
                 {
@@ -398,6 +425,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -419,21 +447,21 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 this.Verify(sensorDescriptor);
 
-                var correlationId = Guid.NewGuid().ToString();
-                var messageId = this._bus.SaveObject(sensorDescriptor, "UpdateSensor", sensor, correlationId);
+                var messageToken = this._publisher.Send("UpdateSensor", sensor);
 
-                var data = this._busConsumers.WaitObject<SensorUpdatingResult>(sensorDescriptor, "SendSensorUpdatingResult");
+                var data = this._dispatcher.WaitObject<SensorUpdatingResult>("SendSensorUpdatingResult");
 
                 var result = new Result<SensorUpdatingResult>
                 {
                     State = OperationState.Success,
-                    Data = data
+                    Data = data.Data
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result<SensorUpdatingResult>
                 {
                     FaultCause = e.Message,
@@ -455,7 +483,7 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 this.Verify(descriptor);
 
-                this._bus.SaveObject(descriptor, "RegisterSensor", sensor);
+                this._publisher.Send("RegisterSensor", sensor);
 
                 var result = new Result
                 {
@@ -466,6 +494,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -480,20 +509,20 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                var token = string.Empty;
-                var data = this._busConsumers.TryGetObject<SensorRegistrationResult>(sensorDescriptor, "SendRegistrationResult", out token);
+                var data = this._dispatcher.TryGetObject<SensorRegistrationResult>("SendRegistrationResult");
 
                 var result = new BusResult<SensorRegistrationResult>
                 {
                     State = OperationState.Success,
-                    Data = data,
-                    Token = Encoding.UTF8.GetBytes(token)
+                    Data = data?.Data,
+                    Token = MessageToken.ToBytes(data?.Token)
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new BusResult<SensorRegistrationResult>
                 {
                     FaultCause = e.Message,
@@ -508,7 +537,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._busConsumers.TryAckMessage("SendRegistrationResult", token);
+                this._dispatcher.TryAckMessage(MessageToken.FromBytes(token));
 
                 var result = new Result
                 {
@@ -519,6 +548,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -540,7 +570,7 @@ namespace Atdi.WcfServices.Sdrn.Device
 
                 this.Verify(sensorDescriptor);
 
-                var messageId = this._bus.SaveObject(sensorDescriptor, "UpdateSensor", sensor);
+               this._publisher.Send("UpdateSensor", sensor);
 
                 var result = new Result
                 {
@@ -551,6 +581,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,
@@ -565,20 +596,20 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                var token = string.Empty;
-                var data = this._busConsumers.TryGetObject<SensorUpdatingResult>(sensorDescriptor, "SendSensorUpdatingResult", out token);
+                var data = this._dispatcher.TryGetObject<SensorUpdatingResult>("SendSensorUpdatingResult");
 
                 var result = new BusResult<SensorUpdatingResult>
                 {
                     State = OperationState.Success,
-                    Data = data,
-                    Token = Encoding.UTF8.GetBytes(token)
+                    Data = data?.Data,
+                    Token = MessageToken.ToBytes(data?.Token)
                 };
 
                 return result;
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new BusResult<SensorUpdatingResult>
                 {
                     FaultCause = e.Message,
@@ -593,7 +624,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             {
                 this.Verify(sensorDescriptor);
 
-                this._busConsumers.TryAckMessage("SendSensorUpdatingResult", token);
+                this._dispatcher.TryAckMessage(MessageToken.FromBytes(token));
 
                 var result = new Result
                 {
@@ -604,6 +635,7 @@ namespace Atdi.WcfServices.Sdrn.Device
             }
             catch (Exception e)
             {
+                _logger.Exception(Contexts.ThisComponent, Categories.Handling, e, this);
                 return new Result
                 {
                     FaultCause = e.Message,

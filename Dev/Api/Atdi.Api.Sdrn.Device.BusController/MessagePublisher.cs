@@ -52,10 +52,10 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 var message = this._messagePacker.Pack<TObject>(messageType, messageObject, _config.SdrnServerInstance, _config.SdrnDeviceSensorName, _config.SdrnDeviceSensorTechId, correlationToken);
                 var token = new MessageToken(message.Id, message.Type);
 
-                if (_config.BufferConfig.Type == BufferType.Filesystem)
+                if (_config.OutboxBufferConfig.Type == BufferType.Filesystem)
                 {
                     this._buffer.Save(message);
-                    this._logger.Verbouse("DeviceBus.MessageSending", $"The message is saved in the buffer: {message}, Buffer={_config.BufferConfig.Type}", this);
+                    this._logger.Verbouse("DeviceBus.MessageSending", $"The message is saved in the buffer: {message}, Buffer={_config.OutboxBufferConfig.Type}", this);
                 }
                 else if (_amqpPublisher.TryToSend(message))
                 {

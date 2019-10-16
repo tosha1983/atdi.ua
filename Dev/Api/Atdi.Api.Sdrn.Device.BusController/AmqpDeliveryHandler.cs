@@ -2,6 +2,7 @@
 using Atdi.Modules.AmqpBroker;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
@@ -20,6 +21,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
         private readonly BusLogger _logger;
         private Channel _redirectChannel;
         private Channel _channel;
+        private long _fileCounter;
 
         public AmqpDeliveryHandler(string dispatherTag, DeviceBusConfig config, string queueName, Dictionary<string, List<MessageHandlerDescriptor>> handlers, BusMessagePacker messagePacker, BusLogger logger)
         {
@@ -82,7 +84,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
                     errors.AppendLine("Incorrect sensor tech ID");
                 }
 
-                if (!this._handlers.ContainsKey(message.Type))
+                if (!this._handlers.ContainsKey(message.Type) && this._config.InboxBufferConfig.Type == BufferType.None)
                 {
                     errors.AppendLine("Unsupported message type");
                 }
@@ -94,70 +96,83 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 }
 
                 //throw new InvalidOperationException("Testing redirection by an error");
-                var protocol = message.GetHeaderValue(Protocol.Header.Protocol);
-                var bodyAqName = message.GetHeaderValue(Protocol.Header.BodyAqName);
+                
 
-                var messageObject = BusMessagePacker.Unpack(message.ContentType, message.ContentEncoding, protocol,
-                    message.Body, bodyAqName, _config.DeviceBusSharedSecretKey);
-
-                var handlers = this._handlers[message.Type];
-                var messageToken = new MessageToken(message.Id, message.Type);
-
-                foreach (var handler in handlers)
+                if (_handlers.TryGetValue(message.Type, out var handlers))
                 {
-                    var receivedMessageParam = Activator.CreateInstance(
-                        handler.ReceivedMessageGenericType,
-                        new object[]
+                    var protocol = message.GetHeaderValue(Protocol.Header.Protocol);
+                    var bodyAqName = message.GetHeaderValue(Protocol.Header.BodyAqName);
+
+                    var messageObject = BusMessagePacker.Unpack(message.ContentType, message.ContentEncoding, protocol,
+                        message.Body, bodyAqName, _config.DeviceBusSharedSecretKey);
+
+                    var messageToken = new MessageToken(message.Id, message.Type);
+
+                    foreach (var handler in handlers)
+                    {
+                        var receivedMessageParam = Activator.CreateInstance(handler.ReceivedMessageGenericType,
+                            new object[]
+                            {
+                                messageToken,
+                                messageObject,
+                                DateTime.Now,
+                                message.CorrelationId
+                            });
+
+                        try
                         {
-                            messageToken,
-                            messageObject,
-                            DateTime.Now,
-                            message.CorrelationId
-                        });
+                            handler.OnHandleMethod.Invoke(handler.Instance, new object[] { receivedMessageParam });
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.Exception("DeviceBus.MessageDispatching", "", e, this);
+                            throw new InvalidOperationException(
+                                $"Error occurred while processing the message: {e.Message}", e);
+                        }
 
-                    try
-                    {
-                        handler.OnHandleMethod.Invoke(handler.Instance, new object[] {receivedMessageParam});
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Exception("DeviceBus.MessageDispatching", "", e, this);
-                        throw new InvalidOperationException($"Error occurred while processing the message: {e.Message}",
-                            e);
-                    }
+                        var result = receivedMessageParam as IMessageResult;
 
-                    var result = receivedMessageParam as IMessageResult;
+                        if (result.Result == MessageHandlingResult.Confirmed)
+                        {
+                            return HandlingResult.Confirm;
+                        }
+                        else if (result.Result == MessageHandlingResult.Reject)
+                        {
+                            return HandlingResult.Reject;
+                        }
+                        else if (result.Result == MessageHandlingResult.Error)
+                        {
+                            this.RedirectMessageToServerQueue("errors", message, deliveryContext, "Error", result.ReasonFailure, null);
+                            return HandlingResult.Confirm;
+                        }
+                        else if (result.Result == MessageHandlingResult.Trash)
+                        {
+                            this.RedirectMessageToServerQueue("trash", message, deliveryContext, "Trash", result.ReasonFailure, null);
+                            return HandlingResult.Confirm;
+                        }
+                        else if (result.Result == MessageHandlingResult.Received)
+                        {
+                            continue;
+                        }
+                        else if (result.Result == MessageHandlingResult.Ignore)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                }
 
-                    if (result.Result == MessageHandlingResult.Received)
-                    {
-                        continue;
-                    }
-                    else if (result.Result == MessageHandlingResult.Confirmed)
-                    {
-                        break;
-                    }
-                    else if (result.Result == MessageHandlingResult.Ignore)
-                    {
-                        continue;
-                    }
-                    else if (result.Result == MessageHandlingResult.Reject)
-                    {
-                        return HandlingResult.Reject;
-                    }
-                    else if (result.Result == MessageHandlingResult.Trash)
-                    {
-                        this.RedirectMessageToServerQueue("trash", message, deliveryContext, "Trash", result.ReasonFailure, null);
-                        return HandlingResult.Confirm;
-                    }
-                    else if (result.Result == MessageHandlingResult.Error)
-                    {
-                        this.RedirectMessageToServerQueue("errors", message, deliveryContext, "Error", result.ReasonFailure, null);
-                        return HandlingResult.Confirm;
-                    }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException();
-                    }
+                if (_config.InboxBufferConfig.Type == BufferType.Filesystem)
+                {
+                    var bufferedMessage = new BufferedMessage(message, deliveryContext);
+                    this.SaveMessageToBuffer(bufferedMessage);
+                }
+                else
+                {
+                    this.RedirectMessageToServerQueue("errors", message, deliveryContext, "Error", "The message was not processed", null);
                 }
                 return HandlingResult.Confirm;
             }
@@ -171,6 +186,70 @@ namespace Atdi.Api.Sdrn.Device.BusController
             {
                 this._logger.Verbouse("DeviceBus.MessageHandling", $"The message was handled: {message}, {deliveryContext}", this);
             }
+        }
+
+        private void SaveMessageToBuffer(BufferedMessage message)
+        {
+            var fileName = string.Empty;
+            var folder = string.Intern(Path.Combine(this._config.InboxBufferConfig.Folder, PrepareTypeForFolderName(message.Type)));
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            if (this._config.InboxBufferConfig.ContentType == ContentType.Json)
+            {
+                var jsonConvertor = BusMessagePacker.GetConvertor(ContentType.Json);
+                var json = (string)jsonConvertor.Serialize(message, typeof(BusMessage));
+
+                fileName = MakeFileName("json");
+                var fullPath = Path.Combine(folder, fileName);
+
+                File.WriteAllText(fullPath, json);
+            }
+            else if (this._config.InboxBufferConfig.ContentType == ContentType.Xml)
+            {
+                var xmlConvertor = BusMessagePacker.GetConvertor(ContentType.Xml);
+                var xml = (string)xmlConvertor.Serialize(message, typeof(BusMessage));
+
+                fileName = MakeFileName("xml");
+                var fullPath = Path.Combine(folder, fileName);
+
+                File.WriteAllText(fullPath, xml);
+            }
+            else if (this._config.InboxBufferConfig.ContentType == ContentType.Binary)
+            {
+                var binaryConvertor = BusMessagePacker.GetConvertor(ContentType.Binary);
+                var binary = (byte[])binaryConvertor.Serialize(message, typeof(BusMessage));
+
+                fileName = MakeFileName("bin");
+                var fullPath = Path.Combine(folder, fileName);
+
+                File.WriteAllBytes(fullPath, binary);
+            }
+
+            this._logger.Verbouse("DeviceBus.MessageHandling", $"The buffered message file was created: File='{fileName}', Folder='{folder}', {this._config.InboxBufferConfig}, Message={message.Id}", this);
+        }
+
+        internal static string PrepareTypeForFolderName(string typeName)
+        {
+            return string.Intern(Path.Combine("ByTypes", typeName));
+        }
+
+        private string MakeFileName(string fileType)
+        {
+            var d = DateTime.Now;
+
+            var timeFormat = "yyyyMMdd_HHmmss";
+            var timeString = d.ToString(timeFormat);
+
+
+            var timeFormat3 = "FFFFFFF";
+            var timeString3 = d.ToString(timeFormat3).PadRight(timeFormat3.Length, '0');
+
+            System.Threading.Interlocked.Increment(ref this._fileCounter);
+            return timeString + "_" + timeString3 + "_" + (this._fileCounter).ToString().PadLeft(10, '0') + "." + fileType;
         }
 
         private void RedirectMessageToServerQueue(string context, IDeliveryMessage baseMessage, IDeliveryContext deliveryContext, string reason, string message, string detail)

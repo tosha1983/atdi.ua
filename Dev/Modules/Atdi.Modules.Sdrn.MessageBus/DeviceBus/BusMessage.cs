@@ -20,6 +20,7 @@ namespace Atdi.Modules.Sdrn.DeviceBus
         Xml = 2,
         Binary = 3
     }
+
     [Serializable]
     public sealed class BusMessage
     {

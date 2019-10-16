@@ -52,19 +52,30 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 var licenseOwnerId = GetParameter(doc, "License.OwnerId");
                 var licenseProductKey = GetParameter(doc, "License.ProductKey");
 
-                var rabbitMQHost = GetParameter(doc, "RabbitMQ.Host");
-                var rabbitMQPort = GetParameter(doc, "RabbitMQ.Port");
-                var rabbitMQVirtualHost = GetParameter(doc, "RabbitMQ.VirtualHost");
-                var rabbitMQUser = GetParameter(doc, "RabbitMQ.User");
-                var rabbitMQPassword = GetParameter(doc, "RabbitMQ.Password");
+                var rabbitMqHost = GetParameter(doc, "RabbitMQ.Host");
+                var rabbitMqPort = GetParameter(doc, "RabbitMQ.Port");
+                var rabbitMqVirtualHost = GetParameter(doc, "RabbitMQ.VirtualHost");
+                var rabbitMqUser = GetParameter(doc, "RabbitMQ.User");
+                var rabbitMqPassword = GetParameter(doc, "RabbitMQ.Password");
 
-                var sdrnServerInstance = GetParameter(doc, "SDRN.ServerInstance");
-                var sdrnMessagesExchange = GetParameter(doc, "SDRN.MessagesExchange");
-                var sdrnServerQueueNamePart = GetParameter(doc, "SDRN.ServerQueueNamePart");
-                var sdrnDeviceQueueNamePart = GetParameter(doc, "SDRN.DeviceQueueNamePart");
+                var sdrnServerInstance = GetParameter(doc, "SDRN.Server.Instance");
+                var sdrnSensorTechId = GetParameter(doc, "SDRN.Device.SensorTechId");
+                var sdrnMessagesExchange = GetParameter(doc, "SDRN.Device.Exchange");
+                var sdrnServerQueueNamePart = GetParameter(doc, "SDRN.Server.QueueNamePart");
+                var sdrnDeviceQueueNamePart = GetParameter(doc, "SDRN.Device.QueueNamePart");
 
-                var inboxPath = GetParameter(doc, "Messages.InboxFolder");
-                var outboxPath = GetParameter(doc, "Messages.OutboxFolder");
+                var sdrnMessagesBindings = GetParameter(doc, "SDRN.Device.MessagesBindings");
+                var sdrnContentType = GetParameter(doc, "DeviceBus.ContentType");
+                var sdrnSharedSecretKey = GetParameter(doc, "DeviceBus.SharedSecretKey");
+
+                var inboxPath = GetParameter(doc, "DeviceBus.Inbox.Buffer.Folder");
+                var outboxPath = GetParameter(doc, "DeviceBus.Outbox.Buffer.Folder");
+
+                var sdrnUseEncryption = GetParameter(doc, "SDRN.MessageConvertor.UseEncryption");
+                var sdrnUseCompression = GetParameter(doc, "SDRN.MessageConvertor.UseCompression");
+
+                var sdrnInboxContentType = GetParameter(doc, "DeviceBus.Inbox.Buffer.ContentType");
+                var sdrnOutboxContentType = GetParameter(doc, "DeviceBus.Outbox.Buffer.ContentType");
 
                 txtLicenseFileName.Text = licenseFileName;
                 try
@@ -80,25 +91,40 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 
                 
 
-                txtRabbitMQHost.Text = rabbitMQHost;
-                txtRabbitMQPort.Text = rabbitMQPort;
-                txtRabbitMQVirtualHost.Text = rabbitMQVirtualHost;
-                txtRabbitMQUser.Text = rabbitMQUser;
+                txtRabbitMQHost.Text = rabbitMqHost;
+                txtRabbitMQPort.Text = rabbitMqPort;
+                txtRabbitMQVirtualHost.Text = rabbitMqVirtualHost;
+                txtRabbitMQUser.Text = rabbitMqUser;
 
                 try
                 {
-                    txtRabbitMQPassword.Text = Encryptor.DecryptStringAES(rabbitMQPassword, SharedSecret);
+                    txtRabbitMQPassword.Text = Encryptor.DecryptStringAES(rabbitMqPassword, SharedSecret);
                 }
                 catch (Exception) { }
                 
 
                 txtSdrnServerInstance.Text = sdrnServerInstance;
+                txtSensorTechId.Text = sdrnSensorTechId;
                 txtSdrnMessagesExchange.Text = sdrnMessagesExchange;
                 txtSdrnServerQueueNamePart.Text = sdrnServerQueueNamePart;
                 txtSdrnDeviceQueueNamePart.Text = sdrnDeviceQueueNamePart;
+                txtMessagesBindings.Text = sdrnMessagesBindings;
+                txtContentType.Text = sdrnContentType;
+                txtSharedSecretKey.Text = sdrnSharedSecretKey;
 
                 txtInboxPath.Text = inboxPath;
                 txtOutboxPath.Text = outboxPath;
+
+                txtUseEncryption.CheckState = "true".Equals(sdrnUseEncryption, StringComparison.OrdinalIgnoreCase)
+                    ? CheckState.Checked
+                    : CheckState.Unchecked;
+
+                txtUseCompression.CheckState = "true".Equals(sdrnUseCompression, StringComparison.OrdinalIgnoreCase)
+                    ? CheckState.Checked
+                    : CheckState.Unchecked;
+
+                txtInboxContentType.Text = sdrnInboxContentType;
+                txtOutboxContentType.Text = sdrnOutboxContentType;
 
                 txtWcfBindings.Text = wcfBindings;
             }
@@ -108,18 +134,14 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             }
         }
 
-        private string GetParameter(XmlDocument doc, string paramName)
+        private static string GetParameter(XmlDocument doc, string paramName)
         {
             var node = doc.SelectSingleNode($"/configuration/atdi.platform/appServer/components/component[@type='SdrnDeviceServices']/parameters/parameter[@name='{paramName}']/@value");
-            if (node == null)
-            {
-                return null;
-            }
 
-            return node.InnerText;
+            return node?.InnerText;
         }
 
-        private void SetParameter(XmlDocument doc, string paramName, string value)
+        private static void SetParameter(XmlDocument doc, string paramName, string value)
         {
             var parameters = doc.SelectSingleNode("/configuration/atdi.platform/appServer/components/component[@type='SdrnDeviceServices']/parameters");
             var parameter = parameters.SelectSingleNode($"parameter[@name='{paramName}']");
@@ -137,13 +159,16 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
                 return;
             }
 
-            var va = parameter.Attributes["value"];
-            if (va == null)
+            if (parameter.Attributes != null)
             {
-                va = doc.CreateAttribute("value");
-                parameter.Attributes.Append(va);
+                var va = parameter.Attributes["value"];
+                if (va == null)
+                {
+                    va = doc.CreateAttribute("value");
+                    parameter.Attributes.Append(va);
+                }
+                va.Value = value;
             }
-            va.Value = value;
         }
 
         private void SaveControlsDataToConfig(string fileName)
@@ -152,19 +177,29 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             var licenseOwnerId = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, SharedSecret);
             var licenseProductKey = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, SharedSecret);
 
-            var rabbitMQHost = txtRabbitMQHost.Text;
-            var rabbitMQPort = txtRabbitMQPort.Text;
-            var rabbitMQVirtualHost = txtRabbitMQVirtualHost.Text;
-            var rabbitMQUser = txtRabbitMQUser.Text;
-            var rabbitMQPassword = Encryptor.EncryptStringAES(txtRabbitMQPassword.Text, SharedSecret);
+            var rabbitMqHost = txtRabbitMQHost.Text;
+            var rabbitMqPort = txtRabbitMQPort.Text;
+            var rabbitMqVirtualHost = txtRabbitMQVirtualHost.Text;
+            var rabbitMqUser = txtRabbitMQUser.Text;
+            var rabbitMqPassword = Encryptor.EncryptStringAES(txtRabbitMQPassword.Text, SharedSecret);
 
             var sdrnServerInstance = txtSdrnServerInstance.Text;
+            var sdrnSensorTechId = txtSensorTechId.Text;
             var sdrnMessagesExchange = txtSdrnMessagesExchange.Text;
+            var sdrnMessagesBindings = txtMessagesBindings.Text;
             var sdrnServerQueueNamePart = txtSdrnServerQueueNamePart.Text;
             var sdrnDeviceQueueNamePart = txtSdrnDeviceQueueNamePart.Text;
+            var sdrnContentType = txtContentType.Text;
+            var sdrnSharedSecretKey = txtSharedSecretKey.Text;
 
             var inboxPath = txtInboxPath.Text;
             var outboxPath = txtOutboxPath.Text;
+
+            var sdrnUseEncryption = txtUseEncryption.CheckState == CheckState.Checked ? "true" : "false";
+            var sdrnUseCompression = txtUseCompression.CheckState == CheckState.Checked ? "true" : "false";
+
+            var sdrnInboxContentType = txtInboxContentType.Text;
+            var sdrnOutboxContentType = txtOutboxContentType.Text;
 
             var wcfBindings = txtWcfBindings.Text;
 
@@ -179,19 +214,34 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
             SetParameter(doc, "License.OwnerId", licenseOwnerId);
             SetParameter(doc, "License.ProductKey", licenseProductKey);
 
-            SetParameter(doc, "RabbitMQ.Host", rabbitMQHost);
-            SetParameter(doc, "RabbitMQ.Port", rabbitMQPort);
-            SetParameter(doc, "RabbitMQ.VirtualHost", rabbitMQVirtualHost);
-            SetParameter(doc, "RabbitMQ.User", rabbitMQUser);
-            SetParameter(doc, "RabbitMQ.Password", rabbitMQPassword);
+            SetParameter(doc, "RabbitMQ.Host", rabbitMqHost);
+            SetParameter(doc, "RabbitMQ.Port", rabbitMqPort);
+            SetParameter(doc, "RabbitMQ.VirtualHost", rabbitMqVirtualHost);
+            SetParameter(doc, "RabbitMQ.User", rabbitMqUser);
+            SetParameter(doc, "RabbitMQ.Password", rabbitMqPassword);
 
-            SetParameter(doc, "SDRN.ServerInstance", sdrnServerInstance);
-            SetParameter(doc, "SDRN.MessagesExchange", sdrnMessagesExchange);
-            SetParameter(doc, "SDRN.ServerQueueNamePart", sdrnServerQueueNamePart);
-            SetParameter(doc, "SDRN.DeviceQueueNamePart", sdrnDeviceQueueNamePart);
+            SetParameter(doc, "SDRN.Server.Instance", sdrnServerInstance);
+            SetParameter(doc, "SDRN.Device.SensorTechId", sdrnSensorTechId);
+            SetParameter(doc, "SDRN.Device.Exchange", sdrnMessagesExchange);
+            SetParameter(doc, "SDRN.Server.QueueNamePart", sdrnServerQueueNamePart);
+            SetParameter(doc, "SDRN.Device.QueueNamePart", sdrnDeviceQueueNamePart);
 
-            SetParameter(doc, "Messages.OutboxFolder", outboxPath);
-            SetParameter(doc, "Messages.InboxFolder", inboxPath);
+            SetParameter(doc, "SDRN.Device.MessagesBindings", sdrnMessagesBindings);
+
+            SetParameter(doc, "DeviceBus.ContentType", sdrnContentType);
+            SetParameter(doc, "DeviceBus.SharedSecretKey", sdrnSharedSecretKey);
+
+            SetParameter(doc, "DeviceBus.Outbox.UseBuffer", "FileSystem");
+            SetParameter(doc, "DeviceBus.Inbox.UseBuffer", "FileSystem");
+
+            SetParameter(doc, "DeviceBus.Outbox.Buffer.Folder", outboxPath);
+            SetParameter(doc, "DeviceBus.Inbox.Buffer.Folder", inboxPath);
+
+            SetParameter(doc, "SDRN.MessageConvertor.UseEncryption", sdrnUseEncryption);
+            SetParameter(doc, "SDRN.MessageConvertor.UseCompression", sdrnUseCompression);
+
+            SetParameter(doc, "DeviceBus.Outbox.Buffer.ContentType", sdrnOutboxContentType);
+            SetParameter(doc, "DeviceBus.Inbox.Buffer.ContentType", sdrnInboxContentType);
 
             doc.Save(fileName);
         }
@@ -206,6 +256,11 @@ namespace Atdi.ConfigWizard.Sdrn.Device.WcfService
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

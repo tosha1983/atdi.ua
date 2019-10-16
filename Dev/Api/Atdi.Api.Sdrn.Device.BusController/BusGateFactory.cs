@@ -204,23 +204,23 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 descriptor.SdrnMessageConvertorUseCompression = "true".Equals(paramValue, StringComparison.OrdinalIgnoreCase);
             }
 
-            if (gateConfig.TryGetValue(ConfigParams.DeviceBusUseBuffer, out paramValue))
+            if (gateConfig.TryGetValue(ConfigParams.DeviceBusOutboxUseBuffer, out paramValue))
             {
                 if (BufferType.Filesystem.ToString().Equals(paramValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    descriptor.BufferConfig.Type = BufferType.Filesystem;
+                    descriptor.OutboxBufferConfig.Type = BufferType.Filesystem;
                    
-                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferContentType, out paramValue, logger))
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusOutboxBufferContentType, out paramValue, logger))
                     {
-                        descriptor.BufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+                        descriptor.OutboxBufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
                     }
                     else
                     {
                         hasParamError = true;
                     }
-                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferOutboxFolder, out paramValue, logger))
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusOutboxBufferFolder, out paramValue, logger))
                     {
-                        descriptor.BufferConfig.OutboxFolder = paramValue;
+                        descriptor.OutboxBufferConfig.Folder = paramValue;
                     }
                     else
                     {
@@ -229,18 +229,18 @@ namespace Atdi.Api.Sdrn.Device.BusController
                 }
                 else if (BufferType.Database.ToString().Equals(paramValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    descriptor.BufferConfig.Type = BufferType.Database;
-                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferContentType, out paramValue, logger))
+                    descriptor.OutboxBufferConfig.Type = BufferType.Database;
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusOutboxBufferContentType, out paramValue, logger))
                     {
-                        descriptor.BufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+                        descriptor.OutboxBufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
                     }
                     else
                     {
                         hasParamError = true;
                     }
-                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusBufferConnectionString, out paramValue, logger))
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusOutboxBufferConnectionString, out paramValue, logger))
                     {
-                        descriptor.BufferConfig.ConnectionString = paramValue;
+                        descriptor.OutboxBufferConfig.ConnectionString = paramValue;
                     }
                     else
                     {
@@ -251,9 +251,58 @@ namespace Atdi.Api.Sdrn.Device.BusController
             }
             else
             {
-                descriptor.BufferConfig.Type = BufferType.None;
+                descriptor.OutboxBufferConfig.Type = BufferType.None;
             }
 
+            if (gateConfig.TryGetValue(ConfigParams.DeviceBusInboxUseBuffer, out paramValue))
+            {
+                if (BufferType.Filesystem.ToString().Equals(paramValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    descriptor.InboxBufferConfig.Type = BufferType.Filesystem;
+
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusInboxBufferContentType, out paramValue, logger))
+                    {
+                        descriptor.InboxBufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusInboxBufferFolder, out paramValue, logger))
+                    {
+                        descriptor.InboxBufferConfig.Folder = paramValue;
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                }
+                else if (BufferType.Database.ToString().Equals(paramValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    descriptor.InboxBufferConfig.Type = BufferType.Database;
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusInboxBufferContentType, out paramValue, logger))
+                    {
+                        descriptor.InboxBufferConfig.ContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                    if (this.TryGetConfigParameter(gateConfig, ConfigParams.DeviceBusInboxBufferConnectionString, out paramValue, logger))
+                    {
+                        descriptor.InboxBufferConfig.ConnectionString = paramValue;
+                    }
+                    else
+                    {
+                        hasParamError = true;
+                    }
+                }
+
+            }
+            else
+            {
+                descriptor.InboxBufferConfig.Type = BufferType.None;
+            }
             if (gateConfig.TryGetValue(ConfigParams.DeviceBusContentType, out paramValue))
             {
                 descriptor.DeviceBusContentType = (ContentType)Enum.Parse(typeof(ContentType), paramValue);

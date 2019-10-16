@@ -55,38 +55,38 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             var fileName = string.Empty;
 
-            if (this._config.BufferConfig.ContentType == ContentType.Json)
+            if (this._config.OutboxBufferConfig.ContentType == ContentType.Json)
             {
                 var jsonConvertor = BusMessagePacker.GetConvertor(ContentType.Json);
                 var json = (string)jsonConvertor.Serialize(message, typeof(BusMessage));
 
                 fileName = MakeFileName("json");
-                var fullPath = Path.Combine(this._config.BufferConfig.OutboxFolder, fileName);
+                var fullPath = Path.Combine(this._config.OutboxBufferConfig.Folder, fileName);
 
                 File.WriteAllText(fullPath, json);
             }
-            else if (this._config.BufferConfig.ContentType == ContentType.Xml)
+            else if (this._config.OutboxBufferConfig.ContentType == ContentType.Xml)
             {
                 var xmlConvertor = BusMessagePacker.GetConvertor(ContentType.Xml);
                 var xml = (string)xmlConvertor.Serialize(message, typeof(BusMessage));
 
                 fileName = MakeFileName("xml");
-                var fullPath = Path.Combine(this._config.BufferConfig.OutboxFolder, fileName);
+                var fullPath = Path.Combine(this._config.OutboxBufferConfig.Folder, fileName);
 
                 File.WriteAllText(fullPath, xml);
             }
-            else if (this._config.BufferConfig.ContentType == ContentType.Binary)
+            else if (this._config.OutboxBufferConfig.ContentType == ContentType.Binary)
             {
                 var binaryConvertor = BusMessagePacker.GetConvertor(ContentType.Binary);
                 var binary = (byte[])binaryConvertor.Serialize(message, typeof(BusMessage));
 
                 fileName = MakeFileName("bin");
-                var fullPath = Path.Combine(this._config.BufferConfig.OutboxFolder, fileName);
+                var fullPath = Path.Combine(this._config.OutboxBufferConfig.Folder, fileName);
 
                 File.WriteAllBytes(fullPath, binary);
             }
 
-            this._logger.Verbouse("DeviceBus.FileProcessing", $"The message file is created: File='{fileName}', {this._config.BufferConfig}, Message={message.Id}", this);
+            this._logger.Verbouse("DeviceBus.FileProcessing", $"The message file is created: File='{fileName}', {this._config.OutboxBufferConfig}, Message={message.Id}", this);
 
             // сигналим что есть файл
             if (_eventWaiter != null && _thread != null)
@@ -382,7 +382,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         private string[] ReadFiles()
         {
-            var files = Directory.GetFiles(this._config.BufferConfig.OutboxFolder, "*.*", SearchOption.TopDirectoryOnly);
+            var files = Directory.GetFiles(this._config.OutboxBufferConfig.Folder, "*.*", SearchOption.TopDirectoryOnly);
             if (files.Length > 0)
             {
                 return files.OrderBy(s => s).ToArray();

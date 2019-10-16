@@ -29,13 +29,13 @@ namespace Atdi.Platform.AppComponent
 
             this.OnActivate();
 
-            _logger.Info("Component", "Activating", (EventText)$"The component has activated: {this}");
+            _logger.Info("Component", "Activating", (EventText)$"The component activated: {this}");
         }
 
         public void Deactivate()
         {
             this.OnDeactivate();
-            _logger.Info("Component", "Deactivating", (EventText)$"The component has deactivated: {this}");
+            _logger.Info("Component", "Deactivating", (EventText)$"The component deactivated: {this}");
         }
 
         public void Install(IServicesContainer container, IComponentConfig config)
@@ -46,8 +46,8 @@ namespace Atdi.Platform.AppComponent
             this._logger = this._resolver.Resolve<ILogger>();
 
 
-            _logger.Info("Component", "Loading", (EventText)$"The component has loaded: {this}");
-            _logger.Debug("Component", "Loading", (EventText)$"The component data", new Dictionary<string, object>
+            _logger.Info("Component", "Loading", (EventText)$"The component loaded: {this}");
+            _logger.Debug("Component", "Loading", (EventText)$"", new Dictionary<string, object>
             {
                 ["Assembly"] = this.GetType().Assembly.FullName,
                 ["Type"] = this.Type,
@@ -61,7 +61,7 @@ namespace Atdi.Platform.AppComponent
         public void Uninstall()
         {
             this.OnUninstall();
-            _logger.Info("Component", "Unloading", (EventText)$"The component has unloaded: {this}");
+            _logger.Info("Component", "Unloading", (EventText)$"The component unloaded: {this}");
 
             this._config = null;
             this._container = null;
@@ -80,7 +80,7 @@ namespace Atdi.Platform.AppComponent
         public override string ToString()
         {
             var name = this.GetType().Assembly.GetName();
-            return $"Name='{name.Name}', Version='{name.Version}'";
+            return $"Assembly='{name.Name}', Version='{name.Version}'";
         }
     }
 }

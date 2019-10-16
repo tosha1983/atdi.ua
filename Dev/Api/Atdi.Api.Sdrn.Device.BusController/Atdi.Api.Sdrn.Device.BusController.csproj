@@ -45,6 +45,7 @@
     <Compile Include="ActionMessageHandler.cs" />
     <Compile Include="AmqpDeliveryHandler.cs" />
     <Compile Include="AmqpPublisher.cs" />
+    <Compile Include="BufferedMessage.cs" />
     <Compile Include="BusEvent.cs" />
     <Compile Include="BusEvents.cs" />
     <Compile Include="BusGate.cs" />

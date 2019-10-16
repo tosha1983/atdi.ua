@@ -14,7 +14,7 @@ namespace Atdi.Contracts.Sdrn.Server.DevicesBus
         Processed = 3,
         Failure = 4
     }
-    public interface IMessageProcessingScope<TDeliveryObject> : IDisposable
+    public interface IMessageProcessingScope<out TDeliveryObject> : IDisposable
     {
         string SensorName { get; }
 
