@@ -1964,43 +1964,41 @@ namespace Atdi.AppServices.WebQuery.Handlers
 
             // Запуск процедуры обновления
 
-            //if ((maxLevelsByValues > 1) || (updateAction != null))
+            
+            listLinkColumn.Clear();
+            var primaryKeys = primaryColumns.Find(z => z.NameTableTo == queryDescriptor.TableName);
+            var linkColumn = new LinkColumn();
+            linkColumn.LinkFieldName = primaryKeys.FieldJoinTo;
+            linkColumn.TableName = queryDescriptor.TableName;
+            linkColumn.ValueLinkId = idValue;
+            linkColumn.TypeColumn = primaryKeys.TypeColumn;
+            linkColumn.FullSourceName = primaryKeys.FieldJoinTo;
+            listLinkColumn.Add(linkColumn);
+
+            for (int i = maxLevelsByValues; i >= 1; i--)
             {
-                listLinkColumn.Clear();
-                var primaryKeys = primaryColumns.Find(z => z.NameTableTo == queryDescriptor.TableName);
-                var linkColumn = new LinkColumn();
-                linkColumn.LinkFieldName = primaryKeys.FieldJoinTo;
-                linkColumn.TableName = queryDescriptor.TableName;
-                linkColumn.ValueLinkId = idValue;
-                linkColumn.TypeColumn = primaryKeys.TypeColumn;
-                linkColumn.FullSourceName = primaryKeys.FieldJoinTo;
-                listLinkColumn.Add(linkColumn);
-
-                for (int i = maxLevelsByValues; i >= 1; i--)
+                var findValuesByLevel = valuesFromColumns.FindAll(z => z.Level == i);
+                foreach (var val in findValuesByLevel)
                 {
-                    var findValuesByLevel = valuesFromColumns.FindAll(z => z.Level == i);
-                    foreach (var val in findValuesByLevel)
+                    var value = irpDescrColumns.ToList();
+                    var findedColumnMeta = value.Find(z => z.columnMeta.Name == val.Name);
+                    if ((findedColumnMeta != null) && (findedColumnMeta.columnProperties != null))
                     {
-                        var value = irpDescrColumns.ToList();
-                        var findedColumnMeta = value.Find(z => z.columnMeta.Name == val.Name);
-                        if ((findedColumnMeta != null) && (findedColumnMeta.columnProperties != null))
+                        for (int j = 0; j < findedColumnMeta.columnProperties.Length; j++)
                         {
-                            for (int j = 0; j < findedColumnMeta.columnProperties.Length; j++)
+                            string findPrefix = val.Name;
+                            if (!string.IsNullOrEmpty(findedColumnMeta.columnProperties[j].Name))
                             {
-                                string findPrefix = val.Name;
-                                if (!string.IsNullOrEmpty(findedColumnMeta.columnProperties[j].Name))
+                                if (findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) != -1)
                                 {
-                                    if (findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) != -1)
-                                    {
-                                        int idx = findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) + findedColumnMeta.columnProperties[j].Name.Length;
-                                        findPrefix = findPrefix.Substring(0, idx);
-                                    }
+                                    int idx = findPrefix.IndexOf(findedColumnMeta.columnProperties[j].Name) + findedColumnMeta.columnProperties[j].Name.Length;
+                                    findPrefix = findPrefix.Substring(0, idx);
                                 }
-
-                                GetValueColumnByTableFrom(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findPrefix);
-                                var listColumnValuesUpdIns = GetColumnValuesFromLevel(findValuesByLevel, irpDescrColumns, findedColumnMeta.columnProperties[j].NameTableTo, findPrefix);
-                                GetLinkColumnByTableTo(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findValuesByLevel, listColumnValuesUpdIns, findPrefix, updateAction, creationAction, userTokenData);
                             }
+
+                            GetValueColumnByTableFrom(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findPrefix);
+                            var listColumnValuesUpdIns = GetColumnValuesFromLevel(findValuesByLevel, irpDescrColumns, findedColumnMeta.columnProperties[j].NameTableTo, findPrefix);
+                            GetLinkColumnByTableTo(ref listLinkColumn, findedColumnMeta.columnProperties[j], queryDescriptor, findValuesByLevel, listColumnValuesUpdIns, findPrefix, updateAction, creationAction, userTokenData);
                         }
                     }
                 }

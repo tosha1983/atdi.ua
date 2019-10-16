@@ -5,17 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
+using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.Contracts.LegacyServices.Icsm;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Handlers;
+
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation
 {
     public sealed class EstimationJobExecutor : IJobExecutor
     {
         private readonly ILogger _logger;
+        private IDataLayer<IcsmDataOrm> _dataLayer { get; set; }
+        private CalcFinalCoverage _startCalcFinalCoverage { get; set; }
+        private  AppServerComponentConfig _appServerComponentConfig { get; set; }
 
-        public EstimationJobExecutor(ILogger logger)
+
+        public EstimationJobExecutor(IDataLayer<IcsmDataOrm> dataLayer, AppServerComponentConfig appServerComponentConfig, ILogger logger)
         {
             // через конструктр заказываем нужные сервисы
-            _logger = logger;
+            this._logger = logger;
+            this._appServerComponentConfig = appServerComponentConfig;
+            this._dataLayer = dataLayer;
+            this._startCalcFinalCoverage = new CalcFinalCoverage(this._dataLayer, this._logger);
         }
 
         public JobExecutionResult Execute(JobExecutionContext context)
@@ -23,37 +34,25 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
             _logger.Verbouse("CoverageEstimation", "Execution", $"The Coverage Estimation Job is starting: StartAttempts=#{context.Token.StartAttempts}, RecoveryAttempts=#{context.Token.RecoveryAttempts}, IsRepeat={context.IsRepeat}, IsRecovery={context.IsRecovery}");
             try
             {
-                // тут полезная нагрузка и все что нужно
-
-                // можем понять режим запуска
-                if (context.IsRecovery)
+                if (context.Token.StartAttempts == 1)
                 {
-                    // запуск после ошибки
+                    this._startCalcFinalCoverage.LoadConfig(this._appServerComponentConfig);
+                    this._startCalcFinalCoverage.Run(context.Token.StartAttempts);
                 }
-                if (!context.IsRepeat)
-                {
-                    // это первый запуска
-                }
+                
 
-                if (context.Token.StartAttempts == 5)
+                if (this._appServerComponentConfig.IsRepeatable==false)
                 {
-                    // это пятый запуск
+                    return JobExecutionResult.Canceled;
                 }
-
-                if (context.Token.RecoveryAttempts == 10)
+                else
                 {
-                    // уже было 10 запусков востановления
+                    this._startCalcFinalCoverage.Run(context.Token.StartAttempts);
                 }
 
                 // если есть длительные цыклы, обязательно проверять на отмену
                 if (context.CancellationToken.IsCancellationRequested)
                 {
-                    return JobExecutionResult.Canceled;
-                }
-
-                if (context.Token.StartAttempts > 10)
-                {
-                    // это пятый запуск
                     return JobExecutionResult.Canceled;
                 }
 

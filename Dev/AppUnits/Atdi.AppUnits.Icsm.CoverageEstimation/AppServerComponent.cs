@@ -19,7 +19,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
             this.Container.RegisterInstance(unitConfig, ServiceLifetime.Singleton);
 
             this.Container.Register<EstimationJobExecutor>(ServiceLifetime.Singleton);
-            
         }
 
         protected override void OnActivateUnit()
@@ -41,6 +40,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
 
                 Logger.Info(Contexts.ThisComponent, Categories.Initializing, $"The Coverage Estimation Job is launched: {token}");
             });
+
         }
 
         protected override void OnDeactivateUnit()
