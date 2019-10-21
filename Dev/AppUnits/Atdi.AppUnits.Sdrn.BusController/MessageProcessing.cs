@@ -52,7 +52,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             this._processingThread = new Thread(this.Process)
             {
-                Name = $"SDRN.BusController.AMQPMessages.Processing"
+                Name = $"ATDI.SdrnServer.DeviceBus.MessageProcessing"
             };
 
             this._processingThread.Start();
@@ -117,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         private void HandleMessage(long id, string type)
         {
-            var statusCode = (byte)0;
+            var statusCode = (byte)MessageProcessingStatus.SentEvent;
             var statusNote = string.Empty;
             try
             {
@@ -127,18 +127,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 };
 
                 _eventEmitter.Emit(busEvent);
-
-                statusCode = 1;
             }
             catch (Exception e)
             {
-                statusCode = 4;
+                statusCode = (byte)MessageProcessingStatus.Failure;
                 statusNote = $"An error occurred while sending a notification 'On{type}DeviceBusEvent': {e.Message}";
                 _logger.Exception(Contexts.ThisComponent, Categories.Processing, statusNote, e, (object)this);
             }
             finally
             {
-                _messagesSite.ChangeStatus(id, (byte)0, statusCode, statusNote);
+                _messagesSite.ChangeStatus(id, (byte)MessageProcessingStatus.Created,statusCode, statusNote);
             }
             
         }

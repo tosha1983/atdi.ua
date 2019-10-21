@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Atdi.Modules.AmqpBroker
 {
@@ -13,7 +9,7 @@ namespace Atdi.Modules.AmqpBroker
         public ConnectionFactory(IBrokerObserver brokerObserver)
         {
             this._brokerObserver = brokerObserver;
-            this._brokerObserver.Verbouse("AmqpBroker.ConnectionFactory", $"The connection factory is initialized successfully", this);
+            this._brokerObserver.Info("AmqpBroker.Initialization", "AMQP Broker Client starting ...", this);
         }
 
         public Connection Create(ConnectionConfig config)

@@ -12,10 +12,12 @@ namespace Atdi.AppUnits.Sdrn.BusController
     {
         private readonly static string _sdatas = "Atdi.AppServer.AppService.SdrnsController";
         private readonly ISdrnServerEnvironment _environment;
+        private readonly ISdrnServerEnvironmentModifier _environmentModifier;
 
-        public SdrnBusControllerConfig(IComponentConfig config, ISdrnServerEnvironment environment)
+        public SdrnBusControllerConfig(IComponentConfig config, ISdrnServerEnvironment environment, ISdrnServerEnvironmentModifier environmentModifier)
         {
             this._environment = environment;
+            this._environmentModifier = environmentModifier;
 
             this.ApiVersion = config.GetParameterAsString("ApiVersion");
 
@@ -46,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.UseEncryption = config.GetParameterAsBoolean("MessageConvertor.UseEncryption");
             this.UseCompression = config.GetParameterAsBoolean("MessageConvertor.UseCompression");
 
-            
+            this._environmentModifier.AddSharedSecretKey("DeviceBus", config.GetParameterAsString("DeviceBus.SharedSecretKey"));
             
 
         }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Atdi.Modules.AmqpBroker
 {
@@ -25,15 +23,11 @@ namespace Atdi.Modules.AmqpBroker
         byte[] Body { get; set; }
     }
 
-    public static class DeliveryMessageExtantion
+    public static class DeliveryMessageExtension
     {
         public static string GetHeaderValue(this IDeliveryMessage message, string key)
         {
-            if (message == null)
-            {
-                return null;
-            }
-            if (message.Headers == null)
+            if (message?.Headers == null)
             {
                 return null;
             }

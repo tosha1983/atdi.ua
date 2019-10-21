@@ -28,6 +28,9 @@ namespace Atdi.Contracts.Sdrn.Server
         ServerRole ServerRoles { get; }
 
         string MasterServerInstance { get; }
+
+        string GetSharedSecretKey(string context);
+
     }
 
     public static class SdrnServerEnvironmentExtentions

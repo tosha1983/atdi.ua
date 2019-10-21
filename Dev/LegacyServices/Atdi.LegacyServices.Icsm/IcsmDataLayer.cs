@@ -35,6 +35,20 @@ namespace Atdi.LegacyServices.Icsm
             throw new NotImplementedException();
         }
 
+        public IDataLayerScope CreateScope<TContext>() where TContext : IDataContext, new()
+        {
+            var dataEngine = this._dataLayer.GetDataEngine<TContext>();
+            var scope = new DataLayerScope(dataEngine, this._schemasMetadata, this.Logger);
+            return scope;
+        }
+
+        public IDataLayerScope CreateScope(IDataContext dataContext)
+        {
+            var dataEngine = this._dataLayer.GetDataEngine(dataContext);
+            var scope = new DataLayerScope(dataEngine, this._schemasMetadata, this.Logger);
+            return scope;
+        }
+
         public IQueryExecutor Executor<TContext>() where TContext : IDataContext, new()
         {
             var contextType = typeof(TContext);

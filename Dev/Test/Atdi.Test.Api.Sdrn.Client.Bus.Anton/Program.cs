@@ -14,8 +14,8 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
     class JsonData
     {
-        public string Type;
-        public string JsonBody;
+        public string Type { get; set; } = null;
+        public string JsonBody { get; set; } = null;
     }
     class Program
     {

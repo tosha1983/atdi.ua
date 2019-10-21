@@ -11,7 +11,18 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
     {
         public void OnEvent(IBusEvent busEvent)
         {
-            Console.WriteLine($"{busEvent.Created} :  Bus event - {busEvent.Level} - {busEvent.Source} - {busEvent.Context} - '{busEvent.Text}' - '{busEvent.Source}'");
+            var context = busEvent.Context;
+            if (!string.IsNullOrEmpty(context))
+            {
+                var parts = busEvent.Context.Split('.');
+                if (parts.Length == 2)
+                {
+                    context = $"{parts[0]}({parts[1]})";
+                }
+            }
+            
+
+            Console.WriteLine($"{busEvent.Created} [{busEvent.Level}] {context}: '{busEvent.Text}'");
 
         }
     }

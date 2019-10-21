@@ -303,7 +303,7 @@ namespace Atdi.Api.DataBus
         {
             this._channel = connection.CreateChannel();
             this._redirectChannel = connection.CreateChannel();
-            this._channel.JoinConsumer(this._queueName, this._tag, this);
+            this._channel.AttachConsumer(this._queueName, this._tag, this);
         }
 
         public void UnJoin()
@@ -312,7 +312,7 @@ namespace Atdi.Api.DataBus
             {
                 try
                 {
-                    _channel.UnjoinConsumer(this._tag);
+                    _channel.DetachConsumer(this._tag);
                     _channel.Dispose();
                 }
                 catch (Exception e)

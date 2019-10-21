@@ -19,5 +19,11 @@ namespace Atdi.Contracts.Api.Sdrn.MessageBus
         void RegistryHandler<TObject>(string messageType, Action<IReceivedMessage<TObject>> handler);
 
         void RegistryHandler<TObject>(IMessageHandler<TObject> handler);
+
+        void TryAckMessage(IMessageToken token);
+
+        IReceivedMessage<TObject> TryGetObject<TObject>(string messageType, string correlationId = null, bool isAutoAck = false);
+
+        IReceivedMessage<TObject> WaitObject<TObject>(string messageType, string correlationId = null);
     }
 }
