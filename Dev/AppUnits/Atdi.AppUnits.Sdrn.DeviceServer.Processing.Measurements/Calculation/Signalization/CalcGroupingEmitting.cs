@@ -185,7 +185,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception ex)
             {
-                logger.Error(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex.Message);
+                logger.Exception(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex);
             }
             return true;
         }
@@ -345,7 +345,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception ex)
             {
-                logger.Error(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex.Message);
+                logger.Exception(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex);
             }
             // формируем результирующее излуение
             return res;
@@ -506,7 +506,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception ex)
             {
-                logger.Error(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex.Message);
+                logger.Exception(Contexts.SignalizationTaskResultHandler, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, ex);
             }
             return true;
         }

@@ -171,7 +171,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.EventCommand, Categories.Processing, Exceptions.UnknownErrorEventCommand, e.Message);
+                _logger.Exception(Contexts.EventCommand, Categories.Processing, Exceptions.UnknownErrorEventCommand, e);
             }
             return isSuccess;
         }

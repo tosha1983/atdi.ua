@@ -450,7 +450,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, e.Message);
+                _logger.Exception(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, e);
                 context.Abort(e);
             }
         }
