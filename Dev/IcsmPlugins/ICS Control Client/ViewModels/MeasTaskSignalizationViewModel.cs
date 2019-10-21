@@ -27,6 +27,11 @@ namespace XICSM.ICSControlClient.ViewModels
         public CustomDataGridMeasResult()
         {
             this.MouseDoubleClick += DoubleClick;
+            this.SelectionChanged += CustomDataGrid_SelectionChanged;
+        }
+        void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.SelectedItemsList = this.SelectedItems;
         }
         private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
         {
@@ -35,7 +40,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
                 { 
-                    var dlgForm = new FM.MeasResultSignalizationForm(item.MeasSdrResultsId);
+                    var dlgForm = new FM.MeasResultSignalizationForm(item.MeasSdrResultsId, 0, null, null);
                     dlgForm.ShowDialog();
                     dlgForm.Dispose();
                 }

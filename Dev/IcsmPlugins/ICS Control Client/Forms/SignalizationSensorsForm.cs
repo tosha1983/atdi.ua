@@ -24,8 +24,14 @@ namespace XICSM.ICSControlClient.Forms
     public partial class SignalizationSensorsForm : Form
     {
         private ElementHost _wpfElementHost;
-        public SignalizationSensorsForm()
+        private int _startType;
+        private DateTime? _timeMeas;
+        private EmittingViewModel[] _emittings;
+        public SignalizationSensorsForm(int startType, EmittingViewModel[] emittings, DateTime? timeMeas)
         {
+            this._startType = startType;
+            this._emittings = emittings;
+            this._timeMeas = timeMeas;
             InitializeComponent();
         }
 
@@ -42,7 +48,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                ((UserControl) this._wpfElementHost.Child).DataContext = new SignalizationSensorsViewModel();
+                ((UserControl) this._wpfElementHost.Child).DataContext = new SignalizationSensorsViewModel(_startType, this, _emittings, _timeMeas);
             }
         }
 
