@@ -59,6 +59,13 @@
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="CalcCoverage\Handlers\CheckOperations\CheckFailedOperation.cs" />
     <Compile Include="CalcCoverage\Handlers\CheckOperations\LocalBinder.cs" />
+    <Compile Include="CalcCoverage\Handlers\DB\CheckCondition.cs" />
+    <Compile Include="CalcCoverage\Handlers\DB\CreateConditionForMobStation2.cs" />
+    <Compile Include="CalcCoverage\Handlers\Manage\CoverageConfig.cs" />
+    <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverageForMobStation2.cs" />
+    <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverageForMobStation.cs" />
+    <Compile Include="CalcCoverage\Handlers\Transliteration\Transliteration.cs" />
+    <Compile Include="CalcCoverage\Models\ConcatBlankWithStation\DataForThread.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentsConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CodeOperatorAndStatusConfig.cs" />
@@ -66,10 +73,14 @@
     <Compile Include="CalcCoverage\Models\Config\ColorConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CommandConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CommandsConfig.cs" />
+    <Compile Include="CalcCoverage\Models\Config\BlockStationsConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\DataConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\DirectoryConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ProvinceConfig.cs" />
+    <Compile Include="CalcCoverage\Models\Config\FreqConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\StandardConfig.cs" />
+    <Compile Include="CalcCoverage\Models\Interface\ICalcFinalCoverage.cs" />
+    <Compile Include="CalcCoverage\Models\Pattern\PointObject.cs" />
     <Compile Include="CalcCoverage\Models\Protocol\Operation.cs" />
     <Compile Include="CalcCoverage\Models\Protocol\CheckOperation.cs" />
     <Compile Include="CalcCoverage\Models\Station\EwxData.cs" />
@@ -81,9 +92,8 @@
     <Compile Include="CalcCoverage\Handlers\Gdal\GdalConfiguration.cs" />
     <Compile Include="CalcCoverage\Handlers\Gdal\GdalCalc.cs" />
     <Compile Include="CalcCoverage\Handlers\LoadConfig\Config.cs" />
-    <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverage.cs" />
-    <Compile Include="CalcCoverage\Handlers\DB\CopyStationsToEwxFile.cs" />
-    <Compile Include="CalcCoverage\Handlers\DB\CreateCondition.cs" />
+    <Compile Include="CalcCoverage\Handlers\DB\CopyMobStationToEwxFile.cs" />
+    <Compile Include="CalcCoverage\Handlers\DB\CreateConditionForMobStation.cs" />
     <Compile Include="CalcCoverage\Handlers\DB\SaveResultCalcCoverageIntoDB.cs" />
     <Compile Include="Hooks\BitBltHook\Injector.cs" />
     <Compile Include="EstimationJobExecutor.cs" />
@@ -138,6 +148,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets" Condition="Exists('..\..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

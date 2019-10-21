@@ -17,65 +17,59 @@ using Atdi.AppUnits.Icsm.Hooks;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 {
-    public  class CalcFinalCoverage
+    public  class CalcFinalCoverageForMobStation :  ICalcFinalCoverage
     {
         private AppServerComponentConfig _appServerComponentConfig { get; set; }
-        private  ILogger _logger { get; set; }
+        private ILogger _logger { get; set; }
         private IDataLayer<IcsmDataOrm> _dataLayer { get; set; }
-        private DataConfig _dataConfig  { get; set; }
         private CheckOperation _checkOperation { get; set; }
         private const string TableNameStations = "MOB_STATION";
         private const string TableNameSaveOutCoverage = "XWEBCOVERAGE";
 
 
-        public CalcFinalCoverage(IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
+        public CalcFinalCoverageForMobStation(AppServerComponentConfig appServerComponentConfig, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
         {
             this._logger = logger;
             this._dataLayer = dataLayer;
-        }
-
-        public void LoadConfig(AppServerComponentConfig appServerComponentConfig)
-        {
-            var config = new Config();
             this._appServerComponentConfig = appServerComponentConfig;
-            this._dataConfig = config.Load(this._appServerComponentConfig.CoverageConfigFileName);
-            this._checkOperation = new CheckOperation(this._appServerComponentConfig.FailedOperationFileName);
+            this._checkOperation = new CheckOperation(appServerComponentConfig.ProtocolOperationFileNameForMobStation);
         }
 
-        public void Run(long iterationNumber)
+
+        public void Run(DataConfig dataConfig, long iterationNumber)
         {
             try
             {
-                if (this._dataConfig==null)
+                if (dataConfig==null)
                 {
                     throw new InvalidOperationException("Config file is null");
                 }
 
 
                 //Загрузка конфигурационного файла
-                var loadConfig = this._dataConfig;
+                var loadConfig = dataConfig;
                 var gdalCalc = new GdalCalc(this._logger);
                 
 
                 // Проверка/создание списка поддиректорий, соответствующих перечню значений Province
-                gdalCalc.CheckOutTIFFFilesDirectorys(loadConfig);
+                gdalCalc.CheckOutTIFFFilesDirectorysForMobStation(loadConfig);
 
                 this._logger.Info(Contexts.CalcCoverages, string.Format(Events.StartIterationNumber.ToString(), iterationNumber));
 
-                if (loadConfig.CodeOperatorAndStatusesConfig == null)
+                if (loadConfig.BlockStationsConfig.MobStationConfig == null)
                 {
                     throw new InvalidOperationException(Exceptions.CodeOperatorAndStatusConfigBlockIsEmpty);
                 }
-                if (loadConfig.CodeOperatorAndStatusesConfig.Length == 0)
+                if (loadConfig.BlockStationsConfig.MobStationConfig.Length == 0)
                 {
                     throw new InvalidOperationException(Exceptions.CountCodeOperatorAndStatusConfigBlocksLengthZero);
                 }
 
                 // цикл по перечню стандартов, провинций, операторов 
-                for (int k = 0; k < loadConfig.CodeOperatorAndStatusesConfig.Length; k++)
+                for (int k = 0; k < loadConfig.BlockStationsConfig.MobStationConfig.Length; k++)
                 {
                     // получить очередной блок содержащий данные по стандарту, провинциям, операторам 
-                    var codeOperatorAndStatusesConfig = loadConfig.CodeOperatorAndStatusesConfig[k];
+                    var codeOperatorAndStatusesConfig = loadConfig.BlockStationsConfig.MobStationConfig[k];
 
                     if (codeOperatorAndStatusesConfig == null)
                     {
@@ -110,7 +104,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             
 
                             // формирование объекта Condition для отправки запроса в WebQuery
-                            var condition = new CreateCondition(codeOperatorAndStatusesConfig, provincesConfig.Name, this._logger);
+                            var condition = new CreateConditionForMobStation(codeOperatorAndStatusesConfig, provincesConfig.Name, this._logger);
                             
                             var operationCreateEwx = new CurrentOperation()
                             {
@@ -135,7 +129,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             // копирование перечня станций в EWX- файл, который расположен в текущей директории проекта ICS Telecom (ICSTelecomEwxFileDir)
 
                             var nameEwxFile = provincesConfig.NameEwxFile;
-                            var copyStationsToEwxFile = new CopyStationsToEwxFile(condition.GetCondition(), TableNameStations, this._dataLayer, this._logger);
+                            var copyStationsToEwxFile = new CopyMobStationToEwxFile(condition.GetCondition(), TableNameStations, this._dataLayer, this._logger);
                             var isSuccessCopyStations = copyStationsToEwxFile.Copy(loadConfig, nameEwxFile, this._logger);
                             if (isSuccessCopyStations == false)
                             {
@@ -199,7 +193,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 //Подготовка временных графических файлов (TIF), которые представляют собой результат операции объединения содержимого файла бланка и отдельно взятого файла покрытия,
                                 // который был получен на этапе обработки ICS Telecom
                                 // Полученные графические файлы записываются во временную директорию dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                                var isSuccessCreateTempFiles = gdalCalc.SaveRecalcTIFFFile(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                //var isSuccessCreateTempFiles = gdalCalc.SaveRecalcTIFFFile(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
                                 if (isSuccessCreateTempFiles == false)
                                 {
                                     throw new InvalidOperationException(string.Format(Exceptions.OccurredWhilePreparingTemporaryImageTIF, codeOperatorAndStatusesConfig.StandardConfig.Name));
@@ -221,9 +216,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                                 // На основании сформрованных на предыдщум шаге граческих файлах, формируем один итоговый файл, представляющий собой результат расчета суммарного покрытия 
                                 // Результирующее покрытие записывается в директорию provincesConfig.OutTIFFFilesDirectory 
-                                var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF";
-                                var tempPathfinalCoverageTIFFile = System.IO.Path.GetTempPath() + codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF";
-                                var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF", provincesConfig.BlankTIFFFile);
+                                var nameProvince = provincesConfig.Name.Replace(",", "_").Replace(".", "_");
+                                var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + Transliteration.TransliteSpecial(codeOperatorAndStatusesConfig.StandardConfig.Name) + "_"+ Transliteration.TransliteSpecial(nameProvince) + ".TIF";
+                                var tempPathfinalCoverageTIFFile = System.IO.Path.GetTempPath() + Transliteration.TransliteSpecial(codeOperatorAndStatusesConfig.StandardConfig.Name) + "_" + Transliteration.TransliteSpecial(nameProvince) + ".TIF";
+                                var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), codeOperatorAndStatusesConfig.StandardConfig.Name + "_" + Transliteration.TransliteSpecial(nameProvince) + ".TIF", provincesConfig.BlankTIFFFile);
                                 if (isSuccessCreateOutCoverageFile == false)
                                 {
                                     throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoPath, finalCoverageTIFFile, codeOperatorAndStatusesConfig.StandardConfig.Name));
@@ -258,12 +254,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                     this._checkOperation.Save(operationSaveFinalCoverageToDB);
 
                                     //Передача полученного суммарного покрытия в виде двоичного файла данных в специальную таблицу (XWEBCOVERAGE) БД ICS Manager
-                                    var fileFinalCoverage = provincesConfig.OutTIFFFilesDirectory + @"\" + codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF";
-                                    var saveResultCalcCoverageIntoDB = new SaveResultCalcCoverageIntoDB(TableNameSaveOutCoverage, this._dataLayer, fileFinalCoverage, this._logger);
-                                    var nameFile = provincesConfig.Name.Replace(",", "_").Replace(".", "_");
-                                    if (saveResultCalcCoverageIntoDB.SaveImageToBlob(nameFile) == false)
+                                    //var fileFinalCoverage = provincesConfig.OutTIFFFilesDirectory + @"\" + codeOperatorAndStatusesConfig.StandardConfig.Name + ".TIF";
+                                    var saveResultCalcCoverageIntoDB = new SaveResultCalcCoverageIntoDB(TableNameSaveOutCoverage, this._dataLayer, finalCoverageTIFFile, this._logger);
+                                    if (saveResultCalcCoverageIntoDB.SaveImageToBlob(nameProvince) == false)
                                     {
-                                        throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoDB, fileFinalCoverage));
+                                        throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoDB, finalCoverageTIFFile));
                                     }
                                 }
 

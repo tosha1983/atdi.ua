@@ -7,6 +7,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
 {
     public class CodeOperatorAndStatusConfig
     {
+        public FreqConfig  FreqConfig { get; set; }
         public StandardConfig StandardConfig { get; set; }
         public string Status { get; set; }
     }

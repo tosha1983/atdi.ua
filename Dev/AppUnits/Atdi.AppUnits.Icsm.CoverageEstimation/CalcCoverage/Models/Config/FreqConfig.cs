@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
 {
-    public class StandardConfig
+    public class FreqConfig
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Values { get; set; }
         public ProvinceConfig[] provincesConfig { get; set; }
     }
 }

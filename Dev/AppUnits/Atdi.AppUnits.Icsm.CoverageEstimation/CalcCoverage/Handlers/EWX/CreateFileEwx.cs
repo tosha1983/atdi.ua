@@ -22,7 +22,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             this._logger = logger;
         }
 
-        public bool CreateFile(string Path, EwxData ewx)
+        public bool CreateFile(string Path, EwxData ewx, string tabelName)
         {
             bool isSuccessCreateEwxFile = false;
             try
@@ -72,6 +72,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     var diagV = bts.DiagV;
                     string diagHNameTag = null;
                     string diagVNameTag = null;
+
                     if (CheckDiagH(ref diagH, out diagHNameTag))
                     {
                         writer.WriteElementString(diagHNameTag, diagH);
@@ -115,10 +116,34 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             else if (diagH.Contains("VECTOR"))
             {
-                diagH = diagH.Replace("VECTOR 10", "");
+                diagH = diagH.Replace("VECTOR 10", "").Replace(",",".");
                 var array = ParseStringToArray(diagH);
                 var arrayPolarH = InterpolationForICSTelecomHorizontal(array);
                 diagH = GetFormatArray(arrayPolarH);
+                NameTag = "DIAG_H";
+                return true;
+            }
+            else if (diagH.Contains("POINTS"))
+            {
+                diagH = diagH.Replace("POINTS ", "").Replace(",", ".");
+                if (!string.IsNullOrEmpty(diagH))
+                {
+                    var isNotZero = isNotZeroValuesOnPointObjects(diagH);
+                    if (isNotZero)
+                    {
+                        var array = ParseStringToPointObjects(diagH);
+                        var arrayPolarH = InterpolationPointForICSTelecomHorizontal(array);
+                        diagH = GetFormatArray(arrayPolarH);
+                    }
+                    else
+                    {
+                        diagH = "OMNI";
+                    }
+                }
+                else
+                {
+                    diagH = "OMNI";
+                }
                 NameTag = "DIAG_H";
                 return true;
             }
@@ -139,10 +164,34 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
             if (diagV.Contains("VECTOR"))
             {
-                diagV = diagV.Replace("VECTOR 10", "");
+                diagV = diagV.Replace("VECTOR 10", "").Replace(",", ".");
                 var array = ParseStringToArray(diagV);
                 var arrayPolarV = InterpolationForICSTelecomVertical(array);
                 diagV = GetFormatArray(arrayPolarV);
+                NameTag = "DIAG_V";
+                return true;
+            }
+            else if (diagV.Contains("POINTS"))
+            {
+                diagV = diagV.Replace("POINTS ", "").Replace(",", ".");
+                if (!string.IsNullOrEmpty(diagV))
+                {
+                    var isNotZero = isNotZeroValuesOnPointObjects(diagV);
+                    if (isNotZero)
+                    {
+                        var array = ParseStringToPointObjects(diagV);
+                        var arrayPolarV = InterpolationPointForICSTelecomVertical(array);
+                        diagV = GetFormatArray(arrayPolarV);
+                    }
+                    else
+                    {
+                        diagV = "OMNI";
+                    }
+                }
+                else
+                {
+                    diagV = "OMNI";
+                }
                 NameTag = "DIAG_V";
                 return true;
             }
@@ -173,7 +222,66 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return outString;
         }
 
-        private  double[] ParseStringToArray(string diag)
+        private PointObject[] ParseStringToPointObjects(string diag)
+        {
+            PointObject[] pointObjects = null;
+            string[] inArr = diag.Split(new char[] { '\t', '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if ((inArr != null) && (inArr.Length > 1))
+            {
+                int size = (int)(inArr.Length / 2);
+                if (inArr.Length % 2 == 0)
+                {
+                    int idx = 0;
+                    pointObjects = new PointObject[size];
+                    for (int i = 0, j = 1; (i < inArr.Length - 1 && j < inArr.Length); i = i + 2, j = j + 2)
+                    {
+                        var pointObject = new PointObject();
+                        pointObject.Azimuth = Convert.ToDouble(inArr[i]);
+                        pointObject.Value = Convert.ToDouble(inArr[j]);
+                        pointObjects[idx] = pointObject;
+                        idx++;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Dimension array must be an even number");
+                }
+            }
+            return pointObjects;
+        }
+
+        private bool isNotZeroValuesOnPointObjects(string diag)
+        {
+            var isChecked = false;
+
+            var inArr = diag.Split(new char[] { '\t', '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if ((inArr != null) && (inArr.Length > 1))
+            {
+                int size = (int)(inArr.Length / 2);
+                if (inArr.Length % 2 == 0)
+                {
+                    for (int i = 0, j = 1; (i < inArr.Length - 1 && j < inArr.Length); i = i + 2, j = j + 2)
+                    {
+                        var pointObject = new PointObject();
+                        pointObject.Azimuth = Convert.ToDouble(inArr[i]);
+                        pointObject.Value = Convert.ToDouble(inArr[j]);
+                        if (pointObject.Value > 0)
+                        {
+                            isChecked = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Dimension array must be an even number");
+                }
+            }
+            return isChecked;
+        }
+
+
+        private double[] ParseStringToArray(string diag)
         {
             string[] inArr = diag.Split(new char[] { '\t', '\n', '\r', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             double[] inArrDouble = null;
@@ -213,6 +321,79 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return result;
         }
 
+        private double[] InterpolationPointForICSTelecomHorizontal(PointObject[] inArray)
+        {
+            var result = new double[72];
+            if (inArray != null)
+            {
+                int j = 0;
+                for (int i = 0; i < result.Length; i++)
+                {
+                    double degre_out = i * 5.0;
+                    while ((inArray.Length - 1 > j) && (inArray[j].Azimuth < degre_out))
+                    { j++; }
+                    if (j == 0)
+                    {
+                        result[i] = inArray[0].Value;
+                    }
+                    else if (j == inArray.Length - 1)
+                    {
+                        if (inArray[0].Azimuth == 0)
+                        {
+                            result[i] = inArray[j].Value + (degre_out - inArray[j].Azimuth) * (inArray[0].Value - inArray[j].Value) / (360 - inArray[j].Azimuth);
+                        }
+                        else
+                        {
+                            result[i] = inArray[inArray.Length - 1].Value;
+                        }
+                    }
+                    else
+                    {
+                        result[i] = inArray[j - 1].Value + (degre_out - inArray[j - 1].Azimuth) * (inArray[j].Value - inArray[j - 1].Value) / (inArray[j].Azimuth - inArray[j - 1].Azimuth);
+                    }
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("The 'inArray' input parameter in the InterpolationForICSTelecomHorizontal method is null!");
+            }
+            return result;
+        }
+
+
+        private double[] InterpolationPointForICSTelecomVertical(PointObject[] inArray)
+        {
+            var result = new double[179];
+            if (inArray != null)
+            {
+                int j = 0;
+                for (int i = 0; i < result.Length; i++)
+                {
+                    double degre_out = i - 89.0;
+                    while ((inArray.Length - 1 > j) && (inArray[j].Azimuth < degre_out))
+                    {
+                        j++;
+                    }
+                    if (j == 0)
+                    {
+                        result[i] = inArray[0].Value;
+                    }
+                    else if (j == inArray.Length - 1)
+                    {
+                        result[i] = inArray[inArray.Length - 1].Value;
+                    }
+                    else
+                    {
+                        result[i] = inArray[j - 1].Value + (degre_out - inArray[j - 1].Azimuth) * (inArray[j].Value - inArray[j - 1].Value) / (inArray[j].Azimuth - inArray[j - 1].Azimuth);
+                    }
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("The 'inArray' input parameter in the InterpolationForICSTelecomVertical method is null!");
+            }
+            return result;
+        }
 
         private double[] InterpolationForICSTelecomVertical(double[] inArray)
         {

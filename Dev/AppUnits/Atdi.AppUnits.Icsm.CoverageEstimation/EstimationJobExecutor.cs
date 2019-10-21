@@ -8,6 +8,7 @@ using Atdi.Platform.Workflows;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.LegacyServices.Icsm;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Handlers;
+using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation
@@ -16,8 +17,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
     {
         private readonly ILogger _logger;
         private IDataLayer<IcsmDataOrm> _dataLayer { get; set; }
-        private CalcFinalCoverage _startCalcFinalCoverage { get; set; }
+        private ICalcFinalCoverage _startCalcFinalCoverageForMobstation { get; set; }
+        private ICalcFinalCoverage _startCalcFinalCoverageForMobstation2 { get; set; }
         private  AppServerComponentConfig _appServerComponentConfig { get; set; }
+        private DataConfig _dataConfig { get; set; }
 
 
         public EstimationJobExecutor(IDataLayer<IcsmDataOrm> dataLayer, AppServerComponentConfig appServerComponentConfig, ILogger logger)
@@ -26,7 +29,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
             this._logger = logger;
             this._appServerComponentConfig = appServerComponentConfig;
             this._dataLayer = dataLayer;
-            this._startCalcFinalCoverage = new CalcFinalCoverage(this._dataLayer, this._logger);
+            this._dataConfig = CoverageConfig.Load(this._appServerComponentConfig);
+            this._startCalcFinalCoverageForMobstation = new CalcFinalCoverageForMobStation(this._appServerComponentConfig, this._dataLayer, this._logger);
+            this._startCalcFinalCoverageForMobstation2 = new CalcFinalCoverageForMobStation2(this._appServerComponentConfig, this._dataLayer, this._logger);
         }
 
         public JobExecutionResult Execute(JobExecutionContext context)
@@ -36,8 +41,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
             {
                 if (context.Token.StartAttempts == 1)
                 {
-                    this._startCalcFinalCoverage.LoadConfig(this._appServerComponentConfig);
-                    this._startCalcFinalCoverage.Run(context.Token.StartAttempts);
+                    this._startCalcFinalCoverageForMobstation2.Run(this._dataConfig, context.Token.StartAttempts);
+                    this._startCalcFinalCoverageForMobstation.Run(this._dataConfig, context.Token.StartAttempts);
                 }
                 
 
@@ -47,7 +52,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
                 }
                 else
                 {
-                    this._startCalcFinalCoverage.Run(context.Token.StartAttempts);
+                    this._startCalcFinalCoverageForMobstation2.Run(this._dataConfig, context.Token.StartAttempts);
+                    this._startCalcFinalCoverageForMobstation.Run(this._dataConfig, context.Token.StartAttempts);
                 }
 
                 // если есть длительные цыклы, обязательно проверять на отмену

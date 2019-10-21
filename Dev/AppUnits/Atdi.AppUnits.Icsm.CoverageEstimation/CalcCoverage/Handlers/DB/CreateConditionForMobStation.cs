@@ -15,55 +15,18 @@ using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 {
-    public class CreateCondition
+    public class CreateConditionForMobStation
     {
         private CodeOperatorAndStatusConfig _dataConfig { get; set; }
         private ILogger _logger { get; set; }
         private string _provincesConfigName { get; set; }
-        public CreateCondition(CodeOperatorAndStatusConfig dataConfig, string provincesConfigName, ILogger logger)
+        public CreateConditionForMobStation(CodeOperatorAndStatusConfig dataConfig, string provincesConfigName, ILogger logger)
         {
             this._dataConfig = dataConfig;
             this._logger = logger;
             this._provincesConfigName = provincesConfigName;
         }
 
-        private void CheckCondition(Condition condition, ref bool isCorrectCondition)
-        {
-            if (condition is ConditionExpression)
-            {
-                if ((condition as ConditionExpression) != null)
-                {
-                    isCorrectCondition = true;
-                }
-                else
-                {
-                    isCorrectCondition = false;
-                    return;
-                }
-            }
-            else if (condition is ComplexCondition)
-            {
-                if (((condition as ComplexCondition).Conditions != null) && (((condition as ComplexCondition).Conditions.Length > 0)))
-                {
-                    for (int i = 0; i < ((condition as ComplexCondition).Conditions).Length; i++)
-                    {
-                        if (((condition as ComplexCondition).Conditions)[i] is ConditionExpression)
-                        {
-                            CheckCondition(((condition as ComplexCondition).Conditions)[i] as ConditionExpression, ref isCorrectCondition);
-                        }
-                        else if (((condition as ComplexCondition).Conditions)[i] is ComplexCondition)
-                        {
-                            CheckCondition(((condition as ComplexCondition).Conditions)[i], ref isCorrectCondition);
-                        }
-                    }
-                }
-                else
-                {
-                    isCorrectCondition = false;
-                    return;
-                }
-            }
-        }
 
         public Condition GetCondition()
         {
@@ -219,7 +182,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 var outListConditions = new List<Condition>();
                 for (int u = 0; u < listConditions.Count; u++)
                 {
-                    CheckCondition(listConditions[u], ref isCorrectCondition);
+                    CheckCondition.Check(listConditions[u], ref isCorrectCondition);
                     if (isCorrectCondition == true)
                     {
                         outListConditions.Add(listConditions[u]);

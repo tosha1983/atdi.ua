@@ -42,7 +42,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
     {
         public static readonly string FinalCoverageFileTifNotWritenIntoDB = "The final coverage file was not written to the database, because it was not found along the '{0}' path";
         public static readonly string FinalCoverageFileTifNotWritenIntoPath = "The final coverage file was not written to the '{0}' path (for Radiotech = '{1}')";
+        public static readonly string FinalCoverageFileTifNotWritenIntoPath2 = "The final coverage file was not written to the '{0}' path (for FreqConfig = '{1}')";
         public static readonly string OccurredWhilePreparingTemporaryImageTIF = "An error occurred while preparing temporary image files(TIF), which are the result of the operation of combining the contents of the blank TIF file and a  coverages files (for Radiotech = '{0}')";
+        public static readonly string OccurredWhilePreparingTemporaryImageTIF2 = "An error occurred while preparing temporary image files(TIF), which are the result of the operation of combining the contents of the blank TIF file and a  coverages files (for FreqConfig = '{0}')";
         public static readonly string ResultRequestWebQueryEmptyRecordset = "Result of request to the WebQuery is empty recordset";
         public static readonly string CodeOperatorAndStatusConfigBlockIsEmpty = "Block 'CodeOperatorAndStatusConfig' in config file is empty";
         public static readonly string CountCodeOperatorAndStatusConfigBlocksLengthZero = "Count of blocks 'CodeOperatorAndStatusConfig' equal zero";
@@ -56,6 +58,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         public static readonly string Block_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigIsNull = "Block CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig is null";
         public static readonly string ICSTelecomProjectFileIsNullOrEmpty = "Project file name of ICS Telecom is null or empty";
         public static readonly string ErrorCopyStationsIntoEwxFile = "An error occurred while copying stations to the EWX file (for Radiotech = '{0}')";
+        public static readonly string ErrorCopyStationsIntoEwxFile2 = "An error occurred while copying stations to the EWX file (for FreqConfig = '{0}')";
+        public static readonly string Block_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigIsNull = "Block CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig is null";
+        public static readonly string CountBlock_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigEqualZero = "Count blocks CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig equal zero";
 
 
     }

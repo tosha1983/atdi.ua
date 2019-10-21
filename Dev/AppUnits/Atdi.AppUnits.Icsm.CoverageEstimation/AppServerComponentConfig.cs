@@ -12,8 +12,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         [ComponentConfigProperty("Telecom.CoverageConfigFileName")]
         public string CoverageConfigFileName { get; set; }
 
-        [ComponentConfigProperty("Telecom.FailedOperationFileName")]
-        public string FailedOperationFileName { get; set; }
+        [ComponentConfigProperty("Telecom.ProtocolOperationFileNameForMobStation")]
+        public string ProtocolOperationFileNameForMobStation { get; set; }
+
+        [ComponentConfigProperty("Telecom.ProtocolOperationFileNameForMobStation2")]
+        public string ProtocolOperationFileNameForMobStation2 { get; set; }
 
         [ComponentConfigProperty("Telecom.IsRepeatable")]
         public bool IsRepeatable { get; set; }

@@ -18,7 +18,7 @@ using Atdi.Contracts.LegacyServices.Icsm;
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 {
-    public class CopyStationsToEwxFile
+    public class CopyMobStationToEwxFile
     {
         private ILogger _logger { get; set; }
         private Condition _condition { get; set; }
@@ -28,7 +28,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
 
 
-        public CopyStationsToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
+        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
@@ -101,7 +101,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                      var station = new Station();
 
-                     station.Address = reader.GetValueAsString(typeof(string), reader.GetOrdinal("Position.ADDRESS"));
+                     station.Address = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Position.ADDRESS"));
                      var Altitude = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.ASL"));
                      if (Altitude != null)
                      {
@@ -126,7 +126,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          station.BandwidthRx = BandwidthRx.Value;
                      }
 
-                     var CallSign = reader.GetValueAsString(typeof(string), reader.GetOrdinal("NAME"));
+                     var CallSign = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("NAME"));
                      if (CallSign != null)
                      {
                          station.CallSign = CallSign;
@@ -154,14 +154,14 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          station.CoordY = CoordY.Value;
                      }
 
-                     var DiagH = reader.GetValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGH"));
+                     var DiagH = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGH"));
                      if (DiagH != null)
                      {
                          station.DiagH = DiagH;
                          station.DiagH = station.DiagH;
                      }
 
-                     var DiagV = reader.GetValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGV"));
+                     var DiagV = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.DIAGV"));
                      if (DiagV != null)
                      {
                          station.DiagV = DiagV;
@@ -213,8 +213,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                          station.NominalPower = Math.Round(Math.Pow(10, station.NominalPower / 10), 7);
                      }
 
-                     station.Polar = reader.GetValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
-                     station.PolarRx = reader.GetValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
+                     station.Polar = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
+                     station.PolarRx = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Antenna.POLARIZATION"));
 
                      var D_cx1 = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("AssignedFrequencies.TX_FREQ"));
                      if (D_cx1 != null)
@@ -245,7 +245,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
 
                 var createFileEwx = new CreateFileEwx(logger);
-                isSuccessCopyStations = createFileEwx.CreateFile(ewxFileCheck, ewxFile);
+                isSuccessCopyStations = createFileEwx.CreateFile(ewxFileCheck, ewxFile, this._tableName);
             }
             catch (Exception e)
             {
