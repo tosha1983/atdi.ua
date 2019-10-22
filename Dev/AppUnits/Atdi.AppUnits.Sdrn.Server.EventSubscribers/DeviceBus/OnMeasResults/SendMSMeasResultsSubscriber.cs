@@ -321,20 +321,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             if (generalResult.BandwidthResult != null)
             {
                 var bandwidthResult = generalResult.BandwidthResult;
-                if (bandwidthResult.MarkerIndex.HasValue && bandwidthResult.T1.HasValue && bandwidthResult.T2.HasValue)
+                if (bandwidthResult.T1.HasValue && bandwidthResult.T2.HasValue)
                 {
-                    if (bandwidthResult.T1.Value >= 0 && bandwidthResult.T1.Value <= bandwidthResult.MarkerIndex.Value
-                        && bandwidthResult.T2.Value >= bandwidthResult.MarkerIndex.Value && bandwidthResult.T2.Value <= 100000)
+                    if (bandwidthResult.T1.Value >= 0 && bandwidthResult.T1.Value <= bandwidthResult.T2.Value && bandwidthResult.T2.Value <= 100000)
                     {
-                        builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
                         builderInsertResStGeneral.SetValue(c => c.T1, bandwidthResult.T1);
                         builderInsertResStGeneral.SetValue(c => c.T2, bandwidthResult.T2);
                     }
                     else
                     {
-                        WriteLog($"({index}) Incorrect values T1, T2 or M", "IResStGeneral", context);
+                        WriteLog($"({index}) Incorrect values T1, T2", "IResStGeneral", context);
                     }
                 }
+
+                if (bandwidthResult.MarkerIndex.HasValue && bandwidthResult.T1.HasValue && bandwidthResult.T2.HasValue)
+                {
+                    if (bandwidthResult.T1.Value <= bandwidthResult.MarkerIndex.Value && bandwidthResult.MarkerIndex.Value <= bandwidthResult.T2.Value)
+                    {
+                        builderInsertResStGeneral.SetValue(c => c.MarkerIndex, bandwidthResult.MarkerIndex);
+                    }
+                    else
+                    {
+                        WriteLog($"({index}) Incorrect values T1, T2 or MarkerIndex", "IResStGeneral", context);
+                    }
+                }
+
                 if (bandwidthResult.Bandwidth_kHz.HasValue && bandwidthResult.Bandwidth_kHz >= 1 && bandwidthResult.Bandwidth_kHz <= 100000)
                 {
                     builderInsertResStGeneral.SetValue(c => c.BW, bandwidthResult.Bandwidth_kHz);
