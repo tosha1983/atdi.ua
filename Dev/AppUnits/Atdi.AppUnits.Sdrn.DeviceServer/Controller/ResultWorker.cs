@@ -10,12 +10,12 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class ResultWorker
+    internal class ResultWorker
     {
         private readonly CommandDescriptor _descriptor;
         private readonly IResultConvertorsHost _convertorsHost;
         private readonly ILogger _logger;
-        private readonly IResultHandler _resultHandler;
+        private readonly ResultHandler _resultHandler;
         private readonly ResultBuffer _resultBuffer;
         private readonly Task _task;
 
@@ -23,7 +23,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             this._descriptor = descriptor;
             this._convertorsHost = convertorsHost;
-            this._resultHandler = handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.TaskType, descriptor.ProcessType);
+            this._resultHandler = (ResultHandler)handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.TaskType, descriptor.ProcessType);
             this._logger = logger;
             this._task = new Task(this.Process);
             this._resultBuffer = new ResultBuffer(descriptor);
@@ -37,56 +37,79 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         private void Process()
         {
-            var convertor = default(IResultConvertor);
-            var prevResultPartType = default(Type);
-
-            while (true)
+            try
             {
-                var resultPart = this._resultBuffer.Take();
-                if (resultPart == null)
-                {
-                    /// null - признак окончания процесса - cancel
-                    break;
-                }
+                _resultHandler.StartedWorkerCounter?.Increment();
+                _resultHandler.RunningWorkerCounter?.Increment();
 
-                var resultPartType = resultPart.GetType();
+                var convertor = default(IResultConvertor);
+                var prevResultPartType = default(Type);
 
-                try
+                while (true)
                 {
-                    /// тип адаптера равен типу обработчика, нет смысла в конвертации
-                    if (resultPartType == _descriptor.ResultType)
+                    var resultPart = this._resultBuffer.Take();
+                    if (resultPart == null)
                     {
-                        this._resultHandler.Handle(_descriptor.Command, resultPart, this._descriptor.TaskContext);
+                        /// null - признак окончания процесса - cancel
+                        break;
                     }
-                    else
+
+                    var resultPartType = resultPart.GetType();
+
+                    try
                     {
-                        // микро оптимизация - как правило в 90% результаты будут приходит в однмо типе
-                        if (convertor == null || prevResultPartType == null && prevResultPartType != resultPartType)
+                        /// тип адаптера равен типу обработчика, нет смысла в конвертации
+                        if (resultPartType == _descriptor.ResultType)
                         {
-                            convertor = this._convertorsHost.GetConvertor(resultPartType, this._descriptor.ResultType);
+                            this._resultHandler.Handle(_descriptor.Command, resultPart, this._descriptor.TaskContext);
                         }
-                        prevResultPartType = resultPartType;
+                        else
+                        {
+                            // микро оптимизация - как правило в 90% результаты будут приходит в однмо типе
+                            if (convertor == null || prevResultPartType == null && prevResultPartType != resultPartType)
+                            {
+                                convertor = this._convertorsHost.GetConvertor(resultPartType,
+                                    this._descriptor.ResultType);
+                            }
 
-                        /// конвеер обработки результатов
-                        var handlerResult = convertor.Convert(resultPart, _descriptor.Command);
-                        this._resultHandler.Handle(_descriptor.Command, handlerResult, this._descriptor.TaskContext);
+                            prevResultPartType = resultPartType;
+
+                            /// конвеер обработки результатов
+                            var handlerResult = convertor.Convert(resultPart, _descriptor.Command);
+                            this._resultHandler.Handle(_descriptor.Command, handlerResult,
+                                this._descriptor.TaskContext);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+
+                        this._logger.Exception(Contexts.ResultWorker, Categories.Processing,
+                            Events.ProcessingResultError.With(_descriptor.Device.AdapterType, _descriptor.CommandType),
+                            e);
+                    }
+
+                    // возможно стоит прекратить процесс
+                    if (resultPart.Status == CommandResultStatus.Final ||
+                        resultPart.Status == CommandResultStatus.Ragged)
+                    {
+                        break;
                     }
                 }
-                catch (Exception e)
-                {
 
-                    this._logger.Exception(Contexts.ResultWorker, Categories.Processing, Events.ProcessingResultError.With(_descriptor.Device.AdapterType, _descriptor.CommandType), e);
-                }
-
-                // возможно стоит прекратить процесс
-                if (resultPart.Status == CommandResultStatus.Final ||
-                        resultPart.Status == CommandResultStatus.Ragged)
-                {
-                    break;
-                }
+                _resultHandler.RunningWorkerCounter?.Decrement();
+                _resultHandler.FinishedWorkerCounter?.Increment();
             }
-
-            this._resultBuffer.Dispose();
+            catch (Exception e)
+            {
+                _resultHandler.RunningWorkerCounter?.Decrement();
+                _resultHandler.AbortedWorkerCounter?.Increment();
+                this._logger.Exception(Contexts.ResultWorker, Categories.Processing,
+                    Events.ProcessingResultError.With(_descriptor.Device.AdapterType, _descriptor.CommandType), e);
+            }
+            finally
+            {
+                this._resultBuffer.Dispose();
+            }
         }
 
         

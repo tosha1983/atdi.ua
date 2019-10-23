@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly IStatisticCounterKey AdaptersCommandsShotsKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Shots");
         public static readonly IStatisticCounterKey AdaptersCommandsCanceledKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Canceled");
 
-        public static readonly IStatisticCounterKey AdaptersCommandsExecutionCountKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Count");
+        public static readonly IStatisticCounterKey AdaptersCommandsExecutionCountKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Running");
         public static readonly IStatisticCounterKey AdaptersCommandsExecutionAbortedKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Aborted");
         public static readonly IStatisticCounterKey AdaptersCommandsExecutionCanceledKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Canceled");
         public static readonly IStatisticCounterKey AdaptersCommandsExecutionCompletedKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Execution.Completed");
@@ -36,6 +36,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static IStatisticCounterKey DefineAdapterCommandCounter(string context, string key)
         {
             return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Adapters.Commands.Handlers.{context}.{key}"));
+        }
+
+        public static readonly IStatisticCounterKey ResultBufferCreatedKey = STS.DefineCounterKey("SDRN.DeviceServer.Results.Buffers.Created");
+        public static readonly IStatisticCounterKey ResultBufferUsingKey = STS.DefineCounterKey("SDRN.DeviceServer.Results.Buffers.Using");
+        public static readonly IStatisticCounterKey ResultBufferReleasedKey = STS.DefineCounterKey("SDRN.DeviceServer.Results.Buffers.Released");
+
+        public static IStatisticCounterKey DefineAdapterResultHandlerCounter(string context, string key)
+        {
+            return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Results.Handlers.{context}.{key}"));
+        }
+
+        public static IStatisticCounterKey DefineAdapterResultWorkerCounter(string context, string key)
+        {
+            return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Results.Workers.{context}.{key}"));
         }
     }
 
