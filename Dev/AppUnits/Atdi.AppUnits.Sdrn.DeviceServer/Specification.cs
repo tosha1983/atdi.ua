@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer
 {
-    static class Monitoring
+    internal static class Monitoring
     {
         public static readonly IStatisticCounterKey AdaptersCountKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Count");
         public static readonly IStatisticCounterKey AdaptersCommandsHitsKey = STS.DefineCounterKey("SDRN.DeviceServer.Adapters.Commands.Hits");
@@ -23,9 +23,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly IStatisticCounterKey TasksHitsKey = STS.DefineCounterKey("SDRN.DeviceServer.Tasks.Hits");
         public static readonly IStatisticCounterKey TasksSyncKey = STS.DefineCounterKey("SDRN.DeviceServer.Tasks.Sync");
         public static readonly IStatisticCounterKey TasksAsyncKey = STS.DefineCounterKey("SDRN.DeviceServer.Tasks.Async");
+
+        public static IStatisticCounterKey DefineTaskCounter(string context, string key)
+        {
+            return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Tasks.Workers.{context}.{key}"));
+        }
+        public static IStatisticCounterKey DefineAutoTaskCounter(string context, string key)
+        {
+            return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.AutoTasks.Workers.{context}.{key}"));
+        }
+
+        public static IStatisticCounterKey DefineAdapterCommandCounter(string context, string key)
+        {
+            return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Adapters.Commands.Handlers.{context}.{key}"));
+        }
     }
 
-    static class Contexts
+    internal static class Contexts
     {
         public static readonly EventContext ThisComponent = "SDRN.DeviceServer";
         public static readonly EventContext AdapterWorker = "SDRN.AdapterWorker";
@@ -43,7 +57,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly EventContext TimerScheduler = "SDRN.TimerScheduler";
     }
 
-    static class Categories
+    internal static class Categories
     {
         public static readonly EventCategory Disposing = "Disposing";
         public static readonly EventCategory Processing = "Processing";
@@ -67,7 +81,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
     }
 
-    static class Events
+    internal static class Events
     {
 
 
@@ -139,7 +153,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly EventText ProcessingSchedulerError = "Error occurred while processing the scheduler: Command Type = '{0}'";
 
     }
-    static class TraceScopeNames
+
+    internal static class TraceScopeNames
     {
         public static readonly TraceScopeName ExecutingAdapterCommand = "({4} - {5}) Executing adapter command = '{0}', Type = '{1}', Id = '{2}', AdapterType = '{3}'";
         public static readonly TraceScopeName InvokingAdapterCommand = "Invoking command - Id='{0}'";
@@ -147,7 +162,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         public static readonly TraceScopeName ConvertingResult = "Id = '{0}', FromType = '{1}', ResultType = '{2}', PartIndex = '{3}', Status = '{4}'";
     }
 
-    static class Exceptions
+    internal static class Exceptions
     {
         public static readonly ExceptionText ErrorOccurredWhileStartingTask = "An error occurred while starting the task: TaskType = '{0}', TaskId = '{1}', Process = '{2}'";
         public static readonly ExceptionText ErrorOccurredWhileInvokingControllerCommand = "An error occurred while invoking a controller command: CommandType = '{0}', CommandId = '{1}'";

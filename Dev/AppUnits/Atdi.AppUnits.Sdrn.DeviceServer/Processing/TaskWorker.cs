@@ -40,6 +40,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         {
             this._tasksHitsCounter?.Increment();
             this._tasksSyncCounter?.Increment();
+
             var task = descriptor.Task as TaskBase;
             var taskContext = _descriptor.CreateTaskContext(descriptor);
             var instance = this._workerFactory.Create(this._descriptor.InstanceType);
