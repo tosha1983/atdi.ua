@@ -59,6 +59,17 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         }
                     }
 
+                    if ((xel.Name.ToString() == "TempEwxFilesDirectory") || (xel.Name.LocalName == "TempEwxFilesDirectory"))
+                    {
+                        if (!string.IsNullOrEmpty(xel.Value))
+                        {
+                            directoryConfiguration.TempEwxFilesDirectory = xel.Value;
+                        }
+                    }
+
+
+                    
+
                     if ((xel.Name.ToString() == "RunCommandICSTelecom") || (xel.Name.LocalName == "RunCommandICSTelecom"))
                     {
                         var commands = xel.Elements();

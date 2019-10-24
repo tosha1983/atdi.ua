@@ -174,7 +174,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.GPSWorker, Categories.Processing, Exceptions.UnknownErrorGPSWorker, e.Message);
+                _logger.Exception(Contexts.GPSWorker, Categories.Processing, Exceptions.UnknownErrorGPSWorker, e);
                 context.Abort(e);
             }
         }

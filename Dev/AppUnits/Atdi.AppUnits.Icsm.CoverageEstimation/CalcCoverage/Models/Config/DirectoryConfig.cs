@@ -12,6 +12,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         public CommandsConfig CommandsConfig { get; set; }
         public string BinICSTelecomDirectory { get; set; }
         public string ICSTelecomProjectDirectory { get; set; }
-        
+        public string TempEwxFilesDirectory { get; set; }
     }
 }

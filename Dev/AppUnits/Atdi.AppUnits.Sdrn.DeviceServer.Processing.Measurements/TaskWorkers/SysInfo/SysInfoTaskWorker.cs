@@ -129,7 +129,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSysInfoTaskWorker, e.Message);
+                _logger.Exception(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSysInfoTaskWorker, e);
                 context.Abort(e);
             }
         }

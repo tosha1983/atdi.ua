@@ -195,8 +195,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 //Подготовка временных графических файлов (TIF), которые представляют собой результат операции объединения содержимого файла бланка и отдельно взятого файла покрытия,
                                 // который был получен на этапе обработки ICS Telecom
                                 // Полученные графические файлы записываются во временную директорию dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                                var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                                //var isSuccessCreateTempFiles = gdalCalc.SaveRecalcTIFFFile(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                //var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                //var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile, nameEwxFile);
                                 if (isSuccessCreateTempFiles == false)
                                 {
                                     throw new InvalidOperationException(string.Format(Exceptions.OccurredWhilePreparingTemporaryImageTIF2, freqConfigValues));
@@ -240,7 +241,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                     }
                                 }
 
-
+                                /*
                                 if (this._appServerComponentConfig.IsSaveFinalCoverageToDB)
                                 {
                                     var operationSaveFinalCoverageToDB =
@@ -263,6 +264,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                         throw new InvalidOperationException(string.Format(Exceptions.FinalCoverageFileTifNotWritenIntoDB, finalCoverageTIFFile));
                                     }
                                 }
+                                */
 
                                 //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
                                 gdalCalc.ClearTempFiles(loadConfig);

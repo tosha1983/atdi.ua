@@ -111,7 +111,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.DispatcherWorker, Categories.Processing, Exceptions.UnknownErrorDispatcherWorker, e.Message);
+                _logger.Exception(Contexts.DispatcherWorker, Categories.Processing, Exceptions.UnknownErrorDispatcherWorker, e);
                 context.Abort(e);
             }
         }

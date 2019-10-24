@@ -19,6 +19,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
     public class GdalCalc
     {
+        private const int MaxCountThreadFilesForFinalCoverage = 250;
+        private const int MaxCountThreadFilesForConcatBlank = 50;
+        private static int[,] grayMatrixGlobal { get; set; }
         private ILogger _logger { get; set; }
         public GdalCalc(ILogger logger)
         {
@@ -88,7 +91,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return thread;
         }
 
-        public static void ThreadConcatBlankWithStation(object data)
+        private static void ThreadConcatBlankWithStation(object data)
         {
             var dataForThread = data as DataForThread;
             var redBand = dataForThread.DatasetBlank.GetRasterBand(1);
@@ -101,7 +104,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             if (Path.GetFileNameWithoutExtension(dataForThread.SourceFileName.ToLower()) != Path.GetFileNameWithoutExtension(dataForThread.BlankFileName.ToLower()))
             {
                 var tFWSourceTIFFile = GetTFWParameter(dataForThread.SourceFileName);
-                var tempCoverageFile = dataForThread.DataConfig.DirectoryConfig.TempTIFFFilesDirectory + @"\" + Path.GetFileNameWithoutExtension(dataForThread.SourceFileName) + "_out.TIF";
+                var tempCoverageFile = dataForThread.DataConfig.DirectoryConfig.TempTIFFFilesDirectory + @"\" + Path.GetFileNameWithoutExtension(dataForThread.SourceFileName) + $"_{Path.GetFileNameWithoutExtension(dataForThread.NameEwxFile)}_out.TIF";
                 using (var outImage = Gdal.GetDriverByName("GTiff").Create(tempCoverageFile, width, height, 5, DataType.GDT_Byte, new string[] { "COMPRESS=PACKBITS" }))
                 {
                     var outGrayBand = outImage.GetRasterBand(5);
@@ -151,7 +154,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             }
         }
 
-        public static List<string[]> BreakDown(string[] elements, int CountInParams)
+        private static List<string[]> BreakDown(string[] elements, int CountInParams)
         {
             var arrstring = new List<string[]>();
             var liststring = new List<string>();
@@ -174,7 +177,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return arrstring;
         }
 
-        public bool StartProcessConcatBlankWithStation(DataConfig dataConfig, string ICSTelecomProjectDir, string NameBlankFile)
+        public bool StartProcessConcatBlankWithStation(DataConfig dataConfig, string ICSTelecomProjectDir, string NameBlankFile, string NameEwxFileValue)
         {
             bool isSuccessCreateFiles = false;
             try
@@ -187,7 +190,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 var proj = image.GetProjection();
 
 
-                var lstFiles = BreakDown(files, 50);
+                var lstFiles = BreakDown(files, MaxCountThreadFilesForConcatBlank);
                 for (int j = 0; j < lstFiles.Count; j++)
                 {
                     var filesSource = lstFiles[j];
@@ -202,7 +205,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             SourceFileName = filesSource[i],
                             DatasetBlank = image,
                             Projection = proj,
-                            GeoTransform = geoTransformerData
+                            GeoTransform = geoTransformerData,
+                            NameEwxFile = NameEwxFileValue
                         };
                         listThreads[i] = CreateNewThreadConcatBlankWithStation(param);
                     }
@@ -388,7 +392,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                         var proj = image.GetProjection();
                         outImage.SetProjection(proj);
                         outImage.SetGeoTransform(geoTransformerData);
-                        var grayMatrix = GetMaxRasterFromGeoTiffFiles(dataConfig, width, height);
+                        var grayMatrix = GetMaxRasterFromGeoTiffFilesWithThread(dataConfig, width, height, this._logger);
+                       
 
                         for (int h = 0; h < height; h++)
                         {
@@ -461,7 +466,79 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return isSuccessCreateFile;
         }
 
-        private int[,] GetMaxRasterFromGeoTiffFiles(DataConfig dataConfig, int widthValue, int heightValue)
+        private System.Threading.Thread CreateNewThreadGetMaxRasterFromGeoTiffFiles(DataForThread dataForThread)
+        {
+          
+            var thread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(ThreadGetMaxRasterFromGeoTiffFiles))
+            {
+                Priority = System.Threading.ThreadPriority.Highest
+            };
+            thread.Start(dataForThread);
+            return thread;
+        }
+
+        private static void ThreadGetMaxRasterFromGeoTiffFiles(object data)
+        {
+            var dataForThread = data as DataForThread;
+            var imageSource = Gdal.Open(dataForThread.SourceFileName, Access.GA_ReadOnly);
+            var grayBand = imageSource.GetRasterBand(5);
+            var width = grayBand.XSize;
+            var height = grayBand.YSize;
+            for (int h = 0; h < height; h++)
+            {
+                var gray = new int[width];
+                grayBand.ReadRaster(0, h, width, 1, gray, width, 1, 0, 0);
+                for (int w = 0; w < width; w++)
+                {
+                    if (gray[w] != 0)
+                    {
+                        if ((grayMatrixGlobal[h, w] != 0) && (gray[w] != 0))
+                        {
+                            if (grayMatrixGlobal[h, w] < gray[w])
+                            {
+                                grayMatrixGlobal[h, w] = gray[w];
+                            }
+                        }
+                        else if (grayMatrixGlobal[h, w] == 0)
+                        {
+                            grayMatrixGlobal[h, w] = gray[w];
+                        }
+                    }
+                }
+            }
+            imageSource.Dispose();
+        }
+
+        private int[,] GetMaxRasterFromGeoTiffFilesWithThread(DataConfig dataConfig, int widthValue, int heightValue, ILogger logger)
+        {
+            grayMatrixGlobal = new int[heightValue, widthValue];
+            var filesSources = Directory.GetFiles(Path.GetDirectoryName(dataConfig.DirectoryConfig.TempTIFFFilesDirectory), "*_out.TIF");
+            var lstFiles = BreakDown(filesSources, MaxCountThreadFilesForFinalCoverage);
+            for (int j = 0; j < lstFiles.Count; j++)
+            {
+                var filesSource = lstFiles[j];
+                var listThreads = new System.Threading.Thread[filesSource.Length];
+                for (int i = 0; i < filesSource.Length; i++)
+                {
+                    var param = new DataForThread()
+                    {
+                        SourceFileName = filesSource[i]
+                    };
+                    listThreads[i] = CreateNewThreadGetMaxRasterFromGeoTiffFiles(param);
+                }
+                int cnt = 0;
+                for (int i = 0; i < listThreads.Length; i++)
+                {
+                    listThreads[i].Join();
+                    this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveTempCovarageFileCompleted.ToString(), filesSource[i])+$" count = {cnt}");
+                    cnt++;
+                }
+            }
+            return grayMatrixGlobal;
+        }
+
+
+        private int[,] GetMaxRasterFromGeoTiffFiles(DataConfig dataConfig, int widthValue, int heightValue, ILogger logger)
         {
             var grayMatrix = new int[heightValue, widthValue];
             var filesSource = Directory.GetFiles(Path.GetDirectoryName(dataConfig.DirectoryConfig.TempTIFFFilesDirectory), "*_out.TIF");
@@ -477,16 +554,19 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     grayBand.ReadRaster(0, h, width, 1, gray, width, 1, 0, 0);
                     for (int w = 0; w < width; w++)
                     {
-                        if ((grayMatrix[h, w] != 0) && (gray[w] != 0))
+                        if (gray[w] != 0)
                         {
-                            if (grayMatrix[h, w] < gray[w])
+                            if ((grayMatrix[h, w] != 0) && (gray[w] != 0))
+                            {
+                                if (grayMatrix[h, w] < gray[w])
+                                {
+                                    grayMatrix[h, w] = gray[w];
+                                }
+                            }
+                            else if (grayMatrix[h, w] == 0)
                             {
                                 grayMatrix[h, w] = gray[w];
                             }
-                        }
-                        else if (grayMatrix[h, w] == 0)
-                        {
-                            grayMatrix[h, w] = gray[w];
                         }
                     }
                 }
