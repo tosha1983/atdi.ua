@@ -175,12 +175,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 var sentence = (result as NMEAStandartSentence);
                                 if (sentence.SentenceID == SentenceIdentifiers.GGA)
                                 {
-                                    if (_executionContextGps.Token.IsCancellationRequested)
-                                    {
-                                        _executionContextGps.Cancel();
-                                        CloseGPSDevice();
-                                        return;
-                                    }
+                                    //if (_executionContextGps.Token.IsCancellationRequested)
+                                    //{
+                                        //_executionContextGps.Cancel();
+                                        //CloseGPSDevice();
+                                        //return;
+                                    //}
 
                                     resultMember.Lat = (double)sentence.parameters[1];
                                     if ((string)sentence.parameters[2] == "S")
@@ -218,8 +218,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 if ((resultMember.Lon != null) && (resultMember.Lat != null) && (resultMember.Asl!=null) && (resultMember.TimeCorrection != null))
                                 {
                                     _executionContextGps.PushResult(resultMember);
-                                    // контекст не освобождаем, т.к. в GPSWorker ожидаем отправленные координаты с этого контекста
-                                    //_executionContextGps.Finish();
                                 }
                             }
                         }
@@ -234,11 +232,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
         void CloseGPSDevice()
         {
-            if (_executionContextGps != null)
-            {
-                _executionContextGps.Finish();
-            }
-
+            //if (_executionContextGps != null)
+            //{
+                //_executionContextGps.Finish();
+            //}
             if (gnssWrapper.IsOpen)
             {
                 try
