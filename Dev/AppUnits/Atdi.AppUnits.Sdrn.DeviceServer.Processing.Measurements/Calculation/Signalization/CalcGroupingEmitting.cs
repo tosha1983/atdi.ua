@@ -25,7 +25,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static double CorrelationFactor;
         private static double MaxFreqDeviation;
         private static int CountMaxEmission; // нужно брать из файла конфигурации
-        
+
+        private static bool CorrelationAdaptation = true; // true означает что можно адаптировать коэфициент корреляции. Устанавливается когда первоначально коэфициент корреляции 0.99 и выше.
+        private static int MaxNumberEmitingOnFreq = 300; // брать из файла конфигурации.
+        private static double MinCoeffCorrelation = 0.8; // брать из файла конфигурации.
+        private static bool UkraineNationalMonitoring = true; // признак что делается все для Украины
+
+
         // конец констант
 
         /// <summary>
@@ -133,52 +139,61 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
-                // перебрасываем из temp хорошие сигналы в Summary
-                for (int i = 0; i < emittingsTempTemp.Count; i++)
+                if ((UkraineNationalMonitoring)&&(CorrelationAdaptation))
                 {
-                    if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
-                    {
-                        emittingsSummaryTemp.Add(CalcSignalization.CreatIndependEmitting(emittingsTempTemp[i]));
-                        emittingsTempTemp.RemoveRange(i, 1);
-                        i--;
-                    }
+                    DeliteRedundantUncorrelationEmission(emittingsTempTemp, logger, NoiseLevel_dBm);
+                    DeliteRedundantUncorrelationEmission(emittingsSummaryTemp, logger, NoiseLevel_dBm);
                 }
-                // Пройдемся по Summary нет ли дублирующихся сигналов 
-                for (int i = 0; emittingsSummaryTemp.Count > i; i++)
+                else
                 {
-                    for (int j = i + 1; emittingsSummaryTemp.Count > j; j++)
+                    // перебрасываем из temp хорошие сигналы в Summary
+                    for (int i = 0; i < emittingsTempTemp.Count; i++)
                     {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
-                        if (existTheSameEmitting)
+                        if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
                         {
-                            var em = emittingsSummaryTemp[i];
-                            JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
-                            emittingsSummaryTemp[i] = em;
-                            emittingsSummaryTemp.RemoveRange(j, 1);
-                            j--;
+                            emittingsSummaryTemp.Add(CalcSignalization.CreatIndependEmitting(emittingsTempTemp[i]));
+                            emittingsTempTemp.RemoveRange(i, 1);
+                            i--;
                         }
                     }
-                }
-                // Пройдемся по temp нет ли дублирующихся сигналов 
-                for (int i = 0; emittingsTempTemp.Count > i; i++)
-                {
-                    for (int j = i + 1; emittingsTempTemp.Count > j; j++)
+                    // Пройдемся по Summary нет ли дублирующихся сигналов 
+                    for (int i = 0; emittingsSummaryTemp.Count > i; i++)
                     {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
-                        if (existTheSameEmitting)
+                        for (int j = i + 1; emittingsSummaryTemp.Count > j; j++)
                         {
-                            var em = emittingsTempTemp[i];
-                            JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
-                            emittingsTempTemp[i] = em;
-                            emittingsTempTemp.RemoveRange(j, 1);
-                            j--;
+                            bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
+                            if (existTheSameEmitting)
+                            {
+                                var em = emittingsSummaryTemp[i];
+                                JoinEmmiting(ref em, emittingsSummaryTemp[j], logger, NoiseLevel_dBm);
+                                emittingsSummaryTemp[i] = em;
+                                emittingsSummaryTemp.RemoveRange(j, 1);
+                                j--;
+                            }
                         }
                     }
+                    // Пройдемся по temp нет ли дублирующихся сигналов 
+                    for (int i = 0; emittingsTempTemp.Count > i; i++)
+                    {
+                        for (int j = i + 1; emittingsTempTemp.Count > j; j++)
+                        {
+                            bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
+                            if (existTheSameEmitting)
+                            {
+                                var em = emittingsTempTemp[i];
+                                JoinEmmiting(ref em, emittingsTempTemp[j], logger, NoiseLevel_dBm);
+                                emittingsTempTemp[i] = em;
+                                emittingsTempTemp.RemoveRange(j, 1);
+                                j--;
+                            }
+                        }
+                    }
+                    DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission);
+                    DeliteRedundantEmission(emittingsSummaryTemp, CountMaxEmission);
                 }
 
 
-                DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission);
-                DeliteRedundantEmission(emittingsSummaryTemp, CountMaxEmission);
+
                 EmittingsTemp = emittingsTempTemp.ToArray();
                 EmittingsSummary = emittingsSummaryTemp.ToArray();
                 EmittingsRaw = null;
@@ -664,6 +679,103 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                 }
                 CurentHitNumber++;
+            }
+        }
+        private static void DeliteRedundantUncorrelationEmission(List<Emitting> emittings, ILogger logger, double NoiseLevel_dBm)
+        { // НЕ ТЕСТИЛ по идее функция должна удалить все излучения оставив там какоето количество
+            // считаем количество излучений на частоте
+            int[] EmittingOnFreq = new int[emittings.Count];
+            int MaxNumber = 0;
+            for (int i = 0; emittings.Count > i; i++)
+            {
+                int count = 0;
+                for (int j = 0; emittings.Count > j; j++)
+                {
+                    if (i != j)
+                    {
+                        if (MatchCheckEmitting(emittings[i], emittings[j]))
+                        { count++; }
+                    }
+                }
+                EmittingOnFreq[i] = count;
+                if (count > MaxNumber) {MaxNumber = count;}
+            }
+            if (MaxNumber < MaxNumberEmitingOnFreq)
+            {
+                return; // выход поскольку все хорошо
+            }
+            // Надо ужимать пройдемся нет ли дублирующих сигналов
+            for (int i = 0; emittings.Count > i; i++)
+            {
+                for (int j = i + 1; emittings.Count > j; j++)
+                {
+                    bool existTheSameEmitting = MatchCheckEmitting(emittings[i], emittings[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
+                    if (existTheSameEmitting)
+                    {
+                        var em = emittings[i];
+                        JoinEmmiting(ref em, emittings[j], logger, NoiseLevel_dBm);
+                        emittings[i] = em;
+                        emittings.RemoveRange(j, 1);
+                        j--;
+                    }
+                }
+            }
+            // повторная оценка после сжатия
+            EmittingOnFreq = new int[emittings.Count];
+            MaxNumber = 0;
+            for (int i = 0; emittings.Count > i; i++)
+            {
+                int count = 0;
+                for (int j = 0; emittings.Count > j; j++)
+                {
+                    if (i != j)
+                    {
+                        if (MatchCheckEmitting(emittings[i], emittings[j]))
+                        { count++; }
+                    }
+                }
+                EmittingOnFreq[i] = count;
+                if (count > MaxNumber) { MaxNumber = count; }
+            }
+            if (MaxNumber < MaxNumberEmitingOnFreq)
+            {
+                return; // выход поскольку все хорошо
+            }
+            // тут все плохо и необходимо уменьшать коэффициент корреляции если можно
+            if (CorrelationFactor > MinCoeffCorrelation)
+            {
+                CorrelationFactor = CorrelationFactor - 0.01;
+                DeliteRedundantUncorrelationEmission(emittings, logger, NoiseLevel_dBm);
+            }
+            else
+            {
+                // уменьшать нельзя поэтому будем удалять излучения на частотах которые наиболее забиты притом удаляем 1/10 от общего количество
+                int numberDel = (int) (MaxNumber/10.0);
+                if (MaxNumber - numberDel > MaxNumberEmitingOnFreq) { numberDel = MaxNumber - MaxNumberEmitingOnFreq;}
+                int delited = 0;
+                int CurentHitNumber = 1;
+                while (numberDel > delited)
+                {
+                    for (int i = emittings.Count-1; 0 < i; i--)
+                    {
+                        if (EmittingOnFreq[i] == MaxNumber)
+                        {
+                            int hit = 0;
+                            for (int j = 0; emittings[i].WorkTimes.Length > j; j++)
+                            {
+                                hit = hit + emittings[i].WorkTimes[j].HitCount;
+                            }
+                            if (hit <= CurentHitNumber)
+                            {// удаление излучения
+                                emittings.RemoveRange(i, 1);
+                                delited++;
+                                if (delited >= numberDel) { break; }
+                            }
+                        }
+                    }
+                    CurentHitNumber++;
+                }
+
             }
         }
         private static int CompareTwoEmittingCenterWithStartEnd(Emitting emitting1, Emitting emitting2)
