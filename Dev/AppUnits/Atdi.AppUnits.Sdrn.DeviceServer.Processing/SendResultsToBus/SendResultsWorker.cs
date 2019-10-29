@@ -66,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             catch (Exception e)
                             {
                                 messageToken = null;
-                                _logger.Error(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e.Message);
+                                _logger.Exception(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e);
                                 System.Threading.Thread.Sleep(this._config.SleepTimePeriodWaitingErrorSendingBus_ms);
                             }
                             if (messageToken != null)
@@ -98,7 +98,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             catch (Exception e)
                             {
                                 messageToken = null;
-                                _logger.Error(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e.Message);
+                                _logger.Exception(Contexts.SendResultsWorker, Categories.Processing, Exceptions.UnknownErrorSendResultsWorker, e);
                                 System.Threading.Thread.Sleep(this._config.SleepTimePeriodWaitingErrorSendingBus_ms);
                             }
                             if (messageToken != null)

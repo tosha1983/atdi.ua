@@ -15,5 +15,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         public Dataset DatasetBlank { get; set; }
         public string Projection { get; set; }
         public double[] GeoTransform { get; set; }
+        public string NameEwxFile { get; set; }
     }
 }

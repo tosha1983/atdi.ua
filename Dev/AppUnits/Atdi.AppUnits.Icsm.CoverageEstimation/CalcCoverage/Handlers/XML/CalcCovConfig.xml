@@ -507,6 +507,9 @@
         <BinICSTelecomDirectory>
           <Value>C:\ATDI\ICS telecom EV x64\</Value>
         </BinICSTelecomDirectory>
+        <TempEwxFilesDirectory>
+          <Value>D:\CalculationCoverage\TempFilesEwx\</Value>
+        </TempEwxFilesDirectory>
         <ICSTelecomProjectDirectory>
           <Value></Value>
         </ICSTelecomProjectDirectory>

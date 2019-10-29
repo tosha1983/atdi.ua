@@ -159,7 +159,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.DeferredTaskWorker, Categories.Processing, Exceptions.UnknownErrorDeferredTaskWorker, e.Message);
+                _logger.Exception(Contexts.DeferredTaskWorker, Categories.Processing, Exceptions.UnknownErrorDeferredTaskWorker, e);
                 context.Abort(e);
             }
         }

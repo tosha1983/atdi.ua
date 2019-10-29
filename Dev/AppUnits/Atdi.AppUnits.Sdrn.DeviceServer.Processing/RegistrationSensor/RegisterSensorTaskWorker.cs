@@ -224,7 +224,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.RegisterSensorTaskWorker, Categories.Processing, Exceptions.UnknownErrorRegisterSensorTaskWorker, e.Message);
+                _logger.Exception(Contexts.RegisterSensorTaskWorker, Categories.Processing, Exceptions.UnknownErrorRegisterSensorTaskWorker, e);
                 context.Abort(e);
             }
         }

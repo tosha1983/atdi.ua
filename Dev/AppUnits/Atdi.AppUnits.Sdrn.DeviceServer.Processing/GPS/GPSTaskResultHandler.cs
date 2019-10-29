@@ -17,18 +17,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     {
         public void Handle(GpsCommand command, GpsResult result, DataModels.Sdrn.DeviceServer.ITaskContext<GPSTask, DispatchProcess> taskContext)
         {
-            if (result != null)
+            try
             {
-                try
-                {
-                    taskContext.SetEvent(result);
-                    taskContext.Finish();
-                }
-                catch (Exception ex)
-                {
-                    taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(CommandFailureReason.Exception, ex));
-                    taskContext.Abort(ex);
-                }
+                taskContext.SetEvent(result);
+            }
+            catch (Exception ex)
+            {
+                taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(CommandFailureReason.Exception, ex));
             }
         }
     }

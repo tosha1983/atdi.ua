@@ -144,9 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CalcCoverage\Handlers\XML\CalcCovConfig.xml" />
-    <Content Include="Hooks\BitBltHook\Dll\HookDll.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

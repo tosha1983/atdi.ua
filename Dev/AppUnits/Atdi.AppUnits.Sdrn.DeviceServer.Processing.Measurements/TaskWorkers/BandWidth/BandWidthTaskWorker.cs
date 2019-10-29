@@ -265,7 +265,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.UnknownErrorBandWidthTaskWorker, e.Message);
+                _logger.Exception(Contexts.BandWidthTaskWorker, Categories.Measurements, Exceptions.UnknownErrorBandWidthTaskWorker, e);
                 context.Abort(e);
             }
         }
