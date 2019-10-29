@@ -122,9 +122,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
 
                         _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
-                        context.Cancel();
-                        
-                        break;
+                        //context.Cancel();
+                        //break;
                     }
 
                     var timeStamp = this._timeService.TimeStamp.Milliseconds;
@@ -149,7 +148,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     SpectrumOcupationResult outSpectrumOcupation = null;
-                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, (int)context.Task.maximumTimeForWaitingResultSO);
+                    //bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation, (int)context.Task.maximumTimeForWaitingResultSO);
+                    bool isDown = context.WaitEvent<SpectrumOcupationResult>(out outSpectrumOcupation);
                     if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
@@ -278,7 +278,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                             }
 
-                            //measResult.TaskId = CommonConvertors.GetTaskId(measResult.ResultId);
+                            if (maximumDurationMeas < 0)
+                            {
+                                context.Task.taskParameters.status = StatusTask.C.ToString();
+                                measResult.Status = StatusTask.C.ToString();
+                            }
 
                             this._measResultsByStringRepository.Create(measResult);
 
@@ -286,6 +290,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             context.Task.LastTimeSend = currTime;
                         }
                     });
+
+                    if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
+                    {
+                        //реакция на принятые результаты измерения
+                        action.Invoke();
+                        context.Finish();
+                        break;
+                    }
 
                     //////////////////////////////////////////////
                     // 
