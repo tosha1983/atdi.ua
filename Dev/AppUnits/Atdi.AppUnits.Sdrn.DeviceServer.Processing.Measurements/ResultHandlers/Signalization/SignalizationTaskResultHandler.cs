@@ -173,7 +173,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                 taskContext.Task.CountMeasurementDone++;
                 taskContext.Task.CounterCallSignaling++;
-                taskContext.Finish();
             }
             catch (Exception ex)
             {
