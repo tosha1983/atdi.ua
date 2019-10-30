@@ -25,17 +25,25 @@
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Refresh Meas Tasks" Command="{Binding RefreshShortTasksCommand}"/>
-
-            <MenuItem Header="Create Meas Task" Command="{Binding CreateMeasTaskCommand}"/>
-            <MenuItem Header="Run Meas Task" Command="{Binding RunMeasTaskCommand}"/>
-            <MenuItem Header="Stop Meas Task" Command="{Binding StopMeasTaskCommand}"/>
-            <MenuItem Header="Delete Meas Task" Command="{Binding DeleteMeasTaskCommand}"/>
-
-            <MenuItem Header="Refresh Sensors" Command="{Binding RefreshShortSensorsCommand}"/>
-            <MenuItem Header="Show/Hide Meas Task Detail" Command="{Binding ShowHideMeasTaskDetailCommand}"/>
-            <MenuItem Header="Show/Hide Meas Results Detail" Command="{Binding ShowHideMeasResultsDetailCommand}"/>
-            <MenuItem Header="Meas Results" Command="{Binding MeasResultCommand}"/>
+          <MenuItem Header="Tasks">
+            <MenuItem Header="Refresh" Command="{Binding RefreshShortTasksCommand}"/>
+            <MenuItem Header="Create new" Command="{Binding CreateMeasTaskCommand}" IsEnabled="False"/>
+            <MenuItem Header="Run" Command="{Binding RunMeasTaskCommand}"/>
+            <MenuItem Header="Stop" Command="{Binding StopMeasTaskCommand}"/>
+            <MenuItem Header="Delete" Command="{Binding DeleteMeasTaskCommand}"/>
+            <MenuItem Header="Show detail" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding ShowMeasTaskDetailEnabled}"/>
+            <MenuItem Header="Hide detail" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding HideMeasTaskDetailEnabled}"/>
+            <!--<MenuItem Header="Show/Hide detail" Command="{Binding ShowHideMeasTaskDetailCommand}"/>-->
+          </MenuItem>
+          <MenuItem Header="Results">
+            <MenuItem Header="Show detail" Command="{Binding ShowHideMeasResultsDetailCommand}" IsEnabled="{Binding ShowMeasResultsDetailEnabled}"/>
+            <MenuItem Header="Hide detail" Command="{Binding ShowHideMeasResultsDetailCommand}" IsEnabled="{Binding HideMeasResultsDetailEnabled}"/>
+            <!--<MenuItem Header="Show/Hide Meas Results Detail" Command="{Binding ShowHideMeasResultsDetailCommand}"/>-->
+            <!--<MenuItem Header="Meas Results" Command="{Binding MeasResultCommand}"/>-->
+          </MenuItem>
+          <MenuItem Header="Sensors">
+            <MenuItem Header="Refresh" Command="{Binding RefreshShortSensorsCommand}"/>
+          </MenuItem>
         </Menu>
         
         <StatusBar DockPanel.Dock="Bottom">
@@ -68,9 +76,9 @@
 
         <Grid >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="66*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="33*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
@@ -462,6 +470,7 @@
                                           <RowDefinition Height="Auto"></RowDefinition>
                                           <RowDefinition Height="Auto"></RowDefinition>
                                           <RowDefinition Height="Auto"></RowDefinition>
+                                          <RowDefinition Height="Auto"></RowDefinition>
                                           <RowDefinition Height="*"></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analysis only with contravention of Reference Level"/>
@@ -481,6 +490,9 @@
 
                                         <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "The minimum number of points a spectrum must contain in order not to measure bandwith"  />
                                         <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MinPointForDetailBW}" IsReadOnly="True"/>
+
+                                        <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Analyze Sys Info emission"  />
+                                        <CheckBox Grid.Column="1" Grid.Row="6" IsChecked="{Binding Path=AnalyzeSysInfoEmission}" IsEnabled="False"/>
                                       </Grid>
                                     </GroupBox>
                                     <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">
@@ -526,8 +538,6 @@
                           </ScrollViewer>
                       </GroupBox>
                     </Grid>
-                    
-                    
 
                     <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     </GridSplitter>
@@ -563,6 +573,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="25"></RowDefinition>
                     </Grid.RowDefinitions>
                  
                     <Grid Grid.Column="0" Grid.Row="0">
@@ -587,8 +598,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
-
-                      <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResults}" >
+                      <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResult}" SelectedItemsList="{Binding CurrentMeasurementResults, Mode=TwoWay}" >
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
                                     <Style.Triggers>
@@ -909,7 +919,7 @@
                                     <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5,0,0" Content="&lt;" Width="15" Height="15" Command="{Binding PrevSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
                                     <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100" Visibility="{Binding ResIdStationVisibility}"/>
                                     <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
-                                    <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="50" Margin="150,5,0,0" Content="Get CSV" Command="{Binding GetSOCSVCommand}" Visibility="{Binding ResGetSOCSVVisibility}"/>
+                                    <!--<Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="50" Margin="150,5,0,0" Content="Get CSV" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>-->
                                   
                                     <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas" Visibility="{Binding ResTimeMeasVisibility}">
                                         <Grid DataContext="{Binding CurrentGeneralResult}">
@@ -960,7 +970,7 @@
                                             <RowDefinition Height="*"></RowDefinition>
                                           </Grid.RowDefinitions>
                                           <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
-                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
+                                          <!--<Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>-->
                                           <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}">
                                             <DataGrid.Columns>
                                               <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
@@ -1003,8 +1013,8 @@
                         </GroupBox>                  
                     </Grid>
 
+                    <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="50" Margin="50,5,0,0" Content="Get CSV" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>
                 </Grid>
-                
             </GroupBox>
 
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>

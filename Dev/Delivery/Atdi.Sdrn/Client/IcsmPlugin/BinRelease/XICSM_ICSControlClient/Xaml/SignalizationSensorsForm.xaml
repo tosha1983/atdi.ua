@@ -38,7 +38,113 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
-          <cdg:CustomDataGridSignSensors IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensors, Mode=TwoWay}">
+          <GroupBox  Header=""  Margin="5, 5, 5, 5" Grid.Column="0">
+            <GroupBox.Style>
+              <Style TargetType="GroupBox">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Path=StartType}" Value="2">
+                    <Setter  Property="Visibility" Value="Collapsed"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Path=StartType}" Value="1">
+                    <Setter  Property="Visibility" Value="Visible"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </GroupBox.Style>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+              </Grid.RowDefinitions>
+              <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mandatory time intersection"  />
+              <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=IsUseTime}"/>
+              <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Path=TimeIntersection}">
+                <TextBox.Style>
+                  <Style TargetType="TextBox">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=IsUseTime}" Value="True">
+                        <Setter  Property="IsEnabled" Value="True"/>
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding Path=IsUseTime}" Value="False">
+                        <Setter  Property="IsEnabled" Value="False"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBox.Style>
+              </TextBox>
+              <Label Height="18" Grid.Column="3" Grid.Row="0" Padding="5,0,0,0" Content = "%"  />
+
+              <Label Height="18" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Padding="5,0,0,0" Content = "Mandatory frequency intersection"  />
+              <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding Path=FreqIntersection}"/>
+              <Label Height="18" Grid.Column="3" Grid.Row="1" Padding="5,0,0,0" Content = "%"  />
+
+              <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Content="Start" Command="{Binding StartCommand}" Width="100" Height="30" Margin="10,0,0,0" HorizontalAlignment="Center"/>
+            </Grid>
+          </GroupBox>
+          <GroupBox  Header=""  Margin="5, 5, 5, 5" Grid.Column="0">
+            <GroupBox.Style>
+              <Style TargetType="GroupBox">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Path=StartType}" Value="1">
+                    <Setter  Property="Visibility" Value="Collapsed"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Path=StartType}" Value="2">
+                    <Setter  Property="Visibility" Value="Visible"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </GroupBox.Style>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="90" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+              </Grid.RowDefinitions>
+              <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Time From"  />
+              <DatePicker Grid.Column="1" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <DatePicker.SelectedDate>
+                  <Binding Path="DateFrom" StringFormat='{}{0:dd.MM.yyyy}'>
+                  </Binding>
+                </DatePicker.SelectedDate>
+              </DatePicker>
+              <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=TimeFrom, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}" Width="50" HorizontalAlignment="Left"/>
+
+              <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Time From"  />
+              <DatePicker Grid.Column="1" Grid.Row="1" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <DatePicker.SelectedDate>
+                  <Binding Path="DateTo" StringFormat='{}{0:dd.MM.yyyy}'>
+                  </Binding>
+                </DatePicker.SelectedDate>
+              </DatePicker>
+              <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=TimeTo, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}" Width="50" HorizontalAlignment="Left"/>
+
+              <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Frequency from, MHz"  />
+              <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Path=FreqFrom}" Width="140" HorizontalAlignment="Left"/>
+
+              <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Frequency to, MHz"  />
+              <TextBox Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding Path=FreqTo}" Width="140" HorizontalAlignment="Left"/>
+
+              <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Content="Start" Command="{Binding StartCommand}" Width="100" Height="30" Margin="10,0,0,0" HorizontalAlignment="Center"/>
+            </Grid>
+          </GroupBox>          
+          <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
+          <cdg:CustomDataGridSignSensors Grid.Column="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensors, Mode=TwoWay}">
             <DataGrid.Columns>
               <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
@@ -56,28 +162,6 @@
               <DataGridTextColumn Header="End of use" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
             </DataGrid.Columns>
           </cdg:CustomDataGridSignSensors>
-          <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
-          <Grid Grid.Column="2">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="120" />
-              <ColumnDefinition Width="40" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto"></RowDefinition>
-              <RowDefinition Height="Auto"></RowDefinition>
-              <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mandatory time intersection"  />
-            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=StationId}"/>
-            <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "%"  />
-
-            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Mandatory frequency intersection"  />
-            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SectorId}"/>
-            <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "%"  />
-
-            <Button Grid.Column="0" Grid.Row="2" Content="Start" Command="{Binding StartCommand}" Width="120" Height="40"/>            
-          </Grid>
         </Grid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"/>
