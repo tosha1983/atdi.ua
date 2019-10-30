@@ -937,6 +937,7 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
+                              <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analysis only with contravention of Reference Level"/>
@@ -1007,6 +1008,9 @@
                                 </Style>
                               </TextBox.Style>
                             </TextBox>
+
+                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Analyze Sys Info emission"  />
+                            <CheckBox Grid.Column="1" Grid.Row="6" IsChecked="{Binding Path=AnalyzeSysInfoEmission}"/>                            
                           </Grid>
                         </GroupBox>
                         <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">

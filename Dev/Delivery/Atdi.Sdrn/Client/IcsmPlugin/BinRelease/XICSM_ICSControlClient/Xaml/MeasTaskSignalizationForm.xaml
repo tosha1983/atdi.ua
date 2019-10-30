@@ -140,8 +140,8 @@
                       <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
                       <DataGridTextColumn Header="TimeMeas" Binding="{Binding Path=TimeMeas}"></DataGridTextColumn>
                       <!--<DataGridTextColumn Header="IdMeasDevice" Binding="{Binding Path=StationMeasurementsStationId}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="№ Stations" Binding="{Binding Path=StationsNumber}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="№ Points" Binding="{Binding Path=PointsNumber}"></DataGridTextColumn>-->
+                      <DataGridTextColumn Header="№ Stations" Binding="{Binding Path=StationsNumber}"></DataGridTextColumn>
+                      <DataGridTextColumn Header="№ Points" Binding="{Binding Path=PointsNumber}"></DataGridTextColumn>-->
                       <DataGridTextColumn Header="SubTaskId" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
                       <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
                       <DataGridTextColumn Header="SensorTechId" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
