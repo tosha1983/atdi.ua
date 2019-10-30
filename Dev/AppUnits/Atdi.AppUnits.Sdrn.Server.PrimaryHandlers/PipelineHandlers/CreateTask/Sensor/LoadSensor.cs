@@ -28,32 +28,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         }
 
 
-        public bool GetAggregationServerBySensorId(long SensorId, out string AggregationServerInstance)
-        {
-            var isClusterMode = false;
-            string aggregationServerInstance = null;
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            var builderAggregationSensor = this._dataLayer.GetBuilder<MD.ILinkAggregationSensor>().From();
-            builderAggregationSensor.Select(c => c.AggregationServerName);
-            builderAggregationSensor.Select(c => c.Id);
-            builderAggregationSensor.Where(c => c.SENSOR.Id, ConditionOperator.Equal, SensorId);
-            queryExecuter.Fetch(builderAggregationSensor, readerAggregationSensor =>
-            {
-                while (readerAggregationSensor.Read())
-                {
-                    aggregationServerInstance = readerAggregationSensor.GetValue(c => c.AggregationServerName);
-                    if (!string.IsNullOrEmpty(aggregationServerInstance))
-                    {
-                        isClusterMode = true;
-                    }
-                    break;
-                }
-                return true;
-            });
-            AggregationServerInstance = aggregationServerInstance;
-            return isClusterMode;
-        }
-
         public long? LoadSensorId(long Id, out string SensorName, out string SensorTechId)
         {
             long? valIdentifier = null;

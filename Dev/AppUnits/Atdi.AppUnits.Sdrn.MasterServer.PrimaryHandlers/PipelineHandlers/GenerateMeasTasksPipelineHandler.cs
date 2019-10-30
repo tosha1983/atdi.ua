@@ -44,7 +44,6 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.PipelineHandlers
                 var AggregationServerList = new List<string>();
                 var dictionaryAggregationWithSensor = new Dictionary<long, string>();
                 var aggregationServerList = new List<string>();
-                var listSensorsWithoutLinkAggrServer = new List<long>();
                 var sensor = new LoadSensor(this._dataLayer, this._logger);
                 var AllMasterSensors = new List<MeasSensor>();
                 var measSubTasks = data.MeasTaskPipeBox.MeasSubTasks.ToList();
@@ -79,10 +78,6 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.PipelineHandlers
                                     {
                                         dictionaryAggregationWithSensor.Add(measSubTask.MeasSubTaskSensors[j].SensorId, AggregationServerId);
                                     }
-                                }
-                                else
-                                {
-                                    listSensorsWithoutLinkAggrServer.Add(measSubTask.MeasSubTaskSensors[j].SensorId);
                                 }
                             }
                         }
@@ -295,33 +290,6 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.PipelineHandlers
                         }
                         data.MeasTasksWithAggregationServerPipeBox = listMeasTasks.ToArray();
                         data.AggregationServerInstancesPipeBox = aggregationServerList.ToArray();
-                    }
-                    if ((listSensorsWithoutLinkAggrServer != null) && (listSensorsWithoutLinkAggrServer.Count > 0))
-                    {
-                        for (int i = 0; i < listSensorsWithoutLinkAggrServer.Count; i++)
-                        {
-                            for (int k = 0; k < prepareSendEvents.Length; k++)
-                            {
-                                if (prepareSendEvents[k].SensorId == listSensorsWithoutLinkAggrServer[i])
-                                {
-                                    var measTaskEvent = new OnMeasTaskEvent()
-                                    {
-                                        SensorId = prepareSendEvents[k].SensorId,
-                                        MeasTaskId = prepareSendEvents[k].MeasTaskId,
-                                        SensorName = prepareSendEvents[k].SensorName,
-                                        EquipmentTechId = prepareSendEvents[k].EquipmentTechId,
-                                        Name = $"On{prepareSendEvents[k].ActionType}MeasTaskEvent",
-                                        MeasTaskIds = prepareSendEvents[k].MeasTaskIds,
-                                        SubTaskSensorId = prepareSendEvents[k].SubTaskSensorId
-                                    };
-                                    this._eventEmitter.Emit(measTaskEvent, new EventEmittingOptions()
-                                    {
-                                        Rule = EventEmittingRule.Default,
-                                        Destination = new string[] { $"SubscriberOn{prepareSendEvents[k].ActionType}MeasTaskEvent" }
-                                    });
-                                }
-                            }
-                        }
                     }
                 }
             }

@@ -46,39 +46,19 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         throw new ArgumentNullException(nameof(data));
                     }
 
-
-                    var isFindLinkAggregationServer = false;
-                    var loadSensor = new LoadSensor(this._dataLayer, this._logger);
-                    var allSensors = loadSensor.LoadAllSensorIds();
-                    if ((allSensors != null) && (allSensors.Length > 0))
+                    var initEvent = new OnInitOnlineMeasurement(this.GetType().FullName)
                     {
-                        for (int i = 0; i < allSensors.Length; i++)
-                        {
-                            isFindLinkAggregationServer = loadSensor.GetAggregationServerBySensorId(allSensors[i], out string AggrServer);
-                            if (isFindLinkAggregationServer == true)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    // если сенсор не принадлежит к аггрегейшн серверам, тогда просто отправка уведомления OnInitOnlineMeasurement
-                    if (isFindLinkAggregationServer == false)
-                    {
-                        var initEvent = new OnInitOnlineMeasurement(this.GetType().FullName)
-                        {
-                            OnlineMeasId = data.OnlineMeasLocalId
-                        };
-                        this._eventEmitter.Emit(initEvent);
+                        OnlineMeasId = data.OnlineMeasLocalId
+                    };
+                    this._eventEmitter.Emit(initEvent);
 
-                        return data;
-                    }
+                    return  data;
                 }
                 catch (Exception e)
                 {
                     _logger.Exception(Contexts.ThisComponent, (EventCategory)"OnInitOnlineMeasurement", e, this);
                     throw;
                 }
-                return context.GoAhead(data);
             }
         }
     }

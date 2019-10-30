@@ -41,13 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceCommand\OnDeviceCommandResultAggregationServer.cs" />
     <Compile Include="DevicesBusEvent.cs" />
     <Compile Include="MeasResultAggregated\MSMeasResultAggregated.cs" />
     <Compile Include="MeasResultAppeared\MSMeasResultAppeared.cs" />
     <Compile Include="MeasTask\OnMeasTaskEvent.cs" />
     <Compile Include="MeasTask\OnMeasTaskToMasterServerEvent.cs" />
     <Compile Include="MeasTask\OnReceivedNewSOResultEvent.cs" />
-    <Compile Include="MeasTask\OnRegisterAggregationServer.cs" />
     <Compile Include="OnlineMeasurement\OnInitExternalOnlineMeasurement.cs" />
     <Compile Include="OnlineMeasurement\OnOnlineMeasurementStatusSubscriber.cs" />
     <Compile Include="OnlineMeasurement\OnOnlineMeasurementResponseDevice.cs" />

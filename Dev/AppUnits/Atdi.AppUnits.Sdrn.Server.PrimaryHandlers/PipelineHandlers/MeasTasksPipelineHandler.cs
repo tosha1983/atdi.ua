@@ -18,14 +18,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly ILogger _logger;
+        private readonly IPipelineSite _pipelineSite;
 
-        public MeasTasksPipelineHandler(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
+        public MeasTasksPipelineHandler(IPipelineSite pipelineSite, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._eventEmitter = eventEmitter;
             this._logger = logger;
             this._environment = environment;
             this._messagePublisher = messagePublisher;
+            this._pipelineSite = pipelineSite;
         }
 
         /// <summary>
@@ -68,6 +70,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                                 if (sensorIdentifier.Value > 0)
                                                 {
                                                     SensorIds.Add(station.SensorId.Value);
+                                                    station.SensorName = sensorName;
+                                                    station.SensorTechId = sensorTechId;
                                                 }
                                             }
                                         }
@@ -103,7 +107,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     throw new Exception(Exceptions.ForTheNewTaskNonExistentSensors);
                 }
                 // передача в обработчик ClientMeasTasksSendPipelineHandler 
-                return context.GoAhead(data);
+                var res = context.GoAhead(data);
+                if (res == null)
+                {
+                    var site = this._pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTaskSendEvents);
+                    var resultSendEvent = site.Execute(new ClientMeasTaskPipebox()
+                    {
+                        MeasTaskPipeBox = data.MeasTaskPipeBox,
+                        PrepareSendEvents = data.PrepareSendEvents
+                    });
+
+                    return resultSendEvent;
+                }
+                else
+                {
+                    return res;
+                }
             }
         }
     }

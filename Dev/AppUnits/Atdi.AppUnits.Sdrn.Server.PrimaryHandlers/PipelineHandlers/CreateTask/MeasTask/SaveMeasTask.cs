@@ -434,15 +434,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                                 valueIdmeasSubTaskSta = insertMeasSubTaskStaPK.Id;
                                                 subTaskSensor.Id = valueIdmeasSubTaskSta;
                                                 measSubTask.MeasSubTaskSensors[v] = subTaskSensor;
-
-                                                if (subTaskSensor.MasterId != null)
-                                                {
-                                                    var builderUpdateLinkSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().Insert();
-                                                    builderUpdateLinkSensor.SetValue(c => c.SubtaskSensorMasterId, subTaskSensor.MasterId);
-                                                    builderUpdateLinkSensor.SetValue(c => c.SUBTASK_SENSOR.Id, valueIdmeasSubTaskSta);
-                                                    var linkAggregationSensor_PKId = scope.Executor.Execute<MD.ILinkSubTaskSensorMasterId_PK>(builderUpdateLinkSensor);
-                                                }
-
+                                                
                                             }
                                         }
                                     }

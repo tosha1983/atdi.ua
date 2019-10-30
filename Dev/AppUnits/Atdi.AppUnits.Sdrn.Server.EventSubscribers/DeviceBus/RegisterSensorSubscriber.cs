@@ -17,7 +17,8 @@ using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Sdrns.Server.Events;
-     
+using Atdi.Platform.Workflows;
+
 
 
 
@@ -32,6 +33,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IMessagesSite _messagesSite;
         private readonly IEventEmitter _eventEmitter;
+        private readonly IPipelineSite _pipelineSite;
 
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _registerSensorHitsCounter;
@@ -44,9 +46,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             ISdrnServerEnvironment environment,
             IStatistics statistics,
             IEventEmitter eventEmitter,
+            IPipelineSite pipelineSite,
             ILogger logger) 
             : base(messagesSite, logger)
         {
+            this._pipelineSite = pipelineSite;
             this._messagesSite = messagesSite;
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
@@ -139,26 +143,21 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
                     }
 
-                    ///Отправка уведомления в AggregationServer о необходимости регистрации сенсора
-                    var measTaskEventToAggregationServer = new OnRegisterAggregationServer()
-                    {
-                        EquipmentTechId = deliveryObject.Equipment.TechId,
-                        SensorName = deliveryObject.Name,
-                        Name = $"OnRegisterAggregationServerEvent"
-                    };
-                    this._eventEmitter.Emit(measTaskEventToAggregationServer, new EventEmittingOptions()
-                    {
-                        Rule = EventEmittingRule.Default,
-                        Destination = new string[] { $"SubscriberOnRegisterAggregationServerEvent" }
-                    });
-                   
-
-
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
                     envelop.SensorName = sensorName;
                     envelop.SensorTechId = sensorTechId;
                     envelop.DeliveryObject = registrationResult;
                     _messagePublisher.Send(envelop);
+
+
+                    var site = this._pipelineSite.TryGetByName<Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent, Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent>(Atdi.DataModels.Sdrns.Server.Pipelines.ClientRegisterAggregationServer, out IPipeline<Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent, Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent> pipeline);
+                    if (site == true)
+                    {
+                        var sensor = new DataModels.Sdrns.Server.RegisterSensorSendEvent();
+                        sensor.SensorName = deliveryObject.Name;
+                        sensor.EquipmentTechId = deliveryObject.Equipment.TechId;
+                        var resultSendEvent = pipeline.Execute(sensor);
+                    }
                 }
             }
         }
@@ -561,7 +560,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                             }
 
 
-                                        
+
 
                                             for (int b = 0; b < sensorData.Antenna.Patterns.Length; b++)
                                             {
@@ -896,7 +895,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                            .From()
                                            .Select(c => c.Id)
                                            .Where(c => c.Lon, ConditionOperator.Equal, location.Lon)
-                                           .Where(c => c.Lat, ConditionOperator.Equal, location.Lat);
+                                           .Where(c => c.Lat, ConditionOperator.Equal, location.Lat)
+                                           .Where(c => c.Asl, ConditionOperator.Equal, location.ASL);
                                             var cnt = scope.Executor.Execute(queryCheck);
                                             if (cnt == 0)
                                             {
