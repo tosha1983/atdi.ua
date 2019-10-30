@@ -114,7 +114,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
                         
-                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
+                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
                         //context.Cancel();
                         //break;
                     }
@@ -144,8 +144,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     //
                     //////////////////////////////////////////////
                     MeasResults outResultData = null;
-                    bool isDown = context.WaitEvent<MeasResults>(out outResultData,  (int)context.Task.maximumTimeForWaitingResultSignalization);
-                        if (isDown == false) // таймут - результатов нет
+                    //bool isDown = context.WaitEvent<MeasResults>(out outResultData,  (int)context.Task.maximumTimeForWaitingResultSignalization);
+                    bool isDown = context.WaitEvent<MeasResults>(out outResultData);
+                    if (isDown == false) // таймут - результатов нет
                     {
                         // проверка - не отменили ли задачу
                         if (context.Task.taskParameters.status == StatusTask.Z.ToString())
