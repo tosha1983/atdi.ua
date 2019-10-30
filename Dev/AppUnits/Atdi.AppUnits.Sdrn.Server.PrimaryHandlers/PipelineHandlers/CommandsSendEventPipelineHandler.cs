@@ -21,6 +21,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly ILogger _logger;
+        
 
         public CommandsSendEventPipelineHandler(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
         {
@@ -29,6 +30,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             this._logger = logger;
             this._environment = environment;
             this._messagePublisher = messagePublisher;
+        
         }
 
 
@@ -46,47 +48,30 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.CommandsSendEventPipelineHandler, this))
             {
-                var isFindLinkAggregationServer = false;
-                var loadSensor = new LoadSensor(this._dataLayer, this._logger);
-                var allSensors = loadSensor.LoadAllSensorIds();
-                if ((allSensors != null) && (allSensors.Length > 0))
+                var prepareSendEvents = data.PrepareSendEvents;
+                for (int k = 0; k < prepareSendEvents.Length; k++)
                 {
-                    for (int i = 0; i < allSensors.Length; i++)
+                    var measTaskEvent = new OnMeasTaskEvent()
                     {
-                        isFindLinkAggregationServer = loadSensor.GetAggregationServerBySensorId(allSensors[i], out string AggrServer);
-                        if (isFindLinkAggregationServer == true)
-                        {
-                            break;
-                        }
-                    }
-                }
-                if (isFindLinkAggregationServer == false)
-                {
-                    var prepareSendEvents = data.PrepareSendEvents;
-                    for (int k = 0; k < prepareSendEvents.Length; k++)
-                    {
-                        var measTaskEvent = new OnMeasTaskEvent()
-                        {
-                            SensorId = prepareSendEvents[k].SensorId,
-                            MeasTaskId = prepareSendEvents[k].MeasTaskId,
-                            SensorName = prepareSendEvents[k].SensorName,
-                            EquipmentTechId = prepareSendEvents[k].EquipmentTechId,
-                            Name = $"On{prepareSendEvents[k].ActionType}MeasTaskEvent",
-                            MeasTaskIds = prepareSendEvents[k].MeasTaskIds
-                        };
-                        this._eventEmitter.Emit(measTaskEvent, new EventEmittingOptions()
-                        {
-                            Rule = EventEmittingRule.Default,
-                            Destination = new string[] { $"SubscriberOn{prepareSendEvents[k].ActionType}MeasTaskEvent" }
-                        });
-                    }
-                    return new ClientMeasTaskPiperesult()
-                    {
-                        MeasTaskIdPipeResult = data.MeasTaskPipeBox.Id.Value,
-                        CommonOperationPipeBoxResult = data.CommonOperationPipeBox
+                        SensorId = prepareSendEvents[k].SensorId,
+                        MeasTaskId = prepareSendEvents[k].MeasTaskId,
+                        SensorName = prepareSendEvents[k].SensorName,
+                        EquipmentTechId = prepareSendEvents[k].EquipmentTechId,
+                        Name = $"On{prepareSendEvents[k].ActionType}MeasTaskEvent",
+                        MeasTaskIds = prepareSendEvents[k].MeasTaskIds
                     };
+                    this._eventEmitter.Emit(measTaskEvent, new EventEmittingOptions()
+                    {
+                        Rule = EventEmittingRule.Default,
+                        Destination = new string[] { $"SubscriberOn{prepareSendEvents[k].ActionType}MeasTaskEvent" }
+                    });
                 }
-                return context.GoAhead(data);
+
+                return new ClientMeasTaskPiperesult()
+                {
+                    MeasTaskIdPipeResult = data.MeasTaskPipeBox.Id.Value,
+                    CommonOperationPipeBoxResult = data.CommonOperationPipeBox
+                };
             }
         }
     }

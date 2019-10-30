@@ -18,14 +18,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly ILogger _logger;
+        private readonly IPipelineSite _pipelineSite;
 
-        public CommandsPipelineHandler(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
+        public CommandsPipelineHandler(IPipelineSite pipelineSite, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._eventEmitter = eventEmitter;
             this._logger = logger;
             this._environment = environment;
             this._messagePublisher = messagePublisher;
+            this._pipelineSite = pipelineSite;
         }
 
 
@@ -69,7 +71,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     }
                 }
                 // передача в обработчик ClientCommandsSendEventPipelineHandler 
-                return context.GoAhead(data);
+                var res = context.GoAhead(data);
+                if (res == null)
+                {
+                    var site = this._pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommandsSendEvents);
+                    var resultSendEvent = site.Execute(new ClientMeasTaskPipebox()
+                    {
+                        MeasTaskPipeBox = data.MeasTaskPipeBox,
+                        PrepareSendEvents = data.PrepareSendEvents
+                    });
+                    resultSendEvent.CommonOperationPipeBoxResult = commonOperationResult;
+                    return resultSendEvent;
+                }
+                else
+                {
+                    return res;
+                }
             }
         }
     }

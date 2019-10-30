@@ -32,11 +32,11 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
             var pipelineSite = this.Resolver.Resolve<IPipelineSite>();
             var tasksPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
-            var InitOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientInitOnlineMeasurement);
+            var SendEventOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientSendEventOnlineMeasurement);
             // регистрация обработчика
             tasksPipeline.Register(typeof(MeasTasksMasterServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
             commandsPipeline.Register(typeof(CommandsMasterServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-            InitOnlineMeasurementPipeline.Register(typeof(SendEventOnlineMeasurementPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            SendEventOnlineMeasurementPipeline.Register(typeof(SendEventOnlineMeasurementPipelineHandler), PipelineHandlerRegistrationOptions.First);
         }
     }
 }

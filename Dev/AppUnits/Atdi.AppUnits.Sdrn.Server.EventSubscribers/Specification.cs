@@ -66,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers
         public static readonly EventCategory MessageProcessing = "Message processing";
         public static readonly EventCategory EventProcessing = "Processing";
         public static readonly EventCategory Notify = "Notify";
-
+        public static readonly EventCategory RegisterAggregationServerPipelineHandler = "RegisterAggregationServerPipelineHandler";
     }
 
     static class Events

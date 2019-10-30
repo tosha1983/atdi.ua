@@ -865,7 +865,6 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
 
                                     if (sensorData.Locations != null)
                                     {
-
                                         for (int f = 0; f < sensorData.Locations.Length; f++)
                                         {
                                             var location = sensorData.Locations[f];
@@ -873,7 +872,8 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
                                            .From()
                                            .Select(c => c.Id)
                                            .Where(c => c.Lon, ConditionOperator.Equal, location.Lon)
-                                           .Where(c => c.Lat, ConditionOperator.Equal, location.Lat);
+                                           .Where(c => c.Lat, ConditionOperator.Equal, location.Lat)
+                                           .Where(c => c.Asl, ConditionOperator.Equal, location.ASL);
                                             var cnt = scope.Executor.Execute(queryCheck);
                                             if (cnt == 0)
                                             {

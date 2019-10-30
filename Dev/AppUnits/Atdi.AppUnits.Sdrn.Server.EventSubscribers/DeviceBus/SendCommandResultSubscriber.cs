@@ -15,6 +15,12 @@ using Atdi.DataModels.Sdrns.Device;
 using Atdi.DataModels.DataConstraint;
 using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
+using Atdi.DataModels.Sdrns.Server.Events;
+using Atdi.Contracts.Api.EventSystem;
+using System.Globalization;
+using Atdi.Platform.Workflows;
+using Atdi.Common;
+using Atdi.DataModels.Sdrns.Server;
 
 namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 {
@@ -24,24 +30,30 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
+        private readonly IEventEmitter _eventEmitter;
         private readonly IStatistics _statistics;
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _sendCommandResultHitsCounter;
         private readonly IStatisticCounter _sendCommandResultErrorsCounter;
+        private readonly IPipelineSite _pipelineSite;
 
         public SendCommandResultSubscriber(
-            ISdrnMessagePublisher messagePublisher, 
-            IMessagesSite messagesSite, 
-            IDataLayer<EntityDataOrm> dataLayer, 
+            ISdrnMessagePublisher messagePublisher,
+            IMessagesSite messagesSite,
+            IDataLayer<EntityDataOrm> dataLayer,
             ISdrnServerEnvironment environment,
+            IEventEmitter eventEmitter,
             IStatistics statistics,
-            ILogger logger) 
+            IPipelineSite pipelineSite,
+            ILogger logger)
             : base(messagesSite, logger)
         {
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
+            this._eventEmitter = eventEmitter;
             this._environment = environment;
             this._statistics = statistics;
+            this._pipelineSite = pipelineSite;
             if (this._statistics != null)
             {
                 this._messageProcessingHitsCounter = _statistics.Counter(Monitoring.Counters.MessageProcessingHits);
@@ -56,8 +68,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             {
                 this._messageProcessingHitsCounter?.Increment();
                 this._sendCommandResultHitsCounter?.Increment();
-
-                //var status = SdrnMessageHandlingStatus.Unprocessed;
                 var sensorExistsInDb = false;
                 try
                 {
@@ -91,14 +101,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                         scope.Commit();
                                     }
                                 }
-                                //status = SdrnMessageHandlingStatus.Confirmed;
                                 break;
                             case "UpdateStatusMeasTask":
                                 long subTaskStationId = -1;
                                 long taskIds = -1;
                                 if (deliveryObject.CustTxt1 != null)
                                 {
-                                    if (long.TryParse(deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.",""), out subTaskStationId))
+                                    if (long.TryParse(deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.", ""), out subTaskStationId))
                                     {
                                         if (subTaskStationId > -1)
                                         {
@@ -108,14 +117,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 .SetValue(c => c.Status, deliveryObject.Status);
                                             var updated = scope.Executor
                                             .Execute(querySubTaskSensor) == 1;
-                                            
 
-                                           var queryMeasTaskSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
-                                         .From()
-                                         .Select(c => c.Id)
-                                         .Select(c => c.Status)
-                                         .Select(c => c.SUBTASK.MEAS_TASK.Id)
-                                         .Where(c => c.Id, ConditionOperator.Equal, subTaskStationId);
+
+                                            var queryMeasTaskSelect = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
+                                          .From()
+                                          .Select(c => c.Id)
+                                          .Select(c => c.Status)
+                                          .Select(c => c.SUBTASK.MEAS_TASK.Id)
+                                          .Where(c => c.Id, ConditionOperator.Equal, subTaskStationId);
                                             scope.Executor
                                            .Fetch(queryMeasTaskSelect, reader =>
                                            {
@@ -164,7 +173,6 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                         }
                                     }
                                 }
-                                //status = SdrnMessageHandlingStatus.Confirmed;
                                 break;
                             case "UpdateSensorLocation":
                                 long? Id = -1;
@@ -177,14 +185,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 .OrderByAsc(c => c.Id);
                                 scope.Executor
                                .Fetch(queryUpdateSensorLocation, reader =>
-                           {
-                               var res = reader.Read();
-                               if (res)
                                {
-                                   Id = reader.GetValue(c => c.Id);
-                               }
-                               return res;
-                           });
+                                   var res = reader.Read();
+                                   if (res)
+                                   {
+                                       Id = reader.GetValue(c => c.Id);
+                                   }
+                                   return res;
+                               });
 
 
                                 if (Id > 0)
@@ -195,20 +203,18 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                         if (values.Length == 3)
                                         {
 
-                                            double Lon = -1;
-                                            double Lat = -1;
-                                            double Asl = -1;
-                                            double.TryParse(values[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Lon);
-                                            double.TryParse(values[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Lat);
-                                            double.TryParse(values[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Asl);
+                                            var lon = values[0].ConvertStringToDouble();
+                                            var lat = values[1].ConvertStringToDouble();
+                                            var asl = values[2].ConvertStringToDouble();
 
-                                            if ((Lon != -1) && (Lat != -1) && (Asl != -1))
+                                            if ((lon != null) && (lat != null) && (asl != null))
                                             {
                                                 var queryCheck = this._dataLayer.GetBuilder<MD.ISensorLocation>()
                                                .From()
                                                .Select(c => c.Id)
-                                               .Where(c => c.Lon, ConditionOperator.Equal, Lon)
-                                               .Where(c => c.Lat, ConditionOperator.Equal, Lat);
+                                               .Where(c => c.Lon, ConditionOperator.Equal, lon)
+                                               .Where(c => c.Lat, ConditionOperator.Equal, lat)
+                                               .Where(c => c.Asl, ConditionOperator.Equal, asl);
                                                 var cnt = scope.Executor.Execute(queryCheck);
                                                 if (cnt == 0)
                                                 {
@@ -221,14 +227,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                                                     var builderInsertSensor = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
                                                     builderInsertSensor.SetValue(c => c.SENSOR.Id, Id);
-                                                    builderInsertSensor.SetValue(c => c.Lon, Lon);
-                                                    builderInsertSensor.SetValue(c => c.Lat, Lat);
-                                                    builderInsertSensor.SetValue(c => c.Asl, Asl);
+                                                    builderInsertSensor.SetValue(c => c.Lon, lon);
+                                                    builderInsertSensor.SetValue(c => c.Lat, lat);
+                                                    builderInsertSensor.SetValue(c => c.Asl, asl);
                                                     builderInsertSensor.SetValue(c => c.DateCreated, DateTime.Now);
                                                     builderInsertSensor.SetValue(c => c.DateFrom, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1));
                                                     builderInsertSensor.SetValue(c => c.DateTo, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59));
                                                     builderInsertSensor.SetValue(c => c.Status, "A");
-                                                    
+
                                                     scope.Executor
                                                     .Execute(builderInsertSensor);
 
@@ -239,18 +245,32 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                                     scope.Commit();
                                 }
-                                //status = SdrnMessageHandlingStatus.Confirmed;
                                 break;
                             default:
                                 throw new NotImplementedException($"Handle for CommandId {deliveryObject.CommandId} not implemented");
                         }
+                    }
+                    
+                    var site = this._pipelineSite.TryGetByName<DeviceCommandResultEvent, DeviceCommandResultEvent>(Pipelines.ClientDeviceCommandAggregationServer, out IPipeline<DeviceCommandResultEvent, DeviceCommandResultEvent> pipeline);
+                    if (site == true)
+                    {
+                        var sensor = new DataModels.Sdrns.Server.DeviceCommandResultEvent()
+                        {
+                            CommandId = deliveryObject.CommandId,
+                            CustDate1 = deliveryObject.CustDate1,
+                            CustNbr1 = deliveryObject.CustNbr1,
+                            CustTxt1 = deliveryObject.CustTxt1,
+                            SensorName = sensorName,
+                            SensorTechId = sensorTechId,
+                            Status = deliveryObject.Status
+                        };
+                        var resultSendEvent = pipeline.Execute(sensor);
                     }
                 }
                 catch (Exception e)
                 {
                     this._sendCommandResultErrorsCounter?.Increment();
                     this._logger.Exception(Contexts.ThisComponent, Categories.MessageProcessing, e, this);
-                    //status = SdrnMessageHandlingStatus.Error;
                 }
             }
         }

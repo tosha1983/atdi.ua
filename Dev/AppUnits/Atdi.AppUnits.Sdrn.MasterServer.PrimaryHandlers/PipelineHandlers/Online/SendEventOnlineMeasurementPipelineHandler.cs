@@ -51,8 +51,9 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                         throw new ArgumentNullException(nameof(data));
                     }
 
-                    var initEvent = new OnInitExternalOnlineMeasurement(this.GetType().FullName);
 
+                    var initEventExternal = new OnInitExternalOnlineMeasurement(this.GetType().FullName);
+                    bool isFindSensor = false;
                     using (var dbScope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
                         var linkAggregationSensor = _dataLayer.GetBuilder<DM.ILinkAggregationSensor>()
@@ -64,23 +65,35 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                            .Select(c => c.SENSOR.TechId)
                            .Where(c => c.SENSOR.Id, ConditionOperator.Equal, data.SensorId);
 
+
                         var sensorExists = dbScope.Executor.ExecuteAndFetch(linkAggregationSensor, reader =>
                         {
                             var exists = reader.Read();
                             if (exists)
                             {
-                                initEvent.SensorName = reader.GetValue(c => c.SENSOR.Name);
-                                initEvent.SensorTechId = reader.GetValue(c => c.SENSOR.TechId);
-                                initEvent.AggregationServerInstance = reader.GetValue(c => c.AggregationServerName);
+                                data.SensorName = reader.GetValue(c => c.SENSOR.Name);
+                                data.SensorTechId = reader.GetValue(c => c.SENSOR.TechId);
+                                data.SensorId = reader.GetValue(c => c.SENSOR.Id);
+                                initEventExternal.SensorName = reader.GetValue(c => c.SENSOR.Name);
+                                initEventExternal.SensorTechId = reader.GetValue(c => c.SENSOR.TechId);
+                                initEventExternal.AggregationServerInstance = reader.GetValue(c => c.AggregationServerName);
+                                isFindSensor = true;
                             }
                             return exists;
                         });
                     }
-                    initEvent.OnlineMeasId = data.OnlineMeasLocalId;
-                    initEvent.ServerToken = data.ServerToken;
-                    initEvent.Period = data.Period;
 
-                    this._eventEmitter.Emit(initEvent);
+                    if (isFindSensor)
+                    {
+                        initEventExternal.OnlineMeasId = data.OnlineMeasLocalId;
+                        initEventExternal.ServerToken = data.ServerToken;
+                        initEventExternal.Period = data.Period;
+                        this._eventEmitter.Emit(initEventExternal);
+                    }
+                    else
+                    {
+                        throw new Exception($"Not found sensor Id = {data.SensorId} in LinkAggregationSensor");
+                    }
 
                 }
                 catch (Exception e)
