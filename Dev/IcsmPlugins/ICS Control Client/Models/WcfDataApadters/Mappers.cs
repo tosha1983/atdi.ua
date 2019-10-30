@@ -304,7 +304,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Status = source.Status,
                 StationSysInfo = source.StationSysInfo,
                 Standard = source.Standard,
-                GeneralResults = source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()
+                CentralFrequencyMeas_MHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequencyMeas : (double?)null,
+                CentralFrequencyMHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequency : (double?)null,
+                GeneralResults = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray() : null
             };
         }
         public static VM.GeneralResultViewModel Map(SDR.MeasurementsParameterGeneral source)

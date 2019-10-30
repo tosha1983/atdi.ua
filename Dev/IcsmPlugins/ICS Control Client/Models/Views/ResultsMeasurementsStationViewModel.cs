@@ -18,6 +18,8 @@ namespace XICSM.ICSControlClient.Models.Views
         public int? LevelMeasurementsLength { get; set; }
         public long Id { get; set; }
         public string Standard { get; set; }
+        public double? CentralFrequencyMHz { get; set; }
+        public double? CentralFrequencyMeas_MHz { get; set; }
         public MeasurementsParameterGeneral[] GeneralResults { get; set; }
     }
 }
