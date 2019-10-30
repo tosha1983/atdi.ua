@@ -8,16 +8,25 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
-    class TaskWorkerDescriptor
+    internal class TaskWorkerDescriptor
     {
+        private readonly IStatistics _statistics;
+        private readonly IStatisticCounter _tasksStartedCounter;
+        private IStatisticCounter _tasksRunningCounter;
+        private IStatisticCounter _tasksCompletedCounter;
+        private IStatisticCounter _tasksCanceledCounter;
+        private IStatisticCounter _tasksAbortedCounter;
+
         public delegate void HandlerInvokerSync(object instance, ITaskContext taskContext);
         public delegate Task HandlerInvokerAsync(object instance, ITaskContext taskContext);
 
-        public TaskWorkerDescriptor(Type instanceType)
+        public TaskWorkerDescriptor(Type instanceType, IStatistics statistics)
         {
+            this._statistics = statistics;
             this.InstanceType = instanceType;
             var instanceInterface = instanceType.GetInterface(typeof(ITaskWorker<,,>).Name);
             
@@ -27,18 +36,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
                 if (instanceInterface == null || (instanceInterface.GenericTypeArguments.Length != 3))
                 {
-                    throw new InvalidOperationException("Invalid result handler definition");
+                    throw new InvalidOperationException("Invalid task worker type definition");
                 }
                 this.IsAsync = true;
             }
             if (instanceInterface.GenericTypeArguments.Length != 3)
             {
-                throw new InvalidOperationException("Invalid result handler definition");
+                throw new InvalidOperationException("Invalid task worker type definition");
             }
 
             this.TaskType = instanceInterface.GenericTypeArguments[0];
-            this.ProccesType = instanceInterface.GenericTypeArguments[1];
-            this.LifetimeType = instanceInterface.GenericTypeArguments[1];
+            this.ProcessType = instanceInterface.GenericTypeArguments[1];
+            this.LifetimeType = instanceInterface.GenericTypeArguments[2];
 
             if (this.IsAsync)
             {
@@ -50,9 +59,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
 
             var taskContextType = typeof(TaskContext<,>);
-            this.TaskContextType = taskContextType.MakeGenericType(this.TaskType, this.ProccesType);
+            this.TaskContextType = taskContextType.MakeGenericType(this.TaskType, this.ProcessType);
 
             this.IsAutoTask = this.TaskType.GetInterface(typeof(IAutoTask).Name) != null;
+
+            if (this._statistics != null)
+            {
+                if (!this.IsAutoTask)
+                {
+                    this._tasksStartedCounter = _statistics.Counter(Monitoring.DefineTaskCounter(this.TaskType.Name, "Started"));
+                    this._tasksRunningCounter = _statistics.Counter(Monitoring.DefineTaskCounter(this.TaskType.Name, "Running"));
+                    this._tasksCompletedCounter = _statistics.Counter(Monitoring.DefineTaskCounter(this.TaskType.Name, "Completed"));
+                    this._tasksCanceledCounter = _statistics.Counter(Monitoring.DefineTaskCounter(this.TaskType.Name, "Canceled"));
+                    this._tasksAbortedCounter = _statistics.Counter(Monitoring.DefineTaskCounter(this.TaskType.Name, "Aborted"));
+                }
+                else
+                {
+                    this._tasksStartedCounter = _statistics.Counter(Monitoring.DefineAutoTaskCounter(this.TaskType.Name, "Started"));
+                    this._tasksRunningCounter = _statistics.Counter(Monitoring.DefineAutoTaskCounter(this.TaskType.Name, "Running"));
+                    this._tasksCompletedCounter = _statistics.Counter(Monitoring.DefineAutoTaskCounter(this.TaskType.Name, "Completed"));
+                    this._tasksCanceledCounter = _statistics.Counter(Monitoring.DefineAutoTaskCounter(this.TaskType.Name, "Canceled"));
+                    this._tasksAbortedCounter = _statistics.Counter(Monitoring.DefineAutoTaskCounter(this.TaskType.Name, "Aborted"));
+                }
+                
+            }
         }
 
         public bool IsAutoTask { get; private set; }
@@ -60,25 +90,51 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         public bool IsAsync { get; private set; }
 
         public Type TaskType { get; private set; }
-        public Type ProccesType { get; private set; }
+
+        public Type ProcessType { get; private set; }
 
         public Type LifetimeType { get; private set; }
+
         public Type InstanceType { get; private set; }
 
-        public string Key { get => BuildKey(TaskType, ProccesType); }
+        public string Key => BuildKey(TaskType, ProcessType);
 
         public HandlerInvokerSync InvokerSync  { get; private set; }
+
         public HandlerInvokerAsync InvokerAsync { get; private set; }
 
         public Type TaskContextType { get; private set; }
 
         public ITaskContext CreateTaskContext(ITaskDescriptor descriptor)
         {
-            var result = Activator.CreateInstance(this.TaskContextType, descriptor);
+            var result = Activator.CreateInstance(this.TaskContextType, descriptor, this);
+            _tasksStartedCounter?.Increment();
+            _tasksRunningCounter?.Increment();
             return result as ITaskContext;
         }
 
-        static HandlerInvokerAsync CreateInvokerAsync(MethodInfo method)
+        public void ReleaseTaskContext(ITaskContext context)
+        {
+            var state = context.Descriptor.Task.State;
+            if (state == TaskState.Done)
+            {
+                _tasksRunningCounter?.Decrement();
+                _tasksCompletedCounter?.Increment();
+            }
+            else if (state == TaskState.Cancelled)
+            {
+                _tasksRunningCounter?.Decrement();
+                _tasksCanceledCounter?.Increment();
+            }
+            else if (state == TaskState.Aborted)
+            {
+                _tasksRunningCounter?.Decrement();
+                _tasksAbortedCounter?.Increment();
+            }
+
+        }
+
+        private static HandlerInvokerAsync CreateInvokerAsync(MethodInfo method)
         {
             var targetArg = Expression.Parameter(typeof(object));
             var taskContextParam = Expression.Parameter(typeof(ITaskContext));
@@ -105,7 +161,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             return lambda.Compile();
         }
 
-        static HandlerInvokerSync CreateInvokerSync(MethodInfo method)
+        private static HandlerInvokerSync CreateInvokerSync(MethodInfo method)
         {
             var targetArg = Expression.Parameter(typeof(object));
             var taskContextParam = Expression.Parameter(typeof(ITaskContext));

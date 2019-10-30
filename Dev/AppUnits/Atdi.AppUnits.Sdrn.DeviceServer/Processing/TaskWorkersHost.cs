@@ -64,18 +64,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 
         public void Register(Type workerInstanceType)
         {
-            var descriptor = new TaskWorkerDescriptor(workerInstanceType);
+            var descriptor = new TaskWorkerDescriptor(workerInstanceType, this._statistics);
             lock (this._loker)
             {
                 if (this._descriptors.ContainsKey(descriptor.Key))
                 {
-                    throw new InvalidOperationException($"Duplicate task worker: TaskType = '{descriptor.TaskType}', ProccesType = '{descriptor.ProccesType}'");
+                    throw new InvalidOperationException($"Duplicate task worker: TaskType = '{descriptor.TaskType}', ProcessType = '{descriptor.ProcessType}'");
                 }
                 this._descriptors.Add(descriptor.Key, descriptor);
 
                 if (descriptor.IsAutoTask)
                 {
-                    this._autoTasks.Add(descriptor.Key, (descriptor.TaskType, descriptor.ProccesType));
+                    this._autoTasks.Add(descriptor.Key, (descriptor.TaskType, descriptor.ProcessType));
                 }
             }
         }

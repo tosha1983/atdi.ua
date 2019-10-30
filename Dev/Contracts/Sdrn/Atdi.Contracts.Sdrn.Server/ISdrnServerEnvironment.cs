@@ -33,7 +33,7 @@ namespace Atdi.Contracts.Sdrn.Server
 
     }
 
-    public static class SdrnServerEnvironmentExtentions
+    public static class SdrnServerEnvironmentExtensions
     {
 
         public static string GetAppName(this ISdrnServerEnvironment environment)
