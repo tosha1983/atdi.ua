@@ -116,6 +116,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                     }
                                     else
                                     {
+                                        if (measTask.MeasSubTasks != null)
+                                        {
+                                            measTask.MeasSubTasks = null;
+                                            measTask.Id = new MeasTaskIdentifier();
+                                        }
                                         if (measTask.MeasSubTasks == null)
                                         {
                                             measTask.CreateAllSubTasks();
@@ -124,11 +129,6 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         {
                                             measTask.Id = measTaskTemp.Id;
                                             measTask.MeasSubTasks = measTaskTemp.MeasSubTasks;
-                                        }
-                                        if (measTask.MeasSubTasks != null)
-                                        {
-                                            measTask.MeasSubTasks = null;
-                                            measTask.Id = new MeasTaskIdentifier();
                                         }
                                         if (measTask is MeasTaskSignaling)
                                         {
