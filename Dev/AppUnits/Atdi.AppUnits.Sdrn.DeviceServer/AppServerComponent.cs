@@ -89,6 +89,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         {
             var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 
+            // Обработчики задач
+
             var workersHost = this.Resolver.Resolve<ITaskWorkersHost>();
             var workerTypes = typeResolver.GetTypesByInterface(typeof(ITaskWorker<,,>));
             foreach (var workerType in workerTypes)
@@ -100,6 +102,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
             Logger.Info(Contexts.ThisComponent, Categories.Initializing, Events.TaskWorkerTypesWereRegistered);
 
+            // Обработчики результатов
+
             var handlersHost = this.Resolver.Resolve<IResultHandlersHost>();
             var handlerTypes = typeResolver.GetTypesByInterface(typeof(IResultHandler<,,,>));
 
@@ -110,6 +114,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             }
 
             Logger.Info(Contexts.ThisComponent, Categories.Initializing, Events.ResultHandlerTypesWereRegistered);
+
+            // Конверторы
 
             var convertorsHost = this.Resolver.Resolve<IResultConvertorsHost>();
             var convertorTypes = typeResolver.GetTypesByInterface(typeof(IResultConvertor<,>));
@@ -125,6 +131,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
             // Scan assemblies loaded into memmory to include the types 
             // that implements the interface "IAdapter" in the container and in the devices host 
 
+            // Адаптеры
+
             var devicesHost = this.Resolver.Resolve<IDevicesHost>();
             var eventWaiter = this.Resolver.Resolve<IEventWaiter>();
             var adapterTypes = typeResolver.GetTypesByInterface<IAdapter>();
@@ -137,14 +145,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
             var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
 
-            hostLoader.RegisterTrigger("Adapter Registration", () => 
+            hostLoader.RegisterTrigger("Adapters registration", () => 
             {
                 foreach (var adapterType in adapterTypes)
                 {
                     this.Container.Register(adapterType, adapterType, ServiceLifetime.Transient);
                     devicesHost.Register(adapterType);
 
-                    if (eventWaiter.Wait<AdapterWorker>(out AdapterWorker adapterWorker, adapterRegistrationTimeout))
+                    if (eventWaiter.Wait<AdapterWorker>(out var adapterWorker, adapterRegistrationTimeout))
                     {
                         if (adapterWorker.State == DeviceState.Failure)
                         {
@@ -170,7 +178,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
             // Start AutoTasks
 
-            hostLoader.RegisterTrigger("Running auto tasks", () =>
+            hostLoader.RegisterTrigger("Auto tasks running", () =>
             {
                 var autoTaskActivator = this.Resolver.Resolve<IAutoTaskActivator>();
                 autoTaskActivator.Run();
@@ -185,9 +193,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         {
             get
             {
-                string codeBase = Assembly.GetAssembly(this.GetType()).CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
+                var codeBase = Assembly.GetAssembly(this.GetType()).CodeBase;
+                var uri = new UriBuilder(codeBase);
+                var path = Uri.UnescapeDataString(uri.Path);
                 return Path.GetDirectoryName(path);
             }
         }

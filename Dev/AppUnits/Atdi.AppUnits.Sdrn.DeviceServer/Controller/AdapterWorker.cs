@@ -4,18 +4,12 @@ using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using System.Reflection;
-using Atdi.Common;
 using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class AdapterWorker : IDevice, IAdapterHost, IDisposable
+    internal class AdapterWorker : IDevice, IAdapterHost, IDisposable
     {
         private readonly Type _adapterType;
         private readonly IAdapterFactory _adapterFactory;
@@ -93,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             this._adapterThread = new Thread(this.Process)
             {
-                Name = $"Adapter.[{this._adapterType.Namespace}].{this._adapterType.Name}",
+                Name = $"ATDI.DeviceServer.Adapter.[{this._adapterType.Namespace}].{this._adapterType.Name}",
                 Priority = ThreadPriority.Highest
             };
 
@@ -251,7 +245,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 throw new InvalidOperationException("The command handler was previously registered");
             }
 
-            var handler = new CommandHandler(commandHandler.Method, commandType, typeof(TResult));
+            var handler = new CommandHandler(commandHandler.Method, commandType, typeof(TResult), _statistics);
             this._commandHandlers.Add(commandType, handler);
 
             var typeLock = new CommandLock();
@@ -295,6 +289,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.InvokingAdapterCommand.With(command.Id)))
                 {
+                    handler.StartedCounter?.Increment();
+                    handler.RunningCounter?.Increment();
+
                     handler.Invoker(this._adapterObject, command, executionContext);
                 }
             }
@@ -376,7 +373,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             var command = descriptor.Command;
             this._resultsHost.ReleaseBuffer(resultBuffer);
-            this._executingCommands.TryRemove(command.Id, out ExecutionContext context);
+            this._executingCommands.TryRemove(command.Id, out var context);
+
+            var handler = this._commandHandlers[descriptor.CommandType];
+            handler.RunningCounter?.Decrement();
+            if (command.State == CommandState.Done)
+            {
+                handler.CompletedCounter?.Increment();
+            }
+            else if (command.State == CommandState.Cancelled)
+            {
+                handler.CanceledCounter?.Increment();
+            }
+            else if (command.State == CommandState.Aborted)
+            {
+                handler.AbortedCounter?.Increment();
+            }
             _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.FinalizedCommand.With(_adapterType, command.Type, command.ParameterType));
         }
 

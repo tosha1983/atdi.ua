@@ -1,35 +1,56 @@
 ﻿using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class CommandHandler
+    internal class CommandHandler
     {
-        public CommandHandler(MethodInfo method, Type commandType, Type resultType)
+        private readonly IStatistics _statistics;
+
+        public CommandHandler(MethodInfo method, Type commandType, Type resultType, IStatistics statistics)
         {
+            _statistics = statistics;
             this.CommandType = commandType;
             this.ResultType = resultType;
             this.Invoker = CreateInvoker(method);
+
+            if (this._statistics != null)
+            {
+                var context = string.Intern($"{commandType.Name}({resultType.Name})");
+                this.StartedCounter = _statistics.Counter(Monitoring.DefineAdapterCommandCounter(context, "Started"));
+                this.RunningCounter = _statistics.Counter(Monitoring.DefineAdapterCommandCounter(context, "Running"));
+                this.CompletedCounter = _statistics.Counter(Monitoring.DefineAdapterCommandCounter(context, "Completed"));
+                this.CanceledCounter = _statistics.Counter(Monitoring.DefineAdapterCommandCounter(context, "Canceled"));
+                this.AbortedCounter = _statistics.Counter(Monitoring.DefineAdapterCommandCounter(context, "Aborted"));
+            }
+
         }
 
-        public Action<IAdapter, ICommand, IExecutionContext> Invoker { get; private set; }
-        public Type ResultType { get; private set; }
-        public Type CommandType { get; private set; }
+        public IStatisticCounter AbortedCounter { get;  }
 
-        static Action<IAdapter, ICommand, IExecutionContext> CreateInvoker(MethodInfo method)
+        public IStatisticCounter CanceledCounter { get; }
+
+        public IStatisticCounter CompletedCounter { get; }
+
+        public IStatisticCounter RunningCounter { get; }
+
+        public IStatisticCounter StartedCounter { get; }
+
+        public Action<IAdapter, ICommand, IExecutionContext> Invoker { get; }
+        private Type ResultType { get; }
+        private Type CommandType { get; }
+
+        private static Action<IAdapter, ICommand, IExecutionContext> CreateInvoker(MethodInfo method)
         {
             var targetArg = Expression.Parameter(typeof(IAdapter));
             var commandParam = Expression.Parameter(typeof(ICommand));
             var contextParam = Expression.Parameter(typeof(IExecutionContext));
 
-            var instance = Expression.Convert(targetArg, method.DeclaringType);
+            var instance = Expression.Convert(targetArg, method.DeclaringType ?? throw new InvalidOperationException());
 
             var methodParams = method.GetParameters();
             if (methodParams.Length != 2)
