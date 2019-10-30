@@ -25,6 +25,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         private readonly IQueryExecutor _queryExecutor;
         private readonly IDataLayer<IcsmDataOrm> _dataLayer;
         private string _tableName { get; set; }
+        private const int CountInParams = 100;
 
 
 
@@ -38,14 +39,37 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         }
 
 
-
-        public bool Copy(DataConfig dataConfig, string icsTelecomEwxFile, ILogger logger)
+        public static List<Station[]> BreakDown(Station[] elements)
         {
-            bool isSuccessCopyStations = false;
+            var arrIntEmitting = new List<Station[]>();
+            var listIntEmitting = new List<Station>();
+            int cnt = 1;
+            for (int i = 0; i < elements.Length; i++)
+            {
+                listIntEmitting.Add(elements[i]);
+                if (cnt >= CountInParams)
+                {
+                    arrIntEmitting.Add(listIntEmitting.ToArray());
+                    listIntEmitting.Clear();
+                    cnt = 0;
+                }
+                ++cnt;
+            }
+            if ((listIntEmitting != null) && (listIntEmitting.Count > 0))
+            {
+                arrIntEmitting.Add(listIntEmitting.ToArray());
+            }
+            return arrIntEmitting;
+        }
+
+
+
+        public EwxData[] Copy(DataConfig dataConfig, string icsTelecomEwxFile, ILogger logger)
+        {
             var stationIds = new List<int>();
             var dicStationNames = new Dictionary<string, int>();
-            var ewxFile = new EwxData();
-            ewxFile.Header = new Header();
+            var lstewxFiles = new List<EwxData>();
+            bool isSuccessCopyStations = false;
             var lstStations = new List<Station>();
             try
             {
@@ -100,6 +124,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                      stationIds.Add(id);
 
                      var station = new Station();
+
+                     station.Id = id;
 
                      station.Address = reader.GetNullableValueAsString(typeof(string), reader.GetOrdinal("Position.ADDRESS"));
                      var Altitude = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("Position.ASL"));
@@ -227,31 +253,61 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                      {
                          station.U_cx1 = U_cx1.Value;
                      }
-                     lstStations.Add(station);
+
+
+                     lstStations.Add(new Station()
+                     {
+                         Address = station.Address,
+                         Altitude = station.Altitude,
+                         Azimuth = station.Azimuth,
+                         Bandwidth = station.Bandwidth,
+                         BandwidthRx = station.BandwidthRx,
+                         CallSign = station.CallSign,
+                         Category = station.Category,
+                         CoordX = station.CoordX,
+                         CoordY = station.CoordY,
+                         DiagH = station.DiagH,
+                         DiagV = station.DiagV,
+                         D_cx1 = station.D_cx1,
+                         FKTB = station.FKTB,
+                         Frequency = station.Frequency,
+                         Gain = station.Gain,
+                         GainRx = station.GainRx,
+                         HAntenna = station.HAntenna,
+                         Info1 = station.Info1,
+                         Losses = station.Losses,
+                         LossesRx = station.LossesRx,
+                         NetId = station.NetId,
+                         NominalPower = station.NominalPower,
+                         Polar = station.Polar,
+                         PolarRx = station.PolarRx,
+                         Tilt = station.Tilt,
+                         TypeCoord = station.TypeCoord,
+                         U_cx1 = station.U_cx1
+                     }
+                     );
+
 
                      res = true;
                  }
                  return res;
              });
 
-
-                ewxFile.Header.CountStation = lstStations.Count;
-                ewxFile.Stations = lstStations.ToArray();
-
-                var ewxFileCheck = icsTelecomEwxFile;
-                if (File.Exists(ewxFileCheck))
+                var elments = BreakDown(lstStations.ToArray());
+                for (int l = 0; l < elments.Count; l++)
                 {
-                    File.Delete(ewxFileCheck);
+                    var ewxFile = new EwxData();
+                    ewxFile.Header = new Header();
+                    ewxFile.Header.CountStation = elments[l].Length;
+                    ewxFile.Stations = elments[l].ToArray();
+                    lstewxFiles.Add(ewxFile);
                 }
-
-                var createFileEwx = new CreateFileEwx(logger);
-                isSuccessCopyStations = createFileEwx.CreateFile(ewxFileCheck, ewxFile, this._tableName);
             }
             catch (Exception e)
             {
                 logger.Exception(Contexts.CalcCoverages, e);
             }
-            return isSuccessCopyStations;
+            return lstewxFiles.ToArray();
         }
     }
 }

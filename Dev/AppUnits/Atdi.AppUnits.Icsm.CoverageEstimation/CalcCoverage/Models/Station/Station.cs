@@ -7,6 +7,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
 {
     public class Station
     {
+        public long Id { get; set; }
         public string CallSign { get; set; }
         public string Address { get; set; }
         public string TypeCoord { get; set; }

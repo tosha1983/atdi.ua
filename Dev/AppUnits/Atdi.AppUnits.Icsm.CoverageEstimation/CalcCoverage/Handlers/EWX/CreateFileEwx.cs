@@ -10,6 +10,7 @@ using System.Text;
 using System.IO;
 using Atdi.Platform.Logging;
 using Atdi.AppUnits.Icsm.CoverageEstimation.Models;
+using Atdi.Common;
 
 
 namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
@@ -22,7 +23,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             this._logger = logger;
         }
 
-        public bool CreateFile(string Path, EwxData ewx, string tabelName)
+        public bool CreateFile(string Path, EwxData ewx)
         {
             bool isSuccessCreateEwxFile = false;
             try
@@ -43,7 +44,27 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                 for (int i = 0; i < ewx.Stations.Length; i++)
                 {
+                    var id = ewx.Stations[i].Id;
                     var bts = ewx.Stations[i];
+                    string diagHNameTag = null;
+                    string diagVNameTag = null;
+                    var diagH = bts.DiagH;
+                    var diagV = bts.DiagV;
+
+                    try
+                    {
+                        if ((CheckDiagH(ref diagH, out diagHNameTag) == false) || (CheckDiagV(ref diagV, out diagVNameTag) == false))
+                        {
+                            this._logger.Info(Contexts.CalcCoverages, (EventText)$"Reject station Id = '{id}'");
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        this._logger.Exception(Contexts.CalcCoverages, (EventCategory)$"Reject station Id = '{id}'", ex);
+                        continue;
+                    }
+
                     writer.WriteStartElement("STATION");
                     writer.WriteStartElement("RECORD");
                     writer.WriteElementString("TYPE_COORD", bts.TypeCoord == null ? "162DEC" : bts.TypeCoord);
@@ -68,20 +89,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     writer.WriteElementString("NETID", Convert.ToString(bts.NetId));
                     writer.WriteElementString("POLAR", bts.Polar);
                     writer.WriteElementString("POLARRX", bts.PolarRx);
-                    var diagH = bts.DiagH;
-                    var diagV = bts.DiagV;
-                    string diagHNameTag = null;
-                    string diagVNameTag = null;
-
-                    if (CheckDiagH(ref diagH, out diagHNameTag))
-                    {
-                        writer.WriteElementString(diagHNameTag, diagH);
-                    }
-                    if (CheckDiagV(ref diagV, out diagVNameTag))
-                    {
-                        writer.WriteElementString(diagVNameTag, diagV);
-                    }
-
+                    writer.WriteElementString(diagHNameTag, diagH);
+                    writer.WriteElementString(diagVNameTag, diagV);
                     writer.WriteElementString("D_cx1", Convert.ToString(bts.D_cx1));
                     writer.WriteElementString("U_cx1", Convert.ToString(bts.U_cx1));
                     writer.WriteElementString("Downlink_cx", "1");
@@ -90,16 +99,17 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     writer.WriteElementString("FKTB", Convert.ToString(KTBF));
                     writer.WriteEndElement();
                     writer.WriteEndElement();
+
+
                 }
                 writer.WriteEndElement();
                 writer.Close();
                 isSuccessCreateEwxFile = true;
-
                 this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveEWXFileCompleted.ToString(), Path));
             }
             catch (Exception e)
             {
-                this._logger.Exception(Contexts.CalcCoverages, e);
+               this._logger.Exception(Contexts.CalcCoverages, e);
             }
             return isSuccessCreateEwxFile;
         }
@@ -114,12 +124,25 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 NameTag = "WiencodeH";
                 return true;
             }
-            else if (diagH.Contains("VECTOR"))
+            else if (diagH.Contains("VECTOR 10"))
             {
                 diagH = diagH.Replace("VECTOR 10", "").Replace(",",".");
                 var array = ParseStringToArray(diagH);
                 var arrayPolarH = InterpolationForICSTelecomHorizontal(array);
                 diagH = GetFormatArray(arrayPolarH);
+                NameTag = "DIAG_H";
+                return true;
+            }
+            else if (diagH.Contains("VECTOR 5"))
+            {
+                diagH = diagH.Replace("VECTOR 5", "").Replace(",", ".");
+                var array = ParseStringToArray(diagH);
+                if (array.Length==72)
+                {
+                    diagH = GetFormatArray(array);
+                }
+                //var arrayPolarH = InterpolationForICSTelecomHorizontal(array);
+                //diagH = GetFormatArray(arrayPolarH);
                 NameTag = "DIAG_H";
                 return true;
             }
@@ -162,7 +185,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 NameTag = "WiencodeV";
                 return true;
             }
-            if (diagV.Contains("VECTOR"))
+            if (diagV.Contains("VECTOR 10"))
             {
                 diagV = diagV.Replace("VECTOR 10", "").Replace(",", ".");
                 var array = ParseStringToArray(diagV);
@@ -170,6 +193,16 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 diagV = GetFormatArray(arrayPolarV);
                 NameTag = "DIAG_V";
                 return true;
+            }
+            else if (diagV.Contains("VECTOR 5"))
+            {
+                //diagV = diagV.Replace("VECTOR 5", "").Replace(",", ".");
+                //var array = ParseStringToArray(diagV);
+                NameTag = "DIAG_V";
+                throw new InvalidOperationException($"DiagV value = '{diagV}' not support");
+                //var arrayPolarV = InterpolationForICSTelecomVertical(array);
+                //diagV = GetFormatArray(arrayPolarV);
+                //return true;
             }
             else if (diagV.Contains("POINTS"))
             {
@@ -236,8 +269,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     for (int i = 0, j = 1; (i < inArr.Length - 1 && j < inArr.Length); i = i + 2, j = j + 2)
                     {
                         var pointObject = new PointObject();
-                        pointObject.Azimuth = Convert.ToDouble(inArr[i]);
-                        pointObject.Value = Convert.ToDouble(inArr[j]);
+                        pointObject.Azimuth = inArr[i].ConvertStringToDouble().Value;
+                        pointObject.Value = inArr[j].ConvertStringToDouble().Value;
+                        //pointObject.Azimuth = Convert.ToDouble(inArr[i]);
+                        //pointObject.Value = Convert.ToDouble(inArr[j]);
                         pointObjects[idx] = pointObject;
                         idx++;
                     }
@@ -263,8 +298,10 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     for (int i = 0, j = 1; (i < inArr.Length - 1 && j < inArr.Length); i = i + 2, j = j + 2)
                     {
                         var pointObject = new PointObject();
-                        pointObject.Azimuth = Convert.ToDouble(inArr[i]);
-                        pointObject.Value = Convert.ToDouble(inArr[j]);
+                        pointObject.Azimuth = inArr[i].ConvertStringToDouble().Value;
+                        pointObject.Value = inArr[j].ConvertStringToDouble().Value;
+                        //pointObject.Azimuth = Convert.ToDouble(inArr[i]);
+                        //pointObject.Value = Convert.ToDouble(inArr[j]);
                         if (pointObject.Value > 0)
                         {
                             isChecked = true;
@@ -290,7 +327,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 inArrDouble = new double[inArr.Length];
                 for (int i = 0; i < inArr.Length; i++)
                 {
-                    inArrDouble[i] = Convert.ToDouble(inArr[i]);
+                    //inArrDouble[i] = Convert.ToDouble(inArr[i]);
+                    inArrDouble[i] = inArr[i].ConvertStringToDouble().Value;
                 }
             }
             return inArrDouble;

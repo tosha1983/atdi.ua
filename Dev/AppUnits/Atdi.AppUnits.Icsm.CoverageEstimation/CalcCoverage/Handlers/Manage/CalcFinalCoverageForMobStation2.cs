@@ -97,15 +97,15 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             //получить директорию текущего проекта ICS Telecom
                             var ICSTelecomProjectDir = Path.GetDirectoryName(provincesConfig.ICSTelecomProjectFile);
                             //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                            gdalCalc.ClearTempFiles(loadConfig);
+                            //gdalCalc.ClearTempFiles(loadConfig);
                             //удаление файлов TIF, TFW с директории проекта ICS Telecom (ICSTelecomProjectDir)
                             var ICSTelecomEwxFileDir = Path.GetDirectoryName(provincesConfig.NameEwxFile);
                             gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                            
+
 
                             // формирование объекта Condition для отправки запроса в WebQuery
                             var condition = new CreateConditionForMobStation2(codeOperatorAndStatusesConfig, provincesConfig.Name, this._logger);
-                            var freqConfigValues = codeOperatorAndStatusesConfig.FreqConfig.Values==null ? "" : codeOperatorAndStatusesConfig.FreqConfig.Values;
+                            var freqConfigValues = codeOperatorAndStatusesConfig.FreqConfig.Values == null ? "" : codeOperatorAndStatusesConfig.FreqConfig.Values;
 
 
                             var operationCreateEwx = new CurrentOperation()
@@ -116,7 +116,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 Status = false
                             };
 
-                            if (this._checkOperation.isNotNullFailedOperation()!=null)
+                            if (this._checkOperation.isNotNullFailedOperation() != null)
                             {
                                 if (this._checkOperation.isFindOperation(operationCreateEwx) == false)
                                 {
@@ -132,77 +132,120 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                             var nameEwxFile = provincesConfig.NameEwxFile;
                             var copyStationsToEwxFile = new CopyMobStationToEwxFile(condition.GetCondition(), TableNameStations, this._dataLayer, this._logger);
-                            var isSuccessCopyStations = copyStationsToEwxFile.Copy(loadConfig, nameEwxFile, this._logger);
-                            if (isSuccessCopyStations == false)
+                            var ewx = copyStationsToEwxFile.Copy(loadConfig, nameEwxFile, this._logger);
+                            if (ewx.Length == 0)
                             {
-                                throw new InvalidOperationException(string.Format(Exceptions.ErrorCopyStationsIntoEwxFile2, freqConfigValues));
+                                this._logger.Error(Contexts.CalcCoverages, string.Format(Exceptions.ErrorCopyStationsIntoEwxFile2, freqConfigValues, provincesConfig.Name));
+                                //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
+                                gdalCalc.ClearTempFiles(loadConfig);
+                                //удаление файлов TIF, TFW с директории проекта ICS Telecom ()
+                                gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                this._checkOperation.DeleteProtocolFile();
                             }
                             else
                             {
-                                // цикл по списку команд конфигурационного файла
-                                for (int i = 0; i < loadConfig.DirectoryConfig.CommandsConfig.CommandsConfigs.Length; i++)
+                                var tempEwxFilesDirectory = dataConfig.DirectoryConfig.TempEwxFilesDirectory;
+                                var filesOuttempEwxFilesDirectory = Directory.GetFiles(tempEwxFilesDirectory);
+                                if (filesOuttempEwxFilesDirectory.Length == 0)
                                 {
-                                    // Получить данные по очередной команде
-                                    var commandConfig = loadConfig.DirectoryConfig.CommandsConfig.CommandsConfigs[i];
-                                    // переменная для хранения аргументоа комманды
-                                    var stringBuilder = new List<string>();
-                                    // первый аргумент - всегда имя проекта ICS Telecom
-                                    stringBuilder.Add(" " + provincesConfig.ICSTelecomProjectFile);
-                                    for (int j = 0; j < commandConfig.ArgumentsConfig.ArgumentsConfigs.Length; j++)
+                                    for (int h = 0; h < ewx.Length; h++)
                                     {
-                                        // получение очередного аргумента комманды
-                                        var argumentsConfig = commandConfig.ArgumentsConfig.ArgumentsConfigs[j];
-                                        stringBuilder.Add(argumentsConfig.Value);
+                                        var createFileEwx = new CreateFileEwx(this._logger);
+                                        createFileEwx.CreateFile(tempEwxFilesDirectory + $"\\Ewx_{h}.ewx", ewx[h]);
                                     }
-                                    // Запись перечня аргументов в processStartInfo для последующего вызова
-                                    var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                                    processStartInfo.Arguments = string.Join(" ", stringBuilder);
-                                    processStartInfo.FileName = loadConfig.DirectoryConfig.BinICSTelecomDirectory + @"\" + commandConfig.NameFile;
-                                    processStartInfo.UseShellExecute = false;
-                                    processStartInfo.CreateNoWindow = true;
-                                    processStartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                                    // Запуск процесса со списком сформированных раннее аргументов комманды
+                                }
 
-                                    var value = System.Diagnostics.Process.Start(processStartInfo);
-                                    // запуск процедуры подмены функции WinAPI BitBlt на "пустышку" 
-                                    var processName = System.IO.Path.GetFileNameWithoutExtension(processStartInfo.FileName);
-                                    var processICSTelecom = System.Diagnostics.Process.GetProcessesByName(processName);
-                                    if ((processICSTelecom != null) && (processICSTelecom.Length > 0))
+                                filesOuttempEwxFilesDirectory = Directory.GetFiles(tempEwxFilesDirectory);
+                                if (filesOuttempEwxFilesDirectory.Length > 0)
+                                {
+
+                                    for (int h = 0; h < filesOuttempEwxFilesDirectory.Length; h++)
                                     {
-                                        if (!string.IsNullOrEmpty(this._appServerComponentConfig.HookBitBltWinAPIFunctionInjectDll))
+                                        if (File.Exists(nameEwxFile))
                                         {
-                                            Injector.Inject(processICSTelecom[0].Id, this._appServerComponentConfig.HookBitBltWinAPIFunctionInjectDll);
+                                            File.Delete(nameEwxFile);
+                                        }
+
+                                        if (File.Exists(filesOuttempEwxFilesDirectory[h]))
+                                        {
+                                            File.Copy(filesOuttempEwxFilesDirectory[h], nameEwxFile);
+                                        }
+
+
+                                        // цикл по списку команд конфигурационного файла
+                                        for (int i = 0; i < loadConfig.DirectoryConfig.CommandsConfig.CommandsConfigs.Length; i++)
+                                        {
+                                            // Получить данные по очередной команде
+                                            var commandConfig = loadConfig.DirectoryConfig.CommandsConfig.CommandsConfigs[i];
+                                            // переменная для хранения аргументоа комманды
+                                            var stringBuilder = new List<string>();
+                                            // первый аргумент - всегда имя проекта ICS Telecom
+                                            stringBuilder.Add(" " + provincesConfig.ICSTelecomProjectFile);
+                                            for (int j = 0; j < commandConfig.ArgumentsConfig.ArgumentsConfigs.Length; j++)
+                                            {
+                                                // получение очередного аргумента комманды
+                                                var argumentsConfig = commandConfig.ArgumentsConfig.ArgumentsConfigs[j];
+                                                stringBuilder.Add(argumentsConfig.Value);
+                                            }
+                                            // Запись перечня аргументов в processStartInfo для последующего вызова
+                                            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                                            processStartInfo.Arguments = string.Join(" ", stringBuilder);
+                                            processStartInfo.FileName = loadConfig.DirectoryConfig.BinICSTelecomDirectory + @"\" + commandConfig.NameFile;
+                                            processStartInfo.UseShellExecute = false;
+                                            processStartInfo.CreateNoWindow = true;
+                                            processStartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                                            // Запуск процесса со списком сформированных раннее аргументов комманды
+
+                                            var value = System.Diagnostics.Process.Start(processStartInfo);
+                                            // запуск процедуры подмены функции WinAPI BitBlt на "пустышку" 
+                                            var processName = System.IO.Path.GetFileNameWithoutExtension(processStartInfo.FileName);
+                                            var processICSTelecom = System.Diagnostics.Process.GetProcessesByName(processName);
+                                            if ((processICSTelecom != null) && (processICSTelecom.Length > 0))
+                                            {
+                                                if (!string.IsNullOrEmpty(this._appServerComponentConfig.HookBitBltWinAPIFunctionInjectDll))
+                                                {
+                                                    Injector.Inject(processICSTelecom[0].Id, this._appServerComponentConfig.HookBitBltWinAPIFunctionInjectDll);
+                                                }
+                                            }
+                                            // ожидаем завершения работы процесса ICS Telecom
+                                            value.WaitForExit();
+                                        }
+
+
+
+                                        // проверка протокола
+                                        var operationCreateTempTifFiles = new CurrentOperation()
+                                        {
+                                            CurrICSTelecomProjectDir = ICSTelecomEwxFileDir,
+                                            Operation = Operation.CreateTempTifFiles,
+                                            Freqs = freqConfigValues,
+                                            NameProvince = provincesConfig.Name,
+                                            Status = false
+                                        };
+                                        // запись параметров текущей операции в отдельный файл
+                                        this._checkOperation.Save(operationCreateTempTifFiles);
+
+                                        //Подготовка временных графических файлов (TIF), которые представляют собой результат операции объединения содержимого файла бланка и отдельно взятого файла покрытия,
+                                        // который был получен на этапе обработки ICS Telecom
+                                        // Полученные графические файлы записываются во временную директорию dataConfig.DirectoryConfig.TempTIFFFilesDirectory
+                                        //var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                        //var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+                                        var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile, filesOuttempEwxFilesDirectory[h]);
+                                        if (isSuccessCreateTempFiles == false)
+                                        {
+                                            throw new InvalidOperationException(string.Format(Exceptions.OccurredWhilePreparingTemporaryImageTIF2, freqConfigValues));
+                                        }
+
+
+                                        //удаление файлов TIF, TFW с директории проекта ICS Telecom ()
+                                        gdalCalc.ClearResultFilesICSTelecomProject(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
+
+                                        if (File.Exists(filesOuttempEwxFilesDirectory[h]))
+                                        {
+                                            File.Delete(filesOuttempEwxFilesDirectory[h]);
                                         }
                                     }
-                                    // ожидаем завершения работы процесса ICS Telecom
-                                    value.WaitForExit();
                                 }
-
-
-
-                                // проверка протокола
-                                var operationCreateTempTifFiles = new CurrentOperation()
-                                {
-                                    CurrICSTelecomProjectDir = ICSTelecomEwxFileDir,
-                                    Operation = Operation.CreateTempTifFiles,
-                                    Freqs = freqConfigValues,
-                                    NameProvince = provincesConfig.Name,
-                                    Status = false
-                                };
-                                // запись параметров текущей операции в отдельный файл
-                                this._checkOperation.Save(operationCreateTempTifFiles);
-
-                                //Подготовка временных графических файлов (TIF), которые представляют собой результат операции объединения содержимого файла бланка и отдельно взятого файла покрытия,
-                                // который был получен на этапе обработки ICS Telecom
-                                // Полученные графические файлы записываются во временную директорию dataConfig.DirectoryConfig.TempTIFFFilesDirectory
-                                //var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                                //var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile);
-                                var isSuccessCreateTempFiles = gdalCalc.StartProcessConcatBlankWithStation(loadConfig, ICSTelecomEwxFileDir, provincesConfig.BlankTIFFFile, nameEwxFile);
-                                if (isSuccessCreateTempFiles == false)
-                                {
-                                    throw new InvalidOperationException(string.Format(Exceptions.OccurredWhilePreparingTemporaryImageTIF2, freqConfigValues));
-                                }
-
 
 
                                 // проверка протокола
@@ -220,7 +263,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 // На основании сформрованных на предыдщум шаге граческих файлах, формируем один итоговый файл, представляющий собой результат расчета суммарного покрытия 
                                 // Результирующее покрытие записывается в директорию provincesConfig.OutTIFFFilesDirectory 
                                 var nameProvince = provincesConfig.Name.Replace(",", "_").Replace(".", "_");
-                                var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + freqConfigValues + "_"+ Transliteration.TransliteSpecial(nameProvince) + ".TIF";
+                                if (nameProvince.Length > 100) nameProvince = nameProvince.Substring(0, 99);
+                                var finalCoverageTIFFile = provincesConfig.OutTIFFFilesDirectory + freqConfigValues + "_" + Transliteration.TransliteSpecial(nameProvince) + ".TIF";
                                 var tempPathfinalCoverageTIFFile = System.IO.Path.GetTempPath() + freqConfigValues + "_" + Transliteration.TransliteSpecial(nameProvince) + ".TIF";
                                 var isSuccessCreateOutCoverageFile = gdalCalc.Run(loadConfig, System.IO.Path.GetTempPath(), freqConfigValues + "_" + Transliteration.TransliteSpecial(nameProvince) + ".TIF", provincesConfig.BlankTIFFFile);
                                 if (isSuccessCreateOutCoverageFile == false)

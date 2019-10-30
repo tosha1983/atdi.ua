@@ -57,8 +57,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
         public static readonly string CountBlock_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigEqualZero = "Count blocks CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig equal zero";
         public static readonly string Block_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigIsNull = "Block CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig is null";
         public static readonly string ICSTelecomProjectFileIsNullOrEmpty = "Project file name of ICS Telecom is null or empty";
-        public static readonly string ErrorCopyStationsIntoEwxFile = "An error occurred while copying stations to the EWX file (for Radiotech = '{0}')";
-        public static readonly string ErrorCopyStationsIntoEwxFile2 = "An error occurred while copying stations to the EWX file (for FreqConfig = '{0}')";
+        public static readonly string ErrorCopyStationsIntoEwxFile = "An error occurred while copying stations to the EWX file (for Radiotech = '{0}' and Province = '{1}') ";
+        public static readonly string ErrorCopyStationsIntoEwxFile2 = "An error occurred while copying stations to the EWX file (for FreqConfig = '{0}' and Province = '{1}'))";
         public static readonly string Block_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigIsNull = "Block CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig is null";
         public static readonly string CountBlock_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigEqualZero = "Count blocks CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig equal zero";
 
