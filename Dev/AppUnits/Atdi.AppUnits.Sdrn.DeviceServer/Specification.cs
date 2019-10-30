@@ -51,6 +51,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
         {
             return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Results.Workers.{context}.{key}"));
         }
+
+        public static readonly IStatisticCounterKey WorkSchedulerStartedKey = STS.DefineCounterKey("SDRN.DeviceServer.WorkScheduler.Started");
+        public static readonly IStatisticCounterKey WorkSchedulerRunningKey = STS.DefineCounterKey("SDRN.DeviceServer.WorkScheduler.Running");
+        public static readonly IStatisticCounterKey WorkSchedulerFinishedKey = STS.DefineCounterKey("SDRN.DeviceServer.WorkScheduler.Finished");
+
+        public static readonly IStatisticCounterKey ProcessingStartedKey = STS.DefineCounterKey("SDRN.DeviceServer.Processing.Started");
+        public static readonly IStatisticCounterKey ProcessingRunningKey = STS.DefineCounterKey("SDRN.DeviceServer.Processing.Running");
+        public static readonly IStatisticCounterKey ProcessingFinishedKey = STS.DefineCounterKey("SDRN.DeviceServer.Processing.Finished");
     }
 
     internal static class Contexts
