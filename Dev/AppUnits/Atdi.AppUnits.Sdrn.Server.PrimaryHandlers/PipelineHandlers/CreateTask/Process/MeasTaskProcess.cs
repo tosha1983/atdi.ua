@@ -118,7 +118,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                     {
                                         if (measTask.MeasSubTasks != null)
                                         {
-                                            measTask.MeasSubTasks = null;
+                                            for (int z=0; z< measTask.MeasSubTasks.Length; z++)
+                                            {
+                                                if (measTask.MeasSubTasks[z]!=null)
+                                                {
+                                                    if (measTask.MeasSubTasks[z].Id != null)
+                                                    {
+                                                        measTask.MeasSubTasks[z].Id = new MeasTaskIdentifier();
+                                                    }
+                                                }
+                                            }
                                             measTask.Id = new MeasTaskIdentifier();
                                         }
                                         if (measTask.MeasSubTasks == null)

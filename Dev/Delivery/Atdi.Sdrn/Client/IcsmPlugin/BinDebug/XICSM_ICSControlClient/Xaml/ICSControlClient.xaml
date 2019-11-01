@@ -675,7 +675,7 @@
                                         <RowDefinition Height="*"></RowDefinition>
                                     </Grid.RowDefinitions>
                                   
-                                    <Grid Grid.Column="0" Grid.Row="0" DataContext="{Binding CurrentMeasurementResults}">
+                                    <Grid Grid.Column="0" Grid.Row="0" DataContext="{Binding CurrentMeasurementResult}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="110" />
                                             <ColumnDefinition Width="*" />
