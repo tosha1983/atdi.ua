@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{177D0BDE-4141-47A5-8418-CF578106DBAA}</ProjectGuid>
+    <ProjectGuid>{4724252C-4ABA-4CAA-8C42-82D10CF09AAB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.WebQuery.Console</RootNamespace>
-    <AssemblyName>Atdi.Test.WebQuery.Console</AssemblyName>
+    <RootNamespace>Atdi.AppServer.WebQuery.Console.AK</RootNamespace>
+    <AssemblyName>Atdi.AppServer.WebQuery.Console.AK</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,13 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>Atdi.Test.WebQuery.Program</StartupObject>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,31 +45,18 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleUsingWebQuery.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Identity\Atdi.Contracts.WcfServices.Identity.csproj">
-      <Project>{cae762ce-a933-426c-9e31-656eb66a0f9a}</Project>
-      <Name>Atdi.Contracts.WcfServices.Identity</Name>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.WebQuery\Atdi.Contracts.WcfServices.WebQuery.csproj">
-      <Project>{773a95ce-0a1c-4629-849d-23f65d6c59e4}</Project>
-      <Name>Atdi.Contracts.WcfServices.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Identity\Atdi.DataModels.Identity.csproj">
-      <Project>{b0a9f81c-cf24-4899-a069-cbf63c4483e6}</Project>
-      <Name>Atdi.DataModels.Identity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
-      <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
-      <Name>Atdi.DataModels.WebQuery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
-      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
-      <Name>Atdi.DataModels</Name>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

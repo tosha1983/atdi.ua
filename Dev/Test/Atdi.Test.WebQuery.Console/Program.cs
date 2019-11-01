@@ -32,7 +32,9 @@ namespace Atdi.Test.WebQuery
                 _count = new BlockingCollection<int>();
                 var timer = System.Diagnostics.Stopwatch.StartNew();
 
-                TestWebQuerySaveChanges("TcpAuthenticationManager", "TcpWebQuery");
+                //TestWebQuerySaveChanges("TcpAuthenticationManager", "TcpWebQuery");
+
+                TestFileStorage("TcpAuthenticationManager", "TcpFileStorage");
 
                 //var tasks = new Task[]
                 //{
@@ -107,6 +109,12 @@ namespace Atdi.Test.WebQuery
         static IWebQuery GetWebQueryByEndpoint(string endpointName)
         {
             var f = new ChannelFactory<IWebQuery>(endpointName);
+            return f.CreateChannel();
+        }
+
+        static IFileStorage GetFileStorageByEndpoint(string endpointName)
+        {
+            var f = new ChannelFactory<IFileStorage>(endpointName);
             return f.CreateChannel();
         }
 
@@ -269,6 +277,39 @@ namespace Atdi.Test.WebQuery
             
 
             
+        }
+
+        static void TestFileStorage(string authEndpointName, string fileStorageEndpointName)
+        {
+            var authManager = GetAuthenticationManagerByEndpoint(authEndpointName);
+            var userCredential = new UserCredential()
+            {
+                UserName = "Andrey",
+                Password = ""
+            };
+
+            var authResult = authManager.AuthenticateUser(userCredential);
+            if (authResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                Console.WriteLine(authResult.FaultCause);
+                return;
+            }
+
+            var userIdentity = authResult.Data;
+
+            var endpoint = GetFileStorageByEndpoint(fileStorageEndpointName);
+            var getFileInfoResult = endpoint.GetFileInfo(userIdentity.UserToken, 100);
+            if (getFileInfoResult.State == DataModels.CommonOperation.OperationState.Fault)
+            {
+                Console.WriteLine(getFileInfoResult.FaultCause);
+                return;
+            }
+
+            if (getFileInfoResult.Data.Id != 100)
+            {
+                Console.WriteLine(getFileInfoResult.FaultCause);
+                return;
+            }
         }
 
         static void TestWebQuerySaveChanges(string authEndpointName, string webQueryEndpointName)

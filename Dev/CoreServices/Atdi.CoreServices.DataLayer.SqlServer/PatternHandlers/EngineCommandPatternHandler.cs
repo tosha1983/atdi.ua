@@ -41,6 +41,10 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
                         {
                             result2.Handler(new EngineDataReader(sqlReader, null));
                         }
+                        else if (pattern.Result is EngineExecutionReaderResult<System.Data.IDataReader> result)
+                        {
+                            result.Handler(sqlReader);
+                        }
                     });
                     return;
                 case EngineExecutionResultKind.Custom:

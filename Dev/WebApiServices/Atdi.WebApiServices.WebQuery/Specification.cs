@@ -11,6 +11,7 @@ namespace Atdi.WebApiServices.WebQuery
     {
         public static readonly EventContext WebQueryWebApiServices = "WebQuery Web API Services";
         public static readonly EventContext WebQuery = "WebQuery Web API Service";
+        public static readonly EventContext FileStorage = "FileStorageWebAPI";
     }
 
     static class Categories
@@ -33,6 +34,12 @@ namespace Atdi.WebApiServices.WebQuery
         public static readonly TraceScopeName GetQueryMetadataByCode = "Get query metadata by code";
         public static readonly TraceScopeName ExecuteQuery = "Execute query";
         public static readonly TraceScopeName SaveChanges = "Save changes";
+
+        public static readonly TraceScopeName GetFileInfo = "GetFileInfo";
+        public static readonly TraceScopeName GetFilesInfo = "GetFilesInfo";
+        public static readonly TraceScopeName GetFile = "GetFile";
+        public static readonly TraceScopeName GeFilePart = "GeFilePart";
+        public static readonly TraceScopeName File = "File";
     }
 
     static class Exceptions

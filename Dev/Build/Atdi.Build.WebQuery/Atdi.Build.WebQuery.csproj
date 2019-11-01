@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.FileStorage\Atdi.AppServices.FileStorage.csproj">
+      <Project>{db7e00a8-5c93-4b8f-98cc-42efc1167f1f}</Project>
+      <Name>Atdi.AppServices.FileStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
       <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
       <Name>Atdi.AppServices.WebQuery</Name>

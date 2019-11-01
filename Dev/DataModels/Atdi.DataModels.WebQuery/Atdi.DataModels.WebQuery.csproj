@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="Models\ColumnProperties.cs" />
     <Compile Include="Models\ColumnMetadata.cs" />
+    <Compile Include="Models\FileContent.cs" />
+    <Compile Include="Models\FileInfo.cs" />
     <Compile Include="Models\QueryMetadata.cs" />
     <Compile Include="Models\FetchOptions.cs" />
     <Compile Include="Models\QueryToken.cs" />

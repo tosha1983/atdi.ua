@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D55BD0A1-1610-4135-8516-239EC6E3F1F5}</ProjectGuid>
+    <ProjectGuid>{DB7E00A8-5C93-4B8F-98CC-42EFC1167F1F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.WcfServices.WebQuery</RootNamespace>
-    <AssemblyName>Atdi.WcfServices.WebQuery</AssemblyName>
+    <RootNamespace>Atdi.AppServices.FileStorage</RootNamespace>
+    <AssemblyName>Atdi.AppServices.FileStorage</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +33,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileStorage.cs" />
-    <Compile Include="WebQuery.cs" />
-    <Compile Include="WebQueryComponent.cs" />
+    <Compile Include="Handlers\GetFile.cs" />
+    <Compile Include="Handlers\GetFileInfo.cs" />
+    <Compile Include="Handlers\GetFilesInfo.cs" />
+    <Compile Include="Handlers\GeFilePart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="AppServerComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
@@ -56,13 +58,17 @@
       <Project>{012b0214-ac04-43b0-b87f-a0c1e991ca8f}</Project>
       <Name>Atdi.Contracts.AppServices.WebQuery</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.WebQuery\Atdi.Contracts.WcfServices.WebQuery.csproj">
-      <Project>{773a95ce-0a1c-4629-849d-23f65d6c59e4}</Project>
-      <Name>Atdi.Contracts.WcfServices.WebQuery</Name>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Identity\Atdi.DataModels.Identity.csproj">
-      <Project>{b0a9f81c-cf24-4899-a069-cbf63c4483e6}</Project>
-      <Name>Atdi.DataModels.Identity</Name>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.Identity\Atdi.Contracts.CoreServices.Identity.csproj">
+      <Project>{a63ea00f-5648-42b0-b35a-897998f8850f}</Project>
+      <Name>Atdi.Contracts.CoreServices.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\LegacyServices\Atdi.Contracts.LegacyServices.Icsm\Atdi.Contracts.LegacyServices.Icsm.csproj">
+      <Project>{da81f383-7154-4061-9eac-1f841af9b277}</Project>
+      <Name>Atdi.Contracts.LegacyServices.Icsm</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.WebQuery\Atdi.DataModels.WebQuery.csproj">
       <Project>{ec0f3654-091a-4e1c-a16d-b11ea75a2b02}</Project>
@@ -76,10 +82,13 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Atdi.WcfServices\Atdi.WcfServices.csproj">
-      <Project>{1554f596-9b1c-4e35-8d9a-e9a0232790a5}</Project>
-      <Name>Atdi.WcfServices</Name>
+    <ProjectReference Include="..\Atdi.AppServices\Atdi.AppServices.csproj">
+      <Project>{0eab226d-aa8d-4671-88cf-0f1049560535}</Project>
+      <Name>Atdi.AppServices</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

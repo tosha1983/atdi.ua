@@ -230,7 +230,7 @@ namespace Atdi.WebApiServices.WebQuery.Controllers
                 throw new ArgumentNullException(nameof(options.Changeset));
             }
 
-            using (this.Logger.StartTrace(Contexts.WebQuery, Categories.OperationCall, TraceScopeNames.ExecuteQuery))
+            using (this.Logger.StartTrace(Contexts.WebQuery, Categories.OperationCall, TraceScopeNames.SaveChanges))
             {
                 var changeset = (Changeset)options.Changeset;
                 var resultData = this._webQueryAppServices.SaveChanges(options.UserToken, options.QueryToken, changeset);
