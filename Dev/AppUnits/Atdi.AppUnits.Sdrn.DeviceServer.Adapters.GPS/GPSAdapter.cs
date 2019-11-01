@@ -214,6 +214,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                             this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format($"Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks. Parameter name:  TimeCorrection = {currValueTicks}"));
                                             this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - WinAPITime.GetTimeStamp();
                                         }
+                                        if (gnssWrapper.port.OffsetToAvged==0)
+                                        {
+                                            this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - WinAPITime.GetTimeStamp();
+                                        }
                                     }
                                     else
                                     {
