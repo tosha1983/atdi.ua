@@ -53,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                 var i = 0;
                 while (!tcpListener.Pending())
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     if (i++ > 600)
                     {
                         throw new TimeoutException();
