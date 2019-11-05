@@ -4,9 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
 {
+    internal static class Monitoring
+    {
+        public static IStatisticCounterKey DefineProcessOnlineMeasurementCounter(string context, string key)
+        {
+            return STS.DefineCounterKey(string.Intern($"SDRN.DeviceServer.Processes.OnlineMeasurement.{context}.{key}"));
+        }
+    }
+
     static class Contexts
     {
         public static readonly EventContext ThisComponent = "SDRN.OnlineMeas";

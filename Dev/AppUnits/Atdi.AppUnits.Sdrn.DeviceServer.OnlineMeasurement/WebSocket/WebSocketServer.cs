@@ -47,22 +47,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                 tcpListener = new TcpListener(IPAddress.Any, this._port);
 
                 tcpListener.Start();
-                //while (!_stopped)
-                //{
+
+                // wait client of 1 minute
+                var i = 0;
+                while (!tcpListener.Pending())
+                {
+                    Thread.Sleep(200);
+                    if (i++ > 600)
+                    {
+                        throw new TimeoutException();
+                    }
+                }
+
                 using (var client = tcpListener.AcceptTcpClient())
                 {
-
-
                     var stream = client.GetStream();
 
-                    while (!stream.DataAvailable) ;
-                    while (client.Available < 3) ;
+                    while (!stream.DataAvailable)
+                    {
+                    }
+
+                    while (client.Available < 3)
+                    {
+                    }
 
                     var buffer = new byte[client.Available];
                     var count = stream.Read(buffer, 0, client.Available);
                     var data = Encoding.UTF8.GetString(buffer, 0, count);
 
-                    if (this.TryDecodeHandshake(data, out HandshakeRequest request))
+                    if (this.TryDecodeHandshake(data, out var request))
                     {
                         buffer = BuildHandshakeResponse(request);
                         stream.Write(buffer, 0, buffer.Length);
@@ -73,14 +86,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.WebSocket
                     {
                         buffer = BuildForbiddenResponse();
                         stream.Write(buffer, 0, buffer.Length);
-                            
+                        _pipeline.OnDisconnect(null, DM.SensorOnlineMeasurementStatus.CanceledBySensor, "The client could not go through the handshake phase");
+
                     }
                     if (client.Connected)
                     {
                         client.Close();
                     }
                 }
-                //}
+            }
+            catch (TimeoutException)
+            {
+                _pipeline.OnDisconnect(null, DM.SensorOnlineMeasurementStatus.CanceledBySensor, "Client connection timed out");
             }
             catch (ThreadAbortException)
             {
