@@ -26,14 +26,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private ConfigProcessing _configProcessing;
         private readonly IBusGate _busGate;
         private readonly DM.Sensor _sensor;
+        private readonly IRepository<DM.DeviceCommandResult, string> _repositoryDeviceCommandResult;
 
 
         public GPSWorker(
             ConfigProcessing configProcessing,
             IController controller,
             IBusGate busGate,
+            IRepository<DM.DeviceCommandResult, string> repositoryDeviceCommandResult,
             ITimeService timeService, ILogger logger)
         {
+            this._repositoryDeviceCommandResult = repositoryDeviceCommandResult;
             this._logger = logger;
             this._timeService = timeService;
             this._controller = controller;
@@ -142,8 +145,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         Created = DateTime.Now,
                                         From = DateTime.Now,
                                         To = DateTime.Now
-                                        //From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
-                                        //To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
                                     };
 
                                     sensorLocation[mass.Length] = location;
@@ -157,12 +158,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     deviceCommandResult.Status = StatusTask.A.ToString();
                                     deviceCommandResult.CustNbr1 = 0;
 
-                                    var publisher = this._busGate.CreatePublisher("main");
-                                    publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
-                                    publisher.Dispose();
+                                    this._repositoryDeviceCommandResult.Create(deviceCommandResult);
                                 }
                             }
-
                             _logger.Info(Contexts.GPSWorker, Categories.Processing, $" New coordinates Lon: {context.Process.Lon}, Lat: {context.Process.Lat}, Asl : {context.Process.Asl}");
                         }
                     }
