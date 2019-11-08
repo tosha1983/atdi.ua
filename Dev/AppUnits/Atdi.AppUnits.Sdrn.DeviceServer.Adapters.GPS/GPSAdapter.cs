@@ -152,7 +152,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             try
             {
-                if ((_executionContextGps != null) && (e != null) && (resultMember!=null))
+                if ((_executionContextGps != null) && (e != null) && (resultMember != null))
                 {
                     var data = e.LogString;
                     if (data != null)
@@ -163,10 +163,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                         }
                         if (!data.StartsWith("$"))
                         {
-                            data = data.Insert(0,"$");
+                            data = data.Insert(0, "$");
                         }
 
-                        
+
                         var result = NMEAParser.Parse(data);
                         if (result != null)
                         {
@@ -177,9 +177,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 {
                                     //if (_executionContextGps.Token.IsCancellationRequested)
                                     //{
-                                        //_executionContextGps.Cancel();
-                                        //CloseGPSDevice();
-                                        //return;
+                                    //_executionContextGps.Cancel();
+                                    //CloseGPSDevice();
+                                    //return;
                                     //}
 
                                     resultMember.Lat = (double)sentence.parameters[1];
@@ -208,6 +208,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                     {
                                         gnssWrapper.port.SetUTCTime(((DateTime)sentence.parameters[0]).Ticks);
                                         this._timeService.TimeCorrection = gnssWrapper.port.OffsetToAvged;
+                                        var currValueTicks = WinAPITime.GetTimeStamp() + this._timeService.TimeCorrection;
+                                        if ((currValueTicks > DateTime.MaxValue.Ticks) || (currValueTicks < DateTime.MinValue.Ticks))
+                                        {
+                                            this._logger.Error(Contexts.ThisComponent, Categories.Processing, string.Format($"Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks. Parameter name:  TimeCorrection = {currValueTicks}"));
+                                            this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - WinAPITime.GetTimeStamp();
+                                        }
+                                        if (gnssWrapper.port.OffsetToAvged==0)
+                                        {
+                                            this._timeService.TimeCorrection = ((DateTime)sentence.parameters[0]).Ticks - WinAPITime.GetTimeStamp();
+                                        }
                                     }
                                     else
                                     {
@@ -215,7 +225,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                     }
                                     resultMember.TimeCorrection = this._timeService.TimeCorrection;
                                 }
-                                if ((resultMember.Lon != null) && (resultMember.Lat != null) && (resultMember.Asl!=null) && (resultMember.TimeCorrection != null))
+                                if ((resultMember.Lon != null) && (resultMember.Lat != null) && (resultMember.Asl != null) && (resultMember.TimeCorrection != null))
                                 {
                                     _executionContextGps.PushResult(resultMember);
                                 }
@@ -226,7 +236,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
             catch (Exception ex)
             {
-                this._logger.Exception(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.LogEventError.ToString(), ex.Message),ex);
+                this._logger.Exception(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.LogEventError.ToString(), ex.Message), ex);
             }
         }
 
@@ -234,7 +244,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
         {
             //if (_executionContextGps != null)
             //{
-                //_executionContextGps.Finish();
+            //_executionContextGps.Finish();
             //}
             if (gnssWrapper.IsOpen)
             {
