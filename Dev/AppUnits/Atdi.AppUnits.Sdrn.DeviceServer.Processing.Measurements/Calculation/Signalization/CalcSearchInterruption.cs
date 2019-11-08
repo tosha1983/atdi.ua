@@ -430,6 +430,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // для каждого излучения вычислим стартовые точки (излучения) и проверим их наличие на трейсе 
                 int start = (int)Math.Floor(((ChCentrFreqs_Mhz[IndexChannel[i]] * 1000000.0 - ChannelBW_kHz * 500.0) - freqTr_Hz[0]) / (TraceStep_Hz));
                 int stop = (int)Math.Ceiling(((ChCentrFreqs_Mhz[IndexChannel[i]] * 1000000.0 + ChannelBW_kHz * 500.0) - freqTr_Hz[0]) / (TraceStep_Hz));
+
+                if (start < 0)
+                {
+                    start = 0;
+                }
+
+                if (trace.Freq_Hz.Length <= stop)
+                {
+                    stop = trace.Freq_Hz.Length - 1;
+                }
+
                 int start_ = start; int stop_ = stop;
                 // определяем границы для спектра
                 double winBW = (stop - start) * windowBW;

@@ -19,9 +19,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (result != null)
             {
+                taskContext.Task.sysInfoResult = new SysInfoResult();
                 try
                 {
-                    taskContext.Task.sysInfoResult = new SysInfoResult();
                     var parentProcess = taskContext.Descriptor.Parent;
                     if (parentProcess != null)
                     {
@@ -53,6 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 catch (Exception ex)
                 {
+                    taskContext.SetEvent((SysInfoResult)(null));
                     taskContext.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(CommandFailureReason.Exception, ex));
                 }
             }
