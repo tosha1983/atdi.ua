@@ -43,20 +43,46 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return imgByteArr;
         }
 
-        public bool SaveImageToBlob(string provinceName)
+        public bool SaveImageToFile(string provinceName)
         {
             if (File.Exists(this._imageFile))
             {
-                var insertQuery = _dataLayer.Builder
+                var idCoverageEstimation = AllocID(this._tableName);
+
+                var insertWebQuery = _dataLayer.Builder
                .Insert(this._tableName)
-               .SetValue("ID", new IntegerValueOperand() { DataType = DataModels.DataType.Integer, Value = AllocID(this._tableName) })
-               .SetValue("RESULT_COVERAGE", new BytesValueOperand() { DataType = DataModels.DataType.Bytes, Value = ImageConversionToBytes(this._imageFile) })
-                .SetValue("FILE_NAME", new StringValueOperand() { DataType = DataModels.DataType.String, Value = Path.GetFileName(this._imageFile) })
-                .SetValue("DATE_CREATED", new DateTimeValueOperand() { DataType = DataModels.DataType.DateTime, Value = DateTime.Now })
-                .SetValue("PROVINCE", new StringValueOperand() { DataType = DataModels.DataType.String, Value = provinceName });
-                this._queryExecutor.Execute(insertQuery);
-                this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveImageFileCompleted.ToString(), this._imageFile));
-                return true;
+               .SetValue("ID", new IntegerValueOperand() { DataType = DataModels.DataType.Integer, Value = idCoverageEstimation })
+               //.SetValue("RESULT_COVERAGE", new BytesValueOperand() { DataType = DataModels.DataType.Bytes, Value = ImageConversionToBytes(this._imageFile) })
+               .SetValue("FILE_NAME", new StringValueOperand() { DataType = DataModels.DataType.String, Value = Path.GetFileName(this._imageFile) })
+               .SetValue("DATE_CREATED", new DateTimeValueOperand() { DataType = DataModels.DataType.DateTime, Value = DateTime.Now })
+               .SetValue("PROVINCE", new StringValueOperand() { DataType = DataModels.DataType.String, Value = provinceName });
+               this._queryExecutor.Execute(insertWebQuery);
+
+
+                var idDocFiles = AllocID("DOCFILES");
+                var insertDocFiles = _dataLayer.Builder
+               .Insert("DOCFILES")
+               .SetValue("ID", new IntegerValueOperand() { DataType = DataModels.DataType.Integer, Value = idDocFiles })
+               .SetValue("PATH", new StringValueOperand() { DataType = DataModels.DataType.String, Value = Path.GetFileName(this._imageFile) })
+               .SetValue("DATE_CREATED", new DateTimeValueOperand() { DataType = DataModels.DataType.DateTime, Value = DateTime.Now })
+               .SetValue("CREATED_BY", new StringValueOperand() { DataType = DataModels.DataType.String, Value = "Atdi.AppUnits.Icsm.CoverageEstimation" })
+               .SetValue("MEMO", new StringValueOperand() { DataType = DataModels.DataType.String, Value = provinceName })
+               .SetValue("DOC_TYPE", new StringValueOperand() { DataType = DataModels.DataType.String, Value = "CE" });
+               this._queryExecutor.Execute(insertDocFiles);
+
+
+               var insertDocLink = _dataLayer.Builder
+               .Insert("DOCLINK")
+               .SetValue("REC_TAB", new StringValueOperand() { DataType = DataModels.DataType.String, Value = this._tableName })
+               .SetValue("REC_ID", new IntegerValueOperand() { DataType = DataModels.DataType.Integer, Value = idCoverageEstimation })
+               .SetValue("DOC_ID", new IntegerValueOperand() { DataType = DataModels.DataType.Integer, Value = idDocFiles })
+               .SetValue("PATH", new StringValueOperand() { DataType = DataModels.DataType.String, Value = Path.GetDirectoryName(this._imageFile) });
+
+               this._queryExecutor.Execute(insertDocLink);
+
+
+               this._logger.Info(Contexts.CalcCoverages, string.Format(Events.OperationSaveImageFileCompleted.ToString(), this._imageFile));
+               return true;
             }
             else
             {

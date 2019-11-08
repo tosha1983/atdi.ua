@@ -69,7 +69,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             var stationIds = new List<int>();
             var dicStationNames = new Dictionary<string, int>();
             var lstewxFiles = new List<EwxData>();
-            bool isSuccessCopyStations = false;
             var lstStations = new List<Station>();
             try
             {

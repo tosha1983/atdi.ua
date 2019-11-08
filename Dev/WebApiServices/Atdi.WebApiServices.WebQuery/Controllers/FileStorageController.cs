@@ -10,6 +10,7 @@ using Atdi.DataModels.WebQuery;
 using Atdi.Platform.Logging;
 using FileInfo = Atdi.DataModels.WebQuery.FileInfo;
 
+
 namespace Atdi.WebApiServices.WebQuery.Controllers
 {
     public class FileStorageController : WebApiController
@@ -115,7 +116,7 @@ namespace Atdi.WebApiServices.WebQuery.Controllers
                 httpResponseMessage.Content.Headers.ContentDisposition =
                     new ContentDispositionHeaderValue("attachment")
                     {
-                        FileName = Path.ChangeExtension(content.Name, content.Extension)
+                        FileName = Path.ChangeExtension(content.FileName, content.FileExtension)
                     };
                 httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 

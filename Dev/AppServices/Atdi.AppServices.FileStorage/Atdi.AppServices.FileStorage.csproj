@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigFileStorage.cs" />
     <Compile Include="Handlers\GetFile.cs" />
     <Compile Include="Handlers\GetFileInfo.cs" />
     <Compile Include="Handlers\GetFilesInfo.cs" />
