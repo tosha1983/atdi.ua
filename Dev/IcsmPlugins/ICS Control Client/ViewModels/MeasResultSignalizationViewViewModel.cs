@@ -743,7 +743,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMax = 960,
                 YTick = 10,
                 XTick = 10,
-                UseZoom = true
+                UseZoom = true,
+                IsEnableSaveToFile = true
             };
 
             //if (_currentMeasResult.RefLevels == null || _currentMeasResult.RefLevels.levels == null)
@@ -912,7 +913,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMin = -100,
                 XMax = 0,
                 YTick = 0.2,
-                XTick = 10
+                XTick = 10,
+                IsEnableSaveToFile = true
             };
 
 

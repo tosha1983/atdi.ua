@@ -306,7 +306,7 @@ namespace XICSM.ICSControlClient.Models.Views
                         }
                         break;
                     case "SignalizationNChenal":
-                        if (SignalizationNChenal.HasValue && (SignalizationNChenal.Value < 2 || SignalizationNChenal.Value > 5000))
+                        if (SignalizationNChenal.HasValue && DetailedMeasurementsBWEmission.GetValueOrDefault(false) && (SignalizationNChenal.Value < 2 || SignalizationNChenal.Value > 5000))
                         {
                             error = "The value must be in the range from 2 to 5000";
                         }

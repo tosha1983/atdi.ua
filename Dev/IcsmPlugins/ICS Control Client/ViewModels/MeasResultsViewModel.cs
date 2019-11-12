@@ -396,7 +396,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMin = 900,
                 XMax = 960,
                 YTick = 10,
-                XTick = 10
+                XTick = 10,
+                IsEnableSaveToFile  = true
             };
 
             var generalResult = this._currentGeneralResult;
@@ -480,7 +481,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMin = 900,
                 XMax = 960,
                 YTick = 10,
-                XTick = 10
+                XTick = 10,
+                IsEnableSaveToFile = true
             };
 
             var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
@@ -538,7 +540,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMin = 900,
                 XMax = 960,
                 YTick = 10,
-                XTick = 10
+                XTick = 10,
+                IsEnableSaveToFile = true
             };
 
             var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(result.MeasSdrResultsId, null, null);
