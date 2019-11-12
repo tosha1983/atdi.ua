@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
 {
+    [Serializable]
     public class OnlineMeasMessage
     {
         public OnlineMeasMessageKind Kind { get; set; }

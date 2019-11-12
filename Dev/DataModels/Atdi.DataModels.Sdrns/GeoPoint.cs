@@ -10,6 +10,7 @@ namespace Atdi.DataModels.Sdrns
     /// <summary>
     /// Represents location of point
     /// </summary>
+    [Serializable]
     [DataContract(Namespace = Specification.Namespace)]
     public class GeoPoint
     {
