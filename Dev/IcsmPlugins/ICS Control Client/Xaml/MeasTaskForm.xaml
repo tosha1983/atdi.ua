@@ -664,7 +664,7 @@
                       </Expander.Style>
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="160" />
+                          <ColumnDefinition Width="200" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -738,7 +738,7 @@
                         <GroupBox  Header=""  Margin="0, 5, 5, 5">
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="340" />
+                              <ColumnDefinition Width="350" />
                               <ColumnDefinition Width="30" />
                               <ColumnDefinition Width="25" />
                               <ColumnDefinition Width="*" />
@@ -928,7 +928,7 @@
                           </GroupBox.Style>
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="340" />
+                              <ColumnDefinition Width="400" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>

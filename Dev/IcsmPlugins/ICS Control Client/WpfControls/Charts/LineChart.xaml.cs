@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using FRM = System.Windows.Forms;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Windows.Shapes;
@@ -67,7 +68,8 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 YTick = 1,
                 YInnerTickCount = 5,
                 YLabel = "Y - Label",
-                UseZoom = false
+                UseZoom = false,
+                IsEnableSaveToFile = true
             };
         }
         public LineChart()
@@ -159,9 +161,7 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                 if (this._option.LinesArray != null)
                     this.DrawNewLines();
             }
-
         }
-
         public void DrawGridlines()
         {
             Point pt = new Point();
@@ -611,8 +611,17 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
                         item.Click += Menu_Click;
                         _contextMenu.Items.Add(item);
                     }
-                    chartCanvas.ContextMenu = _contextMenu;
                 }
+
+                if (this.Option.IsEnableSaveToFile)
+                {
+                    var item = new MenuItem() { Header = "Save to file", Name = "CanvasSaveToFile" };
+                    item.Click += Menu_Click;
+                    _contextMenu.Items.Add(item);
+                }
+                if (_contextMenu.Items.Count > 0)
+                    chartCanvas.ContextMenu = _contextMenu;
+
                 DrawChart();
             }
         }
@@ -816,8 +825,30 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         }
         private void Menu_Click(object sender, RoutedEventArgs e)
         {
+            if ((sender as MenuItem).Name == "CanvasSaveToFile")
+            {
+                CanvasSaveToFile();
+                return;
+            }
             MouseClickPoint = _mouseClickPoint;
             MenuClick = sender as MenuItem;
+        }
+        private void CanvasSaveToFile()
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)this.RenderSize.Width + 50, (int)this.RenderSize.Height + 50, 96d, 96d, System.Windows.Media.PixelFormats.Default);
+            rtb.Render(this);
+
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "PNG (*.png)|*.png", FileName = "" };
+            if (sfd.ShowDialog() == FRM.DialogResult.OK)
+            {
+                using (var fs = System.IO.File.OpenWrite(sfd.FileName))
+                {
+                    pngEncoder.Save(fs);
+                }
+            }
         }
     }
 }

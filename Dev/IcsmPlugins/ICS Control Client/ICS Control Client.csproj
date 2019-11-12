@@ -95,6 +95,12 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\GraphicForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GraphicForm.Designer.cs">
+      <DependentUpon>GraphicForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasResultSignalizationViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -307,6 +313,7 @@
     <Compile Include="ViewModels\ChartAdapters\OnlineMeasLineChartAdapter.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
+    <Compile Include="ViewModels\GrapficViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
@@ -346,6 +353,9 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\GraphicForm.resx">
+      <DependentUpon>GraphicForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
     </EmbeddedResource>

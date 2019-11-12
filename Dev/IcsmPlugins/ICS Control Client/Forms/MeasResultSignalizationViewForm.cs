@@ -19,9 +19,6 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    
-    
-
     public partial class MeasResultSignalizationViewForm : Form
     {
         private ElementHost _wpfElementHost;

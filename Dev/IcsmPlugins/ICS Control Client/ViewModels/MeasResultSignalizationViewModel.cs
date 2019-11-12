@@ -1026,7 +1026,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMax = 960,
                 YTick = 10,
                 XTick = 10,
-                UseZoom = true
+                UseZoom = true,
+                IsEnableSaveToFile = true
             };
 
             var maxX = default(double);
@@ -1204,7 +1205,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMin = -100,
                 XMax = 0,
                 YTick = 0.2,
-                XTick = 10
+                XTick = 10,
+                IsEnableSaveToFile = true
             };
 
             if (this._currentEmitting != null)
