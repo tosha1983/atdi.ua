@@ -19,6 +19,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
 
         byte StatusCode { get; set; }
 
+        string StatusName { get; set; }
+
         string StatusNote { get; set; }
 
         DateTimeOffset CreatedDate { get; set; }
@@ -66,5 +68,12 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string BodyContentEncoding { get; set; }
 
         byte[] BodyContent { get; set; }
+
+        string HeaderApiVersion { get; set; }
+
+        string HeaderProtocol { get; set; }
+
+        string HeaderBodyAQName { get; set; }
+
     }
 }

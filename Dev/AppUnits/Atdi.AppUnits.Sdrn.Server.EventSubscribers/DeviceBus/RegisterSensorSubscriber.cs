@@ -17,7 +17,8 @@ using MSG = Atdi.DataModels.Sdrns.BusMessages;
 using Atdi.Platform;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.DataModels.Sdrns.Server.Events;
-     
+using Atdi.Platform.Workflows;
+
 
 
 
@@ -32,6 +33,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IMessagesSite _messagesSite;
         private readonly IEventEmitter _eventEmitter;
+        private readonly IPipelineSite _pipelineSite;
 
         private readonly IStatisticCounter _messageProcessingHitsCounter;
         private readonly IStatisticCounter _registerSensorHitsCounter;
@@ -44,9 +46,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             ISdrnServerEnvironment environment,
             IStatistics statistics,
             IEventEmitter eventEmitter,
+            IPipelineSite pipelineSite,
             ILogger logger) 
             : base(messagesSite, logger)
         {
+            this._pipelineSite = pipelineSite;
             this._messagesSite = messagesSite;
             this._messagePublisher = messagePublisher;
             this._dataLayer = dataLayer;
@@ -139,26 +143,21 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         registrationResult.Message = "Something went wrong on the server during the registration of a new sensor";
                     }
 
-                    ///Отправка уведомления в AggregationServer о необходимости регистрации сенсора
-                    var measTaskEventToAggregationServer = new OnRegisterAggregationServer()
-                    {
-                        EquipmentTechId = deliveryObject.Equipment.TechId,
-                        SensorName = deliveryObject.Name,
-                        Name = $"OnRegisterAggregationServerEvent"
-                    };
-                    this._eventEmitter.Emit(measTaskEventToAggregationServer, new EventEmittingOptions()
-                    {
-                        Rule = EventEmittingRule.Default,
-                        Destination = new string[] { $"SubscriberOnRegisterAggregationServerEvent" }
-                    });
-                   
-
-
                     var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendRegistrationResultMessage, SensorRegistrationResult>();
                     envelop.SensorName = sensorName;
                     envelop.SensorTechId = sensorTechId;
                     envelop.DeliveryObject = registrationResult;
                     _messagePublisher.Send(envelop);
+
+
+                    var site = this._pipelineSite.TryGetByName<Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent, Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent>(Atdi.DataModels.Sdrns.Server.Pipelines.ClientRegisterAggregationServer, out IPipeline<Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent, Atdi.DataModels.Sdrns.Server.RegisterSensorSendEvent> pipeline);
+                    if (site == true)
+                    {
+                        var sensor = new DataModels.Sdrns.Server.RegisterSensorSendEvent();
+                        sensor.SensorName = deliveryObject.Name;
+                        sensor.EquipmentTechId = deliveryObject.Equipment.TechId;
+                        var resultSendEvent = pipeline.Execute(sensor);
+                    }
                 }
             }
         }
@@ -493,10 +492,14 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     {
                                         if (sensorData.Antenna.Patterns != null)
                                         {
+
                                             long idSensorAntennaPattern = -1;
 
+                                            var listIdSensorAntennaPattern = new List<long>();
                                             for (int b = 0; b < sensorData.Antenna.Patterns.Length; b++)
                                             {
+                                                idSensorAntennaPattern = -1;
+
                                                 AntennaPattern patt = sensorData.Antenna.Patterns[b];
 
                                                 var querySensorAntennaPatterns = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
@@ -505,6 +508,75 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                                 .Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.Equal, idSensorAntenna)
                                                 .Where(c => c.Freq, ConditionOperator.Equal, patt.Freq_MHz)
                                                 .Where(c => c.Gain, ConditionOperator.Equal, patt.Gain)
+                                                .Where(c => c.DiagA, ConditionOperator.Equal, patt.DiagA)
+                                                .Where(c => c.DiagH, ConditionOperator.Equal, patt.DiagH)
+                                                .Where(c => c.DiagV, ConditionOperator.Equal, patt.DiagV)
+                                                .OrderByAsc(c => c.Id)
+                                                ;
+
+                                                scope.Executor
+                                                .Fetch(querySensorAntennaPatterns, readerAntennaPattern =>
+                                                {
+                                                    var result = readerAntennaPattern.Read();
+                                                    if (result)
+                                                    {
+                                                        idSensorAntennaPattern = readerAntennaPattern.GetValue(c => c.Id);
+                                                    }
+                                                    return result;
+                                                });
+
+                                                if (idSensorAntennaPattern > 0)
+                                                {
+                                                    listIdSensorAntennaPattern.Add(idSensorAntennaPattern);
+                                                }
+
+                                                querySensorAntennaPatterns = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
+                                             .From()
+                                             .Select(c => c.Id)
+                                             .Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.NotEqual, idSensorAntenna)
+                                             .OrderByAsc(c => c.Id)
+                                             ;
+
+                                                scope.Executor
+                                                .Fetch(querySensorAntennaPatterns, readerAntennaPattern =>
+                                                {
+                                                    while (readerAntennaPattern.Read())
+                                                    {
+                                                        if (!listIdSensorAntennaPattern.Contains(readerAntennaPattern.GetValue(c => c.Id)))
+                                                        {
+                                                            listIdSensorAntennaPattern.Add(readerAntennaPattern.GetValue(c => c.Id));
+                                                        }
+                                                    }
+                                                    return true;
+                                                });
+                                            }
+
+                                            if (listIdSensorAntennaPattern.Count > 0)
+                                            {
+                                                var queryDelAntennaPattern = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
+                                                .Delete()
+                                                .Where(c => c.Id, ConditionOperator.NotIn, listIdSensorAntennaPattern.ToArray());
+                                                scope.Executor.Execute(queryDelAntennaPattern);
+                                            }
+
+
+
+
+                                            for (int b = 0; b < sensorData.Antenna.Patterns.Length; b++)
+                                            {
+                                                idSensorAntennaPattern = -1;
+
+                                                AntennaPattern patt = sensorData.Antenna.Patterns[b];
+
+                                                var querySensorAntennaPatterns = this._dataLayer.GetBuilder<MD.IAntennaPattern>()
+                                                .From()
+                                                .Select(c => c.Id)
+                                                .Where(c => c.SENSOR_ANTENNA.Id, ConditionOperator.Equal, idSensorAntenna)
+                                                .Where(c => c.Freq, ConditionOperator.Equal, patt.Freq_MHz)
+                                                .Where(c => c.Gain, ConditionOperator.Equal, patt.Gain)
+                                                .Where(c => c.DiagA, ConditionOperator.Equal, patt.DiagA)
+                                                .Where(c => c.DiagH, ConditionOperator.Equal, patt.DiagH)
+                                                .Where(c => c.DiagV, ConditionOperator.Equal, patt.DiagV)
                                                 .OrderByAsc(c => c.Id)
                                                 ;
 
@@ -643,6 +715,70 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     {
                                         if (sensorData.Equipment.Sensitivities != null)
                                         {
+                                            var listIdSensorEquipmentSensitivities = new List<long>();
+                                            for (int g = 0; g < sensorData.Equipment.Sensitivities.Length; g++)
+                                            {
+                                                EquipmentSensitivity senseqps = sensorData.Equipment.Sensitivities[g];
+
+                                                long idSensorEquipmentSensitivities = -1;
+                                                var queryDeleteSensitivites = this._dataLayer.GetBuilder<MD.ISensorSensitivites>()
+                                               .From()
+                                               .Select(c => c.Id)
+                                               .Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.Equal, idSensorEquipment)
+                                               .Where(c => c.AddLoss, ConditionOperator.Equal, senseqps.AddLoss)
+                                               .Where(c => c.Freq, ConditionOperator.Equal, senseqps.Freq_MHz)
+                                               .Where(c => c.FreqStability, ConditionOperator.Equal, senseqps.FreqStability)
+                                               .Where(c => c.Ktbf, ConditionOperator.Equal, senseqps.KTBF_dBm)
+                                               .Where(c => c.Noisef, ConditionOperator.Equal, senseqps.NoiseF)
+                                               .OrderByAsc(c => c.Id);
+
+                                                scope.Executor
+                                                .Fetch(queryDeleteSensitivites, readerDeleteSensitivites =>
+                                                {
+                                                    var result = readerDeleteSensitivites.Read();
+                                                    if (result)
+                                                    {
+                                                        idSensorEquipmentSensitivities = readerDeleteSensitivites.GetValue(c => c.Id);
+                                                    }
+                                                    return result;
+                                                });
+
+                                                if (idSensorEquipmentSensitivities > 0)
+                                                {
+                                                    listIdSensorEquipmentSensitivities.Add(idSensorEquipmentSensitivities);
+                                                }
+
+
+                                                queryDeleteSensitivites = this._dataLayer.GetBuilder<MD.ISensorSensitivites>()
+                                            .From()
+                                            .Select(c => c.Id)
+                                            .Where(c => c.SENSOR_EQUIP.Id, ConditionOperator.NotEqual, idSensorEquipment)
+                                            .OrderByAsc(c => c.Id);
+
+                                                scope.Executor
+                                                .Fetch(queryDeleteSensitivites, readerDeleteSensitivites =>
+                                                {
+                                                    var result = readerDeleteSensitivites.Read();
+                                                    if (result)
+                                                    {
+                                                        if (!listIdSensorEquipmentSensitivities.Contains(readerDeleteSensitivites.GetValue(c => c.Id)))
+                                                        {
+                                                            listIdSensorEquipmentSensitivities.Add(readerDeleteSensitivites.GetValue(c => c.Id));
+                                                        }
+                                                    }
+                                                    return result;
+                                                });
+                                            }
+
+                                            if (listIdSensorEquipmentSensitivities.Count > 0)
+                                            {
+                                                var querySensorDeleteSensitivites = this._dataLayer.GetBuilder<MD.ISensorSensitivites>()
+                                                .Delete()
+                                                .Where(c => c.Id, ConditionOperator.NotIn, listIdSensorEquipmentSensitivities.ToArray());
+                                                scope.Executor.Execute(querySensorDeleteSensitivites);
+                                            }
+
+
                                             for (int g = 0; g < sensorData.Equipment.Sensitivities.Length; g++)
                                             {
                                                 EquipmentSensitivity senseqps = sensorData.Equipment.Sensitivities[g];
@@ -752,54 +888,38 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
                                     if (sensorData.Locations != null)
                                     {
-
                                         for (int f = 0; f < sensorData.Locations.Length; f++)
                                         {
                                             var location = sensorData.Locations[f];
-
-                                            List<long> listSensorLocations = new List<long>();
-                                            long idSensorlocation = -1;
-                                            var querySensorPolygon = this._dataLayer.GetBuilder<MD.ISensorLocation>()
-                                            .From()
-                                            .Select(c => c.Id)
-                                            .Where(c => c.SENSOR.Id, ConditionOperator.Equal, idSensor)
-                                            .Where(c => c.Status, ConditionOperator.Equal, "A")
-                                            .OrderByAsc(c => c.Id);
-
-                                            scope.Executor
-                                            .Fetch(querySensorPolygon, readerSensorLocation =>
+                                            var queryCheck = this._dataLayer.GetBuilder<MD.ISensorLocation>()
+                                           .From()
+                                           .Select(c => c.Id)
+                                           .Where(c => c.Lon, ConditionOperator.Equal, location.Lon)
+                                           .Where(c => c.Lat, ConditionOperator.Equal, location.Lat)
+                                           .Where(c => c.Asl, ConditionOperator.Equal, location.ASL);
+                                            var cnt = scope.Executor.Execute(queryCheck);
+                                            if (cnt == 0)
                                             {
-                                                var result = false;
-                                                while (readerSensorLocation.Read())
-                                                {
-                                                    listSensorLocations.Add(readerSensorLocation.GetValue(c => c.Id));
-                                                    result = true;
-                                                }
-                                                return result;
-                                            });
-
-                                            for (int j = 0; j < listSensorLocations.Count; j++)
-                                            {
-                                                idSensorlocation = listSensorLocations[j];
                                                 var builderUpdateSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Update();
+                                                builderUpdateSensLocations.Where(c => c.SENSOR.Id, ConditionOperator.Equal, idSensor);
+                                                builderUpdateSensLocations.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
                                                 builderUpdateSensLocations.SetValue(c => c.Status, "Z");
-                                                builderUpdateSensLocations.Where(c => c.Id, ConditionOperator.Equal, idSensorlocation);
                                                 scope.Executor
-                                                .Execute(builderUpdateSensLocations);
+                                                 .Execute(builderUpdateSensLocations);
+
+                                                var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
+                                                builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
+                                                builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
+                                                builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
+                                                builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
+                                                builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
+                                                builderInsertSensLocations.SetValue(c => c.Status, "A");
+                                                builderInsertSensLocations.SetValue(c => c.SENSOR.Id, idSensor);
+
+                                                scope.Executor
+                                                .Execute(builderInsertSensLocations);
+
                                             }
-
-
-                                            var builderInsertSensLocations = this._dataLayer.GetBuilder<MD.ISensorLocation>().Insert();
-                                            builderInsertSensLocations.SetValue(c => c.Lat, location.Lat);
-                                            builderInsertSensLocations.SetValue(c => c.Lon, location.Lon);
-                                            builderInsertSensLocations.SetValue(c => c.Asl, location.ASL);
-                                            builderInsertSensLocations.SetValue(c => c.DateFrom, location.From);
-                                            builderInsertSensLocations.SetValue(c => c.DateTo, location.To);
-                                            builderInsertSensLocations.SetValue(c => c.Status, "A");
-                                            builderInsertSensLocations.SetValue(c => c.SENSOR.Id, idSensor);
-
-
-                                            scope.Executor.Execute(builderInsertSensLocations);
                                         }
                                     }
                                 }

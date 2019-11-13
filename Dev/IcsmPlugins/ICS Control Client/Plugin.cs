@@ -24,6 +24,7 @@ namespace XICSM.ICSControlClient
             mainMenu.SetLocation();
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.Run, PluginCommands.OnRunCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.MeasResults, PluginCommands.OnMeasResultsCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.AnalyzeEmissions, PluginCommands.OnAnalyzeEmissionsCommand);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, PluginCommands.OnAboutCommand);
         }
 

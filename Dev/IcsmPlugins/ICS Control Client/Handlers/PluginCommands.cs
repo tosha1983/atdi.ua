@@ -53,5 +53,18 @@ namespace XICSM.ICSControlClient
                 MessageBox.Show(e.ToString());
             }
         }
+        public static void OnAnalyzeEmissionsCommand()
+        {
+            try
+            {
+                var mainForm = new FM.SignalizationSensorsForm(2, null, null);
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
     }
 }

@@ -8,13 +8,6 @@ namespace Atdi.Platform
 {
     public class DefaultResourceResolver : IResourceResolver
     {
-        public DefaultResourceResolver()
-        {
-            
-        }
-
-      
-
         public string Resolve(string name, params object[] args)
         {
             if (args == null || args.Length == 0)

@@ -27,8 +27,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static readonly EventText StartSOTaskWorker = "Start SOTaskWorker context.Task.Id = {0}";
         public static readonly EventText TaskIsCancled = " Task context.Task.Id = {0} is canceled";
         public static readonly EventText SendMeasureTraceCommandToController = " Send 'MeasureTraceCommand' to controller Id = {0}";
-        public static readonly EventText HandlingErrorSendCommandController = "Handling error send command  Id = {0} to controller";
-        public static readonly EventText SleepThread = "Sleep thread for command id = {0} at time {1}";
+        public static readonly EventText HandlingErrorSendCommandController = "Handling error send task  Id = {0} to controller";
+        public static readonly EventText SleepThread = "Sleep thread for task id = {0} at time {1}";
         public static readonly EventText MaximumDurationMeas = "Maximum duration meas can not be -1";
         public static readonly EventText FinishedBandWidthTaskWorker = "Finished 'BandWidthTaskWorker'";
         public static readonly EventText FinishedLevelTaskWorker = "Finished 'LevelTaskWorker'";

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType Name="Text.4000" DataSourceType="Database" xmlns="http://schemas.atdi.com/orm/entity.xsd">
+  <CodeVarType>String</CodeVarType>
+  <SourceVarType>NVARCHAR</SourceVarType>
+  <Length>4000</Length>
+</DataType>

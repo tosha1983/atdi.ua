@@ -196,6 +196,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                 builderInsertMeasDtParam.SetValue(c => c.Rfattenuation, value.RfAttenuation);
                 builderInsertMeasDtParam.SetValue(c => c.Vbw, value.VBW);
                 builderInsertMeasDtParam.SetValue(c => c.SwNumber, value.SwNumber);
+                if (value.ReferenceLevel != null)
+                {
+                    builderInsertMeasDtParam.SetValue(c => c.ReferenceLevel, value.ReferenceLevel);
+                }
+                if (value.NumberTotalScan != null)
+                {
+                    builderInsertMeasDtParam.SetValue(c => c.NumberTotalScan, value.NumberTotalScan);
+                }
                 builderInsertMeasDtParam.SetValue(c => c.MEAS_TASK.Id, sensorIdentifier);
                 var measDtParamPK = dataLayerScope.Executor.Execute<MD.IMeasDtParam_PK>(builderInsertMeasDtParam);
                 measDtParamId = measDtParamPK.Id;
@@ -426,15 +434,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                                 valueIdmeasSubTaskSta = insertMeasSubTaskStaPK.Id;
                                                 subTaskSensor.Id = valueIdmeasSubTaskSta;
                                                 measSubTask.MeasSubTaskSensors[v] = subTaskSensor;
-
-                                                if (subTaskSensor.MasterId != null)
-                                                {
-                                                    var builderUpdateLinkSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().Insert();
-                                                    builderUpdateLinkSensor.SetValue(c => c.SubtaskSensorMasterId, subTaskSensor.MasterId);
-                                                    builderUpdateLinkSensor.SetValue(c => c.SUBTASK_SENSOR.Id, valueIdmeasSubTaskSta);
-                                                    var linkAggregationSensor_PKId = scope.Executor.Execute<MD.ILinkSubTaskSensorMasterId_PK>(builderUpdateLinkSensor);
-                                                }
-
+                                                
                                             }
                                         }
                                     }
@@ -821,16 +821,24 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             {
                 deviceParam.RfAttenuation_dB = -1;
             }
-            if (measDtParam.VBW != null) { deviceParam.VBW_kHz = measDtParam.VBW.GetValueOrDefault(); } else { deviceParam.VBW_kHz = -1; }
-            if ((measurementType == MeasurementType.Signaling)
-                || (measurementType == MeasurementType.BandwidthMeas)
-                    || (measurementType == MeasurementType.Level))
+            if (measDtParam.NumberTotalScan != null) { deviceParam.NumberTotalScan = measDtParam.NumberTotalScan.Value; }
+            if (measDtParam.VBW != null) { deviceParam.VBW_kHz = measDtParam.VBW.Value; } else { deviceParam.VBW_kHz = -1; }
+            if (measDtParam.ReferenceLevel != null)
             {
-                deviceParam.RefLevel_dBm = 1000000000;
+                deviceParam.RefLevel_dBm = measDtParam.ReferenceLevel.Value;
             }
-            else if (measurementType == MeasurementType.SpectrumOccupation)
+            else
             {
-                deviceParam.RefLevel_dBm = 1000000000;
+                if ((measurementType == MeasurementType.Signaling)
+                || (measurementType == MeasurementType.BandwidthMeas)
+                || (measurementType == MeasurementType.Level))
+                {
+                    deviceParam.RefLevel_dBm = 1000000000;
+                }
+                else if (measurementType == MeasurementType.SpectrumOccupation)
+                {
+                    deviceParam.RefLevel_dBm = 1000000000;
+                }
             }
             return deviceParam;
         }
@@ -968,46 +976,42 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
 
                                     if (taskSignaling.RefSituation != null)
                                     {
-                                        if (taskSignaling.RefSituation != null)
+                                        var listReferenceSituation = new List<DEV.ReferenceSituation>();
+                                        for (int k = 0; k < taskSignaling.RefSituation.Length; k++)
                                         {
-                                            var listReferenceSituation = new List<DEV.ReferenceSituation>();
-                                            for (int k = 0; k < taskSignaling.RefSituation.Length; k++)
-                                            {
-                                                var refSituation = new DEV.ReferenceSituation();
-                                                var refSituationTemp = taskSignaling.RefSituation[k];
-                                                refSituation.SensorId = (int)refSituationTemp.SensorId;
+                                            var refSituation = new DEV.ReferenceSituation();
+                                            var refSituationTemp = taskSignaling.RefSituation[k];
+                                            refSituation.SensorId = (int)refSituationTemp.SensorId;
 
-                                                var referenceSignal = refSituationTemp.ReferenceSignal;
-                                                if (referenceSignal.Length > 0)
-                                                {
-                                                    refSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
-                                                    for (int l = 0; l < referenceSignal.Length; l++)
-                                                    {
-                                                        var refSituationReferenceSignal = refSituation.ReferenceSignal[l];
-                                                        refSituationReferenceSignal = new DEV.ReferenceSignal();
-                                                        refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
-                                                        refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
-                                                        refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
-                                                        refSituationReferenceSignal.IcsmId = referenceSignal[l].IcsmId;
-                                                        refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
-                                                        if (referenceSignal[l].SignalMask != null)
-                                                        {
-                                                            refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
-                                                            refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
-                                                        }
-                                                        refSituation.ReferenceSignal[l] = refSituationReferenceSignal;
-                                                    }
-                                                }
-                                                listReferenceSituation.Add(refSituation);
-                                            }
-                                            if (listReferenceSituation.Count > 0)
+                                            var referenceSignal = refSituationTemp.ReferenceSignal;
+                                            if (referenceSignal.Length > 0)
                                             {
-                                                //MTSDR.RefSituation = listReferenceSituation.ToArray();
-                                                MTSDR.RefSituation = listReferenceSituation[0];
+                                                refSituation.ReferenceSignal = new DEV.ReferenceSignal[referenceSignal.Length];
+                                                for (int l = 0; l < referenceSignal.Length; l++)
+                                                {
+                                                    var refSituationReferenceSignal = refSituation.ReferenceSignal[l];
+                                                    refSituationReferenceSignal = new DEV.ReferenceSignal();
+                                                    refSituationReferenceSignal.Bandwidth_kHz = referenceSignal[l].Bandwidth_kHz;
+                                                    refSituationReferenceSignal.Frequency_MHz = referenceSignal[l].Frequency_MHz;
+                                                    refSituationReferenceSignal.LevelSignal_dBm = referenceSignal[l].LevelSignal_dBm;
+                                                    refSituationReferenceSignal.IcsmId = referenceSignal[l].IcsmId;
+                                                    refSituationReferenceSignal.SignalMask = new DEV.SignalMask();
+                                                    if (referenceSignal[l].SignalMask != null)
+                                                    {
+                                                        refSituationReferenceSignal.SignalMask.Freq_kHz = referenceSignal[l].SignalMask.Freq_kHz;
+                                                        refSituationReferenceSignal.SignalMask.Loss_dB = referenceSignal[l].SignalMask.Loss_dB;
+                                                    }
+                                                    refSituation.ReferenceSignal[l] = refSituationReferenceSignal;
+                                                }
                                             }
+                                            listReferenceSituation.Add(refSituation);
+                                        }
+                                        if (listReferenceSituation.Count > 0)
+                                        {
+                                            //MTSDR.RefSituation = listReferenceSituation.ToArray();
+                                            MTSDR.RefSituation = listReferenceSituation[0];
                                         }
                                     }
-
                                     task = taskSignaling;
                                 }
                                 else if (task is MeasTaskMonitoringStations)

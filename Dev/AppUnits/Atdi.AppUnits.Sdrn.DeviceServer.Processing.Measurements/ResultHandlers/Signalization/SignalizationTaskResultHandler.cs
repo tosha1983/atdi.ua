@@ -45,9 +45,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
         public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
         {
+            var measResults = new MeasResults();
             try
             {
-                var measResults = new MeasResults();
                 if ((NeedSearchEmitting(taskContext.Task.CountMeasurementDone)) == true)
                 {
                     taskContext.Task.EmittingsRaw = CalcSearchEmitting.CalcSearch(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
@@ -173,10 +173,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                 taskContext.Task.CountMeasurementDone++;
                 taskContext.Task.CounterCallSignaling++;
-                taskContext.Finish();
             }
             catch (Exception ex)
             {
+                taskContext.SetEvent((MeasResults)(null));
                 taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(CommandFailureReason.Exception, ex));
             }
         }

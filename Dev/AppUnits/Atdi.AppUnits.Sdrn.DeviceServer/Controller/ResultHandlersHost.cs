@@ -3,23 +3,23 @@ using Atdi.Platform.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Atdi.Platform;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class ResultHandlersHost : IResultHandlersHost
+    internal class ResultHandlersHost : IResultHandlersHost
     {
         private readonly IResultHandlerFactory _handlerFactory;
+        private readonly IStatistics _statistics;
         private readonly ILogger _logger;
         private readonly ConcurrentDictionary<string, IResultHandler> _handlers;
         private readonly Dictionary<string, ResultHandlerDecriptor> _descriptors;
-        private object _loker = new object();
+        private readonly object _loker = new object();
 
-        public ResultHandlersHost(IResultHandlerFactory handlerFactory,  ILogger logger)
+        public ResultHandlersHost(IResultHandlerFactory handlerFactory, IStatistics statistics,  ILogger logger)
         {
             this._handlerFactory = handlerFactory;
+            this._statistics = statistics;
             this._logger = logger;
             this._handlers = new ConcurrentDictionary<string, IResultHandler>();
             this._descriptors = new Dictionary<string, ResultHandlerDecriptor>();
@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             var key = ResultHandlerDecriptor.BuildKey(commandType, resultType, taskType, processType);
             
-            if (this._handlers.TryGetValue(key, out IResultHandler handler))
+            if (this._handlers.TryGetValue(key, out var handler))
             {
                 return handler;
             }
@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 var descriptor = this._descriptors[key];
                 var instance = this._handlerFactory.Create(descriptor.InstanceType);
-                handler = new ResultHandler(descriptor, instance, this._logger);
+                handler = new ResultHandler(descriptor, instance, this._statistics, this._logger);
                 this._handlers.TryAdd(key, handler);
                 return handler;
             }

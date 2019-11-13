@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Atdi.Modules.AmqpBroker
 {
@@ -11,7 +8,7 @@ namespace Atdi.Modules.AmqpBroker
         void OnEvent(IBrokerEvent brokerEvent);
     }
 
-    internal static class BrokerObserverExtention
+    internal static class BrokerObserverExtension
     {
         private class Event : IBrokerEvent
         {
@@ -22,11 +19,11 @@ namespace Atdi.Modules.AmqpBroker
                 this.ManagedThread = System.Threading.Thread.CurrentThread.ManagedThreadId;
             }
 
-            public Guid Id { get; private set; }
+            public Guid Id { get; }
 
             public int Code { get; set; }
 
-            public DateTime Created { get; private set; }
+            public DateTime Created { get; }
 
             public BrokerEventLevel Level { get; set; }
 
@@ -34,7 +31,7 @@ namespace Atdi.Modules.AmqpBroker
 
             public string Text { get; set; }
 
-            public int ManagedThread { get; private set; }
+            public int ManagedThread { get; }
 
             public string Source { get; set; }
 
@@ -76,7 +73,7 @@ namespace Atdi.Modules.AmqpBroker
 
             var @event = new Event
             {
-                Code = 0,
+                Code = BrokerEvents.VebouseEvent,
                 Level = BrokerEventLevel.Verbouse,
                 Context = context,
                 Source = source?.GetType().Name,
@@ -152,6 +149,25 @@ namespace Atdi.Modules.AmqpBroker
             var @event = new Event
             {
                 Code = code,
+                Level = BrokerEventLevel.Info,
+                Context = context,
+                Source = source?.GetType().Name,
+                Text = text
+            };
+
+            observer.OnEvent(@event);
+        }
+
+        public static void Info(this IBrokerObserver observer, string context, string text, object source)
+        {
+            if (observer == null)
+            {
+                return;
+            }
+
+            var @event = new Event
+            {
+                Code = 0,
                 Level = BrokerEventLevel.Info,
                 Context = context,
                 Source = source?.GetType().Name,

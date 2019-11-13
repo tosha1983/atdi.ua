@@ -1,80 +1,84 @@
 ﻿using Atdi.Contracts.Api.Sdrn.MessageBus;
-using Atdi.Modules.Sdrn.MessageBus;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Atdi.Modules.Sdrn.DeviceBus;
 
 namespace Atdi.Api.Sdrn.Device.BusController
 {
     internal class MessagePublisher : IMessagePublisher
     {
         private readonly BusLogger _logger;
-        private readonly EnvironmentDescriptor _environmentDescriptor;
-        private readonly MessageConverter _messageConverter;
-        private readonly RabbitMQBus _rabbitBus;
+        private readonly DeviceBusConfig _config;
+        private readonly AmqpPublisher _amqpPublisher;
+        private readonly IBufferProcessing _buffer;
+        private readonly BusMessagePacker _messagePacker;
 
         public string Tag { get; }
 
-        internal MessagePublisher(string tag, EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
+        internal MessagePublisher(string tag, DeviceBusConfig config, IBufferProcessing buffer, AmqpPublisher amqpPublisher, BusMessagePacker messagePacker, BusLogger logger)
         {
             this.Tag = tag;
             this._logger = logger;
-            this._environmentDescriptor = environmentDescriptor;
-            this._messageConverter = messageConverter;  
-            this._rabbitBus = new RabbitMQBus("Publication", environmentDescriptor, logger);
+            this._config = config;
+            this._buffer = buffer;
+            this._amqpPublisher = amqpPublisher;
+            this._messagePacker = messagePacker;
         }
 
         public void Dispose()
         {
-            this._rabbitBus.Dispose();
-        }
-
-        private ExchangeDescriptor DefineExchangeDescriptor(string messsgeType)
-        {
-            var exchangeDescriptor = new ExchangeDescriptor
-            {
-                RoutingKey = this._environmentDescriptor.GetRoutingKeyByMessageType(messsgeType),
-                Exchange = this._environmentDescriptor.BuildDeviceExchangeName()
-            };
-
-            return exchangeDescriptor;
         }
 
         public IMessageToken Send<TObject>(string messageType, TObject messageObject, string correlationToken = null)
         {
-            var exchange = this.DefineExchangeDescriptor(messageType);
-            var message = this._messageConverter.Pack<TObject>(messageType, messageObject);
-            message.CorrelationId = correlationToken;
-            message.Headers = new Dictionary<string, object>
+            if (string.IsNullOrEmpty(messageType))
             {
-                ["SdrnServer"] = this._environmentDescriptor.SdrnServerInstance,
-                ["SensorName"] = this._environmentDescriptor.SdrnDeviceSensorName,
-                ["SensorTechId"] = this._environmentDescriptor.SdrnDeviceSensorTechId,
-                ["Created"] = DateTime.Now.ToString("o")
-            };
+                throw new ArgumentNullException(nameof(messageType));
+            }
+            if (string.IsNullOrEmpty(_config.SdrnServerInstance))
+            {
+                throw new ArgumentException("Undefined a server instance");
+            }
+            if (string.IsNullOrEmpty(_config.SdrnDeviceSensorName))
+            {
+                throw new ArgumentException("Undefined a sensor name");
+            }
+            if (string.IsNullOrEmpty(_config.SdrnDeviceSensorTechId))
+            {
+                throw new ArgumentException("Undefined a sensor tech ID");
+            }
 
-            var messageId = this._rabbitBus.Publish(exchange.Exchange, exchange.RoutingKey, message);
+            try
+            {
+                var message = this._messagePacker.Pack<TObject>(messageType, messageObject, _config.SdrnServerInstance, _config.SdrnDeviceSensorName, _config.SdrnDeviceSensorTechId, correlationToken);
+                var token = new MessageToken(message.Id, message.Type);
 
-            var token = new MessageToken(messageId, messageType);
-            return token;
+                if (_config.OutboxBufferConfig.Type == BufferType.Filesystem)
+                {
+                    this._buffer.Save(message);
+                    this._logger.Verbouse("DeviceBus.MessageSending", $"The message is saved in the buffer: {message}, Buffer={_config.OutboxBufferConfig.Type}", this);
+                }
+                else if (_amqpPublisher.TryToSend(message))
+                {
+                    this._logger.Verbouse("DeviceBus.MessageSending", $"The message is sent immediately: {message}", this);
+                    return token;
+                }
+                else
+                {
+                    throw new InvalidOperationException("The Device Bus is not available");
+                }
+
+                return token;
+            }
+            catch (Exception e)
+            {
+                var message = $"Failed to send message: {messageType}";
+
+                this._logger.Exception("DeviceBus.MessageSending", message, e, this);
+                throw new InvalidOperationException(message, e);
+            }
+
         }
 
-        //private byte[] SerializeObjectToByteArray<TObject>(TObject source)
-        //{
-        //    if (source == null)
-        //    {
-        //        return new byte[] { };
-        //    }
-
-        //    byte[] result = null;
-
-        //    var json = JsonConvert.SerializeObject(source);
-        //    result = Encoding.UTF8.GetBytes(json);
-
-        //    return result;
-        //}
+        
     }
 }

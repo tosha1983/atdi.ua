@@ -370,6 +370,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             builderMeasDtParam.Select(c => c.SwNumber);
             builderMeasDtParam.Select(c => c.Rfattenuation);
             builderMeasDtParam.Select(c => c.Vbw);
+            builderMeasDtParam.Select(c => c.ReferenceLevel);
+            builderMeasDtParam.Select(c => c.NumberTotalScan);
             builderMeasDtParam.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, Id);
             queryExecuter.Fetch(builderMeasDtParam, readerMeasDtParam =>
             {
@@ -392,6 +394,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     measDtParam.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation);
 
                     measDtParam.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
+                    measDtParam.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
+                    measDtParam.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
                     measDtParam.SwNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
 
                 }

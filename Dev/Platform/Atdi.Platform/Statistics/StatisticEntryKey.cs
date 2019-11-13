@@ -20,8 +20,7 @@ namespace Atdi.Platform
 
         public override bool Equals(object obj)
         {
-            var key = obj as StatisticEntryKey<T>;
-            return key != null &&
+            return obj is StatisticEntryKey<T> key &&
                    Name == key.Name;
         }
 

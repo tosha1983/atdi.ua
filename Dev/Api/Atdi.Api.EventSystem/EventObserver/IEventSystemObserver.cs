@@ -161,6 +161,25 @@ namespace Atdi.Api.EventSystem
             observer.OnEvent(@event);
         }
 
+        public static void Info(this IEventSystemObserver observer, string context, string text, object source)
+        {
+            if (observer == null)
+            {
+                return;
+            }
+
+            var @event = new Event
+            {
+                Code = 0,
+                Level = EventSystemEventLevel.Info,
+                Context = context,
+                Source = source?.GetType().Name,
+                Text = text
+            };
+
+            observer.OnEvent(@event);
+        }
+
         public static void Critical(this IEventSystemObserver observer, int code, string context, string text, object source)
         {
             if (observer == null)

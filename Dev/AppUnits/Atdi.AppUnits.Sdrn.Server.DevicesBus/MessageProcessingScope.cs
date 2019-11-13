@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Modules.Sdrn.DeviceBus;
 
 namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 {
@@ -43,18 +44,27 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
             public string BodyContentType;
             public string BodyContentEncoding;
             public byte[] BodyContent;
-            
+
+            //public string HeaderApiVersion;
+
+            public string HeaderProtocol;
+
+            public string HeaderBodyAqName;
+
         }
         private readonly long _messageId;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
+        private readonly ISdrnServerEnvironment _environment;
         private readonly ILogger _logger;
         private bool _isDisposed = false;
-
-        public MessageProcessingScope(long messageId, IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        private readonly string _sharedSecretKey;
+        public MessageProcessingScope(long messageId, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger)
         {
             this._messageId = messageId;
             this._dataLayer = dataLayer;
+            this._environment = environment;
             this._logger = logger;
+            this._sharedSecretKey = _environment.GetSharedSecretKey("DeviceBus");
             this.LoadMessageFromStorage();
         }
 
@@ -71,15 +81,17 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
                     c => c.HeaderSensorName,
                     c => c.HeaderSensorTechId,
                     c => c.PropContentType,
-                    c => c.PropContentEncoding
+                    c => c.PropContentEncoding,
+                    c => c.HeaderBodyAQName,
+                    c => c.HeaderProtocol
                     )
                 .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
 
-            AmqpMessage amqpMessage = new AmqpMessage();
+            var amqpMessage = new AmqpMessage();
 
-            queryExecuter.Fetch(query, reader =>
+            queryExecutor.Fetch(query, reader =>
             {
                 if (!reader.Read())
                 {
@@ -95,11 +107,13 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
                 amqpMessage.HeaderSensorTechId = reader.GetValue(c => c.HeaderSensorTechId);
                 amqpMessage.PropContentType = reader.GetValue(c => c.PropContentType);
                 amqpMessage.PropContentEncoding = reader.GetValue(c => c.PropContentEncoding);
+                amqpMessage.HeaderBodyAqName = reader.GetValue(c => c.HeaderBodyAQName);
+                amqpMessage.HeaderProtocol = reader.GetValue(c => c.HeaderProtocol);
 
                 return true;
             });
 
-            if (amqpMessage.StatusCode == 2)
+            if (amqpMessage.StatusCode == (byte)MessageProcessingStatus.Processing)
             {
                 throw new InvalidOperationException($"The message with ID #{_messageId} has invalid status code #{amqpMessage.StatusCode}");
             }
@@ -110,14 +124,19 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
             this.Status = MessageProcessingStatus.Processing;
 
             var content = amqpMessage.BodyContent;
-
-            if ("compressed".Equals(amqpMessage.BodyContentEncoding, StringComparison.OrdinalIgnoreCase) )
+            var encoding = Protocol.ContentEncoding.Decode(amqpMessage.BodyContentEncoding);
+            if (encoding.UseCompression)
             {
                 content = Compressor.Decompress(content);
             }
-            if ("json".Equals(amqpMessage.BodyContentType, StringComparison.OrdinalIgnoreCase))
+
+            // пока тело сообщение в первичном виде (тип Json временный, будет исключен через версию.)
+            if (Protocol.ContentType.QualifiedOriginal.Equals(amqpMessage.BodyContentType, StringComparison.OrdinalIgnoreCase)
+                || Protocol.ContentType.Json.Equals(amqpMessage.BodyContentType, StringComparison.OrdinalIgnoreCase))
             {
-                this.Delivery = this.Deserialize<TDeliveryObject>(content, amqpMessage.PropContentType, amqpMessage.PropContentEncoding);
+                this.Delivery = (TDeliveryObject)BusMessagePacker.Unpack(amqpMessage.PropContentType, amqpMessage.PropContentEncoding,
+                    amqpMessage.HeaderProtocol, content, amqpMessage.HeaderBodyAqName, _sharedSecretKey);
+                //this.Deserialize<TDeliveryObject>(content, amqpMessage.PropContentType, amqpMessage.PropContentEncoding);
             }
             else
             {
@@ -126,11 +145,11 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
             var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
                 .Update()
-                .SetValue(c => c.StatusCode, (byte)2)
+                .SetValue(c => c.StatusCode, (byte)MessageProcessingStatus.Processing)
                 .SetValue(c => c.ProcessedStartDate, DateTimeOffset.Now)
                 .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
-            queryExecuter.Execute(updateQuery);
+            queryExecutor.Execute(updateQuery);
         }
 
         public string SensorName { get; set; }
@@ -143,44 +162,44 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
         public string ResultNote { get; set; }
 
-        private T Deserialize<T>(byte[] content, string contentType, string contentEncoding)
-        {
+        //private T Deserialize<T>(byte[] content, string contentType, string contentEncoding)
+        //{
 
-            var json = Encoding.UTF8.GetString(content);
-            var type = typeof(T);
+        //    var json = Encoding.UTF8.GetString(content);
+        //    var type = typeof(T);
             
-            if ("application/sdrn".Equals(contentType, StringComparison.OrdinalIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(contentEncoding))
-                {
-                    if (contentEncoding.Contains("encrypted"))
-                    {
-                        json = Encryptor.Decrypt(json);
-                    }
-                    if (contentEncoding.Contains("compressed"))
-                    {
-                        // пока не подключен компрессор 
-                        // json = json;
-                    }
-                }
+        //    if ("application/sdrn".Equals(contentType, StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        if (!string.IsNullOrEmpty(contentEncoding))
+        //        {
+        //            if (contentEncoding.Contains("encrypted"))
+        //            {
+        //                json = Encryptor.Decrypt(json);
+        //            }
+        //            if (contentEncoding.Contains("compressed"))
+        //            {
+        //                // пока не подключен компрессор 
+        //                // json = json;
+        //            }
+        //        }
 
-                var messageBody = JsonConvert.DeserializeObject<MessageBody>(json);
-                var msgObjectType = Type.GetType(messageBody.Type);
-                if (type != msgObjectType)
-                {
-                    throw new InvalidOperationException($"Unexpected type '{msgObjectType.AssemblyQualifiedName}'. Expected type '{type.AssemblyQualifiedName}'");
-                }
-                json = messageBody.JsonBody;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Unsupported content type '{contentType}'");
-            }
+        //        var messageBody = JsonConvert.DeserializeObject<MessageBody>(json);
+        //        var msgObjectType = Type.GetType(messageBody.Type);
+        //        if (type != msgObjectType)
+        //        {
+        //            throw new InvalidOperationException($"Unexpected type '{msgObjectType.AssemblyQualifiedName}'. Expected type '{type.AssemblyQualifiedName}'");
+        //        }
+        //        json = messageBody.JsonBody;
+        //    }
+        //    else
+        //    {
+        //        throw new InvalidOperationException($"Unsupported content type '{contentType}'");
+        //    }
 
-            var result = JsonConvert.DeserializeObject(json, type);
+        //    var result = JsonConvert.DeserializeObject(json, type);
 
-            return (T)result;
-        }
+        //    return (T)result;
+        //}
 
         public void Dispose()
         {
@@ -198,16 +217,17 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
                     this.ResultNote = "The message processing status not acknowledged";
                 }
 
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
 
                 var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
                 .Update()
                 .SetValue(c => c.StatusCode, (byte)this.Status)
+                .SetValue(c => c.StatusName, this.Status.ToString())
                 .SetValue(c => c.StatusNote, this.ResultNote)
                 .SetValue(c => c.ProcessedFinishDate, DateTimeOffset.Now)
                 .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
-                queryExecuter.Execute(updateQuery);
+                queryExecutor.Execute(updateQuery);
             }
             catch (Exception e)
             {
@@ -217,10 +237,10 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
         }
     }
 
-    public class MessageBody
-    {
-        public string Type { get; set; }
+    //public class MessageBody
+    //{
+    //    public string Type { get; set; }
 
-        public string JsonBody { get; set; }
-    }
+    //    public string JsonBody { get; set; }
+    //}
 }

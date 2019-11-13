@@ -121,7 +121,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
                 sqlWhere = context.BuildConditionExpression(expression.Condition); //+";";
             }
 
-            context.Builder.Delete(expression.Target.Schema, expression.Target.Name, sqlFrom, sqlJoins.ToArray(), sqlWhere);
+            context.Builder.Delete(expression.Target.Schema, expression.Target.Name, sqlFrom, sqlJoins.ToArray(), sqlWhere, sourceAliasName);
         }
     }
 }

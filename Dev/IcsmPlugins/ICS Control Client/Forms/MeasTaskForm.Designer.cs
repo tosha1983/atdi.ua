@@ -38,6 +38,7 @@
             this.Name = "MeasTaskForm";
             this.Text = "ICS Control Client - Meas Task";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MeasTaskForm_FormClosed);
             this.Load += new System.EventHandler(this.MeasTaskForm_Load);
             this.ResumeLayout(false);
 

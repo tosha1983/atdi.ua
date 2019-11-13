@@ -45,7 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceBus\BusMessage.cs" />
     <Compile Include="Compressor.cs" />
+    <Compile Include="DeviceBus\BusMessagePacker.cs" />
+    <Compile Include="DeviceBus\Compressor.cs" />
+    <Compile Include="DeviceBus\Encryptor.cs" />
+    <Compile Include="DeviceBus\LocalBinder.cs" />
+    <Compile Include="DeviceBus\Protocol.cs" />
     <Compile Include="Encryptor.cs" />
     <Compile Include="IMessageObjectTypeResolver.cs" />
     <Compile Include="Message.cs" />
@@ -73,5 +79,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -37,6 +37,11 @@ namespace Atdi.Api.Sdrn.Device.BusController
             this.OnHandleMethod = instanceType.GetMethod("OnHandle");
         }
 
+        public static Type MakeReceivedMessageGenericType<TObject>()
+        {
+            return ReceivedMessageType.MakeGenericType(new Type[] {typeof(TObject)});
+        }
+
         public object Instance { get; }
 
         public string MessageType { get;  }

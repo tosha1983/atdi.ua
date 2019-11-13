@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
+using Atdi.Modules.AmqpBroker;
+using Atdi.Modules.Sdrn.DeviceBus;
 using Atdi.Modules.Sdrn.MessageBus;
 
 namespace Atdi.Api.Sdrn.Device.BusController
@@ -11,39 +10,67 @@ namespace Atdi.Api.Sdrn.Device.BusController
     internal sealed class BusGate : IBusGate
     {
         private readonly BusLogger _logger;
-        private readonly EnvironmentDescriptor _environmentDescriptor;
-        private readonly MessageConverter _messageConverter;
+        private readonly DeviceBusConfig _config;
+        private readonly IBufferProcessing _bufferProcessing;
+        private readonly ConnectionFactory _amqpConnectionFactory;
+        private readonly BusMessagePacker _messagePacker;
+        private readonly AmqpPublisher _amqpPublisher;
 
-        internal BusGate(string tag, EnvironmentDescriptor environmentDescriptor, MessageConverter messageConverter, BusLogger logger)
+        internal BusGate(string tag, DeviceBusConfig config, BusLogger logger)
         {
             this.Tag = tag;
             this._logger = logger;
-            this._environmentDescriptor = environmentDescriptor;
-            this._messageConverter = messageConverter;
+            this._config = config;
+
+            this._messagePacker = new BusMessagePacker(new PackerOptions
+            {
+                ContentType = config.DeviceBusContentType,
+                ApiVersion = config.SdrnApiVersion,
+                Protocol = config.DeviceBusProtocol,
+                Application = config.DeviceBusClient,
+                SharedSecretKey = config.DeviceBusSharedSecretKey,
+                UseEncryption = config.SdrnMessageConvertorUseEncryption,
+                UseCompression = config.SdrnMessageConvertorUseCompression
+            });
+
+            this._amqpConnectionFactory = new ConnectionFactory(this._logger);
+            this._amqpPublisher = new AmqpPublisher(config, this._amqpConnectionFactory, this._logger);
+
+            if (_config.OutboxBufferConfig.Type == BufferType.Filesystem)
+            {
+                _bufferProcessing = new FileSystemBufferProcessing(this._config, this._amqpPublisher, this._messagePacker, this._logger);
+            }
+            else if (_config.OutboxBufferConfig.Type != BufferType.None)
+            {
+                throw new InvalidOperationException($"Unsupported the buffer type with name '{_config.OutboxBufferConfig.Type}'");
+            }
+
+            _bufferProcessing?.Start();
         }
 
         public string Tag { get; }
 
-        public IBusGateConfig Config => this._environmentDescriptor.GateConfig;
+        public IBusGateConfig Config => this._config.GateConfig;
 
         public IMessageDispatcher CreateDispatcher(string dispatcherTag, IBusEventObserver eventObserver = null)
         {
             try
             {
-                BusLogger logger = _logger;
+                var logger = _logger;
                 if (eventObserver != null)
                 {
                     logger = new BusLogger(eventObserver);
                 }
 
-                var dispatcher = new MessageDispatcher(dispatcherTag, this._environmentDescriptor, this._messageConverter, logger);
-                logger.Info(0, "CreateDispatcher", "The object of the dispatcher was created saccessfully", this);
+                var dispatcher = new MessageDispatcher(dispatcherTag, this._config, this._amqpConnectionFactory, this._messagePacker, logger);
+
+                logger.Info(0, "DeviceBus.DispatcherCreation", $"The message dispatcher is created successfully: Tag='{dispatcherTag}', {this}", this);
 
                 return dispatcher;
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException("The object of the dispatcher was not created", e);
+                throw new InvalidOperationException($"The message dispatcher is not created: Tag='{dispatcherTag}', {this}", e);
             }
         }
 
@@ -51,25 +78,34 @@ namespace Atdi.Api.Sdrn.Device.BusController
         {
             try
             {
-                BusLogger logger = _logger;
+                var logger = _logger;
                 if (eventObserver != null)
                 {
                     logger = new BusLogger(eventObserver);
                 }
 
-                var publisher = new MessagePublisher(publisherTag, this._environmentDescriptor, this._messageConverter, logger);
-                logger.Info(0, "CreatePublisher", "The object of the publisher was created saccessfully", this);
+                var publisher = new MessagePublisher(publisherTag, this._config, this._bufferProcessing, _amqpPublisher, _messagePacker, logger);
+
+                logger.Info(0, "DeviceBus.PublisherCreation", $"The message publisher is created successfully: Tag='{publisherTag}', {this}", this);
 
                 return publisher;
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException("The object of the publisher was not created", e);
+                throw new InvalidOperationException($"The message publisher is not created: Tag='{publisherTag}', {this}", e);
             }
         }
 
         public void Dispose()
         {
+            _bufferProcessing?.Stop();
+            _amqpPublisher.Dispose();
+            this._logger.Verbouse("DeviceBus.GateDisposing", $"The gate is disposed successfully: {this}", this);
+        }
+
+        public override string ToString()
+        {
+            return $"Gate='{Tag}'";
         }
     }
 }

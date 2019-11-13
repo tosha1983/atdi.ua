@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Atdi.Platform.Logging.EventsConsumers
 {
@@ -11,7 +8,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
     {
         private readonly IResourceResolver _resourceResolver;
         private string _offset = "";
-        private int _offsetValue = 0;
+        private int _offsetValue;
 
         public ColorConsoleEventWriter(IResourceResolver resourceResolver)
         {
@@ -36,7 +33,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
 
         private void WriteEventRow(IEvent @event)
         {
-            this.Write($"({Thread.CurrentThread.ManagedThreadId}) ", ConsoleColor.Red);
+            //this.Write($"({Thread.CurrentThread.ManagedThreadId}) ", ConsoleColor.Red);
 
             // the part of time
             var timeFormat = "HH:mm:ss";
@@ -49,14 +46,14 @@ namespace Atdi.Platform.Logging.EventsConsumers
 
             var timeFormat3 = "FFFFFFF";
             var timeString3 = @event.Time.ToString(timeFormat3).PadRight(timeFormat3.Length, '0');
-            this.Write($".{timeString3.Substring(3)}", ConsoleColor.DarkGray);
+            this.Write($"{timeString3.Substring(3)}", ConsoleColor.DarkGray);
 
             //var ticksString = @event.Time.Ticks.ToString();
             //this.Write($" {ticksString.Substring(ticksString.Length - 12)}", ConsoleColor.Gray);
 
             // the part of thread
             var treadString = $" #{@event.ManagedThread:D4}";
-            this.Write(treadString, ConsoleColor.DarkGray);
+            this.Write(treadString, ConsoleColor.Yellow);
 
             // the part of event level
             var levelColor = GetColorbyEventLevel(@event.Level);
@@ -66,7 +63,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             this.Write($"]");
 
             // the part of context
-            var contextCategorySectionSize = 35;
+            var contextCategorySectionSize = 100;
             var contextName = this._resourceResolver.Resolve(@event.Context.Name);
             if (contextName.Length > contextCategorySectionSize)
             {
@@ -77,7 +74,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             {
                 contextCategorySectionSize -= contextName.Length;
             }
-            this.Write(" " + contextName);
+            this.Write(" " + contextName, ConsoleColor.White);
 
             if (!string.IsNullOrEmpty(@event.Category.Name) && contextCategorySectionSize > 2)
             {
@@ -96,7 +93,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
                         contextCategorySectionSize -= category.Length + 2;
                     }
                     this.Write("(", ConsoleColor.White);
-                    this.Write(category, ConsoleColor.DarkGray);
+                    this.Write(category, ConsoleColor.DarkCyan);
                     this.Write(")", ConsoleColor.White);
                 }
             }
@@ -112,13 +109,27 @@ namespace Atdi.Platform.Logging.EventsConsumers
             {
                 eventText = this._resourceResolver.Resolve(text.Text, text.Args);
             }
-
+            else if (@event is IDebugEvent && !(@event is IBeginTraceEvent) && !(@event is IEndTraceEvent))
+            {
+                eventText = "-- Data info --";
+            }
+            this.Write(Environment.NewLine + "     ");
             // the part of trace
             if (@event is ITraceEvent traceEvent)
             {
+                if (traceEvent.Duration.HasValue)
+                {
+                    var durationMsString = traceEvent.Duration.Value.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
+                    //var durationTksString = traceEvent.Duration.Value.Ticks.ToString();
+
+                    this.Write($"+", ConsoleColor.White);
+                    this.Write($"{durationMsString}", levelColor);
+                    this.Write($"ms ", ConsoleColor.White);
+                }
+
                 if (traceEvent is IBeginTraceEvent beginTraceEvent)
                 {
-                    this.Write($": Begin scope '", ConsoleColor.White);
+                    this.Write($"Begin scope '", ConsoleColor.White);
                     this.Write($"{beginTraceEvent.ScopeData.Name}", levelColor);
                     this.Write($"'", ConsoleColor.White);
                 }
@@ -126,28 +137,18 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 {
                     if (traceEvent is IEndTraceEvent endTraceEvent)
                     {
-                        this.Write($": End scope '", ConsoleColor.White);
+                        this.Write($"End scope '", ConsoleColor.White);
                         this.Write($"{endTraceEvent.ScopeData.Name}", levelColor);
                         this.Write($"'", ConsoleColor.White);
                     }
                     else
                     {
-                        this.Write($": Scope '", ConsoleColor.White);
+                        this.Write($"Scope '", ConsoleColor.White);
                         this.Write($"{traceEvent.ScopeData.Name}", levelColor);
                         this.Write($"'", ConsoleColor.White);
                     }
                 }
-                if (traceEvent.Duration.HasValue)
-                {
-                    var durationMsString = traceEvent.Duration.Value.TotalMilliseconds.ToString();
-                    var durationTksString = traceEvent.Duration.Value.Ticks.ToString();
-
-                    this.Write($" (", ConsoleColor.White);
-                    this.Write($"+{durationMsString}", levelColor);
-                    this.Write($"ms/", ConsoleColor.White);
-                    this.Write($"+{durationTksString}", levelColor);
-                    this.Write($"ts)", ConsoleColor.White);
-                }
+                
 
                 if (!string.IsNullOrEmpty(eventText))
                 {
@@ -189,8 +190,10 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 else
                 {
                     // the user event text
-                    this.Write($": '", ConsoleColor.White);
-                    this.Write($"{eventText}", levelColor);
+                    this.Write($"'", ConsoleColor.White);
+                    //this.Write($"{eventText.Replace(":", ":" + Environment.NewLine + "                                                                     ")}", levelColor);
+                    //this.Write($"{Wrap(eventText, 100, Environment.NewLine + "                                                                    ")}");
+                    this.Write($"{Wrap(eventText, 100, Environment.NewLine + "      ")}",levelColor);
                     this.Write($"'", ConsoleColor.White);
                 }
             }
@@ -206,6 +209,35 @@ namespace Atdi.Platform.Logging.EventsConsumers
             }
 
             this.Write(Environment.NewLine);
+        }
+
+        public static string Wrap(string text, int margin, string separator)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            int start = 0, end;
+            var lines = new List<string>(text.Length / margin + 1);
+            //text = Regex.Replace(text, @"\s", " ").Trim();
+
+            while ((end = start + margin) < text.Length)
+            {
+                while (text[end] != ' ' && end > start)
+                    end -= 1;
+
+                if (end == start)
+                    end = start + margin;
+
+                lines.Add(text.Substring(start, end - start));
+                start = end + 1;
+            }
+
+            if (start < text.Length)
+                lines.Add(text.Substring(start));
+
+            return string.Join(separator, lines.ToArray());
         }
 
         private ConsoleColor GetColorbyEventLevel(EventLevel level)
@@ -242,7 +274,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 case EventLevel.Debug:
                     return "--Debug--";
                 case EventLevel.Verbouse:
-                    return "Verbouse-";
+                    return "-Verbose-";
                 case EventLevel.Info:
                     return "--Info---";
                 case EventLevel.Warning:
@@ -264,7 +296,11 @@ namespace Atdi.Platform.Logging.EventsConsumers
                 return;
 
             //this.WriteLine("");
-            this.WriteLine(" -- Data info -- ");
+            //if (string.IsNullOrEmpty(@event.Text.Text))
+            //{
+            //    this.WriteLine(" -- Data info -- ");
+            //}
+            
             //this.WriteLine("");
 
             foreach (var item in @event.Data)

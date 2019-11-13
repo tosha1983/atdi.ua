@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Atdi.Modules.AmqpBroker
+﻿namespace Atdi.Modules.AmqpBroker
 {
-    public class Compressor
+    public static class Compressor
     {
         public static string Compress(string source)
         {

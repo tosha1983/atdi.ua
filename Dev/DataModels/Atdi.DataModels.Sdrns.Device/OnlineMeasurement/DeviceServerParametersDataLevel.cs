@@ -18,5 +18,6 @@ namespace Atdi.DataModels.Sdrns.Device.OnlineMeasurement
         public bool isChanged_PreAmp_dB { get; set; }
         public int RefLevel_dBm { get; set; }
         public bool isChanged_RefLevel_dBm { get; set; }
+        public double AntennaFactor { get; set; }
     }
 }

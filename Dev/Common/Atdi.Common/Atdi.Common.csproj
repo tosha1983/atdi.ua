@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BreakDownElemBlocks.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\SerializationExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

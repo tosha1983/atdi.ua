@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using Atdi.Api.Sdrn.Device.BusController;
@@ -12,20 +15,54 @@ using Newtonsoft.Json;
 
 namespace Atdi.Test.Api.Sdrn.Device.BusController
 {
-    class JsonData
+    internal class JsonData
     {
-        public string Type;
-        public string JsonBody;
+        public string Type { get; set; } = null;
+        public string JsonBody { get; set; } = null;
+
     }
     class Program
     {
         static void Main(string[] args)
         {
-            while(true)
+            Console.WriteLine($"Press [Enter] to start testing ...");
+            Console.ReadLine();
+
+            var source = new CancellationTokenSource();
+            var options = new object[][]
             {
-                Test1();
+                new object[]{ 1, "Sdrn", "false", "false"},
+                new object[]{ 2, "Sdrn", "true", "false"},
+                new object[]{ 3, "Sdrn", "false", "true"},
+                new object[]{ 4, "Sdrn", "true", "true"},
+
+                new object[]{ 5, "Binary", "false", "false"},
+                new object[]{ 6, "Binary", "true", "false"},
+                new object[]{ 7, "Binary", "false", "true"},
+                new object[]{ 8, "Binary", "true", "true"},
+
+                new object[]{ 9, "Json", "false", "false"},
+                new object[]{ 10, "Json", "true", "false"},
+                new object[]{ 11, "Json", "false", "true"},
+                new object[]{ 12, "Json", "true", "true"},
+
+                new object[]{ 13, "Xml", "false", "false"},
+                new object[]{ 14, "Xml", "true", "false"},
+                new object[]{ 15, "Xml", "false", "true"},
+                new object[]{ 16, "Xml", "true", "true"}
+            };
+            foreach (var option in options)
+            {
+                var op = option;
+                Task.Run(() =>
+                {
+                    Thread.CurrentThread.Name = $"ATDI.TestSensor.#{op[0]}";
+                    TestSensor(source.Token, (int)op[0], (string)op[1], (string)op[2], (string)op[3]);
+                }, source.Token);
             }
-            
+
+            Console.ReadLine();
+            source.Cancel();
         }
 
         static void Test()
@@ -225,30 +262,15 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             busGate.Dispose();
         }
 
-        static void Test1()
+        public static DM.Sensor GetSensor(int index)
         {
-            Console.WriteLine($"Press [Enter] to start testing ...");
-             Console.ReadLine();
-
-            var gateFactory = BusGateFactory.Create();
-            var gate = CreateGate(gateFactory);
-
-            //var dispatcher = gate.CreateDispatcher("main");
-            //dispatcher.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            //dispatcher.RegistryHandler(new Handlers.SendCommandHandler(gate));
-            //dispatcher.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
-            //dispatcher.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
-            //dispatcher.Activate();
-
-
-            var publisher = gate.CreatePublisher("main");
-
-            var sensor = new DM.Sensor
+            return new DM.Sensor
             {
                 Name = "SENSOR-DBD12-A00-1280",
                 Equipment = new DM.SensorEquipment
                 {
-                    TechId = "Atdi.Sdrn.Device.Client.API"
+                    TechId = $"0000000.#{index}",
+
                 },
                 Administration = "Administration",
                 Antenna = new SensorAntenna
@@ -267,74 +289,155 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     Name = "SensorAntenna",
                     Polarization = DataModels.Sdrns.AntennaPolarization.V,
                     TechId = "SensorAntenna.TechId",
-                    
+
                 },
                 Type = "Type",
                 Status = "A",
                 RxLoss = 20
             };
+        }
 
-            //publisher.Send("RegisterSensor", sensor, $"testing ");
+        static void TestSensor(CancellationToken token, int index, string contentType, string encrypted, string compress)
+        {
+            
+
+            var sensor = Program.GetSensor(index);
+
+            var gateFactory = BusGateFactory.Create();
+            var gate = CreateGate(gateFactory, sensor, index, contentType, encrypted, compress);
+
+            var dispatcher1 = gate.CreateDispatcher($"SDRN.SensorDispatcher.#{index}");
+            //dispatcher1.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+            //dispatcher1.RegistryHandler(new Handlers.SendCommandHandler(gate));
+            dispatcher1.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate, index));
+            dispatcher1.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate, index));
+            dispatcher1.Activate();
+
+            //var dispatcher2 = gate.CreateDispatcher("SensorMessageDispatcher2");
+            ////dispatcher2.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+            ////dispatcher2.RegistryHandler(new Handlers.SendCommandHandler(gate));
+            ////dispatcher2.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
+            //dispatcher2.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
+            //dispatcher2.Activate();
+
+            //var dispatcher3 = gate.CreateDispatcher("SensorMessageDispatcher3");
+            //dispatcher3.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+            //dispatcher3.RegistryHandler(new Handlers.SendCommandHandler(gate));
+            ////dispatcher2.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
+            ////dispatcher3.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
+            //dispatcher3.Activate();
+
             //Console.ReadLine();
 
-            var res = LoadFromFiles(@"C:\Users\andrey\Downloads\2019-May-28_11.35_queue_Q.SDRN.Server");
-            for (int i = 0; i < res.Length; i++)
+            var publisher = gate.CreatePublisher($"SDRN.SensorPublisher.#{index}");
+            //var source = new CancellationTokenSource();
+            //Task.Run(() =>
+            //{
+            //    var r = new Random();
+            //    while (!source.Token.IsCancellationRequested)
+            //    {
+            //        var time = r.Next(200, 500) * 100;
+            //        Thread.Sleep(time);
+
+            //        DisableNetworkInterface("Ethernet0");
+
+            //        time = r.Next(20, 100) * 100;
+            //        Thread.Sleep(time);
+
+            //        EnableNetworkInterface("Ethernet0");
+
+            //    }
+            //});
+
+            //for (var j = 0; j < 10; j++)
+            //{
+            //    Task.Run(() =>
+            //    {
+            //        for (var i = 0; i < 100; i++)
+            //        {
+            //            publisher.Send("RegisterSensor", sensor, $"{j}.testing {i}");
+            //            //Console.ReadLine();
+            //            //Thread.Sleep(5);
+            //        }
+            //    });
+            //}
+
+
+               
+            for (var i = 0; i < 1000; i++)
             {
-                var item = res[i];
-              //  item.Measured = item.Measured.AddDays(i);
-                publisher.Send("SendMeasResults", item, $"MonitoringStations");
-                Console.WriteLine($"TASK ID: {item.TaskId}");
+                publisher.Send("RegisterSensor", sensor, $"{index}.testing {i}");
             }
 
-            Console.WriteLine($"Test finished ...");
-            Console.ReadLine();
-            var measMSResult = BuildTestMeasResultsMonitoringStations();
+            while (!token.IsCancellationRequested)
+            {
+                Thread.Sleep(1000);
+            }
+
+            return;
+
+
+            //Console.ReadLine();
+            ////source.Cancel();
+
+            //var res = LoadFromFiles(@"C:\Users\andrey\Downloads\2019-May-28_11.35_queue_Q.SDRN.Server");
+            //for (int i = 0; i < res.Length; i++)
+            //{
+            //    var item = res[i];
+            //  //  item.Measured = item.Measured.AddDays(i);
+            //    publisher.Send("SendMeasResults", item, $"MonitoringStations");
+            //    Console.WriteLine($"TASK ID: {item.TaskId}");
+            //}
+
+            //Console.WriteLine($"Test finished ...");
+            //Console.ReadLine();
+            //var measMSResult = BuildTestMeasResultsMonitoringStations();
             
 
 
-            var measResult = BuildTestMeasResults();
-            var commandResult = new DeviceCommandResult()
-            {
-                CommandId = Guid.NewGuid().ToString()
-            };
+            //var measResult = BuildTestMeasResults();
+            //var commandResult = new DeviceCommandResult()
+            //{
+            //    CommandId = Guid.NewGuid().ToString()
+            //};
 
-            var entity = new Entity
-            {
-                EntityId = Guid.NewGuid().ToString(),
-                ContentType = "xml",
-                Description = "The some data",
-                Encoding = "",
-                Name = "Test object",
-                PartIndex = 1,
-                EOF = true,
-                Content = new byte[250]
-            };
+            //var entity = new Entity
+            //{
+            //    EntityId = Guid.NewGuid().ToString(),
+            //    ContentType = "xml",
+            //    Description = "The some data",
+            //    Encoding = "",
+            //    Name = "Test object",
+            //    PartIndex = 1,
+            //    EOF = true,
+            //    Content = new byte[250]
+            //};
 
-            var entityPart = new EntityPart()
-            {
-                EOF = true,
-                EntityId = entity.EntityId,
-                Content = new byte[250]
-            };
-            var count = 1;
-            for (int i = 0; i < count; i++)
-            {
-                publisher.Send("RegisterSensor", sensor, $"ID #{i}");
-                Console.ReadLine();
-                publisher.Send("UpdateSensor", sensor, $"ID #{i}");
-                Console.ReadLine();
-                publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
-                Console.ReadLine();
+            //var entityPart = new EntityPart()
+            //{
+            //    EOF = true,
+            //    EntityId = entity.EntityId,
+            //    Content = new byte[250]
+            //};
+            //var count = 1;
+            //for (int i = 0; i < count; i++)
+            //{
+            //    publisher.Send("RegisterSensor", sensor, $"ID #{i}");
+            //    Console.ReadLine();
+            //    publisher.Send("UpdateSensor", sensor, $"ID #{i}");
+            //    Console.ReadLine();
+            //    publisher.Send("SendCommandResult", commandResult, $"ID #{i}");
+            //    Console.ReadLine();
 
-                publisher.Send("SendMeasResults", measResult, $"ID #{i}");
-                Console.ReadLine();
+            //    publisher.Send("SendMeasResults", measResult, $"ID #{i}");
+            //    Console.ReadLine();
 
 
-                publisher.Send("SendEntity", entity, $"#{i}");
-                publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
+            //    publisher.Send("SendEntity", entity, $"#{i}");
+            //    publisher.Send("SendEntityPart", entityPart, $"ID #{i}");
 
-                Console.WriteLine(i);
-            }
+            //    Console.WriteLine(i);
+            //}
 
 
             //for (int i = 0; i < 5; i++)
@@ -354,23 +457,47 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             //}
 
             // обязательно все почистить
-            publisher.Dispose();
+            //publisher.Dispose();
             //dispatcher.Deactivate();
             //dispatcher.Dispose();
 
-            Console.ReadLine();
+           // Console.ReadLine();
         }
 
-        static IBusGate CreateGate(IBusGateFactory gateFactory)
+        private static void EnableNetworkInterface(string interfaceName)
         {
-            var gateConfig = CreateConfig(gateFactory);
-            var gate = gateFactory.CreateGate("MainGate", gateConfig);
+            var psi =
+                new System.Diagnostics.ProcessStartInfo("netsh",
+                    "interface set interface \"" + interfaceName + "\" enable")
+                {
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+            var p = new System.Diagnostics.Process {StartInfo = psi};
+            p.Start();
+        }
+
+        private static void DisableNetworkInterface(string interfaceName)
+        {
+            var psi =
+                new System.Diagnostics.ProcessStartInfo("netsh",
+                    "interface set interface \"" + interfaceName + "\" disable")
+                {
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+            var p = new System.Diagnostics.Process {StartInfo = psi};
+            p.Start();
+        }
+
+        static IBusGate CreateGate(IBusGateFactory gateFactory, DM.Sensor sensor, int index, string contentType, string encrypted, string compress)
+        {
+            var gateConfig = CreateConfig(gateFactory, sensor.Equipment.TechId, index, contentType, encrypted, compress);
+            var gate = gateFactory.CreateGate($"Atdi.DeviceBus.Gate#{index}", gateConfig, new MyEventObserver());
             return gate;
         }
 
 
 
-        static IBusGateConfig CreateConfig(IBusGateFactory gateFactory)
+        static IBusGateConfig CreateConfig(IBusGateFactory gateFactory,string sensorTechId, int index, string contentType, string encrypted, string compress)
         {
             var config = gateFactory.CreateConfig();
 
@@ -379,7 +506,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["License.ProductKey"] = "0VE1-OCOL-S4S0-C1D1-SEXB";
 
             config["RabbitMQ.Host"] = "192.168.33.110";
-            config["RabbitMQ.VirtualHost"] = "Test.SDRN.Control";
+            config["RabbitMQ.VirtualHost"] = "Test.SDRN.SDRNSV-SBD12-A00-8591.DevicesBus";
             config["RabbitMQ.User"] = "andrey";
             config["RabbitMQ.Password"] = "P@ssw0rd";
 
@@ -388,12 +515,20 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
             config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-8591";
             config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
 
-            config["SDRN.Device.SensorTechId"] = "Atdi.Sdrn.Device.Client.API";
+            config["SDRN.Device.SensorTechId"] = sensorTechId;
             config["SDRN.Device.Exchange"] = "EX.SDRN.Device";
             config["SDRN.Device.QueueNamePart"] = "Q.SDRN.Device";
             config["SDRN.Device.MessagesBindings"] = "{messageType=RegisterSensor, routingKey=#01};{messageType=SendCommandResult, routingKey=#02};{messageType=SendMeasResults, routingKey=#03};{messageType=SendEntity, routingKey=#04};{messageType=SendEntityPart, routingKey=#05};{messageType=UpdateSensor, routingKey=#06}";
-            config["SDRN.MessageConvertor.UseEncryption"] = "false";
-            config["SDRN.MessageConvertor.UseCompression"] = "false";
+            config["SDRN.MessageConvertor.UseEncryption"] = encrypted;
+            config["SDRN.MessageConvertor.UseCompression"] = compress;
+
+            config["DeviceBus.Outbox.ContentType"] = contentType;
+            config["DeviceBus.Outbox.UseBuffer"] = "FileSystem";
+            config["DeviceBus.Outbox.Buffer.OutboxFolder"] = "C:\\Temp\\DeviceBus\\" + index;
+            config["DeviceBus.Outbox.Buffer.ContentType"] = "Binary";
+
+            config["DeviceBus.SharedSecretKey"] = "SHDLLKDJKWXXKSDLCJKIWHJKH";
+            config["DeviceBus.Client"] = "Test Client " + Assembly.GetAssembly(typeof(Program)).GetName().Version;
 
             return config;
         }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
+using Atdi.Platform;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
@@ -26,12 +27,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
         private Thread _socketThread;
 
         private ClientDescriptor _descriptor;
+        private readonly IStatisticCounter _deviceShotsCounter;
+        private readonly IStatisticCounter _deviceCapturedCounter;
+        private readonly IStatisticCounter _deviceCapturingCounter;
+        private readonly IStatisticCounter _deviceReleasedCounter;
 
         public MeasurementDispatcher(
             IBusGate busGate,
             IProcessingDispatcher processingDispatcher,
             AppServerComponentConfig config,
             ITaskStarter taskStarter,
+            IStatistics statistics,
             ILogger logger)
         {
             this._busGate = busGate;
@@ -39,6 +45,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
             this._config = config;
             this._taskStarter = taskStarter;
             this._logger = logger;
+
+            if (statistics != null)
+            {
+                var context = "Device";
+                this._deviceShotsCounter = statistics.Counter(Monitoring.DefineProcessOnlineMeasurementCounter(context, "Shots"));
+                this._deviceCapturedCounter = statistics.Counter(Monitoring.DefineProcessOnlineMeasurementCounter(context, "Captured"));
+                this._deviceCapturingCounter = statistics.Counter(Monitoring.DefineProcessOnlineMeasurementCounter(context, "Capturing"));
+                this._deviceReleasedCounter = statistics.Counter(Monitoring.DefineProcessOnlineMeasurementCounter(context, "Released"));
+            }
         }
 
         public DM.OnlineMeasurementResponseData CaptureDevice(DM.InitOnlineMeasurementOptions options)
@@ -51,6 +66,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
             var captured = this.TryCaptureDevice();
             if (captured)
             {
+                this._logger.Info(Contexts.WebSocket, Categories.Running, "The device was captured for online measurement");
+
                 this._descriptor = new ClientDescriptor
                 {
                     OnlineMeasId = options.OnlineMeasId,
@@ -83,7 +100,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
 
             _socketThread = new Thread(() => _descriptor.Server.Run())
             {
-                Name = "Atdi.SDRN.DeviceServer.WebSocket"
+                Name = "ATDI.DeviceServer.SocketProcessing"
             };
 
             _socketThread.Start();
@@ -91,6 +108,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
 
         private bool TryCaptureDevice()
         {
+            this._deviceShotsCounter?.Increment();
             if (_captured)
             {
                 return false;
@@ -102,6 +120,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
                     return false;
                 }
                 _captured = true;
+                this._deviceCapturedCounter?.Increment();
+                this._deviceCapturingCounter?.Increment();
                 return true;
             }
         }
@@ -147,6 +167,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement
                     this._logger.Exception(Contexts.WebSocket, Categories.Handling, e, this);
                 }
                 _captured = false;
+                this._deviceCapturingCounter?.Decrement();
+                this._deviceReleasedCounter?.Increment();
+                this._logger.Info(Contexts.WebSocket, Categories.Running, "The device was released from online measurement");
             }
         }
 

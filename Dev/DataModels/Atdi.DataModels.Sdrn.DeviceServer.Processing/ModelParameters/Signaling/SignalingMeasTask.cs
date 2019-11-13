@@ -25,5 +25,9 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public double? triggerLevel_dBm_Hz { get; set; } // уровень шума на входе приемника по умолчанию измерение автошума = -999 используется в  namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements строка 61 (в хендлере)
         public SignalingInterruptionParameters InterruptionParameters { get; set; }
         public SignalingGroupingParameters GroupingParameters { get; set; }
+        public bool? CorrelationAdaptation { get; set; } // true означает что можно адаптировать коэфициент корреляции. Устанавливается когда первоначально коэфициент корреляции 0.99 и выше.
+        public int? MaxNumberEmitingOnFreq { get; set; } // брать из файла конфигурации.
+        public double? MinCoeffCorrelation { get; set; } // брать из файла конфигурации.
+        public bool? UkraineNationalMonitoring { get; set; } // признак что делается все для Украины
     }
 }

@@ -8,7 +8,7 @@ namespace Atdi.Platform.Logging
 {
     public struct EventContext : IEquatable<EventContext>
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public EventContext(string name)
         {

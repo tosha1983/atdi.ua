@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Api.Sdrn.MessageBus
 {
-    public interface IReceivedMessage<TObject>
+    public interface IReceivedMessage<out TObject>
     {
         IMessageToken Token { get; }
 

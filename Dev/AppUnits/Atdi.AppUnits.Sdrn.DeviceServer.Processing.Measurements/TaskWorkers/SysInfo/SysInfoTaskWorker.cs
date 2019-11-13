@@ -66,24 +66,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                 for (int i = 0; i < context.Task.mesureSystemInfoParameters.Length; i++)
                 {
-                    var mesureSystemInfoParameter = context.Task.mesureSystemInfoParameters[i];
-                    var deviceCommand = new MesureSystemInfoCommand(mesureSystemInfoParameter);
-                    //deviceCommand.Delay = 10000;
-                    deviceCommand.Options = CommandOption.StartImmediately;
-
-                    if (parentProc != null)
-                    {
-                        if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
-                        {
-                            this._controller.SendCommand<MesureSystemInfoResult>(context, deviceCommand,
-                            (
-                            ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                            ) =>
-                            {
-                                parentProc.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
-                            });
-                        }
-                    }
 
 
                     //////////////////////////////////////////////
@@ -94,25 +76,42 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     ///
                     if (parentProc == null)
                     {
+                        //bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasSysInfo_ms));
+                        var error = new ExceptionProcessSysInfo();
                         SysInfoResult outResultData = null;
-                        bool isDown = context.WaitEvent<SysInfoResult>(out outResultData, (int)(context.Task.durationForMeasSysInfo_ms));
-                        if (isDown == false) // таймут - результатов нет
+                        bool isError = context.WaitEvent<ExceptionProcessSysInfo>(out error, 1);
+                        if (isError == true) // есть ошибка
                         {
-                            var error = new ExceptionProcessSysInfo();
-                            if (context.WaitEvent<ExceptionProcessSysInfo>(out error, 1) == true)
+                            if (error._ex != null)
                             {
-                                if (error._ex != null)
-                                {
-                                    /// реакция на ошибку выполнения команды
-                                    _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
-                                    context.Cancel();
-                                }
+                                /// реакция на ошибку выполнения команды
+                                _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
+                                context.Cancel();
                             }
                         }
                         else
                         {
+                            var mesureSystemInfoParameter = context.Task.mesureSystemInfoParameters[i];
+                            var deviceCommand = new MesureSystemInfoCommand(mesureSystemInfoParameter);
+                            //deviceCommand.Delay = 10000;
+                            deviceCommand.Options = CommandOption.StartImmediately;
+
+                            if (parentProc != null)
+                            {
+                                if ((parentProc is DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess>) == true)
+                                {
+                                    this._controller.SendCommand<MesureSystemInfoResult>(context, deviceCommand,
+                                    (
+                                    ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                                    ) =>
+                                    {
+                                        parentProc.SetEvent<ExceptionProcessSysInfo>(new ExceptionProcessSysInfo(failureReason, ex));
+                                    });
+                                }
+                            }
+
                             // есть результат
-                            //context.Task.CountGetResultBWPositive++;
+                            bool isDown = context.WaitEvent<SysInfoResult>(out outResultData);
                         }
 
                     }
@@ -129,7 +128,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSysInfoTaskWorker, e.Message);
+                _logger.Exception(Contexts.SysInfoTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSysInfoTaskWorker, e);
                 context.Abort(e);
             }
         }

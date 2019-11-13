@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AppServices\Atdi.AppServices.FileStorage\Atdi.AppServices.FileStorage.csproj">
+      <Project>{db7e00a8-5c93-4b8f-98cc-42efc1167f1f}</Project>
+      <Name>Atdi.AppServices.FileStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppServices\Atdi.AppServices.WebQuery\Atdi.AppServices.WebQuery.csproj">
       <Project>{d1f7d966-035f-4e29-a420-5fd1f44f6c19}</Project>
       <Name>Atdi.AppServices.WebQuery</Name>
@@ -54,6 +58,14 @@
     <ProjectReference Include="..\..\AppServices\Atdi.AppServices\Atdi.AppServices.csproj">
       <Project>{0eab226d-aa8d-4671-88cf-0f1049560535}</Project>
       <Name>Atdi.AppServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Icsm.CoverageEstimation\Atdi.AppUnits.Icsm.CoverageEstimation.csproj">
+      <Project>{5781259f-1ac9-4454-a3f1-d86ffd9e0dbd}</Project>
+      <Name>Atdi.AppUnits.Icsm.CoverageEstimation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits\Atdi.AppUnits.csproj">
+      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
+      <Name>Atdi.AppUnits</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>

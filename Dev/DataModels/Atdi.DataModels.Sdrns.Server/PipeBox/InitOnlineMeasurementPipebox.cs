@@ -16,6 +16,17 @@ namespace Atdi.DataModels.Sdrns.Server
         public long SensorId { get; set; }
 
         /// <summary>
+        /// Sensor name
+        /// </summary>
+        public string SensorName { get; set; }
+
+        /// <summary>
+        /// Sensor tech Id
+        /// </summary>
+        public string SensorTechId { get; set; }
+
+
+        /// <summary>
         /// Период измерения. Считается с момента получения сервером от устроства статуса готовности.
         /// Используется севером что бы блокировать на этот интрвал времени доступнеость устройства.
         /// А также принять решение о том идет ли проццесс еще имзмерения в случаи анализа доступных сенсоров

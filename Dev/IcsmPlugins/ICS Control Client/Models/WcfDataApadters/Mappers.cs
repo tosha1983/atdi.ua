@@ -134,6 +134,21 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 source.MeasTimeParamList = new SDR.MeasTimeParamList();
             }
 
+            if (source.SignalingMeasTaskParameters == null)
+            {
+                source.SignalingMeasTaskParameters = new SDR.SignalingMeasTask();
+            }
+
+            if (source.SignalingMeasTaskParameters.GroupingParameters == null)
+            {
+                source.SignalingMeasTaskParameters.GroupingParameters = new SDR.SignalingGroupingParameters();
+            }
+
+            if (source.SignalingMeasTaskParameters.InterruptionParameters == null)
+            {
+                source.SignalingMeasTaskParameters.InterruptionParameters = new SDR.SignalingInterruptionParameters();
+            }
+
             return new VM.MeasTaskViewModel
             {
                 CreatedBy = source.CreatedBy,
@@ -144,14 +159,61 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
                 MeasDtParamDemod = source.MeasDtParam.Demod,
                 MeasDtParamDetectType = source.MeasDtParam.DetectType,
-                MeasDtParamIfAttenuation = source.MeasDtParam.IfAttenuation??0,
-                MeasDtParamMeasTime = source.MeasDtParam.MeasTime.ToNull(),
+                MeasDtParamIfAttenuation = source.MeasDtParam.IfAttenuation ?? 0,
                 MeasDtParamMode = source.MeasDtParam.Mode,
-                MeasDtParamPreamplification = source.MeasDtParam.Preamplification??0,
-                MeasDtParamRBW = source.MeasDtParam.RBW.ToNull(),
-                MeasDtParamRfAttenuation = source.MeasDtParam.RfAttenuation.GetValueOrDefault(),
+
+                MeasDtParamMeasTime = (source.MeasDtParam.MeasTime.ToNull().HasValue && source.MeasDtParam.MeasTime.Value == 0.001) ? null : source.MeasDtParam.MeasTime.ToNull(),
+                IsAutoMeasDtParamMeasTime = (source.MeasDtParam.MeasTime.ToNull().HasValue && source.MeasDtParam.MeasTime.Value == 0.001),
+
+                MeasDtParamPreamplification = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1) ? (int?)null : source.MeasDtParam.Preamplification ?? 0,
+                IsAutoMeasDtParamPreamplification = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1),
+
+                MeasDtParamRBW = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1) ? null : source.MeasDtParam.RBW.ToNull(),
+                IsAutoMeasDtParamRBW = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1),
+
+                MeasDtParamRfAttenuation = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1) ? (double?)null : source.MeasDtParam.RfAttenuation.GetValueOrDefault(),
+                IsAutoMeasDtParamRfAttenuation = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1),
+
                 MeasDtParamTypeMeasurements = source.MeasDtParam.TypeMeasurements,
-                MeasDtParamVBW = source.MeasDtParam.VBW.ToNull(),
+
+                MeasDtParamVBW = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1) ? null : source.MeasDtParam.VBW.ToNull(),
+                IsAutoMeasDtParamVBW = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1),
+
+                MeasDtParamReferenceLevel = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000) ? null : source.MeasDtParam.ReferenceLevel.ToNull(),
+                IsAutoMeasDtParamReferenceLevel = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000),
+
+                AllowableExcess_dB = source.SignalingMeasTaskParameters.allowableExcess_dB.ToNull(),
+                CompareTraceJustWithRefLevels = source.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels,
+                FiltrationTrace = source.SignalingMeasTaskParameters.FiltrationTrace,
+                SignalizationNChenal = source.SignalingMeasTaskParameters.SignalizationNChenal.ToNull(),
+                SignalizationNCount = source.SignalingMeasTaskParameters.SignalizationNCount.ToNull(),
+                AnalyzeByChannel = source.SignalingMeasTaskParameters.AnalyzeByChannel,
+                AnalyzeSysInfoEmission = source.SignalingMeasTaskParameters.AnalyzeSysInfoEmission,
+                CheckFreqChannel = source.SignalingMeasTaskParameters.CheckFreqChannel,
+                CorrelationAnalize = source.SignalingMeasTaskParameters.CorrelationAnalize,
+                CorrelationFactor = source.SignalingMeasTaskParameters.CorrelationFactor.ToNull(),
+                DetailedMeasurementsBWEmission = source.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission,
+                Standard = source.SignalingMeasTaskParameters.Standard,
+                triggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? null : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz,
+                IsAutoTriggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999),
+
+                CrossingBWPercentageForBadSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals.ToNull(),
+                CrossingBWPercentageForGoodSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.ToNull(),
+                TimeBetweenWorkTimes_sec = source.SignalingMeasTaskParameters.GroupingParameters.TimeBetweenWorkTimes_sec.ToNull(),
+                TypeJoinSpectrum = source.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum.ToNull(),
+
+                AutoDivisionEmitting = source.SignalingMeasTaskParameters.InterruptionParameters.AutoDivisionEmitting,
+                DifferenceMaxMax = source.SignalingMeasTaskParameters.InterruptionParameters.DifferenceMaxMax.ToNull(),
+                CheckLevelChannel = source.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel,
+                DiffLevelForCalcBW = source.SignalingMeasTaskParameters.InterruptionParameters.DiffLevelForCalcBW.ToNull(),
+                MaxFreqDeviation = source.SignalingMeasTaskParameters.InterruptionParameters.MaxFreqDeviation.ToNull(),
+                MinExcessNoseLevel_dB = source.SignalingMeasTaskParameters.InterruptionParameters.MinExcessNoseLevel_dB.ToNull(),
+                MinPointForDetailBW = source.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW.ToNull(),
+                nDbLevel_dB = source.SignalingMeasTaskParameters.InterruptionParameters.nDbLevel_dB.ToNull(),
+                NumberIgnoredPoints = source.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints.ToNull(),
+                NumberPointForChangeExcess = source.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.ToNull(),
+                windowBW = source.SignalingMeasTaskParameters.InterruptionParameters.windowBW.ToNull(),
+
 
                 MeasFreqParamMeasFreqs = (source.MeasFreqParam.MeasFreqs ?? (new SDR.MeasFreq[] { })).Select(i => i.Freq).ToArray(),
                 MeasFreqParamMode = source.MeasFreqParam.Mode,
@@ -203,7 +265,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasurementsResults = source.MeasurementsResults,
                 N = source.N.ToNull(),
                 ResultsMeasStation = source.ResultsMeasStation,
-                StationMeasurementsStationId = source.StationMeasurements.StationId.Value,
+                StationMeasurementsStationId = source.StationMeasurements == null ? 0 : source.StationMeasurements.StationId.Value,
                 SubMeasTaskId = source.Id.SubMeasTaskId,
                 SubMeasTaskStationId = source.Id.SubMeasTaskStationId,
                 TimeMeas = source.TimeMeas,
@@ -242,7 +304,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Status = source.Status,
                 StationSysInfo = source.StationSysInfo,
                 Standard = source.Standard,
-                GeneralResults = source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()
+                CentralFrequencyMeas_MHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequencyMeas : (double?)null,
+                CentralFrequencyMHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequency : (double?)null,
+                GeneralResults = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray() : null
             };
         }
         public static VM.GeneralResultViewModel Map(SDR.MeasurementsParameterGeneral source)

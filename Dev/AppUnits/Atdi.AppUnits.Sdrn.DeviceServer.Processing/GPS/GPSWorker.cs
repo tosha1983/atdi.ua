@@ -26,14 +26,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private ConfigProcessing _configProcessing;
         private readonly IBusGate _busGate;
         private readonly DM.Sensor _sensor;
+        private readonly IRepository<DM.DeviceCommandResult, string> _repositoryDeviceCommandResult;
 
 
         public GPSWorker(
             ConfigProcessing configProcessing,
             IController controller,
             IBusGate busGate,
+            IRepository<DM.DeviceCommandResult, string> repositoryDeviceCommandResult,
             ITimeService timeService, ILogger logger)
         {
+            this._repositoryDeviceCommandResult = repositoryDeviceCommandResult;
             this._logger = logger;
             this._timeService = timeService;
             this._controller = controller;
@@ -55,119 +58,121 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 //////////////////////////////////////////////
 
                 context.Process.Asl = this._configProcessing.AslDefault;
-                context.Process.Lon = this._configProcessing.LonDelta;
+                context.Process.Lon = this._configProcessing.LonDefault;
                 context.Process.Lat = this._configProcessing.LatDefault;
 
-                //////////////////////////////////////////////
-                // 
-                // Отправка команды в контроллер GPS
-                //
-                //////////////////////////////////////////////
-                var gpsParameter = new GpsParameter();
-                gpsParameter.GpsMode = GpsMode.Start;
-                var gpsDevice = new GpsCommand(gpsParameter);
-
-                this._controller.SendCommand<GpsResult>(context, gpsDevice,
-                (
-                      ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                ) =>
+                if (this._configProcessing.EnableGPS == true)
                 {
-                    taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
-                });
-
-                while (true)
-                {
-                    if (context.Token.IsCancellationRequested)
-                    {
-                        context.Cancel();
-                        break;
-                    }
-
-
                     //////////////////////////////////////////////
                     // 
-                    // Получение очередного  результат 
-                    //
+                    // Отправка команды в контроллер GPS
                     //
                     //////////////////////////////////////////////
-                    System.Threading.Thread.Sleep(this._configProcessing.PeriodSendCoordinatesToSDRNS);
-                    
-                    GpsResult gpsResult = null;
-                    bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
-                    if (isWait)
+                    var gpsParameter = new GpsParameter();
+                    gpsParameter.GpsMode = GpsMode.Start;
+                    var gpsDevice = new GpsCommand(gpsParameter);
+
+                    this._controller.SendCommand<GpsResult>(context, gpsDevice,
+                    (
+                          ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                    ) =>
                     {
-                        context.Process.Asl = gpsResult.Asl.Value;
-                        context.Process.Lon = gpsResult.Lon.Value;
-                        context.Process.Lat = gpsResult.Lat.Value;
+                        taskContext.SetEvent<ExceptionProcessGPS>(new ExceptionProcessGPS(failureReason, ex));
+                    });
 
-                        
-                        if (_sensor != null)
+                    while (true)
+                    {
+                        if (context.Token.IsCancellationRequested)
                         {
-                            if (_sensor.Locations==null)
-                            {
-                                _sensor.Locations = new DM.SensorLocation[1];
-                                _sensor.Locations[0] = new DM.SensorLocation()
-                                {
-                                    Status = StatusTask.A.ToString(),
-                                    Created = DateTime.Now,
-                                    From = DateTime.Now,
-                                    To = DateTime.Now
-                                };
-                            }
-
-                            var listSensorLocations = _sensor.Locations.ToList();
-                            var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - context.Process.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - context.Process.Lat) <= this._configProcessing.LatDelta && Math.Abs(t.ASL.Value - context.Process.Asl) <= this._configProcessing.AslDelta && t.Status != StatusTask.Z.ToString());
-                            if (lSensorLocations.Count == 0)
-                            {
-                                lSensorLocations.OrderByDescending(x => x.Created);
-                                var mass = lSensorLocations.ToArray();
-                                var sensorLocation = new DM.SensorLocation[mass.Length + 1];
-                                if (mass.Length >= 1)
-                                {
-                                    for (int i = 0; i < mass.Length; i++)
-                                    {
-                                        sensorLocation[i] = _sensor.Locations[i];
-                                        sensorLocation[i].Status = StatusTask.Z.ToString();
-                                    }
-                                }
-
-                                var location = new DM.SensorLocation()
-                                {
-                                    ASL = context.Process.Asl,
-                                    Lon = context.Process.Lon,
-                                    Lat = context.Process.Lat,
-                                    Status = "A",
-                                    Created = DateTime.Now,
-                                    From = DateTime.Now,
-                                    To = DateTime.Now
-                                    //From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 1),
-                                    //To = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59)
-                                };
-
-                                sensorLocation[mass.Length] = location;
-                                _sensor.Locations = sensorLocation;
-
-
-                                DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
-                                deviceCommandResult.CommandId = "UpdateSensorLocation";
-                                deviceCommandResult.CustDate1 = DateTime.Now;
-                                deviceCommandResult.CustTxt1 = $"{location.Lon}|{location.Lat}|{location.ASL}";
-                                deviceCommandResult.Status = StatusTask.A.ToString();
-                                deviceCommandResult.CustNbr1 = 0;
-
-                                var publisher = this._busGate.CreatePublisher("main");
-                                publisher.Send<DM.DeviceCommandResult>("SendCommandResult", deviceCommandResult);
-                                publisher.Dispose();
-                            }
+                            context.Cancel();
+                            break;
                         }
 
-                        _logger.Info(Contexts.GPSWorker, Categories.Processing, $" New coordinates Lon: {context.Process.Lon}, Lat: {context.Process.Lat}, Asl : {context.Process.Asl}");
+
+                        //////////////////////////////////////////////
+                        // 
+                        // Получение очередного  результат 
+                        //
+                        //
+                        //////////////////////////////////////////////
+                        System.Threading.Thread.Sleep(this._configProcessing.PeriodSendCoordinatesToSDRNS);
+
+                        GpsResult gpsResult = null;
+                        bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
+                        if (isWait)
+                        {
+                            context.Process.Asl = gpsResult.Asl.Value;
+                            context.Process.Lon = gpsResult.Lon.Value;
+                            context.Process.Lat = gpsResult.Lat.Value;
+
+
+                            if (_sensor != null)
+                            {
+                                if (_sensor.Locations == null)
+                                {
+                                    _sensor.Locations = new DM.SensorLocation[1];
+                                    _sensor.Locations[0] = new DM.SensorLocation()
+                                    {
+                                        Status = StatusTask.A.ToString(),
+                                        Created = DateTime.Now,
+                                        From = DateTime.Now,
+                                        To = DateTime.Now
+                                    };
+                                }
+
+                                var listSensorLocations = _sensor.Locations.ToList();
+                                var lSensorLocations = listSensorLocations.FindAll(t => Math.Abs(t.Lon - context.Process.Lon) <= this._configProcessing.LonDelta && Math.Abs(t.Lat - context.Process.Lat) <= this._configProcessing.LatDelta && Math.Abs(t.ASL.Value - context.Process.Asl) <= this._configProcessing.AslDelta && t.Status != StatusTask.Z.ToString());
+                                if (lSensorLocations.Count == 0)
+                                {
+                                    lSensorLocations.OrderByDescending(x => x.Created);
+                                    var mass = lSensorLocations.ToArray();
+                                    var sensorLocation = new DM.SensorLocation[mass.Length + 1];
+                                    if (mass.Length >= 1)
+                                    {
+                                        for (int i = 0; i < mass.Length; i++)
+                                        {
+                                            sensorLocation[i] = _sensor.Locations[i];
+                                            sensorLocation[i].Status = StatusTask.Z.ToString();
+                                        }
+                                    }
+
+                                    var location = new DM.SensorLocation()
+                                    {
+                                        ASL = context.Process.Asl,
+                                        Lon = context.Process.Lon,
+                                        Lat = context.Process.Lat,
+                                        Status = "A",
+                                        Created = DateTime.Now,
+                                        From = DateTime.Now,
+                                        To = DateTime.Now
+                                    };
+
+                                    sensorLocation[mass.Length] = location;
+                                    _sensor.Locations = sensorLocation;
+
+
+                                    DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                                    deviceCommandResult.CommandId = "UpdateSensorLocation";
+                                    deviceCommandResult.CustDate1 = DateTime.Now;
+                                    deviceCommandResult.CustTxt1 = $"{location.Lon}|{location.Lat}|{location.ASL}";
+                                    deviceCommandResult.Status = StatusTask.A.ToString();
+                                    deviceCommandResult.CustNbr1 = 0;
+
+                                    this._repositoryDeviceCommandResult.Create(deviceCommandResult);
+                                }
+                            }
+                            _logger.Info(Contexts.GPSWorker, Categories.Processing, $" New coordinates Lon: {context.Process.Lon}, Lat: {context.Process.Lat}, Asl : {context.Process.Asl}");
+                        }
                     }
+                }
+                else
+                {
+                    context.Finish();
                 }
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.GPSWorker, Categories.Processing, Exceptions.UnknownErrorGPSWorker, e.Message);
+                _logger.Exception(Contexts.GPSWorker, Categories.Processing, Exceptions.UnknownErrorGPSWorker, e);
                 context.Abort(e);
             }
         }

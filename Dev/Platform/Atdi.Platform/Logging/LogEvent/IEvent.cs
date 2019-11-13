@@ -15,7 +15,7 @@ namespace Atdi.Platform.Logging
 
         DateTime Time { get; }
 
-        int OSThread { get; }
+        // int OSThread { get; }
 
         int ManagedThread { get; }
 

@@ -48,7 +48,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private SDR.LocationSensorMeasurement _currentSensorLocation;
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
-        private long? _emittingId;
+        private EmittingViewModel _emitting;
 
         private MP.MapDrawingData _currentMapData;
         private IList _currentStations;
@@ -59,11 +59,11 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public WpfCommand AssociatedCommand { get; set; }
 
-        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, long? emittingId)
+        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting)
         {
             this._stationData = stationData;
             this._measResult = measResult;
-            this._emittingId = emittingId;
+            this._emitting = emitting;
             if (buttonAssociatedVisible)
                 this._buttonAssociatedVisibility = Visibility.Visible;
             else
@@ -172,9 +172,25 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnAssociatedCommand(object parameter)
         {
-            if (this._emittingId.HasValue && this._currentStation != null)
+            if (this._emitting.Id.HasValue && this._currentStation != null)
             {
-                SVC.SdrnsControllerWcfClient.AddAssociationStationByEmitting(new long[] { this._emittingId.Value }, this._currentStation.IcsmId, this._currentStation.IcsmTable);
+                SVC.SdrnsControllerWcfClient.AddAssociationStationByEmitting(new long[] { this._emitting.Id.Value }, this._currentStation.IcsmId, this._currentStation.IcsmTable);
+
+                //this._emitting.IcsmID = this._currentStation.IcsmId;
+                //this._emitting.IcsmTable = this._currentStation.IcsmTable;
+
+
+                foreach (var em in this._measResult.Emittings.Where(e => e.Id == this._emitting.Id.Value).ToArray())
+                {
+                    em.AssociatedStationID = this._currentStation.IcsmId;
+                    em.AssociatedStationTableName = this._currentStation.IcsmTable;
+                }
+                //this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
+                //this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+
+
+
                 _form.Close();
             }
         }

@@ -13,8 +13,8 @@ namespace Atdi.Platform.AppServer
 
     static class Contexts
     {
-        public static readonly EventContext AppServerInstaller = "AppServer Installer";
-        public static readonly EventContext AppServerHost = "AppServer Host";
+        public static readonly EventContext AppServerInstaller = "Platform";
+        public static readonly EventContext AppServerHost = "ServerHost";
     }
 
     static class Categories
@@ -23,47 +23,47 @@ namespace Atdi.Platform.AppServer
         public static readonly EventCategory Installation = "Installation";
         public static readonly EventCategory Stopping = "Stopping";
         public static readonly EventCategory Starting = "Starting";
-        public static readonly EventCategory Disposabling = "Disposabling";
+        public static readonly EventCategory Disposing = "Disposing";
         public static readonly EventCategory Triggering = "Triggering";
     }
 
     static class Events
     {
-        public static readonly EventText StartedInstall = "The Server Host is installing";
-        public static readonly EventText FinishedInstall = "The Server Host installed";
+        public static readonly EventText StartedInstall = "Server host installation started";
+        public static readonly EventText FinishedInstall = "Server host installation completed";
 
-        public static readonly EventText StartedInitServerHost = "The Server Host is initializing";
-        public static readonly EventText CreatedServerHost = "The Server Host with name '{0}' was created successfully";
+        public static readonly EventText StartedInitServerHost = "The server host started initialization";
+        public static readonly EventText CreatedServerHost = "The server host was created: Name='{0}'";
 
-        public static readonly EventText ServerComponentsIsInstalling = "The Server Components are installing";
-        public static readonly EventText ServerComponentsInstalled = "The Server Components installed: perfom {0} of components";
+        public static readonly EventText ServerComponentsIsInstalling = "Server components installation started";
+        public static readonly EventText ServerComponentsInstalled = "Server components installation completed: perform {0} of components";
 
-        public static readonly EventText ServerHostIsStarting = "The Server Host is starting";
-        public static readonly EventText ServerHostStarted = "The Server Host started successfully";
+        public static readonly EventText ServerHostIsStarting = "The server host is starting";
+        public static readonly EventText ServerHostStarted = "The server host started";
 
-        public static readonly EventText ServerHostIsStoping = "The Server Host is stoping";
-        public static readonly EventText ServerHostStopped = "The Server Host stopped successfully";
+        public static readonly EventText ServerHostIsStopping = "The server host is stopping";
+        public static readonly EventText ServerHostStopped = "The server host stopped";
 
-        public static readonly EventText ServerComponentsIsActivating = "The Server Components are activating";
-        public static readonly EventText ServerComponentsActivated = "The Server Components activated successfully";
+        public static readonly EventText ServerComponentsIsActivating = "Server components activation started";
+        public static readonly EventText ServerComponentsActivated = "Server components activation completed";
 
-        public static readonly EventText ServerComponentsIsDeactivating = "The Server Components are deactivating";
-        public static readonly EventText ServerComponentsDeactivated = "The Server Components deactivated successfully";
+        public static readonly EventText ServerComponentsIsDeactivating = "Server components deactivation started";
+        public static readonly EventText ServerComponentsDeactivated = "Server components deactivation completed";
 
-        public static readonly EventText ServerHostIsDisposabling = "The Server Host is disposabling";
-        public static readonly EventText ServerHostDisposabled = "The Server Host disposabled";
+        public static readonly EventText ServerHostIsDisposing = "The server host is disposing";
+        public static readonly EventText ServerHostDisposed = "The server host disposed";
 
-        public static readonly EventText ServerComponentsIsUninstalling = "The Server Components are uninstalling";
-        public static readonly EventText ServerComponentsUninstalled = "The Server Components uninstallied";
+        public static readonly EventText ServerComponentsIsUninstalling = "Server components uninstalling started";
+        public static readonly EventText ServerComponentsUninstalled = "Server components uninstalling completed";
 
-        public static readonly EventText ServerComponentIsInstalling = "The Server Component is installing. Type is {0}, instance '{1}', assembly {2}";
-        public static readonly EventText ServerComponentDidNotInstall = "The Server Component did not install. Type is {0}, instance '{1}', assembly {2}";
-        public static readonly EventText ServerComponentInstalled = "The Server Component installed successfully";
+        public static readonly EventText ServerComponentIsInstalling = "Component installation started: Type='{0}'";
+        public static readonly EventText ServerComponentDidNotInstall = "The component failed to install: Type='{0}', Instance='{1}', Assembly='{2}'";
+        public static readonly EventText ServerComponentInstalled = "Component installation completed: Type='{0}'";
 
-        public static readonly EventText TriggerExecuting = "The trigger is executing: Context = '{0}'";
-        public static readonly EventText TriggerExecuted = "The trigger was executed: Context = '{0}'";
+        public static readonly EventText TriggerExecuting = "The trigger is executing: Context='{0}'";
+        public static readonly EventText TriggerExecuted = "The trigger executed: Context='{0}'";
 
-        public static readonly EventText ExecutingTriggerError = "Error occurred while executing the trigger: Context = '{0}'";
+        public static readonly EventText ExecutingTriggerError = "Error occurred while executing the trigger: Context='{0}'";
     }
 
     static class TraceScopeNames

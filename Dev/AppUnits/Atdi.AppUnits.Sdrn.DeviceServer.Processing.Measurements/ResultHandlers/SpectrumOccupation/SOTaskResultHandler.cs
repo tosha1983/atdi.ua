@@ -32,6 +32,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 catch (Exception ex)
                 {
+                    taskContext.SetEvent((SpectrumOcupationResult)(null));
                     taskContext.SetEvent<ExceptionProcessSO>(new ExceptionProcessSO(CommandFailureReason.Exception, ex));
                 }
             }

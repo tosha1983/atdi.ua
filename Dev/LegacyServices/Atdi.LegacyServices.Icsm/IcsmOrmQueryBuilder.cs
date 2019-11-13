@@ -256,8 +256,8 @@ namespace Atdi.LegacyServices.Icsm
 
                 var sourceExpression = this._syntax.EncodeTableName(this._schemasMetadata.DbSchema, statement.TableName);
                 var valuesExpression = this.BuildSetValuesExpression(statement.ColumnsValues, parameters);
-                var fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out Orm.DbField[] dbFields);
 
+                string fromStatement = this._schemasMetadata.BuildJoinStatement(this._syntax, statement.TableName, columnsArray.Select(c => c.ColumnName).ToArray(), out Orm.DbField[] dbFields);
                 for (int i = 0; i < columnsArray.Length; i++)
                 {
                     var column = columnsArray[i];
@@ -265,6 +265,7 @@ namespace Atdi.LegacyServices.Icsm
                     column.ColumnName = dbField.m_logFld;
                     column.Source = dbField.m_idxTable.Tcaz;
                 }
+
                 var whereExpression = this.BuildWhereExpression(statement.Conditions, parameters);
 
                 var updateStatement = this._syntax.UpdateExpression(sourceExpression, valuesExpression, fromStatement, whereExpression);

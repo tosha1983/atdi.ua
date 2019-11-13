@@ -14,7 +14,7 @@ namespace Atdi.Platform.Caching
         IDataCacheDescriptor Descriptor { get; }
     }
 
-    public interface IDataCache<TKey, TData> : IDataCache
+    public interface IDataCache<in TKey, TData> : IDataCache
     {
         /// <summary>
         /// Попытка получить элемент из кзша.

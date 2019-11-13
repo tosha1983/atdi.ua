@@ -33,11 +33,9 @@ namespace Atdi.Platform.AppComponent
         {
             var result = new TConfig();
             var type = typeof(TConfig);
-            var properies = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            for (int i = 0; i < properies.Length; i++)
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in properties)
             {
-                var propertyInfo = properies[i];
-
                 if (!propertyInfo.CanWrite)
                 {
                     continue;
@@ -89,12 +87,7 @@ namespace Atdi.Platform.AppComponent
 
         public static string GetParameterAsString(this IComponentConfig config, string paramName)
         {
-            if (config == null)
-            {
-                return string.Empty;
-            }
-
-            var realValue = config[paramName];
+            var realValue = config?[paramName];
             if (realValue == null)
             {
                 return string.Empty;
@@ -123,12 +116,7 @@ namespace Atdi.Platform.AppComponent
 
         public static bool GetParameterAsBoolean(this IComponentConfig config, string paramName)
         {
-            if (config == null)
-            {
-                return false;
-            }
-
-            var realValue = config[paramName];
+            var realValue = config?[paramName];
             if (realValue == null)
             {
                 return false;
@@ -145,12 +133,7 @@ namespace Atdi.Platform.AppComponent
 
         public static int? GetParameterAsInteger(this IComponentConfig config, string paramName)
         {
-            if (config == null)
-            {
-                return null;
-            }
-
-            var realValue = config[paramName];
+            var realValue = config?[paramName];
             if (realValue == null)
             {
                 return null;
@@ -172,12 +155,7 @@ namespace Atdi.Platform.AppComponent
 
         public static float? GetParameterAsFloat(this IComponentConfig config, string paramName)
         {
-            if (config == null)
-            {
-                return null;
-            }
-
-            var realValue = config[paramName];
+            var realValue = config?[paramName];
             if (realValue == null)
             {
                 return null;
@@ -199,12 +177,7 @@ namespace Atdi.Platform.AppComponent
 
         public static double? GetParameterAsDouble(this IComponentConfig config, string paramName)
         {
-            if (config == null)
-            {
-                return null;
-            }
-
-            var realValue = config[paramName];
+            var realValue = config?[paramName];
             if (realValue == null)
             {
                 return null;
@@ -226,12 +199,7 @@ namespace Atdi.Platform.AppComponent
 
         public static decimal? GetParameterAsDecimal(this IComponentConfig config, string paramName)
         {
-            if (config == null)
-            {
-                return null;
-            }
-
-            var realValue = config[paramName];
+            var realValue = config?[paramName];
             if (realValue == null)
             {
                 return null;
@@ -255,17 +223,12 @@ namespace Atdi.Platform.AppComponent
     [AttributeUsage(AttributeTargets.Property)]
     public class ComponentConfigPropertyAttribute : Attribute
     {
-        private readonly string _name;
-
         public ComponentConfigPropertyAttribute(string name)
         {
-            this._name = name;
+            this.Name = name;
         }
 
-        public string Name
-        {
-            get => this._name;
-        }
+        public string Name { get; }
 
         public string SharedSecret { get; set; }
     }

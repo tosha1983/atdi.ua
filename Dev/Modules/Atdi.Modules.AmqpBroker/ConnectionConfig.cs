@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Atdi.Modules.AmqpBroker
+﻿namespace Atdi.Modules.AmqpBroker
 {
     public class ConnectionConfig
     {
@@ -25,7 +19,7 @@ namespace Atdi.Modules.AmqpBroker
 
         public override string ToString()
         {
-            return $"Name = '{ConnectionName}', Host = '{HostName}', Port = '{Port}', VirtualHost = '{VirtualHost}', User = '{UserName}'";
+            return $"Host='{HostName}', Port=#{Port}, VirtualHost='{VirtualHost}', User='{UserName}', Name='{ConnectionName}'";
         }
     }
 }

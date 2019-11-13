@@ -40,10 +40,31 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
         /// <param name="context"></param>
         /// <returns></returns>
         public ClientMeasTaskPiperesult Handle(ClientMeasTaskPipebox data, IPipelineContext<ClientMeasTaskPipebox, ClientMeasTaskPiperesult> context)
-        {
+        { 
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MeasTasksOnAggServerSendEventPipelineHandler, this))
             {
+                var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
+                var measSubTasks = data.MeasTaskPipeBox.MeasSubTasks;
                 var prepareSendEvents = data.PrepareSendEvents;
+                if ((measSubTasks != null) && (measSubTasks.Length > 0))
+                {
+                    for (int i = 0; i < measSubTasks.Length; i++)
+                    {
+                        var measSubTask = measSubTasks[i];
+                        if ((measSubTask.MeasSubTaskSensors != null) && (measSubTask.MeasSubTaskSensors.Length > 0))
+                        {
+                            for (int j = 0; j < measSubTask.MeasSubTaskSensors.Length; j++)
+                            {
+                                var MeasSubTaskSensor = measSubTask.MeasSubTaskSensors[j];
+                                if (MeasSubTaskSensor.MasterId != null)
+                                {
+                                    saveMeasTask.SetAggregationMeasTaskId(MeasSubTaskSensor.Id, MeasSubTaskSensor.MasterId.Value);
+                                }
+                            }
+                        }
+                    }
+                }
+               
                 if (prepareSendEvents != null)
                 {
                     for (int k = 0; k < prepareSendEvents.Length; k++)

@@ -23,14 +23,16 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         private readonly ISdrnServerEnvironment _environment;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly ILogger _logger;
+        private readonly IPipelineSite _pipelineSite;
 
-        public InitOnlineMeasurementPipelineHandler(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
+        public InitOnlineMeasurementPipelineHandler(IPipelineSite pipelineSite, IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ISdrnMessagePublisher messagePublisher, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._eventEmitter = eventEmitter;
             this._logger = logger;
             this._environment = environment;
             this._messagePublisher = messagePublisher;
+            this._pipelineSite = pipelineSite;
         }
 
 
@@ -38,6 +40,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
         {
             using (this._logger.StartTrace(Contexts.ThisComponent, Categories.OnInitOnlineMeasurement, this))
             {
+                var resultSendEvent = new InitOnlineMeasurementPipebox();
                 var result = new InitOnlineMeasurementPipebox();
                 // 1. Поиск сенсора - нету - отказ
                 // 2. Поиск уже иницированых измерений по сенсору, 
@@ -65,6 +68,8 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         var sensorQuery = _dataLayer.GetBuilder<DM.ISensor>()
                             .From()
                             .Select(c => c.Id)
+                            .Select(c => c.Name)
+                            .Select(c => c.TechId)
                             .Where(c => c.Id, ConditionOperator.Equal, data.SensorId);
 
                         var sensorExists = dbScope.Executor.ExecuteAndFetch(sensorQuery, reader =>
@@ -72,7 +77,12 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                             var exists = reader.Read();
                             if (exists)
                             {
-                                exists = reader.GetValue(c => c.Id) == data.SensorId;
+                                if (reader.GetValue(c => c.Id) == data.SensorId)
+                                {
+                                    data.SensorName = reader.GetValue(c => c.Name);
+                                    data.SensorTechId = reader.GetValue(c => c.TechId);
+                                    exists = true;
+                                }
                             // read some data od the Sensor with ID = options.SensorId
                         }
                             return exists;
@@ -189,7 +199,24 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         result.Allowed = true;
                         result.SensorId = data.SensorId;
                         result.Period = data.Period;
+                        result.SensorName = data.SensorName;
+                        result.SensorTechId = data.SensorTechId;
                         data = result;
+
+
+                        var site = this._pipelineSite.GetByName<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientSendEventOnlineMeasurement);
+                        resultSendEvent = site.Execute(new InitOnlineMeasurementPipebox()
+                        {
+                            Allowed = data.Allowed,
+                            Message = data.Message,
+                            OnlineMeasLocalId = data.OnlineMeasLocalId,
+                            OnlineMeasMasterId = data.OnlineMeasMasterId,
+                            Period = data.Period,
+                            SensorId = data.SensorId,
+                            SensorName = data.SensorName,
+                            SensorTechId = data.SensorTechId,
+                            ServerToken = data.ServerToken
+                        });
                     }
                 }
                 catch (Exception e)
@@ -197,7 +224,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     _logger.Exception(Contexts.ThisComponent, (EventCategory)"OnInitOnlineMeasurement", e, this);
                     throw;
                 }
-                return context.GoAhead(data);
+                return resultSendEvent;
             }
         }
     }

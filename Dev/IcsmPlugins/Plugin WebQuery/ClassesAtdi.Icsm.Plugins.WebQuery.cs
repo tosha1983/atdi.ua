@@ -51,6 +51,20 @@ namespace OrmCs
 		public YXwebquery m_JoinWebQuery { get { return (YXwebquery)getYyy(6); }  set { setYyy(6,value); } }
 	}
 
+	public class YXwebcoverage : Yyy
+	{
+		public YXwebcoverage() { construct("XWEBCOVERAGE",null); }
+		public YXwebcoverage(OrmLinker lk) { construct("XWEBCOVERAGE",lk); }
+		public double m_id { get { return getDouble(0); } set { setDouble(0,value); } }
+			public DatPtr z_id { get { return new DatPtr(this,0); } }
+		public string m_file_name { get { return getString(1); } set { setString(1,50,value); } }
+			public DatPtr z_file_name { get { return new DatPtr(this,1); } }
+		public DateTime m_date_created { get { return getDateTime(2); } set { setDateTime(2,value); } }
+			public DatPtr z_date_created { get { return new DatPtr(this,2); } }
+		public string m_province { get { return getString(3); } set { setString(3,50,value); } }
+			public DatPtr z_province { get { return new DatPtr(this,3); } }
+	}
+
 	public class YXwebconstraint : Yyy
 	{
 		public YXwebconstraint() { construct("XWEBCONSTRAINT",null); }

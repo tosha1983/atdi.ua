@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Handlers.OnlineMeasurement.Calculation;
 using XICSM.ICSControlClient.ViewModels;
@@ -61,7 +60,6 @@ namespace XICSM.ICSControlClient.Models.Views
 
     public class OnlienrMeasParametersViewModel : WpfViewModelBase, IDataErrorInfo
     {
-        private readonly OnlineMeasurementViewModel _parent;
         private string _connectButtonText;
         private string _runButtonText;
         private bool _isReadOnlyProperties;
@@ -79,6 +77,7 @@ namespace XICSM.ICSControlClient.Models.Views
         private int _refLevel_dBm;
         private int _preAmp_dB;
         private int _att_dB;
+        private double _antennaFactor;
 
         private BandWidthEstimation.BandwidthEstimationType _bandwidthEstimationType;
         private double _xBeta; 
@@ -86,7 +85,7 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public OnlienrMeasParametersViewModel(OnlineMeasurementViewModel parent)
         {
-            this._parent = parent;
+            this.Parent = parent;
             this._isReadOnlyProperties = true;
             this._isEnabledConnectButton = true;
             this._isEnabledRunButton = false;
@@ -97,13 +96,7 @@ namespace XICSM.ICSControlClient.Models.Views
             get => this._bandwidthEstimationType;
             set => this.Set(ref this._bandwidthEstimationType, value, () => { });
         }
-        public IList<BandWidthEstimation.BandwidthEstimationType> EstimationTypeValues
-        {
-            get
-            {
-                return Enum.GetValues(typeof(BandWidthEstimation.BandwidthEstimationType)).Cast <BandWidthEstimation.BandwidthEstimationType > ().ToList();
-            }
-        }
+        public IList<BandWidthEstimation.BandwidthEstimationType> EstimationTypeValues => Enum.GetValues(typeof(BandWidthEstimation.BandwidthEstimationType)).Cast <BandWidthEstimation.BandwidthEstimationType > ().ToList();
 
         public double X_Beta
         {
@@ -147,13 +140,7 @@ namespace XICSM.ICSControlClient.Models.Views
             });
         }
 
-        public IList<TraceType> TraceTypeValues
-        {
-            get
-            {
-                return Enum.GetValues(typeof(TraceType)).Cast<TraceType>().ToList();
-            }
-        }
+        public IList<TraceType> TraceTypeValues => Enum.GetValues(typeof(TraceType)).Cast<TraceType>().ToList();
 
         public int TraceCount
         {
@@ -179,13 +166,7 @@ namespace XICSM.ICSControlClient.Models.Views
             set => this.Set(ref this._detectorType, value, () => { });
         }
 
-        public IList<DetectorType> DetectorTypeValues
-        {
-            get
-            {
-                return Enum.GetValues(typeof(DetectorType)).Cast<DetectorType>().ToList();
-            }
-        }
+        public IList<DetectorType> DetectorTypeValues => Enum.GetValues(typeof(DetectorType)).Cast<DetectorType>().ToList();
 
         public OnlineMeasType OnlineMeasType { get; set; }
 
@@ -207,6 +188,14 @@ namespace XICSM.ICSControlClient.Models.Views
             set => this.Set(ref this._att_dB, value, () => { });
         }
 
+        
+
+        public double AntennaFactor
+        {
+            get => this._antennaFactor;
+            set => this.Set(ref this._antennaFactor, value, () => { });
+        }
+
         public string CurrentStatus
         {
             get => this._currentStatus;
@@ -225,10 +214,7 @@ namespace XICSM.ICSControlClient.Models.Views
             set => this.Set(ref this._runButtonText, value, () => { });
         }
 
-        public OnlineMeasurementViewModel Parent
-        {
-            get => _parent;
-        }
+        public OnlineMeasurementViewModel Parent { get; }
 
         public bool IsReadOnlyProperties
         {
@@ -248,19 +234,13 @@ namespace XICSM.ICSControlClient.Models.Views
             set => this.Set(ref this._isEnabledRunButton, value, () => { });
         }
 
-        public string Error
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public string Error => null;
 
         public string this[string columnName]
         {
             get
             {
-                string error = String.Empty;
+                var error = string.Empty;
                 switch (columnName)
                 {
                     case "FreqStart_MHz":

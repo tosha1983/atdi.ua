@@ -26,7 +26,7 @@ using XICSM.ICSControlClient.Forms;
 namespace XICSM.ICSControlClient.ViewModels
 {
    
-    public class MeasResultSignalizationViewViewModel : WpfViewModelBase
+    public class MeasResultSignalizationViewViewModel : WpfViewModelBase, IDisposable
     {
         private long[] _stations;
         private readonly string _tableName;
@@ -743,7 +743,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMax = 960,
                 YTick = 10,
                 XTick = 10,
-                UseZoom = true
+                UseZoom = true,
+                IsEnableSaveToFile = true
             };
 
             //if (_currentMeasResult.RefLevels == null || _currentMeasResult.RefLevels.levels == null)
@@ -849,17 +850,17 @@ namespace XICSM.ICSControlClient.ViewModels
                             if (emitting.Spectrum.T1 != 0)
                             {
                                 var val = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T1) / 1000000;
-                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val,6).ToString() });
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val,6).ToString(), LabelLeft = 5, LabelTop = -25 });
                             }
                             if (emitting.Spectrum.T2 != 0)
                             {
                                 var val = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.T2) / 1000000;
-                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -45 });
                             }
                             if (emitting.Spectrum.MarkerIndex != 0)
                             {
                                 var val = (emitting.Spectrum.SpectrumStartFreq_MHz * 1000000 + emitting.Spectrum.SpectrumSteps_kHz * 1000 * emitting.Spectrum.MarkerIndex) / 1000000;
-                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString() });
+                                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = Math.Round(val, 6).ToString(), LabelLeft = 5, LabelTop = -35 });
                             }
                         }
                         else
@@ -912,7 +913,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 XMin = -100,
                 XMax = 0,
                 YTick = 0.2,
-                XTick = 10
+                XTick = 10,
+                IsEnableSaveToFile = true
             };
 
 
@@ -1013,6 +1015,15 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             return option;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+            _waitForm?.Dispose();
+            
+            this._dataStore.OnBeginInvoke -= _dataStore_OnBeginInvoke;
+            this._dataStore.OnEndInvoke -= _dataStore_OnEndInvoke;
         }
     }
 }

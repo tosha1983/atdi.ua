@@ -8,7 +8,7 @@ namespace Atdi.Platform.Caching
 {
     public struct DataCacheOptions
     {
-        public static readonly DataCacheOptions Default = new DataCacheOptions { };
+        public static readonly DataCacheOptions Default = new DataCacheOptions();
 
         /// <summary>
         /// Размер кеша

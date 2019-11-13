@@ -15,8 +15,12 @@ namespace Atdi.AppUnits.Sdrn.Server
     {
         private readonly static string _sdatas = "Atdi.AppServer.AppService.SdrnsController";
 
+        private readonly Dictionary<string, string> _sharedSecretKeys;
+
         public SdrnServerEnvironment(IComponentConfig config)
         {
+            this._sharedSecretKeys = new Dictionary<string, string>();
+
             var licenseFileName = config.GetParameterAsString("License.FileName");
             var licenseOwnerId = config.GetParameterAsDecodeString("License.OwnerId", _sdatas);
             var licenseProductKey = config.GetParameterAsDecodeString("License.ProductKey", _sdatas);
@@ -97,5 +101,20 @@ namespace Atdi.AppUnits.Sdrn.Server
         public ServerRole ServerRoles { get; set; }
 
         public string MasterServerInstance { get; set; }
+
+        public void AddSharedSecretKey(string context, string key)
+        {
+            _sharedSecretKeys[context] = key;
+        }
+
+        public string GetSharedSecretKey(string context)
+        {
+            if (_sharedSecretKeys.TryGetValue(context, out var key))
+            {
+                return key;
+            }
+
+            return null;
+        }
     }
 }

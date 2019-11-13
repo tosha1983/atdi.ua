@@ -26,6 +26,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string Mode { get; set; }
         double? Rbw { get; set; }
         double? Vbw { get; set; }
+        double? ReferenceLevel { get; set; }
+        int? NumberTotalScan { get; set; }
         IMeasTask MEAS_TASK { get; set; }
     }
 }

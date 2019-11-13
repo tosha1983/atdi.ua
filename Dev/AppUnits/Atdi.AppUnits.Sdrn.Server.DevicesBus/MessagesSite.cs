@@ -12,18 +12,20 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 {
-    class MessagesSite : IMessagesSite
+    public class MessagesSite : IMessagesSite
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
+        private readonly ISdrnServerEnvironment _environment;
         private readonly ILogger _logger;
         private readonly IQueryExecutor _queryExecutor;
         private readonly IQueryBuilder<IAmqpMessage> _amqpMessageQueryBuilder;
         private readonly IQueryBuilder<IAmqpEvent> _amqpEventQueryBuilder;
 
 
-        public MessagesSite(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public MessagesSite(IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger)
         {
             this._dataLayer = dataLayer;
+            this._environment = environment;
             this._logger = logger;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
             this._amqpMessageQueryBuilder = this._dataLayer.GetBuilder<IAmqpMessage>();
@@ -32,7 +34,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
         public IMessageProcessingScope<TDeliveryObject> StartProcessing<TDeliveryObject>(long messageId)
         {
-            return new MessageProcessingScope<TDeliveryObject>(messageId, _dataLayer, _logger);
+            return new MessageProcessingScope<TDeliveryObject>(messageId, _dataLayer, _environment, _logger);
         }
 
         public void ChangeStatus(long messageId, byte oldCode, byte newCode, string statusNote)
@@ -42,6 +44,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
                 var updateQuery = this._amqpMessageQueryBuilder
                 .Update()
                 .SetValue(c => c.StatusCode, newCode)
+                .SetValue(c => c.StatusName, ((MessageProcessingStatus)newCode).ToString())
                 .SetValue(c => c.StatusNote, statusNote)
                 .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId)
                 // важно: следующее услови это блокиратор от ситуации когда 
@@ -51,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
                 this._queryExecutor.Execute(updateQuery);
 
                 // для статуса 0 нужно подчистить собітия
-                if (oldCode == 0)
+                if (oldCode == (byte)MessageProcessingStatus.Created)
                 {
                     var deleteQuery = this._amqpEventQueryBuilder
                         .Delete()

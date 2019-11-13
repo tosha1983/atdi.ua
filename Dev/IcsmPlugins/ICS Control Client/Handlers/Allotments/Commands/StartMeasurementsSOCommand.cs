@@ -249,18 +249,18 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 result = false;
             }
 
-            if (allotment.CustDate1.IsNull())
-            {
-                messages.AppendLine($"Undefined a CUST_DAT1 of the allotment #{allotment.Id}");
-                result = false;
-            }
+            //if (allotment.CustDate1.IsNull())
+            //{
+            //    messages.AppendLine($"Undefined a CUST_DAT1 of the allotment #{allotment.Id}");
+            //    result = false;
+            //}
 
-            if (allotment.CustDate2.IsNull())
-            {
-                messages.AppendLine($"Undefined a CUST_DAT2 of the allotment #{allotment.Id}");
-                result = false;
-            }
-            
+            //if (allotment.CustDate2.IsNull())
+            //{
+            //    messages.AppendLine($"Undefined a CUST_DAT2 of the allotment #{allotment.Id}");
+            //    result = false;
+            //}
+
             if (string.IsNullOrEmpty(allotment.CustText1))
             {
                 messages.AppendLine($"Undefined a CUST_TXT1 of the allotment #{allotment.Id}");

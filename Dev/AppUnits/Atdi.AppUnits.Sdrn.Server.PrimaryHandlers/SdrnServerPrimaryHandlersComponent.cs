@@ -49,18 +49,23 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers
             var tasksPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
             var InitOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientInitOnlineMeasurement);
+            var SendEventOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientSendEventOnlineMeasurement);
+            var tasksSendEventsPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTaskSendEvents);
+            var tasksCommandEventsPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommandsSendEvents);
+
 
             // регистрация обработчиков
-            tasksPipeline.Register(typeof(MeasTasksPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-            commandsPipeline.Register(typeof(CommandsPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-            tasksPipeline.Register(typeof(MeasTasksSendPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-            commandsPipeline.Register(typeof(CommandsSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-
+            tasksPipeline.Register(typeof(MeasTasksPipelineHandler), PipelineHandlerRegistrationOptions.First);
+            commandsPipeline.Register(typeof(CommandsPipelineHandler), PipelineHandlerRegistrationOptions.First);
+            tasksSendEventsPipeline.Register(typeof(MeasTasksSendPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            tasksCommandEventsPipeline.Register(typeof(CommandsSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
 
 
             //Online
             InitOnlineMeasurementPipeline.Register(typeof(InitOnlineMeasurementPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-            InitOnlineMeasurementPipeline.Register(typeof(SendEventOnlineMeasurementPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            SendEventOnlineMeasurementPipeline.Register(typeof(SendEventOnlineMeasurementPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+          
+
         }
 
         protected override void OnDeactivateUnit()

@@ -81,15 +81,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         taskContext.Task.MeasBWResults.Freq_Hz = result.Freq_Hz;
                         taskContext.Task.MeasBWResults.СorrectnessEstimations = measBandWidthResults.СorrectnessEstimations.Value;
                         taskContext.Task.MeasBWResults.TimeMeas = DateTime.Now;
-                        /*
-                        string val = "";
-                        string newVal = "";
-                        if ((taskContext.Task.MeasBWResults.Levels_dBm != null) && (taskContext.Task.MeasBWResults.Levels_dBm.Length > 50))
-                        {
-                            val = string.Join(",", taskContext.Task.MeasBWResults.Levels_dBm);
-                            newVal = val;
-                        }
-                        */
+
 
                     }
 
@@ -135,6 +127,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 catch (Exception ex)
                 {
+                    taskContext.SetEvent((BWResult)null);
                     taskContext.SetEvent<ExceptionProcessBandWidth>(new ExceptionProcessBandWidth(CommandFailureReason.Exception, ex));
                 }
             }

@@ -36,7 +36,6 @@
           </StatusBar.ItemsPanel>
           <StatusBarItem>
             <ProgressBar Value="0" Width="190" Height="16" IsIndeterminate="{Binding StatusBarIsIndeterminate}"/>
-              
           </StatusBarItem>
           <Separator Grid.Column="1" />
           <StatusBarItem Grid.Column="2">
@@ -166,7 +165,7 @@
                 <Button Content=" Add Association Station " Margin="10,20,0,0" Command="{Binding AddAssociationStationCommand}" Height="30"/>
                 <Button Content=" Delete Emission " Margin="10,20,0,0" Command="{Binding DeleteEmissionCommand}" Height="30" HorizontalAlignment="Right"/>
                 <Button Content=" Compare with transmitter mask " Margin="10,20,0,0" Command="{Binding CompareWithTransmitterMaskCommand}" Height="30" HorizontalAlignment="Right"/>
-                <!--<Button Content=" Compare with emission on other sensors " Margin="10,20,0,0" Command="{Binding CompareWithEmissionOnOtherSensorsCommand}" Height="30" HorizontalAlignment="Right"/>-->
+                <Button Content=" Compare with emission on other sensors " Margin="10,20,0,0" Command="{Binding CompareWithEmissionOnOtherSensorsCommand}" Height="30" HorizontalAlignment="Right"/>
               </WrapPanel>
               
             </Grid>

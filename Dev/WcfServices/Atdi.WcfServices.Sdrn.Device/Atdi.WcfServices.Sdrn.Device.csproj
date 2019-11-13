@@ -31,15 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=2.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.2.0.1\lib\net461\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -52,23 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusConsumer.cs" />
-    <Compile Include="BusConsumerDescriptor.cs" />
-    <Compile Include="BusConsumers.cs" />
-    <Compile Include="BusPublisher.cs" />
-    <Compile Include="LocalBinder.cs" />
+    <Compile Include="Old\BusConsumer.cs" />
+    <Compile Include="Old\BusConsumerDescriptor.cs" />
+    <Compile Include="Old\BusConsumers.cs" />
+    <Compile Include="BusEventObserver.cs" />
+    <Compile Include="Old\BusPublisher.cs" />
+    <Compile Include="Old\LocalBinder.cs" />
     <Compile Include="MeasTasksBus.cs" />
-    <Compile Include="MessageData.cs" />
-    <Compile Include="MessagesBus.cs" />
+    <Compile Include="Old\MessageData.cs" />
+    <Compile Include="Old\MessagesBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdrnDeviceComponent.cs" />
     <Compile Include="SdrnServerDescriptor.cs" />
     <Compile Include="ServiceEnvironment.cs" />
+    <Compile Include="Specification.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.Sdrn.Device.BusController\Atdi.Api.Sdrn.Device.BusController.csproj">
+      <Project>{09e46aa5-52c9-4d38-a86b-a26bc7846a75}</Project>
+      <Name>Atdi.Api.Sdrn.Device.BusController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.Sdrn.MessageBus\Atdi.Contracts.Api.Sdrn.MessageBus.csproj">
+      <Project>{cc08c3fa-e295-4c68-b35e-995d4b2d66d0}</Project>
+      <Name>Atdi.Contracts.Api.Sdrn.MessageBus</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Device\Atdi.Contracts.WcfServices.Sdrn.Device.csproj">
       <Project>{bed80a02-9104-477f-a267-f9265eeed6c0}</Project>
@@ -104,7 +105,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

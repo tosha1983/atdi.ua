@@ -10,6 +10,7 @@ using Atdi.DataModels.Sdrns.Server;
 using Atdi.Platform.AppServer;
 using Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers;
 using Atdi.Platform.AppComponent;
+using Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Subscribes;
 
 namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
 {
@@ -25,12 +26,10 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         {
             var serverConfig = this.Config.Extract<AppComponentConfig>();
             // регистрация  обрабочика конвеера в DI-окружении
-            this.Container.Register<MeasTasksOnAggServerPipelineHandler, MeasTasksOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
-            this.Container.Register<CommandsOnAggServerPipelineHandler, CommandsOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<RegistrationAggregationServer, RegistrationAggregationServer>(ServiceLifetime.Singleton);
+            this.Container.Register<RegisterSensorPipelineHandler, RegisterSensorPipelineHandler>(ServiceLifetime.Singleton);
+            this.Container.Register<OnDeviceCommandPipelineHandler, OnDeviceCommandPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<OnlineMeasOnAggServerPipelineHandler, OnlineMeasOnAggServerPipelineHandler>(ServiceLifetime.Singleton);
-
-
             this.Container.Register<MeasTasksOnAggServerSendEventPipelineHandler, MeasTasksOnAggServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<ClientCommandsOnAggregationServerSendEventPipelineHandler, ClientCommandsOnAggregationServerSendEventPipelineHandler>(ServiceLifetime.Singleton);
             this.Container.Register<MeasResultWorker, MeasResultWorker>(ServiceLifetime.Singleton);
@@ -60,20 +59,18 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             var tasksPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTasks);
             var commandsPipeline = pipelineSite.GetByName<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommands);
             var InitOnlineMeasurementPipeline = pipelineSite.Declare<InitOnlineMeasurementPipebox, InitOnlineMeasurementPipebox>(Pipelines.ClientInitOnlineMeasurement);
+            var tasksSendEventsPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientMeasTaskSendEvents);
+            var tasksCommandEventsPipeline = pipelineSite.Declare<ClientMeasTaskPipebox, ClientMeasTaskPiperesult>(Pipelines.ClientCommandsSendEvents);
+            var registerAggregationServerPipeline = pipelineSite.Declare<RegisterSensorSendEvent, RegisterSensorSendEvent>(Pipelines.ClientRegisterAggregationServer);
+            var deviceCommandAggregationServerPipeline = pipelineSite.Declare<DeviceCommandResultEvent, DeviceCommandResultEvent>(Pipelines.ClientDeviceCommandAggregationServer);
 
 
-
-
-            // регистрация обработчика
-            tasksPipeline.Register(typeof(MeasTasksOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
-            commandsPipeline.Register(typeof(CommandsOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
-
-            tasksPipeline.Register(typeof(MeasTasksOnAggServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
-            commandsPipeline.Register(typeof(ClientCommandsOnAggregationServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.Last);
+            tasksSendEventsPipeline.Register(typeof(MeasTasksOnAggServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.First);
+            tasksCommandEventsPipeline.Register(typeof(ClientCommandsOnAggregationServerSendEventPipelineHandler), PipelineHandlerRegistrationOptions.First);
 
             InitOnlineMeasurementPipeline.Register(typeof(OnlineMeasOnAggServerPipelineHandler), PipelineHandlerRegistrationOptions.First);
+            registerAggregationServerPipeline.Register(typeof(RegisterSensorPipelineHandler), PipelineHandlerRegistrationOptions.First);
+            deviceCommandAggregationServerPipeline.Register(typeof(OnDeviceCommandPipelineHandler), PipelineHandlerRegistrationOptions.First);
         }
-
-
     }
 }

@@ -73,5 +73,34 @@ namespace Atdi.Common
             }
             return null;
         }
+
+        public static string Wrap(this string text, int margin, string separator)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            int start = 0, end;
+            var lines = new List<string>(text.Length / margin + 1);
+            //text = Regex.Replace(text, @"\s", " ").Trim();
+
+            while ((end = start + margin) < text.Length)
+            {
+                while (text[end] != ' ' && end > start)
+                    end -= 1;
+
+                if (end == start)
+                    end = start + margin;
+
+                lines.Add(text.Substring(start, end - start));
+                start = end + 1;
+            }
+
+            if (start < text.Length)
+                lines.Add(text.Substring(start));
+
+            return string.Join(separator, lines.ToArray());
+        }
     }
 }

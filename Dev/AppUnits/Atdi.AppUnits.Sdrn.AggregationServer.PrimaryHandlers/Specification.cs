@@ -40,7 +40,9 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
         public static readonly EventCategory CommandsOnAggServerSendEventPipelineHandler = "CommandsOnAggServerSendEventPipelineHandler";
         public static readonly EventCategory MeasTasksOnAggServerPipelineHandler = "MeasTasksOnAggServerPipelineHandler";
         public static readonly EventCategory OnlineMeasOnAggServerHandler = "OnlineMeasOnAggServerHandler";
+        public static readonly EventCategory OnDeviceCommandPipelineHandler = "OnDeviceCommandPipelineHandler";
         
+
 
         public static readonly EventCategory MessageProcessing = "Message processing";
         public static readonly EventCategory EventProcessing = "Processing";

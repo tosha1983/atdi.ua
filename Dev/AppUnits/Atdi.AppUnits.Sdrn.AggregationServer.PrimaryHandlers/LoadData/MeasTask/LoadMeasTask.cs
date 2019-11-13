@@ -48,5 +48,25 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
             });
             return aggregationTaskId;
         }
+
+        public long GetAggregationSubTaskId(long masterSubTaskId)
+        {
+            long aggregationSubTaskId = -1;
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var builderAggregationSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().From();
+            builderAggregationSensor.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
+            builderAggregationSensor.Select(c => c.Id);
+            builderAggregationSensor.Where(c => c.SubtaskSensorMasterId, ConditionOperator.Equal, masterSubTaskId);
+            queryExecuter.Fetch(builderAggregationSensor, readerAggregationSensor =>
+            {
+                while (readerAggregationSensor.Read())
+                {
+                    aggregationSubTaskId = readerAggregationSensor.GetValue(c => c.SUBTASK_SENSOR.Id);
+                    break;
+                }
+                return true;
+            });
+            return aggregationSubTaskId;
+        }
     }
 }

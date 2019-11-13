@@ -82,6 +82,17 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQuery
                 s.DeclareJoin("JoinWebQuery", "XWEBQUERY", null, "WEBQUERYID", "ID");
             }
 
+            s.DeclareTable("XWEBCOVERAGE", "Web Coverage", plugin4);
+            {
+                s.DeclareField("ID", "NUMBER(15,0)", null, "NOTNULL", null);
+                s.DeclareIndex("PK_XWEBCOVERAGE", "PRIMARY", "ID");
+                s.DeclareField("RESULT_COVERAGE", "BINARY(20000)", null, null, null);
+                s.DeclareField("FILE_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("DATE_CREATED", "DATE", "Date", null, null);
+                s.DeclareField("PROVINCE", "VARCHAR(50)", null, null, null);
+            }
+            
+
             s.DeclareTable("XWEBCONSTRAINT", "Web constraints", plugin4);
             {
                 s.DeclareField("ID", "NUMBER(9,0)", null, "NOTNULL", null);

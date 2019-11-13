@@ -9,17 +9,19 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
-    class TaskContext<TTask, TProcess> : ITaskContext<TTask, TProcess>
+    internal sealed class TaskContext<TTask, TProcess> : ITaskContext<TTask, TProcess>
         where TTask : ITask
         where TProcess : IProcess
     {
+        private readonly TaskWorkerDescriptor _workerDescriptor;
         private readonly TaskBase _taskBase;
-        private CancellationTokenSource _tokenSource;
-        private ConcurrentDictionary<Type, EventWaitHandle> _waiters;
-        private ConcurrentDictionary<Type, object> _events;
+        private readonly CancellationTokenSource _tokenSource;
+        private readonly ConcurrentDictionary<Type, EventWaitHandle> _waiters;
+        private readonly ConcurrentDictionary<Type, object> _events;
 
-        public TaskContext(ITaskDescriptor descriptor)
+        public TaskContext(ITaskDescriptor descriptor, TaskWorkerDescriptor workerDescriptor)
         {
+            this._workerDescriptor = workerDescriptor;
             this.Descriptor = descriptor;
             this.Task = (TTask)descriptor.Task;
             this.Process = (TProcess)descriptor.Process;
@@ -44,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         {
             this._taskBase.ChangeState(TaskState.Aborted);
             this.Exception = e;
+            this.Release();
         }
 
         public void Cancel()
@@ -53,11 +56,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 this._tokenSource.Cancel();
             }
             this._taskBase.ChangeState(TaskState.Cancelled);
+            this.Release();
         }
 
         public void Finish()
         {
             this._taskBase.ChangeState(TaskState.Done);
+            this.Release();
+        }
+
+        private void Release()
+        {
+            this._workerDescriptor.ReleaseTaskContext(this);
+
+            foreach (var waiter in this._waiters.Values)
+            {
+                try
+                {
+                    waiter.Dispose();
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
 
         public void SetEvent<TEvent>(TEvent @event)
@@ -103,7 +124,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private bool TryTakeEvent<TEvent>(out TEvent @event)
         {
             @event = default(TEvent);
-            if (!_events.TryGetValue(typeof(TEvent), out object value))
+            if (!_events.TryGetValue(typeof(TEvent), out var value))
             {
                 return false;
             }
@@ -115,7 +136,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
         private ConcurrentQueue<TEvent> GetEventQueue<TEvent>()
         {
             var type = typeof(TEvent);
-            if (!this._events.TryGetValue(type, out object eventQueue))
+            if (!this._events.TryGetValue(type, out var eventQueue))
             {
                 eventQueue = new ConcurrentQueue<TEvent>();
                 if (!this._events.TryAdd(type, eventQueue))

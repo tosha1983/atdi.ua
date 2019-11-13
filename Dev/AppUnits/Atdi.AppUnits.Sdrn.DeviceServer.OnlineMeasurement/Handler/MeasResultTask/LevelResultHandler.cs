@@ -194,8 +194,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                                     sum += (float)Math.Pow(10.0,(double)(arr[i + j]/10.0));
                                     count++;
                                 }
-                                sum = 10 * (float)Math.Log10(sum);
-                                reducedArray[reducedIndex++] = sum / count;
+                                sum = 10 * (float)Math.Log10(sum/count);
+                                reducedArray[reducedIndex++] = sum;
                             }
                             break;
                         case TraceType.MinHold:

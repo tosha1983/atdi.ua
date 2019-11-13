@@ -80,10 +80,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     // запуск задачи включения GPS
                     //
                     ////////////////////////////////////////////////////////////////////////
-                    if (this._configProcessing.EnableGPS)
-                    {
-                        _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
-                    }
+                    _taskStarter.RunParallel(new GPSTask(), dispatchProcess);
+                    
 
 
                     ////////////////////////////////////////////////////////////////////////
@@ -113,7 +111,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.DispatcherWorker, Categories.Processing, Exceptions.UnknownErrorDispatcherWorker, e.Message);
+                _logger.Exception(Contexts.DispatcherWorker, Categories.Processing, Exceptions.UnknownErrorDispatcherWorker, e);
                 context.Abort(e);
             }
         }

@@ -38,28 +38,34 @@ namespace Atdi.Test.Api.Sdrn.Device.WcfService
 
                 var measTasksBusServiceEndpointName = "MeasTasksBus" + endpointSuffix;
 
-                for (int i = 0; i < 1000; i++)
+                //for (int i = 0; i < 1000; i++)
+                //{
+                //    SendMeasResultsSimple(measTasksBusServiceEndpointName);
+                //}
+
+                //return;
+
+                var sensor = CreateSensorData();
+
+                for (int i = 0; i < 100000; i++)
                 {
-                    SendMeasResultsSimple(measTasksBusServiceEndpointName);
+                    var regInfo = RegisterSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
+
+                    if (regInfo != null)
+                    {
+                        Console.WriteLine($"{i} >>> Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");
+                    }
+
+                    var updInfo = UpdateSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
+
+                    if (updInfo != null)
+                    {
+                        Console.WriteLine($"{i} >>> Sensor '{updInfo.SensorName}' was updated: status = '{updInfo.Status}', Tech ID = '{updInfo.EquipmentTechId}'");
+                    }
                 }
+
+
                 
-                return;
-
-                //    var sensor = CreateSensorData();
-
-                //    var regInfo = RegisterSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
-
-                //    if (regInfo != null)
-                //    {
-                //        Console.WriteLine($"Sensor '{regInfo.SensorName}' was registered: status = '{regInfo.Status}', Tech ID = '{regInfo.EquipmentTechId}'");
-                //    }
-
-                //    var updInfo = UpdateSensor(measTasksBusServiceEndpointName, sensor, sdrnServer);
-
-                //    if (updInfo != null)
-                //    {
-                //        Console.WriteLine($"Sensor '{updInfo.SensorName}' was updated: status = '{updInfo.Status}', Tech ID = '{updInfo.EquipmentTechId}'");
-                //    }
 
                 //    var sensorDescriptor = new SensorDescriptor
                 //    {
@@ -283,7 +289,7 @@ namespace Atdi.Test.Api.Sdrn.Device.WcfService
                 },
                 Equipment = new SensorEquipment
                 {
-                    TechId = "#0010023747364"
+                    TechId = "WCF Service Sensor 001"
                 }
             };
 

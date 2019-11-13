@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Contracts.Sdrn.Server.DevicesBus;
+using Atdi.Modules.Sdrn.DeviceBus;
 using MD = Atdi.DataModels.Sdrns.Server.Entities;
 
 namespace Atdi.AppUnits.Sdrn.BusController
@@ -73,43 +75,52 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                 try
                 {
-                    if (string.IsNullOrEmpty(message.Id) 
-                        || string.IsNullOrEmpty(message.Type) 
+                    if (string.IsNullOrEmpty(message.Id)
+                        || string.IsNullOrEmpty(message.Type)
                         || string.IsNullOrEmpty(message.AppId)
                         || string.IsNullOrEmpty(message.ContentType)
                         || message.Headers == null)
                     {
                         handlingResult.Status = SdrnMessageHandlingStatus.Trash;
-                        handlingResult.ReasonFailure = "The message contains an incorrect head";
+                        handlingResult.ReasonFailure = "The message contains an incorrect header";
                         this.RedirectMessage(message, deliveryContext, handlingResult);
                         return MessageHandlingResult.Confirm;
                     }
 
-                    if (!"application/sdrn".Equals(message.ContentType))
+                    if (!Protocol.ContentType.Check(message.ContentType))
                     {
-                        throw new InvalidOperationException("The message contains an incorrect conent type");
+                        throw new InvalidOperationException("The message contains an incorrect Content Type");
                     }
 
-                    var sdrnServer = GetHeaderValue(message.Headers, "SdrnServer");
-                    if (!_busControllerConfig.Environment.ServerInstance.Equals(sdrnServer, StringComparison.OrdinalIgnoreCase))
+                    var sdrnServer = GetHeaderValue(message.Headers, Protocol.Header.SdrnServer);
+                    if (!_busControllerConfig.Environment.ServerInstance.Equals(sdrnServer,
+                        StringComparison.OrdinalIgnoreCase))
                     {
-                        throw new InvalidOperationException("The message contains an incorrect SDRN server name");
+                        throw new InvalidOperationException("The message contains an incorrect SDRN Server Name");
                     }
-                    var sensorName = GetHeaderValue(message.Headers, "SensorName");
+
+                    var sensorName = GetHeaderValue(message.Headers, Protocol.Header.SensorName);
                     if (string.IsNullOrWhiteSpace(sensorName))
                     {
                         throw new InvalidOperationException("The message contains an incorrect Sensor Name");
                     }
-                    var sensorTechId = GetHeaderValue(message.Headers, "SensorTechId");
+
+                    var sensorTechId = GetHeaderValue(message.Headers, Protocol.Header.SensorTechId);
                     if (string.IsNullOrWhiteSpace(sensorName))
                     {
                         throw new InvalidOperationException("The message contains an incorrect Sensor Tech Id");
                     }
 
+                    var headerApiVersion = GetHeaderValue(message.Headers, Protocol.Header.ApiVersion);
+                    var headerProtocol = GetHeaderValue(message.Headers, Protocol.Header.Protocol);
+                    var headerBodyAqName = GetHeaderValue(message.Headers, Protocol.Header.BodyAqName);
+                    var headerCreated = GetHeaderValue(message.Headers, Protocol.Header.Created);
 
                     var queryInsert = this._amqpMessageQueryBuilder
                         .Insert()
-                        .SetValue(c => c.StatusCode, (byte)0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
+                        .SetValue(c => c.StatusCode,
+                            (byte) 0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
+                        .SetValue(c => c.StatusName, MessageProcessingStatus.Created.ToString())
                         .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
                         .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
                         .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
@@ -124,104 +135,31 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         .SetValue(c => c.PropContentType, message.ContentType)
                         .SetValue(c => c.PropCorrelationId, message.CorrelationId)
                         .SetValue(c => c.PropTimestamp, message.Timestamp)
-                        .SetValue(c => c.HeaderCreated, GetHeaderValue(message.Headers, "Created"))
+
+                        .SetValue(c => c.HeaderCreated, headerCreated)
                         .SetValue(c => c.HeaderSdrnServer, sdrnServer)
                         .SetValue(c => c.HeaderSensorName, sensorName)
                         .SetValue(c => c.HeaderSensorTechId, sensorTechId)
+                        .SetValue(c => c.HeaderApiVersion, headerApiVersion)
+                        .SetValue(c => c.HeaderProtocol, headerProtocol)
+                        .SetValue(c => c.HeaderBodyAQName, headerBodyAqName)
 
-                        .SetValue(c => c.BodyContentType, "json")
-                        .SetValue(c => c.BodyContentEncoding, "compressed")
-                        .SetValue(c => c.BodyContent, Compressor.Compress(message.Body))
-                        .Select(c => c.Id);
+                        .SetValue(c => c.BodyContentType, Protocol.ContentType.QualifiedOriginal)
+                        .SetValue(c => c.BodyContentEncoding, Protocol.ContentEncoding.Compressed)
+                        .SetValue(c => c.BodyContent, Compressor.Compress(message.Body));
 
-
-                    var messageId_PK = _queryExecutor.Execute<MD.IAmqpMessage_PK>(queryInsert);
+                    var messagePk = _queryExecutor.Execute<MD.IAmqpMessage_PK>(queryInsert);
 
 
                     var eventQueryInsert = this._amqpEventQueryBuilder
                         .Insert()
-                        .SetValue(c => c.Id, messageId_PK.Id)
+                        .SetValue(c => c.Id, messagePk.Id)
                         .SetValue(c => c.PropType, message.Type);
 
-
-                    _queryExecutor.Execute<MD.IAmqpEvent_PK>(eventQueryInsert);
+                    _queryExecutor.Execute(eventQueryInsert);
 
                     _messageProcessing.OnCreatedMessage();
 
-                    //var busEvent = new DevicesBusEvent($"On{message.Type}DeviceBusEvent", "SdrnDeviceBusController")
-                    //{
-                    //    BusMessageId = messageId
-                    //};
-
-                    //_eventEmitter.Emit(busEvent);
-
-                    return MessageHandlingResult.Confirm;
-                    /*
-                    var messageObject = _messageConverter.Deserialize(message);
-                    var handlerTypes = this._handlerLibrary.GetHandlerTypes(message.Type, messageObject.Type);
-
-
-                    if (handlerTypes.Length == 0)
-                    {
-                        this.RedirectMessage(message, deliveryContext, handlingResult);
-                        return MessageHandlingResult.Confirm;
-                    }
-
-                    
-
-                    var messageHeader = new SdrnIncomingEnvelopeProperties
-                    {
-                        MessageId = message.Id,
-                        MessageType = message.Type,
-                        CorrelationToken = message.CorrelationId,
-                        Created = Convert.ToDateTime(GetHeaderValue(message.Headers, "Created")),
-                        SensorName = GetHeaderValue(message.Headers, "SensorName"),
-                        SensorTechId = GetHeaderValue(message.Headers, "SensorTechId"),
-                    };
-
-                    var envelopeType = typeof(SdrnIncomingEnvelope<>);
-                    var envelopeGenericType = envelopeType.MakeGenericType(messageObject.Type);
-                    var incomingEnvelope = Activator.CreateInstance(envelopeGenericType, messageHeader, messageObject.Object);
-
-                    for (int i = 0; i < handlerTypes.Length; i++)
-                    {
-                        var handlerType = handlerTypes[i];
-
-                        // void Handle(ISdrnIncomingEnvelope<TDeliveryObject> incomingEnvelope, ISdrnMessageHandlingResult result);
-
-
-                        var handleMethod = handlerType.GetMethod("Handle");
-                        var handlerInstance = _handlerLibrary.ResolveHandler(handlerType);
-                        handleMethod.Invoke(handlerInstance, new object[] { incomingEnvelope, handlingResult });
-
-                        if (handlingResult.Status == SdrnMessageHandlingStatus.Confirmed)
-                        {
-                            return MessageHandlingResult.Confirm;
-                        }
-                        if (handlingResult.Status == SdrnMessageHandlingStatus.Ignored)
-                        {
-                            return MessageHandlingResult.Ignore;
-                        }
-                        if (handlingResult.Status == SdrnMessageHandlingStatus.Error)
-                        {
-                            this.RedirectMessage(message, deliveryContext, handlingResult);
-                            return MessageHandlingResult.Confirm;
-                        }
-                        if (handlingResult.Status == SdrnMessageHandlingStatus.Rejected)
-                        {
-                            this.RedirectMessage(message, deliveryContext, handlingResult);
-                            return MessageHandlingResult.Reject;
-                        }
-                        if (handlingResult.Status == SdrnMessageHandlingStatus.Trash)
-                        {
-                            this.RedirectMessage(message, deliveryContext, handlingResult);
-                            return MessageHandlingResult.Confirm;
-                        }
-                    }
-
-                    this.RedirectMessage(message, deliveryContext, handlingResult);
-                    return MessageHandlingResult.Confirm;
-                    */
                 }
                 catch (Exception e)
                 {
@@ -229,28 +167,30 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                     handlingResult.Status = SdrnMessageHandlingStatus.Error;
                     handlingResult.ReasonFailure = e.Message;
+
                     this.RedirectMessage(message, deliveryContext, handlingResult);
-                    return MessageHandlingResult.Confirm;
                 }
+
+                return MessageHandlingResult.Confirm;
             }
         }
 
-        private string GetHeaderValue(IDictionary<string, object> headers, string key)
+        private static string GetHeaderValue(IDictionary<string, object> headers, string key)
         {
             if (headers == null)
             {
                 return null;
             }
-            if (!headers.ContainsKey(key))
+            if (headers.TryGetValue(key, out var value))
             {
-                return null;
+                return Convert.ToString(Encoding.UTF8.GetString(((byte[])value)));
             }
-            return Convert.ToString(Encoding.UTF8.GetString(((byte[])headers[key])));
+            return null;
         }
 
         private void RedirectMessage(Message message, IDeliveryContext deliveryContext, ISdrnMessageHandlingResult handlingResult)
         {
-            var routingKey = string.Empty;
+            string routingKey;
             if (handlingResult.Status == SdrnMessageHandlingStatus.Error)
             {
                 routingKey = _busControllerConfig.BuildServerErrorQueueRoute(this._routingKey);
@@ -274,52 +214,23 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
             var redirectedMessage = new Message
             {
-                Id = Guid.NewGuid().ToString(),
-                Type = "RedirectMessage",
+                Id = message.Id,
+                Type = message.Type,
                 CorrelationId = message.Id,
                 ContentType = message.ContentType,
                 ContentEncoding = message.ContentEncoding,
                 Body = message.Body,
-                AppId = "Atdi.AppUnits.Sdrn.BusController.dll"
+                AppId = message.AppId,
+                Timestamp = message.Timestamp,
+                Headers = new Dictionary<string, object>(message.Headers)
+                {
+                    ["Redirect.Created"] = DateTime.Now.ToString("o"),
+                    ["Redirect.Status"] = handlingResult.Status.ToString(),
+                    ["Redirect.Reason"] = handlingResult.ReasonFailure
+                }
             };
 
-            redirectedMessage.Headers = new Dictionary<string, object>
-            {
-                ["SdrnServer"] = this._busControllerConfig.Environment.ServerInstance,
-                ["Created"] = DateTime.Now.ToString("o"),
-
-                ["Message.Id"] = message.Id,
-                ["Message.Type"] = message.Type,
-                ["Message.AppId"] = message.AppId,
-                ["Message.CorrelationId"] = message.CorrelationId,
-                ["Message.ContentType"] = message.ContentType,
-                ["Message.ContentEncoding"] = message.ContentEncoding,
-                ["Message.SdrnServer"] = message.Headers["SdrnServer"],
-                ["Message.SensorName"] = message.Headers["SensorName"],
-                ["Message.SensorTechId"] = message.Headers["SensorTechId"],
-                ["Message.Created"] = message.Headers["Created"],
-                
-                ["Processing.Status"] = handlingResult.Status.ToString(),
-                ["Processing.ReasonFailure"] = handlingResult.ReasonFailure
-            };
-
-            //var factory = _servicesResolver.Resolve<BusConnectionFactory>();
-            //var busConfig = new BusConnectionConfig
-            //{
-            //    ApplicationName = _busControllerConfig.Environment.GetAppName(),
-            //    ConnectionName = $"[SDRN.Server].[{_busControllerConfig.Environment.ServerInstance}].[Consumer].[{this._tag}].[#{System.Threading.Thread.CurrentThread.ManagedThreadId}]",
-            //    AutoRecovery = true,
-            //    HostName = _busControllerConfig.BusHost,
-            //    VirtualHost = _busControllerConfig.BusVirtualHost,
-            //    Port = _busControllerConfig.BusPort,
-            //    UserName = _busControllerConfig.BusUser,
-            //    Password = _busControllerConfig.BusPassword
-            //};
-
-            //using (var busConnection = factory.Create(busConfig))
-            {
-                _busConnection.Publish(_busControllerConfig.GetServerInnerExchangeName(), routingKey, redirectedMessage);
-            }
+            _busConnection.Publish(_busControllerConfig.GetServerInnerExchangeName(), routingKey, redirectedMessage);
         }
 
         public void Join()

@@ -26,7 +26,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
         protected override void OnInstallUnit()
         {
             var environment = this.Resolver.Resolve<ISdrnServerEnvironment>();
-            this._busControllerConfig = new SdrnBusControllerConfig(this.Config, environment);
+            var environmentModifier = this.Resolver.Resolve<ISdrnServerEnvironmentModifier>();
+            this._busControllerConfig = new SdrnBusControllerConfig(this.Config, environment, environmentModifier);
             this.Container.RegisterInstance(this._busControllerConfig, ServiceLifetime.Singleton);
 
             var convertorSettings = new MessageConvertSettings

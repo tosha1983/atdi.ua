@@ -22,6 +22,8 @@
     <Field Desc="VBW, kHz" Title="VBW, kHz" Name="Vbw" DataType="Double.30.10" SourceName="VBW" SourceType="Column" Required="false" Unit="Frequency.kHz"/>
     <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasDtParam to MeasTask"/>
     <Field Desc="SwNumber" Title="SwNumber" Name="SwNumber" DataType="Integer.32" SourceName="SW_NUMBER" SourceType="Column" Required="false"/>
+    <Field Desc="ReferenceLevel" Title="ReferenceLevel" Name="ReferenceLevel" DataType="Double.30.10" SourceName="REF_LEVEL" SourceType="Column" Required="false"/>
+    <Field Desc="NumberTotalScan" Title="NumberTotalScan" Name="NumberTotalScan" DataType="Integer.32" SourceName="NUM_TOTAL_SCAN" SourceType="Column" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

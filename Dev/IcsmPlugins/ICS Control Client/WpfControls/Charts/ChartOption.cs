@@ -47,5 +47,6 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         public string YLabel { get; set; }
 
         public bool UseZoom { get; set; }
-    }
+        public bool IsEnableSaveToFile { get; set; }
+}
 }

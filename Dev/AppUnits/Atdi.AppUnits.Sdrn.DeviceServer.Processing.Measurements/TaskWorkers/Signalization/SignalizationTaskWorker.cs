@@ -114,38 +114,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
                         
-                        _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
+                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
                         //context.Cancel();
                         //break;
                     }
 
-
-                    //////////////////////////////////////////////
-                    // 
-                    // Отправка команды в контроллер 
-                    //
-                    //////////////////////////////////////////////
-                    //context.Task.CountCallSignaling++;
-                    var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
-                    deviceCommand.Delay = 0;
-                    //deviceCommand.Options = CommandOption.StartImmediately;
-                    DateTime currTime = DateTime.Now;
-                    _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
-                    this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
-                    (
-                        ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
-                    ) =>
-                    {
-                        taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(failureReason, ex));
-                    });
-                    //////////////////////////////////////////////
-                    // 
-                    // Получение очередного  результат от Result Handler
-                    //
-                    //////////////////////////////////////////////
+                    var error = new ExceptionProcessSignalization();
                     MeasResults outResultData = null;
-                    bool isDown = context.WaitEvent<MeasResults>(out outResultData,  (int)context.Task.maximumTimeForWaitingResultSignalization);
-                        if (isDown == false) // таймут - результатов нет
+                    bool isError = context.WaitEvent<ExceptionProcessSignalization>(out error, 1);
+                    if (isError == true) // есть ошибка
                     {
                         // проверка - не отменили ли задачу
                         if (context.Task.taskParameters.status == StatusTask.Z.ToString())
@@ -166,59 +143,83 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             continue;
                         }
 
-                        var error = new ExceptionProcessSignalization();
-                        if (context.WaitEvent<ExceptionProcessSignalization>(out error, 1) == true)
+
+                        if (error._ex != null)
                         {
-                            if (error._ex != null)
+                            /// реакция на ошибку выполнения команды
+                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
+                            switch (error._failureReason)
                             {
-                                /// реакция на ошибку выполнения команды
-                                _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.HandlingErrorSendCommandController.With(deviceCommand.Id), error._ex.StackTrace);
-                                switch (error._failureReason)
-                                {
-                                    case CommandFailureReason.DeviceIsBusy:
-                                    case CommandFailureReason.CanceledExecution:
-                                    case CommandFailureReason.TimeoutExpired:
-                                    case CommandFailureReason.CanceledBeforeExecution:
-                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)maximumDurationMeas), error._ex.StackTrace);
-                                        Thread.Sleep(maximumDurationMeasSignaling_ms); // вынести в константу (по умолчанию 1 сек)
-                                        return;
-                                    case CommandFailureReason.NotFoundConvertor:
-                                    case CommandFailureReason.NotFoundDevice:
-                                        var durationToRepietMeas = (int)maximumDurationMeasSignaling_ms * (int)context.Task.KoeffWaitingDevice;
-                                        TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
-                                        if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
-                                        {
-                                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
-                                            context.Cancel();
-                                            return;
-                                        }
-                                        else
-                                        {
-                                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, durationToRepietMeas, error._ex.StackTrace));
-                                            Thread.Sleep(durationToRepietMeas);
-                                        }
-                                        break;
-                                    case CommandFailureReason.Exception:
+                                case CommandFailureReason.DeviceIsBusy:
+                                case CommandFailureReason.CanceledExecution:
+                                case CommandFailureReason.TimeoutExpired:
+                                case CommandFailureReason.CanceledBeforeExecution:
+                                    _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(context.Task.taskParameters.SDRTaskId, (int)maximumDurationMeas), error._ex.StackTrace);
+                                    Thread.Sleep(maximumDurationMeasSignaling_ms); // вынести в константу (по умолчанию 1 сек)
+                                    return;
+                                case CommandFailureReason.NotFoundConvertor:
+                                case CommandFailureReason.NotFoundDevice:
+                                    var durationToRepietMeas = (int)maximumDurationMeasSignaling_ms * (int)context.Task.KoeffWaitingDevice;
+                                    TimeSpan durationToFinishTask = context.Task.taskParameters.StopTime.Value - DateTime.Now;
+                                    if (durationToRepietMeas < durationToFinishTask.TotalMilliseconds)
+                                    {
                                         _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
                                         context.Cancel();
                                         return;
-                                    default:
-                                        throw new NotImplementedException($"Type {error._failureReason} not supported");
-                                }
+                                    }
+                                    else
+                                    {
+                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(context.Task.taskParameters.SDRTaskId, durationToRepietMeas, error._ex.StackTrace));
+                                        Thread.Sleep(durationToRepietMeas);
+                                    }
+                                    break;
+                                case CommandFailureReason.Exception:
+                                    _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId), error._ex.StackTrace);
+                                    context.Cancel();
+                                    return;
+                                default:
+                                    throw new NotImplementedException($"Type {error._failureReason} not supported");
                             }
                         }
                     }
                     else
                     {
-                        // есть результат
-                    }
+
+                        //////////////////////////////////////////////
+                        // 
+                        // Отправка команды в контроллер 
+                        //
+                        //////////////////////////////////////////////
+                        //context.Task.CountCallSignaling++;
+                        var deviceCommand = new MesureTraceCommand(context.Task.mesureTraceParameter);
+                        deviceCommand.Delay = 0;
+                        //deviceCommand.Options = CommandOption.StartImmediately;
+                        DateTime currTime = DateTime.Now;
+                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SendMeasureTraceCommandToController.With(deviceCommand.Id));
+                        this._controller.SendCommand<MesureTraceResult>(context, deviceCommand,
+                        (
+                            ITaskContext taskContext, ICommand command, CommandFailureReason failureReason, Exception ex
+                        ) =>
+                        {
+                            taskContext.SetEvent<ExceptionProcessSignalization>(new ExceptionProcessSignalization(failureReason, ex));
+                        });
 
 
-                    var action = new Action(() =>
-                    {
+
+                        //////////////////////////////////////////////
+                        // 
+                        // Получение очередного  результат от Result Handler
+                        //
+                        //////////////////////////////////////////////
+                        bool isResultNotNull = context.WaitEvent<MeasResults>(out outResultData);
+
+
+
+                        var action = new Action(() =>
+                        {
                         //реакция на принятые результаты измерения
                         if (outResultData != null)
-                        {
+                            {
                             //////////////////////////////////////////////
                             // 
                             //  Здесь получаем данные с GPS приемника
@@ -226,231 +227,232 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //////////////////////////////////////////////
                             //outResultData.ResultId = Guid.NewGuid().ToString();
                             context.Task.CountSendResults++;
-                            outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
-                            outResultData.ResultId = Guid.NewGuid().ToString();
+                                outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
+                                outResultData.ResultId = Guid.NewGuid().ToString();
                             //outResultData.ScansNumber = context.Task.CountSendResults;
                             outResultData.Status = "N";
-                            outResultData.ScansNumber = context.Task.CountMeasurementDone;
-                            outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
-                            outResultData.StartTime = context.Task.LastTimeSend.Value;
-                            outResultData.StopTime = currTime;
-                            outResultData.Measured = currTime;
-                            outResultData.Location = new DataModels.Sdrns.GeoLocation();
-                            var parentProcess = context.Process.Parent;
-                            if (parentProcess != null)
-                            {
-                                if (parentProcess is DispatchProcess)
+                                outResultData.ScansNumber = context.Task.CountMeasurementDone;
+                                outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
+                                outResultData.StartTime = context.Task.LastTimeSend.Value;
+                                outResultData.StopTime = currTime;
+                                outResultData.Measured = currTime;
+                                outResultData.Location = new DataModels.Sdrns.GeoLocation();
+                                var parentProcess = context.Process.Parent;
+                                if (parentProcess != null)
                                 {
-                                    DispatchProcess dispatchProcessParent = null;
-                                    try
+                                    if (parentProcess is DispatchProcess)
                                     {
-                                        dispatchProcessParent = (parentProcess as DispatchProcess);
-                                        if (dispatchProcessParent != null)
+                                        DispatchProcess dispatchProcessParent = null;
+                                        try
                                         {
-                                            outResultData.Location.ASL = dispatchProcessParent.Asl;
-                                            outResultData.Location.Lon = dispatchProcessParent.Lon;
-                                            outResultData.Location.Lat = dispatchProcessParent.Lat;
+                                            dispatchProcessParent = (parentProcess as DispatchProcess);
+                                            if (dispatchProcessParent != null)
+                                            {
+                                                outResultData.Location.ASL = dispatchProcessParent.Asl;
+                                                outResultData.Location.Lon = dispatchProcessParent.Lon;
+                                                outResultData.Location.Lat = dispatchProcessParent.Lat;
+                                            }
+                                            else
+                                            {
+                                                _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                            }
                                         }
-                                        else
+                                        catch (Exception ex)
                                         {
-                                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                            _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
                                         }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                        _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
                                     }
                                 }
                                 else
                                 {
-                                    _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                    _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                                 }
-                            }
-                            else
-                            {
-                                _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
-                            }
 
                             //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
                             var arrEmit = new Emitting[outResultData.Emittings.Length];
-                            for (int i=0; i< outResultData.Emittings.Length; i++)
-                            {
-                                var val = outResultData.Emittings[i];
-                                var emit = CopyHelper.CreateDeepCopy(val);
-                                var levelDistributionCorrCount = new List<int>();
-                                var levelDistributionCorrLevel = new List<int>();
-                                if (emit!=null)
+                                for (int i = 0; i < outResultData.Emittings.Length; i++)
                                 {
-                                    if (emit.LevelsDistribution!=null)
+                                    var val = outResultData.Emittings[i];
+                                    var emit = CopyHelper.CreateDeepCopy(val);
+                                    var levelDistributionCorrCount = new List<int>();
+                                    var levelDistributionCorrLevel = new List<int>();
+                                    if (emit != null)
                                     {
-                                        var newEmittingLevelsDistributionCount = emit.LevelsDistribution.Count;
-                                        var newEmittingLevelsDistributionLevel = emit.LevelsDistribution.Levels;
-                                        int startIndex = -1;
-                                        int endIndex = -1;
-                                        for (int j=0; j< newEmittingLevelsDistributionCount.Length; j++)
+                                        if (emit.LevelsDistribution != null)
                                         {
-                                            var valCount = newEmittingLevelsDistributionCount[j];
-                                            var valLevel = newEmittingLevelsDistributionLevel[j];
-                                            if (valCount==0)
+                                            var newEmittingLevelsDistributionCount = emit.LevelsDistribution.Count;
+                                            var newEmittingLevelsDistributionLevel = emit.LevelsDistribution.Levels;
+                                            int startIndex = -1;
+                                            int endIndex = -1;
+                                            for (int j = 0; j < newEmittingLevelsDistributionCount.Length; j++)
                                             {
-                                                continue;
+                                                var valCount = newEmittingLevelsDistributionCount[j];
+                                                var valLevel = newEmittingLevelsDistributionLevel[j];
+                                                if (valCount == 0)
+                                                {
+                                                    continue;
+                                                }
+                                                else
+                                                {
+                                                    startIndex = j;
+                                                    break;
+                                                }
+                                            }
+
+                                            for (int j = newEmittingLevelsDistributionCount.Length - 1; j >= 0; j--)
+                                            {
+                                                var valCount = newEmittingLevelsDistributionCount[j];
+                                                var valLevel = newEmittingLevelsDistributionLevel[j];
+                                                if (valCount == 0)
+                                                {
+                                                    continue;
+                                                }
+                                                else
+                                                {
+                                                    endIndex = j;
+                                                    break;
+                                                }
+                                            }
+
+                                            if ((startIndex >= 0) && (endIndex >= 0))
+                                            {
+                                                for (int k = startIndex; k <= endIndex; k++)
+                                                {
+                                                    var valCount = newEmittingLevelsDistributionCount[k];
+                                                    var valLevel = newEmittingLevelsDistributionLevel[k];
+
+                                                    levelDistributionCorrCount.Add(valCount);
+                                                    levelDistributionCorrLevel.Add(valLevel);
+                                                }
+                                                emit.LevelsDistribution.Levels = levelDistributionCorrLevel.ToArray();
+                                                emit.LevelsDistribution.Count = levelDistributionCorrCount.ToArray();
                                             }
                                             else
                                             {
-                                                startIndex = j;
-                                                break;
+                                                emit.LevelsDistribution.Levels = newEmittingLevelsDistributionLevel.ToArray();
+                                                emit.LevelsDistribution.Count = newEmittingLevelsDistributionCount.ToArray();
                                             }
-                                        }
-
-                                        for (int j = newEmittingLevelsDistributionCount.Length - 1; j >=0; j--)
-                                        {
-                                            var valCount = newEmittingLevelsDistributionCount[j];
-                                            var valLevel = newEmittingLevelsDistributionLevel[j];
-                                            if (valCount == 0)
-                                            {
-                                                continue;
-                                            }
-                                            else
-                                            {
-                                                endIndex = j;
-                                                break;
-                                            }
-                                        }
-
-                                        if ((startIndex >= 0) && (endIndex >= 0))
-                                        {
-                                            for (int k = startIndex; k <= endIndex; k++)
-                                            {
-                                                var valCount = newEmittingLevelsDistributionCount[k];
-                                                var valLevel = newEmittingLevelsDistributionLevel[k];
-
-                                                levelDistributionCorrCount.Add(valCount);
-                                                levelDistributionCorrLevel.Add(valLevel);
-                                            }
-                                            emit.LevelsDistribution.Levels = levelDistributionCorrLevel.ToArray();
-                                            emit.LevelsDistribution.Count = levelDistributionCorrCount.ToArray();
-                                        }
-                                        else
-                                        {
-                                            emit.LevelsDistribution.Levels = newEmittingLevelsDistributionLevel.ToArray();
-                                            emit.LevelsDistribution.Count = newEmittingLevelsDistributionCount.ToArray();
                                         }
                                     }
+                                    arrEmit[i] = emit;
                                 }
-                                arrEmit[i] = emit;
+
+                                CheckPercentAvailability.CheckPercent(ref arrEmit);
+
+                                DM.MeasResults measResultsNew = new MeasResults()
+                                {
+                                    BandwidthResult = outResultData.BandwidthResult,
+                                    Emittings = arrEmit,
+                                    Frequencies = outResultData.Frequencies,
+                                    FrequencySamples = outResultData.FrequencySamples,
+                                    Levels_dBm = outResultData.Levels_dBm,
+                                    Location = outResultData.Location,
+                                    Measured = outResultData.Measured,
+                                    Measurement = outResultData.Measurement,
+                                    RefLevels = outResultData.RefLevels,
+                                    ResultId = outResultData.ResultId,
+                                    Routes = outResultData.Routes,
+                                    ScansNumber = outResultData.ScansNumber,
+                                    StartTime = outResultData.StartTime,
+                                    StationResults = outResultData.StationResults,
+                                    Status = outResultData.Status,
+                                    StopTime = outResultData.StopTime,
+                                    SwNumber = outResultData.SwNumber,
+                                    TaskId = outResultData.TaskId
+                                };
+
+
+                                if (maximumDurationMeas < 0)
+                                {
+                                    context.Task.taskParameters.status = StatusTask.C.ToString();
+                                    measResultsNew.Status = StatusTask.C.ToString();
+                                }
+
+                                this._measResultsByStringRepository.Create(measResultsNew);
+
+                                context.Task.MeasResults = null;
+                                context.Task.LastTimeSend = currTime;
+                                context.Task.CounterCallSignaling = 0;
                             }
+                        });
 
-                            CheckPercentAvailability.CheckPercent(ref arrEmit);
-
-                            DM.MeasResults measResultsNew = new MeasResults()
-                            {
-                                BandwidthResult = outResultData.BandwidthResult,
-                                Emittings = arrEmit,
-                                Frequencies = outResultData.Frequencies,
-                                FrequencySamples = outResultData.FrequencySamples,
-                                Levels_dBm = outResultData.Levels_dBm,
-                                Location = outResultData.Location,
-                                Measured = outResultData.Measured,
-                                Measurement = outResultData.Measurement,
-                                RefLevels = outResultData.RefLevels,
-                                ResultId = outResultData.ResultId,
-                                Routes = outResultData.Routes,
-                                ScansNumber = outResultData.ScansNumber,
-                                StartTime = outResultData.StartTime,
-                                StationResults = outResultData.StationResults,
-                                Status = outResultData.Status,
-                                StopTime = outResultData.StopTime,
-                                SwNumber = outResultData.SwNumber,
-                                TaskId = outResultData.TaskId
-                            };
-
-
-                            if (maximumDurationMeas < 0)
-                            {
-                                context.Task.taskParameters.status = StatusTask.C.ToString();
-                                measResultsNew.Status = StatusTask.C.ToString();
-                            }
-
-                            this._measResultsByStringRepository.Create(measResultsNew);
-
-                            context.Task.MeasResults = null;
-                            context.Task.LastTimeSend = currTime;
-                            context.Task.CounterCallSignaling = 0;
-                        }
-                    });
-
-                    if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
-                    {
-                        //реакция на принятые результаты измерения
-                        action.Invoke();
-                        context.Finish();
-                        break;
-                    }
-
-
-                    //////////////////////////////////////////////
-                    // 
-                    //  Принять решение о полноте результатов
-                    //  
-                    //////////////////////////////////////////////
-                    TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
-                    if (timeSpan.TotalMilliseconds > context.Task.durationForSendResultSignaling)
-                    {
-                        //реакция на принятые результаты измерения
-                        action.Invoke();
-                    }
-
-                    //////////////////////////////////////////////
-                    // 
-                    // Принятие решение о завершении таска
-                    // 
-                    //
-                    //////////////////////////////////////////////
-                    if (currTime > context.Task.taskParameters.StopTime)
-                    {
-                        // Здесь отправка последнего таска 
-                        //(С проверкой - чтобы не отправляллся дубликат)
-                        if (outResultData != null)
+                        if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
                         {
-                            timeSpan = currTime - context.Task.LastTimeSend.Value;
-                            if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResultSignaling / 2.0))
-                            {
-                                action.Invoke();
-                            }
+                            //реакция на принятые результаты измерения
+                            action.Invoke();
+                            context.Finish();
+                            break;
                         }
 
-                        // обновление TaskParameters в БД
-                        context.Task.taskParameters.status = StatusTask.C.ToString();
-                        this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
 
-                        DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
-                        deviceCommandResult.CommandId = "UpdateStatusMeasTask";
-                        deviceCommandResult.CustDate1 = DateTime.Now;
-                        deviceCommandResult.Status = StatusTask.C.ToString();
-                        deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
+                        //////////////////////////////////////////////
+                        // 
+                        //  Принять решение о полноте результатов
+                        //  
+                        //////////////////////////////////////////////
+                        TimeSpan timeSpan = currTime - context.Task.LastTimeSend.Value;
+                        if (timeSpan.TotalMilliseconds > context.Task.durationForSendResultSignaling)
+                        {
+                            //реакция на принятые результаты измерения
+                            action.Invoke();
+                        }
 
-                        this._repositoryDeviceCommandResult.Create(deviceCommandResult);
+                        //////////////////////////////////////////////
+                        // 
+                        // Принятие решение о завершении таска
+                        // 
+                        //
+                        //////////////////////////////////////////////
+                        if (currTime > context.Task.taskParameters.StopTime)
+                        {
+                            // Здесь отправка последнего таска 
+                            //(С проверкой - чтобы не отправляллся дубликат)
+                            if (outResultData != null)
+                            {
+                                timeSpan = currTime - context.Task.LastTimeSend.Value;
+                                if (timeSpan.TotalMilliseconds > (int)(context.Task.durationForSendResultSignaling / 2.0))
+                                {
+                                    action.Invoke();
+                                }
+                            }
 
-                        context.Finish();
-                        break;
+                            // обновление TaskParameters в БД
+                            context.Task.taskParameters.status = StatusTask.C.ToString();
+                            this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
+
+                            DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                            deviceCommandResult.CommandId = "UpdateStatusMeasTask";
+                            deviceCommandResult.CustDate1 = DateTime.Now;
+                            deviceCommandResult.Status = StatusTask.C.ToString();
+                            deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
+
+                            this._repositoryDeviceCommandResult.Create(deviceCommandResult);
+
+                            context.Finish();
+                            break;
+                        }
+                        //////////////////////////////////////////////
+                        // 
+                        // Приостановка потока на рассчитаное время 
+                        //
+                        //////////////////////////////////////////////
+                        var sleepTime = maximumDurationMeas - (DateTime.Now - currTime).TotalMilliseconds;
+                        if (sleepTime >= 0)
+                        {
+                            _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
+                            Thread.Sleep((int)sleepTime);
+                        }
+                        //if (isDown) context.Task.CountMeasurementDone++;
                     }
-                    //////////////////////////////////////////////
-                    // 
-                    // Приостановка потока на рассчитаное время 
-                    //
-                    //////////////////////////////////////////////
-                    var sleepTime = maximumDurationMeas - (DateTime.Now - currTime).TotalMilliseconds;
-                    if (sleepTime >= 0)
-                    {
-                        _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.SleepThread.With(deviceCommand.Id, (int)sleepTime));
-                        Thread.Sleep((int)sleepTime);
-                    }
-                    //if (isDown) context.Task.CountMeasurementDone++;
                 }
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, e.Message);
+                _logger.Exception(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.UnknownErrorSignalizationTaskWorker, e);
                 context.Abort(e);
             }
         }

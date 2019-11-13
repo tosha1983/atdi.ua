@@ -317,7 +317,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             }
             catch (Exception e)
             {
-                _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.UnknownErrorQueueEventTaskWorker, e.Message);
+                _logger.Exception(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.UnknownErrorQueueEventTaskWorker, e);
                 context.Abort(e);
             }
         }
