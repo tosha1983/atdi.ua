@@ -81,11 +81,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ////////////TimeThread.IsBackground = true;
             ////////////TimeThread.Start();
 
-            ANThread = new Thread(ANWorks);
-            ANThread.Name = "ANThread";
-            ANThread.IsBackground = true;
-            ANThread.Start();
-            AND += ANConnect;
+            //ANThread = new Thread(ANWorks);
+            //ANThread.Name = "ANThread";
+            //ANThread.IsBackground = true;
+            //ANThread.Start();
+            //AND += ANConnect;
 
             SHThread = new Thread(SHWorks);
             SHThread.Name = "SHThread";
@@ -93,11 +93,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             SHThread.Start();
             SHD += SHConnect;
 
-            //GPSThread = new Thread(GPSWorks);
-            //GPSThread.Name = "GPSThread";
-            //GPSThread.IsBackground = true;
-            //GPSThread.Start();
-            //GPSD += GPSConnect;
+            GPSThread = new Thread(GPSWorks);
+            GPSThread.Name = "GPSThread";
+            GPSThread.IsBackground = true;
+            GPSThread.Start();
+            GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
@@ -591,16 +591,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 10;
-                command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
-                command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
-                command.Parameter.PreAmp_dB = 30;
-                command.Parameter.RBW_Hz = -1;
+                command.Parameter.Att_dB = 20;
+                command.Parameter.FreqStart_Hz = 2600m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 2700m * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.PreAmp_dB = 10;
+                command.Parameter.RBW_Hz = 100;
                 command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 8000;
+                command.Parameter.TraceCount = 2;
+                command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
