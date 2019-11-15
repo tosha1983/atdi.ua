@@ -41,8 +41,8 @@ namespace Atdi.Platform.AppServer
         public static readonly EventText ServerHostIsStarting = "The server host is starting";
         public static readonly EventText ServerHostStarted = "The server host started";
 
-        public static readonly EventText ServerHostIsStopping = "The server host is stopping";
-        public static readonly EventText ServerHostStopped = "The server host stopped";
+        public static readonly EventText ServerHostIsStopping = "The server host is stopping: Reason='{0}'";
+        public static readonly EventText ServerHostStopped = "The server host stopped: Reason='{0}'";
 
         public static readonly EventText ServerComponentsIsActivating = "Server components activation started";
         public static readonly EventText ServerComponentsActivated = "Server components activation completed";

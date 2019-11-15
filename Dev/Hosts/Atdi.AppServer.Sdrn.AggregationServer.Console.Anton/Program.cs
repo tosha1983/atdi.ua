@@ -30,7 +30,7 @@ namespace Atdi.AppServer.Sdrn.AggregationServer
 
                 try
                 {
-                    host.Stop();
+                    host.Stop("Normal completion");
                 }
                 catch (Exception e)
                 {

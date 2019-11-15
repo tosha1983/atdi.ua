@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Platform.AppComponent
 {
+    [Flags]
     public enum ComponentBehavior
     {
         Simple = 0,

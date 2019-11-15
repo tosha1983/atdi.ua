@@ -15,6 +15,8 @@ namespace Atdi.Platform.AppServer
 
         void Stop();
 
+        void Stop(string reason);
+
         IServicesContainer Container { get;  }
 
         IServerContext Context { get; }
