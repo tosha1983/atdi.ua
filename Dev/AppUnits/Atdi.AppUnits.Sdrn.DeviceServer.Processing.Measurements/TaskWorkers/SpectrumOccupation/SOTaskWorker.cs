@@ -105,7 +105,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // Формирование команды (инициализация начальными параметрами) перед отправкой в контроллер
 
                     var maximumDurationMeas = CommonConvertors.CalculateTimeSleep(context.Task.taskParameters, context.Task.CountMeasurementDone);
-                    if (maximumDurationMeas < 0)
+                    if (maximumDurationMeas <= 0)
                     {
                         // обновление TaskParameters в БД
                         context.Task.taskParameters.status = StatusTask.C.ToString();
@@ -279,7 +279,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                     _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                                 }
 
-                                if (maximumDurationMeas < 0)
+                                if (maximumDurationMeas <= 0)
                                 {
                                     context.Task.taskParameters.status = StatusTask.C.ToString();
                                     measResult.Status = StatusTask.C.ToString();
@@ -292,7 +292,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             }
                         });
 
-                        if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
+                        if ((maximumDurationMeas <= 0) || (currTime > context.Task.taskParameters.StopTime))
                         {
                             //реакция на принятые результаты измерения
                             action.Invoke();
