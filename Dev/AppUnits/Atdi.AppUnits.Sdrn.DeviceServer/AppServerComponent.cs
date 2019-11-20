@@ -207,13 +207,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 var productKey = this.Config.GetParameterAsDecodeString("License.ProductKey", "Atdi.WcfServices.Sdrn.Device");
                 var ownerId = this.Config.GetParameterAsDecodeString("License.OwnerId", "Atdi.WcfServices.Sdrn.Device");
 
-                var verificationData = new VerificationData
+                var verificationData = new VerificationData2
                 {
                     OwnerId = ownerId,
                     ProductName = "ICS Control Device",
                     ProductKey = productKey,
                     LicenseType = "DeviceLicense",
-                    Date = DateTime.Now
+                    Date = DateTime.Now,
+                    YearHash = LicenseVerifier.EncodeYear(2020)
                 };
 
                 var licenseFileName = this.Config.GetParameterAsString("License.FileName");

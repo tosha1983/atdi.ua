@@ -70,13 +70,14 @@ namespace Atdi.Tools.Sdrn.Monitoring
             {
                 var sharedSecret = "Atdi.Tools.Sdrn.Client";
 
-                var verificationData = new VerificationData
+                var verificationData = new VerificationData2
                 {
                     OwnerId = Platform.Cryptography.Encryptor.DecryptStringAES(ownerId, sharedSecret), 
                     ProductName = "ICS Control Monitoring Client",
                     ProductKey = Platform.Cryptography.Encryptor.DecryptStringAES(productKey, sharedSecret),
                     LicenseType = "ClientLicense",
-                    Date = DateTime.Now
+                    Date = DateTime.Now,
+                    YearHash = LicenseVerifier.EncodeYear(2020)
                 };
 
                 licenseFileName = Path.Combine(this.AssemblyDirectory, licenseFileName);

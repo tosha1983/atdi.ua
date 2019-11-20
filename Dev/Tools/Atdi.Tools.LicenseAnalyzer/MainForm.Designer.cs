@@ -69,6 +69,14 @@
             this.label13 = new System.Windows.Forms.Label();
             this.txtEncryptedOwnerId = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.txtTerms = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.txtVersion = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtYear = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.txtAssembly = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -174,6 +182,14 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.txtAssembly);
+            this.groupBox3.Controls.Add(this.label21);
+            this.groupBox3.Controls.Add(this.txtVersion);
+            this.groupBox3.Controls.Add(this.label19);
+            this.groupBox3.Controls.Add(this.txtYear);
+            this.groupBox3.Controls.Add(this.label20);
+            this.groupBox3.Controls.Add(this.txtTerms);
+            this.groupBox3.Controls.Add(this.label18);
             this.groupBox3.Controls.Add(this.txtOwner);
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.txtCompany);
@@ -192,9 +208,9 @@
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.txtNumber);
             this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Location = new System.Drawing.Point(12, 138);
+            this.groupBox3.Location = new System.Drawing.Point(12, 129);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(479, 186);
+            this.groupBox3.Size = new System.Drawing.Size(479, 258);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "  License data ";
@@ -270,7 +286,7 @@
             // 
             // txtStopDate
             // 
-            this.txtStopDate.Location = new System.Drawing.Point(296, 150);
+            this.txtStopDate.Location = new System.Drawing.Point(296, 202);
             this.txtStopDate.Name = "txtStopDate";
             this.txtStopDate.ReadOnly = true;
             this.txtStopDate.Size = new System.Drawing.Size(162, 20);
@@ -279,7 +295,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(235, 153);
+            this.label4.Location = new System.Drawing.Point(235, 205);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(55, 13);
             this.label4.TabIndex = 14;
@@ -287,7 +303,7 @@
             // 
             // txtStartDate
             // 
-            this.txtStartDate.Location = new System.Drawing.Point(67, 150);
+            this.txtStartDate.Location = new System.Drawing.Point(67, 202);
             this.txtStartDate.Name = "txtStartDate";
             this.txtStartDate.ReadOnly = true;
             this.txtStartDate.Size = new System.Drawing.Size(162, 20);
@@ -296,7 +312,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 153);
+            this.label10.Location = new System.Drawing.Point(6, 205);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(55, 13);
             this.label10.TabIndex = 12;
@@ -366,7 +382,7 @@
             this.groupBox2.Controls.Add(this.txtEncryptedOwnerId);
             this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 341);
+            this.groupBox2.Location = new System.Drawing.Point(12, 399);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(479, 164);
             this.groupBox2.TabIndex = 4;
@@ -475,11 +491,79 @@
             this.label14.TabIndex = 13;
             this.label14.Text = "Owner ID";
             // 
+            // txtTerms
+            // 
+            this.txtTerms.Location = new System.Drawing.Point(67, 150);
+            this.txtTerms.Name = "txtTerms";
+            this.txtTerms.ReadOnly = true;
+            this.txtTerms.Size = new System.Drawing.Size(391, 20);
+            this.txtTerms.TabIndex = 25;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 153);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(36, 13);
+            this.label18.TabIndex = 24;
+            this.label18.Text = "Terms";
+            // 
+            // txtVersion
+            // 
+            this.txtVersion.Location = new System.Drawing.Point(296, 176);
+            this.txtVersion.Name = "txtVersion";
+            this.txtVersion.ReadOnly = true;
+            this.txtVersion.Size = new System.Drawing.Size(162, 20);
+            this.txtVersion.TabIndex = 29;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(235, 179);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(42, 13);
+            this.label19.TabIndex = 28;
+            this.label19.Text = "Version";
+            // 
+            // txtYear
+            // 
+            this.txtYear.Location = new System.Drawing.Point(67, 176);
+            this.txtYear.Name = "txtYear";
+            this.txtYear.ReadOnly = true;
+            this.txtYear.Size = new System.Drawing.Size(162, 20);
+            this.txtYear.TabIndex = 27;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(6, 179);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(29, 13);
+            this.label20.TabIndex = 26;
+            this.label20.Text = "Year";
+            // 
+            // txtAssembly
+            // 
+            this.txtAssembly.Location = new System.Drawing.Point(67, 228);
+            this.txtAssembly.Name = "txtAssembly";
+            this.txtAssembly.ReadOnly = true;
+            this.txtAssembly.Size = new System.Drawing.Size(391, 20);
+            this.txtAssembly.TabIndex = 31;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(6, 231);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(51, 13);
+            this.label21.TabIndex = 30;
+            this.label21.Text = "Assembly";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(503, 517);
+            this.ClientSize = new System.Drawing.Size(503, 574);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
@@ -542,6 +626,14 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ComboBox cmbConfigType;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox txtTerms;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox txtVersion;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox txtYear;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox txtAssembly;
+        private System.Windows.Forms.Label label21;
     }
 }
 
