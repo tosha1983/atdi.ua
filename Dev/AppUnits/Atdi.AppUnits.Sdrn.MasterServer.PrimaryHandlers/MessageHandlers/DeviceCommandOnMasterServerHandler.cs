@@ -83,9 +83,11 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers.MessageHandlers
                         long taskIds = -1;
                         if (deliveryObject.CustTxt1 != null)
                         {
-                            if (long.TryParse(deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.", ""), out subTaskStationId))
+                            var subTaskId = deliveryObject.CustTxt1.ConvertStringToDouble();
+                            if (subTaskId != null)
                             {
-                                if (subTaskStationId > -1)
+                                subTaskStationId = (long)subTaskId.Value;
+                                if (subTaskStationId > 0)
                                 {
                                     var querySubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
                                         .Update()
