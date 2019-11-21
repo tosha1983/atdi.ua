@@ -18,22 +18,13 @@ using XICSM.ICSControlClient.WpfControls.Maps;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasTaskSignalizationForm : Form
+    public partial class MeasTaskSignalizationForm : WpfFormBase
     {
         private long _taskId;
-        private ElementHost _wpfElementHost;
         public MeasTaskSignalizationForm(long taskId)
         {
             _taskId = taskId;
             InitializeComponent();
-        }
-
-        private void MeasTaskSignalizationForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 

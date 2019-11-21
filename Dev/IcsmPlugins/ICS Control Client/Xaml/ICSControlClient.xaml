@@ -141,7 +141,7 @@
                               <DataGridTextColumn Header="CreatedBy" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
                           </DataGrid.Columns>
                       
-                    </cdg:CustomDataGridMeasTasks>
+                      </cdg:CustomDataGridMeasTasks>
 
                       <GridSplitter Visibility="{Binding MeasTaskDetailVisibility}" Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                       </GridSplitter>

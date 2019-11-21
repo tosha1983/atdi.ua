@@ -35,21 +35,21 @@ namespace XICSM.ICSControlClient.ViewModels
     {
         public CustomDataGridMeasTasks()
         {
-            this.MouseDoubleClick += DoubleClick;
+            //this.MouseDoubleClick += DoubleClick;
         }
-        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-            foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
-            {
-                if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
-                {
-                    var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
-                    dlgForm.ShowDialog();
-                    dlgForm.Dispose();
-                }
-            }
-        }
+        //private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        //{
+        //    this.SelectedItemsList = this.SelectedItems;
+        //    foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
+        //    {
+        //        if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
+        //        {
+        //            var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
+        //            dlgForm.ShowDialog();
+        //            dlgForm.Dispose();
+        //        }
+        //    }
+        //}
         public IList SelectedItemsList
         {
             get { return (IList)GetValue(SelectedItemsListProperty); }

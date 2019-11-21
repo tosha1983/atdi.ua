@@ -480,8 +480,8 @@ namespace XICSM.ICSControlClient.ViewModels
                                     TriggerDeviationFromReference = (double)record[dicFields["EMITTING.TriggerDeviationFromReference"]],
                                     EmittingParameters = new SDR.EmittingParameters()
                                     {
-                                        RollOffFactor = (double)record[dicFields["PersentAvailability"]],
-                                        StandardBW = (double)record[dicFields["PersentAvailability"]]
+                                        RollOffFactor = (double)record[dicFields["EMITTING.RollOffFactor"]],
+                                        StandardBW = (double)record[dicFields["EMITTING.StandardBW"]]
                                     },
                                     AssociatedStationID = Convert.ToInt64(record[dicFields["EMITTING.StationID"]]),
                                     AssociatedStationTableName = (string)record[dicFields["EMITTING.StationTableName"]],

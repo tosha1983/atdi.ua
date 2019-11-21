@@ -20,20 +20,11 @@ using XICSM.ICSControlClient.WpfControls.Maps;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasResultForm : Form
+    public partial class MeasResultForm : WpfFormBase
     {
-        private ElementHost _wpfElementHost;
-        //private MainFormWpfControl _wpfControl;
         public MeasResultForm()
         {
             InitializeComponent();
-        }
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -43,8 +34,6 @@ namespace XICSM.ICSControlClient.Forms
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
                 (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new MeasResultsViewModel();
             }
-            //_wpfControl = new MainFormWpfControl();
-            //this._wpfElementHost.Child = _wpfControl;
         }
 
         private void MeasResultForm_FormClosed(object sender, FormClosedEventArgs e)

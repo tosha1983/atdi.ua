@@ -30,6 +30,11 @@
         {
             this.SuspendLayout();
             // 
+            // _wpfElementHost
+            // 
+            this._wpfElementHost.Size = new System.Drawing.Size(800, 450);
+            this._wpfElementHost.Child = null;
+            // 
             // MeasResultSignalizationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -39,7 +44,6 @@
             this.Text = "ICS Control Client - Meas Result Signalization";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MeasResultSignalizationForm_FormClosed);
-            this.Load += new System.EventHandler(this.MeasResultSignalizationForm_Load);
             this.ResumeLayout(false);
 
         }

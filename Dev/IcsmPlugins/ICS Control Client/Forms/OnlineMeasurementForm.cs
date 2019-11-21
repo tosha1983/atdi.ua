@@ -20,10 +20,9 @@ namespace XICSM.ICSControlClient.Forms
 {
     
 
-    public partial class OnlineMeasurementForm : Form
+    public partial class OnlineMeasurementForm : WpfFormBase
     {
         private readonly ShortSensorViewModel _sensor;
-        private ElementHost _wpfElementHost;
         private OnlineMeasurementViewModel _viewModel;
         private OnlineMeasurementParameters _param;
 
@@ -34,13 +33,6 @@ namespace XICSM.ICSControlClient.Forms
             this._viewModel = new OnlineMeasurementViewModel(this._sensor, this._param);
             InitializeComponent();
             this.Text = $"ICS Control Client - Online Measurement - Sensor ID #{sensor.Id} '{_sensor.Name}'";
-        }
-
-        private void OnlineMeasurementForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
 
             try
             {
@@ -50,7 +42,7 @@ namespace XICSM.ICSControlClient.Forms
                 using (var fileStream = new FileStream(fileName, FileMode.Open))
                 {
                     this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                    
+
                     (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = this._viewModel;
                 }
             }
@@ -59,15 +51,7 @@ namespace XICSM.ICSControlClient.Forms
                 System.Diagnostics.Debug.WriteLine($"OnlineMeasurementForm_Load: {ex.ToString()}");
                 throw;
             }
-
-            
         }
-
-        private void OnlineMeasurementForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            
-        }
-
         private void OnlineMeasurementForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (this._viewModel != null)
