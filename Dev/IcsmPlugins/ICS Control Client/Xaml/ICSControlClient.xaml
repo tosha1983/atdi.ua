@@ -990,8 +990,8 @@
                     </ScrollViewer>
                   </GroupBox>
 
-                  <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="60" Margin="50,5,0,0" Content="Get CSV" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>
-                    <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="60" Margin="120,5,0,0" Content="Get Graphic" Command="{Binding GetGraphicCommand}" Visibility="{Binding ResGetGraphicVisibility}"/>
+                    <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="80" Margin="50,5,0,0" Content="Get CSV" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>
+                    <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="80" Margin="160,5,0,0" Content="Get Graphic" Command="{Binding GetGraphicCommand}" Visibility="{Binding ResGetGraphicVisibility}"/>
                 </Grid>
             </GroupBox>
 

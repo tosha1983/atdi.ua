@@ -305,7 +305,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StationSysInfo = source.StationSysInfo,
                 Standard = source.Standard,
                 CentralFrequencyMeas_MHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequencyMeas : (double?)null,
-                CentralFrequencyMHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequency : (double?)null,
+                CentralFrequencyMHz = source.CentralFrequencyMeas_MHz,
+                //CentralFrequencyMHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequency : (double?)null,
                 GeneralResults = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray() : null
             };
         }
