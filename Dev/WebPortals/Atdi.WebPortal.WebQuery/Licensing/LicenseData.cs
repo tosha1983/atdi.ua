@@ -35,4 +35,28 @@ namespace Atdi.WebPortal.WebQuery.Licensing
 
         public string Instance { get; set; }
     }
+
+    [Flags]
+    public enum LicenseLimitationTerms
+    {
+        TimePeriod = 1,
+        Version = 2,
+        Assembly = 4,
+        Year = 8,
+        Host = 16
+    }
+
+    [Serializable]
+    public class LicenseData2 : LicenseData
+    {
+        public LicenseLimitationTerms LimitationTerms { get; set; }
+
+        public string Version { get; set; }
+
+        public ushort Year { get; set; }
+
+        public string AssemblyFullName { get; set; }
+
+        public string HostData { get; set; }
+    }
 }

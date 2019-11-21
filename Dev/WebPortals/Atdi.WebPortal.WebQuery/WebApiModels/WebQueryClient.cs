@@ -19,13 +19,14 @@ namespace Atdi.WebPortal.WebQuery.WebApiModels
             {
                 var ownerId = Encryptor.DecryptStringAES(options.Value.LicenseOwnerId, "Atdi.WebPortal.WebQuery");
                 var productKey = Encryptor.DecryptStringAES(options.Value.LicenseProductKey, "Atdi.WebPortal.WebQuery");
-                var verificationData = new VerificationData
+                var verificationData = new VerificationData2
                 {
                     OwnerId = ownerId,
                     ProductName = "WebQuery Web Portal",
                     ProductKey = productKey,
                     LicenseType = "ServerLicense",
-                    Date = DateTime.Now
+                    Date = DateTime.Now,
+                    YearHash = LicenseVerifier.EncodeYear(2020)
                 };
 
                 var licenseFileName = options.Value.LicenseFileName;

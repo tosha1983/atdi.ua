@@ -64,13 +64,14 @@ namespace Atdi.AppServices.WebQuery
 
             try
             {
-                var verificationData = new VerificationData
+                var verificationData = new VerificationData2
                 {
                     OwnerId = ownerId,
                     ProductName = "WebQuery Application Server",
                     ProductKey = productKey,
                     LicenseType = "ServerLicense",
-                    Date = DateTime.Now
+                    Date = DateTime.Now,
+                    YearHash = LicenseVerifier.EncodeYear(2020)
                 };
 
                 licenseFileName = Path.Combine(this.AssemblyDirectory, licenseFileName);
