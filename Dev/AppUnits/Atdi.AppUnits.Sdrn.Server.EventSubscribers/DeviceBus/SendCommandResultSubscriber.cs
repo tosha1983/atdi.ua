@@ -107,9 +107,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 long taskIds = -1;
                                 if (deliveryObject.CustTxt1 != null)
                                 {
-                                    if (long.TryParse(deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.", ""), out subTaskStationId))
+                                    var subtaskId = deliveryObject.CustTxt1.Replace("SDRN.SubTaskSensorId.", "").ConvertStringToDouble();
+                                    if (subtaskId != null)
                                     {
-                                        if (subTaskStationId > -1)
+                                        subTaskStationId = (long)subtaskId.Value;
+                                        if (subTaskStationId > 0)
                                         {
                                             var querySubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>()
                                                 .Update()

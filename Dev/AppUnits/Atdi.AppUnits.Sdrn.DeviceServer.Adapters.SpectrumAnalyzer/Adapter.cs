@@ -373,7 +373,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     //Устанавливаем сколько трейсов хотим
                     if (command.Parameter.TraceCount > 0)
                     {
-                        TraceCountToMeas = (ulong)command.Parameter.TraceCount;
+                        TraceCountToMeas = (ulong)command.Parameter.TraceCount + 1;// +1 маленький костыль для предотвращения кривого трейса
                         TraceCount = 0;
                         TracePoints = command.Parameter.TracePoint;
                     }
@@ -382,14 +382,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         throw new Exception("TraceCount must be set greater than zero.");
                     }
 
-                    //если надо изменяем размер буфера
-                    //int length = SweepPoints * 4 + SweepPoints.ToString().Length + 100;
-                    //if (session.DefaultBufferSize != length)
-                    //{
-                    //    session.DefaultBufferSize = length;
-                    //}
-                    int dsfgsdg = 0;
-                    long ddddddd = _timeService.TimeStamp.Ticks;
                     //Меряем
                     //Если TraceType ClearWrite то пушаем каждый результат                    
                     if (TraceTypeResult == EN.TraceType.ClearWrite)
@@ -399,38 +391,38 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
-                            dsfgsdg++;
-                            //long ddddddd = _timeService.TimeStamp.Ticks;
                             newres = GetTrace();
                             if (newres)
                             {
-
-                                // пушаем результат
-                                var result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Next);
-                                TraceCount++;
-                                if (TraceCountToMeas == TraceCount)
+                                if (i > 0)// +1 маленький костыль для предотвращения кривого трейса
                                 {
-                                    result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Final);
+                                    // пушаем результат
+                                    var result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Next);
+                                    TraceCount++;
+                                    if (TraceCountToMeas == TraceCount)
+                                    {
+                                        result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Final);
+                                    }
+                                    result.Att_dB = (int)AttLevelSpec;
+                                    result.RefLevel_dBm = (int)RefLevelSpec;
+                                    result.PreAmp_dB = PreAmpSpec ? 1 : 0;
+                                    result.RBW_Hz = (double)RBW;
+                                    result.VBW_Hz = (double)VBW;
+                                    result.Freq_Hz = new double[FreqArr.Length];
+                                    result.Level = new float[FreqArr.Length];
+                                    for (int j = 0; j < FreqArr.Length; j++)
+                                    {
+                                        result.Freq_Hz[j] = FreqArr[j];
+                                        result.Level[j] = LevelArr[j];
+                                    }
+                                    result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                                                                                       //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                                    if (PowerRegister != EN.PowerRegister.Normal)
+                                    {
+                                        result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                                    }
+                                    context.PushResult(result);
                                 }
-                                result.Att_dB = (int)AttLevelSpec;
-                                result.RefLevel_dBm = (int)RefLevelSpec;
-                                result.PreAmp_dB = PreAmpSpec ? 1 : 0;
-                                result.RBW_Hz = (double)RBW;
-                                result.VBW_Hz = (double)VBW;
-                                result.Freq_Hz = new double[FreqArr.Length];
-                                result.Level = new float[FreqArr.Length];
-                                for (int j = 0; j < FreqArr.Length; j++)
-                                {
-                                    result.Freq_Hz[j] = FreqArr[j];
-                                    result.Level[j] = LevelArr[j];
-                                }
-                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                                //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                                if (PowerRegister != EN.PowerRegister.Normal)
-                                {
-                                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                                }
-                                context.PushResult(result);
                             }
                             else
                             {
@@ -462,16 +454,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         TraceReset = true;///сбросим предыдущие результаты
                         if (TraceTypeResult == EN.TraceType.Average)//назначим сколько усреднять
                         {
-                            TraceAveraged.AveragingCount = (int)TraceCountToMeas;
+                            TraceAveraged.AveragingCount = (int)TraceCountToMeas-1;
                         }
                         bool _RFOverload = false;
                         bool newres = false;
                         for (ulong i = 0; i < TraceCountToMeas; i++)
                         {
-                            dsfgsdg++;
                             newres = GetTrace();
                             if (newres)
                             {
+                                if (i == 0)
+                                {
+                                    TraceReset = true;
+                                }
                                 TraceCount++;
                                 if (PowerRegister != EN.PowerRegister.Normal)
                                 {
@@ -521,6 +516,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                             if (_RFOverload)
                             {
                                 result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                            }
+                            else
+                            {
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                             }
                             context.PushResult(result);
                         }
@@ -630,24 +629,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 //{
                 //    SetSampleSpeed(samplespeed);
                 //}
-
-
-
-
-
-                //long time = command.Parameter.TimeStart;// _timeService.GetGnssTime().Ticks;
-                //long ToNextSecond = (time / 10000000) * 10000000 - time + 10000000;
-
-                ////IQMeasTime
-                //decimal delay = Math.Abs(((decimal)ToNextSecond) / 10000000);// - 0.03m;// - 0.5m; //время насколько раньше тригерра будут собранны данные всегда отрицательное
-                ////ищем ближайшее целое по отношени к длительности семпла
-                //int divisor = -1 + (int)Math.Floor((0 - delay) / SampleTimeLength);
-
-
-                //IQMeasTimeAll = (decimal)command.Parameter.IQReceivTime_s;
-                //IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
-                //SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
-                //SetTriggerOffsetAndSampleLength(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
 
                 COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final)
                 {
@@ -3738,7 +3719,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 if (IQStopIndex > temp.Length) IQStopIndex = temp.Length;
                 result.OneSempleDuration_ns = (long)(SampleTimeLength * 1000000000);
                 result.PPSTimeDifference_ns = (long)(TriggerOffset * 1000000000 - IQStartIndex * SampleTimeLength * 500000000);
-                result.TimeStamp = (NextSecond * 100 - result.PPSTimeDifference_ns)/100;
+                result.TimeStamp = (NextSecond * 100 - result.PPSTimeDifference_ns) / 100;
                 TriggerOffset = ((decimal)result.PPSTimeDifference_ns) / 1000000000;
                 result.iq_samples = new float[1][];
                 result.iq_samples[0] = new float[IQStopIndex - IQStartIndex];

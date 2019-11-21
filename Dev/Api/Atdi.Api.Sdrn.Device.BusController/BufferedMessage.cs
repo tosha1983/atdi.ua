@@ -10,6 +10,7 @@ namespace Atdi.Api.Sdrn.Device.BusController
     [Serializable]
     internal sealed class BufferedMessage
     {
+        [Serializable]
         public sealed class DeliveryContext
         {
             public DeliveryContext()

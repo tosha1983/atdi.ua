@@ -30,7 +30,7 @@ namespace Atdi.AppServer.Sdrn.MasterServer
 
                 try
                 {
-                    host.Stop();
+                    host.Stop("Normal completion");
                 }
                 catch (Exception e)
                 {

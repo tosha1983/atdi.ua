@@ -29,7 +29,7 @@ namespace Atdi.AppServer.Sdrn.Device.WcfService
 
                 try
                 {
-                    host.Stop();
+                    host.Stop("Normal completion");
                 }
                 catch (Exception e)
                 {
