@@ -1463,18 +1463,15 @@ namespace XICSM.ICSControlClient.ViewModels
 
             if (generalResult.T1.GetValueOrDefault(0) != 0)
             {
-                var val = Convert.ToDouble(generalResult.SpecrumStartFreq + (decimal)generalResult.T1.Value * generalResult.SpecrumSteps / 1000);
-                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T1", LabelLeft = 5, LabelTop = -25 });
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.T1.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T1", LabelLeft = 5, LabelTop = -25 });
             }
             if (generalResult.MarkerIndex.GetValueOrDefault(0) != 0)
             {
-                var val = Convert.ToDouble(generalResult.SpecrumStartFreq + (decimal)generalResult.MarkerIndex.Value * generalResult.SpecrumSteps / 1000);
-                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "M", LabelLeft = 5, LabelTop = -35 });
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.MarkerIndex.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "M", LabelLeft = 5, LabelTop = -35 });
             }
             if (generalResult.T2.GetValueOrDefault(0) != 0)
             {
-                var val = Convert.ToDouble(generalResult.SpecrumStartFreq + (decimal)generalResult.T2.Value * generalResult.SpecrumSteps / 1000);
-                linesList.Add(new CS.ChartLine() { Point = new Point { X = val, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T2", LabelLeft = 5, LabelTop = -45 });
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.T2.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T2", LabelLeft = 5, LabelTop = -45 });
             }
 
             var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
