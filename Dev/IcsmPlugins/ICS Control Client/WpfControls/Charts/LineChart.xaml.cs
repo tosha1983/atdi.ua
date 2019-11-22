@@ -835,13 +835,28 @@ namespace XICSM.ICSControlClient.WpfControls.Charts
         }
         private void CanvasSaveToFile()
         {
+            //this.Background = Brushes.White;
+            //chartGrid.Background = Brushes.White;
+            //textCanvas.Background = Brushes.White;
+            //chartCanvas.Background = Brushes.White;
+            //legendCanvas.Background = Brushes.White;
+
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)this.RenderSize.Width + 50, (int)this.RenderSize.Height + 50, 96d, 96d, System.Windows.Media.PixelFormats.Default);
             rtb.Render(this);
 
             BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            //BitmapEncoder pngEncoder = new JpegBitmapEncoder();
             pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
+            //this.Background = Brushes.Transparent;
+            //chartGrid.Background = Brushes.Transparent;
+            //textCanvas.Background = Brushes.Transparent;
+            //chartCanvas.Background = Brushes.Transparent;
+            //legendCanvas.Background = Brushes.Transparent;
+
+
             FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "PNG (*.png)|*.png", FileName = "" };
+            //FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "JPG (*.jpg)|*.jpg", FileName = "" };
             if (sfd.ShowDialog() == FRM.DialogResult.OK)
             {
                 using (var fs = System.IO.File.OpenWrite(sfd.FileName))

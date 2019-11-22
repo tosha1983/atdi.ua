@@ -19,24 +19,12 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasResultSignalizationViewForm : Form
+    public partial class MeasResultSignalizationViewForm : WpfFormBase
     {
-        private ElementHost _wpfElementHost;
         private MeasResultSignalizationViewViewModel _model;
         public MeasResultSignalizationViewForm(long[] stations, string tableName, string title)
         {
             InitializeComponent();
-            if (null == System.Windows.Application.Current)
-            {
-                new System.Windows.Application();
-            }
-
-            this.Text = title;
-
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 

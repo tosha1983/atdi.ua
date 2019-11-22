@@ -45,7 +45,7 @@ namespace Atdi.Test.Platform
 
                 try
                 {
-                    host.Stop();
+                    host.Stop("Normal completion");
                 }
                 catch (Exception e)
                 {

@@ -35,21 +35,21 @@ namespace XICSM.ICSControlClient.ViewModels
     {
         public CustomDataGridMeasTasks()
         {
-            this.MouseDoubleClick += DoubleClick;
+            //this.MouseDoubleClick += DoubleClick;
         }
-        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-            foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
-            {
-                if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
-                {
-                    var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
-                    dlgForm.ShowDialog();
-                    dlgForm.Dispose();
-                }
-            }
-        }
+        //private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        //{
+        //    this.SelectedItemsList = this.SelectedItems;
+        //    foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
+        //    {
+        //        if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
+        //        {
+        //            var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
+        //            dlgForm.ShowDialog();
+        //            dlgForm.Dispose();
+        //        }
+        //    }
+        //}
         public IList SelectedItemsList
         {
             get { return (IList)GetValue(SelectedItemsListProperty); }
@@ -248,13 +248,13 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ReloadShortMeasTasks();
             this.ReloadShortSensors(this.CurrentMeasTask);
 
-            this.ResFreq1Visibility = Visibility.Visible;
-            this.ResFreq2Visibility = Visibility.Visible;
-            this.ResIdStationVisibility = Visibility.Visible;
-            this.ResSpecVisibility = Visibility.Visible;
-            this.ResTimeMeasVisibility = Visibility.Visible;
-            this.ResLevelMes1Visibility = Visibility.Visible;
-            this.ResGetCSVVisibility = Visibility.Visible;
+            this.ResFreq1Visibility = Visibility.Collapsed;
+            this.ResFreq2Visibility = Visibility.Collapsed;
+            this.ResIdStationVisibility = Visibility.Collapsed;
+            this.ResSpecVisibility = Visibility.Collapsed;
+            this.ResTimeMeasVisibility = Visibility.Collapsed;
+            this.ResLevelMes1Visibility = Visibility.Collapsed;
+            this.ResGetCSVVisibility = Visibility.Collapsed;
 
         }
         private Timer _timer = null;
@@ -427,7 +427,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public GeneralResultViewModel CurrentGeneralResult
         {
             get => this._currentGeneralResult;
-            set => this.Set(ref this._currentGeneralResult, value, () => { UpdateCurrentChartOption(this._currentMeasurementResult); });
+            set => this.Set(ref this._currentGeneralResult, value, () => { UpdateCurrentChartOption(this._currentMeasurementResult); RedrawMap(); });
         }
         private void OnChangedCurrentMeasurementResult(MeasurementResultsViewModel measurementResults)
         {
@@ -715,6 +715,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResFreq2Visibility = Visibility.Collapsed;
                 this.ResIdStationVisibility = Visibility.Collapsed;
                 this.ResSpecVisibility = Visibility.Collapsed;
+                this.ResTimeMeasVisibility = Visibility.Collapsed;
                 this.ResLevelMes1Visibility = Visibility.Collapsed;
             }
             else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Level && this.MeasResultsDetailVisibility == Visibility.Visible)
@@ -827,26 +828,25 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void ReloadShortSensors(MeasTaskViewModel measTask)
         {
-            //var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
+            var sensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
 
-            //var measTask = this.CurrentMeasTask;
-            //if (measTask != null )
-            //{
-            //    if (measTask.Stations != null && measTask.Stations.Length > 0)
-            //    {
-            //        sdrSensors = sdrSensors
-            //            .Where(sdrSensor => measTask.Stations
-            //                    .FirstOrDefault(s => s.StationId.Value == sdrSensor.Id.Value) != null
-            //                )
-            //            .ToArray();
-            //    }
-            //    else
-            //    {
-            //        sdrSensors = new SDR.ShortSensor[] { };
-            //    }
-            //}
-            
-            var sensors = _dataStore.GetShortSensorsByTask(measTask);
+            if (measTask != null)
+            {
+                if (measTask.Sensors != null && measTask.Sensors.Length > 0)
+                {
+                    sensors = sensors
+                        .Where(sdrSensor => measTask.Sensors
+                                .FirstOrDefault(s => s.SensorId.Value == sdrSensor.Id.Value) != null
+                            )
+                        .ToArray();
+                }
+                else
+                {
+                    sensors = new SDR.ShortSensor[] { };
+                }
+            }
+
+            //var sensors = _dataStore.GetShortSensorsByTask(measTask);
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
@@ -1423,6 +1423,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             var count = spectrumLevels.Length;
             var points = new Point[count];
+            var linesList = new List<CS.ChartLine>();
             var maxX = default(double);
             var minX = default(double);
 
@@ -1460,6 +1461,19 @@ namespace XICSM.ICSControlClient.ViewModels
                 points[i] = point;
             }
 
+            if (generalResult.T1.GetValueOrDefault(0) != 0)
+            {
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.T1.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T1", LabelLeft = 5, LabelTop = -25 });
+            }
+            if (generalResult.MarkerIndex.GetValueOrDefault(0) != 0)
+            {
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.MarkerIndex.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "M", LabelLeft = 5, LabelTop = -35 });
+            }
+            if (generalResult.T2.GetValueOrDefault(0) != 0)
+            {
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.T2.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T2", LabelLeft = 5, LabelTop = -45 });
+            }
+
             var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
             option.YTick = 10;
             option.YMax = preparedDataY.MaxValue;
@@ -1471,6 +1485,7 @@ namespace XICSM.ICSControlClient.ViewModels
             option.XMax = preparedDataX.MaxValue;
 
             option.Points = points;
+            option.LinesArray = linesList.ToArray();
 
             return option;
         }

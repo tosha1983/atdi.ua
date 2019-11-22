@@ -20,13 +20,12 @@ using XICSM.ICSControlClient.Models.Views;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasStationsSignalizationForm : Form
+    public partial class MeasStationsSignalizationForm : WpfFormBase
     {
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
         private bool _buttonAssociatedVisible;
         private EmittingViewModel _emitting;
-        private ElementHost _wpfElementHost;
         private MeasStationsSignalizationFormViewModel _model;
         public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting, string captionAdd)
         {
@@ -36,14 +35,6 @@ namespace XICSM.ICSControlClient.Forms
             this._emitting = emitting;
             InitializeComponent();
             this.Text = this.Text + captionAdd;
-        }
-
-        private void MeasStationsSignalizationForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -54,7 +45,6 @@ namespace XICSM.ICSControlClient.Forms
                 this._model = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emitting) { _form = this };
                 (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = this._model;
             };
-
         }
 
         private void MeasStationsSignalizationForm_FormClosed(object sender, FormClosedEventArgs e)

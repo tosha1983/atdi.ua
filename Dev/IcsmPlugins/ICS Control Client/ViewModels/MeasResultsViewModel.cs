@@ -143,7 +143,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public GeneralResultViewModel CurrentGeneralResult
         {
             get => this._currentGeneralResult;
-            set => this.Set(ref this._currentGeneralResult, value, () => { UpdateCurrentChartOption(); });
+            set => this.Set(ref this._currentGeneralResult, value, () => { UpdateCurrentChartOption(); RedrawMap(); });
         }
         public ResultsMeasurementsStationViewModel CurrentResultsMeasurementsStation
         {
@@ -230,7 +230,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResFreq2Visibility = Visibility.Collapsed;
                 this.ResIdStationVisibility = Visibility.Collapsed;
                 this.ResSpecVisibility = Visibility.Collapsed;
-                this.ResTimeMeasVisibility = Visibility.Visible;
+                this.ResTimeMeasVisibility = Visibility.Collapsed;
                 this.ResLevelMes1Visibility = Visibility.Collapsed;
             }
             else if (this._measDtParamTypeMeasurements == SDR.MeasurementType.Level)
@@ -402,18 +402,18 @@ namespace XICSM.ICSControlClient.ViewModels
 
             var generalResult = this._currentGeneralResult;
             if (generalResult == null)
-            {
                 return option;
-            }
 
             var spectrumLevels = generalResult.LevelsSpecrum;
             if (spectrumLevels == null || spectrumLevels.Length == 0)
-            {
                 return option;
-            }
+
+            if (!generalResult.SpecrumStartFreq.HasValue || !generalResult.SpecrumSteps.HasValue)
+                return option;
 
             var count = spectrumLevels.Length;
             var points = new Point[count];
+            var linesList = new List<CS.ChartLine>();
             var maxX = default(double);
             var minX = default(double);
 
@@ -451,6 +451,19 @@ namespace XICSM.ICSControlClient.ViewModels
                 points[i] = point;
             }
 
+            if (generalResult.T1.GetValueOrDefault(0) != 0)
+            {
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.T1.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T1", LabelLeft = 5, LabelTop = -25 });
+            }
+            if (generalResult.MarkerIndex.GetValueOrDefault(0) != 0)
+            {
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.MarkerIndex.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "M", LabelLeft = 5, LabelTop = -35 });
+            }
+            if (generalResult.T2.GetValueOrDefault(0) != 0)
+            {
+                linesList.Add(new CS.ChartLine() { Point = new Point { X = generalResult.T2.Value, Y = 0 }, LineColor = System.Windows.Media.Brushes.DarkRed, IsHorizontal = false, IsVertical = true, Name = "T2", LabelLeft = 5, LabelTop = -45 });
+            }
+
             var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
             option.YTick = 10;
             option.YMax = preparedDataY.MaxValue;
@@ -462,7 +475,7 @@ namespace XICSM.ICSControlClient.ViewModels
             option.XMax = preparedDataX.MaxValue;
 
             option.Points = points;
-
+            option.LinesArray = linesList.ToArray();
             return option;
         }
 

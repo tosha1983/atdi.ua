@@ -14,26 +14,13 @@ using UserControl = System.Windows.Controls.UserControl;
 namespace XICSM.ICSControlClient.Forms
 {
 
-    public partial class MainForm : Form
+    public partial class MainForm : WpfFormBase
     {
-        private readonly ElementHost _wpfElementHost;
         private readonly ControlClientViewModel _model;
 
-        public MainForm()
+        public MainForm() 
         {
             InitializeComponent();
-
-            if (null == System.Windows.Application.Current)
-            {
-                new System.Windows.Application();
-            }
-
-            _wpfElementHost = new ElementHost
-            {
-                Dock = DockStyle.Fill
-            };
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -71,27 +58,6 @@ namespace XICSM.ICSControlClient.Forms
             _wpfElementHost.Parent = null;
 
         }
-
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
-
         //private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
         //{
         //    DataGridRow row = sender as DataGridRow;

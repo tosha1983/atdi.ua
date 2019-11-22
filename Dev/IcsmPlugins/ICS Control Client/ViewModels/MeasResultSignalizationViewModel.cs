@@ -53,6 +53,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private long _resultId;
         private int _startType = 0;
         private DateTime? _timeMeas = null;
+        private SDR.Emitting[] _inputEmittings;
 
         #region Current Objects
         private string _emittingCaption;
@@ -97,6 +98,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._startType = startType;
             if (timeMeas.HasValue) _timeMeas = timeMeas;
             this._emittings = new EmittingDataAdapter();
+            this._inputEmittings = emittings;
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
@@ -107,7 +109,7 @@ namespace XICSM.ICSControlClient.ViewModels
             if (this._startType == 0)
                 Task.Run(() => this.ReloadMeasResult());
             if (this._startType == 1 || this._startType == 2)
-                Task.Run(() => this.ReloadData(emittings));
+                Task.Run(() => this.ReloadData());
         }
 
         private void _dataStore_OnEndInvoke(string description)
@@ -272,9 +274,9 @@ namespace XICSM.ICSControlClient.ViewModels
 
             }));
         }
-        private void ReloadData(SDR.Emitting[] emittings)
+        private void ReloadData()
         {
-            this._emittings.Source = emittings;
+            this._emittings.Source = this._inputEmittings;
             this.EmittingCaption = this.GetCurrentEmittingCaption();
         }
         private void UpdateCurrentChartOption(double? startFreq, double? stopFreq)
@@ -364,26 +366,42 @@ namespace XICSM.ICSControlClient.ViewModels
 
                     Task.Run(() =>
                     {
-
                         try
                         {
-
                             SVC.SdrnsControllerWcfClient.DeleteEmittingById(emitings.ToArray());
 
-                            this._currentMeasResult.Emittings = this._currentMeasResult.Emittings.Where(e => !ids.Contains(e.Id)).ToArray();
-
-                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                            if (this._startType == 0)
                             {
+                                this._currentMeasResult.Emittings = this._currentMeasResult.Emittings.Where(e => !ids.Contains(e.Id)).ToArray();
 
-                                this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
-                                this.EmittingCaption = this.GetCurrentEmittingCaption();
-
-                                if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
-                                }
-                                this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
-                            }));
+
+                                    this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
+                                    this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+                                    if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                    {
+                                        this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
+                                    }
+                                    this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
+                                }));
+                            }
+                            else
+                            {
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+
+                                    this._emittings.Source = this._inputEmittings.Where(e => !ids.Contains(e.Id)).OrderByDescending(c => c.Id).ToArray();
+                                    this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+                                    if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                    {
+                                        this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
+                                    }
+                                    this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
+                                }));
+                            }
                         }
                         catch (Exception e)
                         {
@@ -1165,6 +1183,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
             }
+
+            if (pointsList.Count == 0)
+                return option;
 
             var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
             option.YTick = 20;

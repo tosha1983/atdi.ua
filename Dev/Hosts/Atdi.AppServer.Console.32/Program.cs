@@ -23,7 +23,7 @@ namespace Atdi.AppServer
                 }
 
                 Console.ReadKey();
-                host.Stop();
+                host.Stop("Normal completion");
 
             }
             Console.ReadKey();

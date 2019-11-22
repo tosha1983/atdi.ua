@@ -25,12 +25,12 @@
                 RenderTransformOrigin="0.5,0.5" FontSize="14" 
                 HorizontalAlignment="Left" VerticalAlignment="Stretch" TextAlignment="Center" 
                 Text="{Binding Path=LeftTitle}"/>
-        
+
         <TextBlock Margin="2" x:Name="tbRightTitle" Grid.Column="1" Grid.Row="0" 
                 RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" Foreground="Red"
                 HorizontalAlignment="Right" VerticalAlignment="Stretch" TextAlignment="Center" 
                 Text="{Binding Path=RightTitle}"/>
-        
+
         <TextBlock Margin="2" x:Name="tbXLabel" Grid.Column="1" Grid.Row="2" 
                RenderTransformOrigin="0.5,0.5" TextAlignment="Center"  FontWeight="Bold"
                Text="{Binding Path=XLabel}"/>
@@ -45,8 +45,8 @@
 
         <Grid  Margin="0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1" ClipToBounds="True" Background="Transparent" SizeChanged="ChartGrid_SizeChanged" />
         <Canvas Margin="2" Name="textCanvas" ClipToBounds="True" Grid.Column="1" Grid.Row="1">
-            <Canvas Name="chartCanvas" Background="Transparent" ClipToBounds="True" MouseMove="ChartCanvas_MouseMove" MouseLeftButtonDown="ChartCanvas_LeftMouseDown" MouseRightButtonUp="ChartCanvas_RightMouseUp">
-                <Canvas Name="legendCanvas" Background="Transparent" MouseMove="ChartCanvas_MouseMove" MouseLeftButtonDown="ChartCanvas_LeftMouseDown" MouseRightButtonUp="ChartCanvas_RightMouseUp" />
+            <Canvas Name="chartCanvas" Background="White" ClipToBounds="True" MouseMove="ChartCanvas_MouseMove" MouseLeftButtonDown="ChartCanvas_LeftMouseDown" MouseRightButtonUp="ChartCanvas_RightMouseUp">
+                <Canvas Name="legendCanvas" Background="White" MouseMove="ChartCanvas_MouseMove" MouseLeftButtonDown="ChartCanvas_LeftMouseDown" MouseRightButtonUp="ChartCanvas_RightMouseUp" />
             </Canvas>
         </Canvas>
     </Grid>

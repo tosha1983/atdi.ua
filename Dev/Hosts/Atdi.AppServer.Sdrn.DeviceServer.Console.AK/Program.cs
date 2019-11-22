@@ -33,8 +33,8 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
 
                 Console.WriteLine($"Press any key to stop SDRN Device App Server (AK) ...");
                 Console.ReadLine();
-                host.Stop();
-                
+                host.Stop("Normal completion");
+
 
             }
             Console.ReadLine();

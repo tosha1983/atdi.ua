@@ -91,7 +91,7 @@ namespace Atdi.AppServer.Svchost
 
             try
             {
-                this._serverHost.Stop();
+                this._serverHost.Stop("Service was stopped");
                 this._serverHost.Dispose();
                 this._serverHost = null;
             }

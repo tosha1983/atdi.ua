@@ -54,7 +54,7 @@ namespace Atdi.Platform.AppServer
             if (componentsConfig != null && componentsConfig.Length > 0)
             {
                 this._components = new List<ComponentDescriptor>(componentsConfig.Length);
-                for (int i = 0; i < componentsConfig.Length; i++)
+                for (var i = 0; i < componentsConfig.Length; i++)
                 {
                     var descriptor = InstallComponent(componentsConfig[i]);
                     if (descriptor != null)
@@ -97,197 +97,6 @@ namespace Atdi.Platform.AppServer
 
         public HostState State => this._state;
 
-        //private readonly string _instanceName;
-        //private IWindsorContainer _container;
-        //private IAppServerContext _serverContext;
-        //private ILogger _logger;
-        //private List<IAppServerComponent> _components;
-        //private AppServerHostState _state;
-
-        //public Host(string instanceName, IReadOnlyList<IAppServerComponent> components)
-        //{
-        //    this._state = AppServerHostState.Initializing;
-
-        //    this._instanceName = instanceName;
-
-        //    this._container = new WindsorContainer()
-        //       .Install(new Installer(this));
-
-        //    this._logger = this._container.Resolve<ILogger>();
-
-        //    this._logger.Info("AppServer: Server Host is initializing ...");
-        //    this._logger.Info("AppServer: The DI-Container has been initialized.");
-        //    this._logger.Info("AppServer: The Logger has been initialized.");
-
-        //    this._serverContext = this._container.Resolve<IAppServerContext>();
-
-        //    this._logger.Info("AppServer: The Server Context has been initialized.");
-
-        //    this._components = new List<IAppServerComponent>();
-        //    if (components != null && components.Count > 0)
-        //    {
-        //        this._components.AddRange(components);
-        //        foreach (var component in this._components)
-        //        {
-        //            component.Install(this._container, this._serverContext);
-        //        }
-        //    }
-        //    this._logger.Info("AppServer: The Server Components has been installed.");
-
-        //    this._state = AppServerHostState.Initialized;
-
-        //    this._logger.Info("AppServer: Server Host has been initialized successfully.");
-        //}
-
-        //public static Host Create(string instanceName, IReadOnlyList<IAppServerComponent> components)
-        //{
-        //    return new Host(instanceName, components);
-        //}
-
-        //public string InstanceName => this._instanceName;
-
-        //public void Introduce(IAppServerComponent component)
-        //{
-        //    if (this._state == AppServerHostState.Disposed 
-        //        || this._state == AppServerHostState.Initializing 
-        //        || this._state == AppServerHostState.Starting 
-        //        || this._state == AppServerHostState.Stopping
-        //        || this._state == AppServerHostState.Disposing)
-        //    {
-        //        throw new InvalidOperationException("Incorrect current host state for introducing component");
-        //    }
-
-        //    this._components.Add(component);
-
-        //    component.Install(this._container, this._serverContext);
-
-        //    if (this._state == AppServerHostState.Started)
-        //    {
-        //        component.Activate();
-        //    }
-        //}
-
-        //public void Start()
-        //{
-        //    if (this._state == AppServerHostState.Started)
-        //    {
-        //        return;
-        //    }
-
-        //    if (this._state != AppServerHostState.Initialized && this._state != AppServerHostState.Stopped)
-        //    {
-        //        throw new InvalidOperationException("Incorrect current host state for starting");
-        //    }
-
-        //    this._logger.Info("AppServer: The Server Host is starting ...");
-        //    try
-        //    {
-        //        foreach (var component in this._components)
-        //        {
-        //            component.Activate();
-        //        }
-
-        //        this._logger.Info("AppServer: The Server Host has been started successfully");
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this._logger.Fatal(e);
-        //        throw;
-        //    }
-        //}
-
-        //public void Stop()
-        //{
-        //    if (this._state == AppServerHostState.Stopped || this._state == AppServerHostState.Initialized)
-        //    {
-        //        return;
-        //    }
-
-        //    if (this._state != AppServerHostState.Started)
-        //    {
-        //        throw new InvalidOperationException("Incorrect current host state for stopping");
-        //    }
-
-        //    this._logger.Info("AppServere: The Server Host is stopping ...");
-        //    try
-        //    {
-        //        foreach (var component in this._components)
-        //        {
-        //            component.Deactivate();
-        //        }
-
-        //        this._logger.Info("AppServer: The Server Host has been stopped successfully");
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this._logger.Fatal(e);
-        //        throw;
-        //    }
-        //}
-
-        //#region IDisposable Support
-
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (this._state != AppServerHostState.Disposed && this._state != AppServerHostState.Disposing)
-        //    {
-        //        this._state = AppServerHostState.Disposing;
-
-        //        if (disposing)
-        //        {
-        //            this._logger.Info("AppServere: Stoping ...");
-
-        //            // TODO: dispose managed state (managed objects).
-        //            if (this._components != null)
-        //            {
-        //                foreach (var component in this._components)
-        //                {
-        //                    component.Deactivate();
-        //                }
-        //                this._logger.Info("AppServer: The Server Components has been deactivating");
-
-        //                foreach (var component in this._components)
-        //                {
-        //                    component.Uninstall(this._container, this._serverContext);
-        //                }
-
-        //                this._logger.Info("AppServer: The Server Components has been uninstalling");
-        //            }
-
-        //            if (this._container != null)
-        //            {
-        //                this._logger.Info("AppServer: The DI-Container has been closing");
-        //                this._logger.Info("AppServer: The Server Host has been stoping");
-        //                this._logger = null;
-        //                this._container.Dispose();
-        //                this._container = null;
-        //            }
-        //        }
-
-        //        // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-        //        // TODO: set large fields to null.
-
-        //        this._state = AppServerHostState.Disposed;
-        //    }
-        //}
-
-        //// TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        //// ~AppServerHost() {
-        ////   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        ////   Dispose(false);
-        //// }
-
-        //// This code added to correctly implement the disposable pattern.
-        //public void Dispose()
-        //{
-        //    // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //    Dispose(true);
-        //    // TODO: uncomment the following line if the finalizer is overridden above.
-        //    // GC.SuppressFinalize(this);
-        //}
-        //#endregion
 
         public void Dispose()
         {
@@ -295,16 +104,18 @@ namespace Atdi.Platform.AppServer
             {
                 return;
             }
+            var curState = this._state;
+            if (curState == HostState.Started)
+            {
+                this.Stop("Unexpected completion");
+            }
 
             this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerHostIsDisposing);
-            var curState = this._state;
+            
             this._state = HostState.Disposing;
             if (this._components != null)
             {
-                if (curState == HostState.Started)
-                {
-                    this.DeactivateComponents();
-                }
+                
                 this.UninstallComponents();
                 this._components = null;
             }
@@ -344,6 +155,11 @@ namespace Atdi.Platform.AppServer
 
         public void Stop()
         {
+            this.Stop("Unknown");
+        }
+
+        public void Stop(string reason)
+        {
             if (this._state == HostState.Stopped || this._state == HostState.Initialized)
             {
                 return;
@@ -354,11 +170,11 @@ namespace Atdi.Platform.AppServer
                 throw new InvalidOperationException(Exceptions.IncorrectStateForStopping);
             }
 
-            this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerHostIsStopping);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerHostIsStopping.With(reason));
             this._state = HostState.Stopping;
             this.DeactivateComponents();
             this._state = HostState.Stopped;
-            this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerHostStopped);
+            this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerHostStopped.With(reason));
         }
 
         private void ActivateComponents()
@@ -366,21 +182,23 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Starting, Events.ServerComponentsIsActivating);
             try
             {
-                foreach (var descriptor in this._components)
+                if (this._components != null)
                 {
-                    if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
+                    foreach (var descriptor in this._components)
                     {
-                        try
+                        if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
                         {
-                            descriptor.Component.Activate();
+                            try
+                            {
+                                descriptor.Component.Activate();
+                            }
+                            catch (Exception e)
+                            {
+                                this.Logger.Exception(Contexts.AppServerHost, Categories.Starting, e);
+                                this.Logger.Error(Contexts.AppServerHost, Categories.Starting, $"Can not activate the component '{descriptor.Component.Name}'");
+                            }
+
                         }
-                        catch (Exception e)
-                        {
-                            this.Logger.Exception(Contexts.AppServerHost, Categories.Starting, e);
-                            this.Logger.Error(Contexts.AppServerHost, Categories.Starting, $"Can not activate the component '{descriptor.Component.Name}'");
-                            //throw;
-                        }
-                        
                     }
                 }
 
@@ -399,11 +217,16 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Stopping, Events.ServerComponentsIsDeactivating);
             try
             {
-                foreach (var descriptor in this._components)
+                if (this._components != null)
                 {
-                    if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
+                    // двигаемся в обратном порядке
+                    for (var i = this._components.Count - 1; i >= 0; i--)
                     {
-                        descriptor.Component.Deactivate();
+                        var descriptor = this._components[i];
+                        if ((descriptor.Component.Behavior & ComponentBehavior.WithoutActivation) != ComponentBehavior.WithoutActivation)
+                        {
+                            descriptor.Component.Deactivate();
+                        }
                     }
                 }
 
@@ -420,9 +243,11 @@ namespace Atdi.Platform.AppServer
         private void UninstallComponents()
         {
             this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerComponentsIsUninstalling);
-           
-            foreach (var descriptor in this._components)
+
+            // двигаемся в обратном порядке
+            for (var i = this._components.Count - 1; i >= 0; i--)
             {
+                var descriptor = this._components[i];
                 try
                 {
                     descriptor.Component.Uninstall();
@@ -436,8 +261,8 @@ namespace Atdi.Platform.AppServer
             this.Logger.Info(Contexts.AppServerHost, Categories.Disposing, Events.ServerComponentsUninstalled);
         }
 
-        public IServicesContainer Container { get => this._container; }
+        public IServicesContainer Container => this._container;
 
-        public IServerContext Context { get => this._serverContext; }
+        public IServerContext Context => this._serverContext;
     }
 }
