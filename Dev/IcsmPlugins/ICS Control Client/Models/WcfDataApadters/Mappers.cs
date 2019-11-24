@@ -387,7 +387,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SumHitCount = source.WorkTimes == null ? 0 : source.WorkTimes.Sum(c => c.HitCount),
                 EmissionFreqMHz = source.Spectrum == null ? 0 : source.Spectrum.SpectrumSteps_kHz * (source.Spectrum.T2 + source.Spectrum.T1)/2000 + source.Spectrum.SpectrumStartFreq_MHz,
                 IcsmID = source.AssociatedStationID,
-                IcsmTable = source.AssociatedStationTableName
+                IcsmTable = source.AssociatedStationTableName,
+                MeasResultId = source.MeasResultId
             };
         }
         public static VM.EmittingWorkTimeViewModel Map(SDR.WorkTime source)
