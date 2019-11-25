@@ -87,22 +87,29 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                if (_timer != null)
+                try
                 {
-                    _timer.Enabled = false;
-                    _timer = null;
+                    if (_timer != null)
+                    {
+                        _timer.Enabled = false;
+                        _timer = null;
+                    }
+
+                    this.StatusBarIsIndeterminate = false;
+                    this.StatusBarTitle = $"Loaded data of {description}";
+
+                    if (_waitForm != null)
+                    {
+                        _waitForm.Close();
+                        _waitForm.Dispose();
+                        _waitForm = null;
+                    }
+                }
+                catch (Exception mes)
+                {
+                    MessageBox.Show("_dataStore_OnEndInvoke: " + mes.Message);
                 }
 
-                this.StatusBarIsIndeterminate = false;
-                this.StatusBarTitle = $"Loaded data of {description}";
-
-
-                if (_waitForm != null)
-                {
-                    _waitForm.Close();
-                    _waitForm.Dispose();
-                    _waitForm = null;
-                }
             }));
         }
 
@@ -110,13 +117,26 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                _timer.Enabled = false;
-                _waitForm = new FM.WaitForm();
-                _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
-                _waitForm.TopMost = true;
-                _waitForm.ShowDialog();
-                //_waitForm.FormBorderStyle = FRM.FormBorderStyle.FixedSingle;
-                //_waitForm.Refresh();
+                try
+                {
+                    if (_timer != null)
+                    {
+                        _timer.Enabled = false;
+                        if (_waitForm == null)
+                        {
+                            _waitForm = new FM.WaitForm();
+                            _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
+                            _waitForm.TopMost = true;
+                            _waitForm.ShowDialog();
+                            //_waitForm.FormBorderStyle = FRM.FormBorderStyle.FixedSingle;
+                            //_waitForm.Refresh();
+                        }
+                    }
+                }
+                catch (Exception mes)
+                {
+                    MessageBox.Show("_timer_Elapsed: " + mes.Message);
+                }
             }));
         }
 
@@ -124,12 +144,19 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this.StatusBarIsIndeterminate = true;
-                this.StatusBarTitle = $"Loading data of {description} ...";
+                try
+                {
+                    this.StatusBarIsIndeterminate = true;
+                    this.StatusBarTitle = $"Loading data of {description} ...";
 
-                this._timer = new Timer(300);
-                this._timer.Elapsed += _timer_Elapsed;
-                this._timer.Enabled = true;
+                    this._timer = new Timer(300);
+                    this._timer.Elapsed += _timer_Elapsed;
+                    this._timer.Enabled = true;
+                }
+                catch (Exception mes)
+                {
+                    MessageBox.Show("_dataStore_OnBeginInvoke: " + mes.Message);
+                }
             }));
         }
 

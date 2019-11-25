@@ -20,30 +20,25 @@ using XICSM.ICSControlClient.Models.Views;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasStationsSignalizationForm : Form
+    public partial class MeasStationsSignalizationForm : WpfFormBase
     {
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
         private bool _buttonAssociatedVisible;
         private EmittingViewModel _emitting;
-        private ElementHost _wpfElementHost;
+        private int _startType;
+        private SDR.Emitting[] _inputEmittings;
         private MeasStationsSignalizationFormViewModel _model;
-        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting, string captionAdd)
+        public MeasStationsSignalizationForm(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting, string captionAdd, int startType, SDR.Emitting[] inputEmittings)
         {
             this._stationData = stationData;
             this._measResult = measResult;
             this._buttonAssociatedVisible = buttonAssociatedVisible;
             this._emitting = emitting;
+            this._startType = startType;
+            this._inputEmittings = inputEmittings;
             InitializeComponent();
             this.Text = this.Text + captionAdd;
-        }
-
-        private void MeasStationsSignalizationForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -51,10 +46,9 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                this._model = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emitting) { _form = this };
+                this._model = new MeasStationsSignalizationFormViewModel(this._stationData, this._measResult, this._buttonAssociatedVisible, this._emitting, this._startType, this._inputEmittings) { _form = this };
                 (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = this._model;
             };
-
         }
 
         private void MeasStationsSignalizationForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -75,25 +69,6 @@ namespace XICSM.ICSControlClient.Forms
             _wpfElementHost.Dispose();
             _wpfElementHost.Parent = null;
             _model._form = null;
-        }
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
         }
     }
 }

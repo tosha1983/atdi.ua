@@ -30,6 +30,11 @@
         {
             this.SuspendLayout();
             // 
+            // _wpfElementHost
+            // 
+            this._wpfElementHost.Size = new System.Drawing.Size(800, 450);
+            this._wpfElementHost.Child = null;
+            // 
             // OnlineMeasurementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -38,9 +43,7 @@
             this.Name = "OnlineMeasurementForm";
             this.Text = "ICS Control Client - Online Measurement";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnlineMeasurementForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnlineMeasurementForm_FormClosed);
-            this.Load += new System.EventHandler(this.OnlineMeasurementForm_Load);
             this.ResumeLayout(false);
 
         }

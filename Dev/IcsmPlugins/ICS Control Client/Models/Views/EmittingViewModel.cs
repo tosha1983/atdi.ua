@@ -66,6 +66,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("IcsmTable", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string IcsmTable { get; set; }
 
+        [WpfColumn("MeasResultId", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public long MeasResultId { get; set; }
+
 
         public WorkTime[] WorkTimes { get; set; }
         public Spectrum Spectrum { get; set; }

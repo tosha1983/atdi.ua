@@ -21,9 +21,8 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class SignalizationSensorsForm : Form
+    public partial class SignalizationSensorsForm : WpfFormBase
     {
-        private ElementHost _wpfElementHost;
         private int _startType;
         private DateTime? _timeMeas;
         private EmittingViewModel[] _emittings;
@@ -33,14 +32,6 @@ namespace XICSM.ICSControlClient.Forms
             this._emittings = emittings;
             this._timeMeas = timeMeas;
             InitializeComponent();
-        }
-
-        private void SignalizationSensorsForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -48,7 +39,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                ((UserControl) this._wpfElementHost.Child).DataContext = new SignalizationSensorsViewModel(_startType, this, _emittings, _timeMeas);
+                ((UserControl)this._wpfElementHost.Child).DataContext = new SignalizationSensorsViewModel(_startType, this, _emittings, _timeMeas);
             }
         }
 

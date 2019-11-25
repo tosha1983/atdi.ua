@@ -161,6 +161,9 @@
     <Compile Include="Forms\WaitForm.Designer.cs">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\WpfFormBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
       <SubType>Form</SubType>
@@ -309,6 +312,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RequestResult.cs" />
     <Compile Include="ViewModels\ChartAdapters\OnlineMeasLineChartAdapter.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
@@ -429,8 +437,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="ICSM 6.2.70\ICSM3.exe.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xaml\" />

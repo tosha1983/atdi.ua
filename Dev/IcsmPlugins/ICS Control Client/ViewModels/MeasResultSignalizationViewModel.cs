@@ -22,6 +22,10 @@ using System.Collections;
 using System.Globalization;
 using System.Timers;
 using XICSM.ICSControlClient.Forms;
+using System.Configuration;
+using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -53,6 +57,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private long _resultId;
         private int _startType = 0;
         private DateTime? _timeMeas = null;
+        private SDR.Emitting[] _inputEmittings;
 
         #region Current Objects
         private string _emittingCaption;
@@ -75,6 +80,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private bool _statusBarIsIndeterminate = false;
         private string _statusBarTitle = "";
         private string _statusBarDecription = "";
+        private string _endpointUrls;
         private Timer _timer = null;
         private WaitForm _waitForm = null;
 
@@ -97,6 +103,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._startType = startType;
             if (timeMeas.HasValue) _timeMeas = timeMeas;
             this._emittings = new EmittingDataAdapter();
+            this._inputEmittings = emittings;
             this._emittingWorkTimes = new EmittingWorkTimeDataAdapter();
             this.ZoomUndoCommand = new WpfCommand(this.OnZoomUndoCommand);
             this.ZoomDefaultCommand = new WpfCommand(this.OnZoomDefaultCommand);
@@ -104,31 +111,41 @@ namespace XICSM.ICSControlClient.ViewModels
             this.DeleteEmissionCommand = new WpfCommand(this.OnDeleteEmissionCommand);
             this.CompareWithTransmitterMaskCommand = new WpfCommand(this.OnCompareWithTransmitterMaskCommand);
             this.CompareWithEmissionOnOtherSensorsCommand = new WpfCommand(this.OnCompareWithEmissionOnOtherSensorsCommand);
+
+            var appSettings = ConfigurationManager.AppSettings;
+            _endpointUrls = appSettings["SdrnServerRestEndpoint"];
+
             if (this._startType == 0)
                 Task.Run(() => this.ReloadMeasResult());
             if (this._startType == 1 || this._startType == 2)
-                Task.Run(() => this.ReloadData(emittings));
+                Task.Run(() => this.ReloadData());
         }
 
         private void _dataStore_OnEndInvoke(string description)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                if (_timer != null)
+                try
                 {
-                    _timer.Enabled = false;
-                    _timer = null;
+                    if (_timer != null)
+                    {
+                        _timer.Enabled = false;
+                        _timer = null;
+                    }
+
+                    this.StatusBarIsIndeterminate = false;
+                    this.StatusBarTitle = $"Loaded data of {description}";
+
+                    if (_waitForm != null)
+                    {
+                        _waitForm.Close();
+                        _waitForm.Dispose();
+                        _waitForm = null;
+                    }
                 }
-
-                this.StatusBarIsIndeterminate = false;
-                this.StatusBarTitle = $"Loaded data of {description}";
-
-
-                if (_waitForm != null)
+                catch (Exception mes)
                 {
-                    _waitForm.Close();
-                    _waitForm.Dispose();
-                    _waitForm = null;
+                    MessageBox.Show(mes.Message);
                 }
             }));
         }
@@ -137,13 +154,27 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                _timer.Enabled = false;
-                _waitForm = new FM.WaitForm();
-                _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
-                _waitForm.TopMost = true;
-                _waitForm.ShowDialog();
-                //_waitForm.FormBorderStyle = FRM.FormBorderStyle.FixedSingle;
-                //_waitForm.Refresh();
+                try
+                {
+                    if (_timer != null)
+                    {
+                        _timer.Enabled = false;
+                        if (_waitForm == null)
+                        {
+                            _waitForm = new FM.WaitForm();
+                            _waitForm.SetMessage($"Please wait. {this.StatusBarTitle}");
+                            _waitForm.TopMost = true;
+                            _waitForm.ShowDialog();
+                            //_waitForm.FormBorderStyle = FRM.FormBorderStyle.FixedSingle;
+                            //_waitForm.Refresh();
+                        }
+                    }
+                }
+                catch (Exception mes)
+                {
+                    MessageBox.Show(mes.Message);
+                }
+
             }));
         }
 
@@ -151,12 +182,19 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this.StatusBarIsIndeterminate = true;
-                this.StatusBarTitle = $"Loading data of {description} ...";
+                try
+                {
+                    this.StatusBarIsIndeterminate = true;
+                    this.StatusBarTitle = $"Loading data of {description} ...";
 
-                this._timer = new Timer(300);
-                this._timer.Elapsed += _timer_Elapsed;
-                this._timer.Enabled = true;
+                    this._timer = new Timer(300);
+                    this._timer.Elapsed += _timer_Elapsed;
+                    this._timer.Enabled = true;
+                }
+                catch (Exception mes)
+                {
+                    MessageBox.Show(mes.Message);
+                }
             }));
         }
 
@@ -272,9 +310,9 @@ namespace XICSM.ICSControlClient.ViewModels
 
             }));
         }
-        private void ReloadData(SDR.Emitting[] emittings)
+        private void ReloadData()
         {
-            this._emittings.Source = emittings;
+            this._emittings.Source = this._inputEmittings;
             this.EmittingCaption = this.GetCurrentEmittingCaption();
         }
         private void UpdateCurrentChartOption(double? startFreq, double? stopFreq)
@@ -364,26 +402,42 @@ namespace XICSM.ICSControlClient.ViewModels
 
                     Task.Run(() =>
                     {
-
                         try
                         {
-
                             SVC.SdrnsControllerWcfClient.DeleteEmittingById(emitings.ToArray());
 
-                            this._currentMeasResult.Emittings = this._currentMeasResult.Emittings.Where(e => !ids.Contains(e.Id)).ToArray();
-
-                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                            if (this._startType == 0)
                             {
+                                this._currentMeasResult.Emittings = this._currentMeasResult.Emittings.Where(e => !ids.Contains(e.Id)).ToArray();
 
-                                this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
-                                this.EmittingCaption = this.GetCurrentEmittingCaption();
-
-                                if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
-                                }
-                                this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
-                            }));
+
+                                    this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
+                                    this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+                                    if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                    {
+                                        this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
+                                    }
+                                    this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
+                                }));
+                            }
+                            else
+                            {
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+
+                                    this._emittings.Source = this._inputEmittings.Where(e => !ids.Contains(e.Id)).OrderByDescending(c => c.Id).ToArray();
+                                    this.EmittingCaption = this.GetCurrentEmittingCaption();
+
+                                    if (this._selectedRangeX != null && this._selectedRangeX.Length == 2)
+                                    {
+                                        this.FilterEmittings(this._selectedRangeX[0], this._selectedRangeX[1]);
+                                    }
+                                    this.StatusBarTitle = $"Deleted emissions ({emitings.Count})";
+                                }));
+                            }
                         }
                         catch (Exception e)
                         {
@@ -458,20 +512,49 @@ namespace XICSM.ICSControlClient.ViewModels
                 double lonSensor = 0;
                 double latSensor = 0;
 
-                if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                if (this._currentEmitting != null && (this._startType == 1 || this._startType == 2))
                 {
-                    var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
-
-                    if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                    using (var wc = new HttpClient())
                     {
-                        lonSensor = _currentSensorLocation.Lon.Value;
-                        latSensor = _currentSensorLocation.Lat.Value;
+                        string filter = $"(RES_MEAS.Id eq {this._currentEmitting.MeasResultId})";
+                        string fields = "Lon,Lat";
+                        string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/ResLocSensorMeas?select={fields}&filter={filter}&orderBy=Id";
+                        var response = wc.GetAsync(request).Result;
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            var dicFields = new Dictionary<string, int>();
+                            var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+                            foreach (var field in data.Fields)
+                                dicFields[field.Path] = field.Index;
+                            foreach (object[] record in data.Records)
+                            {
+                                lonSensor = (double)record[dicFields["Lon"]];
+                                latSensor = (double)record[dicFields["Lat"]];
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                    {
+                        var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
+
+                        if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                        {
+                            lonSensor = _currentSensorLocation.Lon.Value;
+                            latSensor = _currentSensorLocation.Lat.Value;
+                        }
                     }
                 }
 
                 var dlgForm = new FM.MeasStationsSignalizationDlg1Form(10, 0, true);
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
+
+                if (!dlgForm.IsPresOK)
+                    return;
 
                 double distance = dlgForm.Distance;
 
@@ -638,9 +721,21 @@ namespace XICSM.ICSControlClient.ViewModels
                 //System.Windows.MessageBox.Show("No Equipments");
                 //return;
                 //}
-                var measTaskForm = new FM.SignalizationStationsEquipments(equipments.ToArray(), emittings.ToArray(), this._currentMeasResult, this._zoomHistory, this._selectedRangeX);
-                measTaskForm.ShowDialog();
-                measTaskForm.Dispose();
+                if (this._startType == 0)
+                {
+                    var measTaskForm = new FM.SignalizationStationsEquipments(equipments.ToArray(), emittings.ToArray(), this._currentMeasResult, this._zoomHistory, this._selectedRangeX);
+                    measTaskForm.ShowDialog();
+                    measTaskForm.Dispose();
+                }
+                else
+                {
+                    var measResult = this._dataStore.GetFullMeasurementResultByResId(this._currentEmitting.MeasResultId); 
+                    var measTaskForm = new FM.SignalizationStationsEquipments(equipments.ToArray(), emittings.ToArray(), measResult, this._zoomHistory, this._selectedRangeX);
+                    measTaskForm.ShowDialog();
+                    measTaskForm.Dispose();
+                }
+
+
             }
             catch (Exception e)
             {
@@ -660,14 +755,40 @@ namespace XICSM.ICSControlClient.ViewModels
                 double lonSensor = 0;
                 double latSensor = 0;
 
-                if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                if (this._currentEmitting != null && (this._startType == 1 || this._startType == 2))
                 {
-                    var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
-
-                    if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                    using (var wc = new HttpClient())
                     {
-                        lonSensor = _currentSensorLocation.Lon.Value;
-                        latSensor = _currentSensorLocation.Lat.Value;
+                        string filter = $"(RES_MEAS.Id eq {this._currentEmitting.MeasResultId})";
+                        string fields = "Lon,Lat";
+                        string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/ResLocSensorMeas?select={fields}&filter={filter}&orderBy=Id";
+                        var response = wc.GetAsync(request).Result;
+                        if (response.StatusCode == HttpStatusCode.OK)
+                        {
+                            var dicFields = new Dictionary<string, int>();
+                            var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+                            foreach (var field in data.Fields)
+                                dicFields[field.Path] = field.Index;
+                            foreach (object[] record in data.Records)
+                            {
+                                lonSensor = (double)record[dicFields["Lon"]];
+                                latSensor = (double)record[dicFields["Lat"]];
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (this._currentMeasResult != null && this._currentMeasResult.LocationSensorMeasurement != null && this._currentMeasResult.LocationSensorMeasurement.Count() > 0)
+                    {
+                        var _currentSensorLocation = this._currentMeasResult.LocationSensorMeasurement[this._currentMeasResult.LocationSensorMeasurement.Count() - 1];
+
+                        if (_currentSensorLocation.Lon.HasValue && _currentSensorLocation.Lat.HasValue)
+                        {
+                            lonSensor = _currentSensorLocation.Lon.Value;
+                            latSensor = _currentSensorLocation.Lat.Value;
+                        }
                     }
                 }
 
@@ -759,10 +880,14 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
                 string caption = ", Frequency - " + Math.Round(freq, 6).ToString() + ", MHz, Pow of Emission - " + Math.Round(this._currentEmitting.CurentPower_dBm, 1).ToString() + ", dBm";
-                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.OrderBy(c => c.Distance).ToArray(), this._currentMeasResult, true, this._currentEmitting, caption);
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.OrderBy(c => c.Distance).ToArray(), this._currentMeasResult, true, this._currentEmitting, caption, this._startType, this._inputEmittings);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
-                this._emittings.Source = this._currentMeasResult.Emittings;
+                if (_startType == 0)
+                    this._emittings.Source = this._currentMeasResult.Emittings;
+                else
+                    this._emittings.Source = this._inputEmittings;
+
                 MessageBox.Show("Success");
             }
             catch (Exception e)
@@ -845,7 +970,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
                 string caption = ", Frequency - " + Math.Round(freq, 6).ToString() + ", MHz";
-                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult, false, null, caption);
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult, false, null, caption, this._startType, this._inputEmittings);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
             }
@@ -959,7 +1084,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
                 string caption = ", Frequency - " + Math.Round(freq, 6).ToString() + ", MHz";
-                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult, false, null, caption);
+                var measTaskForm = new FM.MeasStationsSignalizationForm(stationData.ToArray(), this._currentMeasResult, false, null, caption, this._startType, this._inputEmittings);
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
             }
@@ -1165,6 +1290,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
             }
+
+            if (pointsList.Count == 0)
+                return option;
 
             var preparedDataY = Environment.Utitlity.CalcLevelRange(minY, maxY);
             option.YTick = 20;

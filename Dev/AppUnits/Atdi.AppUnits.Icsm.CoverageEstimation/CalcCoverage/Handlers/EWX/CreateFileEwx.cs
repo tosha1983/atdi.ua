@@ -78,7 +78,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     writer.WriteElementString("BANDWIDTHRX", Convert.ToString(bts.BandwidthRx));
                     writer.WriteElementString("H_ANTENNA", Convert.ToString(bts.HAntenna));
                     writer.WriteElementString("AZIMUTH", Convert.ToString(bts.Azimuth));
-                    writer.WriteElementString("TILT", Convert.ToString(bts.Tilt));
+                    //writer.WriteElementString("TILT", Convert.ToString(bts.Tilt));
+                    writer.WriteElementString("TILT", "-9");
                     writer.WriteElementString("GAIN", Convert.ToString(bts.Gain));
                     writer.WriteElementString("GAINRX", Convert.ToString(bts.GainRx));
                     writer.WriteElementString("LOSSES", Convert.ToString(bts.Losses));
@@ -118,6 +119,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
         private  bool CheckDiagH(ref string diagH, out string NameTag)
         {
+            if (string.IsNullOrEmpty(diagH))
+            {
+                NameTag = null;
+                return false;
+            }
             if (diagH.Contains("WIEN "))
             {
                 diagH = diagH.Replace("WIEN ", "");
@@ -179,6 +185,11 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
         private  bool CheckDiagV(ref string diagV, out string NameTag)
         {
+            if (string.IsNullOrEmpty(diagV))
+            {
+                NameTag = null;
+                return false;
+            }
             if (diagV.Contains("WIEN "))
             {
                 diagV = diagV.Replace("WIEN ","");

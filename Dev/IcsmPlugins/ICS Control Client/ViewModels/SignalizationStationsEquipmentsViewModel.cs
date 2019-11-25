@@ -220,7 +220,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 IsEnableSaveToFile = true
             };
 
-            if (_currentMeasResult.RefLevels == null || _currentMeasResult.RefLevels.levels == null)
+            if (_currentMeasResult == null || _currentMeasResult.RefLevels == null || _currentMeasResult.RefLevels.levels == null)
                 return option;
 
             var maxX = default(double);
@@ -396,7 +396,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private string GetCurrentRBWValue()
         {
-            if (_currentMeasResult.RefLevels == null)
+            if (_currentMeasResult == null || _currentMeasResult.RefLevels == null)
             {
                 return "RBW = (unknown) kHz";
             }

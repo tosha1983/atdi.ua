@@ -285,8 +285,19 @@ namespace XICSM.ICSControlClient.ViewModels
             if (!this.CurrentMeasTask.IsAutoMeasDtParamMeasTime)
                 param.SweepTime_s = this.CurrentMeasTask.MeasDtParamMeasTime;
 
-            param.FreqStart_MHz = this.CurrentMeasTask.MeasFreqParamRgL;
-            param.FreqStop_MHz = this.CurrentMeasTask.MeasFreqParamRgU;
+            if (this.CurrentMeasTask.MeasFreqParamStep.HasValue)
+            {
+                if (this.CurrentMeasTask.MeasFreqParamRgL.HasValue)
+                    param.FreqStart_MHz = this.CurrentMeasTask.MeasFreqParamRgL - this.CurrentMeasTask.MeasFreqParamStep/2000;
+
+                if (this.CurrentMeasTask.MeasFreqParamRgU.HasValue)
+                    param.FreqStop_MHz = this.CurrentMeasTask.MeasFreqParamRgU + this.CurrentMeasTask.MeasFreqParamStep / 2000;
+            }
+            else
+            {
+                param.FreqStart_MHz = this.CurrentMeasTask.MeasFreqParamRgL;
+                param.FreqStop_MHz = this.CurrentMeasTask.MeasFreqParamRgU;
+            }
 
             if (!this.CurrentMeasTask.IsAutoMeasDtParamRfAttenuation)
                 param.Att_dB = (int?)this.CurrentMeasTask.MeasDtParamRfAttenuation;
@@ -335,7 +346,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
-                if (this.CurrentMeasTask.MinPointForDetailBW.HasValue && this.CurrentMeasTask.SignalizationNChenal.HasValue && (this.CurrentMeasTask.MinPointForDetailBW.Value < this.CurrentMeasTask.SignalizationNChenal.Value || this.CurrentMeasTask.MinPointForDetailBW.Value > 5000))
+                if (this.CurrentMeasTask.DetailedMeasurementsBWEmission.GetValueOrDefault(false) && this.CurrentMeasTask.MinPointForDetailBW.HasValue && this.CurrentMeasTask.SignalizationNChenal.HasValue && (this.CurrentMeasTask.MinPointForDetailBW.Value < this.CurrentMeasTask.SignalizationNChenal.Value || this.CurrentMeasTask.MinPointForDetailBW.Value > 5000))
                 {
                     MessageBox.Show("The value “The minimum number of points a spectrum must contain in order not to measure bandwith” must be in the range from " + this.CurrentMeasTask.SignalizationNChenal.Value + " to 5000!");
                     return;
