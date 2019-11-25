@@ -20,5 +20,9 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
         public ServerRole ServerRoles => throw new NotImplementedException();
 
         public string MasterServerInstance => throw new NotImplementedException();
+        public string GetSharedSecretKey(string context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
