@@ -116,7 +116,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     for (int i = 0; i < taskParameters.Length; i++)
                     {
-                        if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()) || (taskParameters[i].StopTime < DateTime.Now))
+                        //if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()) || (taskParameters[i].StopTime < DateTime.Now))
+                        if ((taskParameters[i].status == StatusTask.C.ToString()) || (taskParameters[i].status == StatusTask.Z.ToString()))
                         {
                             var additionalParameters = string.Format("{0}_{1}_", taskParameters[i].MeasurementType.ToString(), taskParameters[i].SDRTaskId);
                             var fileName = loadMessages.GetFileName(additionalParameters);
