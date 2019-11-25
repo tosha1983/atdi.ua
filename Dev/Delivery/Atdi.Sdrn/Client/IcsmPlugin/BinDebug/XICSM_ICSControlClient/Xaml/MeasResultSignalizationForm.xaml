@@ -159,6 +159,7 @@
                   <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
                   <DataGridTextColumn Header="MeanDeviationFromReference" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
                   <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
+                  <!--<DataGridTextColumn Header="MeasResultId" Binding="{Binding Path=MeasResultId}"></DataGridTextColumn>-->
                 </DataGrid.Columns>
               </cdg:CustomDataGridEmitting>
               <WrapPanel Grid.Row="1" Grid.ColumnSpan="20" >

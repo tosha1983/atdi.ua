@@ -74,6 +74,21 @@ namespace Atdi.UnitTest.AppUnits.Sdrn.Server.PrimaryHandlers.Fake
             public void RegistryHandler<TObject>(IMessageHandler<TObject> handler)
             {
             }
+
+            public void TryAckMessage(IMessageToken token)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IReceivedMessage<TObject> TryGetObject<TObject>(string messageType, string correlationId = null, bool isAutoAck = false)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IReceivedMessage<TObject> WaitObject<TObject>(string messageType, string correlationId = null)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public string Tag => "Fake gate";
