@@ -553,6 +553,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
 
+                if (!dlgForm.IsPresOK)
+                    return;
+
                 double distance = dlgForm.Distance;
 
                 this.StatusBarTitle = $"Search stations ...";

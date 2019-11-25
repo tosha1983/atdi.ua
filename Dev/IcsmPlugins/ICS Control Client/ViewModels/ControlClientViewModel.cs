@@ -275,7 +275,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     this.StatusBarIsIndeterminate = false;
                     this.StatusBarTitle = $"Loaded data of {description}";
                 
-                
                     if (_waitForm != null)
                     {
                         _waitForm.Close();
