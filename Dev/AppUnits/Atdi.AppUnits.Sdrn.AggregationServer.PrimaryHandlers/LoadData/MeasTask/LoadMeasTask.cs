@@ -49,24 +49,27 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers
             return aggregationTaskId;
         }
 
-        public long GetAggregationSubTaskId(long masterSubTaskId)
+        public long GetMasterSubTaskId(long aggregationSubTaskId)
         {
-            long aggregationSubTaskId = -1;
+            long masterSubTaskId = -1;
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var builderAggregationSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().From();
-            builderAggregationSensor.Select(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
+            builderAggregationSensor.Select(c => c.SubtaskSensorMasterId);
             builderAggregationSensor.Select(c => c.Id);
-            builderAggregationSensor.Where(c => c.SubtaskSensorMasterId, ConditionOperator.Equal, masterSubTaskId);
+            builderAggregationSensor.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, aggregationSubTaskId);
             queryExecuter.Fetch(builderAggregationSensor, readerAggregationSensor =>
             {
                 while (readerAggregationSensor.Read())
                 {
-                    aggregationSubTaskId = readerAggregationSensor.GetValue(c => c.SUBTASK_SENSOR.Id);
-                    break;
+                    if (readerAggregationSensor.GetValue(c => c.SubtaskSensorMasterId).HasValue)
+                    {
+                        masterSubTaskId = readerAggregationSensor.GetValue(c => c.SubtaskSensorMasterId).Value;
+                        break;
+                    }
                 }
                 return true;
             });
-            return aggregationSubTaskId;
+            return masterSubTaskId;
         }
     }
 }

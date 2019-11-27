@@ -31,7 +31,7 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
 
                 try
                 {
-                    host.Stop();
+                    host.Stop("Normal completion");
                 }
                 catch (Exception e)
                 {

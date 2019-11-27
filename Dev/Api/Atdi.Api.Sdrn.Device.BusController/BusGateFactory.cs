@@ -49,13 +49,14 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
             try
             {
-                var verificationData = new VerificationData
+                var verificationData = new VerificationData2
                 {
                     OwnerId = ownerId,
                     ProductName = "ICS Control Device",
                     ProductKey = productKey,
                     LicenseType = "DeviceLicense",
-                    Date = DateTime.Now
+                    Date = DateTime.Now,
+                    YearHash = LicenseVerifier.EncodeYear(2020)
                 };
 
                 licenseFileName = Path.Combine(this.AssemblyDirectory, licenseFileName);

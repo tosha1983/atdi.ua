@@ -49,6 +49,8 @@ namespace XICSM.ICSControlClient.ViewModels
         private SDR.MeasurementResults _measResult;
         private MeasStationsSignalization[] _stationData;
         private EmittingViewModel _emitting;
+        private int _startType;
+        private SDR.Emitting[] _inputEmittings;
 
         private MP.MapDrawingData _currentMapData;
         private IList _currentStations;
@@ -59,11 +61,14 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public WpfCommand AssociatedCommand { get; set; }
 
-        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting)
+        public MeasStationsSignalizationFormViewModel(MeasStationsSignalization[] stationData, SDR.MeasurementResults measResult, bool buttonAssociatedVisible, EmittingViewModel emitting, int startType, SDR.Emitting[] inputEmittings)
         {
             this._stationData = stationData;
             this._measResult = measResult;
             this._emitting = emitting;
+            this._startType = startType;
+            this._inputEmittings = inputEmittings;
+
             if (buttonAssociatedVisible)
                 this._buttonAssociatedVisibility = Visibility.Visible;
             else
@@ -176,21 +181,22 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 SVC.SdrnsControllerWcfClient.AddAssociationStationByEmitting(new long[] { this._emitting.Id.Value }, this._currentStation.IcsmId, this._currentStation.IcsmTable);
 
-                //this._emitting.IcsmID = this._currentStation.IcsmId;
-                //this._emitting.IcsmTable = this._currentStation.IcsmTable;
-
-
-                foreach (var em in this._measResult.Emittings.Where(e => e.Id == this._emitting.Id.Value).ToArray())
+                if (_startType == 0)
                 {
-                    em.AssociatedStationID = this._currentStation.IcsmId;
-                    em.AssociatedStationTableName = this._currentStation.IcsmTable;
+                    foreach (var em in this._measResult.Emittings.Where(e => e.Id == this._emitting.Id.Value).ToArray())
+                    {
+                        em.AssociatedStationID = this._currentStation.IcsmId;
+                        em.AssociatedStationTableName = this._currentStation.IcsmTable;
+                    }
                 }
-                //this._emittings.Source = this._currentMeasResult.Emittings.OrderByDescending(c => c.Id).ToArray();
-                //this.EmittingCaption = this.GetCurrentEmittingCaption();
-
-
-
-
+                else
+                {
+                    foreach (var em in this._inputEmittings.Where(e => e.Id == this._emitting.Id.Value).ToArray())
+                    {
+                        em.AssociatedStationID = this._currentStation.IcsmId;
+                        em.AssociatedStationTableName = this._currentStation.IcsmTable;
+                    }
+                }
                 _form.Close();
             }
         }

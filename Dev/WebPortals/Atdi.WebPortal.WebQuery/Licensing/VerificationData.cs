@@ -19,4 +19,13 @@ namespace Atdi.WebPortal.WebQuery.Licensing
 
         public string LicenseType { get; set; }
     }
+
+    public class VerificationData2 : VerificationData
+    {
+        public string Version { get; set; }
+
+        public string YearHash { get; set; }
+
+        public string AssemblyFullName { get; set; }
+    }
 }

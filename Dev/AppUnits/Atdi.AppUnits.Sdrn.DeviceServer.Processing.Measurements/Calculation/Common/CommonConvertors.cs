@@ -26,6 +26,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             TimeSpan interval = taskParameters.StopTime.Value - dateTimeNow;
             double interval_ms = interval.TotalMilliseconds;
             if (taskParameters.NCount <= DoneCount) { return -1; }
+            //if (interval_ms<=0) { return -1; }
             long duration = (long)(interval_ms / (taskParameters.NCount - DoneCount));
             return duration;
         }

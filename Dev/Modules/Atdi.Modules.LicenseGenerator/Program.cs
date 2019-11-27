@@ -26,7 +26,9 @@ namespace Atdi.Modules.LicenseGenerator
 
             //ICSControl_ForUDCR(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\УНИКОМ", 2, 10, 4);
 
-            ICSControl_ForTesting_ClientMonitoring(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019", 1);
+            //ICSControl_ForTesting_ClientMonitoring(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019", 1);
+
+            ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2020");
 
             Console.WriteLine("Process was finished");
             Console.ReadKey();
@@ -328,15 +330,15 @@ namespace Atdi.Modules.LicenseGenerator
             MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
         }
 
-        static void ICSControl_ForTesting_ClusterServers(string path, int count = 2)
+        static void ICSControl_ForTesting_ClusterServers(string path,  int count = 2)
         {
-            var ownerId = "OID-BD12-A00-N00";
-            var ownerName = "ТОВ 'Лабораторія інформаційних систем'";
-            var company = "ТОВ 'Лабораторія інформаційних систем'";
-            var ownerKey = "BD12-A00";
+            const string ownerId = "OID-BD12-A00-N00";
+            const string ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+            const string company = "ТОВ 'Лабораторія інформаційних систем'";
+            const string ownerKey = "BD12-A00";
             var startDate = new DateTime(2019, 8, 20);
-            var stopDate = new DateTime(2021, 8, 20);
-
+            var stopDate = new DateTime(2025, 8, 20);
+            const ushort year = 2020;
             //MakeServerLicense();
             for (int i = 0; i < count; i++)
             {
@@ -345,7 +347,7 @@ namespace Atdi.Modules.LicenseGenerator
                 var srvLicPrefix = "LIC-S";
                 var srvInstancePrefix = "SDRNSV-S";
 
-                MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+                MakeLicense2(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate, year);
             }
 
             
@@ -557,8 +559,87 @@ namespace Atdi.Modules.LicenseGenerator
             return productKey;
         }
 
+        private static string MakeLicense2(string path, string licPrefix, string instancePrefix, string licenseType, string productName, string licenseIndex, string instanceIndex, string ownerName, string ownerId, string ownerKey, string company, DateTime startDate, DateTime stopDate, ushort year)
+        {
+            var productKey = string.Empty;
+
+            var c = new LicenseCreator();
+
+            var l = new LicenseData2()
+            {
+                //LicenseNumber = $"LIC-D{ownerKey}-{licenseIndex}",
+                LicenseType = licenseType, //"DeviceLicense",
+                Company = company,
+                Copyright = "",
+                OwnerId = ownerId,
+                OwnerName = ownerName,
+                Created = DateTime.Now,
+                StartDate = startDate,
+                StopDate = stopDate,
+                ProductKey = productKey,
+                ProductName = productName,
+                Count = 1,
+                LimitationTerms = LicenseLimitationTerms.Year | LicenseLimitationTerms.TimePeriod,
+                Year =  year
+                //Instance = $"SENSOR-D{ownerKey}-{deviceIndex}"
+            };
+
+            if ("DeviceLicense".Equals(licenseType))
+            {
+                l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+                l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+            }
+            else if ("ServerLicense".Equals(licenseType))
+            {
+                l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+                l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+            }
+            else if ("ClientLicense".Equals(licenseType))
+            {
+                l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+                l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+            }
+            else
+            {
+
+                throw new InvalidOperationException($"Invalid the license type '{licenseType}'");
+            }
+
+            productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);
+            l.ProductKey = productKey;
+
+            var result = c.Create(new LicenseData2[] { l });
+
+            var directory = $"{path}\\{ownerKey}\\{licenseType}";
+            Directory.CreateDirectory(directory);
+
+            var fileName = $"{directory}\\{l.LicenseNumber}.{l.Instance}.lic";
+
+            File.WriteAllBytes(fileName, result.Body);
+            CreateLicenseDescriptionFile(l, fileName);
+
+            var licBody = File.ReadAllBytes(fileName);
+
+            var vd = new VerificationData2
+            {
+                OwnerId = l.OwnerId,
+                ProductName = l.ProductName,
+                ProductKey = l.ProductKey,
+                LicenseType = l.LicenseType,
+                Date = startDate,
+                YearHash = LicenseVerifier.EncodeYear(year)
+            };
+
+            var cc = LicenseVerifier.Verify(vd, licBody);
+
+            Console.WriteLine($"Made license: '{productKey}' >>> {fileName}");
+            return productKey;
+        }
+
         private static void CreateLicenseDescriptionFile(LicenseData l, string fileName)
         {
+            var l2 = l as LicenseData2;
+
             var verFileData = new StringBuilder();
 
             verFileData.AppendLine();
@@ -574,9 +655,23 @@ namespace Atdi.Modules.LicenseGenerator
             verFileData.AppendLine($"Product Key  : '{l.ProductKey}'");
             verFileData.AppendLine("  ------------------ ");
             verFileData.AppendLine();
-            verFileData.AppendLine($"Created    : {l.Created}");
-            verFileData.AppendLine($"Start Date : {l.StartDate}");
-            verFileData.AppendLine($"Stop Date  : {l.StopDate}");
+            verFileData.AppendLine($"Created         : {l.Created}");
+
+            if (l2 != null)
+            {
+                verFileData.AppendLine($"Limitation Terms: {l2.LimitationTerms}");
+            }
+
+            verFileData.AppendLine($"Start Date      : {l.StartDate}");
+            verFileData.AppendLine($"Stop Date       : {l.StopDate}");
+
+            if (l2 != null)
+            {
+                verFileData.AppendLine($"Year            : {l2.Year}");
+                verFileData.AppendLine($"Version         : {l2.Version}");
+                verFileData.AppendLine($"AssemblyFullName: {l2.AssemblyFullName}");
+            }
+
             verFileData.AppendLine("  ------------------ ");
             verFileData.AppendLine();
             verFileData.AppendLine($"Instance : '{l.Instance}'");

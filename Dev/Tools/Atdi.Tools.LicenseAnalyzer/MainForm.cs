@@ -51,6 +51,14 @@ namespace Atdi.Tools.LicenseAnalyzer
                 txtStartDate.Text = license.StartDate.ToLongDateString();
                 txtStopDate.Text = license.StopDate.ToLongDateString();
                 txtInstance.Text = license.Instance;
+
+                if (license is LicenseData2 license2)
+                {
+                    txtTerms.Text = license2.LimitationTerms.ToString();
+                    txtAssembly.Text = license2.AssemblyFullName;
+                    txtYear.Text = license2.Year.ToString();
+                    txtVersion.Text = license2.Version;
+                }
             }
             catch(Exception ex)
             {

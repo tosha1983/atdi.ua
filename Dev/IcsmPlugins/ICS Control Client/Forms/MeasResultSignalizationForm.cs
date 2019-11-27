@@ -20,12 +20,11 @@ using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasResultSignalizationForm : Form
+    public partial class MeasResultSignalizationForm : WpfFormBase
     {
         private long _resultId;
         private int _startType;
         private SDR.Emitting[] _emittings;
-        private ElementHost _wpfElementHost;
         private MeasResultSignalizationViewModel _model;
         private DateTime? _timeMeas;
 
@@ -36,13 +35,6 @@ namespace XICSM.ICSControlClient.Forms
             _emittings = emittings;
             _timeMeas = timeMeas;
             InitializeComponent();
-        }
-        private void MeasResultSignalizationForm_Load(object sender, EventArgs e)
-        {
-
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -51,10 +43,9 @@ namespace XICSM.ICSControlClient.Forms
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
                 this._model = new MeasResultSignalizationViewModel(_resultId, _startType, _emittings, _timeMeas);
-                ((UserControl) this._wpfElementHost.Child).DataContext = _model;
+                ((UserControl)this._wpfElementHost.Child).DataContext = _model;
             }
         }
-
         private void MeasResultSignalizationForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             _model.Dispose();

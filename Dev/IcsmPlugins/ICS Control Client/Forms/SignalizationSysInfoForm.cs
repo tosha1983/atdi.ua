@@ -20,9 +20,8 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class SignalizationSysInfoForm : Form
+    public partial class SignalizationSysInfoForm : WpfFormBase
     {
-        private ElementHost _wpfElementHost;
         long _measResultId;
         double _freq_MHz;
         public SignalizationSysInfoForm(long measResultId, double freq_MHz, string captionAdd)
@@ -31,19 +30,14 @@ namespace XICSM.ICSControlClient.Forms
             this._freq_MHz = freq_MHz;
             InitializeComponent();
             this.Text = this.Text + captionAdd;
-        }
-        private void SignalizationSysInfoForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
+
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
             var fileName = Path.Combine(appFolder, "XICSM_ICSControlClient\\Xaml\\SignalizationSysInfoForm.xaml");
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                ((UserControl) this._wpfElementHost.Child).DataContext = new SignalizationSysInfoViewModel(this._measResultId, this._freq_MHz);
+                ((UserControl)this._wpfElementHost.Child).DataContext = new SignalizationSysInfoViewModel(this._measResultId, this._freq_MHz);
             }
         }
 

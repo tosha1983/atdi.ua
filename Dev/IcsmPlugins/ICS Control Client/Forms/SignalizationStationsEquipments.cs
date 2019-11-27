@@ -21,9 +21,8 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class SignalizationStationsEquipments : Form
+    public partial class SignalizationStationsEquipments : WpfFormBase
     {
-        private ElementHost _wpfElementHost;
         private SDR.MeasurementResults _measResult;
         private StationsEquipment[] _stationData;
         private EmittingViewModel[] _emittings;
@@ -39,14 +38,6 @@ namespace XICSM.ICSControlClient.Forms
             this._zoomHistory = zoomHistory;
             this._selectedRangeX = selectedRangeX;
             InitializeComponent();
-        }
-
-        private void SignalizationStationsEquipments_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
-
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -54,13 +45,8 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                _model = new SignalizationStationsEquipmentsViewModel(this._stationData,
-                    this._emittings,
-                    this._measResult,
-                    this._zoomHistory,
-                    this._selectedRangeX,
-                    this);
-                ((UserControl) this._wpfElementHost.Child).DataContext = _model;
+                _model = new SignalizationStationsEquipmentsViewModel(this._stationData, this._emittings, this._measResult, this._zoomHistory, this._selectedRangeX, this);
+                ((UserControl)this._wpfElementHost.Child).DataContext = _model;
             }
         }
 

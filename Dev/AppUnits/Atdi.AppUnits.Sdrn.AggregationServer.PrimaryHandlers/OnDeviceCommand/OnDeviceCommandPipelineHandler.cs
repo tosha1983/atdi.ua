@@ -10,7 +10,7 @@ using Atdi.DataModels.Sdrns.Server.Events;
 using Atdi.DataModels.Api.EventSystem;
 using Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Handlers;
 using Atdi.Contracts.Api.DataBus;
-
+using Atdi.Common;
 
 
 
@@ -44,6 +44,21 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.Subscribes
             {
                 var retEnvelope = this._publisher.CreateEnvelope<SendDeviceCommandFromAggregationToMasterServer, DeviceCommandResultEvent>();
                 retEnvelope.To = this._environment.MasterServerInstance;
+                long aggregationSubTaskId = -1;
+                long masterSubTaskId = -1;
+                var constSubtataskName = "SDRN.SubTaskSensorId.";
+                var val = data.CustTxt1.Replace(constSubtataskName, "").ConvertStringToDouble();
+                if (val != null)
+                {
+                    aggregationSubTaskId = (long)(val.Value);
+                    if (aggregationSubTaskId > 0)
+                    {
+                        var loadMeasTask = new LoadMeasTask(this._dataLayer, this._logger);
+                        masterSubTaskId = loadMeasTask.GetMasterSubTaskId(aggregationSubTaskId);
+                        data.CustTxt1 = masterSubTaskId.ToString();
+                    }
+                }
+
                 retEnvelope.DeliveryObject = new DeviceCommandResultEvent()
                 {
                     CommandId = data.CommandId,

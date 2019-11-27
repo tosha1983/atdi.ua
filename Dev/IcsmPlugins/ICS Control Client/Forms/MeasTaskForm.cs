@@ -21,24 +21,17 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class MeasTaskForm : Form
+    public partial class MeasTaskForm : WpfFormBase
     {
         private int? _allotId;
         private long _taskId;
         private SDR.MeasurementType _measType = SDR.MeasurementType.Signaling;
-        private ElementHost _wpfElementHost;
         private CreateMeasTaskViewModel _model;
         public MeasTaskForm(int? allotId, SDR.MeasurementType measType)
         {
             _allotId = allotId;
             _measType = measType;
             InitializeComponent();
-        }
-        private void MeasTaskForm_Load(object sender, EventArgs e)
-        {
-            _wpfElementHost = new ElementHost();
-            _wpfElementHost.Dock = DockStyle.Fill;
-            this.Controls.Add(_wpfElementHost);
 
             var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
@@ -47,10 +40,8 @@ namespace XICSM.ICSControlClient.Forms
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
                 this._model = new CreateMeasTaskViewModel(_allotId, _measType) { _measTaskForm = this };
-                ((UserControl) this._wpfElementHost.Child).DataContext = _model;
+                ((UserControl)this._wpfElementHost.Child).DataContext = _model;
             }
-            //_wpfControl = new MainFormWpfControl();
-            //this._wpfElementHost.Child = _wpfControl;
         }
         public long TaskId
         {

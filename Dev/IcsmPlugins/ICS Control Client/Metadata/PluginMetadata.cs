@@ -12,7 +12,7 @@ namespace XICSM.ICSControlClient
     {
         public static readonly string Title = "ICS Control Client";
         public static readonly string Ident = "ICSControlClient";
-        public static readonly double SchemaVersion = 20180216.1443;
+        public static readonly double SchemaVersion = 20191125.1629;
 
         public class Processes
         {
