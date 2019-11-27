@@ -1541,7 +1541,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             // сформировано пустое место
         }
+#if DEBUG
         public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
+#endif
         private bool GetIQStream(ref COMR.MesureIQStreamResult IQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool WithPPS, bool JustWithSignal)
         {
             bool done = false;
@@ -1745,18 +1747,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 #region обработка полученных данных
                 if (ReceivedBlockWithErrors)
                 {
-                    if (IQStartIndex < IQStopIndex)
+                    IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
                     {
-                        IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
-                        {
-                            iq_samples = new float[IQStopIndex - IQStartIndex][]
-                        };
-                        Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
-
+                        iq_samples = new float[IQStopIndex - IQStartIndex][]
+                    };
+                    Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
+                    if (IQStartIndex > IQStopIndex)
+                    {
+                        throw new Exception("Data received with error, no valid data.");//Задача была запущена после необходимого времени старта задачи
                     }
                     else
                     {
-                        throw new Exception("Data received with error, no valid data.");//Задача была запущена после необходимого времени старта задачи
+                        
                     }
                 }
                 else
@@ -1778,14 +1780,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         IQStreamResult.PPSTimeDifference_ns = TimeToStartBlockWithPPS;
                         if (dTPPSIndex < IQStartIndex)
                         {
-                            for (int t = dTPPSIndex - 1; t < IQStartIndex; t++)
+                            for (int t = dTPPSIndex; t < IQStartIndex; t++)
                             {
                                 IQStreamResult.PPSTimeDifference_ns -= tempIQStream.BlockTimeDelta[t];
                             }
                         }
                         else if (IQStartIndex < dTPPSIndex)
                         {
-                            for (int t = IQStartIndex; t < dTPPSIndex + 1; t++)
+                            for (int t = IQStartIndex; t < dTPPSIndex; t++)
                             {
                                 IQStreamResult.PPSTimeDifference_ns += tempIQStream.BlockTimeDelta[t];
                             }
@@ -1798,7 +1800,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion обработка полученных данных  
                 done = true;
-
+#if DEBUG
+                IQArr = new float[tempIQStream.IQData.Length * tempIQStream.IQData[0].Length];
+                for (int i = 0; i < IQStreamResult.iq_samples.Length; i++)
+                {
+                    Array.Copy(IQStreamResult.iq_samples[i], 0, IQArr, 0 + i* IQStreamResult.iq_samples[i].Length, IQStreamResult.iq_samples[i].Length);
+                }
+                TriggerOffset = ((decimal)IQStreamResult.PPSTimeDifference_ns) / 1000000000;
+#endif
             }
             return done;
         }

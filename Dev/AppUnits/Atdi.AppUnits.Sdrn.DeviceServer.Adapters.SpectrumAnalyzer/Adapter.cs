@@ -1266,6 +1266,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     90001, 91001, 92001, 93001, 94001, 95001, 96001, 97001, 98001, 99001,
                     100001 },
                 DefaultSweepPoint = 1001,
+
                 RBWArr = new decimal[]{ 1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500, 1000, 2000, 3000, 5000, 6250, 10000, 20000, 30000, 50000, 100000, 200000, 300000, 500000, 1000000, 2000000, 3000000, 5000000, 10000000 },
                 VBWArr = new decimal[]{ 1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000, 200000, 300000, 500000, 1000000, 2000000, 3000000, 5000000, 10000000 },
                 RangeArr = new decimal[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200 },
@@ -3603,6 +3604,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             bool res = false;
             if (UniqueData.InstrManufacture == 1)
             {
+#if DEBUG
+                long delta = _timeService.TimeStamp.Ticks;
+#endif
                 long time = command.Parameter.TimeStart;// _timeService.GetGnssTime().Ticks;
                 long NextSecond = (time / 10000000) * 10000000 + 10000000;
                 long ToNextSecond = NextSecond - time;
@@ -3617,29 +3621,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
                 SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
                 SetTriggerOffsetAndSampleLengthAndStartCollection(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
-
+#if DEBUG
+                delta = _timeService.TimeStamp.Ticks - delta;
+#endif
                 if (command.Parameter.TimeStart < _timeService.GetGnssUtcTime().Ticks - UTCOffset)
                 {
                     //Debug.WriteLine("ВСе плохо");
                 }
                 //Debug.WriteLine(new TimeSpan(command.Parameter.TimeStart + UTCOffset - _timeService.GetGnssUtcTime().Ticks).ToString());
-                int sleep = (int)(IQMeasTimeAll * 1000 - 150);
+                int sleep = (int)((IQMeasTimeAll + Math.Abs( divisor * SampleTimeLength)) * 1000 );
                 if (sleep < 1)
                 {
                     sleep = 1;
                 }
                 Thread.Sleep(sleep);
 
-                int step = SampleLength / 10;
-                if (step > 50000)
-                {
-                    step = 50000;
-                }
-                else if (step < 10000)
-                {
-                    step = 1000;
-                }
 
+
+                int step = SampleLength / 10;
+                if (step > 5000000)
+                {
+                    step = 5000000;
+                }
+                else if (step < 5000000)
+                {
+                    step = 5000000;
+                }
+#if DEBUG
+                long delta2 = _timeService.TimeStamp.Ticks;
+#endif
                 float[] temp = new float[SampleLength * 2];
                 long ddd = _timeService.TimeStamp.Ticks;
                 int pos = 0;
@@ -3648,16 +3658,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     int from = i, to = i + step;
                     if (to > SampleLength) to = SampleLength;
                     WriteString($"TRAC:IQ:DATA:MEM? {from},{to - from}");
-                    byte[] byteArray = session.FormattedIO.ReadBinaryBlockOfByte();// ReadByte();
-                    //if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                    //{
-                    //    int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                    //    int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                    float[] temp2 = new float[byteArray.Length / 4];//QueryFloat($"TRAC:IQ:DATA:MEM? {from},{to - from}");// 
-                    //if (temp2[0] == 0)
-                    //{
+                    
 
-                    //}
+                    byte[] byteArray = session.FormattedIO.ReadBinaryBlockOfByte();// ReadByte();
+
+                    float[] temp2 = new float[byteArray.Length / 4];
+
                     for (int j = 0; j < temp2.Length; j++)
                     {
                         temp2[j] = System.BitConverter.ToSingle(byteArray, j * 4);
@@ -3666,10 +3672,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     pos += temp2.Length;
 
                 }
+#if DEBUG
+                delta2 = _timeService.TimeStamp.Ticks - delta2;
+                Debug.WriteLine("delta " + (new TimeSpan(delta)).ToString());
+                Debug.WriteLine("delta2 " + (new TimeSpan(delta2)).ToString());
+                Debug.WriteLine("delta++ " + (new TimeSpan(delta2 + delta)).ToString());
+#endif
                 string dfghkjdp = QueryString("TRACe:IQ:TPISample?");
                 TriggerOffsetInSample = DecimalParse(dfghkjdp);
                 //Посчитаем когда точно был триггер относительно первого семпла
                 TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
+
+
 
                 float noise = 1.5f / 10000000f; // уровень шума 
                 float SN = 10; // превышение шума в разах 
