@@ -81,17 +81,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ////////////TimeThread.IsBackground = true;
             ////////////TimeThread.Start();
 
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            ANThread = new Thread(ANWorks);
+            ANThread.Name = "ANThread";
+            ANThread.IsBackground = true;
+            ANThread.Start();
+            AND += ANConnect;
 
-            SHThread = new Thread(SHWorks);
-            SHThread.Name = "SHThread";
-            SHThread.IsBackground = true;
-            SHThread.Start();
-            SHD += SHConnect;
+            //SHThread = new Thread(SHWorks);
+            //SHThread.Name = "SHThread";
+            //SHThread.IsBackground = true;
+            //SHThread.Start();
+            //SHD += SHConnect;
 
             GPSThread = new Thread(GPSWorks);
             GPSThread.Name = "GPSThread";
@@ -362,7 +362,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = -1;
                 command.Parameter.RBW_Hz = -1;
                 command.Parameter.VBW_Hz = -1;
-                command.Parameter.RefLevel_dBm = -1;
+                command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.003;
                 command.Parameter.TraceCount = 1;
                 command.Parameter.TracePoint = 3750;
@@ -421,7 +421,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = 1600;
+                command.Parameter.TracePoint = 16000;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
@@ -801,14 +801,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //135,5
                 //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
                 //command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
-                command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
-                command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
+                decimal centr = 424.650m * 1000000;
+                decimal span = 12.8m * 1000000;//0.025m
+
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.Att_dB = 0;
                 command.Parameter.PreAmp_dB = 0;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.BitRate_MBs = 0.6;
-                command.Parameter.IQBlockDuration_s = 0.5;
-                command.Parameter.IQReceivTime_s = 0.6;
+                command.Parameter.IQBlockDuration_s = 0.1;
+                command.Parameter.IQReceivTime_s = 0.1;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = true;
 
@@ -847,8 +850,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.PreAmp_dB = 30;
 
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.IQBlockDuration_s = 0.5;
-                command.Parameter.IQReceivTime_s = 0.6;
+                command.Parameter.IQBlockDuration_s = 1.0;
+                command.Parameter.IQReceivTime_s = 1.1;
                 command.Parameter.MandatoryPPS = true;
                 command.Parameter.MandatorySignal = true;
                 long offset = (long)(0.04 * 10000000);
@@ -888,19 +891,23 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureIQStreamCommand();
-                //135,5
-                command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
-                command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
+                decimal centr = 935.2m * 1000000;
+                decimal span = 0.271m * 1000000;//0.025m
+
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//
+                //command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
+                //command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
                 //command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
                 //command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
                 command.Parameter.Att_dB = 0;
                 command.Parameter.PreAmp_dB = 0;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.BitRate_MBs = 0.6;
-                command.Parameter.IQBlockDuration_s = 0.9;
-                command.Parameter.IQReceivTime_s = 1.0;
-                command.Parameter.MandatoryPPS = false;
-                command.Parameter.MandatorySignal = true;
+                command.Parameter.IQBlockDuration_s = 0.2;
+                command.Parameter.IQReceivTime_s = 0.2;
+                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatorySignal = false;
 
                 long offset = (long)(0.04 * 10000000);
                 command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
@@ -927,9 +934,9 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //135,5
                 command.Parameter.FreqStart_Hz = 935.0645m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = 935.3355m * 1000000;//930*1000000;//424.675m * 1000000;
-                command.Parameter.BitRate_MBs = 0.9;
-                command.Parameter.Att_dB = 10;
-                command.Parameter.PreAmp_dB = 10;
+                command.Parameter.BitRate_MBs = 0.6;
+                command.Parameter.Att_dB = 0;
+                command.Parameter.PreAmp_dB = 0;
                 //command.Parameter.FreqStart_Hz = 424.6375m * 1000000;//910 * 1000000;//424.625m * 1000000;//424.650
                 //command.Parameter.FreqStop_Hz = 424.6625m * 1000000;//930*1000000;//424.675m * 1000000;
                 //command.Parameter.BitRate_MBs = 0.1;
@@ -937,10 +944,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 //command.Parameter.PreAmp_dB = 30;
 
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.IQBlockDuration_s = 0.9;
+                command.Parameter.IQBlockDuration_s = 1.0;
                 command.Parameter.IQReceivTime_s = 1.0;
                 command.Parameter.MandatoryPPS = true;
-                command.Parameter.MandatorySignal = true;
+                command.Parameter.MandatorySignal = false;
                 long offset = (long)(0.04 * 10000000);
                 command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                 //long tttt = AC.WinAPITime.GetTimeStamp();// TimeService.GetGnssUtcTime().Ticks; 
@@ -991,7 +998,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.IQBlockDuration_s = 0.6;
                 command.Parameter.IQReceivTime_s = 1.0;
                 command.Parameter.MandatoryPPS = true;
-                command.Parameter.MandatorySignal = true;
+                command.Parameter.MandatorySignal = false;
 
                 long offset = (long)(0.03 * 10000000);
                 command.Parameter.TimeStart = TimeService.GetGnssUtcTime().Ticks + offset - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
@@ -1352,7 +1359,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         bool add = false;
         private void GetIQAN_Click(object sender, RoutedEventArgs e)
         {
-            add = true;
+
             //SHD += SHGetIQ;
             //AND += ANGetIQ;
 
@@ -1413,7 +1420,25 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
         }
 
+        private void SaveIQAN_Click(object sender, RoutedEventArgs e)
+        {
+            string strPath = @System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\IQ.txt";
+            if (!System.IO.File.Exists(strPath))
+            {
+                System.IO.File.Create(strPath).Dispose();
+            }
+            using (System.IO.StreamWriter sw = System.IO.File.AppendText(strPath))
+            {
+                sw.WriteLine((ANadapter.IQArr.Length/2).ToString() + ";");
+                for (int i = 0; i < ANadapter.IQArr.Length / 2; i++)
+                {
+                    sw.WriteLine(ANadapter.IQArr[0 + i*2].ToString() + ";"+ ANadapter.IQArr[1 + i*2].ToString());
+                }
 
+
+                sw.Dispose();
+            }
+        }
     }
     public class DummyTimeService : ITimeService
     {
