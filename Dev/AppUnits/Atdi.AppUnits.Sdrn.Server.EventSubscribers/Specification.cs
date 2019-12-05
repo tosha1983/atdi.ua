@@ -30,6 +30,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers
             public static readonly IStatisticCounterKey SendMeasResultsSpectrumOccupation = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.SpectrumOccupation");
             public static readonly IStatisticCounterKey SendMeasResultsMonitoringStations = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.MonitoringStations");
             public static readonly IStatisticCounterKey SendMeasResultsSignaling = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.Signaling");
+            public static readonly IStatisticCounterKey SendMeasResultsTdoa = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.TDOA");
             public static readonly IStatisticCounterKey SendMeasResultsErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendMeasResults.Errors");
 
             public static readonly IStatisticCounterKey RegisterSensorHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.RegisterSensor.Hits");
