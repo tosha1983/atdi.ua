@@ -81,11 +81,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ////////////TimeThread.IsBackground = true;
             ////////////TimeThread.Start();
 
-            ANThread = new Thread(ANWorks);
-            ANThread.Name = "ANThread";
-            ANThread.IsBackground = true;
-            ANThread.Start();
-            AND += ANConnect;
+            //ANThread = new Thread(ANWorks);
+            //ANThread.Name = "ANThread";
+            //ANThread.IsBackground = true;
+            //ANThread.Start();
+            //AND += ANConnect;
 
             //SHThread = new Thread(SHWorks);
             //SHThread.Name = "SHThread";
@@ -193,7 +193,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 var adapterConfig = new ADP.SignalHound.AdapterConfig()
                 {
-                    SerialNumber = "16319373",//"18250087",// "16319373",
+                    SerialNumber = 16319373,//"18250087",// "16319373",
                     GPSPPSConnected = true,
                     Reference10MHzConnected = false,
                     //SyncCPUtoGPS = true,

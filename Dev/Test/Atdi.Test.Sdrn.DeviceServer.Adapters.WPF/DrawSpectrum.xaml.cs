@@ -206,7 +206,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
 
                         RefLevel = (double)SHAdapter.RefLevel;
 
-                        Range = (double)SHAdapter.Range;
+                        //Range = (double)SHAdapter.Range;
                         LowestLevel = RefLevel - Range;
                     }
                 }
