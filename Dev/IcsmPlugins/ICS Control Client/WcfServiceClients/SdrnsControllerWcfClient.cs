@@ -135,6 +135,12 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             return result ?? new ResultsMeasurementsStation[] { };
         }
+        public static ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(long resId, ResultsMeasurementsStationFilters filter)
+        {
+            var result = Execute(contract => contract.GetResMeasStationHeaderByResIdWithFilter(resId, filter));
+
+            return result ?? new ResultsMeasurementsStation[] { };
+        }
         public static MeasurementResults GetMeasurementResultByResId(long resId, double? startFrequencyHz, double? stopFrequencyHz)
         {
             return Execute(contract => contract.GetMeasurementResultByResId(resId, true, startFrequencyHz, stopFrequencyHz));

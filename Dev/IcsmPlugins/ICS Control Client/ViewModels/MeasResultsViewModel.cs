@@ -16,6 +16,8 @@ using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
+using System.Globalization;
+using TR = System.Threading;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -37,6 +39,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand SearchStationCommand { get; set; }
         public WpfCommand PrevSpecCommand { get; set; }
         public WpfCommand NextSpecCommand { get; set; }
+        public WpfCommand FilterApplyCommand { get; set; }
         #endregion
 
         #region Current Objects
@@ -49,6 +52,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private MP.MapDrawingData _currentMapData;
         private ModelType _currentModel;
         private SDR.MeasurementType _measDtParamTypeMeasurements;
+        private ResultsMeasurementsStationFilters _currentStationsGolbalFilter;
         private bool _taskOnlyChecked;
         private bool _sensorOnlyChecked;
         private Visibility _resultStationsVisibility = Visibility.Hidden;
@@ -100,6 +104,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this._currentModel = ModelType.None;
             this._currentChartOption = this.GetDefaultChartOption();
+            this._currentStationsGolbalFilter = new ResultsMeasurementsStationFilters();
             this._measResults = new MeasurementResultsDataAdatper();
             this._resultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
             this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
@@ -109,6 +114,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this.SearchStationCommand = new WpfCommand(this.OnSearchStationCommand);
             this.PrevSpecCommand = new WpfCommand(this.OnPrevSpecCommand);
             this.NextSpecCommand = new WpfCommand(this.OnNextSpecCommand);
+            this.FilterApplyCommand = new WpfCommand(this.OnFilterApplyCommand);
+            this.LoadSettings();
             this.ReloadMeasResult();
         }
         public SDR.MeasurementType MeasDtParamTypeMeasurements
@@ -134,6 +141,11 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             get => this._currentMapData;
             set => this.Set(ref this._currentMapData, value);
+        }
+        public ResultsMeasurementsStationFilters CurrentStationsGolbalFilter
+        {
+            get => this._currentStationsGolbalFilter;
+            set => this.Set(ref this._currentStationsGolbalFilter, value);
         }
         public MeasurementResultsViewModel CurrentMeasurementResults
         {
@@ -309,12 +321,26 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             if (this._currentMeasurementResults != null)
             {
-                var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
-                this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
-
-                var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId, null, null);
-                LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
-                UpFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Max(f => f.Freq));
+                if (this._measDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
+                {
+                    //var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId);
+                    //this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
+                    var filter = new SDR.ResultsMeasurementsStationFilters()
+                    {
+                        FreqBg = ConvertToDouble(this._currentStationsGolbalFilter.FreqBg),
+                        FreqEd = ConvertToDouble(this._currentStationsGolbalFilter.FreqEd),
+                        MeasGlobalSid = this._currentStationsGolbalFilter.MeasGlobalSid,
+                        Standard = this._currentStationsGolbalFilter.Standard
+                    };
+                    var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResults.MeasSdrResultsId, filter);
+                    this._resultsMeasurementsStations.Source = sdrMeasResults;
+                }
+                else
+                {
+                    var sdrMeasResultsDetail = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResults.MeasSdrResultsId, null, null);
+                    LowFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Min(f => f.Freq));
+                    UpFreq = sdrMeasResultsDetail.FrequenciesMeasurements == null ? (double?)null : (sdrMeasResultsDetail.FrequenciesMeasurements.Length == 0 ? 0 : sdrMeasResultsDetail.FrequenciesMeasurements.Max(f => f.Freq));
+                }
             }
             else
             {
@@ -470,9 +496,10 @@ namespace XICSM.ICSControlClient.ViewModels
             option.YMin = preparedDataY.MinValue;
 
             var preparedDataX = Environment.Utitlity.CalcFrequencyRange(minX, maxX, 8);
-            option.XTick = preparedDataX.Step;
             option.XMin = preparedDataX.MinValue;
             option.XMax = preparedDataX.MaxValue;
+            if (minX != maxX)
+                option.XTick = preparedDataX.Step;
 
             option.Points = points;
             option.LinesArray = linesList.ToArray();
@@ -1013,12 +1040,63 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.GenerateSpecLabelText();
             }
         }
+        private void OnFilterApplyCommand(object parameter)
+        {
+            Properties.Settings.Default.GlobalFilterMeasGlobalSid = this._currentStationsGolbalFilter.MeasGlobalSid;
+            Properties.Settings.Default.GlobalFilterStandard = this._currentStationsGolbalFilter.Standard;
+            Properties.Settings.Default.GlobalFilterFreqBg = this._currentStationsGolbalFilter.FreqBg;
+            Properties.Settings.Default.GlobalFilterFreqEd = this._currentStationsGolbalFilter.FreqEd;
+            Properties.Settings.Default.Save();
+            ReloadMeasResaltDetail();
+        }
+        private void LoadSettings()
+        {
+            this._currentStationsGolbalFilter.MeasGlobalSid = Properties.Settings.Default.GlobalFilterMeasGlobalSid;
+            this._currentStationsGolbalFilter.Standard = Properties.Settings.Default.GlobalFilterStandard;
+            this._currentStationsGolbalFilter.FreqBg = Properties.Settings.Default.GlobalFilterFreqBg;
+            this._currentStationsGolbalFilter.FreqEd = Properties.Settings.Default.GlobalFilterFreqEd;
+        }
         private void GenerateSpecLabelText()
         {
             if (this.CurrentResultsMeasurementsStationData != null && this.CurrentResultsMeasurementsStationData.GeneralResults != null && this.CurrentResultsMeasurementsStationData.GeneralResults.Length > 0)
                 SpecLabelText = (_selectedSpectrum + 1).ToString() + " of " + this.CurrentResultsMeasurementsStationData.GeneralResults.Length.ToString();
             else
                 SpecLabelText = "0 of 0";
+        }
+        private double? ConvertToDouble(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return null;
+            char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
+            double result = 0;
+            try
+            {
+                if (s != null)
+                    if (!s.Contains(","))
+                        result = double.Parse(s, CultureInfo.InvariantCulture);
+                    else
+                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
+            }
+            catch
+            {
+                try
+                {
+                    result = Convert.ToDouble(s);
+                }
+                catch
+                {
+                    try
+                    {
+                        result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
+                    }
+                    catch
+                    {
+                        //throw new Exception("Wrong string-to-double format");
+                        return null;
+                    }
+                }
+            }
+            return result;
         }
     }
 }

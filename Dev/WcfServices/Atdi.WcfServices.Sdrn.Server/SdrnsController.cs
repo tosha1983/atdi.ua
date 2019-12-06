@@ -148,6 +148,11 @@ namespace Atdi.WcfServices.Sdrn.Server
             var loadResults = new LoadResults(_dataLayer, _logger);
             return loadResults.GetResMeasStationHeaderByResId(ResId);
         }
+        public ResultsMeasurementsStation[] GetResMeasStationHeaderByResIdWithFilter(long ResId, ResultsMeasurementsStationFilters filter)
+        {
+            var loadResults = new LoadResults(_dataLayer, _logger);
+            return loadResults.GetResMeasStationHeaderByResId(ResId, filter);
+        }
 
         public Route[] GetRoutes(long MeasResultsId)
         {
