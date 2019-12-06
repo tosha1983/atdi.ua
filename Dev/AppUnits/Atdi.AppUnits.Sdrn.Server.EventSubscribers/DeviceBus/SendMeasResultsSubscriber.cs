@@ -98,6 +98,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         {
                             busEvent = new DevicesBusEvent($"OnSGMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber") { BusMessageId = messageId };
                         }
+                        else if (deliveryObject.Measurement == MeasurementType.Tdoa)
+                        {
+                            busEvent = new DevicesBusEvent($"OnTdoaMeasResultsDeviceBusEvent", "SendMeasResultsSubscriber") { BusMessageId = messageId };
+                        }
                         else
                         {
                             throw new InvalidOperationException($"Unsupported MeasurementType '{deliveryObject.Measurement}'");
