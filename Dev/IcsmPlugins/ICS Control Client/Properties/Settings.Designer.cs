@@ -34,5 +34,53 @@ namespace XICSM.ICSControlClient.Properties {
                 this["baseSetting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalFilterMeasGlobalSid {
+            get {
+                return ((string)(this["GlobalFilterMeasGlobalSid"]));
+            }
+            set {
+                this["GlobalFilterMeasGlobalSid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalFilterStandard {
+            get {
+                return ((string)(this["GlobalFilterStandard"]));
+            }
+            set {
+                this["GlobalFilterStandard"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalFilterFreqBg {
+            get {
+                return ((string)(this["GlobalFilterFreqBg"]));
+            }
+            set {
+                this["GlobalFilterFreqBg"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalFilterFreqEd {
+            get {
+                return ((string)(this["GlobalFilterFreqEd"]));
+            }
+            set {
+                this["GlobalFilterFreqEd"] = value;
+            }
+        }
     }
 }

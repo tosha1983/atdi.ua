@@ -242,11 +242,20 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="MeasResultsId"></param>
+        /// <param name="ResId"></param>
         /// <param name="StationId"></param>
         /// <returns></returns>
         [OperationContract]
         ResultsMeasurementsStation[] GetResMeasStationHeaderByResId(long ResId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ResId"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ResultsMeasurementsStation[] GetResMeasStationHeaderByResIdWithFilter(long ResId, ResultsMeasurementsStationFilters filter);
 
         /// <summary>
         /// 
