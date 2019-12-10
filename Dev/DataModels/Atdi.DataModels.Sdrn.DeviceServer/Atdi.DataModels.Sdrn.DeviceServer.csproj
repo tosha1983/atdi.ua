@@ -69,6 +69,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TaskState.cs" />
     <Compile Include="Enums\TaskExecutionOption.cs" />
+    <Compile Include="ResultPoolDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels\Atdi.DataModels.csproj">

@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
-        private readonly IStatistics _statistics;
+        //private readonly IStatistics _statistics;
         private readonly ISdrnMessagePublisher _messagePublisher;
         private readonly IEventEmitter _eventEmitter;
         private readonly IQueryExecutor _queryExecutor;

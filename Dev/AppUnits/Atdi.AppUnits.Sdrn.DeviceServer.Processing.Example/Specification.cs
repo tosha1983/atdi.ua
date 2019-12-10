@@ -12,9 +12,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example
         public static readonly EventContext Test1TaskWorker = "SDRN.Test1TaskWorker";
         public static readonly EventContext Test2TaskWorker = "SDRN.Test2TaskWorker";
 
+        public static readonly EventContext TraceAutoTask = "SDRN.TraceAutoTask";
+        public static readonly EventContext TraceTask = "SDRN.TraceTask";
+
         public static readonly EventContext TestCommand1ResultHandler = "SDRN.TestCommand1ResultHandler";
         public static readonly EventContext TestCommand2ResultHandler = "SDRN.TestCommand2ResultHandler";
 
+        public static readonly EventContext TraceCommandResultHandler = "SDRN.TraceCommandResultHandler";
 
     }
 
