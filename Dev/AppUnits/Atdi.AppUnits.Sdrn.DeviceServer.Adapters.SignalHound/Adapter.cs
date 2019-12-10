@@ -47,7 +47,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             LevelArr = new float[tracePoints];
             for (int i = 0; i < tracePoints; i++)
             {
-                FreqArr[i] = (double)FreqStart + freqStep * i;
+                FreqArr[i] = (double)FreqStart + resfreqStep * i;
                 LevelArr[i] = -100;
             }
         }
@@ -66,6 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                 if (Connect(adapterConfig.SerialNumber))
                 {
+                    //deviceSerialNumber = 16319373;
                     string fileName = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + deviceSerialNumber + ".xml";
                     tac = new CFG.ThisAdapterConfig() { };
                     if (!tac.GetThisAdapterConfig(fileName))
@@ -75,7 +76,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         tac.SetThisAdapterConfig(mainConfig, fileName);
                     }
                     else
-                    {
+                    {                    
+                        
+                        if (tac.Main.AdapterTraceResultPools.Length == 0)
+                        {
+                            SetDefaulTraceResultPoolsConfig(ref tac.Main);
+                            tac.SetThisAdapterConfig(tac.Main, fileName);
+                        }
                         mainConfig = tac.Main;
                     }
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
@@ -434,7 +441,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #region Trace Data
         //private bool NewTrace;
 
-        private double freqStep = 10000;
+        private double resFreqStart = 10000;
+        private double resfreqStep = 10000;
 
         private int tracePoints = 1601;
 
@@ -1136,7 +1144,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             double startFreq = 0.0;
             StatusError(AdapterDriver.bbQueryTraceInfo(deviceId, ref traceLen, ref binSize, ref startFreq));
 
-            freqStep = binSize;
+            resfreqStep = binSize;
 
             if (Status != EN.Status.DeviceConnectionErr ||
                 Status != EN.Status.DeviceInvalidErr ||
@@ -1778,6 +1786,116 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     DiagH = "POINT 0 0 90 3 180 6 270 3",//от нуля В конфиг
                     DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
                 }
+            };
+
+            config.AdapterTraceResultPools = new CFG.AdapterResultPool[]
+                {
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "small",
+                        MinSize = 50,
+                        MaxSize = 100,
+                        Size = 5000
+                    },
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "small10k",
+                        MinSize = 50,
+                        MaxSize = 100,
+                        Size = 10000
+                    },
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "small20k",
+                        MinSize = 50,
+                        MaxSize = 100,
+                        Size = 20000
+                    },
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "middle40k",
+                        MinSize = 25,
+                        MaxSize = 50,
+                        Size = 40000
+                    },
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "middle100k",
+                        MinSize = 25,
+                        MaxSize = 50,
+                        Size = 100000
+                    },
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "middle200k",
+                        MinSize = 10,
+                        MaxSize = 20,
+                        Size = 200000
+                    },
+                    new CFG.AdapterResultPool()
+                    {
+                        KeyName = "huge500k",
+                        MinSize = 10,
+                        MaxSize = 20,
+                        Size = 500000
+                    },
+
+                };
+        }
+        private void SetDefaulTraceResultPoolsConfig(ref CFG.AdapterMainConfig config)
+        {
+            config.AdapterTraceResultPools = new CFG.AdapterResultPool[]
+            {
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "small",
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 5000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "small10k",
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 10000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "small20k",
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 20000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "middle40k",
+                    MinSize = 25,
+                    MaxSize = 50,
+                    Size = 40000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "middle100k",
+                    MinSize = 25,
+                    MaxSize = 50,
+                    Size = 100000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "middle200k",
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 200000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "huge500k",
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 500000
+                },
+
             };
         }
 

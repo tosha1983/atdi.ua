@@ -11,14 +11,14 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
     public class ThisAdapterConfig
     {
         public AdapterMainConfig Main = new AdapterMainConfig();
-        private string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        private string appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private string FilePath;
 
 
         public bool GetThisAdapterConfig(string FileName)
         {
             bool res = false;
-            this.FilePath = AppPath + "/" + FileName;
+            this.FilePath = appPath + "/" + FileName;
             if (File.Exists(FilePath))
             {
                 MainConfig_ReadXml();
@@ -33,7 +33,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
         public void SetThisAdapterConfig(AdapterMainConfig config, string FileName)
         {
             Main = config;
-            this.FilePath = AppPath + "/" + FileName;
+            this.FilePath = appPath + "/" + FileName;
 
             Main.Serialize(FilePath);
         }

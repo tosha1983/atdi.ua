@@ -87,17 +87,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //ANThread.Start();
             //AND += ANConnect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
 
-            GPSThread = new Thread(GPSWorks);
-            GPSThread.Name = "GPSThread";
-            GPSThread.IsBackground = true;
-            GPSThread.Start();
-            GPSD += GPSConnect;
+            //GPSThread = new Thread(GPSWorks);
+            //GPSThread.Name = "GPSThread";
+            //GPSThread.IsBackground = true;
+            //GPSThread.Start();
+            //GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
