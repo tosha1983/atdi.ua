@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 using Atdi.Platform;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
@@ -18,6 +19,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly ITimeService _timeService;
         private readonly IEventWaiter _eventWaiter;
         private readonly IStatistics _statistics;
+        private readonly IObjectPoolSite _poolSite;
         private readonly ILogger _logger;
         private readonly int _abortingTimeout = 1000;
         private Thread _adapterThread;
@@ -51,6 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             ITimeService timeService,
             IEventWaiter eventWaiter,
             IStatistics statistics,
+            IObjectPoolSite poolSite,
             ILogger logger)
         {
             this._adapterType = adapterType ?? throw new ArgumentNullException(nameof(adapterType));
@@ -60,6 +63,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._timeService = timeService;
             this._eventWaiter = eventWaiter;
             this._statistics = statistics;
+            this._poolSite = poolSite;
             this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.DeviceId = Guid.NewGuid();
             this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
@@ -70,6 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._properties = new Dictionary<CommandType, IDeviceProperties>();
             this._counter = 0;
             this._state = DeviceState.Created;
+
             if (this._statistics != null)
             {
                 _statistics.Counter(Monitoring.AdaptersCountKey)?.Increment();
@@ -236,7 +241,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             
         }
 
-        public void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler, IDeviceProperties deviceProperties = null) 
+        public void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler, IResultPoolDescriptor<TResult>[] poolDescriptors,  IDeviceProperties deviceProperties) 
             where TCommand : new()
         {
             var commandType = typeof(TCommand);
@@ -260,6 +265,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
             _commandsHost.Register(this, dummyCommand.Type, commandType);
 
+            // регистрация пулов результатов
+            if (poolDescriptors != null && poolDescriptors.Length > 0)
+            {
+                foreach (var poolDescriptor in poolDescriptors)
+                {
+                    this.RegisterPoolResult(dummyCommand.Type, poolDescriptor);
+                }
+            }
+
             if (deviceProperties != null)
             {
                 if (_properties.ContainsKey(dummyCommand.Type))
@@ -271,6 +285,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             }
         }
 
+        public static string BuildPoolKey(CommandType commandType, string key)
+        {
+            return string.Concat(commandType.ToString(), "|", key);
+        }
+        
+        private void RegisterPoolResult<TResult>(CommandType commandType, IResultPoolDescriptor<TResult> descriptor)
+        {
+            var poolDescriptor = new ObjectPoolDescriptor<TResult>()
+            {
+                Factory = descriptor.Factory,
+                Key = BuildPoolKey(commandType, descriptor.Key),
+                MinSize = descriptor.MinSize,
+                MaxSize = descriptor.MaxSize,
+            };
+
+            var pool = _poolSite.Register(poolDescriptor);
+
+            _logger.Verbouse(Contexts.AdapterWorker, Categories.Initializing, $"Result object pool was registered: {pool.ToString()}");
+        }
 
         private void StartExecutingCommand(CommandDescriptor commandDescriptor)
         {
@@ -280,7 +313,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
             var resultBuffer = this._resultsHost.TakeBuffer(commandDescriptor);
 
-            var executionContext = new ExecutionContext(commandDescriptor, this, resultBuffer, this._statistics);
+            var executionContext = new ExecutionContext(commandDescriptor, this, resultBuffer, this._poolSite, this._statistics);
             this._executingCommands.TryAdd(command.Id, executionContext);
 
             commandDescriptor.Process();

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
@@ -16,6 +17,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly IResultsHost _resultsHost;
         private readonly ITimeService _timeService;
         private readonly IEventWaiter _eventWaiter;
+        private readonly IObjectPoolSite _poolSite;
         private readonly IStatistics _statistics;
         private readonly ILogger _logger;
         private readonly Dictionary<Type, AdapterWorker> _workers;
@@ -26,6 +28,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             IResultsHost resultsHost, 
             ITimeService timeService,
             IEventWaiter eventWaiter,
+            IObjectPoolSite poolSite,
             IStatistics statistics,
             ILogger logger)
         {
@@ -34,6 +37,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._resultsHost = resultsHost;
             this._timeService = timeService;
             this._eventWaiter = eventWaiter;
+            this._poolSite = poolSite;
             this._statistics = statistics;
             this._logger = logger;
             this._workers = new Dictionary<Type, AdapterWorker>();
@@ -70,7 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 return;
             }
-            var worker = new AdapterWorker(adapterType, this._adapterFactory, this._commandsHost, this._resultsHost, this._timeService, this._eventWaiter, this._statistics, this._logger);
+            var worker = new AdapterWorker(adapterType, this._adapterFactory, this._commandsHost, this._resultsHost, this._timeService, this._eventWaiter, this._statistics, this._poolSite, this._logger);
             this._workers.Add(adapterType, worker);
 
             _logger.Verbouse(Contexts.DevicesHost, Categories.Registering, Events.RegisteredAdapter.With(adapterType));

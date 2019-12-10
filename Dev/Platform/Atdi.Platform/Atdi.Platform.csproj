@@ -63,6 +63,12 @@
     <Compile Include="Caching\IDataCacheDescriptor.cs" />
     <Compile Include="Caching\IDataCacheSite.cs" />
     <Compile Include="Cryptography\Encryptor.cs" />
+    <Compile Include="Data\IObjectPool.cs" />
+    <Compile Include="Data\IObjectPoolSite.cs" />
+    <Compile Include="Data\MissingPoolObjectsException.cs" />
+    <Compile Include="Data\ObjectPool.cs" />
+    <Compile Include="Data\ObjectPoolDescriptor.cs" />
+    <Compile Include="Data\ObjectPoolSite.cs" />
     <Compile Include="DefaultResourceResolver.cs" />
     <Compile Include="DependencyInjection\BaseOnMode.cs" />
     <Compile Include="DependencyInjection\IHandlerResolver.cs" />

@@ -44,14 +44,17 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="ExampleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResultHandlers\TestCommand1ResultHandler.cs" />
-    <Compile Include="ResultHandlers\ExampleResultHandler.cs" />
-    <Compile Include="ResultHandlers\TestCommand2ResultHandler.cs" />
+    <Compile Include="ResultHandlers\Others\TestCommand1ResultHandler.cs" />
+    <Compile Include="ResultHandlers\Others\ExampleResultHandler.cs" />
+    <Compile Include="ResultHandlers\Others\TestCommand2ResultHandler.cs" />
+    <Compile Include="ResultHandlers\Trace\TraceCommandResultHandler.cs" />
     <Compile Include="Specification.cs" />
-    <Compile Include="TaskWorkers\ExampleAutoTaskWorker.cs" />
-    <Compile Include="TaskWorkers\ExampleTaskWorker.cs" />
-    <Compile Include="TaskWorkers\Test2TaskWorker.cs" />
-    <Compile Include="TaskWorkers\Test1TaskWorker.cs" />
+    <Compile Include="TaskWorkers\Others\ExampleAutoTaskWorker.cs" />
+    <Compile Include="TaskWorkers\Others\ExampleTaskWorker.cs" />
+    <Compile Include="TaskWorkers\Others\Test2TaskWorker.cs" />
+    <Compile Include="TaskWorkers\Others\Test1TaskWorker.cs" />
+    <Compile Include="TaskWorkers\Trace\TraceTaskWorker.cs" />
+    <Compile Include="TaskWorkers\Trace\TraceAutoTaskWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
