@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrns.Device;
+using Atdi.Common;
 
 
 
@@ -15,10 +16,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public class SysInfoTaskResultHandler : IResultHandler<MesureSystemInfoCommand, MesureSystemInfoResult, SysInfoTask, SysInfoProcess>
     {
-        public void Handle(MesureSystemInfoCommand command, MesureSystemInfoResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SysInfoTask, SysInfoProcess> taskContext)
+        public void Handle(MesureSystemInfoCommand command, MesureSystemInfoResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<SysInfoTask, SysInfoProcess> taskContext)
         {
-            if (result != null)
+            if (tempResult != null)
             {
+                var result = CopyHelper.CreateDeepCopy(tempResult);
+
                 taskContext.Task.sysInfoResult = new SysInfoResult();
                 try
                 {

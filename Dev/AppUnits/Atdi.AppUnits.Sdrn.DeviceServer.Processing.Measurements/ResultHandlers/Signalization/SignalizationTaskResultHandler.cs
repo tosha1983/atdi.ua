@@ -43,11 +43,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._configMeasurements = configMeasurement;
         }
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
         {
             var measResults = new MeasResults();
             try
             {
+                var result = CopyHelper.CreateDeepCopy(tempResult);
+
                 if ((NeedSearchEmitting(taskContext.Task.CountMeasurementDone)) == true)
                 {
                     taskContext.Task.EmittingsRaw = CalcSearchEmitting.CalcSearch(taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm);
@@ -161,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     var allEmitting = new List<Emitting>();
                     allEmitting.AddRange(taskContext.Task.EmittingsSummary);
                     allEmitting.AddRange(taskContext.Task.EmittingsTemp);
-                    for (int p=0; p< allEmitting.Count; p++)
+                    for (var p =0; p< allEmitting.Count; p++)
                     {
                         allEmitting[p].SensorId = taskContext.Task.taskParameters.SensorId;
                     }

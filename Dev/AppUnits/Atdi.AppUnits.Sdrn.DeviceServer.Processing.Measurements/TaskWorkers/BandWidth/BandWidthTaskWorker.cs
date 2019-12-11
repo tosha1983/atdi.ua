@@ -156,7 +156,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         //реакция на принятые результаты измерения
                         if (outResultData != null)
                         {
-                            DM.MeasResults measResult = new DM.MeasResults();
+                            var measResult = new DM.MeasResults();
                             context.Task.CountSendResults++;
                             //measResult.ResultId = string.Format("{0}|{1}", context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
                             measResult.TaskId = context.Task.taskParameters.SDRTaskId;
@@ -228,7 +228,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             {
                                 this._measResultsByStringRepository.Create(measResult);
 
-                                DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                                var deviceCommandResult = new DM.DeviceCommandResult();
                                 deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                                 deviceCommandResult.CustDate1 = DateTime.Now;
                                 deviceCommandResult.Status = StatusTask.C.ToString();

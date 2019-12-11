@@ -12,6 +12,8 @@ using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
 using Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks;
 using System.Collections;
 using System.ComponentModel;
+using Atdi.Common;
+using Atdi.Platform;
 
 
 
@@ -26,10 +28,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             this._config = config;
         }
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<ClientTaskRegistrationTask, OnlineMeasurementProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<ClientTaskRegistrationTask, OnlineMeasurementProcess> taskContext)
         {
-            if (result != null)
+            if (tempResult != null)
             {
+                var result = CopyHelper.CreateDeepCopy(tempResult);
+
                 try
                 {
                     var parametersDataLevel = new DeviceServerParametersDataLevel();
@@ -54,7 +58,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             }
         }
 
-        
+
+
         public static double SDRGainFromFrequency(MesureTraceDeviceProperties MesureTraceDeviceProperties, double Frequency_Hz)
         {
             // Константа с файла конфигурации

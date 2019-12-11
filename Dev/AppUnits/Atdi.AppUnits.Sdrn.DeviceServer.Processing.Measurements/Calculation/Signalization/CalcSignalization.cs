@@ -21,8 +21,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static Spectrum CreateSpectrum(float[] templevels, double stepBW_kHz, double startFreq_MHz, double NoiseLevel_dBm, double DiffLevelForCalcBW = 25, double windowBW = 1.5,
            double nDbLevel_dB = 15, int NumberIgnoredPoints = 1, double MinExcessNoseLevel_dB = 5)
         {
-            MeasBandwidthResult measSdrBandwidthResults = BandWidthEstimation.GetBandwidthPoint(templevels, BandWidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, 0);
-            Spectrum Spectrum = new Spectrum();
+            var measSdrBandwidthResults = BandWidthEstimation.GetBandwidthPoint(templevels, BandWidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, 0);
+            var Spectrum = new Spectrum();
             int start = 0; int stop = templevels.Length;
             if (measSdrBandwidthResults.СorrectnessEstimations != null)
             {
@@ -101,7 +101,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.LevelsDistribution = new LevelsDistribution();
                 emitting.LevelsDistribution.Count = new int[NumberPointForLevelDistribution];
                 emitting.LevelsDistribution.Levels = new int[NumberPointForLevelDistribution];
-                for (int i = 0; i < NumberPointForLevelDistribution; i++)
+                for (var i = 0; i < NumberPointForLevelDistribution; i++)
                 {
                     emitting.LevelsDistribution.Levels[i] = StartLevelsForLevelDistribution + i;
                     emitting.LevelsDistribution.Count[i] = 0;
@@ -117,7 +117,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         public static Emitting CreatIndependEmitting(Emitting emitting)
         {
-            Emitting emitting1 = new Emitting()
+            var emitting1 = new Emitting()
             {
                 CurentPower_dBm = emitting.CurentPower_dBm,
                 EmittingParameters = emitting.EmittingParameters,
@@ -143,7 +143,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool CheckContravention(ref Spectrum spectrum, ReferenceLevels referenceLevels, bool Smooth = true)
         { // ПРОТЕСТИРОВАНО
-            float[] Levels = new float[spectrum.Levels_dBm.Length];
+            var Levels = new float[spectrum.Levels_dBm.Length];
             if (Smooth)
             {
                 Levels = SmoothTrace.blackman(spectrum.Levels_dBm);
@@ -155,7 +155,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double LogFreqSpectrum = 10 * Math.Log10(spectrum.SpectrumSteps_kHz * 1000.0);
             double LogFreqRef = 10 * Math.Log10(referenceLevels.StepFrequency_Hz);
 
-            for (int i = 0; i < Levels.Length; i++)
+            for (var i = 0; i < Levels.Length; i++)
             {
                 // double DensityLevel = Levels[i] - LogFreqSpectrum;
                 double freq_Level_Hz = spectrum.SpectrumStartFreq_MHz * 1000000.0 + spectrum.SpectrumSteps_kHz * i * 1000.0;

@@ -12,7 +12,7 @@ using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
 using Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks;
 using System.Collections;
 using System.ComponentModel;
-
+using Atdi.Common;
 
 
 
@@ -29,12 +29,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             this._config = config;
         }
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<ClientReadyTakeMeasResultTask, OnlineMeasurementProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<ClientReadyTakeMeasResultTask, OnlineMeasurementProcess> taskContext)
         {
-            if (result != null)
+            if (tempResult != null)
             {
                 try
                 {
+                    var result = CopyHelper.CreateDeepCopy(tempResult);
+
                     Atdi.DataModels.Sdrns.Device.OnlineMeasurement.TraceType traceType = TraceType.Unknown;
                     var levelResult = new DeviceServerResultLevel();
                     levelResult.Index = taskContext.Process.CountMeasurementDone;

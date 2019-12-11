@@ -20,24 +20,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if ((taskParameters.TypeOfSO == SOType.FreqBandwidthOccupation) || (taskParameters.TypeOfSO == SOType.FreqChannelOccupation))
             {
                 // вот собственно само измерение
-                SemplFreq[] F_ch_res_ = new SemplFreq[taskParameters.ListFreqCH.Count];
+                var F_ch_res_ = new SemplFreq[taskParameters.ListFreqCH.Count];
                 // замер 
-                              
+
                 // Вот и дополнили значениями SO и прочим теперь значения красивые по микроканальчикам
                 // Вычисляем занятость для данного замера по каналам 
-                SemplFreq[] F_ch_res_temp = new SemplFreq[taskParameters.ListFreqCH.Count]; // здест будут храниться замеры приведенные к каналу
+                var F_ch_res_temp = new SemplFreq[taskParameters.ListFreqCH.Count]; // здест будут храниться замеры приведенные к каналу
                 int start = 0;
 
-                double realRBW_Hz = result.Freq_Hz[1] - result.Freq_Hz[0]; //Вставить проверку на наличие result.Freq_Hz[1] - result.Freq_Hz[0] если отсутвует выходить тиз функции с ошибкой что принятый результат не верен
+                double realRBW_Hz = result.FrequencyStep_Hz;//.Freq_Hz[1] - result.Freq_Hz[0]; //Вставить проверку на наличие result.Freq_Hz[1] - result.Freq_Hz[0] если отсутвует выходить тиз функции с ошибкой что принятый результат не верен
 
-                for (int i = 0; i < taskParameters.ListFreqCH.Count; i++) // Цикл по каналам
+                for (var i = 0; i < taskParameters.ListFreqCH.Count; i++) // Цикл по каналам
                 {
-                    SemplFreq F_SO = new SemplFreq(); // здесь будет храниться один замер приведенный к каналу
+                    var F_SO = new SemplFreq(); // здесь будет храниться один замер приведенный к каналу
                     int sempl_in_freq = 0; //количество замеров идущие в один канал 
-                    for (int j = start; j < result.Level.Length; j++) // цикл по замерам по канальчикам
+                    for (var j = start; j < result.Level.Length; j++) // цикл по замерам по канальчикам
                     {
-                        if ( 1000000 * taskParameters.ListFreqCH[i] +  500 * taskParameters.StepSO_kHz < result.Freq_Hz[j]) { start = j; break; }
-                        if ((1000000 * taskParameters.ListFreqCH[i] - 500 * taskParameters.StepSO_kHz <= result.Freq_Hz[j]) && (1000000 * taskParameters.ListFreqCH[i] + 500 * taskParameters.StepSO_kHz  > result.Freq_Hz[j])) // проверка на попадание в диапазон частот
+                        if ( 1000000 * taskParameters.ListFreqCH[i] +  500 * taskParameters.StepSO_kHz < (result.FrequencyStart_Hz + j * result.FrequencyStep_Hz)) { start = j; break; }
+                        if ((1000000 * taskParameters.ListFreqCH[i] - 500 * taskParameters.StepSO_kHz <= (result.FrequencyStart_Hz + j * result.FrequencyStep_Hz)) && (1000000 * taskParameters.ListFreqCH[i] + 500 * taskParameters.StepSO_kHz  > (result.FrequencyStart_Hz + j * result.FrequencyStep_Hz))) // проверка на попадание в диапазон частот
                         {
                             sempl_in_freq = sempl_in_freq + 1;
                             if (sempl_in_freq == 1)// заполняем первое попадание как есть
@@ -80,7 +80,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else
                     {
-                        for (int i = 0; i < lastResultParameters.fSemplesResult.Length; i++)
+                        for (var i = 0; i < lastResultParameters.fSemplesResult.Length; i++)
                         {
                             SemplFreq Semple = new SemplFreq();
                             Semple.Freq = lastResultParameters.fSemplesResult[i].Freq;
@@ -100,7 +100,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // в данной точке результат находится в переменой F_ch_res и в count мы его должны показать/запомнить.  
                 // кстати это происходит у нас циклически
                 lastResultParameters = new SpectrumOcupationResult();
-                CalcFSFromLevel Calc1 = new CalcFSFromLevel(F_ch_res_temp, sensorParameters);
+                var Calc1 = new CalcFSFromLevel(F_ch_res_temp, sensorParameters);
                 lastResultParameters.fSemplesResult = F_ch_res_;
                 lastResultParameters.NN = NN+1;
 

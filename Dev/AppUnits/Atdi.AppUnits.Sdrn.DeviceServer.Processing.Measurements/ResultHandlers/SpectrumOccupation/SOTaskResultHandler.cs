@@ -10,6 +10,7 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using Atdi.Common;
 
 
 
@@ -17,10 +18,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public class SOTaskResultHandler : IResultHandler<MesureTraceCommand, MesureTraceResult, SOTask, SpectrumOccupationProcess>
     {
-        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SOTask, SpectrumOccupationProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<SOTask, SpectrumOccupationProcess> taskContext)
         {
-            if (result != null)
+            if (tempResult != null)
             {
+                var result = CopyHelper.CreateDeepCopy(tempResult);
+
                 SpectrumOcupationResult measResults = null;
                 try
                 {

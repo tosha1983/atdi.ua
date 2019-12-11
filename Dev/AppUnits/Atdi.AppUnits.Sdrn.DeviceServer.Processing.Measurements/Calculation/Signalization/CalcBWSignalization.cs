@@ -93,7 +93,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             int limit = 0;
             if (MoveRight) { k = 1; limit = levels.Length - 1; }
             int CountPoint = 0;
-            for (int i = index_max; i * k <= limit * k; i = i + k)
+            for (var i = index_max; i * k <= limit * k; i = i + k)
             {// цикл обеспечивающий движение по спектру в нужную сторону от максимального уровня
                 if (levels[i] < level_max - nDbLevel_dB)
                 {

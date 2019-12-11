@@ -32,7 +32,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (DifferenceMaxMax < 5) { DifferenceMaxMax = 5; }
             // конец проверки корректности 
 
-            float[] Level = new float[PointStop - PointStart + 1];
+            var Level = new float[PointStop - PointStart + 1];
             Array.Copy(Level_dBm, PointStart, Level, 0, PointStop - PointStart + 1);
             if (FiltrationTrace) { Level = SmoothTrace.blackman(Level, false); } // провели сглаживание массива
 
@@ -40,13 +40,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double LocMin1; int IndexLocMin1;
             bool gotoMax;
 
-            List<int> MinMax = new List<int>();
+            var MinMax = new List<int>();
 
             LocMin1 = Level[0]; IndexLocMin1 = 0;
             LocMax1 = Level[0]; IndexLocMax1 = 0;
             gotoMax = true;
 
-            for (int i = 1; Level.Length > i; i++)
+            for (var i = 1; Level.Length > i; i++)
             {
                 if (gotoMax)
                 {
@@ -113,7 +113,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else { MinMax.RemoveAt(MinMax.Count - 1); }
             }
             StartStop = new int[MinMax.Count];
-            for (int i = 0; MinMax.Count > i; i++)
+            for (var i = 0; MinMax.Count > i; i++)
             {
                 StartStop[i] = MinMax[i] + PointStart;
             }

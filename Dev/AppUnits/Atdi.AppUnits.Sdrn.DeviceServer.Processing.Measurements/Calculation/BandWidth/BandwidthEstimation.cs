@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     GetBandwidthPointMethodBeta(ref SpecrtumArrdBm, X_Beta, out T1, out T2, out M1, out CorrectEstimation, MaximumIgnorPoint, LevelOfSuspiciousJumpdB);
                     break;
             }
-            MeasBandwidthResult measSdrBandwidthResults = new MeasBandwidthResult
+            var measSdrBandwidthResults = new MeasBandwidthResult
             {
                 T1 = T1,
                 T2 = T2,
@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // суть метода мы идем от края до края шаг за шагом оценивая сумму эелементов (т.е. площадь елементов) Смысл найти позицию где у нас будет минимальная BW
             double TriggerPowmW = Math.Pow(10, SumPow / 10) * (100 - beta) / 100;
             double currentSummW = 0; int currentT1 = 0; int currentT2 = 0; 
-            for (int i = 0; i < SpecrtumArrdBm.Length; i++)
+            for (var i = 0; i < SpecrtumArrdBm.Length; i++)
             {
                 currentSummW = currentSummW + Math.Pow(10, SpecrtumArrdBm[i] / 10.0);
                 currentT2 = i;
@@ -80,7 +80,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double SumPow = 0; //int imax = 0;
             // проверка возможности использовать данный метод по уровню 30дБ, а также определение общей суммы 
             CorrectEstimation = CheckCorrectionInputSignalForBandwidthEstimation(ref SpecrtumArrdBm, x, MaximumIgnorPoint, LevelOfSuspiciousJumpdB, out SumPow, out M1);
-            double TrigerLeveldBm = SpecrtumArrdBm[M1] - x;
+            var TrigerLeveldBm = SpecrtumArrdBm[M1] - x;
             //int cT1, cT2, eT1, eT2;
             if (FindFromCentr)
             {
@@ -109,7 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             point = to; int step = 1; bool conv = true;
             if (from > to) { step = -1; conv = false; }
             int countPoint = 1;
-            for (int i = from; ((i <= to) && (conv)) || ((i >= to) && (!conv)); i = i + step)
+            for (var i = from; ((i <= to) && (conv)) || ((i >= to) && (!conv)); i = i + step)
             {
                 if (((TrigerLeveldBm > SpecrtumArrdBm[i]) && (downTrigLevel)) || ((TrigerLeveldBm < SpecrtumArrdBm[i]) && (!downTrigLevel)))
                 {
@@ -165,7 +165,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             SumPow = Math.Pow(10, SpecrtumArrdBm[0] / 10.0);
             imax = 0;
             double MaxLeveldBm = SpecrtumArrdBm[0];
-            for (int i = 1; i < SpecrtumArrdBm.Length; i++)
+            for (var i = 1; i < SpecrtumArrdBm.Length; i++)
             {
                 SumPow = SumPow + Math.Pow(10, SpecrtumArrdBm[i] / 10.0);
                 if (MaxLeveldBm < SpecrtumArrdBm[i])
@@ -175,8 +175,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         if ((SpecrtumArrdBm[i] - SpecrtumArrdBm[i - 1]) > LevelOfSuspiciousJumpdB)
                         {
                             // Т.е. резкий скачек теперь проверяем что он единичный
-                            bool Jump = false;
-                            for (int j = i; j <= i + MaximumIgnorPoint; j++)
+                            var Jump = false;
+                            for (var j = i; j <= i + MaximumIgnorPoint; j++)
                             {
                                 if ((SpecrtumArrdBm[j] - SpecrtumArrdBm[j + 1]) > LevelOfSuspiciousJumpdB)
                                 {

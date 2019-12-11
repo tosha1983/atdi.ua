@@ -56,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 double GainLoss = MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[0].Gain - MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[0].FeederLoss_dB;
                 return GainLoss;
             }
-            for (int i = 0; i < MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length - 1; i++)
+            for (var i = 0; i < MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length - 1; i++)
             {
                 if (((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i].Freq_Hz <= Frequency_Hz) && ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[i + 1].Freq_Hz >= Frequency_Hz))
                 {
