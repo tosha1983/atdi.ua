@@ -51,6 +51,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
 
                 if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
+                    context.Process.ReducedArray = new float[100000];
 
                     var sendCommandForMeasResultTaskWorker = new SendCommandForMeasResultTaskWorker(this._config, this._controller, this._logger);
 

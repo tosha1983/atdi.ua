@@ -28,19 +28,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             this._config = config;
         }
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<ClientTaskRegistrationTask, OnlineMeasurementProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<ClientTaskRegistrationTask, OnlineMeasurementProcess> taskContext)
         {
-            if (tempResult != null)
+            if (result != null)
             {
-                var result = CopyHelper.CreateDeepCopy(tempResult);
-
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
                 try
                 {
                     var parametersDataLevel = new DeviceServerParametersDataLevel();
-                    parametersDataLevel.Freq_Hz = CutArray(result.Freq_Hz, this._config.MaxCountPoint.Value);
-                    if (result.Freq_Hz.Length > 0)
+                    var freqArray_Hz = new double[result.LevelMaxIndex + 1];
+                    for (var v = 0; v <= result.LevelMaxIndex; v++)
                     {
-                        var freq_Hz = (double)((result.Freq_Hz[0] + result.Freq_Hz[result.Freq_Hz.Length - 1]) / 2.0);
+                        freqArray_Hz[v] = (result.FrequencyStart_Hz + v * result.FrequencyStep_Hz);
+                    }
+                    parametersDataLevel.Freq_Hz = CutArray(freqArray_Hz, this._config.MaxCountPoint.Value);
+                    if (freqArray_Hz.Length > 0)
+                    {
+                        var freq_Hz = (double)((freqArray_Hz[0] + freqArray_Hz[freqArray_Hz.Length - 1]) / 2.0);
                         var freq_MHz = (double)(freq_Hz / 1000000.0);
                         parametersDataLevel.AntennaFactor = 20 * Math.Log10(freq_MHz) - SDRGainFromFrequency(taskContext.Process.MeasTraceDeviceProperties, freq_Hz) - 29.79;
                     }

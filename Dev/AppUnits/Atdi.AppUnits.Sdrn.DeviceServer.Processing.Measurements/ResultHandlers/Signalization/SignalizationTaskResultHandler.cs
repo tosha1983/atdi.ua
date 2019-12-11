@@ -43,12 +43,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             this._configMeasurements = configMeasurement;
         }
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SignalizationTask, SignalizationProcess> taskContext)
         {
             var measResults = new MeasResults();
             try
             {
-                var result = CopyHelper.CreateDeepCopy(tempResult);
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
 
                 if ((NeedSearchEmitting(taskContext.Task.CountMeasurementDone)) == true)
                 {
@@ -60,7 +60,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         taskContext.Task.ReferenceLevels = CalcReferenceLevels.CalcRefLevels(taskContext.Task.taskParameters, taskContext.Task.taskParameters.RefSituation, result, taskContext.Task.mesureTraceDeviceProperties, ref taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.SignalingMeasTaskParameters.triggerLevel_dBm_Hz==null ? -999 : taskContext.Task.taskParameters.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value);
                     }
-                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.ChCentrFreqs_Mhz, taskContext.Task.taskParameters.BWChalnel_kHz);
+                    taskContext.Task.EmittingsRaw = CalcSearchInterruption.Calc(ref taskContext.Task.templevel, taskContext.Task.taskParameters, taskContext.Task.ReferenceLevels, result, taskContext.Task.NoiseLevel_dBm, taskContext.Task.taskParameters.ChCentrFreqs_Mhz, taskContext.Task.taskParameters.BWChalnel_kHz);
                 }
                 // Результат содержится в taskContext.Task.EmittingsRaw
                 //получаем результаты BW

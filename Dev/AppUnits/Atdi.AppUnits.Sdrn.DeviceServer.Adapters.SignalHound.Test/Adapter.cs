@@ -307,11 +307,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
                                 {
                                     result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Final);
                                 }
-                                result.Freq_Hz = new double[FreqArr.Length];
+                                //result.Freq_Hz = new double[FreqArr.Length];
+                                result.FrequencyStart_Hz = FreqArr[0];
+                                result.FrequencyStep_Hz = FreqArr[1]- FreqArr[0];
+                                result.LevelMaxIndex = FreqArr.Length - 1;
                                 result.Level = new float[FreqArr.Length];
                                 for (int j = 0; j < FreqArr.Length; j++)
                                 {
-                                    result.Freq_Hz[j] = FreqArr[j];
+                                    //result.Freq_Hz[j] = FreqArr[j];
                                     result.Level[j] = LevelArr[j];
                                 }
                                 result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
@@ -381,11 +384,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
                         if (TraceCountToMeas == TraceCount)
                         {
                             var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final);
-                            result.Freq_Hz = new double[FreqArr.Length];
+                            //result.Freq_Hz = new double[FreqArr.Length];
+                            result.FrequencyStart_Hz = FreqArr[0];
+                            result.FrequencyStep_Hz = FreqArr[1] - FreqArr[0];
+                            result.LevelMaxIndex = FreqArr.Length - 1;
                             result.Level = new float[FreqArr.Length];
                             for (int j = 0; j < FreqArr.Length; j++)
                             {
-                                result.Freq_Hz[j] = FreqArr[j];
+                                //result.Freq_Hz[j] = FreqArr[j];
                                 result.Level[j] = LevelArr[j];
                             }
                             result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;

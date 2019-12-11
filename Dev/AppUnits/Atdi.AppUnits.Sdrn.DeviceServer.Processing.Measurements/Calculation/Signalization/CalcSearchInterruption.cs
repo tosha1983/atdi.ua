@@ -43,7 +43,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="referenceLevels"></param>
         /// <param name="Trace"></param>
         /// <returns></returns>
-        public static Emitting[] Calc(TaskParameters taskParameters, ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm, List<double> ChCentrFreqs_Mhz = null, double BWChalnel_kHz = 200)
+        public static Emitting[] Calc(ref float[] tempLevel, TaskParameters taskParameters, ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm, List<double> ChCentrFreqs_Mhz = null, double BWChalnel_kHz = 200)
         { //НЕ ТЕСТИРОВАННО
 
             NumberPointForChangeExcess = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.Value;
@@ -102,7 +102,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Формируем помехи.
                 //double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length - 1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length - 1) * 1000.0);
                 double stepBW_kHz = (Trace.FrequencyStep_Hz/1000.0);
-                var newEmittings = CreateEmittings(Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm, CompareTraceJustWithRefLevels);
+                var newEmittings = CreateEmittings(ref tempLevel, Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm, CompareTraceJustWithRefLevels);
                 // сформировали новые параметры излучения теперь надо накатить старые по идее.
                 return newEmittings;
             }
@@ -301,10 +301,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return ResultStartStopIndexArr;
         }
-        private static Emitting[] CreateEmittings(MesureTraceResult trace, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double NoiseLevel_dBm, bool CompareTraceJustWithRefLevels)
+        private static Emitting[] CreateEmittings(ref float[] templevel, MesureTraceResult trace, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double NoiseLevel_dBm, bool CompareTraceJustWithRefLevels)
         { // задача локализовать излучения
 
             var levels = trace.Level;
+            if (levels.Length> templevel.Length)
+            {
+                throw new InvalidOperationException($"CreateEmittings method: count elements in array 'trace.Level' = {levels.Length} greater count elements in pool-array 'context.templevel' = {templevel.Length}");
+            }
+
             var emittings = new List<Emitting>();
             for (var i = 0; i < index_start_stop.Count; i = i + 2)
             {
@@ -313,9 +318,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 int start_ = start; int stop_ = stop; // нужны только для определения BW
                 double winBW = (stop - start) * windowBW;
                 if ((start + stop - winBW) / 2 > 0) { start_ = (int)((start + stop - winBW) / 2.0); } else { start_ = 0; }
-                if ((start + stop + winBW) / 2 < levels.Length - 1) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = levels.Length - 1; }
+                if ((start + stop + winBW) / 2 < trace.LevelMaxIndex) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = trace.LevelMaxIndex; }
                 var emitting = new Emitting();
-                var templevel = new float[stop_ - start_];
+                //var templevel = new float[stop_ - start_];
+                Array.Clear(templevel, 0, templevel.Length);
                 Array.Copy(levels, start_, templevel, 0, stop_ - start_);
                 var TemplevelForAnalize = templevel;
                 if (FiltrationTrace) { TemplevelForAnalize = SmoothTrace.blackman(templevel); }

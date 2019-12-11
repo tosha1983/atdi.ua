@@ -20,12 +20,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static double X_beta = 25;
         // end constant
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<BandWidthTask, BandWidthProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<BandWidthTask, BandWidthProcess> taskContext)
         {
-            if (tempResult != null)
+            if (result != null)
             {
-                var result = CopyHelper.CreateDeepCopy(tempResult);
-
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
                 try
                 {
                     var Levels = result.Level;

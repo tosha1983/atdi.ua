@@ -16,11 +16,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 {
     public class SysInfoTaskResultHandler : IResultHandler<MesureSystemInfoCommand, MesureSystemInfoResult, SysInfoTask, SysInfoProcess>
     {
-        public void Handle(MesureSystemInfoCommand command, MesureSystemInfoResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<SysInfoTask, SysInfoProcess> taskContext)
+        public void Handle(MesureSystemInfoCommand command, MesureSystemInfoResult result, DataModels.Sdrn.DeviceServer.ITaskContext<SysInfoTask, SysInfoProcess> taskContext)
         {
-            if (tempResult != null)
+            if (result != null)
             {
-                var result = CopyHelper.CreateDeepCopy(tempResult);
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
 
                 taskContext.Task.sysInfoResult = new SysInfoResult();
                 try

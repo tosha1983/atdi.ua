@@ -29,13 +29,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             this._config = config;
         }
 
-        public void Handle(MesureTraceCommand command, MesureTraceResult tempResult, DataModels.Sdrn.DeviceServer.ITaskContext<ClientReadyTakeMeasResultTask, OnlineMeasurementProcess> taskContext)
+        public void Handle(MesureTraceCommand command, MesureTraceResult result, DataModels.Sdrn.DeviceServer.ITaskContext<ClientReadyTakeMeasResultTask, OnlineMeasurementProcess> taskContext)
         {
-            if (tempResult != null)
+            if (result != null)
             {
                 try
                 {
-                    var result = CopyHelper.CreateDeepCopy(tempResult);
+                    //var result = CopyHelper.CreateDeepCopy(tempResult);
 
                     Atdi.DataModels.Sdrns.Device.OnlineMeasurement.TraceType traceType = TraceType.Unknown;
                     var levelResult = new DeviceServerResultLevel();
@@ -63,9 +63,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                             break;
                         default:
                             throw new Exception($"Not supported type {command.Parameter.TraceType}");
-                    }   
+                    }
 
-                    levelResult.Level = CutArray(result.Level, traceType, this._config.MaxCountPoint.Value);
+                    levelResult.Level = CutArray(taskContext.Process.ReducedArray, result.Level, result.LevelMaxIndex + 1, traceType, this._config.MaxCountPoint.Value);
                     if (taskContext.Process.LevelResult_dBm == null) { taskContext.Process.LevelResult_dBm = levelResult.Level; }
                     else
                     {
@@ -150,21 +150,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             return pow;
         }
 
-        public static float[] CutArray(float[] arr, TraceType traceType, int CountPoint)
+        public static float[] CutArray(float[] reducedArray, float[] arr, int length, TraceType traceType, int CountPoint)
         {
-            if (arr.Length <= CountPoint)
+            if (length <= CountPoint)
             {
                 return arr;
             }
             else
             {
-                var k = (int)Math.Round((double)(arr.Length / CountPoint));
-                int newpoint = (int)Math.Ceiling((double)(arr.Length/k));
-                var reducedArray = new float[newpoint];
+                var k = (int)Math.Round((double)(length / CountPoint));
+                int newpoint = (int)Math.Ceiling((double)(length / k));
+                Array.Clear(reducedArray, 0, reducedArray.Length);
                 int reducedIndex = 0;
-                for (int i = 0; i < arr.Length; i += k)
+                for (var i = 0; i < length; i += k)
                 {
                     if (reducedIndex > newpoint - 1) break;
+                    if (reducedIndex > reducedArray.Length - 1) break;
                     float sum = 0;
                     int count = 0;
                     switch (traceType)
@@ -175,9 +176,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         case TraceType.Unknown:
                             //Max
                             {
-                            
+
                                 float temp = arr[i];
-                                for (int j = 0; j < k && (i + j) < arr.Length; j++)
+                                for (int j = 0; j < k && (i + j) < length; j++)
                                 {
                                     if (temp < arr[i + j])
                                     {
@@ -191,12 +192,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         case TraceType.Average:
                             //Average
                             {
-                                for (int j = 0; j < k && (i + j) < arr.Length; j++)
+                                for (int j = 0; j < k && (i + j) < length; j++)
                                 {
-                                    sum += (float)Math.Pow(10.0,(double)(arr[i + j]/10.0));
+                                    sum += (float)Math.Pow(10.0, (double)(arr[i + j] / 10.0));
                                     count++;
                                 }
-                                sum = 10 * (float)Math.Log10(sum/count);
+                                sum = 10 * (float)Math.Log10(sum / count);
                                 reducedArray[reducedIndex++] = sum;
                             }
                             break;
@@ -204,7 +205,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                             //Min
                             {
                                 float temp = arr[i];
-                                for (int j = 0; j < k && (i + j) < arr.Length; j++)
+                                for (int j = 0; j < k && (i + j) < length; j++)
                                 {
                                     if (temp > arr[i + j])
                                     {
