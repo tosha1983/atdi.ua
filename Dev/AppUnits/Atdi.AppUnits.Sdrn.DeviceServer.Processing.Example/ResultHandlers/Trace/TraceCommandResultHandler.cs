@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers;
 using Atdi.DataModels.Sdrn.DeviceServer.TestCommands;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
 {
@@ -17,34 +19,58 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
     {
         private readonly IWorkScheduler _workScheduler;
         private readonly ILogger _logger;
+        private readonly IObjectPoolSite _poolSite;
+        private readonly IObjectPool<TraceTaskResultData> _traceResultPool;
 
-        public TraceCommandResultHandler(IWorkScheduler workScheduler, ILogger logger)
+        public TraceCommandResultHandler(
+            IWorkScheduler workScheduler,
+            IObjectPoolSite poolSite,
+            ILogger logger)
         {
             this._workScheduler = workScheduler;
             this._logger = logger;
-
+            this._poolSite = poolSite;
+            _traceResultPool = this._poolSite.GetPool<TraceTaskResultData>("data");
             this._logger.Debug(Contexts.TraceCommandResultHandler, Categories.Ctor, Events.Call);
         }
 
         public void Handle(TraceCommand command, TraceCommandResult result, ITaskContext<TraceTask, TraceProcess> taskContext)
         {
             //this._logger.Debug(Contexts.TraceCommandResultHandler, Categories.Handle, Events.HandlingResult.With(result.PartIndex, result.Status));
-
-            if (result.Status == CommandResultStatus.Final)
+            try
             {
-                //taskContext.Task.Timer.Stop();
-                Interlocked.Increment(ref taskContext.Process.CommandCount);
-                //this._logger.Info(Contexts.TraceCommandResultHandler, Categories.Handle, $"Duration (Trace command): {taskContext.Task.Timer.Elapsed.TotalMilliseconds}");
+                if (result.Status == CommandResultStatus.Final)
+                {
+                    var traceResult = _traceResultPool.Take();
 
-                // обрабатываем результат
-                
+                    //for (int i = 0; i < command.BlockSize; i++)
+                    //{
+                    //    traceResult.FloatValues[i] = result.ValueAsFloats[i];
+                    //    traceResult.DoubleValues[i] = result.ValuesAsDouble[i];
+                    //}
 
-                //taskContext.Task.Timer.Restart();
-               // taskContext.SetEvent(result);
+                    traceResult.CommandId = command.Id;
+                    traceResult.TaskId = taskContext.Task.Id;
+
+                    //taskContext.Task.Timer.Stop();
+                    Interlocked.Increment(ref taskContext.Process.CommandCount);
+                    //this._logger.Info(Contexts.TraceCommandResultHandler, Categories.Handle, $"Duration (Trace command): {taskContext.Task.Timer.Elapsed.TotalMilliseconds}");
+
+                    // обрабатываем результат
 
 
-                // после выходя из процедуры объект результата будет возвращен в буфер
+                    //taskContext.Task.Timer.Restart();
+                    taskContext.SetEvent(traceResult);
+
+
+                    // после выходя из процедуры объект результата будет возвращен в буфер
+                }
             }
+            catch (Exception e)
+            {
+                this._logger.Exception( Contexts.TraceCommandResultHandler, Categories.Handle, e, this);
+            }
+            
         }
 
        

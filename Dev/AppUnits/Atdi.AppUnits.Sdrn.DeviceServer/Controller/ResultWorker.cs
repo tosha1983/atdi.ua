@@ -26,10 +26,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this._descriptor = descriptor;
             this._convertorsHost = convertorsHost;
             this._poolSite = poolSite;
-            this._resultHandler = (ResultHandler)handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.TaskType, descriptor.ProcessType);
             this._logger = logger;
             this._task = new Task(this.Process);
             this._resultBuffer = new ResultBuffer(descriptor);
+
+            try
+            {
+                this._resultHandler = (ResultHandler)handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.TaskType, descriptor.ProcessType);
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ResultWorker, Categories.Initializing,
+                    Events.DefiningResultHandlerError.With(_descriptor.Device.AdapterType, _descriptor.CommandType), e);
+            }
         }
 
         public ResultBuffer Run()
@@ -42,8 +51,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         {
             try
             {
-                _resultHandler.StartedWorkerCounter?.Increment();
-                _resultHandler.RunningWorkerCounter?.Increment();
+                _resultHandler?.StartedWorkerCounter?.Increment();
+                _resultHandler?.RunningWorkerCounter?.Increment();
 
                 var convertor = default(IResultConvertor);
                 var prevResultPartType = default(Type);
@@ -67,7 +76,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                             var poolId = resultPart.PoolId;
                             try
                             {
-                                this._resultHandler.Handle(_descriptor.Command, resultPart,
+                                this._resultHandler?.Handle(_descriptor.Command, resultPart,
                                     this._descriptor.TaskContext);
                             }
                             finally
@@ -97,7 +106,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                             {
                                 // тут возможен трафик - желательно вконверторах также использовать пул объектов
                                 var convertedResultPartResult = convertor.Convert(resultPart, _descriptor.Command);
-                                this._resultHandler.Handle(_descriptor.Command, convertedResultPartResult,
+                                this._resultHandler?.Handle(_descriptor.Command, convertedResultPartResult,
                                     this._descriptor.TaskContext);
                             }
                             finally
@@ -127,13 +136,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                     }
                 }
 
-                _resultHandler.RunningWorkerCounter?.Decrement();
-                _resultHandler.FinishedWorkerCounter?.Increment();
+                _resultHandler?.RunningWorkerCounter?.Decrement();
+                _resultHandler?.FinishedWorkerCounter?.Increment();
             }
             catch (Exception e)
             {
-                _resultHandler.RunningWorkerCounter?.Decrement();
-                _resultHandler.AbortedWorkerCounter?.Increment();
+                _resultHandler?.RunningWorkerCounter?.Decrement();
+                _resultHandler?.AbortedWorkerCounter?.Increment();
                 this._logger.Exception(Contexts.ResultWorker, Categories.Processing,
                     Events.ProcessingResultError.With(_descriptor.Device.AdapterType, _descriptor.CommandType), e);
             }
