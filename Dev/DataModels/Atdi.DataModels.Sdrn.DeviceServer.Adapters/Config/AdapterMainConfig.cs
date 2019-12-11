@@ -29,6 +29,8 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
         [XmlArray]
         public AdapterRadioPathParameter[] AdapterRadioPathParameters = new AdapterRadioPathParameter[] { };
 
+        [XmlArray]
+        public AdapterResultPool[] AdapterTraceResultPools = new AdapterResultPool[] { };
 
         public void Serialize(string FilePath)
         {

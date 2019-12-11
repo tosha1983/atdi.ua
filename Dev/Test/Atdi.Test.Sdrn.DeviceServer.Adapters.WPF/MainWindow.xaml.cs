@@ -81,11 +81,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ////////////TimeThread.IsBackground = true;
             ////////////TimeThread.Start();
 
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            ANThread = new Thread(ANWorks);
+            ANThread.Name = "ANThread";
+            ANThread.IsBackground = true;
+            ANThread.Start();
+            AND += ANConnect;
 
             //SHThread = new Thread(SHWorks);
             //SHThread.Name = "SHThread";
@@ -93,11 +93,11 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //SHThread.Start();
             //SHD += SHConnect;
 
-            GPSThread = new Thread(GPSWorks);
-            GPSThread.Name = "GPSThread";
-            GPSThread.IsBackground = true;
-            GPSThread.Start();
-            GPSD += GPSConnect;
+            //GPSThread = new Thread(GPSWorks);
+            //GPSThread.Name = "GPSThread";
+            //GPSThread.IsBackground = true;
+            //GPSThread.Start();
+            //GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
@@ -1241,18 +1241,18 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         private void SaveToFile(object sender, RoutedEventArgs e)
         {
             string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            int ind = FindMarkerIndOnTrace(ANadapter.FreqArr, (double)ANadapter.FreqCentr);
-            double lev = Math.Abs(ANadapter.LevelArr[ind]);
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(AppPath + "\\" + ANadapter.FreqCentr.ToString() + ".txt", false))
-            {
-                for (int i = 0; i < ANadapter.FreqArr.Length; i++)
-                {
-                    string str = (ANadapter.FreqArr[i] - (double)ANadapter.FreqCentr).ToString().Replace(".", ",") + ";" +
-                        (lev + (double)ANadapter.LevelArr[i]).ToString().Replace(".", ",");
-                    file.WriteLine(str);
-                }
+            //int ind = FindMarkerIndOnTrace(ANadapter.FreqArr, (double)ANadapter.FreqCentr);
+            //double lev = Math.Abs(ANadapter.LevelArr[ind]);
+            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(AppPath + "\\" + ANadapter.FreqCentr.ToString() + ".txt", false))
+            //{
+            //    for (int i = 0; i < ANadapter.FreqArr.Length; i++)
+            //    {
+            //        string str = (ANadapter.FreqArr[i] - (double)ANadapter.FreqCentr).ToString().Replace(".", ",") + ";" +
+            //            (lev + (double)ANadapter.LevelArr[i]).ToString().Replace(".", ",");
+            //        file.WriteLine(str);
+            //    }
 
-            }
+            //}
         }
         public int FindMarkerIndOnTrace(double[] tracepoints, double freq)
         {

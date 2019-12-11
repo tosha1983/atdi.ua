@@ -13,6 +13,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
         public static readonly EventContext Adapter1 = "SDRN.Adapter1";
         public static readonly EventContext Adapter2 = "SDRN.Adapter2";
         public static readonly EventContext Adapter3 = "SDRN.Adapter3";
+        public static readonly EventContext TraceAdapter = "SDRN.TraceAdapter";
         public static readonly EventContext ResultConvertor1 = "SDRN.ResultConvertor1";
         public static readonly EventContext ResultConvertor2 = "SDRN.ResultConvertor2";
         public static readonly EventContext ResultConvertor3 = "SDRN.ResultConvertor3";

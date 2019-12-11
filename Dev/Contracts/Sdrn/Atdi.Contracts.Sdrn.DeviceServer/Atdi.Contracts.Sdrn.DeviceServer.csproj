@@ -41,12 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterHostExtensions.cs" />
+    <Compile Include="ControllerExtensions.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="IAutoTaskActivator.cs" />
     <Compile Include="IDeviceServerConfig.cs" />
+    <Compile Include="IEventToken.cs" />
     <Compile Include="IEventWaiter.cs" />
     <Compile Include="IProcessingDispatcher.cs" />
     <Compile Include="IResultConvertorFactory.cs" />
+    <Compile Include="ITaskWorkerAsync.cs" />
     <Compile Include="ITaskWorkerFactory.cs" />
     <Compile Include="IResultHandlerFactory.cs" />
     <Compile Include="IAdapterFactory.cs" />
@@ -64,10 +68,16 @@
     <Compile Include="IResultsHost.cs" />
     <Compile Include="ITaskStarter.cs" />
     <Compile Include="ITaskWorker.cs" />
+    <Compile Include="ITaskWorkerLifetime.cs" />
     <Compile Include="ITaskWorkersHost.cs" />
     <Compile Include="ITimeService.cs" />
+    <Compile Include="ITimeStamp.cs" />
     <Compile Include="IWorkScheduler.cs" />
+    <Compile Include="PerThreadTaskWorkerLifetime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingletonTaskWorkerLifetime.cs" />
+    <Compile Include="TaskStarterExtensions.cs" />
+    <Compile Include="TransientTaskWorkerLifetime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.DeviceServer\Atdi.DataModels.Sdrn.DeviceServer.csproj">

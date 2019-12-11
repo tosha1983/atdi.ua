@@ -91,11 +91,14 @@
     <Compile Include="Tasks\MeasurementTaskBase.cs" />
     <Compile Include="Tasks\SysInfoTask.cs" />
     <Compile Include="Tasks\SOTask.cs" />
-    <Compile Include="Test\ExampleTask.cs" />
-    <Compile Include="Test\Test2Process.cs" />
-    <Compile Include="Test\Test1Process.cs" />
-    <Compile Include="Test\Test2Task.cs" />
-    <Compile Include="Test\Test1Task.cs" />
+    <Compile Include="Test\Others\ExampleTask.cs" />
+    <Compile Include="Test\Others\Test2Process.cs" />
+    <Compile Include="Test\Others\Test1Process.cs" />
+    <Compile Include="Test\Others\Test2Task.cs" />
+    <Compile Include="Test\Others\Test1Task.cs" />
+    <Compile Include="Test\Trace\TraceTask.cs" />
+    <Compile Include="Test\Trace\TraceProcess.cs" />
+    <Compile Include="Test\Trace\TraceAutoTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeviceServer.Commands\Atdi.DataModels.Sdrn.DeviceServer.Commands.csproj">
