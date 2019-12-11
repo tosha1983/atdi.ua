@@ -154,9 +154,11 @@
                                 <DataGridTextColumn Header="GlobalSID" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="MeasGlobalSID" Binding="{Binding Path=MeasGlobalSID}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="№ Meas. Location" Binding="{Binding Path=LevelMeasurementsLength}"></DataGridTextColumn>
+                                <!--<DataGridTextColumn Header="№ Meas. Location" Binding="{Binding Path=CountLevelMeas}"></DataGridTextColumn>-->
                                 <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Standard" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+                                <!--<DataGridTextColumn Header="CountSpectrums" Binding="{Binding Path=CountSpectrums}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="CountLevelMeas" Binding="{Binding Path=CountLevelMeas}"></DataGridTextColumn>-->
                               </DataGrid.Columns>
                             </DataGrid>
                           </Grid>

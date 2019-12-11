@@ -13,6 +13,10 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Results
                : base(partIndex, status)
         {
         }
+        public MesureTraceResult()
+            :base()
+        { }
+
         public float[] Level;
         public double FrequencyStart_Hz; //Фактическая начальная частота
         public double FrequencyStep_Hz; // Реальный шаг в сетке частот

@@ -81,17 +81,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ////////////TimeThread.IsBackground = true;
             ////////////TimeThread.Start();
 
-            ANThread = new Thread(ANWorks);
-            ANThread.Name = "ANThread";
-            ANThread.IsBackground = true;
-            ANThread.Start();
-            AND += ANConnect;
+            //ANThread = new Thread(ANWorks);
+            //ANThread.Name = "ANThread";
+            //ANThread.IsBackground = true;
+            //ANThread.Start();
+            //AND += ANConnect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
 
             //GPSThread = new Thread(GPSWorks);
             //GPSThread.Name = "GPSThread";
@@ -193,7 +193,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 var adapterConfig = new ADP.SignalHound.AdapterConfig()
                 {
-                    SerialNumber = 16319373,//"18250087",// "16319373",
+                    SerialNumber = 18250280,//"18250087",// "16319373",
                     GPSPPSConnected = true,
                     Reference10MHzConnected = false,
                     //SyncCPUtoGPS = true,
@@ -595,7 +595,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStart_Hz = 2600m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 2700m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 10;
-                command.Parameter.RBW_Hz = 100;
+                command.Parameter.RBW_Hz = 500;
                 command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
@@ -639,7 +639,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 10;
+                command.Parameter.Att_dB = 30;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 30;
@@ -1429,10 +1429,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             }
             using (System.IO.StreamWriter sw = System.IO.File.AppendText(strPath))
             {
-                sw.WriteLine((ANadapter.IQArr.Length/2).ToString() + ";");
+                sw.WriteLine((ANadapter.IQArr.Length / 2).ToString() + ";");
                 for (int i = 0; i < ANadapter.IQArr.Length / 2; i++)
                 {
-                    sw.WriteLine(ANadapter.IQArr[0 + i*2].ToString() + ";"+ ANadapter.IQArr[1 + i*2].ToString());
+                    sw.WriteLine(ANadapter.IQArr[0 + i * 2].ToString() + ";" + ANadapter.IQArr[1 + i * 2].ToString());
                 }
 
 
@@ -1602,6 +1602,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         public void Unlock()
         {
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
+        }
+
+
+        public T TakeResult<T>(string key, ulong index, CommandResultStatus status) where T : ICommandResultPart
+        {
+            object t = new Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureTraceResult()
+            {
+                Level = new float[20000]
+            };
+            return (T)t;
+            //throw new NotImplementedException();
+        }
+
+        public void ReleaseResult<T>(T result) where T : ICommandResultPart
+        {
+            throw new NotImplementedException();
         }
     }
 }
