@@ -80,6 +80,12 @@ namespace Atdi.Platform.ServicesContainer.Castle
                     .LifeStyle.Singleton
             );
 
+            container.Register(
+                Component.For<Data.IObjectPoolSite>()
+                    .ImplementedBy<Data.ObjectPoolSite>()
+                    .LifeStyle.Singleton
+            );
+
         }
     }
 }

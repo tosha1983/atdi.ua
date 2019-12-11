@@ -7,6 +7,7 @@ using System.Threading;
 using Atdi.Contracts.Sdrn.DeviceServer;
 using Atdi.Platform.Logging;
 using Atdi.DataModels.Sdrn.DeviceServer;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
@@ -14,15 +15,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
     {
         private readonly CommandDescriptor _descriptor;
         private readonly IResultConvertorsHost _convertorsHost;
+        private readonly IObjectPoolSite _poolSite;
         private readonly ILogger _logger;
         private readonly ResultHandler _resultHandler;
         private readonly ResultBuffer _resultBuffer;
         private readonly Task _task;
 
-        public ResultWorker(CommandDescriptor descriptor, IResultConvertorsHost convertorsHost, IResultHandlersHost handlersHost, ILogger logger)
+        public ResultWorker(CommandDescriptor descriptor, IResultConvertorsHost convertorsHost, IResultHandlersHost handlersHost, IObjectPoolSite poolSite, ILogger logger)
         {
             this._descriptor = descriptor;
             this._convertorsHost = convertorsHost;
+            this._poolSite = poolSite;
             this._resultHandler = (ResultHandler)handlersHost.GetHandler(descriptor.CommandType, descriptor.ResultType, descriptor.TaskType, descriptor.ProcessType);
             this._logger = logger;
             this._task = new Task(this.Process);
@@ -61,7 +64,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                         /// тип адаптера равен типу обработчика, нет смысла в конвертации
                         if (resultPartType == _descriptor.ResultType)
                         {
-                            this._resultHandler.Handle(_descriptor.Command, resultPart, this._descriptor.TaskContext);
+                            var poolId = resultPart.PoolId;
+                            try
+                            {
+                                this._resultHandler.Handle(_descriptor.Command, resultPart,
+                                    this._descriptor.TaskContext);
+                            }
+                            finally
+                            {
+                                // сброс идетификатора пула означет призанк освобожения объектиа
+                                if (poolId != Guid.Empty && poolId == resultPart.PoolId)
+                                {
+                                    this.ReleaseResult(resultPart);
+                                }
+                            }
+                            
                         }
                         else
                         {
@@ -75,9 +92,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                             prevResultPartType = resultPartType;
 
                             /// конвеер обработки результатов
-                            var handlerResult = convertor.Convert(resultPart, _descriptor.Command);
-                            this._resultHandler.Handle(_descriptor.Command, handlerResult,
-                                this._descriptor.TaskContext);
+                            var poolId = resultPart.PoolId;
+                            try
+                            {
+                                // тут возможен трафик - желательно вконверторах также использовать пул объектов
+                                var convertedResultPartResult = convertor.Convert(resultPart, _descriptor.Command);
+                                this._resultHandler.Handle(_descriptor.Command, convertedResultPartResult,
+                                    this._descriptor.TaskContext);
+                            }
+                            finally
+                            {
+                                // сброс идетификатора пула означет призанк освобожения объектиа
+                                if (poolId != Guid.Empty && poolId == resultPart.PoolId)
+                                {
+                                    this.ReleaseResult(resultPart);
+                                }
+                            }
+                            
                         }
                     }
                     catch (Exception e)
@@ -112,7 +143,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             }
         }
 
-        
+        private void ReleaseResult(ICommandResultPart result)
+        {
+            if (result == null) throw new ArgumentNullException(nameof(result));
+
+            var pool = this.GetResultPool(result.PoolKey, result);
+            result.PoolId = Guid.Empty;
+            pool.PutObject(result);
+        }
+
+        private IObjectPool GetResultPool(string key, ICommandResultPart resultPart)
+        {
+            var poolKey = AdapterWorker.BuildPoolKey(_descriptor.Command.Type, key);
+            var pool = _poolSite.GetPool(poolKey, resultPart.GetType());
+            return pool;
+        }
+
         public void Stop()
         {
             // ничего делать не нужно - юуфер сам освободитьс якогда поток результатов перестанет поступать, 

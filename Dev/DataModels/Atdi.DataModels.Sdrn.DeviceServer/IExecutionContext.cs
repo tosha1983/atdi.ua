@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeviceServer
 {
+
     public interface IExecutionContext
     {
         CancellationToken Token { get; }
@@ -43,5 +45,28 @@ namespace Atdi.DataModels.Sdrn.DeviceServer
         void Unlock(params CommandType[] types);
         void Unlock(params Type[] commandTypes);
         void Unlock();
+
+        /// <summary>
+        /// Получить объект для формирования результата из пула
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key">ключи типа объекта результат из пула</param>
+        /// <param name="index">индекс результата</param>
+        /// <param name="status">состояние</param>
+        /// <returns></returns>
+        T TakeResult<T>(string key, ulong index, CommandResultStatus status) 
+            where T : ICommandResultPart;
+
+        void ReleaseResult<T>(T result)
+            where T : ICommandResultPart;
+    }
+
+    public static class ExecutionContextExtension
+    {
+        public static T TakeResult<T>(this IExecutionContext context, ulong index, CommandResultStatus status)
+            where T : ICommandResultPart
+        {
+            return context.TakeResult<T>(ResultPoolDescriptor<T>.DefaultKey, index, status);
+        }
     }
 }

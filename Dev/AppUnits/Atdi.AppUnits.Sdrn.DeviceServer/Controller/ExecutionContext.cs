@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
@@ -15,25 +16,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly CommandDescriptor _commandDescriptor;
         private readonly AdapterWorker _adapterWorker;
         private readonly IResultBuffer _resultBuffer;
-        private readonly IStatistics _statistics;
+        private readonly IObjectPoolSite _poolSite;
+        //private readonly IStatistics _statistics;
         private readonly IStatisticCounter _adaptersCommandsExecutionCountCounter;
         private readonly IStatisticCounter _adaptersCommandsExecutionCompletedCounter;
         private readonly IStatisticCounter _adaptersCommandsExecutionCanceledCounter;
         private readonly IStatisticCounter _adaptersCommandsExecutionAbortedCounter;
 
-        public ExecutionContext(CommandDescriptor commandDescriptor, AdapterWorker adapterWorker, IResultBuffer resultBuffer, IStatistics statistics)
+        public ExecutionContext(CommandDescriptor commandDescriptor, AdapterWorker adapterWorker, IResultBuffer resultBuffer, IObjectPoolSite poolSite, IStatistics statistics)
         {
             this._commandDescriptor = commandDescriptor;
             this._adapterWorker = adapterWorker;
             this._resultBuffer = resultBuffer;
-            this._statistics = statistics;
+            this._poolSite = poolSite;
+            //this._statistics = statistics;
 
-            if (this._statistics != null)
+            if (statistics != null)
             {
-                this._adaptersCommandsExecutionCountCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionCountKey);
-                this._adaptersCommandsExecutionCompletedCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionCompletedKey);
-                this._adaptersCommandsExecutionCanceledCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionCanceledKey);
-                this._adaptersCommandsExecutionAbortedCounter = _statistics.Counter(Monitoring.AdaptersCommandsExecutionAbortedKey);
+                this._adaptersCommandsExecutionCountCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionCountKey);
+                this._adaptersCommandsExecutionCompletedCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionCompletedKey);
+                this._adaptersCommandsExecutionCanceledCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionCanceledKey);
+                this._adaptersCommandsExecutionAbortedCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionAbortedKey);
 
                 this._adaptersCommandsExecutionCountCounter?.Increment();
             }
@@ -115,6 +118,33 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         public void Unlock()
         {
             this._adapterWorker.Unlock(_commandDescriptor.CommandType);
+        }
+
+        public T TakeResult<T>(string key, ulong index, CommandResultStatus status) where T : ICommandResultPart
+        {
+            var pool = this.GetResultPool<T>(key);
+            var result = pool.Take();
+            result.PoolKey = key;
+            result.PoolId = Guid.NewGuid();
+            result.PartIndex = index;
+            result.Status = status;
+            return result;
+        }
+
+        public void ReleaseResult<T>(T result) where T : ICommandResultPart
+        {
+            if (result == null) throw new ArgumentNullException(nameof(result));
+            
+            var pool = this.GetResultPool<T>(result.PoolKey);
+            result.PoolId = Guid.Empty;
+            pool.Put(result);
+        }
+
+        private IObjectPool<T> GetResultPool<T>(string key)
+        {
+            var poolKey = AdapterWorker.BuildPoolKey(_commandDescriptor.Command.Type, key);
+            var pool = _poolSite.GetPool<T>(poolKey);
+            return pool;
         }
     }
 }

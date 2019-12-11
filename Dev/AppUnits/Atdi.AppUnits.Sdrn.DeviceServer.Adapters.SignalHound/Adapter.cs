@@ -43,11 +43,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
 
             lpc = new LocalParametersConverter(this.logger);
-            FreqArr = new double[tracePoints];
+
             LevelArr = new float[tracePoints];
             for (int i = 0; i < tracePoints; i++)
             {
-                FreqArr[i] = (double)FreqStart + freqStep * i;
                 LevelArr[i] = -100;
             }
         }
@@ -66,6 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                 if (Connect(adapterConfig.SerialNumber))
                 {
+                    //deviceSerialNumber = 16319373;
                     string fileName = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + deviceSerialNumber + ".xml";
                     tac = new CFG.ThisAdapterConfig() { };
                     if (!tac.GetThisAdapterConfig(fileName))
@@ -76,10 +76,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                     else
                     {
+
+                        if (tac.Main.AdapterTraceResultPools.Length == 0)
+                        {
+                            SetDefaulTraceResultPoolsConfig(ref tac.Main);
+                            tac.SetThisAdapterConfig(tac.Main, fileName);
+                        }
                         mainConfig = tac.Main;
                     }
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
-                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, mtdp);
+
+                    IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = ValidateAdapterTracePoolMainConfig(mainConfig.AdapterTraceResultPools, fileName);
+
+                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
                 }
             }
@@ -200,7 +209,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
-
         }
 
         /// <summary>
@@ -433,23 +441,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         #region Trace Data
         //private bool NewTrace;
-
-        private double freqStep = 10000;
-
+        private int tracePointsMaxPool = 0;
+        private double resFreqStart = 10000;
+        private double resFreqStep = 10000;
+        private double traceFreqStart = 0; //предвдущего прохода
         private int tracePoints = 1601;
 
         private ulong traceCountToMeas = 1;
         private ulong traceCount = 1;
 
         private float[] sweepMax = new float[10000], sweepMin = new float[10000];
-        public double[] FreqArr;
+        //public double[] FreqArr;
         public float[] LevelArr;
 
         private bool traceReset;
         private AveragedTrace traceAveraged = new AveragedTrace();
 
-        private double traceFreqStart = 0;
-        private double traceFreqStop = 0;
+
 
         #region Trace
         public EN.Detector DetectorUse = EN.Detector.MaxOnly;
@@ -515,6 +523,48 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             return res;
         }
 
+        private IResultPoolDescriptor<COMR.MesureTraceResult>[] ValidateAdapterTracePoolMainConfig(CFG.AdapterResultPool[] adapterTraceResultPools, string fileName)
+        {
+            IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = new IResultPoolDescriptor<COMR.MesureTraceResult>[adapterTraceResultPools.Length];
+            for (int i = 0; i < adapterTraceResultPools.Length; i++)
+            {
+                if (adapterTraceResultPools[i].Size >= tracePointsMaxPool)
+                {
+                    tracePointsMaxPool = adapterTraceResultPools[i].Size;
+                }
+                bool find = false;
+                for (int n = 0; n < adapterTraceResultPools.Length; n++)
+                {
+                    if (adapterTraceResultPools[n].KeyName == adapterTraceResultPools[i].KeyName)
+                    {
+                        find = true;
+                    }
+                }
+                if (!find)
+                {
+                    rpd[i] = new ResultPoolDescriptor<COMR.MesureTraceResult>()
+                    {
+                        Key = adapterTraceResultPools[i].KeyName,
+                        MinSize = adapterTraceResultPools[i].MinSize,
+                        MaxSize = adapterTraceResultPools[i].MaxSize,
+                        Factory = () =>
+                        {
+                            var result = new COMR.MesureTraceResult()
+                            {
+                                Level = new float[adapterTraceResultPools[i].Size]
+                            };
+                            return result;
+                        }
+                    };
+                }
+                else
+                {
+                    throw new Exception("An element with a duplicate name was found in the AdapterTraceResultPools configuration. File Name \"" + fileName + "\"");
+                }
+            }
+            return rpd;
+        }
+
         private void ValidateAndSetFreqStartStop(decimal freqStart, decimal freqStop, IExecutionContext context)
         {
             if (FreqStart != freqStart || FreqStop != freqStop)
@@ -551,6 +601,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         private void ValidateAndSetRBWVBWTracePointSweepTime(double rbw, double vbw, int tracePoint, double sweepTime, IExecutionContext context)
         {
             sweepTime = lpc.SweepTime(this, sweepTime);
+            if (tracePoint > tracePointsMaxPool)
+            {
+                throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
+            }
 
             if (rbw < 0)
             {
@@ -563,9 +617,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 int index = 0;
                 for (int i = 0; i < ar.Length; i++)
                 {
-                    if (Math.Abs(ar[i] - m2) < delta)
+                    double temp = Math.Abs(ar[i] - m2);
+                    if (temp < delta)
                     {
-                        delta = Math.Abs(ar[i] - m2);
+                        delta = temp;
                         index = i;
                     }
                 }
@@ -617,7 +672,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             if (traceCount > 0)
             {
                 traceCountToMeas = (ulong)traceCount;//т.к. отсюда берется индекс результата
-                traceCount = 0;
+                this.traceCount = 0;
             }
             else
             {
@@ -967,7 +1022,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         private void GetAndPushTraceResults(COM.MesureTraceCommand command, IExecutionContext context)
         {
-            float adj = (float)(10 * Math.Log10((FreqArr[5] - FreqArr[4]) / (double)RBW));
+            float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
+            string poolKeyName = "";
+            bool poolKeyFind = false;
             //Если TraceType ClearWrite то пушаем каждый результат
             if (traceType == EN.TraceType.ClearWrite)
             {
@@ -977,40 +1034,45 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     {
                         // пушаем результат
                         traceCount++;
+                        if (!poolKeyFind)
+                        {
+                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                        }
                         COMR.MesureTraceResult result;
                         if (traceCountToMeas == traceCount)
                         {
-                            result = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Final);
+                            result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Final);
                         }
                         else
                         {
-                            result = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Next);
+                            result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Next);
                         }
-                        result.Freq_Hz = new double[FreqArr.Length];
-                        result.Level = new float[FreqArr.Length];
+
                         if (command.Parameter.RBW_Hz == -2)
                         {
-                            for (int j = 0; j < FreqArr.Length; j++)
+                            for (int j = 0; j < LevelArr.Length; j++)
                             {
-                                result.Freq_Hz[j] = FreqArr[j];
                                 result.Level[j] = LevelArr[j] + adj;
                             }
                         }
                         else
                         {
-                            for (int j = 0; j < FreqArr.Length; j++)
+                            for (int j = 0; j < LevelArr.Length; j++)
                             {
-                                result.Freq_Hz[j] = FreqArr[j];
                                 result.Level[j] = LevelArr[j];
                             }
                         }
+                        result.LevelMaxIndex = LevelArr.Length;
+                        result.FrequencyStart_Hz = resFreqStart;
+                        result.FrequencyStep_Hz = resFreqStep;
+
                         result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
                                                                                           //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                         result.Att_dB = lpc.Attenuator(Attenuator);
                         result.PreAmp_dB = lpc.Gain(Gain);
                         result.RefLevel_dBm = (int)RefLevel;
-                        result.RBW_Hz = (double)RBW;
-                        result.VBW_Hz = (double)VBW;
+                        result.RBW_Hz = RBW;
+                        result.VBW_Hz = VBW;
                         result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                         if (RFOverload == 1)
                         {
@@ -1025,7 +1087,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         // все нужно остановиться
 
                         // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-                        var result2 = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Ragged);
+                        var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Ragged);
                         result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                         context.PushResult(result2);
 
@@ -1035,7 +1097,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         // освобождаем поток 
                         return;
                     }
-
                 }
             }
             //Если TraceType Average/MinHold/MaxHold то делаем измерений сколько сказали и пушаем только готовый результат
@@ -1064,21 +1125,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         // все нужно остановиться
 
                         // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-
-                        var result2 = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Ragged);
+                        if (!poolKeyFind)
+                        {
+                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                        }
+                        var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Ragged);
                         result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
                         //Скорее нет результатов
-                        //result2.Freq_Hz = new double[FreqArr.Length];
-                        //result2.Level = new float[FreqArr.Length];
-                        //for (int j = 0; j < FreqArr.Length; j++)
-                        //{
-                        //    result2.Freq_Hz[j] = FreqArr[j];
-                        //    result2.Level[j] = LevelArr[j];
-                        //}
-                        //result2.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks; //пофиксить
                         context.PushResult(result2);
-
-
                         // подтверждаем факт обработки отмены
                         context.Cancel();
                         // освобождаем поток 
@@ -1087,42 +1141,66 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 if (traceCountToMeas == traceCount)
                 {
-                    var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
+                    if (!poolKeyFind)
                     {
-                        Freq_Hz = new double[FreqArr.Length],
-                        Level = new float[FreqArr.Length],
-                        DeviceStatus = COMR.Enums.DeviceStatus.Normal
-                    };
+                        FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                    }
+                    var result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Final);
+
                     if (command.Parameter.RBW_Hz == -2)
                     {
-                        for (int j = 0; j < FreqArr.Length; j++)
+                        for (int j = 0; j < LevelArr.Length; j++)
                         {
-                            result.Freq_Hz[j] = FreqArr[j];
                             result.Level[j] = LevelArr[j] + adj;
                         }
                     }
                     else
                     {
-                        for (int j = 0; j < FreqArr.Length; j++)
+                        for (int j = 0; j < LevelArr.Length; j++)
                         {
-                            result.Freq_Hz[j] = FreqArr[j];
                             result.Level[j] = LevelArr[j];
                         }
                     }
+                    result.LevelMaxIndex = LevelArr.Length;
+                    result.FrequencyStart_Hz = resFreqStart;
+                    result.FrequencyStep_Hz = resFreqStep;
 
                     result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
                                                                                       //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                     result.Att_dB = lpc.Attenuator(Attenuator);
                     result.PreAmp_dB = lpc.Gain(Gain);
                     result.RefLevel_dBm = (int)RefLevel;
-                    result.RBW_Hz = (double)RBW;
-                    result.VBW_Hz = (double)VBW;
-                    result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                    result.RBW_Hz = RBW;
+                    result.VBW_Hz = VBW;
+
                     if (_RFOverload)
                     {
                         result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
                     }
+                    else
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                    }
                     context.PushResult(result);
+                }
+            }
+        }
+        private void FindTracePoolName(int size, ref bool state, ref string name)
+        {
+            if (size > tracePointsMaxPool)
+            {
+                throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
+            }
+            else
+            {
+                for (int p = 0; p < mainConfig.AdapterTraceResultPools.Length; p++)
+                {
+                    if (mainConfig.AdapterTraceResultPools[p].Size >= size && !state)
+                    {
+                        name = mainConfig.AdapterTraceResultPools[p].KeyName;
+                        state = true;
+                        break;
+                    }
                 }
             }
         }
@@ -1132,11 +1210,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             bool res = true;
             //получаем спектр
             uint traceLen = 0;
-            double binSize = 0.0;
-            double startFreq = 0.0;
-            StatusError(AdapterDriver.bbQueryTraceInfo(deviceId, ref traceLen, ref binSize, ref startFreq));
 
-            freqStep = binSize;
+            StatusError(AdapterDriver.bbQueryTraceInfo(deviceId, ref traceLen, ref resFreqStep, ref resFreqStart));
 
             if (Status != EN.Status.DeviceConnectionErr ||
                 Status != EN.Status.DeviceInvalidErr ||
@@ -1158,7 +1233,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             else
             {
-                SetTraceData((int)traceLen, sweepMin, sweepMax, startFreq, binSize);
+                SetTraceData((int)traceLen, sweepMin, sweepMax, resFreqStart, resFreqStep);
                 lastUpdate = DateTime.Now.Ticks;
             }
 
@@ -1168,11 +1243,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             if (maxTrace.Length > 0 && newLength > 0 && step > 0)
             {
-                if (FreqArr.Length != newLength || (Math.Abs(traceFreqStart - freqStart) >= step))
+                if (LevelArr.Length != newLength || (Math.Abs(traceFreqStart - freqStart) >= step))
                 {
                     traceFreqStart = freqStart;
                     tracePoints = newLength;
-                    FreqArr = new double[newLength];
                     LevelArr = new float[newLength];
                     if (LevelUnit == MEN.LevelUnit.dBm)
                     {
@@ -1180,7 +1254,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = freqStart + step * i;
                                 LevelArr[i] = maxTrace[i];
                             }
                         }
@@ -1188,7 +1261,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = freqStart + step * i;
                                 LevelArr[i] = minTrace[i];
                             }
                         }
@@ -1199,7 +1271,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = freqStart + step * i;
                                 LevelArr[i] = maxTrace[i] + 107;
                             }
                         }
@@ -1207,12 +1278,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = freqStart + step * i;
                                 LevelArr[i] = minTrace[i] + 107;
                             }
                         }
                     }
-                    traceFreqStop = FreqArr[FreqArr.Length - 1];
                 }
                 if (traceType == EN.TraceType.ClearWrite)
                 {
@@ -1289,7 +1358,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                     }
                     if (traceReset) { traceAveraged.Reset(); traceReset = false; }
-                    traceAveraged.AddTraceToAverade(FreqArr, levels, LevelUnit);
+                    traceAveraged.AddTraceToAverade(freqStart, step, levels, LevelUnit);
                     LevelArr = traceAveraged.AveragedLevels;
 
                 }
@@ -1778,6 +1847,64 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     DiagH = "POINT 0 0 90 3 180 6 270 3",//от нуля В конфиг
                     DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
                 }
+            };
+
+            SetDefaulTraceResultPoolsConfig(ref config);
+        }
+        private void SetDefaulTraceResultPoolsConfig(ref CFG.AdapterMainConfig config)
+        {
+            config.AdapterTraceResultPools = new CFG.AdapterResultPool[]
+            {
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "small",
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 5000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "small10k",
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 10000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "small20k",
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 20000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "middle40k",
+                    MinSize = 25,
+                    MaxSize = 50,
+                    Size = 40000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "middle100k",
+                    MinSize = 25,
+                    MaxSize = 50,
+                    Size = 100000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "middle200k",
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 200000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    KeyName = "huge500k",
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 500000
+                },
+
             };
         }
 
