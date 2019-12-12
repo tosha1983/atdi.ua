@@ -535,13 +535,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 bool find = false;
                 for (int n = 0; n < adapterTraceResultPools.Length; n++)
                 {
-                    if (adapterTraceResultPools[n].KeyName == adapterTraceResultPools[i].KeyName)
+                    if ((n!=i) && (adapterTraceResultPools[n].KeyName == adapterTraceResultPools[i].KeyName))
                     {
                         find = true;
                     }
                 }
                 if (!find)
                 {
+                    var cnt = adapterTraceResultPools[i].Size;
                     rpd[i] = new ResultPoolDescriptor<COMR.MesureTraceResult>()
                     {
                         Key = adapterTraceResultPools[i].KeyName,
@@ -551,7 +552,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             var result = new COMR.MesureTraceResult()
                             {
-                                Level = new float[adapterTraceResultPools[i].Size]
+                                Level = new float[cnt]
                             };
                             return result;
                         }
