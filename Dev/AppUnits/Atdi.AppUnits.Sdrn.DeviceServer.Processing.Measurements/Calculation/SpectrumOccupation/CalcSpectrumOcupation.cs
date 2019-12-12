@@ -34,7 +34,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     var F_SO = new SemplFreq(); // здесь будет храниться один замер приведенный к каналу
                     int sempl_in_freq = 0; //количество замеров идущие в один канал 
-                    for (var j = start; j < result.Level.Length; j++) // цикл по замерам по канальчикам
+                    for (var j = start; j < result.LevelMaxIndex+1; j++) // цикл по замерам по канальчикам
                     {
                         if ( 1000000 * taskParameters.ListFreqCH[i] +  500 * taskParameters.StepSO_kHz < (result.FrequencyStart_Hz + j * result.FrequencyStep_Hz)) { start = j; break; }
                         if ((1000000 * taskParameters.ListFreqCH[i] - 500 * taskParameters.StepSO_kHz <= (result.FrequencyStart_Hz + j * result.FrequencyStep_Hz)) && (1000000 * taskParameters.ListFreqCH[i] + 500 * taskParameters.StepSO_kHz  > (result.FrequencyStart_Hz + j * result.FrequencyStep_Hz))) // проверка на попадание в диапазон частот

@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {// попробуем пройтись по масиву с помощью метода nDbDown и всеже определить ширину спектра
                     int startreal = -1;
                     int stoptreal = -1;
-                    bool CorectCalcBW = CalcBWSignalization.CalcBW(templevels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, NumberIgnoredPoints, ref startreal, ref stoptreal);
+                    bool CorectCalcBW = CalcBWSignalization.CalcBW(templevels, templevels.Length, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, NumberIgnoredPoints, ref startreal, ref stoptreal);
                     if (CorectCalcBW)
                     {
                         // необходимо найти корректное значение полосы частот
@@ -146,7 +146,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             var Levels = new float[spectrum.Levels_dBm.Length];
             if (Smooth)
             {
-                Levels = SmoothTrace.blackman(spectrum.Levels_dBm);
+                Levels = SmoothTrace.blackman(spectrum.Levels_dBm, spectrum.Levels_dBm.Length);
             }
             else
             {

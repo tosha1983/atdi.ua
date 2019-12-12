@@ -23,18 +23,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="DifferenceMaxMax"></param>
         /// <param name="FiltrationTrace"></param>
         /// <returns></returns>
-        public static int Counting(float[] Level_dBm, int PointStart, int PointStop, out int[] StartStop, double DifferenceMaxMax = 20, bool FiltrationTrace = true)
+        public static int Counting(float[] Level_dBm, int length, int PointStart, int PointStop, out int[] StartStop, double DifferenceMaxMax = 20, bool FiltrationTrace = true)
         { // НЕ ТЕСТИРОВАЛОСЬ
           // проверка коректности принимаемых данных
             if (PointStop < PointStart) { int T = PointStop; PointStop = PointStart; PointStart = T; }
             if (PointStart < 0) { PointStart = 0; }
-            if (PointStop > Level_dBm.Length - 1) { PointStop = Level_dBm.Length - 1; }
+            if (PointStop > length - 1) { PointStop = length - 1; }
             if (DifferenceMaxMax < 5) { DifferenceMaxMax = 5; }
             // конец проверки корректности 
 
             var Level = new float[PointStop - PointStart + 1];
             Array.Copy(Level_dBm, PointStart, Level, 0, PointStop - PointStart + 1);
-            if (FiltrationTrace) { Level = SmoothTrace.blackman(Level, false); } // провели сглаживание массива
+            if (FiltrationTrace) { Level = SmoothTrace.blackman(Level, Level.Length, false); } // провели сглаживание массива
 
             double LocMax1; int IndexLocMax1;
             double LocMin1; int IndexLocMin1;

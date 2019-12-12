@@ -150,7 +150,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             return pow;
         }
 
-        public static float[] CutArray(float[] reducedArray, float[] arr, int length, TraceType traceType, int CountPoint)
+        public static float[] CutArray(float[] tempReducedArray, float[] arr, int length, TraceType traceType, int CountPoint)
         {
             if (length <= CountPoint)
             {
@@ -160,7 +160,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             {
                 var k = (int)Math.Round((double)(length / CountPoint));
                 int newpoint = (int)Math.Ceiling((double)(length / k));
-                Array.Clear(reducedArray, 0, reducedArray.Length);
+                var reducedArray = new float[newpoint];
+                //Array.Clear(reducedArray, 0, reducedArray.Length);
                 int reducedIndex = 0;
                 for (var i = 0; i < length; i += k)
                 {
