@@ -30,7 +30,11 @@ namespace Atdi.Modules.LicenseGenerator
 
             //ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2020");
 
-            UpdatePeriod_ICSControl_ForUDCR_2020(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019");
+            //UpdatePeriod_ICSControl_ForUDCR_2020(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019");
+
+            UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
+            UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
+
             Console.WriteLine("Process was finished");
             Console.ReadKey();
         }
@@ -242,9 +246,9 @@ namespace Atdi.Modules.LicenseGenerator
             var creator = new LicenseCreator();
             var result = creator.Create(new LicenseData[] { lic });
 
-            var directory = $"{outPath}\\{ownerKey}\\{lic.LicenseType}";
-            Directory.CreateDirectory(directory);
-            var newfileName = $"{directory}\\{lic.LicenseNumber}.{lic.Instance}.lic";
+            //var directory = $"{outPath}\\{ownerKey}\\{lic.LicenseType}";
+            Directory.CreateDirectory(outPath);
+            var newfileName = $"{outPath}\\{lic.LicenseNumber}.{lic.Instance}.lic";
 
             File.WriteAllBytes(newfileName, result.Body);
 
@@ -300,9 +304,9 @@ namespace Atdi.Modules.LicenseGenerator
             var creator = new LicenseCreator();
             var result = creator.Create(new LicenseData2[] { lic2 });
 
-            var directory = $"{outPath}\\{ownerKey}\\{lic2.LicenseType}";
-            Directory.CreateDirectory(directory);
-            var newfileName = $"{directory}\\{lic2.LicenseNumber}.{lic2.Instance}.lic";
+            //var directory = $"{outPath}\\{ownerKey}\\{lic2.LicenseType}";
+            Directory.CreateDirectory(outPath);
+            var newfileName = $"{outPath}\\{lic2.LicenseNumber}.{lic2.Instance}.lic";
 
             File.WriteAllBytes(newfileName, result.Body);
 
@@ -409,6 +413,82 @@ namespace Atdi.Modules.LicenseGenerator
 
             MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
         }
+
+
+        static void UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020()
+        {
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2021, 1, 1);
+            
+            var ownerId = "OID-CA10-B00-N00";
+            var ownerKey = "CA10-B00";
+
+            // server
+            var outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_Current\AppServer";
+            UpdateLicesePeriod(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\AppServer\CA10-B00\ServerLicense\LIC-WQASCA10-B00-857.APPSRV-WQCA10-B00-1782.lic",
+                productKey: "EDRA-9WNB-E8DC-VIEC-QYND",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate);
+
+            // WebPortal
+            outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_Current\WebPortal";
+            UpdateLicesePeriod(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\WebPortal\CA10-B00\ServerLicense\LIC-WQWPCA10-B00-718.WBP-WQCA10-B00-1437.lic",
+                productKey: "PAWE-ANNE-YC0I-R306-EICC",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate);
+
+        }
+
+        static void UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020()
+        {
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2021, 1, 1);
+
+            var ownerId = "OID-CA10-B00-N00";
+            var ownerKey = "CA10-B00";
+
+            var year = (ushort)2020;
+
+            // server
+            var outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_3.2.0\AppServer";
+            UpdateLicesePeriod2(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\AppServer\CA10-B00\ServerLicense\LIC-WQASCA10-B00-857.APPSRV-WQCA10-B00-1782.lic",
+                productKey: "EDRA-9WNB-E8DC-VIEC-QYND",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            // WebPortal
+            outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_3.2.0\WebPortal";
+            UpdateLicesePeriod2(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\WebPortal\CA10-B00\ServerLicense\LIC-WQWPCA10-B00-718.WBP-WQCA10-B00-1437.lic",
+                productKey: "PAWE-ANNE-YC0I-R306-EICC",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            
+
+        }
+
+
+
+
+
 
         static void WebQueryAppServer_ForTesting(string path)
         {
