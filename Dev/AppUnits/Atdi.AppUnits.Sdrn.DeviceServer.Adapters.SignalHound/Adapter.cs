@@ -63,9 +63,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 /// иницируем его параметрами сконфигурации
                 /// проверяем к чем оно готово
 
-                if (Connect(adapterConfig.SerialNumber))
+                if (true)//Connect(adapterConfig.SerialNumber))
                 {
-                    //deviceSerialNumber = 16319373;
+                    deviceSerialNumber = (uint)adapterConfig.SerialNumber;
                     string fileName = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + deviceSerialNumber + ".xml";
                     tac = new CFG.ThisAdapterConfig() { };
                     if (!tac.GetThisAdapterConfig(fileName))
@@ -76,11 +76,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                     else
                     {
-
                         if (tac.Main.AdapterTraceResultPools.Length == 0)
                         {
                             SetDefaulTraceResultPoolsConfig(ref tac.Main);
                             tac.SetThisAdapterConfig(tac.Main, fileName);
+                            logger.Verbouse(Contexts.ThisComponent, "AdapterTraceResultPools were not found in the configuration " +
+                                "file and were replaced with the default values for this adapter.");
                         }
                         mainConfig = tac.Main;
                     }
@@ -95,7 +96,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             #region Exception
             catch (Exception exp)
             {
-                logger.Exception(Contexts.ThisComponent, exp);
+                logger.Critical(Contexts.ThisComponent, exp);
                 throw new InvalidOperationException("Invalid initialize/connect adapter", exp);
             }
             #endregion
@@ -442,6 +443,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #region Trace Data
         //private bool NewTrace;
         private int tracePointsMaxPool = 0;
+        private const int tracePointsMax = 2_000_000;
         private double resFreqStart = 10000;
         private double resFreqStep = 10000;
         private double traceFreqStart = 0; //предвдущего прохода
@@ -525,42 +527,77 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         private IResultPoolDescriptor<COMR.MesureTraceResult>[] ValidateAdapterTracePoolMainConfig(CFG.AdapterResultPool[] adapterTraceResultPools, string fileName)
         {
-            IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = new IResultPoolDescriptor<COMR.MesureTraceResult>[adapterTraceResultPools.Length];
+            IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = null;
+
+            int poolMaxSize = 256_000_000;
+            int poolSize = 0;
             for (int i = 0; i < adapterTraceResultPools.Length; i++)
             {
-                if (adapterTraceResultPools[i].Size >= tracePointsMaxPool)
+                if (adapterTraceResultPools[i].MinSize > 0)
                 {
-                    tracePointsMaxPool = adapterTraceResultPools[i].Size;
-                }
-                bool find = false;
-                for (int n = 0; n < adapterTraceResultPools.Length; n++)
-                {
-                    if (adapterTraceResultPools[n].KeyName == adapterTraceResultPools[i].KeyName)
+                    if (adapterTraceResultPools[i].MaxSize > 0)
                     {
-                        find = true;
+                        if (adapterTraceResultPools[i].MinSize < adapterTraceResultPools[i].MaxSize)
+                        {
+                            if (adapterTraceResultPools[i].Size <= tracePointsMax)
+                            {
+                                poolSize += adapterTraceResultPools[i].MaxSize * adapterTraceResultPools[i].Size * sizeof(float);
+                                if (adapterTraceResultPools[i].Size >= tracePointsMaxPool)//ищем максимальный размер одного пула, потом этим пользуемся чтобы не выстрелить в ногу
+                                {
+                                    tracePointsMaxPool = adapterTraceResultPools[i].Size;
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("In the AdapterTraceResultPools element number " + i + ", " +
+                                    "the Size value is exceeded the maximum value (" + tracePointsMax + ") for the SignalHound adapter. File Name \"" + fileName + "\"");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("In the AdapterTraceResultPools element number " + i + ", " +
+                                "the MinSize value is greater than the MaxSize. File Name \"" + fileName + "\"");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("In the AdapterTraceResultPools item number " + i + ", " +
+                            "the MaxSize value is less than or equal to zero. File Name \"" + fileName + "\"");
                     }
                 }
-                if (!find)
+                else
                 {
+                    throw new Exception("In the AdapterTraceResultPools item number " + i + ", " +
+                        "the MinSize value is less than or equal to zero. File Name \"" + fileName + "\"");
+                }
+            }
+            if (poolSize <= poolMaxSize)
+            {
+                rpd = new IResultPoolDescriptor<COMR.MesureTraceResult>[adapterTraceResultPools.Length];
+                for (int i = 0; i < adapterTraceResultPools.Length; i++)
+                {
+
+                    int count = adapterTraceResultPools[i].Size;
                     rpd[i] = new ResultPoolDescriptor<COMR.MesureTraceResult>()
                     {
-                        Key = adapterTraceResultPools[i].KeyName,
+                        Key = count.ToString(),
                         MinSize = adapterTraceResultPools[i].MinSize,
                         MaxSize = adapterTraceResultPools[i].MaxSize,
                         Factory = () =>
                         {
                             var result = new COMR.MesureTraceResult()
                             {
-                                Level = new float[adapterTraceResultPools[i].Size]
+                                Level = new float[count]
                             };
                             return result;
                         }
                     };
+
                 }
-                else
-                {
-                    throw new Exception("An element with a duplicate name was found in the AdapterTraceResultPools configuration. File Name \"" + fileName + "\"");
-                }
+            }
+            else
+            {
+                throw new Exception("The AdapterTraceResultPools configuration exceeded the maximum pool size limit of " + poolMaxSize / 1000000 + " MB. File Name \"" + fileName + "\"");
             }
             return rpd;
         }
@@ -1197,7 +1234,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 {
                     if (mainConfig.AdapterTraceResultPools[p].Size >= size && !state)
                     {
-                        name = mainConfig.AdapterTraceResultPools[p].KeyName;
+                        name = mainConfig.AdapterTraceResultPools[p].Size.ToString();
                         state = true;
                         break;
                     }
@@ -1857,49 +1894,42 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "small",
                     MinSize = 50,
                     MaxSize = 100,
                     Size = 5000
                 },
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "small10k",
                     MinSize = 50,
                     MaxSize = 100,
                     Size = 10000
                 },
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "small20k",
                     MinSize = 50,
                     MaxSize = 100,
                     Size = 20000
                 },
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "middle40k",
                     MinSize = 25,
                     MaxSize = 50,
                     Size = 40000
                 },
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "middle100k",
                     MinSize = 25,
                     MaxSize = 50,
                     Size = 100000
                 },
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "middle200k",
                     MinSize = 10,
                     MaxSize = 20,
                     Size = 200000
                 },
                 new CFG.AdapterResultPool()
                 {
-                    KeyName = "huge500k",
                     MinSize = 10,
                     MaxSize = 20,
                     Size = 500000

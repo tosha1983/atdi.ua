@@ -11,9 +11,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
     public class AdapterResultPool
     {
         [XmlElement]
-        public string KeyName = "";
-
-        [XmlElement]
         public int MinSize = 0;
 
         [XmlElement]
