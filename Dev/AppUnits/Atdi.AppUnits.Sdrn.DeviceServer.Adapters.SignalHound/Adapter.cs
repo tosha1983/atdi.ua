@@ -62,10 +62,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 /// включем устройство
                 /// иницируем его параметрами сконфигурации
                 /// проверяем к чем оно готово
-
-                if (true)//Connect(adapterConfig.SerialNumber))
-                {
-                    deviceSerialNumber = (uint)adapterConfig.SerialNumber;
+                if (Connect(adapterConfig.SerialNumber))
+                {                    
                     string fileName = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + deviceSerialNumber + ".xml";
                     tac = new CFG.ThisAdapterConfig() { };
                     if (!tac.GetThisAdapterConfig(fileName))
@@ -111,8 +109,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                /// освобождаем ресурсы и отключаем устройство
-                //TAC.Save();
+                /// освобождаем ресурсы и отключаем устройство              
                 isRuning = false;
                 StatusError(AdapterDriver.bbCloseDevice(deviceId));
             }
