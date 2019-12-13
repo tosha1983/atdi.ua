@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrns.Device;
+using Atdi.Common;
 
 
 
@@ -19,6 +20,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (result != null)
             {
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
+
                 taskContext.Task.sysInfoResult = new SysInfoResult();
                 try
                 {

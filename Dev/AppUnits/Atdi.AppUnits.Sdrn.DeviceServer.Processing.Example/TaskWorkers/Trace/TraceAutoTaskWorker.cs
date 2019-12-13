@@ -53,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
                 {
                     var task = new TraceTask()
                     {
-                        Count = 100000,
+                        Count = 100000000,
                         BlockSize = 1000_000,
                         Index = i,
                         Timer = new Stopwatch()
@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
                 {
                     var task = new TraceTask()
                     {
-                        Count = 100000,
+                        Count = 100000000,
                         BlockSize = 10_000,
                         Index = i,
                         Timer = new Stopwatch()

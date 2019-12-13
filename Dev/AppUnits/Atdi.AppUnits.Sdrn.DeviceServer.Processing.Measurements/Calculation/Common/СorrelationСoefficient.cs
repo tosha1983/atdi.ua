@@ -60,7 +60,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             sumArr1 = sumArr1 / n;
             sumArr2 = sumArr2 / n;
             double a1 = 0; double a2 = 0; double a3 = 0;
-            for (int i = 0; n > i; i++)
+            for (var i = 0; n > i; i++)
             {
                 a1 = a1 + ((arr1[i] - sumArr1) * (arr2[i] - sumArr2));
                 a2 = a2 + ((arr1[i] - sumArr1) * (arr1[i] - sumArr1));
@@ -70,17 +70,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static double PearsonLinear(float[] arr1, float[] arr2)
         {// НЕ ТЕСТИРОВАННО
-            float[] arr1Lin = FromdBmtomW(arr1);
-            float[] arr2Lin = FromdBmtomW(arr2);
+            var arr1Lin = FromdBmtomW(arr1);
+            var arr2Lin = FromdBmtomW(arr2);
             return Pearson(arr1Lin, arr2Lin);
         }
         private static double Spearman(float[] arr1, float[] arr2)
         { // НЕ ТЕСТИРОВАННО
             if (arr1.Length != arr2.Length) { return -2; }//Выход с ошибкой
-            int[] rang1 = rangArrCalc(arr1);
-            int[] rang2 = rangArrCalc(arr2);
+            var rang1 = rangArrCalc(arr1);
+            var rang2 = rangArrCalc(arr2);
             double dd = 0;
-            for (int i =0; arr1.Length>i; i++)
+            for (var i =0; arr1.Length>i; i++)
             {
                 dd = (rang1[i] - rang2[i]) * (rang1[i] - rang2[i])+dd;
             }
@@ -90,14 +90,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         { // НЕ ТЕСТИРОВАННО
             if (arr1.Length != arr2.Length) { return -2; }//Выход с ошибкой
             int indexCenter = (int)Math.Round(arr1.Length / 2.0);
-            float[] arr11 = new float[indexCenter];
+            var arr11 = new float[indexCenter];
             Array.Copy(arr1, 0, arr11, 0, indexCenter);
-            float[] arr21 = new float[indexCenter];
+            var arr21 = new float[indexCenter];
             Array.Copy(arr2, 0, arr21, 0, indexCenter);
             double part1 = Spearman(arr11, arr21);
-            float[] arr12 = new float[arr1.Length - indexCenter];
+            var arr12 = new float[arr1.Length - indexCenter];
             Array.Copy(arr1, indexCenter, arr12, 0, arr1.Length - indexCenter);
-            float[] arr22 = new float[arr1.Length - indexCenter];
+            var arr22 = new float[arr1.Length - indexCenter];
             Array.Copy(arr2, indexCenter, arr22, 0, arr1.Length - indexCenter);
             double part2 = Spearman(arr12, arr22);
             return (part1+part2)/2.0;
@@ -105,14 +105,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static int [] rangArrCalc(float[] arr1)
         { // Проверенно
             if (arr1 is null) { return null;}
-            float[] arr = new float[arr1.Length];
-            for (int i = 0; arr.Length > i; i++) { arr[i] = arr1[i];}
-            int[] rangArr = new int[arr.Length];
-            for (int i = 0; arr.Length > i; i++)
+            var arr = new float[arr1.Length];
+            for (var i = 0; arr.Length > i; i++) { arr[i] = arr1[i];}
+            var rangArr = new int[arr.Length];
+            for (var i = 0; arr.Length > i; i++)
             {
                 double minValue = 99999999;
                 int IndexMinValue = 0;
-                for (int j = 0; arr.Length > j; j++)
+                for (var j = 0; arr.Length > j; j++)
                 {
                     if (arr[j] < minValue)
                     {
@@ -127,8 +127,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static float[] FromdBmtomW(float[] arr_dBm)
         {// НЕ ТЕСТИРОВАННО
-            float[] arr_mW = new float[arr_dBm.Length];
-            for (int i = 0; arr_dBm.Length > i; i++)
+            var arr_mW = new float[arr_dBm.Length];
+            for (var i = 0; arr_dBm.Length > i; i++)
             {
                 arr_mW[i] = (float)Math.Pow(10, arr_dBm[i] / 10);
             }
@@ -143,12 +143,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (arr1.Length != arr2.Length) { return -1000000; }//Выход с ошибкой
             if (arr1.Length < 2) { return -1000000; }//Выход с ошибкой
             int MaxPointShift = (int)Math.Round(arr1.Length * PersentMaxShift / 100.0);
-            List<double> Corr = new List<double>();
-            for (int i = -MaxPointShift; MaxPointShift >= i; i++)
+            var Corr = new List<double>();
+            for (var i = -MaxPointShift; MaxPointShift >= i; i++)
             {
                 int l = arr1.Length - Math.Abs(i);
-                float[] arr1sh = new float[l];
-                float[] arr2sh = new float[l];
+                var arr1sh = new float[l];
+                var arr2sh = new float[l];
                 if (i > 0)
                 {
                     Array.Copy(arr1, i, arr1sh, 0, arr1.Length - i);

@@ -12,6 +12,8 @@ using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
 using Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks;
 using System.Collections;
 using System.ComponentModel;
+using Atdi.Common;
+using Atdi.Platform;
 
 
 
@@ -30,13 +32,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
         {
             if (result != null)
             {
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
                 try
                 {
                     var parametersDataLevel = new DeviceServerParametersDataLevel();
-                    parametersDataLevel.Freq_Hz = CutArray(result.Freq_Hz, this._config.MaxCountPoint.Value);
-                    if (result.Freq_Hz.Length > 0)
+                    var freqArray_Hz = new double[result.LevelMaxIndex + 1];
+                    for (var v = 0; v <= result.LevelMaxIndex; v++)
                     {
-                        var freq_Hz = (double)((result.Freq_Hz[0] + result.Freq_Hz[result.Freq_Hz.Length - 1]) / 2.0);
+                        freqArray_Hz[v] = (result.FrequencyStart_Hz + v * result.FrequencyStep_Hz);
+                    }
+
+                    var k = (int)Math.Round((double)(freqArray_Hz.Length / this._config.MaxCountPoint.Value));
+                    int newpoint = (int)Math.Ceiling((double)(freqArray_Hz.Length / k));
+                    taskContext.Process.ReducedArray = new float[newpoint];
+                    parametersDataLevel.Freq_Hz = CutArray(freqArray_Hz, this._config.MaxCountPoint.Value);
+                    if (freqArray_Hz.Length > 0)
+                    {
+                        var freq_Hz = (double)((freqArray_Hz[0] + freqArray_Hz[freqArray_Hz.Length - 1]) / 2.0);
                         var freq_MHz = (double)(freq_Hz / 1000000.0);
                         parametersDataLevel.AntennaFactor = 20 * Math.Log10(freq_MHz) - SDRGainFromFrequency(taskContext.Process.MeasTraceDeviceProperties, freq_Hz) - 29.79;
                     }
@@ -54,7 +66,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             }
         }
 
-        
+
+
         public static double SDRGainFromFrequency(MesureTraceDeviceProperties MesureTraceDeviceProperties, double Frequency_Hz)
         {
             // Константа с файла конфигурации

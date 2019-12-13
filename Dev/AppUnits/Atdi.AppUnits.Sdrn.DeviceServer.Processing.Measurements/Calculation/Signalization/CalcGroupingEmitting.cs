@@ -68,7 +68,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // Увеличиваем счетчики у всех излучений
                 if (EmittingsSummary != null)
                 {
-                    for (int i = 0; EmittingsSummary.Length > i; i++)
+                    for (var i = 0; EmittingsSummary.Length > i; i++)
                     {
                         if (EmittingsSummary[i].WorkTimes != null)
                         {
@@ -78,7 +78,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
                 if (EmittingsTemp != null)
                 {
-                    for (int i = 0; EmittingsTemp.Length > i; i++)
+                    for (var i = 0; EmittingsTemp.Length > i; i++)
                     {
                         if (EmittingsTemp[i].WorkTimes != null)
                         {
@@ -105,11 +105,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     emittingsTempTemp = EmittingsTemp.ToList();
                 }
-                for (int i = 0; EmittingsRaw.Length > i; i++)
+                for (var i = 0; EmittingsRaw.Length > i; i++)
                 {
                     bool isSuccess = false;
                     bool existTheSameEmitting = false;
-                    for (int j = 0; emittingsSummaryTemp.Count > j; j++)
+                    for (var j = 0; emittingsSummaryTemp.Count > j; j++)
                     {
                         existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
                         if (existTheSameEmitting)
@@ -123,7 +123,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     if (isSuccess == false)
                     {
-                        for (int l = 0; emittingsTempTemp.Count > l; l++)
+                        for (var l = 0; emittingsTempTemp.Count > l; l++)
                         {
                             existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[l], EmittingsRaw[i], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
                             if (existTheSameEmitting)
@@ -157,7 +157,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else
                 {
                     // перебрасываем из temp хорошие сигналы в Summary
-                    for (int i = 0; i < emittingsTempTemp.Count; i++)
+                    for (var i = 0; i < emittingsTempTemp.Count; i++)
                     {
                         if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
                         {
@@ -167,9 +167,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                     // Пройдемся по Summary нет ли дублирующихся сигналов 
-                    for (int i = 0; emittingsSummaryTemp.Count > i; i++)
+                    for (var i = 0; emittingsSummaryTemp.Count > i; i++)
                     {
-                        for (int j = i + 1; emittingsSummaryTemp.Count > j; j++)
+                        for (var j = i + 1; emittingsSummaryTemp.Count > j; j++)
                         {
                             bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
                             if (existTheSameEmitting)
@@ -183,9 +183,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                     // Пройдемся по temp нет ли дублирующихся сигналов 
-                    for (int i = 0; emittingsTempTemp.Count > i; i++)
+                    for (var i = 0; emittingsTempTemp.Count > i; i++)
                     {
-                        for (int j = i + 1; emittingsTempTemp.Count > j; j++)
+                        for (var j = i + 1; emittingsTempTemp.Count > j; j++)
                         {
                             bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
                             if (existTheSameEmitting)
@@ -294,8 +294,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool JoinEmmiting(ref Emitting MasterEmitting, Emitting AttachableEmitting, ILogger logger, double NoiseLevel_dBm)
         {
-            bool res = false;
-            bool JoinAttachableEmittingToMasterEmitting = true;
+            var res = false;
+            var JoinAttachableEmittingToMasterEmitting = true;
             try
             {
                 // определяем кто к кому присоединяется
@@ -488,12 +488,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 else
                 {
                     // обединяем массивы
-                    List<WorkTime> workTimes1 = new List<WorkTime>();
+                    var workTimes1 = new List<WorkTime>();
                     if (MasterEmitting.WorkTimes != null)
                     {
                         workTimes1 = MasterEmitting.WorkTimes.ToList();
                     }
-                    List<WorkTime> workTimes2 = new List<WorkTime>();
+                    var workTimes2 = new List<WorkTime>();
                     if (AttachableEmitting.WorkTimes != null)
                     {
                         workTimes2 = AttachableEmitting.WorkTimes.ToList();
@@ -502,10 +502,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         workTimes1.AddRange(workTimes2);
                         var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
-                        List<WorkTime> WorkTimes = NewWorkTimes.ToList();
+                        var WorkTimes = NewWorkTimes.ToList();
 
                         // найдем и удалим пересечения 
-                        for (int i = 0; WorkTimes.Count - 1 > i; i++)
+                        for (var i = 0; WorkTimes.Count - 1 > i; i++)
                         {
                             TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
                             if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
@@ -557,11 +557,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double maxFreq_Hz = 1000.0 * Math.Max(1000.0 * MasterSpectrum.SpectrumStartFreq_MHz + MasterSpectrum.SpectrumSteps_kHz * (MasterSpectrum.Levels_dBm.Length - 1),
                 1000.0 * AttachableSpectrum.SpectrumStartFreq_MHz + AttachableSpectrum.SpectrumSteps_kHz * (AttachableSpectrum.Levels_dBm.Length - 1));
             int NewLevelArrCount = (int)Math.Ceiling((maxFreq_Hz - minStartFreq_Hz) / MinStep_Hz);
-            float[] NewLevels_dBm = new float[NewLevelArrCount]; // массив с уровнями
+            var NewLevels_dBm = new float[NewLevelArrCount]; // массив с уровнями
             if (Math.Abs(MasterSpectrum.SpectrumSteps_kHz - MasterSpectrum.SpectrumSteps_kHz) < 0.001)
             {
                 // сетки совпали просто складываем
-                for (int i = 0; NewLevelArrCount > i; i++)
+                for (var i = 0; NewLevelArrCount > i; i++)
                 {
                     NewLevels_dBm[i] = -200;
                     double curFreq = minStartFreq_Hz + i * MinStep_Hz;
@@ -582,7 +582,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 double deltaLevelMaster = 10 * Math.Log10(MasterSpectrum.SpectrumSteps_kHz * 1000 / MinStep_Hz);
                 double deltaLevelAttachable = 10 * Math.Log10(AttachableSpectrum.SpectrumSteps_kHz * 1000 / MinStep_Hz);
                 // сетки не совпали редкое явление но нужно складывать
-                for (int i = 0; NewLevelArrCount > i; i++)
+                for (var i = 0; NewLevelArrCount > i; i++)
                 {
                     NewLevels_dBm[i] = -200;
                     double curFreq = minStartFreq_Hz + i * MinStep_Hz;
@@ -599,7 +599,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
 
             }
-            Spectrum spectrum = CalcSignalization.CreateSpectrum(NewLevels_dBm, MinStep_Hz, minStartFreq_Hz, NoiseLevel_dBm);
+            var spectrum = CalcSignalization.CreateSpectrum(NewLevels_dBm, MinStep_Hz, minStartFreq_Hz, NoiseLevel_dBm);
             if ((MasterSpectrum.Contravention) || (AttachableSpectrum.Contravention))
             { spectrum.Contravention = true; }
             else { spectrum.Contravention = false; }
@@ -620,12 +620,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (index2Start < 0) { index2Start = 0; }
             if (index1Stop >= emitting1.Spectrum.Levels_dBm.Length) { index1Stop = emitting1.Spectrum.Levels_dBm.Length - 1; }
             if (index2Stop >= emitting2.Spectrum.Levels_dBm.Length) { index2Stop = emitting2.Spectrum.Levels_dBm.Length - 1; }
-            float[] arr1 = new float[index1Stop - index1Start];
+            var arr1 = new float[index1Stop - index1Start];
             Array.Copy(emitting1.Spectrum.Levels_dBm, index1Start, arr1, 0, index1Stop - index1Start);
-            arr1 = SmoothTrace.blackman(arr1);
-            float[] arr2 = new float[index2Stop - index2Start];
+            arr1 = SmoothTrace.blackman(arr1, arr1.Length);
+            var arr2 = new float[index2Stop - index2Start];
             Array.Copy(emitting2.Spectrum.Levels_dBm, index2Start, arr2, 0, index2Stop - index2Start);
-            arr2 = SmoothTrace.blackman(arr2);
+            arr2 = SmoothTrace.blackman(arr2, arr2.Length);
 
             double freq1_Hz = emitting1.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting1.Spectrum.SpectrumSteps_kHz * index1Start * 1000.0;
             double freq2_Hz = emitting2.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting2.Spectrum.SpectrumSteps_kHz * index2Start * 1000.0;
@@ -645,12 +645,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (index2Start < 0) { index2Start = 0; }
             if (index1Stop >= emitting1.Spectrum.Levels_dBm.Length) { index1Stop = emitting1.Spectrum.Levels_dBm.Length - 1; }
             if (index2Stop >= emitting2.Spectrum.Levels_dBm.Length) { index2Stop = emitting2.Spectrum.Levels_dBm.Length - 1; }
-            float[] arr1 = new float[index1Stop - index1Start];
+            var arr1 = new float[index1Stop - index1Start];
             Array.Copy(emitting1.Spectrum.Levels_dBm, index1Start, arr1, 0, index1Stop - index1Start);
-            arr1 = SmoothTrace.blackman(arr1);
-            float[] arr2 = new float[index2Stop - index2Start];
+            arr1 = SmoothTrace.blackman(arr1, arr1.Length);
+            var arr2 = new float[index2Stop - index2Start];
             Array.Copy(emitting2.Spectrum.Levels_dBm, index2Start, arr2, 0, index2Stop - index2Start);
-            arr2 = SmoothTrace.blackman(arr2);
+            arr2 = SmoothTrace.blackman(arr2, arr2.Length);
 
             double freq1_Hz = emitting1.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting1.Spectrum.SpectrumSteps_kHz * index1Start * 1000.0;
             double freq2_Hz = emitting2.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting2.Spectrum.SpectrumSteps_kHz * index2Start * 1000.0;
@@ -713,12 +713,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         private static void DeliteRedundantUncorrelationEmission(List<Emitting> emittings, ILogger logger, double NoiseLevel_dBm)
         { // НЕ ТЕСТИЛ по идее функция должна удалить все излучения оставив там какоето количество
             // считаем количество излучений на частоте
-            int[] EmittingOnFreq = new int[emittings.Count];
+            var EmittingOnFreq = new int[emittings.Count];
             int MaxNumber = 0;
-            for (int i = 0; emittings.Count > i; i++)
+            for (var i = 0; emittings.Count > i; i++)
             {
                 int count = 0;
-                for (int j = 0; emittings.Count > j; j++)
+                for (var j = 0; emittings.Count > j; j++)
                 {
                     if (i != j)
                     {
@@ -734,8 +734,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 return; // выход поскольку все хорошо
             }
             // Надо ужимать пройдемся нет ли дублирующих сигналов
-            double [] CorrelationFactors= new double[emittings.Count];// В данном месте мы собираем максимальную кореляцию для сигнала по соотношению с другими сигналами
-            for (int i = 0; emittings.Count > i; i++)
+            var CorrelationFactors = new double[emittings.Count];// В данном месте мы собираем максимальную кореляцию для сигнала по соотношению с другими сигналами
+            for (var i = 0; emittings.Count > i; i++)
             {
                 double MaxCorelationFactors = 0;
                 for (int j = i + 1; emittings.Count > j; j++)
@@ -762,10 +762,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // повторная оценка после сжатия
             EmittingOnFreq = new int[emittings.Count];
             MaxNumber = 0;
-            for (int i = 0; emittings.Count > i; i++)
+            for (var i = 0; emittings.Count > i; i++)
             {
                 int count = 0;
-                for (int j = 0; emittings.Count > j; j++)
+                for (var j = 0; emittings.Count > j; j++)
                 {
                     if (i != j)
                     {
@@ -790,11 +790,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 // уменьшать нельзя поэтому будем удалять излучения на частотах которые наиболее забиты притом удаляем 1/10 от общего количество
                 // считаем массив хитов
-                int[] ArrHit = new int[emittings.Count];
-                for (int i = 0; emittings.Count > i; i++)
+                var ArrHit = new int[emittings.Count];
+                for (var i = 0; emittings.Count > i; i++)
                 {
                     int hit = 0;
-                    for (int j = 0; emittings[i].WorkTimes.Length > j; j++)
+                    for (var j = 0; emittings[i].WorkTimes.Length > j; j++)
                     {
                         hit = hit + emittings[i].WorkTimes[j].HitCount;
                     }
@@ -803,7 +803,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 int numberDel = (int) (MaxNumber/10.0); // определяем количество элементов которые стоит удалить 
                 if (MaxNumber - numberDel > MaxNumberEmitingOnFreq) { numberDel = MaxNumber - MaxNumberEmitingOnFreq;}
                 // определяем кого удалять
-                int[] IndexDel = BedCorrelationEmitting(ArrHit, CorrelationFactors, EmittingOnFreq, numberDel);
+                var IndexDel = BedCorrelationEmitting(ArrHit, CorrelationFactors, EmittingOnFreq, numberDel);
                 // удаляем
                 if (IndexDel != null)
                 {
@@ -821,10 +821,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // нужно составить список из худших излучкений которые стоит убить
             int count = ArrHit.Length;
             int mark = 0;
-            List <int> resArr = new List<int>();
-            double[] RangeArr = new double[count];
+            var resArr = new List<int>();
+            var RangeArr = new double[count];
             int Max_Count_On_Freq = 0;
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 if (EmittingOnFreq[i] > Max_Count_On_Freq) { Max_Count_On_Freq = EmittingOnFreq[i];}
                 RangeArr[i] = (1 - CoordinationFactors[i]) * Math.Pow (ArrHit[i], 0.5);
@@ -845,7 +845,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             resArr = distinctList.ToList();
             resArr.Sort();
             resArr.Reverse();
-            int[] resArr1 = resArr.ToArray();
+            var resArr1 = resArr.ToArray();
             return resArr1;
         }
         private static int CompareTwoEmittingCenterWithStartEnd(Emitting emitting1, Emitting emitting2)
@@ -874,7 +874,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (start < 0) { start = 0;}
             if (stop >= arr.Length) { stop = arr.Length - 1;}
             double Pow = 0;
-            for (int i = start; stop >= i; i++)
+            for (var i = start; stop >= i; i++)
             {
                 Pow = Pow + Math.Pow(10, arr[i] / 10);
             }

@@ -10,21 +10,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     public static class SmoothTrace
     {
         private const double PersentLongFilterFromTrace = 3;
-        public static float[] blackman (float[] ArrIn, bool LogInterpolation = false)
+        public static float[] blackman (float[] ArrIn, int length, bool LogInterpolation = false)
         { // НЕ ТЕСТИРОВАННО
-            
-            int N = (int)Math.Floor(ArrIn.Length * PersentLongFilterFromTrace / 200); // Длина фильтра
+            int z = length;
+            var outArrFloat = new float[z];
+            int N = (int)Math.Floor(length * PersentLongFilterFromTrace / 200); // Длина фильтра
             N = N * 2 + 1;
-            if (N <= 2) { return ArrIn;}
-            double[] H = new double[N]; // Импульсная характеристика фильтра
+            if (N <= 2) { Array.ConstrainedCopy(ArrIn, 0, outArrFloat, 0, z); return outArrFloat; }
+            var H = new double[N]; // Импульсная характеристика фильтра
             // Расчет импульсной характеристики фильтра Блекмана
-            for (int i = 0; N > i; i++)
+            for (var i = 0; N > i; i++)
             {
                 H[i] = 0.42 - 0.5 * Math.Cos((2 * Math.PI * (i - 1)) / (N - 1)) + 0.08 * Math.Cos((4 * Math.PI * (i - 1)) / (N - 1));
             }
             //Нормировка импульсной характеристики
             double SUM = 0;
-            for (int i = 0; N > i; i++)
+            for (var i = 0; N > i; i++)
             {
                 SUM = SUM + H[i];
             }
@@ -33,9 +34,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 H[i] = H[i] / SUM;  // сумма коэффициентов равна 1
             }
 
-            int z = ArrIn.Length;
-            double[] outArr = new double[z];
-            double[] ArrIn1 = new double[z];
+            var outArr = new double[z];
+            var ArrIn1 = new double[z];
             // Фильтрация входных данных
             if (!LogInterpolation)
             {
@@ -45,10 +45,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 }
             }
             int st = (int)(Math.Floor(N/2.0)); // Индекс точки с максимальной характеристикой 
-            for (int i = st; z + st > i; i++)
+            for (var i = st; z + st > i; i++)
             {
                 outArr[i - st] = 0;
-                for (int j = 0; N > j; j++)
+                for (var j = 0; N > j; j++)
                 {
                     if (i - j >= 0)
                     {
@@ -74,8 +74,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     outArr[i] = 10*Math.Log10(outArr[i]);
                 }
             }
-            float[] ArrOut = new float[outArr.Length];
-            for (int i = 0; z > i; i++)
+            var ArrOut = new float[outArr.Length];
+            for (var i = 0; z > i; i++)
             {
                 ArrOut[i] = (float)outArr[i];
             }

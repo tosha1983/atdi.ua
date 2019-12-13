@@ -23,11 +23,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             // List<SysInfoResult> listSysinfoResult - почему на входе список?
             // обновляем emittingSummary результатами новых измерений 
-            for (int i = 0; listSysinfoResult.Count>i; i++)
+            for (var i = 0; listSysinfoResult.Count>i; i++)
             {
                 var SysInfo = listSysinfoResult[i];
 
-                for (int k = 0; SysInfo.signalingSysInfo.Length > k; k++)
+                for (var k = 0; SysInfo.signalingSysInfo.Length > k; k++)
                 {
                     var oneSysInfo = SysInfo.signalingSysInfo[k];
                     double BWRes = 0;
@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     // далее цыкл для определения излучения которое больше всего подходит
                     double Min_penalty = 9999;
                     int CountInEmittingSummary = 0;
-                    for (int j = 0; emittingSummary.Length > j; j++)
+                    for (var j = 0; emittingSummary.Length > j; j++)
                     {
                         var emiting = emittingSummary[j];
                         double StartFreq;
@@ -88,13 +88,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         public static bool GetEmittingDetailed(ref Emitting[] emittingSummary, List<BWResult> listBWResult, ReferenceLevels referenceLevels, ILogger logger)
         {
             // обновляем emittingSummary результатами новых измерений
-            for (int i = 0; listBWResult.Count > i; i++)
+            for (var i = 0; listBWResult.Count > i; i++)
             {
                 // на первом шаге мы должны определить индекс того излучения которому более всего соответсвует измерение
                 var BWRes = listBWResult[i];
                 double Min_penalty = 9999;
                 int CountInEmittingSummary = 0;
-                for (int j = 0; emittingSummary.Length > j; j++)
+                for (var j = 0; emittingSummary.Length > j; j++)
                 {
                     var emiting = emittingSummary[j];
                     double StartFreq = emiting.Spectrum.SpectrumStartFreq_MHz + emiting.Spectrum.T1 * emiting.Spectrum.SpectrumSteps_kHz / 1000;

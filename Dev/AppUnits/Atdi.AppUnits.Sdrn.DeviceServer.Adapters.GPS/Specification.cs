@@ -21,6 +21,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
     {
         public static readonly EventText OpenDevice = "GPS device is running";
         public static readonly EventText CloseDevice = "GPS device is closed";
+        public static readonly EventText FromConfigurationFileNotRecognized = "from configuration file not recognized";
+        public static readonly EventText FromConfigurationFileIsNullOrEmpty = "from configuration file is null or empty";
+        
+
+
     }
     static class TraceScopeNames
     {
