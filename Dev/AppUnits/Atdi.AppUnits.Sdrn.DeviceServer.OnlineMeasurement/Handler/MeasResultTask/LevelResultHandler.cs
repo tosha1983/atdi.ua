@@ -65,7 +65,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                             throw new Exception($"Not supported type {command.Parameter.TraceType}");
                     }
 
-                    levelResult.Level = CutArray(taskContext.Process.ReducedArray, result.Level, result.LevelMaxIndex + 1, traceType, this._config.MaxCountPoint.Value);
+                    Array.Clear(taskContext.Process.ReducedArray, 0, taskContext.Process.ReducedArray.Length);
+                    levelResult.Level = CutArray(taskContext.Process.ReducedArray, result.Level, result.LevelMaxIndex+1, traceType, this._config.MaxCountPoint.Value);
                     if (taskContext.Process.LevelResult_dBm == null) { taskContext.Process.LevelResult_dBm = levelResult.Level; }
                     else
                     {
@@ -143,24 +144,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 pow = pow + Math.Pow(10,Levels[i]);
             }
             pow = 10 * Math.Log10(pow);
-            //if (MeasTraceDeviceProperties != null)
-            //{
-            //    SDRGainFromFrequency(MeasTraceDeviceProperties, Freq_Hz);
-            //}
             return pow;
         }
 
         public static float[] CutArray(float[] reducedArray, float[] arr, int length, TraceType traceType, int CountPoint)
         {
-            if (length <= CountPoint)
+            if (arr.Length <= CountPoint)
             {
                 return arr;
             }
             else
             {
                 var k = (int)Math.Round((double)(length / CountPoint));
+                if (k==0)
+                {
+                    k = 1;
+                }
                 int newpoint = (int)Math.Ceiling((double)(length / k));
-                Array.Clear(reducedArray, 0, reducedArray.Length);
                 int reducedIndex = 0;
                 for (var i = 0; i < length; i += k)
                 {

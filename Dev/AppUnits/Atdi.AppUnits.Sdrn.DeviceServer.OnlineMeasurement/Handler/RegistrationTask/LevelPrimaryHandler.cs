@@ -43,6 +43,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     }
 
                     var k = (int)Math.Round((double)(freqArray_Hz.Length / this._config.MaxCountPoint.Value));
+                    if (k==0)
+                    {
+                        k = 1;
+                    }
                     int newpoint = (int)Math.Ceiling((double)(freqArray_Hz.Length / k));
                     taskContext.Process.ReducedArray = new float[newpoint];
                     parametersDataLevel.Freq_Hz = CutArray(freqArray_Hz, this._config.MaxCountPoint.Value);
