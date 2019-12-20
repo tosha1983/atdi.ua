@@ -66,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     }
 
                     Array.Clear(taskContext.Process.ReducedArray, 0, taskContext.Process.ReducedArray.Length);
-                    levelResult.Level = CutArray(taskContext.Process.ReducedArray, result.Level, result.LevelMaxIndex+1, traceType, this._config.MaxCountPoint.Value);
+                    levelResult.Level = CutArray(taskContext.Process.ReducedArray, result.Level, result.LevelMaxIndex, traceType, this._config.MaxCountPoint.Value);
                     if (taskContext.Process.LevelResult_dBm == null) { taskContext.Process.LevelResult_dBm = levelResult.Level; }
                     else
                     {
@@ -133,15 +133,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 }
             }
             LevelBufer = CurLevel;
-            
+
         }
         public static double CalcPow(float[] Levels, MesureTraceDeviceProperties MeasTraceDeviceProperties, double Freq_Hz)
         {
-            if ((Levels == null)||(Levels.Length < 1)) { return -999;}
+            if ((Levels == null) || (Levels.Length < 1)) { return -999; }
             double pow = 0;
-            for (int i = 0;  Levels.Length>i; i++)
+            for (int i = 0; Levels.Length > i; i++)
             {
-                pow = pow + Math.Pow(10,Levels[i]);
+                pow = pow + Math.Pow(10, Levels[i]);
             }
             pow = 10 * Math.Log10(pow);
             return pow;
@@ -151,12 +151,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
         {
             if (arr.Length <= CountPoint)
             {
-                return arr;
+                reducedArray = new float[length];
+                for (var i = 0; i < length; i++)
+                {
+                    reducedArray[i] = arr[i];
+                }
+                return reducedArray;
             }
             else
             {
                 var k = (int)Math.Round((double)(length / CountPoint));
-                if (k==0)
+                if (k == 0)
                 {
                     k = 1;
                 }

@@ -36,14 +36,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 try
                 {
                     var parametersDataLevel = new DeviceServerParametersDataLevel();
-                    var freqArray_Hz = new double[result.LevelMaxIndex + 1];
-                    for (var v = 0; v <= result.LevelMaxIndex; v++)
+                    var freqArray_Hz = new double[result.LevelMaxIndex];
+                    for (var v = 0; v < result.LevelMaxIndex; v++)
                     {
                         freqArray_Hz[v] = (result.FrequencyStart_Hz + v * result.FrequencyStep_Hz);
                     }
 
                     var k = (int)Math.Round((double)(freqArray_Hz.Length / this._config.MaxCountPoint.Value));
-                    if (k==0)
+                    if (k == 0)
                     {
                         k = 1;
                     }
@@ -58,7 +58,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                     }
                     parametersDataLevel.Att_dB = result.Att_dB;
                     parametersDataLevel.PreAmp_dB = result.PreAmp_dB;
-                    parametersDataLevel.RBW_kHz = (double)(result.RBW_Hz /1000.0);
+                    parametersDataLevel.RBW_kHz = (double)(result.RBW_Hz / 1000.0);
                     parametersDataLevel.RefLevel_dBm = result.RefLevel_dBm;
                     taskContext.SetEvent(parametersDataLevel);
                     taskContext.Process.CountMeasurementDone++;
@@ -84,9 +84,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                 double GainLoss = MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[0].Gain - MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[0].FeederLoss_dB;
                 return GainLoss;
             }
-            if ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length-1].Freq_Hz <= Frequency_Hz)
+            if ((double)MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length - 1].Freq_Hz <= Frequency_Hz)
             {
-                double GainLoss = MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length-1].Gain- MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length-1].FeederLoss_dB;
+                double GainLoss = MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length - 1].Gain - MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters[MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length - 1].FeederLoss_dB;
                 return GainLoss;
             }
             if (MesureTraceDeviceProperties.StandardDeviceProperties.RadioPathParameters.Length == 1)
@@ -108,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             }
             return GainByDefault;
         }
-        
+
 
 
         public static double[] CutArray(double[] arr, int CountPoint)
@@ -116,7 +116,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             if (arr.Length <= CountPoint)
             {
                 double[] arrMhz = new double[arr.Length];
-                for (int i=0; i< arr.Length;i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
                     arrMhz[i] = (double)(arr[i] / 1000000);
                 }
