@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Atdi.Platform.Data
 {
-    public interface IObjectPool
+    public interface IObjectPool : IDisposable
     {
         object TakeObject();
 

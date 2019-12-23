@@ -2,6 +2,7 @@
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.Platform.Logging;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
@@ -12,10 +13,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
     internal class AdapterWorker : IDevice, IAdapterHost, IDisposable
     {
+        public const int CommandContextPoolObjectsDefaultValue = 10;
+
+        private readonly IDeviceServerConfig _config;
         private readonly Type _adapterType;
         private readonly IAdapterFactory _adapterFactory;
         private readonly ICommandsHost _commandsHost;
         private readonly IResultsHost _resultsHost;
+        private readonly IResultConvertorsHost _convertorsHost;
+        private readonly IResultHandlersHost _handlersHost;
         private readonly ITimeService _timeService;
         private readonly IEventWaiter _eventWaiter;
         private readonly IStatistics _statistics;
@@ -26,7 +32,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private IAdapter _adapterObject;
         private volatile bool _isDisposing;
 
-        private readonly ConcurrentDictionary<Guid, ExecutionContext> _executingCommands;
+        private readonly Dictionary<CommandType, IObjectPool<CommandContext>> _pools;
+        private readonly Dictionary<ValueTuple<Type, CommandType, string>, IObjectPool> _resultsPool;
+
+        //private readonly ConcurrentDictionary<Guid, ExecutionContext> _executingCommands;
         private readonly CommandsBuffer _buffer;
         private readonly Dictionary<Type, CommandHandler> _commandHandlers;
 
@@ -46,27 +55,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         public Type AdapterType => this._adapterType;
 
         public AdapterWorker(
+            IDeviceServerConfig config,
             Type adapterType, 
             IAdapterFactory adapterFactory, 
             ICommandsHost commandsHost, 
-            IResultsHost resultsHost, 
+            IResultsHost resultsHost,
+            IResultConvertorsHost convertorsHost, 
+            IResultHandlersHost handlersHost,
             ITimeService timeService,
             IEventWaiter eventWaiter,
             IStatistics statistics,
             IObjectPoolSite poolSite,
             ILogger logger)
         {
+            this._config = config;
             this._adapterType = adapterType ?? throw new ArgumentNullException(nameof(adapterType));
             this._adapterFactory = adapterFactory ?? throw new ArgumentNullException(nameof(adapterFactory));
             this._commandsHost = commandsHost;
             this._resultsHost = resultsHost;
+            this._convertorsHost = convertorsHost;
+            this._handlersHost = handlersHost;
             this._timeService = timeService;
             this._eventWaiter = eventWaiter;
             this._statistics = statistics;
             this._poolSite = poolSite;
             this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.DeviceId = Guid.NewGuid();
-            this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
+            this._pools = new Dictionary<CommandType, IObjectPool<CommandContext>>();
+            this._resultsPool = new Dictionary<(Type, CommandType, string), IObjectPool>();
+            //this._executingCommands = new ConcurrentDictionary<Guid, ExecutionContext>();
             this._buffer = new CommandsBuffer();
             this._commandHandlers = new Dictionary<Type, CommandHandler>();
             this._enumLocks = new Dictionary<CommandType, CommandLock>();
@@ -126,19 +143,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
                 while (true)
                 {
-                    var start = _timeService.TimeStamp.Milliseconds;
-                    var timer = System.Diagnostics.Stopwatch.StartNew();
+                    //var start = _timeService.TimeStamp.Milliseconds;
+                    //var timer = System.Diagnostics.Stopwatch.StartNew();
                     var commandDescriptor = _buffer.Take();
                     
-                    var waitTime = _timeService.TimeStamp.Milliseconds - start;
-                    timer.Stop();
+                    //var waitTime = _timeService.TimeStamp.Milliseconds - start;
+                    //timer.Stop();
 
                     this._state = DeviceState.Basy;
                     var command = commandDescriptor.Command;
 
                     this._adaptersCommandsShotsCounter?.Increment();
 
-                    using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.ExecutingAdapterCommand.With(commandDescriptor.CommandType.Name, command.Type, command.Id, _adapterType, waitTime, timer.Elapsed.TotalMilliseconds)))
+                    //using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.ExecutingAdapterCommand.With(commandDescriptor.CommandType.Name, command.Type, command.Id, _adapterType, waitTime, timer.Elapsed.TotalMilliseconds)))
                     {
                         //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.TookCommand.With(_adapterType, command.Type, command.ParameterType));
 
@@ -265,6 +282,32 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
             _commandsHost.Register(this, dummyCommand.Type, commandType);
 
+            // регестрируем пул контекстов комманд
+            if (!_pools.ContainsKey(dummyCommand.Type))
+            {
+                var type = dummyCommand.Type;
+                var pool = _poolSite.Register(new ObjectPoolDescriptor<CommandContext>()
+                {
+                    Key = $"AdapterWork[{this.DeviceId.ToString()}].CommandContexts.#" + ((int)dummyCommand.Type).ToString(),
+                    MinSize = 0,
+                    MaxSize = _config.CommandContextPoolObjects.GetValueOrDefault(CommandContextPoolObjectsDefaultValue),
+                    Factory = () =>
+                    {
+                        var buffer = this._resultsHost.TakeBuffer();
+                        var worker = new ResultWorker(buffer, this._convertorsHost, this._handlersHost, this._poolSite, this._logger);
+                        return new CommandContext(this._resultsPool)
+                        {
+                            Type = type,
+                            Handler = handler,
+                            Buffer = buffer,
+                            Worker = worker,
+                            ExecutionContext = new ExecutionContext(this, buffer, _poolSite, _statistics)
+                        };
+                    }
+                });
+                _pools[dummyCommand.Type] = pool;
+            }
+
             // регистрация пулов результатов
             if (poolDescriptors != null && poolDescriptors.Length > 0)
             {
@@ -285,9 +328,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             }
         }
 
-        public static string BuildPoolKey(CommandType commandType, string key)
+        private string BuildPoolKey(CommandType commandType, string key)
         {
-            return string.Concat(commandType.ToString(), "|", key);
+            return string.Concat($"AdapterWorker[{this.DeviceId.ToString()}].CommandResults.#", ((int)commandType).ToString(), "|", key);
         }
         
         private void RegisterPoolResult<TResult>(CommandType commandType, IResultPoolDescriptor<TResult> descriptor)
@@ -295,44 +338,59 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             var poolDescriptor = new ObjectPoolDescriptor<TResult>()
             {
                 Factory = descriptor.Factory,
-                Key = BuildPoolKey(commandType, descriptor.Key),
+                Key = this.BuildPoolKey(commandType, descriptor.Key),
                 MinSize = descriptor.MinSize,
                 MaxSize = descriptor.MaxSize,
             };
 
             var pool = _poolSite.Register(poolDescriptor);
-
+            _resultsPool[new ValueTuple<Type, CommandType, string>(typeof(TResult), commandType, descriptor.Key)] = pool;
             _logger.Verbouse(Contexts.AdapterWorker, Categories.Initializing, $"Result object pool was registered: {pool.ToString()}");
         }
 
         private void StartExecutingCommand(CommandDescriptor commandDescriptor)
         {
-            var handler = this._commandHandlers[commandDescriptor.CommandType];
+            
 
             var command = commandDescriptor.Command;
 
-            var resultBuffer = this._resultsHost.TakeBuffer(commandDescriptor);
+            //var handler = this._commandHandlers[commandDescriptor.CommandType];
+            //var resultBuffer = this._resultsHost.TakeBuffer(commandDescriptor);
+            //var executionContext = new ExecutionContext(commandDescriptor, this, resultBuffer, this._poolSite, this._statistics);
 
-            var executionContext = new ExecutionContext(commandDescriptor, this, resultBuffer, this._poolSite, this._statistics);
-            this._executingCommands.TryAdd(command.Id, executionContext);
+            var pool = _pools[command.Type];
+
+            if (!pool.TryTake(out var commandContext))
+            {
+                do
+                {
+                    Thread.SpinWait(100);
+                } while (!pool.TryTake(out commandContext));
+            }
+            
+            //var commandContext = pool.Take();
+
+            commandContext.Use(commandDescriptor);
+            //commandContext.ExecutionContext.Use(commandDescriptor, commandContext);
+
+            //this._executingCommands.TryAdd(command.Id, commandContext.ExecutionContext);
 
             commandDescriptor.Process();
 
             try
             {
-                using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.InvokingAdapterCommand.With(command.Id)))
+                //using (var scope = this._logger.StartTrace(Contexts.AdapterWorker, Categories.Executing, TraceScopeNames.InvokingAdapterCommand.With(command.Id)))
                 {
-                    handler.StartedCounter?.Increment();
-                    handler.RunningCounter?.Increment();
-
-                    handler.Invoker(this._adapterObject, command, executionContext);
+                    commandContext.Handler.StartedCounter?.Increment();
+                    commandContext.Handler.RunningCounter?.Increment();
+                    commandContext.Handler.Invoker(this._adapterObject, command, commandContext.ExecutionContext);
                 }
             }
             catch (Exception e)
             {
                 _logger.Exception(Contexts.AdapterWorker, Categories.Processing, e);
                 commandDescriptor.Abort(CommandFailureReason.Exception, e);
-                this.FinalizeCommand(commandDescriptor, resultBuffer);
+                this.FinalizeCommand(commandDescriptor, commandContext);
             }
         }
 
@@ -402,13 +460,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             commandLock.Unlock();
         }
 
-        public void FinalizeCommand(CommandDescriptor descriptor, IResultBuffer resultBuffer)
+        public void FinalizeCommand(CommandDescriptor descriptor, CommandContext context)
         {
+            
             var command = descriptor.Command;
-            this._resultsHost.ReleaseBuffer(resultBuffer);
-            this._executingCommands.TryRemove(command.Id, out var context);
+            var pool = _pools[command.Type];
 
-            var handler = this._commandHandlers[descriptor.CommandType];
+            //this._resultsHost.ReleaseBuffer(resultBuffer);
+
+            //this._executingCommands.TryRemove(command.Id, out _);
+
+            var handler = context.Handler; // this._commandHandlers[descriptor.CommandType];
             handler.RunningCounter?.Decrement();
             if (command.State == CommandState.Done)
             {
@@ -422,7 +484,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 handler.AbortedCounter?.Increment();
             }
-            _logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.FinalizedCommand.With(_adapterType, command.Type, command.ParameterType));
+
+            context.Free(pool);
+            
+            //_logger.Verbouse(Contexts.AdapterWorker, Categories.Processing, Events.FinalizedCommand.With(_adapterType, command.Type, command.ParameterType));
         }
 
         public IDeviceProperties EnsureProperties(CommandType commandType)

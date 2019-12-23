@@ -48,6 +48,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.ResultHandlers
                     //    traceResult.FloatValues[i] = result.ValueAsFloats[i];
                     //    traceResult.DoubleValues[i] = result.ValuesAsDouble[i];
                     //}
+                    //Array.Copy(result.ValueAsFloats, traceResult.FloatValues, command.BlockSize);
+                    //Array.Copy(result.ValuesAsDouble, traceResult.DoubleValues, command.BlockSize);
 
                     traceResult.CommandId = command.Id;
                     traceResult.TaskId = taskContext.Task.Id;
