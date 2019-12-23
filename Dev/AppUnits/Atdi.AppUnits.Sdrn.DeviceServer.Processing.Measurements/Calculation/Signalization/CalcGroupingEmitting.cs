@@ -622,10 +622,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (index2Stop >= emitting2.Spectrum.Levels_dBm.Length) { index2Stop = emitting2.Spectrum.Levels_dBm.Length - 1; }
             var arr1 = new float[index1Stop - index1Start];
             Array.Copy(emitting1.Spectrum.Levels_dBm, index1Start, arr1, 0, index1Stop - index1Start);
-            arr1 = SmoothTrace.blackman(arr1);
+            arr1 = SmoothTrace.blackman(arr1, arr1.Length);
             var arr2 = new float[index2Stop - index2Start];
             Array.Copy(emitting2.Spectrum.Levels_dBm, index2Start, arr2, 0, index2Stop - index2Start);
-            arr2 = SmoothTrace.blackman(arr2);
+            arr2 = SmoothTrace.blackman(arr2, arr2.Length);
 
             double freq1_Hz = emitting1.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting1.Spectrum.SpectrumSteps_kHz * index1Start * 1000.0;
             double freq2_Hz = emitting2.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting2.Spectrum.SpectrumSteps_kHz * index2Start * 1000.0;
@@ -647,10 +647,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (index2Stop >= emitting2.Spectrum.Levels_dBm.Length) { index2Stop = emitting2.Spectrum.Levels_dBm.Length - 1; }
             var arr1 = new float[index1Stop - index1Start];
             Array.Copy(emitting1.Spectrum.Levels_dBm, index1Start, arr1, 0, index1Stop - index1Start);
-            arr1 = SmoothTrace.blackman(arr1);
+            arr1 = SmoothTrace.blackman(arr1, arr1.Length);
             var arr2 = new float[index2Stop - index2Start];
             Array.Copy(emitting2.Spectrum.Levels_dBm, index2Start, arr2, 0, index2Stop - index2Start);
-            arr2 = SmoothTrace.blackman(arr2);
+            arr2 = SmoothTrace.blackman(arr2, arr2.Length);
 
             double freq1_Hz = emitting1.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting1.Spectrum.SpectrumSteps_kHz * index1Start * 1000.0;
             double freq2_Hz = emitting2.Spectrum.SpectrumStartFreq_MHz * 1000000.0 + emitting2.Spectrum.SpectrumSteps_kHz * index2Start * 1000.0;

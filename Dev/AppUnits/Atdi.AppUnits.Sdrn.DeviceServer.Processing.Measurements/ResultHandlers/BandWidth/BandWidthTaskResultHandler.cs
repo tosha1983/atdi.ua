@@ -28,8 +28,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 try
                 {
                     var Levels = result.Level;
-                    if (taskContext.Task.Smooth) { Levels = SmoothTrace.blackman(Levels); }
-                    int MaximumIgnorPoint =(int)Math.Round(result.Level.Length / 300.0);
+                    if (taskContext.Task.Smooth) { Levels = SmoothTrace.blackman(Levels, result.LevelMaxIndex + 1); }
+                    int MaximumIgnorPoint = (int)Math.Round((result.LevelMaxIndex+1) / 300.0);
                     MeasBandwidthResult measBandWidthResults = null;
                     var parentProcess = taskContext.Descriptor.Parent;
                     if (parentProcess != null)

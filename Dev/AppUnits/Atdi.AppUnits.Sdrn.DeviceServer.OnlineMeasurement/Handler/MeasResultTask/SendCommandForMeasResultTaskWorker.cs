@@ -48,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
             });
 
 
-            bool isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel, (int)(deviceCommand.Timeout));
+            bool isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel /*, (int)(deviceCommand.Timeout)*/);
             if (isDown == false) // таймут - результатов нет
             {
                 var error = new ExceptionProcessLevel();
@@ -70,7 +70,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                                 });
 
 
-                                isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel, (int)(deviceCommand.Timeout));
+                                isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel/*, (int)(deviceCommand.Timeout)*/);
                                 if (isDown == true)
                                 {
                                     isSuccessOperation = true;
@@ -103,7 +103,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                                 });
 
 
-                                isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel, (int)(deviceCommand.Timeout));
+                                isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel/*, (int)(deviceCommand.Timeout)*/);
                                 if (isDown == true)
                                 {
                                     isSuccessOperation = true;
@@ -175,7 +175,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Results
                         });
 
 
-                        isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel, (int)(deviceCommand.Timeout));
+                        isDown = context.WaitEvent<DeviceServerResultLevel>(out deviceServerResultLevel/*, (int)(deviceCommand.Timeout)*/);
                         if (isDown == true)
                         {
                             isSuccessOperation = true;

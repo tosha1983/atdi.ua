@@ -43,7 +43,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="referenceLevels"></param>
         /// <param name="Trace"></param>
         /// <returns></returns>
-        public static Emitting[] Calc(ref float[] tempLevel, TaskParameters taskParameters, ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm, List<double> ChCentrFreqs_Mhz = null, double BWChalnel_kHz = 200)
+        public static Emitting[] Calc(TaskParameters taskParameters, ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm, List<double> ChCentrFreqs_Mhz = null, double BWChalnel_kHz = 200)
         { //НЕ ТЕСТИРОВАННО
 
             NumberPointForChangeExcess = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.Value;
@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             ChackLevelChannel = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.CheckLevelChannel.Value;
             MinPointForDetailBW = taskParameters.SignalingMeasTaskParameters.InterruptionParameters.MinPointForDetailBW.Value;
 
-            if (refLevels.levels.Length != Trace.Level.Length)
+            if (refLevels.levels.Length != (Trace.LevelMaxIndex+1))
             {
                 return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
             }
@@ -102,7 +102,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Формируем помехи.
                 //double stepBW_kHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length - 1] - Trace.Freq_Hz[0]) / ((Trace.Freq_Hz.Length - 1) * 1000.0);
                 double stepBW_kHz = (Trace.FrequencyStep_Hz/1000.0);
-                var newEmittings = CreateEmittings(ref tempLevel, Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm, CompareTraceJustWithRefLevels);
+                var newEmittings = CreateEmittings(Trace, refLevels, index_start_stop, stepBW_kHz, NoiseLevel_dBm, CompareTraceJustWithRefLevels);
                 // сформировали новые параметры излучения теперь надо накатить старые по идее.
                 return newEmittings;
             }
@@ -118,7 +118,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         private static List<int> SearchStartStopCompaireWithRefLevels(ReferenceLevels refLevels, MesureTraceResult Trace, double NoiseLevel_dBm, int NumberPointForChangeExcess = 10)
         {
-            if (refLevels.levels.Length != Trace.Level.Length)
+            if (refLevels.levels.Length != (Trace.LevelMaxIndex+1))
             {
                 return null; // выход по причине несовпадения количества точек следовательно необходимо перерасчитать CalcReferenceLevels 
             }
@@ -184,7 +184,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (Trace.Level[0] > NoiseLevel_dBm + allowableExcess_dB) { excess = true; startSignalIndex = 0; }
             // выделение мест где произошло превышение порога 
             var index_start_stop = new List<int>();
-            for (int i = 0; i < Trace.Level.Length; i++)
+            for (int i = 0; i < (Trace.LevelMaxIndex+1); i++)
             {
                 if (Trace.Level[i] > NoiseLevel_dBm + allowableExcess_dB)
                 { //Превышение
@@ -218,7 +218,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             if (excess)
             { // Конец превышения
                 index_start_stop.Add(startSignalIndex);
-                index_start_stop.Add(Trace.Level.Length - 1);
+                index_start_stop.Add(Trace.LevelMaxIndex);
                 excess = false;
             }
             // выделение произошло. 
@@ -253,14 +253,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             double step = Trace.FrequencyStep_Hz;
             double Freq_start_Hz = Trace.FrequencyStart_Hz;
             if (ChCentrFreqs_Mhz.Count == 1)
-            {   double Pow = CalcPowInChannel(ref Trace.Level, Freq_start_Hz, step, ChCentrFreqs_Mhz[0], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
+            {   double Pow = CalcPowInChannel(ref Trace.Level, Trace.LevelMaxIndex+1,  Freq_start_Hz, step, ChCentrFreqs_Mhz[0], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
                 if (Pow > TrigerLevel_dBmCh+10) { GoodChannel.Add(0); }
                 else if (Pow > TrigerLevel_dBmCh) { AverageChannel.Add(0); } return;}
 
 
             // когда два канала 
-            double PowFirstCh = CalcPowInChannel(ref Trace.Level, Freq_start_Hz, step, ChCentrFreqs_Mhz[0], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmFirstCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
-            double PowSecondCh = CalcPowInChannel(ref Trace.Level, Freq_start_Hz, step, ChCentrFreqs_Mhz[1], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmSecondCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
+            double PowFirstCh = CalcPowInChannel(ref Trace.Level, Trace.LevelMaxIndex + 1, Freq_start_Hz, step, ChCentrFreqs_Mhz[0], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmFirstCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
+            double PowSecondCh = CalcPowInChannel(ref Trace.Level, Trace.LevelMaxIndex + 1, Freq_start_Hz, step, ChCentrFreqs_Mhz[1], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmSecondCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
             if (ChCentrFreqs_Mhz.Count == 2)
             {
                 if (PowSecondCh - DifferencePowerInCoChannel_dB >= PowFirstCh) { GoodChannel.Add(1); }
@@ -274,7 +274,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             else if (PowFirstCh - DifferencePowerInCoChannelForJustAnalize_dB >= PowSecondCh) { if (PowFirstCh > TrigerLevel_dBmFirstCh) { AverageChannel.Add(0); } }
             for (int i = 2; ChCentrFreqs_Mhz.Count > i; i++)
             {
-                double PowLastCh = CalcPowInChannel(ref Trace.Level, Freq_start_Hz, step, ChCentrFreqs_Mhz[i], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmLastCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
+                double PowLastCh = CalcPowInChannel(ref Trace.Level, Trace.LevelMaxIndex + 1, Freq_start_Hz, step, ChCentrFreqs_Mhz[i], BWChalnel_kHz, NoiseLevel_dBm, out double TrigerLevel_dBmLastCh, PersentSpectrumInCentrForCalcPowInChannelForComparePow);
                 if ((PowSecondCh - DifferencePowerInCoChannel_dB >= PowFirstCh) && (PowSecondCh - DifferencePowerInCoChannel_dB >= PowLastCh)) {
                     GoodChannel.Add(i - 1); }
                 else if ((PowSecondCh - DifferencePowerInCoChannelForJustAnalize_dB >= PowFirstCh) && (PowSecondCh - DifferencePowerInCoChannelForJustAnalize_dB >= PowLastCh)) {
@@ -293,7 +293,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             for (var i = 0; i < index_start_stop.Count - 1; i = i + 2)
             {
                 int[] StartStopAnalized;
-                int count = EmissionCounting.Counting(Trace.Level, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, DifferenceMaxMax, FiltrationTrace);
+                int count = EmissionCounting.Counting(Trace.Level, Trace.LevelMaxIndex + 1, index_start_stop[i], index_start_stop[i + 1], out StartStopAnalized, DifferenceMaxMax, FiltrationTrace);
                 for (int j = 0; j < StartStopAnalized.Length; j++)
                 {
                     ResultStartStopIndexArr.Add(StartStopAnalized[j]);
@@ -301,14 +301,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return ResultStartStopIndexArr;
         }
-        private static Emitting[] CreateEmittings(ref float[] templevel, MesureTraceResult trace, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double NoiseLevel_dBm, bool CompareTraceJustWithRefLevels)
+        private static Emitting[] CreateEmittings(MesureTraceResult trace, ReferenceLevels refLevel, List<int> index_start_stop, double stepBW_kHz, double NoiseLevel_dBm, bool CompareTraceJustWithRefLevels)
         { // задача локализовать излучения
 
             var levels = trace.Level;
-            if (levels.Length> templevel.Length)
-            {
-                throw new InvalidOperationException($"CreateEmittings method: count elements in array 'trace.Level' = {levels.Length} greater count elements in pool-array 'context.templevel' = {templevel.Length}");
-            }
 
             var emittings = new List<Emitting>();
             for (var i = 0; i < index_start_stop.Count; i = i + 2)
@@ -320,11 +316,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 if ((start + stop - winBW) / 2 > 0) { start_ = (int)((start + stop - winBW) / 2.0); } else { start_ = 0; }
                 if ((start + stop + winBW) / 2 < trace.LevelMaxIndex) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = trace.LevelMaxIndex; }
                 var emitting = new Emitting();
-                //var templevel = new float[stop_ - start_];
-                Array.Clear(templevel, 0, templevel.Length);
+                var templevel = new float[stop_ - start_];
                 Array.Copy(levels, start_, templevel, 0, stop_ - start_);
                 var TemplevelForAnalize = templevel;
-                if (FiltrationTrace) { TemplevelForAnalize = SmoothTrace.blackman(templevel); }
+                if (FiltrationTrace) { TemplevelForAnalize = SmoothTrace.blackman(templevel, stop_ - start_); }
                 var measSdrBandwidthResults = BandWidthEstimation.GetBandwidthPoint(TemplevelForAnalize, BandWidthEstimation.BandwidthEstimationType.xFromCentr, DiffLevelForCalcBW, NumberIgnoredPoints);
                 emitting.Spectrum = new Spectrum();
                 if (measSdrBandwidthResults.СorrectnessEstimations != null)
@@ -344,7 +339,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {// попробуем пройтись по масиву с помощью метода nDbDown и всеже определить ширину спектра
                         int startreal = -1;
                         int stopreal = -1;
-                        bool CorectCalcBW = CalcBWSignalization.CalcBW(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, NumberIgnoredPoints, ref startreal, ref stopreal);
+                        bool CorectCalcBW = CalcBWSignalization.CalcBW(levels, trace.LevelMaxIndex + 1, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, NumberIgnoredPoints, ref startreal, ref stopreal);
                         if (CorectCalcBW)
                         {
                             // поиск коректной полосы 
@@ -358,7 +353,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 start = (int)Math.Floor((emitting.StartFrequency_MHz - trace.FrequencyStart_Hz / 1000000.0) / (stepBW_kHz / 1000));
                                 stop = (int)Math.Ceiling((emitting.StopFrequency_MHz - trace.FrequencyStart_Hz / 1000000.0) / (stepBW_kHz / 1000));
                                 if (start < 0) { start = 0; }
-                                if (stop >= levels.Length) { stop = levels.Length - 1; }
+                                if (stop >= (trace.LevelMaxIndex + 1)) { stop = trace.LevelMaxIndex ; }
                             }
                             else
                             {
@@ -464,7 +459,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 // определяем границы для спектра
                 double winBW = (stop - start) * windowBW;
                 if ((start + stop - winBW) / 2 > 0) { start_ = (int)((start + stop - winBW) / 2.0); } else { start_ = 0; }
-                if ((start + stop + winBW) / 2 < levels.Length - 1) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = levels.Length - 1; }
+                if ((start + stop + winBW) / 2 < trace.LevelMaxIndex) { stop_ = (int)((start + stop + winBW) / 2.0); } else { stop_ = trace.LevelMaxIndex; }
                 // границы находяться в start_  и stop_ 
 
                 var emitting = new Emitting();
@@ -478,7 +473,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 emitting.EmittingParameters = new EmittingParameters();
 
                 var TemplevelForAnalize = templevel;
-                if (FiltrationTrace) { TemplevelForAnalize = SmoothTrace.blackman(templevel); }
+                if (FiltrationTrace) { TemplevelForAnalize = SmoothTrace.blackman(templevel, stop_ - start_); }
 
                 // определение BW 
                 bool estimBW = false;
@@ -512,13 +507,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     int start_A = start; int stop_A = stop;
                     winBW = (stop - start) * persentBWforCorrelationAnalize / 100.0;
                     if ((start + stop - winBW) / 2 > 0) { start_A = (int)((start + stop - winBW) / 2.0); } else { start_A = 0; }
-                    if ((start + stop + winBW) / 2 < levels.Length - 1) { stop_A = (int)((start + stop + winBW) / 2.0); } else { stop_A = levels.Length - 1; }
+                    if ((start + stop + winBW) / 2 < trace.LevelMaxIndex) { stop_A = (int)((start + stop + winBW) / 2.0); } else { stop_A = trace.LevelMaxIndex; }
                     var TempLevelForCorrelation = new float[stop_A - start_A];
                     Array.Copy(levels, start_A, TempLevelForCorrelation, 0, stop_A - start_A);
-                    TempLevelForCorrelation = SmoothTrace.blackman(TempLevelForCorrelation);
+                    TempLevelForCorrelation = SmoothTrace.blackman(TempLevelForCorrelation, stop_A - start_A);
                     if (estimBW)
                     {
-                        double corr = CorrelationAnalyzeForCompairWithEtalon(TempLevelForCorrelation, StartTraceFreq_Hz + start_A * TraceStep_Hz, TraceStep_Hz, out double StandardBW_Hz, out string standard);
+                        double corr = CorrelationAnalyzeForCompairWithEtalon(TempLevelForCorrelation, stop_A - start_A, StartTraceFreq_Hz + start_A * TraceStep_Hz, TraceStep_Hz, out double StandardBW_Hz, out string standard);
                         if (corr >= 0.75)
                         {
                             emitting.EmittingParameters.StandardBW = StandardBW_Hz;
@@ -535,7 +530,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     }
                     else
                     {
-                        int MarkerIndex = CorrelationAnalyzeForEstimationFreq(TempLevelForCorrelation, StartTraceFreq_Hz + start_A * TraceStep_Hz, TraceStep_Hz, out double BestCorr, out double StandardBW_Hz, out string standard);
+                        int MarkerIndex = CorrelationAnalyzeForEstimationFreq(TempLevelForCorrelation, stop_A - start_A, StartTraceFreq_Hz + start_A * TraceStep_Hz, TraceStep_Hz, out double BestCorr, out double StandardBW_Hz, out string standard);
                         if (BestCorr >= 0.75)//CorrelationFactor)
                         {// Супер сигнал идентифицирован частота определена 
                             MarkerIndex = MarkerIndex - start_ + start_A;
@@ -619,13 +614,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             return emittings.ToArray();
         }
-        private static double CalcPowInChannel(ref float[] Level_dBm, double Freq_start_Hz, double step_Hz, double CentralChannelFreq_MHz, double ChannelBW_kHz, double NoiseLevel_dBm, out double TrigerLevel, int persentpoints = 0)
+        private static double CalcPowInChannel(ref float[] Level_dBm, int length, double Freq_start_Hz, double step_Hz, double CentralChannelFreq_MHz, double ChannelBW_kHz, double NoiseLevel_dBm, out double TrigerLevel, int persentpoints = 0)
         { // НЕ ПРОВЕРЕННО (проверенно частично)
             if (persentpoints == 0)
             { // расчет идет только для центрального канала 
                 TrigerLevel = NoiseLevel_dBm + allowableExcess_dB;
                 int IndexCenterLastChannel = (int)Math.Round((CentralChannelFreq_MHz * 1000000 - Freq_start_Hz) / step_Hz);
-                if (IndexCenterLastChannel >= Level_dBm.Length) { return -999; }
+                if (IndexCenterLastChannel >= length) { return -999; }
                 double Pow = Level_dBm[IndexCenterLastChannel];
                 return Pow;
             }
@@ -636,7 +631,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 TrigerLevel = NoiseLevel_dBm + allowableExcess_dB + 10 * Math.Log10(numberpoint);
                 int IndexCenterLastChannel = (int)Math.Round((CentralChannelFreq_MHz * 1000000 - Freq_start_Hz) / step_Hz);
                 int shift = (int)Math.Floor(numberpoint / 2.0);
-                if ((IndexCenterLastChannel + numberpoint - shift >= Level_dBm.Length) || (IndexCenterLastChannel - shift < 0)) { return -999; }
+                if ((IndexCenterLastChannel + numberpoint - shift >= length) || (IndexCenterLastChannel - shift < 0)) { return -999; }
                 double Pow_mW = 0;
                 for (var i = 0; numberpoint > i; i++)
                 {
@@ -647,10 +642,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             TrigerLevel = -999;
             return -999;
         }
-        private static int CorrelationAnalyzeForEstimationFreq(float[] Level_dBm, double StartFreq_Hz, double Step_Hz, out double BestCorr, out double StandartBW_Hz, out string Standard)
+        private static int CorrelationAnalyzeForEstimationFreq(float[] Level_dBm, int length, double StartFreq_Hz, double Step_Hz, out double BestCorr, out double StandartBW_Hz, out string Standard)
         { // Важно Данная функция должна определить центральную частоту (ее индекс) на основании сопоставления с эталонными сигналами пока сравнение идет только с GSM
             //const double GSMWindowAnalize_Hz = 200000;
-            double AllBW = Step_Hz * (Level_dBm.Length - 1);
+            double AllBW = Step_Hz * (length - 1);
             if ((AllBW >= 150000) && (AllBW <= 400000))
             {// есть подозрение что это GSM
                 // производим сравнение с GSM
@@ -664,7 +659,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //Array.Copy(Level_dBm, indexStart, SignalAnalizeLevel, 0, indexStop - indexStart);
 
 
-                var LevelsRef = SmoothTrace.blackman(ReferenceSpectrum.GSMLevels);
+                var LevelsRef = SmoothTrace.blackman(ReferenceSpectrum.GSMLevels, ReferenceSpectrum.GSMLevels.Length);
                 double CentrFreq_Hz = StartFreq_Hz + (AllBW / 2.0);
                 double RefFreq_Hz = CentrFreq_Hz - ReferenceSpectrum.GSMCentralIndex * ReferenceSpectrum.GSMStep_Hz;
                 int shift = СorrelationСoefficient.CalcShiftSpectrum(Level_dBm, StartFreq_Hz, Step_Hz, ReferenceSpectrum.GSMLevels,
@@ -680,13 +675,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             Standard = null;
             return -9999999;
         }
-        private static double CorrelationAnalyzeForCompairWithEtalon(float[] Level_dBm, double StartFreq_Hz, double Step_Hz, out double StandartBW_Hz, out string Standard)
+        private static double CorrelationAnalyzeForCompairWithEtalon(float[] Level_dBm, int length, double StartFreq_Hz, double Step_Hz, out double StandartBW_Hz, out string Standard)
         { // Важно Данная функция должна определить центральную частоту (ее индекс) на основании сопоставления с эталонными сигналами пока сравнение идет только с GSM
-            double AllBW = Step_Hz * (Level_dBm.Length - 1);
+            double AllBW = Step_Hz * (length - 1);
             if ((AllBW >= 150000) && (AllBW <= 400000))
             {// есть подозрение что это GSM
 
-                var LevelsRef = SmoothTrace.blackman(ReferenceSpectrum.GSMLevels);
+                var LevelsRef = SmoothTrace.blackman(ReferenceSpectrum.GSMLevels, ReferenceSpectrum.GSMLevels.Length);
                 double CentrFreq_Hz = StartFreq_Hz + (AllBW / 2.0);
                 double RefFreq_Hz = CentrFreq_Hz - ReferenceSpectrum.GSMCentralIndex * ReferenceSpectrum.GSMStep_Hz;
                 double corr = СorrelationСoefficient.CalcCorrelation(Level_dBm, StartFreq_Hz, Step_Hz, ReferenceSpectrum.GSMLevels,

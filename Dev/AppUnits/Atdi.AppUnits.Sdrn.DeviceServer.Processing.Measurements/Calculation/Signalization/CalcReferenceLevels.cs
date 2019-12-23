@@ -25,7 +25,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             var referenceLevels = new ReferenceLevels();
             referenceLevels.StartFrequency_Hz = Trace.FrequencyStart_Hz; //Trace.Freq_Hz[0];
             referenceLevels.StepFrequency_Hz = (stepTraceHz);
-            referenceLevels.levels = new float[Trace.Level.Length];
+            referenceLevels.levels = new float[Trace.LevelMaxIndex+1];
             bool corectMask = SortReferenceSituationMask(ref referenceSituation);
             for (var i = 0; i < referenceLevels.levels.Length; i++)
             {
@@ -75,13 +75,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         public static double GetNoiseLeveldBm(MesureTraceResult Trace, double PercentForCalcNoise = 10)
         { // НЕ ПРОВЕРЕННО
-            var nums = new float[Trace.Level.Length];
+            var nums = new float[Trace.LevelMaxIndex+1];
             for (var i = 0; i < nums.Length; i++)
             {
                 nums[i] = Trace.Level[i];
             }
             float temp;
-            int number = (int)Math.Floor(Trace.Level.Length * PercentForCalcNoise / 100.0);
+            int number = (int)Math.Floor((Trace.LevelMaxIndex + 1) * PercentForCalcNoise / 100.0);
             if (number > nums.Length-1) { number = nums.Length - 1; }
             for (var i = 0; i < number; i++)
             {

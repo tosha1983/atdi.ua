@@ -64,7 +64,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         (context.Process.Parent as DispatchProcess).contextSignalizationTasks.Add(context);
                     }
                 }
-                context.Task.templevel = new float[100000];
 
                 DateTime dateTimeNow = DateTime.Now;
                 TimeSpan waitStartTask = context.Task.taskParameters.StartTime.Value - dateTimeNow;

@@ -10,12 +10,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     public static class SmoothTrace
     {
         private const double PersentLongFilterFromTrace = 3;
-        public static float[] blackman (float[] ArrIn, bool LogInterpolation = false)
+        public static float[] blackman (float[] ArrIn, int length, bool LogInterpolation = false)
         { // НЕ ТЕСТИРОВАННО
-            
-            int N = (int)Math.Floor(ArrIn.Length * PersentLongFilterFromTrace / 200); // Длина фильтра
+            int z = length;
+            var outArrFloat = new float[z];
+            int N = (int)Math.Floor(length * PersentLongFilterFromTrace / 200); // Длина фильтра
             N = N * 2 + 1;
-            if (N <= 2) { return ArrIn;}
+            if (N <= 2) { Array.ConstrainedCopy(ArrIn, 0, outArrFloat, 0, z); return outArrFloat; }
             var H = new double[N]; // Импульсная характеристика фильтра
             // Расчет импульсной характеристики фильтра Блекмана
             for (var i = 0; N > i; i++)
@@ -33,7 +34,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 H[i] = H[i] / SUM;  // сумма коэффициентов равна 1
             }
 
-            int z = ArrIn.Length;
             var outArr = new double[z];
             var ArrIn1 = new double[z];
             // Фильтрация входных данных
