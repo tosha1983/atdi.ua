@@ -133,6 +133,10 @@
       <Project>{02b46618-04e2-4bc7-b8ad-533338854228}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.csproj">
+      <Project>{aa49edcc-42aa-4ab1-860c-e642156f9926}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx\Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.csproj">
       <Project>{744ed6de-49b5-4856-a3a7-cb3f47ad1cc6}</Project>
       <Name>Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx</Name>

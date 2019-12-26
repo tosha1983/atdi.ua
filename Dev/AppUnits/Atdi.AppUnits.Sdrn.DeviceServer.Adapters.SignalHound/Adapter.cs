@@ -1581,6 +1581,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 #if DEBUG
         public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
 #endif
+
         private bool GetIQStream(ref COMR.MesureIQStreamResult iQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool withPPS, bool justWithSignal)
         {
             bool done = false;

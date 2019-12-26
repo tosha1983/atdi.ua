@@ -86,7 +86,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             get { return (string)GetValue(LevelUnitProperty); }
             set { SetValue(LevelUnitProperty, value); }
         }
-        public ADP.SpectrumAnalyzer.Adapter ANAdapter
+        public ADP.RSFPL.Adapter ANAdapter
         {
             get;
             set;
