@@ -2,7 +2,7 @@
 
 namespace Atdi.Platform.Data
 {
-    public interface IObjectPoolSite
+    public interface IObjectPoolSite : IDisposable
     {
         IObjectPool<T> Register<T>(ObjectPoolDescriptor<T> descriptor);
 

@@ -92,8 +92,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
         }
 
-        private void OpenGPSDevice()
+        private bool OpenGPSDevice()
         {
+            bool isSuccess = false;
+
             this._logger.Verbouse(Contexts.ThisComponent, Categories.Processing, "Try open GPS device...");
 
             var portSettings = new SerialPortSettings();
@@ -164,16 +166,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 try
                 {
                     gnssWrapper.Open();
-                    gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
-                    this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OpenDevice);
+                    if (gnssWrapper.IsOpen)
+                    {
+                        gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+                        isSuccess = true;
+                        this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OpenDevice);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"COM port {portSettings.PortName} is not open");
+                    }
                 }
                 catch (Exception ex)
                 {
-
+                    CloseGPSDevice();
                     this._logger.Critical(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message), ex);
                     throw new InvalidOperationException(Categories.Processing + ":" + ex.Message, ex);
                 }
             }
+            return isSuccess;
         }
 
         private void gnssWrapper_LogEvent(object sender, LogEventArgs e)

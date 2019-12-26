@@ -116,10 +116,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                     throw new InvalidOperationException("Invalid the block size");
                 }
                 //Thread.Sleep(3);
-                if (false)
-                {
-                    context.ReleaseResult(result);
-                }
+                //if (false)
+                //{
+                //    context.ReleaseResult(result);
+                //}
 
                 //result.ValueAsFloats = GenerateFloatArray(command.BlockSize);
                 //result.ValuesAsDouble = GenerateDoubleArray(command.BlockSize);

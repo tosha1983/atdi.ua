@@ -9,7 +9,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public interface IResultsHost
     {
-        IResultBuffer TakeBuffer(ICommandDescriptor commandDescriptor);
+        IResultBuffer TakeBuffer();
 
         void ReleaseBuffer(IResultBuffer resultBuffer);
     }

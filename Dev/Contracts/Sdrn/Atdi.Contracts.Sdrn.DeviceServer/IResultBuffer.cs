@@ -3,16 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.DeviceServer
 {
-    public interface IResultBuffer
+    public interface IResultBuffer : IDisposable
     {
-        ICommandDescriptor Descriptor { get; }
+        Guid Id { get; }
 
         void Push(ICommandResultPart resultPart);
 
-        ICommandResultPart Take();
+        bool TryTake(out ICommandResultPart result, CancellationToken token);
+
+        void Cancel();
     }
 }

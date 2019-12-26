@@ -36,23 +36,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public void ReleaseBuffer(IResultBuffer resultBuffer)
         {
-            var id = resultBuffer.Descriptor.Command.Id;
+            _usingCounter?.Decrement();
+            _releasedCounter?.Increment();
 
-            if (this._workers.TryRemove(id, out var worker))
-            {
-                _usingCounter?.Decrement();
-                _releasedCounter?.Increment();
-                worker.Stop();
-            }
+            //var id = resultBuffer.Id;
+
+            //if (this._workers.TryRemove(id, out var worker))
+            //{
+                
+            //    worker.Stop();
+            //}
         }
 
-        public IResultBuffer TakeBuffer(ICommandDescriptor commandDescriptor)
+        public IResultBuffer TakeBuffer()
         {
-            var worker = new ResultWorker(commandDescriptor as CommandDescriptor, this._convertorsHost, this._handlersHost, this._poolSite, this._logger);
-            this._workers.TryAdd(commandDescriptor.Command.Id, worker);
+            var resultBuffer = new ResultBuffer();
+            //var worker = new ResultWorker(resultBuffer, this._convertorsHost, this._handlersHost, this._poolSite, this._logger);
+            //this._workers.TryAdd(resultBuffer.Id, worker);
             _createdCounter?.Increment();
             _usingCounter?.Increment();
-            return worker.Run();
+            return resultBuffer;
         }
     }
 }

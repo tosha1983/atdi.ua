@@ -10,10 +10,13 @@ using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class DevicesHost : IDevicesHost
+    internal sealed class DevicesHost : IDevicesHost
     {
+        private readonly IDeviceServerConfig _config;
         private readonly IAdapterFactory _adapterFactory;
         private readonly ICommandsHost _commandsHost;
+        private readonly IResultConvertorsHost _convertorsHost;
+        private readonly IResultHandlersHost _handlersHost;
         private readonly IResultsHost _resultsHost;
         private readonly ITimeService _timeService;
         private readonly IEventWaiter _eventWaiter;
@@ -23,8 +26,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         private readonly Dictionary<Type, AdapterWorker> _workers;
 
         public DevicesHost(
+            IDeviceServerConfig config,
             IAdapterFactory adapterFactory, 
-            ICommandsHost commandsHost, 
+            ICommandsHost commandsHost,
+            IResultConvertorsHost convertorsHost,
+            IResultHandlersHost handlersHost,
             IResultsHost resultsHost, 
             ITimeService timeService,
             IEventWaiter eventWaiter,
@@ -32,8 +38,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             IStatistics statistics,
             ILogger logger)
         {
+            this._config = config;
             this._adapterFactory = adapterFactory;
             this._commandsHost = commandsHost;
+            this._convertorsHost = convertorsHost;
+            this._handlersHost = handlersHost;
             this._resultsHost = resultsHost;
             this._timeService = timeService;
             this._eventWaiter = eventWaiter;
@@ -74,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             {
                 return;
             }
-            var worker = new AdapterWorker(adapterType, this._adapterFactory, this._commandsHost, this._resultsHost, this._timeService, this._eventWaiter, this._statistics, this._poolSite, this._logger);
+            var worker = new AdapterWorker(this._config, adapterType, this._adapterFactory, this._commandsHost, this._resultsHost, this._convertorsHost, this._handlersHost, this._timeService, this._eventWaiter, this._statistics, this._poolSite, this._logger);
             this._workers.Add(adapterType, worker);
 
             _logger.Verbouse(Contexts.DevicesHost, Categories.Registering, Events.RegisteredAdapter.With(adapterType));

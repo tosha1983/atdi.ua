@@ -62,6 +62,8 @@ namespace Atdi.Api.Sdrn.Device.BusController
 
         public static readonly string DeviceBusSharedSecretKey = "DeviceBus.SharedSecretKey";
         public static readonly string DeviceBusClient = "DeviceBus.Client";
+
+        public static readonly string CommandContextPoolObjects = "SDRN.DeviceServer.PoolObjects.CommandContext";
     }
 
     public static class BusGateConfigExtensions

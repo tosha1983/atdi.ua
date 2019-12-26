@@ -214,7 +214,8 @@ namespace Atdi.Api.DataBus
                 Code = brokerEvent.Code ,
                 Context = brokerEvent.Context,
                 Source = brokerEvent.Source,
-                Text = brokerEvent.Text
+                Text = brokerEvent.Text,
+                Exception = brokerEvent.Exception
             };
 
             switch (brokerEvent.Level)

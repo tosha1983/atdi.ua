@@ -55,7 +55,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
             {
                 Key = "data",
                 MinSize = 4,
-                MaxSize = 6,
+                MaxSize = 50,
                 Factory = () => new TraceTaskResultData()
                 {
                     DoubleValues = new double[1_000_000],
@@ -112,15 +112,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
                     avgTime += totalMilliseconds;
 
                     //_logger.Info(Contexts.TraceAutoTask, Categories.Run,
-                    //    $"Duration (command): index=#{context.Task.Index.ToString()}, Time={context.Task.Timer.Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture)}");
+                    //    $"Duration (command): index=#{context.Task.Index.ToString()}, Time={totalMilliseconds.ToString(CultureInfo.InvariantCulture)}");
 
                     //context.Task.Timer.Restart();
 
                     if (result.CommandId != deviceCommand.Id)
                     {
                         _logger.Error(Contexts.TraceAutoTask, Categories.Run,
-                            $"Incorrect command ID: index=#{context.Task.Index}");
+                            $"Incorrect command ID: index=#{context.Task.Index}, ID={deviceCommand.Id.ToString()} - {result.CommandId.ToString()}");
                     }
+                    //else
+                    //{
+                    //    _logger.Info(Contexts.TraceAutoTask, Categories.Run,
+                    //        $"Correct command ID: index=#{context.Task.Index}, ID={deviceCommand.Id.ToString()} - {result.CommandId.ToString()}");
+                    //}
                     if (result.TaskId != context.Task.Id)
                     {
                         _logger.Error(Contexts.TraceAutoTask, Categories.Run,
@@ -136,7 +141,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
                     //    var d = result.DoubleValues[j] / double.MinValue;
                     //    result.DoubleValues[j] = d;
                     //}
+                    //var (item1, item2) = new Tuple<float[], double[]>
+                    //(new float[deviceCommand.BlockSize],
+                    //    new double[deviceCommand.BlockSize]);
+
+
+                    //Array.Copy(result.FloatValues, item1, deviceCommand.BlockSize);
+                    //Array.Copy(result.DoubleValues, item2, deviceCommand.BlockSize);
+
                     _traceResultPool.Put(result);
+
+                    //context.Process.IterationCount = item1.Length + item2.Length;
 
                     //context.Task.Timer.Stop();
                     //_logger.Info(Contexts.TraceAutoTask, Categories.Run,
@@ -147,7 +162,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
 
                 _logger.Info(Contexts.TraceAutoTask, Categories.Run,
                     $"Trace task was finished: index=#{context.Task.Index.ToString()}, Count={context.Task.Count.ToString()} MinTime={minTime.ToString(CultureInfo.InvariantCulture)}, AvgTime={avgTime.ToString(CultureInfo.InvariantCulture)}, MaxTime={maxTime.ToString(CultureInfo.InvariantCulture)}, FullTime={mainTimer.Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture)}, AvgFullTime={(mainTimer.Elapsed.TotalMilliseconds/context.Task.Count).ToString(CultureInfo.InvariantCulture)}");
-
+                
+                
                 context.Finish();
             }
             catch (Exception e)
