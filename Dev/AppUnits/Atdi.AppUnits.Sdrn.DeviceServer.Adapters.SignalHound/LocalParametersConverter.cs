@@ -3,11 +3,19 @@ using PEN = Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums;
 using MEN = Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums;
 using System.Diagnostics;
+using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
     public class LocalParametersConverter
     {
+        private readonly ILogger logger;
+
+        public LocalParametersConverter(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public EN.Attenuator Attenuator(int ATTFromParameter)
         {
             EN.Attenuator res = EN.Attenuator.Atten_0;
@@ -71,26 +79,49 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             return res;
         }
-        public EN.Gain Gain(int GainFromParameter)
+        public double RefLevel(double refLevelFromParameter)
+        {
+            double res = 0;
+            if (refLevelFromParameter == 1000000000.0)//предусмотренно договаренностью
+            {
+                res = -40;
+            }
+            else if (refLevelFromParameter > 20.0)
+            {
+                res = 20.0;
+                logger.Warning(Contexts.ThisComponent, "RefLevel is set correct and is equal to " + res + "dBm");
+            }
+            else if (refLevelFromParameter < -130.0)
+            {
+                res = -130.0;
+                logger.Warning(Contexts.ThisComponent, "RefLevel is set correct and is equal to " + res + "dBm");
+            }
+            else
+            {
+                res = refLevelFromParameter;
+            }
+            return res;
+        }
+        public EN.Gain Gain(int gainFromParameter)
         {
             EN.Gain res = EN.Gain.Gain_0;
-            if (GainFromParameter == -1)
+            if (gainFromParameter == -1)
             {
                 res = EN.Gain.Gain_AUTO;
             }
-            else if (GainFromParameter == 0)
+            else if (gainFromParameter == 0)
             {
                 res = EN.Gain.Gain_0;
             }
-            else if (GainFromParameter == 10)
+            else if (gainFromParameter == 10)
             {
                 res = EN.Gain.Gain_1;
             }
-            else if (GainFromParameter == 20)
+            else if (gainFromParameter == 20)
             {
                 res = EN.Gain.Gain_2;
             }
-            else if (GainFromParameter == 30)
+            else if (gainFromParameter == 30)
             {
                 res = EN.Gain.Gain_3;
             }
@@ -99,9 +130,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 int delta = int.MaxValue;
                 foreach (int t in Enum.GetValues(typeof(EN.Gain)))
                 {
-                    if (Math.Abs(GainFromParameter - t * 10) < delta)
+                    if (Math.Abs(gainFromParameter - t * 10) < delta)
                     {
-                        delta = Math.Abs(GainFromParameter - t * 10);
+                        delta = Math.Abs(gainFromParameter - t * 10);
                         res = (EN.Gain)t;
                     }
                 }
@@ -109,69 +140,90 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             return res;
         }
-        public int Gain(EN.Gain GainFromDevice)
+        public int Gain(EN.Gain gainFromDevice)
         {
             int res = 0;
-            if (GainFromDevice == EN.Gain.Gain_AUTO)
+            if (gainFromDevice == EN.Gain.Gain_AUTO)
             {
                 res = -1;
             }
-            else if (GainFromDevice == EN.Gain.Gain_0)
+            else if (gainFromDevice == EN.Gain.Gain_0)
             {
                 res = 0;
             }
-            else if (GainFromDevice == EN.Gain.Gain_1)
+            else if (gainFromDevice == EN.Gain.Gain_1)
             {
                 res = 10;
             }
-            else if (GainFromDevice == EN.Gain.Gain_2)
+            else if (gainFromDevice == EN.Gain.Gain_2)
             {
                 res = 20;
             }
-            else if (GainFromDevice == EN.Gain.Gain_3)
+            else if (gainFromDevice == EN.Gain.Gain_3)
             {
                 res = 30;
             }
 
             return res;
         }
-        public decimal FreqStart(Adapter SH, decimal FreqStartFromParameter)
+        public double SweepTime(Adapter SH, double sweepTimeFromParameter)
         {
-            decimal res = 0;
-            if (FreqStartFromParameter < SH.FreqMin)
+            double res = 0;
+            if (sweepTimeFromParameter < SH.SweepTimeMin)
             {
-                res = SH.FreqMin;
+                res = SH.SweepTimeMin;
+                logger.Warning(Contexts.ThisComponent, "SweepTime is set correct and is equal to " + res.ToString() + "s");
             }
-            else if (FreqStartFromParameter > SH.FreqMax)
+            else if (sweepTimeFromParameter > SH.SweepTimeMax)
             {
-                res = SH.FreqMax - 1000000;
+                res = SH.SweepTimeMax;
+                logger.Warning(Contexts.ThisComponent, "SweepTime is set correct and is equal to " + res.ToString() + "s");
             }
             else
             {
-                res = FreqStartFromParameter;
+                res = sweepTimeFromParameter;
             }
             return res;
         }
-        public decimal FreqStop(Adapter SH, decimal FreqStopFromParameter)
+        public decimal FreqStart(Adapter SH, decimal freqStartFromParameter)
         {
             decimal res = 0;
-            if (FreqStopFromParameter > SH.FreqMax)
+            if (freqStartFromParameter < SH.FreqMin)
+            {
+                res = SH.FreqMin;
+                logger.Warning(Contexts.ThisComponent, "FreqStart changed to FreqMin and equals " + SH.FreqMin / 1000000 + "MHz");
+            }
+            else if (freqStartFromParameter > SH.FreqMax)
+            {
+                res = SH.FreqMax - 1000000;
+                logger.Warning(Contexts.ThisComponent, "FreqStart changed to FreqMax and equals " + (SH.FreqMax - 1000000) / 1000000 + "MHz");
+            }
+            else
+            {
+                res = freqStartFromParameter;
+            }
+            return res;
+        }
+        public decimal FreqStop(Adapter SH, decimal freqStopFromParameter)
+        {
+            decimal res = 0;
+            if (freqStopFromParameter > SH.FreqMax)
             {
                 res = SH.FreqMax;
             }
-            else if (FreqStopFromParameter < SH.FreqMin)
+            else if (freqStopFromParameter < SH.FreqMin)
             {
                 res = SH.FreqMin + 1000000;
             }
             else
             {
-                res = FreqStopFromParameter;
+                res = freqStopFromParameter;
             }
             return res;
         }
-        public decimal RBW(Adapter SH, decimal RBWFromParameter)
+        public double RBW(Adapter SH, double RBWFromParameter)
         {
-            decimal res = 0;
+            double res = 0;
             if (RBWFromParameter > SH.RBWMax)
             {
                 res = SH.RBWMax;
@@ -186,9 +238,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             return res;
         }
-        public decimal VBW(Adapter SH, decimal VBWFromParameter)
+        public double VBW(Adapter SH, double VBWFromParameter)
         {
-            decimal res = 0;
+            double res = 0;
             if (VBWFromParameter > SH.VBWMax)
             {
                 res = SH.VBWMax;
@@ -201,115 +253,116 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 res = VBWFromParameter;
             }
-            return res;            
+            return res;
         }
-        public EN.TraceType TraceType(PEN.TraceType TraceTypeFromParameter)
+        public EN.TraceType TraceType(PEN.TraceType traceTypeFromParameter)
         {
             EN.TraceType res = EN.TraceType.ClearWrite;
-            if (TraceTypeFromParameter == PEN.TraceType.Auto)
+            if (traceTypeFromParameter == PEN.TraceType.Auto)
             {
                 //По результатам согласования принято такое решение
                 res = EN.TraceType.ClearWrite;//OO
             }
-            else if (TraceTypeFromParameter == PEN.TraceType.ClearWhrite)
+            else if (traceTypeFromParameter == PEN.TraceType.ClearWhrite)
             {
                 res = EN.TraceType.ClearWrite;
             }
-            else if (TraceTypeFromParameter == PEN.TraceType.Average)
+            else if (traceTypeFromParameter == PEN.TraceType.Average)
             {
                 res = EN.TraceType.Average;
             }
-            else if (TraceTypeFromParameter == PEN.TraceType.MaxHold)
+            else if (traceTypeFromParameter == PEN.TraceType.MaxHold)
             {
                 res = EN.TraceType.MaxHold;
             }
-            else if (TraceTypeFromParameter == PEN.TraceType.MinHold)
+            else if (traceTypeFromParameter == PEN.TraceType.MinHold)
             {
                 res = EN.TraceType.MinHold;
             }
             return res;
         }
-        public void DetectorType(Adapter SH, PEN.DetectorType DetectorTypeFromParameter)
+        public (EN.Detector, EN.Detector) DetectorType(PEN.DetectorType detectorTypeFromParameter)
         {
-            SH.DetectorUse = EN.Detector.MaxOnly;
-            SH.DetectorToSet = EN.Detector.MinAndMax;
-            if (DetectorTypeFromParameter == PEN.DetectorType.Auto)
+            EN.Detector DetectorUse = EN.Detector.MaxOnly;
+            EN.Detector DetectorToSet = EN.Detector.MinAndMax;
+            if (detectorTypeFromParameter == PEN.DetectorType.Auto)
             {
                 //По результатам согласования принято такое решение
-                SH.DetectorUse = EN.Detector.MaxOnly;
-                SH.DetectorToSet = EN.Detector.MinAndMax;
+                DetectorUse = EN.Detector.MaxOnly;
+                DetectorToSet = EN.Detector.MinAndMax;
             }
-            else if (DetectorTypeFromParameter == PEN.DetectorType.MaxPeak)
+            else if (detectorTypeFromParameter == PEN.DetectorType.MaxPeak)
             {
                 //По результатам согласования принято такое решение
-                SH.DetectorUse = EN.Detector.MaxOnly;
-                SH.DetectorToSet = EN.Detector.MinAndMax;
+                DetectorUse = EN.Detector.MaxOnly;
+                DetectorToSet = EN.Detector.MinAndMax;
             }
-            else if (DetectorTypeFromParameter == PEN.DetectorType.MinPeak)
+            else if (detectorTypeFromParameter == PEN.DetectorType.MinPeak)
             {
                 //По результатам согласования принято такое решение
-                SH.DetectorUse = EN.Detector.MinOnly;
-                SH.DetectorToSet = EN.Detector.MinAndMax;
+                DetectorUse = EN.Detector.MinOnly;
+                DetectorToSet = EN.Detector.MinAndMax;
             }
-            else if (DetectorTypeFromParameter == PEN.DetectorType.Average)
+            else if (detectorTypeFromParameter == PEN.DetectorType.Average)
             {
                 //По результатам согласования принято такое решение
-                SH.DetectorUse = EN.Detector.Average;
-                SH.DetectorToSet = EN.Detector.Average;
+                DetectorUse = EN.Detector.Average;
+                DetectorToSet = EN.Detector.Average;
             }
-            else if (DetectorTypeFromParameter == PEN.DetectorType.RMS)
+            else if (detectorTypeFromParameter == PEN.DetectorType.RMS)
             {
                 //По результатам согласования принято такое решение
-                SH.DetectorUse = EN.Detector.Average;
-                SH.DetectorToSet = EN.Detector.Average;
+                DetectorUse = EN.Detector.Average;
+                DetectorToSet = EN.Detector.Average;
             }
+            return (DetectorUse, DetectorToSet);
         }
-        public MEN.LevelUnit LevelUnit(PEN.LevelUnit LevelUnitFromParameter)
+        public MEN.LevelUnit LevelUnit(PEN.LevelUnit levelUnitFromParameter)
         {
             MEN.LevelUnit res = MEN.LevelUnit.dBm;
-            if (LevelUnitFromParameter == PEN.LevelUnit.dBm)
+            if (levelUnitFromParameter == PEN.LevelUnit.dBm)
             {
                 res = MEN.LevelUnit.dBm;
             }
-            else if (LevelUnitFromParameter == PEN.LevelUnit.dBmkV)
+            else if (levelUnitFromParameter == PEN.LevelUnit.dBmkV)
             {
                 res = MEN.LevelUnit.dBµV;
             }
-            else if (LevelUnitFromParameter == PEN.LevelUnit.dBmkVm)
+            else if (levelUnitFromParameter == PEN.LevelUnit.dBmkVm)
             {
                 //По результатам согласования принято такое решение
-                throw new Exception("LevelUnit must be set to dbm or dBmkVm");
+                throw new Exception("LevelUnit must be set to dbm or dBmkV");
                 //res = MEN.LevelUnit.dBµVm;
             }
-            else if (LevelUnitFromParameter == PEN.LevelUnit.mkV)
+            else if (levelUnitFromParameter == PEN.LevelUnit.mkV)
             {
                 //По результатам согласования принято такое решение
-                throw new Exception("LevelUnit must be set to dbm or dBmkVm");
+                throw new Exception("LevelUnit must be set to dbm or dBmkV");
                 //res = MEN.LevelUnit.µV;
             }
             return res;
         }
 
 
-        public (decimal FreqStart, decimal FreqStop) IQFreqStartStop(Adapter SH, decimal FreqStartFromParameter, decimal FreqStopFromParameter)
+        public (decimal freqStart, decimal freqStop) IQFreqStartStop(Adapter SH, decimal freqStartFromParameter, decimal freqStopFromParameter)
         {
             decimal fstart = 0, fstop = 0;
-            if (FreqStopFromParameter - FreqStartFromParameter <= 20000000)
+            if (freqStopFromParameter - freqStartFromParameter <= 20000000)
             {
-                if (FreqStartFromParameter < FreqStopFromParameter)
+                if (freqStartFromParameter < freqStopFromParameter)
                 {
-                    if (FreqStartFromParameter >= SH.FreqMin)
+                    if (freqStartFromParameter >= SH.FreqMin)
                     {
-                        fstart = FreqStartFromParameter;
+                        fstart = freqStartFromParameter;
                     }
                     else
                     {
                         throw new Exception("FreqStart < FreqMin");
                     }
 
-                    if (FreqStopFromParameter <= SH.FreqMax)
+                    if (freqStopFromParameter <= SH.FreqMax)
                     {
-                        fstop = FreqStopFromParameter;
+                        fstop = freqStopFromParameter;
                     }
                     else
                     {
@@ -328,18 +381,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
             return (fstart, fstop);
         }
-        public int IQDownsampleFactor(double BitRate_MBsFromParameter, decimal Span)
+        public int IQDownsampleFactor(double bitRate_MBsFromParameter, decimal span)
         {
             int res = 1;
-            double BitRate = BitRate_MBsFromParameter * 1000000;
-            if (Span <= 20000000)
+            double BitRate = bitRate_MBsFromParameter * 1000000;
+            if (span <= 20000000)
             {
                 if (BitRate < 0)
                 {
                     BitRate = 40000000;
                 }
 
-                if ((decimal)BitRate / Span >= 2)
+                if ((decimal)BitRate / span >= 2)
                 {
                     double df = 40000000 / BitRate;
                     if (df < 2) res = 1;
@@ -370,15 +423,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             return res;
         }
 
-        public (double BlockDuration, double ReceiveTime) IQTimeParameters(double BlockDuration, double ReceiveTime)
+        public (double blockDuration, double receiveTime) IQTimeParameters(double blockDuration, double receiveTime)
         {
             double blockduration = 1, receivetime = 1;
-            if (BlockDuration > 0 && ReceiveTime > 0)
+            if (blockDuration > 0 && receiveTime > 0)
             {
-                if (BlockDuration <= ReceiveTime)
+                if (blockDuration <= receiveTime)
                 {
-                    blockduration = BlockDuration;
-                    receivetime = ReceiveTime;
+                    blockduration = blockDuration;
+                    receivetime = receiveTime;
                 }
                 else
                 {
@@ -387,10 +440,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             else
             {
-                if (BlockDuration <= 0)
+                if (blockDuration <= 0)
                     throw new Exception("BlockDuration cannot be less than or equal to zero.");
 
-                if (ReceiveTime <= 0)
+                if (receiveTime <= 0)
                     throw new Exception("ReceiveTime cannot be less than or equal to zero.");
             }
             return (blockduration, receivetime);

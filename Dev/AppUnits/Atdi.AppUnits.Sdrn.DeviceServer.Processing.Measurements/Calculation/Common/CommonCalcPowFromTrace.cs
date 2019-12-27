@@ -48,7 +48,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 Pow_mW = Math.Pow(10, Pow_mW / 10);
             }
 
-            for (int i = T1; i <= T2; i++)
+            for (var i = T1; i <= T2; i++)
             {
                 Pow_mW = Pow_mW + Math.Pow(10, Levels_dBm[i] / 10);
             }

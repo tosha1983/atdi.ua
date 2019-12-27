@@ -344,12 +344,13 @@ namespace Atdi.Platform.Logging
             return _config.IsAllowed(level);
         }
 
+        private static readonly TraceScopeDummy _traceScopeDummy = new TraceScopeDummy();
         public ITraceScope StartTrace(EventContext context, EventCategory category, TraceScopeName scopeName, string source, IReadOnlyDictionary<string, object> data)
         {
             var now = DateTime.Now;
 
             if (!this.IsAllowed(EventLevel.Trace))
-                return new TraceScopeDummy();
+                return _traceScopeDummy;
 
             var scopeData = new TraceScopeData(scopeName);
 

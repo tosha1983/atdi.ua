@@ -20,7 +20,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         //конец константам
         public static double GetStandartBW_kHz(double Real_BW_kHz)
         {
-            for (int i = 0; i < BW_kHz.Length; i++)
+            for (var i = 0; i < BW_kHz.Length; i++)
             {
                 if (Real_BW_kHz < BW_kHz[i]* (AllowableExcessRealBW+1))
                 {

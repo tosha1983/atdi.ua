@@ -88,6 +88,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             try
             {
                 OnConnectionOpening();
+                serialPort.Handshake = Handshake.None;
+                Interlocked.MemoryBarrier();
                 serialPort.Open();
             }
             catch (Exception ex)

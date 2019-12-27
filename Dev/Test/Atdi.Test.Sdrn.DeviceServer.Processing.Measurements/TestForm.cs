@@ -114,7 +114,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Processing.Measurements
             List<float[]> arrsSM = new List<float[]>();
             for (int i = 0; arrs.Count > i; i++)
             {
-                arrsSM.Add(Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.SmoothTrace.blackman(arrs[i]));
+                arrsSM.Add(Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements.SmoothTrace.blackman(arrs[i], arrs[i].Length));
             }
 
             List<int> CorrelationShiftPearson = new List<int>();

@@ -14,8 +14,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
     {
         public static FrequencySample[] Convert(this SemplFreq[] semplFreqs)
         {
-            FrequencySample[] fSemples = new FrequencySample[semplFreqs.Length];
-            for (int i = 0; i < semplFreqs.Length; i++)
+            var fSemples = new FrequencySample[semplFreqs.Length];
+            for (var i = 0; i < semplFreqs.Length; i++)
             {
                 if (semplFreqs[i] != null)
                 {

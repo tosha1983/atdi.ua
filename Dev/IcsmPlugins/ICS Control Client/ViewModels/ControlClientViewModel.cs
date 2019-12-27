@@ -28,6 +28,8 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Configuration;
+using System.Globalization;
+using TR = System.Threading;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -136,6 +138,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private ResultsMeasurementsStationDataAdapter _resultsMeasurementsStations;
         private LevelMeasurementsCarDataAdapter _levelMeasurements;
         private GeneralResultDataAdapter _generalResults;
+        private ResultsMeasurementsStationFilters _currentStationsGolbalFilter;
 
         private Visibility _measTaskDetailVisibility = Visibility.Hidden;
         private Visibility _measResultsDetailVisibility = Visibility.Hidden;
@@ -176,6 +179,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand ShowHideMeasTaskDetailCommand { get; set; }
         public WpfCommand ShowHideMeasResultsDetailCommand { get; set; }
         public WpfCommand MeasResultCommand { get; set; }
+        public WpfCommand FilterApplyCommand { get; set; }
 
         #endregion
 
@@ -216,6 +220,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentModel = ModelType.None;
 
             this._currentChartOption = this.GetDefaultChartOption();
+            this._currentStationsGolbalFilter = new ResultsMeasurementsStationFilters();
 
             this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
             this.GetSOCSVCommand = new WpfCommand(this.OnGetSOCSVCommand);
@@ -241,6 +246,9 @@ namespace XICSM.ICSControlClient.ViewModels
             this._resultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
             this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
             this._generalResults = new GeneralResultDataAdapter();
+
+            this.FilterApplyCommand = new WpfCommand(this.OnFilterApplyCommand);
+            this.LoadSettings();
 
             this._dataStore.OnBeginInvoke += _dataStore_OnBeginInvoke;
             this._dataStore.OnEndInvoke += _dataStore_OnEndInvoke;
@@ -343,25 +351,26 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._currentModel;
             set => this.Set(ref this._currentModel, value);
         }
-
         public CS.ChartOption CurrentChartOption
         {
             get => this._currentChartOption;
             set => this.Set(ref this._currentChartOption, value);
         }
-
         public MP.MapDrawingData CurrentMapData
         {
             get => this._currentMapData;
             set => this.Set(ref this._currentMapData, value);
         }
-
+        public ResultsMeasurementsStationFilters CurrentStationsGolbalFilter
+        {
+            get => this._currentStationsGolbalFilter;
+            set => this.Set(ref this._currentStationsGolbalFilter, value);
+        }
         public MeasTaskViewModel CurrentMeasTask
         {
             get => this._currentMeasTask;
             set => this.Set(ref this._currentMeasTask, value, () => {  });
         }
-
         public ShortMeasTaskViewModel CurrentShortMeasTask
         {
             get => this._currentShortMeasTask;
@@ -784,12 +793,23 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             if (measurementResults != null)
             {
-                var sdrMeasResults = _dataStore.GetResMeasStationHeaderByResId(measurementResults.MeasSdrResultsId); // SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(this._currentMeasurementResult.MeasSdrResultsId);
-                
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                if (measurementResults.TypeMeasurements == SDR.MeasurementType.MonitoringStations)
                 {
-                    this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
-                }));
+                    //var sdrMeasResults = _dataStore.GetResMeasStationHeaderByResId(measurementResults.MeasSdrResultsId);
+                    var filter = new SDR.ResultsMeasurementsStationFilters()
+                    {
+                        FreqBg = ConvertToDouble(this._currentStationsGolbalFilter.FreqBg),
+                        FreqEd = ConvertToDouble(this._currentStationsGolbalFilter.FreqEd),
+                        MeasGlobalSid = this._currentStationsGolbalFilter.MeasGlobalSid,
+                        Standard = this._currentStationsGolbalFilter.Standard
+                    };
+                    var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetResMeasStationHeaderByResId(measurementResults.MeasSdrResultsId, filter);
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        //this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
+                        this._resultsMeasurementsStations.Source = sdrMeasResults;
+                    }));
+                }
 
                 if (this.MeasResultsDetailVisibility == Visibility.Visible)
                 {
@@ -823,7 +843,6 @@ namespace XICSM.ICSControlClient.ViewModels
                     LowFreq = null;
                     UpFreq = null;
                 }));
-                
             }
             if (this.CurrentMeasTask == null)
                 return;
@@ -1441,22 +1460,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 XTick = 10
             };
 
-            //var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this.CurrentResultsMeasurementsStation.Id);
-            //this._currentMeasurementResult = Mappers.Map(sdrMeasResults);
-
+            
+            if (this._currentGeneralResult == null || this._currentGeneralResult.LevelsSpecrum == null || this._currentGeneralResult.LevelsSpecrum.Length == 0)
+            {
+                return option;
+            }
             var generalResult = this._currentGeneralResult;
-            if (generalResult == null)
-            {
-                return option;
-            }
-
-            //var spectrumLevels = this._currentMeasurementResult.ge; //measStation.GeneralResultLevelsSpecrum;
             var spectrumLevels = generalResult.LevelsSpecrum;
-            if (spectrumLevels == null || spectrumLevels.Length == 0)
-            {
-                return option;
-            }
-
             var count = spectrumLevels.Length;
             var points = new Point[count];
             var linesList = new List<CS.ChartLine>();
@@ -1579,9 +1589,10 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             var preparedDataX = Environment.Utitlity.CalcFrequencyRange(min, max, 6);
-            option.XTick = preparedDataX.Step;
             option.XMin = preparedDataX.MinValue;
             option.XMax = preparedDataX.MaxValue;
+            if (min != max)
+                option.XTick = preparedDataX.Step;
 
             option.Points = points;
             return option;
@@ -1950,6 +1961,22 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.GenerateSpecLabelText();
             }
         }
+        private void OnFilterApplyCommand(object parameter)
+        {
+            Properties.Settings.Default.GlobalFilterMeasGlobalSid = this._currentStationsGolbalFilter.MeasGlobalSid;
+            Properties.Settings.Default.GlobalFilterStandard = this._currentStationsGolbalFilter.Standard;
+            Properties.Settings.Default.GlobalFilterFreqBg = this._currentStationsGolbalFilter.FreqBg;
+            Properties.Settings.Default.GlobalFilterFreqEd = this._currentStationsGolbalFilter.FreqEd;
+            Properties.Settings.Default.Save();
+            ReloadMeasResaltDetail(this.CurrentMeasurementResult);
+        }
+        private void LoadSettings()
+        {
+            this._currentStationsGolbalFilter.MeasGlobalSid = Properties.Settings.Default.GlobalFilterMeasGlobalSid;
+            this._currentStationsGolbalFilter.Standard = Properties.Settings.Default.GlobalFilterStandard;
+            this._currentStationsGolbalFilter.FreqBg = Properties.Settings.Default.GlobalFilterFreqBg;
+            this._currentStationsGolbalFilter.FreqEd = Properties.Settings.Default.GlobalFilterFreqEd;
+        }
         private void GenerateSpecLabelText()
         {
             if (this.CurrentResultsMeasurementsStationData != null && this.CurrentResultsMeasurementsStationData.GeneralResults != null && this.CurrentResultsMeasurementsStationData.GeneralResults.Length > 0)
@@ -1972,7 +1999,38 @@ namespace XICSM.ICSControlClient.ViewModels
             _timer?.Dispose();
             _waitForm?.Dispose();
             _userActionTask?.Dispose();
-
+        }
+        private double ConvertToDouble(string s)
+        {
+            char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
+            double result = 0;
+            try
+            {
+                if (s != null)
+                    if (!s.Contains(","))
+                        result = double.Parse(s, CultureInfo.InvariantCulture);
+                    else
+                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    result = Convert.ToDouble(s);
+                }
+                catch
+                {
+                    try
+                    {
+                        result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
+                    }
+                    catch
+                    {
+                        throw new Exception("Wrong string-to-double format");
+                    }
+                }
+            }
+            return result;
         }
     }
 }

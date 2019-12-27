@@ -260,8 +260,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
                 SensorName = licenseInfo.Instance,
                 LicenseNumber = licenseInfo.LicenseNumber,
                 LicenseStartDate = licenseInfo.StartDate,
-                LicenseStopDate = licenseInfo.StopDate
-            };
+                LicenseStopDate = licenseInfo.StopDate,
+                CommandContextPoolObjects = this.Config.GetParameterAsInteger(ConfigParams.CommandContextPoolObjects)
+        };
             
             return config;
         }

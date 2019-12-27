@@ -61,11 +61,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             this._adapterConfig = adapterConfig;
             this._timeService = timeService;
             LPC = new LocalParametersConverter();
-            FreqArr = new double[TracePoints];
             LevelArr = new float[TracePoints];
             for (int i = 0; i < TracePoints; i++)
             {
-                FreqArr[i] = (double)(FreqStart + 1000 * i);
                 LevelArr[i] = -100;
             }
             if (adapterConfig.ConnectionMode == 0)
@@ -373,8 +371,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     //Устанавливаем сколько трейсов хотим
                     if (command.Parameter.TraceCount > 0)
                     {
-                        TraceCountToMeas = (ulong)command.Parameter.TraceCount + 1;// +1 маленький костыль для предотвращения кривого трейса
-                        TraceCount = 0;
+                        traceCountToMeas = (ulong)command.Parameter.TraceCount + 1;// +1 маленький костыль для предотвращения кривого трейса
+                        traceCount = 0;
                         TracePoints = command.Parameter.TracePoint;
                     }
                     else
@@ -389,7 +387,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         bool newres = false;
 
 
-                        for (ulong i = 0; i < TraceCountToMeas; i++)
+                        for (ulong i = 0; i < traceCountToMeas; i++)
                         {
                             newres = GetTrace();
                             if (newres)
@@ -397,22 +395,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                                 if (i > 0)// +1 маленький костыль для предотвращения кривого трейса
                                 {
                                     // пушаем результат
-                                    var result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Next);
-                                    TraceCount++;
-                                    if (TraceCountToMeas == TraceCount)
+                                    var result = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Next);
+                                    traceCount++;
+                                    if (traceCountToMeas == traceCount)
                                     {
-                                        result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Final);
+                                        result = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Final);
                                     }
+                                    result.LevelMaxIndex = LevelArr.Length;
+                                    result.FrequencyStart_Hz = resFreqStart;
+                                    result.FrequencyStep_Hz = resFreqStep;
                                     result.Att_dB = (int)AttLevelSpec;
                                     result.RefLevel_dBm = (int)RefLevelSpec;
                                     result.PreAmp_dB = PreAmpSpec ? 1 : 0;
                                     result.RBW_Hz = (double)RBW;
                                     result.VBW_Hz = (double)VBW;
-                                    result.Freq_Hz = new double[FreqArr.Length];
-                                    result.Level = new float[FreqArr.Length];
-                                    for (int j = 0; j < FreqArr.Length; j++)
+                                    result.Level = new float[LevelArr.Length];
+                                    for (int j = 0; j < LevelArr.Length; j++)
                                     {
-                                        result.Freq_Hz[j] = FreqArr[j];
                                         result.Level[j] = LevelArr[j];
                                     }
                                     result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
@@ -434,7 +433,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                                 // все нужно остановиться
 
                                 // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-                                var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Ragged);
+                                var result2 = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Ragged);
 
                                 context.PushResult(result2);
 
@@ -454,11 +453,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         TraceReset = true;///сбросим предыдущие результаты
                         if (TraceTypeResult == EN.TraceType.Average)//назначим сколько усреднять
                         {
-                            TraceAveraged.AveragingCount = (int)TraceCountToMeas-1;
+                            TraceAveraged.AveragingCount = (int)traceCountToMeas - 1;
                         }
                         bool _RFOverload = false;
                         bool newres = false;
-                        for (ulong i = 0; i < TraceCountToMeas; i++)
+                        for (ulong i = 0; i < traceCountToMeas; i++)
                         {
                             newres = GetTrace();
                             if (newres)
@@ -467,7 +466,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                                 {
                                     TraceReset = true;
                                 }
-                                TraceCount++;
+                                traceCount++;
                                 if (PowerRegister != EN.PowerRegister.Normal)
                                 {
                                     _RFOverload = true;
@@ -484,7 +483,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
 
                                 // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
 
-                                var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Ragged);
+                                var result2 = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Ragged);
                                 //Скорее нет результатов
                                 context.PushResult(result2);
 
@@ -494,18 +493,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                                 return;
                             }
                         }
-                        if (TraceCountToMeas == TraceCount)
+                        if (traceCountToMeas == traceCount)
                         {
                             var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
                             {
-                                Freq_Hz = new double[FreqArr.Length],
-                                Level = new float[FreqArr.Length]
+                                Level = new float[LevelArr.Length]
                             };
-                            for (int j = 0; j < FreqArr.Length; j++)
+                            for (int j = 0; j < LevelArr.Length; j++)
                             {
-                                result.Freq_Hz[j] = FreqArr[j];
                                 result.Level[j] = LevelArr[j];
                             }
+                            result.LevelMaxIndex = LevelArr.Length;
+                            result.FrequencyStart_Hz = resFreqStart;
+                            result.FrequencyStep_Hz = resFreqStep;
+
                             result.Att_dB = (int)AttLevelSpec;
                             result.RefLevel_dBm = (int)RefLevelSpec;
                             result.PreAmp_dB = PreAmpSpec ? 1 : 0;
@@ -1266,6 +1267,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     90001, 91001, 92001, 93001, 94001, 95001, 96001, 97001, 98001, 99001,
                     100001 },
                 DefaultSweepPoint = 1001,
+
                 RBWArr = new decimal[]{ 1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500, 1000, 2000, 3000, 5000, 6250, 10000, 20000, 30000, 50000, 100000, 200000, 300000, 500000, 1000000, 2000000, 3000000, 5000000, 10000000 },
                 VBWArr = new decimal[]{ 1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000, 200000, 300000, 500000, 1000000, 2000000, 3000000, 5000000, 10000000 },
                 RangeArr = new decimal[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200 },
@@ -1648,11 +1650,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
         #endregion Level
 
         #region Trace Data
+        private double resFreqStart = 10000;
+        private double resFreqStep = 10000;
 
-        private ulong TraceCountToMeas = 1;
-        private ulong TraceCount = 1;
+        private ulong traceCountToMeas = 1;
+        private ulong traceCount = 1;
 
-        public double[] FreqArr;
+        //public double[] FreqArr;
         public float[] LevelArr;
         private float[] LevelArrTemp;//нужед ля сравнения пришедших трейсов
 
@@ -2060,18 +2064,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
                     //WriteString("TRAC1:X? TRACE1");
                     byte[] byteArray = QueryByte("TRAC1:X? TRACE1");
-
-                    double[] temp = new double[byteArray.Length / 4 + 2];
-                    for (int j = 0; j < byteArray.Length / 4; j++)
+                    double stepsum = 0;
+                    double[] temp = new double[byteArray.Length / 4];
+                    temp[0] = System.BitConverter.ToSingle(byteArray, 0);
+                    for (int j = 1; j < temp.Length; j++)
                     {
-                        temp[j + 1] = System.BitConverter.ToSingle(byteArray, j * 4);
+                        temp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
+                        stepsum += temp[j] - temp[j - 1];
                     }
-                    temp[0] = (double)FreqStart;
-                    temp[temp.Length - 1] = (double)FreqStop;
-                    FreqArr = temp;
-                    LevelArr = new float[FreqArr.Length];
-                    LevelArrTemp = new float[FreqArr.Length];
-                    for (int i = 0; i < FreqArr.Length; i++)
+                    resFreqStep = stepsum / (temp.Length - 1);
+                    resFreqStart = temp[0];
+
+                    LevelArr = new float[temp.Length];
+                    LevelArrTemp = new float[temp.Length];
+                    for (int i = 0; i < temp.Length; i++)
                     {
                         LevelArr[i] = -1000;
                         LevelArrTemp[i] = -1000;
@@ -2100,13 +2106,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 }
                 else if (UniqueData.HiSpeed == false)
                 {
-                    FreqArr = new double[TracePoints];
                     LevelArr = new float[TracePoints];
                     LevelArrTemp = new float[LevelArr.Length];
-                    decimal step = (decimal)FreqSpan / (TracePoints - 1);
                     for (int i = 0; i < TracePoints; i++)
                     {
-                        FreqArr[i] = (double)(FreqStart + step * i);
                         LevelArr[i] = -1000;
                         LevelArrTemp[i] = -1000;
                     }
@@ -2114,26 +2117,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             }
             else if (UniqueData.InstrManufacture == 2)
             {
-                FreqArr = new double[TracePoints];
                 LevelArr = new float[TracePoints];
                 LevelArrTemp = new float[LevelArr.Length];
-                decimal step = (decimal)FreqSpan / (TracePoints - 1);
                 for (int i = 0; i < TracePoints; i++)
                 {
-                    FreqArr[i] = (double)(FreqStart + step * i);
                     LevelArr[i] = -1000;
                     LevelArrTemp[i] = -1000;
                 }
             }
             else if (UniqueData.InstrManufacture == 3)
             {
-                FreqArr = new double[TracePoints];
                 LevelArr = new float[TracePoints];
                 LevelArrTemp = new float[LevelArr.Length];
-                decimal step = (decimal)FreqSpan / (TracePoints - 1);
                 for (int i = 0; i < TracePoints; i++)
                 {
-                    FreqArr[i] = (double)(FreqStart + step * i);
                     LevelArr[i] = -1000;
                     LevelArrTemp[i] = -1000;
                 }
@@ -3461,14 +3458,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                         else if (pr == 4) { PowerRegister = EN.PowerRegister.IFOverload; }
                         else if (pr == 1) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
 
-                        temp = new float[byteArray.Length / 4 + 2];
+                        temp = new float[byteArray.Length / 4];
                         for (int j = 0; j < byteArray.Length / 4; j++)
                         {
-                            temp[j + 1] = System.BitConverter.ToSingle(byteArray, j * 4);
-                        }
-                        temp[0] = temp[1];
-                        temp[temp.Length - 1] = temp[temp.Length - 2];
-
+                            temp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
+                        } 
                     }
                     else
                     {
@@ -3559,7 +3553,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 {
 
                     if (TraceReset) { TraceAveraged.Reset(); TraceReset = false; }
-                    TraceAveraged.AddTraceToAverade(FreqArr, trace, (MEN.LevelUnit)LevelUnits.Id, LevelUnitsResult);
+                    TraceAveraged.AddTraceToAverade(resFreqStart, resFreqStep, trace, (MEN.LevelUnit)LevelUnits.Id, LevelUnitsResult);
                     LevelArr = TraceAveraged.AveragedLevels;
 
                 }
@@ -3603,6 +3597,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
             bool res = false;
             if (UniqueData.InstrManufacture == 1)
             {
+#if DEBUG
+                long delta = _timeService.TimeStamp.Ticks;
+#endif
                 long time = command.Parameter.TimeStart;// _timeService.GetGnssTime().Ticks;
                 long NextSecond = (time / 10000000) * 10000000 + 10000000;
                 long ToNextSecond = NextSecond - time;
@@ -3617,29 +3614,35 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                 IQMeasTime = (decimal)command.Parameter.IQBlockDuration_s;
                 SampleLength = (int)(SampleSpeed * IQMeasTimeAll);
                 SetTriggerOffsetAndSampleLengthAndStartCollection(divisor * SampleTimeLength, (int)(SampleSpeed * IQMeasTimeAll));
-
+#if DEBUG
+                delta = _timeService.TimeStamp.Ticks - delta;
+#endif
                 if (command.Parameter.TimeStart < _timeService.GetGnssUtcTime().Ticks - UTCOffset)
                 {
                     //Debug.WriteLine("ВСе плохо");
                 }
                 //Debug.WriteLine(new TimeSpan(command.Parameter.TimeStart + UTCOffset - _timeService.GetGnssUtcTime().Ticks).ToString());
-                int sleep = (int)(IQMeasTimeAll * 1000 - 150);
+                int sleep = (int)((IQMeasTimeAll + Math.Abs(divisor * SampleTimeLength)) * 1000);
                 if (sleep < 1)
                 {
                     sleep = 1;
                 }
                 Thread.Sleep(sleep);
 
-                int step = SampleLength / 10;
-                if (step > 50000)
-                {
-                    step = 50000;
-                }
-                else if (step < 10000)
-                {
-                    step = 1000;
-                }
 
+
+                int step = SampleLength / 10;
+                if (step > 5000000)
+                {
+                    step = 5000000;
+                }
+                else if (step < 5000000)
+                {
+                    step = 5000000;
+                }
+#if DEBUG
+                long delta2 = _timeService.TimeStamp.Ticks;
+#endif
                 float[] temp = new float[SampleLength * 2];
                 long ddd = _timeService.TimeStamp.Ticks;
                 int pos = 0;
@@ -3648,16 +3651,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     int from = i, to = i + step;
                     if (to > SampleLength) to = SampleLength;
                     WriteString($"TRAC:IQ:DATA:MEM? {from},{to - from}");
-                    byte[] byteArray = session.FormattedIO.ReadBinaryBlockOfByte();// ReadByte();
-                    //if (System.Text.Encoding.ASCII.GetString(byteArray, 0, 1) == "#")
-                    //{
-                    //    int lengthPreamb = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 1, 1));
-                    //    int lengthData = int.Parse(System.Text.Encoding.ASCII.GetString(byteArray, 2, lengthPreamb));
-                    float[] temp2 = new float[byteArray.Length / 4];//QueryFloat($"TRAC:IQ:DATA:MEM? {from},{to - from}");// 
-                    //if (temp2[0] == 0)
-                    //{
 
-                    //}
+
+                    byte[] byteArray = session.FormattedIO.ReadBinaryBlockOfByte();// ReadByte();
+
+                    float[] temp2 = new float[byteArray.Length / 4];
+
                     for (int j = 0; j < temp2.Length; j++)
                     {
                         temp2[j] = System.BitConverter.ToSingle(byteArray, j * 4);
@@ -3666,10 +3665,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SpectrumAnalyzer
                     pos += temp2.Length;
 
                 }
+#if DEBUG
+                delta2 = _timeService.TimeStamp.Ticks - delta2;
+                Debug.WriteLine("delta " + (new TimeSpan(delta)).ToString());
+                Debug.WriteLine("delta2 " + (new TimeSpan(delta2)).ToString());
+                Debug.WriteLine("delta++ " + (new TimeSpan(delta2 + delta)).ToString());
+#endif
                 string dfghkjdp = QueryString("TRACe:IQ:TPISample?");
                 TriggerOffsetInSample = DecimalParse(dfghkjdp);
                 //Посчитаем когда точно был триггер относительно первого семпла
                 TriggerOffset = Math.Abs(TriggerOffset) + TriggerOffsetInSample;
+
+
 
                 float noise = 1.5f / 10000000f; // уровень шума 
                 float SN = 10; // превышение шума в разах 

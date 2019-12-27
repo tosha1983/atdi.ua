@@ -29,12 +29,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <returns></returns>
         public static bool NeedResearchExistSignals(Emitting[] EmittingsSummury, out TaskParameters[] taskParameters)
         {
-            List<int> EmittingForAnalyzeID = new List<int>();
+            var EmittingForAnalyzeID = new List<int>();
             DateTime CurTime = DateTime.Now;
             // поиск тех измерений которые не детальные
             if (EmittingsSummury != null)
             {
-                for (int i = 0; i < EmittingsSummury.Length; i++)
+                for (var i = 0; i < EmittingsSummury.Length; i++)
                 {
                     if (EmittingsSummury[i].WorkTimes != null)
                     {
@@ -49,7 +49,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     if (EmittingForAnalyzeID.Count > MaxTaskFromOneTime)
                     {// не обследованных излучений у нас больше чем можно обследовать тупа перфорируем
-                        Random rnd = new Random();
+                        var rnd = new Random();
                         do
                         {
                             int value = rnd.Next(0, EmittingForAnalyzeID.Count - 1);
@@ -60,7 +60,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     else
                     {// не обследованных излучений у нас мало, а обследовать можно больше так что придеться добавлять
                         int LastIndex = EmittingForAnalyzeID.Count - 1;
-                        for (int i = 0; i < EmittingsSummury.Length; i++)
+                        for (var i = 0; i < EmittingsSummury.Length; i++)
                         {
                             if (EmittingsSummury[i].WorkTimes != null)
                             {
@@ -74,7 +74,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                         if (EmittingForAnalyzeID.Count > MaxTaskFromOneTime)
                         {// не обследованных излучений у нас больше чем можно обследовать тупа перфорируем
-                            Random rnd = new Random();
+                            var rnd = new Random();
                             do
                             {
                                 int value = rnd.Next(LastIndex + 1, EmittingForAnalyzeID.Count - 1);
@@ -97,8 +97,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 if (EmittingsSummury != null)
                 {
-                    TaskParameters[] TaskParameters = new TaskParameters[ListID.Count];
-                    for (int i = 0; ListID.Count > i; i++)
+                    var TaskParameters = new TaskParameters[ListID.Count];
+                    for (var i = 0; ListID.Count > i; i++)
                     {
                         var Emitting = EmittingsSummury[ListID[i]];
                         TaskParameters TaskParameter = new TaskParameters();

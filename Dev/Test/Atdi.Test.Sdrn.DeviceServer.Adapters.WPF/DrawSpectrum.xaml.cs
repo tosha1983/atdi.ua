@@ -84,7 +84,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             get { return (string)GetValue(LevelUnitProperty); }
             set { SetValue(LevelUnitProperty, value); }
         }
-        public ADP.SpectrumAnalyzer.Adapter ANAdapter
+        public ADP.RSFPL.Adapter ANAdapter
         {
             get;
             set;
@@ -179,12 +179,20 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     if (ANAdapter != null)
                     {
                         Level = ANAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
-                        Freq = ANAdapter.FreqArr;
+                       
                         FreqCentr = (double)ANAdapter.FreqCentr;
                         FreqSpan = (double)ANAdapter.FreqSpan;
                         FreqStop = (double)ANAdapter.FreqStop;
                         FreqStart = (double)ANAdapter.FreqStart;
-                        LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnits.Id).ToString();
+
+
+                        Freq = new double[Level.Length];
+                        double step = FreqSpan / (Level.Length - 1);
+                        for (int i = 0; i < Level.Length; i++)
+                        {
+                            Freq[i] = FreqStart + i * step;
+                        }
+                        LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnit.Id).ToString();
 
                         RefLevel = (double)ANAdapter.RefLevelSpec;
 
@@ -197,16 +205,22 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     if (SHAdapter != null)
                     {
                         Level = SHAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
-                        Freq = SHAdapter.FreqArr;
                         FreqCentr = (double)SHAdapter.FreqCentr;
                         FreqSpan = (double)SHAdapter.FreqSpan;
                         FreqStop = (double)SHAdapter.FreqStop;
                         FreqStart = (double)SHAdapter.FreqStart;
+
+                        Freq = new double[Level.Length];
+                        double step = FreqSpan / (Level.Length - 1);
+                        for (int i = 0; i < Level.Length; i++)
+                        {
+                            Freq[i] = FreqStart + i * step;
+                        }
                         LevelUnit = SHAdapter.LevelUnit.ToString();
 
                         RefLevel = (double)SHAdapter.RefLevel;
 
-                        Range = (double)SHAdapter.Range;
+                        //Range = (double)SHAdapter.Range;
                         LowestLevel = RefLevel - Range;
                     }
                 }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.DataModels.Sdrns.Device;
-
+using Atdi.Common;
 
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
@@ -24,12 +24,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (result != null)
             {
-             
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
                 try
                 {
-                    float[] Levels = result.Level;
-                    if (taskContext.Task.Smooth) { Levels = SmoothTrace.blackman(Levels); }
-                    int MaximumIgnorPoint =(int)Math.Round(result.Level.Length / 300.0);
+                    var Levels = result.Level;
+                    if (taskContext.Task.Smooth) { Levels = SmoothTrace.blackman(Levels, result.LevelMaxIndex + 1); }
+                    int MaximumIgnorPoint = (int)Math.Round((result.LevelMaxIndex+1) / 300.0);
                     MeasBandwidthResult measBandWidthResults = null;
                     var parentProcess = taskContext.Descriptor.Parent;
                     if (parentProcess != null)
@@ -75,14 +75,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
 
                         taskContext.Task.MeasBWResults.Bandwidth_kHz = ((taskContext.Task.MeasBWResults.T2 - taskContext.Task.MeasBWResults.T1) *
-                            ((result.Freq_Hz[result.Freq_Hz.Length - 1] - result.Freq_Hz[0]) / (result.Freq_Hz.Length - 1))) / 1000;
+                        (result.FrequencyStep_Hz)) / 1000;
+                        //((result.Freq_Hz[result.Freq_Hz.Length - 1] - result.Freq_Hz[0]) / (result.Freq_Hz.Length - 1))) / 1000;
 
                         taskContext.Task.MeasBWResults.Levels_dBm = result.Level;
-                        taskContext.Task.MeasBWResults.Freq_Hz = result.Freq_Hz;
+                        taskContext.Task.MeasBWResults.Freq_Hz = new double[result.LevelMaxIndex + 1];
+                        for (int v=0; v<= result.LevelMaxIndex; v++)
+                        {
+                            taskContext.Task.MeasBWResults.Freq_Hz[v] = (result.FrequencyStart_Hz + v * result.FrequencyStep_Hz);
+                        }
+                       
                         taskContext.Task.MeasBWResults.СorrectnessEstimations = measBandWidthResults.СorrectnessEstimations.Value;
                         taskContext.Task.MeasBWResults.TimeMeas = DateTime.Now;
-
-
                     }
 
                     // Отправка результата в родительский процесс (если он есть)
