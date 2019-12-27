@@ -30,6 +30,16 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                     Logger.WriteWarning(PluginMetadata.Processes.CreateMeasTask, $"Incorrect the status of the allotment #{allotment.Id}", true);
                     return false;
                 }
+                if (!MD.Allotments.UserTypes.M.Equals(allotment.UserType, StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.WriteWarning(PluginMetadata.Processes.CreateMeasTask, $"Incorrect the user type of the allotment #{allotment.Id}", true);
+                    return false;
+                }
+                if (allotment.PlanRef == null || allotment.PlanRef.Id == IM.NullI)
+                {
+                    Logger.WriteWarning(PluginMetadata.Processes.CreateMeasTask, $"Undefined channelling plan", true);
+                    return false;
+                }
 
                 var measTaskForm = new FM.MeasTaskForm(allotmentId, SDR.MeasurementType.Signaling);
                 measTaskForm.ShowDialog();
