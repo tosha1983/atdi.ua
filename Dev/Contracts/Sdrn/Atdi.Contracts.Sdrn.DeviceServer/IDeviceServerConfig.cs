@@ -19,5 +19,7 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
         DateTime LicenseStopDate { get; }
 
         DateTime LicenseStartDate { get; }
+
+        int? CommandContextPoolObjects { get; }
     }
 }

@@ -18,16 +18,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (triggerLevel_dBm_Hz == -999)
             {// расчитываем уровеньшума по трейсу // Надо проверить
-                triggerLevel_dBm_Hz = GetNoiseLeveldBm(Trace, taskParameters.PercentForCalcNoise) - 10*Math.Log10(Trace.Freq_Hz[1] - Trace.Freq_Hz[0]);
+                triggerLevel_dBm_Hz = GetNoiseLeveldBm(Trace, taskParameters.PercentForCalcNoise) - 10 * Math.Log10(Trace.FrequencyStep_Hz); //(Trace.Freq_Hz[1] - Trace.Freq_Hz[0]);
             }
-            double stepTraceHz = (Trace.Freq_Hz[Trace.Freq_Hz.Length - 1] - Trace.Freq_Hz[0]) / (Trace.Freq_Hz.Length - 1);
+            double stepTraceHz = Trace.FrequencyStep_Hz;//(Trace.Freq_Hz[Trace.Freq_Hz.Length - 1] - Trace.Freq_Hz[0]) / (Trace.Freq_Hz.Length - 1);
             NoiseLevel_dBm = triggerLevel_dBm_Hz + 10*Math.Log10(stepTraceHz);
-            ReferenceLevels referenceLevels = new ReferenceLevels();
-            referenceLevels.StartFrequency_Hz = Trace.Freq_Hz[0];
+            var referenceLevels = new ReferenceLevels();
+            referenceLevels.StartFrequency_Hz = Trace.FrequencyStart_Hz; //Trace.Freq_Hz[0];
             referenceLevels.StepFrequency_Hz = (stepTraceHz);
-            referenceLevels.levels = new float[Trace.Level.Length];
+            referenceLevels.levels = new float[Trace.LevelMaxIndex+1];
             bool corectMask = SortReferenceSituationMask(ref referenceSituation);
-            for (int i = 0; i < referenceLevels.levels.Length; i++)
+            for (var i = 0; i < referenceLevels.levels.Length; i++)
             {
                 // расчет уровня для одной частоты StartFrequency_Hz + StepFrequency_Hz*i
                 referenceLevels.levels[i] = (float)(triggerLevel_dBm_Hz + 10.0 * Math.Log10(referenceLevels.StepFrequency_Hz) + taskParameters.SignalingMeasTaskParameters.allowableExcess_dB.Value);
@@ -38,7 +38,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     double freqStart = (referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i - 0.5)) / 1000000;
                     double freqStop = (referenceLevels.StartFrequency_Hz + referenceLevels.StepFrequency_Hz * (i + 0.5)) / 1000000;
 
-                    for (int j = 0; j < referenceSituation.ReferenceSignal.Length; j++)
+                    for (var j = 0; j < referenceSituation.ReferenceSignal.Length; j++)
                     {
                         // проверка на попадение
                         double freqStartSignal;
@@ -75,15 +75,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         public static double GetNoiseLeveldBm(MesureTraceResult Trace, double PercentForCalcNoise = 10)
         { // НЕ ПРОВЕРЕННО
-            float[] nums = new float[Trace.Level.Length];
-            for (int i = 0; i < nums.Length; i++)
+            var nums = new float[Trace.LevelMaxIndex+1];
+            for (var i = 0; i < nums.Length; i++)
             {
                 nums[i] = Trace.Level[i];
             }
             float temp;
-            int number = (int)Math.Floor(Trace.Level.Length * PercentForCalcNoise / 100.0);
+            int number = (int)Math.Floor((Trace.LevelMaxIndex + 1) * PercentForCalcNoise / 100.0);
             if (number > nums.Length-1) { number = nums.Length - 1; }
-            for (int i = 0; i < number; i++)
+            for (var i = 0; i < number; i++)
             {
                 for (int j = i + 1; j < nums.Length; j++)
                 {
@@ -103,15 +103,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             {
                 if (referenceSituation.ReferenceSignal != null)
                 {
-                    for (int i = 0; referenceSituation.ReferenceSignal.Length > i; i++)
+                    for (var i = 0; referenceSituation.ReferenceSignal.Length > i; i++)
                     {// цикл по сигналам
                         if ((referenceSituation.ReferenceSignal[i].SignalMask != null) && (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz != null) &&
                             (referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB != null) && (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length > 0) &&
                             (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length == referenceSituation.ReferenceSignal[i].SignalMask.Loss_dB.Length))
                         {
-                            for (int k = 0; k < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length - 1; k++)
+                            for (var k = 0; k < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length - 1; k++)
                             {
-                                for (int j = k + 1; j < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length; j++)
+                                for (var j = k + 1; j < referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz.Length; j++)
                                 {
                                     if (referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[k] > referenceSituation.ReferenceSignal[i].SignalMask.Freq_kHz[j])
                                     {
@@ -168,7 +168,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // расчет делаем не по отношению площадей, а по отношению к 0 где максимальное излучение
             double SpectrumDensyti_mWinHz = Math.Pow(10, referenceSignal.LevelSignal_dBm / 10) / (referenceSignal.Bandwidth_kHz * 1000);
             double Level_mW = 0;
-            for (int i = 1; referenceSignal.SignalMask.Freq_kHz.Length>i; i++)
+            for (var i = 1; referenceSignal.SignalMask.Freq_kHz.Length>i; i++)
             {
                 double MaskFreqStart_kHz = referenceSignal.SignalMask.Freq_kHz[i - 1] + 1000.0 * referenceSignal.Frequency_MHz;
                 double MaskFreqStop_kHz = referenceSignal.SignalMask.Freq_kHz[i] + 1000.0 * referenceSignal.Frequency_MHz;

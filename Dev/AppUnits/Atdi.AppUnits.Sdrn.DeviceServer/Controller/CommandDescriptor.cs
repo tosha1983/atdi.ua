@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class CommandDescriptor : ICommandDescriptor
+    internal class CommandDescriptor : ICommandDescriptor
     {
         private CommandBase _command;
         private ITaskContext _taskContext;

@@ -10,6 +10,7 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using Atdi.Common;
 
 
 
@@ -21,6 +22,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             if (result != null)
             {
+                //var result = CopyHelper.CreateDeepCopy(tempResult);
+
                 SpectrumOcupationResult measResults = null;
                 try
                 {

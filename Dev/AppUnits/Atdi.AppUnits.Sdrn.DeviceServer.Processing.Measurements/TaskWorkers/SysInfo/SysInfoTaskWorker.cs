@@ -64,7 +64,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //
                 //////////////////////////////////////////////
 
-                for (int i = 0; i < context.Task.mesureSystemInfoParameters.Length; i++)
+                for (var i = 0; i < context.Task.mesureSystemInfoParameters.Length; i++)
                 {
 
 

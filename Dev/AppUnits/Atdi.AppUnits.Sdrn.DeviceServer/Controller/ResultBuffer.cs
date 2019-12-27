@@ -10,85 +10,78 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class ResultBuffer : IResultBuffer, IDisposable
+    internal sealed class ResultBuffer : IResultBuffer
     {
         private readonly object _locker = new object();
-        //private readonly ConcurrentBag<ICommandResultPart> _queue;
         private readonly ConcurrentQueue<ICommandResultPart> _queue;
-        private readonly CommandDescriptor _descriptor;
-        //private readonly CancellationTokenSource _tokenSource;
-        //private readonly CancellationToken _cancellationToken;
         private EventWaitHandle _waiter;
-        //private volatile bool _isDisposing = false;
 
-        public ResultBuffer(CommandDescriptor descriptor)
+        //private readonly Guid _id;
+        public ResultBuffer()
         {
+            this.Id = Guid.NewGuid();
             this._queue = new ConcurrentQueue<ICommandResultPart>();
-            //this._queue = new ConcurrentBag<ICommandResultPart>();
             this._waiter = new AutoResetEvent(false);
-            this._descriptor = descriptor;
-            //this._tokenSource = new CancellationTokenSource();
-            //this._cancellationToken = _tokenSource.Token;
         }
 
-        public ICommandDescriptor Descriptor => _descriptor;
+        public Guid Id { get; }
+    
 
         public void Push(ICommandResultPart resultPart)
         {
             this._queue.Enqueue(resultPart);
-            //this._queue.Add(resultPart);
-
-            /// to send event about new command 
-            this._waiter.Set();
-        }
-
-        public ICommandResultPart Take()
-        {
-            while (true)
+            lock (_locker)
             {
-                if (_queue.TryDequeue(out ICommandResultPart resultPart))
-                {
-                    return resultPart;
-                }
-                //else if (_cancellationToken.IsCancellationRequested)
-                //{
-                //    Thread.MemoryBarrier();
-                //    // може возникнуть результат в этот момент
-                //    if (_queue.TryDequeue(out resultPart))
-                //    {
-                //        return resultPart;
-                //    }
-                //    return null;
-                //}
-                //if (_queue.TryTake(out ICommandResultPart resultPart))
-                //{
-                //    return resultPart;
-                //}
-                /// to wait next command
-                _waiter.WaitOne();
-                
-                
+                // to send event about new command
+                this._waiter?.Set();
             }
         }
 
-        //public void Cancel()
-        //{
-        //    this._tokenSource.Cancel();
+        public bool TryTake(out ICommandResultPart result, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (_queue.TryDequeue(out result))
+                {
+                    return true;
+                }
 
-        //    Thread.MemoryBarrier();
-        //    if (!this._isDisposing)
-        //    {
-        //        this._waiter.Set();
-        //    } 
-        //}
+                // to wait next command
+                // c просыпанием - для проверки токена отмены
+                _waiter?.WaitOne();
+            }
+            result = null;
+            return false;
+        }
+
+        public void Cancel()
+        {
+            if (this._waiter == null)
+            {
+                return;
+            }
+
+            lock (_locker)
+            {
+                // to send event about new command
+                this._waiter?.Set();
+            }
+        }
 
         public void Dispose()
         {
-            if (_waiter != null)
+            if (_waiter == null)
+            {
+                return;
+            }
+
+            lock (_locker)
             {
                 _waiter.Close();
                 _waiter = null;
             }
+            
+            //System.Diagnostics.Debug.WriteLine($"Waiter disposing: {_id}");
         }
     }
 }

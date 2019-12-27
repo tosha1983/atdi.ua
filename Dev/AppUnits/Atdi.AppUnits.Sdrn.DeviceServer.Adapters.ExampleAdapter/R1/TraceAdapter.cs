@@ -116,10 +116,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                     throw new InvalidOperationException("Invalid the block size");
                 }
                 //Thread.Sleep(3);
-                if (false)
-                {
-                    context.ReleaseResult(result);
-                }
+                //if (false)
+                //{
+                //    context.ReleaseResult(result);
+                //}
 
                 //result.ValueAsFloats = GenerateFloatArray(command.BlockSize);
                 //result.ValuesAsDouble = GenerateDoubleArray(command.BlockSize);
@@ -127,9 +127,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.ExampleAdapter
                 // теперь так нельзя - есть пулл, исмпользуем  context.TakeResult
 
                 // заполняем данными масивы
-                FillFloatArray(result.ValueAsFloats, command.BlockSize);
-                FillDoubleArray(result.ValuesAsDouble, command.BlockSize);
-                Thread.Sleep(20);
+                //FillFloatArray(result.ValueAsFloats, command.BlockSize);
+                //FillDoubleArray(result.ValuesAsDouble, command.BlockSize);
+                //Thread.Sleep(20);
                 //var result = new TraceCommandResult(0, CommandResultStatus.Final)
                 //{
                 //    ValueAsFloats = GenerateFloatArray(command.BlockSize),

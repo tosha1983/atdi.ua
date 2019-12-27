@@ -19,10 +19,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         // конец констант
 
 
-        public static bool CalcBW(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, int NumberIgnoredPoints, ref int IndexStart, ref int IndexStop)
+        public static bool CalcBW(float[] levels, int length, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, int NumberIgnoredPoints, ref int IndexStart, ref int IndexStop)
         {
-            IndexStart = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
-            IndexStop = SearchEdgeIndex(levels, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, true, NumberIgnoredPoints);
+            IndexStart = SearchEdgeIndex(levels, length, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, false, NumberIgnoredPoints);
+            IndexStop = SearchEdgeIndex(levels, length, start, stop, nDbLevel_dB, NoiseLevel_dBm, MinExcessNoseLevel_dB, true, NumberIgnoredPoints);
             if ((IndexStart == -1) || (IndexStop == -1)) { return false; }
             return true;
         }
@@ -39,7 +39,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="MoveRight"></param>
         /// <param name="NumberIgnoredPoints"></param>
         /// <returns></returns>
-        private static int SearchEdgeIndex(float[] levels, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, bool MoveRight, int NumberIgnoredPoints)
+        private static int SearchEdgeIndex(float[] levels, int length, int start, int stop, double nDbLevel_dB, double NoiseLevel_dBm, double MinExcessNoseLevel_dB, bool MoveRight, int NumberIgnoredPoints)
         {
             // конверсия если перепутали местами
             if (start > stop)
@@ -91,9 +91,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             // идем от максимума по направлению 
             int k = -1;
             int limit = 0;
-            if (MoveRight) { k = 1; limit = levels.Length - 1; }
+            if (MoveRight) { k = 1; limit = length - 1; }
             int CountPoint = 0;
-            for (int i = index_max; i * k <= limit * k; i = i + k)
+            for (var i = index_max; i * k <= limit * k; i = i + k)
             {// цикл обеспечивающий движение по спектру в нужную сторону от максимального уровня
                 if (levels[i] < level_max - nDbLevel_dB)
                 {

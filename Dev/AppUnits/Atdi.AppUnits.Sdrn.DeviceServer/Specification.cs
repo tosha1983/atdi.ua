@@ -127,6 +127,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer
 
         public static readonly EventText ProcessingResultError = "Error occurred while processing the result: AdapterType = '{0}', CommandType = '{1}'";
 
+        public static readonly EventText DefiningResultHandlerError = "Error occurred while defining result handler: AdapterType = '{0}', CommandType = '{1}'";
+
         public static readonly EventText HandlingResultError = "Error occurred while processing the results: CommandType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
         public static readonly EventText ConvertingResultError = "Error occurred while converting the results: FromType = '{0}', ResultType = '{1}', PartIndex = '{2}', Status = '{3}'";
 

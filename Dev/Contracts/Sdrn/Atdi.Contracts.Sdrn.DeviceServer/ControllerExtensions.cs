@@ -6,14 +6,16 @@ namespace Atdi.Contracts.Sdrn.DeviceServer
 {
     public static class ControllerExtensions
     {
+        private static readonly ControllerFailureAction ControllerFailureDefaultAction = FailureDefaultAction;
+
         public static void SendCommand<TResult>(this IController controller, ITaskContext taskContext, ICommand command)
         {
-            controller.SendCommand<TResult>(taskContext, command, CancellationToken.None, FailureDefaultAction);
+            controller.SendCommand<TResult>(taskContext, command, CancellationToken.None, ControllerFailureDefaultAction);
         }
 
         public static void SendCommand<TResult>(this IController controller, ITaskContext taskContext, ICommand command, CancellationToken cancellationToken)
         {
-            controller.SendCommand<TResult>(taskContext, command, cancellationToken, FailureDefaultAction);
+            controller.SendCommand<TResult>(taskContext, command, cancellationToken, ControllerFailureDefaultAction);
         }
 
         public static void SendCommand<TResult>(this IController controller, ITaskContext taskContext, ICommand command, ControllerFailureAction onFailureAction)

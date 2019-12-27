@@ -92,8 +92,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             }
         }
 
-        private void OpenGPSDevice()
+        private bool OpenGPSDevice()
         {
+            bool isSuccess = false;
+
             this._logger.Verbouse(Contexts.ThisComponent, Categories.Processing, "Try open GPS device...");
 
             var portSettings = new SerialPortSettings();
@@ -103,11 +105,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             {
                 portSettings.PortBaudRate = baudRate;
             }
+            else
+            {
+                throw new InvalidOperationException(Categories.Processing + $": Value '{this._config.PortBaudRate}' {Events.FromConfigurationFileNotRecognized}");
+            }
 
             DataBits dataBits;
             if (Enum.TryParse<DataBits>(this._config.PortDataBits, out dataBits))
             {
                 portSettings.PortDataBits = dataBits;
+            }
+            else
+            {
+                throw new InvalidOperationException(Categories.Processing +  $": Value '{this._config.PortDataBits}' {Events.FromConfigurationFileNotRecognized}");
             }
 
             System.IO.Ports.Handshake handshake;
@@ -115,19 +125,38 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
             {
                 portSettings.PortHandshake = handshake;
             }
+            else
+            {
+                throw new InvalidOperationException(Categories.Processing + $": Value '{this._config.PortHandshake}' {Events.FromConfigurationFileNotRecognized}");
+            }
 
-            portSettings.PortName = this._config.PortName;
+            if (!string.IsNullOrEmpty(this._config.PortName))
+            {
+                portSettings.PortName = this._config.PortName;
+            }
+            else
+            {
+                throw new InvalidOperationException(Categories.Processing + $": Value '{this._config.PortName}' {Events.FromConfigurationFileIsNullOrEmpty}");
+            }
 
             System.IO.Ports.StopBits stopBits;
             if (Enum.TryParse<System.IO.Ports.StopBits>(this._config.PortStopBits, out stopBits))
             {
                 portSettings.PortStopBits = stopBits;
             }
+            else
+            {
+                throw new InvalidOperationException(Categories.Processing + $": Value '{this._config.PortStopBits}' {Events.FromConfigurationFileNotRecognized}");
+            }
 
             System.IO.Ports.Parity parity;
             if (Enum.TryParse<System.IO.Ports.Parity>(this._config.PortParity, out parity))
             {
                 portSettings.PortParity = parity;
+            }
+            else
+            {
+                throw new InvalidOperationException(Categories.Processing + $": Value '{this._config.PortParity}' {Events.FromConfigurationFileNotRecognized}");
             }
 
             gnssWrapper = new GNSSReceiverWrapper(portSettings);
@@ -137,15 +166,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                 try
                 {
                     gnssWrapper.Open();
-                    gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
-                    this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OpenDevice);
+                    if (gnssWrapper.IsOpen)
+                    {
+                        gnssWrapper.LogEvent += new EventHandler<LogEventArgs>(gnssWrapper_LogEvent);
+                        isSuccess = true;
+                        this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OpenDevice);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"COM port {portSettings.PortName} is not open");
+                    }
                 }
                 catch (Exception ex)
                 {
+                    CloseGPSDevice();
                     this._logger.Critical(Contexts.ThisComponent, Categories.Processing, string.Format(Exceptions.UnknownError.ToString(), ex.Message), ex);
                     throw new InvalidOperationException(Categories.Processing + ":" + ex.Message, ex);
                 }
             }
+            return isSuccess;
         }
 
         private void gnssWrapper_LogEvent(object sender, LogEventArgs e)
@@ -175,13 +214,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                                 var sentence = (result as NMEAStandartSentence);
                                 if (sentence.SentenceID == SentenceIdentifiers.GGA)
                                 {
-                                    //if (_executionContextGps.Token.IsCancellationRequested)
-                                    //{
-                                    //_executionContextGps.Cancel();
-                                    //CloseGPSDevice();
-                                    //return;
-                                    //}
-
                                     resultMember.Lat = (double)sentence.parameters[1];
                                     if ((string)sentence.parameters[2] == "S")
                                         resultMember.Lat = resultMember.Lat * (-1);
@@ -242,10 +274,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
 
         void CloseGPSDevice()
         {
-            //if (_executionContextGps != null)
-            //{
-            //_executionContextGps.Finish();
-            //}
             if (gnssWrapper.IsOpen)
             {
                 try

@@ -22,5 +22,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing.Test
         /// Кол-во завершенных тасков
         /// </summary>
         public int TaskCount;
+
+        public int IterationCount;
     }
 }

@@ -38,43 +38,46 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Example.TaskWorkers
                     CommandCount = 0
                 };
 
+                const int taskCount = 100;
+                const int commandsCount = 16 * 1_000_000 / taskCount; //1_000_000;
+
                 //var task = new TraceTask()
                 //{
-                //    Count = 100000,
-                //    BlockSize = 1000_000,
+                //    Count = commandsCount,
+                //    BlockSize = 10, // 100_000,
                 //    Index = 100,
                 //    Timer = new Stopwatch()
                 //};
 
                 //_taskStarter.RunParallel(task, traceProcess, context.Token);
 
-                // запускаем 4 паралельных задачи, который грузят контролер измерениями трейса
-                for (int i = 0; i < 2; i++)
+                //запускаем 4 паралельных задачи, который грузят контролер измерениями трейса
+                for (int i = 0; i < taskCount; i++)
                 {
                     var task = new TraceTask()
                     {
-                        Count = 100000,
-                        BlockSize = 1000_000,
+                        Count = commandsCount,
+                        BlockSize = 10, // 1000_000,
                         Index = i,
                         Timer = new Stopwatch()
                     };
 
                     _taskStarter.RunParallel(task, traceProcess, context.Token);
                 }
-                for (int i = 2; i < 4; i++)
-                {
-                    var task = new TraceTask()
-                    {
-                        Count = 100000,
-                        BlockSize = 10_000,
-                        Index = i,
-                        Timer = new Stopwatch()
-                    };
+                //for (int i = 2; i < 4; i++)
+                //{
+                //    var task = new TraceTask()
+                //    {
+                //        Count = commandsCount,
+                //        BlockSize = 10, // 10_000,
+                //        Index = i,
+                //        Timer = new Stopwatch()
+                //    };
 
-                    _taskStarter.RunParallel(task, traceProcess, context.Token);
-                }
+                //    _taskStarter.RunParallel(task, traceProcess, context.Token);
+                //}
 
-                while (traceProcess.TaskCount < 4)
+                while (traceProcess.TaskCount < taskCount)
                 {
                     
                     // и наблюдаем за процессом, раз в секунду скидываем статистику в лог

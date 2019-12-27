@@ -38,5 +38,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.Tasks
         public DeviceServerParametersDataLevel Parameters { get; set; }
 
         public WebSocketPublisher Publisher { get; set; }
-    }
+
+        public float[] ReducedArray { get; set; }
+}
 }

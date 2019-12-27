@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class DeviceSelector : IDeviceSelector
+    internal sealed class DeviceSelector : IDeviceSelector
     {
         private readonly ICommandsHost _commandsHost;
         private readonly ILogger _logger;
@@ -22,8 +22,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public IDevice Select(ICommandDescriptor descriptor)
         {
-            var decriptorImpl = descriptor as CommandDescriptor;
-            var devices = _commandsHost.GetDevices(decriptorImpl.CommandType);
+            var descriptorImpl = descriptor as CommandDescriptor;
+            var devices = _commandsHost.GetDevices(descriptorImpl.CommandType);
 
             if (devices.Length == 1)
             {
@@ -42,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 {
                     if (device.CheckAbilityToExecute(descriptor))
                     {
-                        decriptorImpl.Device = device;
+                        descriptorImpl.Device = device;
                         return device;
                     }
                 }

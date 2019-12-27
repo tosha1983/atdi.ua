@@ -12,6 +12,7 @@ using Atdi.Platform;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
 using Atdi.DataModels.Sdrns.Server;
+using Atdi.Platform.AppServer;
 
 namespace Atdi.AppUnits.Sdrn.Server
 {
@@ -103,21 +104,40 @@ namespace Atdi.AppUnits.Sdrn.Server
                         var ft = type.GetInterface(eventSubscribeInterfaceType.FullName);
                         return ft != null;
                     }
-                );
+                ).ToArray();
 
             foreach (var subscriberType in subscriberTypes)
             {
                 try
                 {
                     this.Container.Register(subscriberType, subscriberType, ServiceLifetime.PerThread);
-                    eventDispatcher.Subscribe(subscriberType);
-                    Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.HandlerTypeWasRegistred.With(subscriberType.AssemblyQualifiedName));
+                    //eventDispatcher.Subscribe(subscriberType);
+                    Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.HandlerTypeWasRegistered.With(subscriberType.AssemblyQualifiedName));
                 }
                 catch (Exception e)
                 {
                     Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
                 }
             }
+
+
+            var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
+
+            hostLoader.RegisterTrigger("Running Event System Subscribers", () =>
+            {
+                foreach (var subscriberType in subscriberTypes)
+                {
+                    try
+                    {
+                        eventDispatcher.Subscribe(subscriberType);
+                        Logger.Verbouse(Contexts.ThisComponent, Categories.Subscribing, Events.HandlerTypeWasConnected.With(subscriberType.AssemblyQualifiedName));
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
+                    }
+                }
+            });
         }
 
         protected override void OnDeactivateUnit()

@@ -51,7 +51,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.OnlineMeasurement.TaskWorkers
 
                 if (context.Process.MeasTask.OnlineMeasType == OnlineMeasType.Level)
                 {
-
                     var sendCommandForMeasResultTaskWorker = new SendCommandForMeasResultTaskWorker(this._config, this._controller, this._logger);
 
                     while (true)

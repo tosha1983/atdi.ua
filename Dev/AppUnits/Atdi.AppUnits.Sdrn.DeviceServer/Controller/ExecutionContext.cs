@@ -2,34 +2,32 @@
 using Atdi.DataModels.Sdrn.DeviceServer;
 using Atdi.Platform;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Atdi.Platform.Data;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class ExecutionContext : IExecutionContext
+    internal sealed class ExecutionContext : IExecutionContext
     {
-        private readonly CommandDescriptor _commandDescriptor;
+        private CommandDescriptor _commandDescriptor;
+        private CommandContext _commandContext;
+
         private readonly AdapterWorker _adapterWorker;
         private readonly IResultBuffer _resultBuffer;
         private readonly IObjectPoolSite _poolSite;
-        //private readonly IStatistics _statistics;
+
         private readonly IStatisticCounter _adaptersCommandsExecutionCountCounter;
         private readonly IStatisticCounter _adaptersCommandsExecutionCompletedCounter;
         private readonly IStatisticCounter _adaptersCommandsExecutionCanceledCounter;
         private readonly IStatisticCounter _adaptersCommandsExecutionAbortedCounter;
 
-        public ExecutionContext(CommandDescriptor commandDescriptor, AdapterWorker adapterWorker, IResultBuffer resultBuffer, IObjectPoolSite poolSite, IStatistics statistics)
+        private ICommandResultPart _lastResult;
+
+        public ExecutionContext(AdapterWorker adapterWorker, IResultBuffer resultBuffer, IObjectPoolSite poolSite, IStatistics statistics)
         {
-            this._commandDescriptor = commandDescriptor;
             this._adapterWorker = adapterWorker;
             this._resultBuffer = resultBuffer;
             this._poolSite = poolSite;
-            //this._statistics = statistics;
 
             if (statistics != null)
             {
@@ -37,17 +35,27 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
                 this._adaptersCommandsExecutionCompletedCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionCompletedKey);
                 this._adaptersCommandsExecutionCanceledCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionCanceledKey);
                 this._adaptersCommandsExecutionAbortedCounter = statistics.Counter(Monitoring.AdaptersCommandsExecutionAbortedKey);
-
-                this._adaptersCommandsExecutionCountCounter?.Increment();
             }
+        }
+
+        public void Use(CommandDescriptor descriptor, CommandContext context)
+        {
+            this._commandDescriptor = descriptor;
+            this._commandContext = context;
+            this._adaptersCommandsExecutionCountCounter?.Increment();
         }
 
         public CancellationToken Token => _commandDescriptor.CancellationToken;
 
         public void Abort(Exception e)
         {
+            if (_lastResult != null)
+            {
+                this.ReleaseResult(_lastResult);
+                _lastResult = null;
+            }
             _commandDescriptor.Abort(CommandFailureReason.Exception, e);
-            _adapterWorker.FinalizeCommand(_commandDescriptor, _resultBuffer);
+            _adapterWorker.FinalizeCommand(_commandDescriptor, this._commandContext);
 
             this._adaptersCommandsExecutionAbortedCounter?.Increment();
             this._adaptersCommandsExecutionCountCounter?.Decrement();
@@ -55,8 +63,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public void Cancel()
         {
+            if (_lastResult != null)
+            {
+                this.ReleaseResult(_lastResult);
+                _lastResult = null;
+            }
+
             _commandDescriptor.Cancel();
-            _adapterWorker.FinalizeCommand(_commandDescriptor, _resultBuffer);
+            _adapterWorker.FinalizeCommand(_commandDescriptor, this._commandContext);
 
             this._adaptersCommandsExecutionCanceledCounter?.Increment();
             this._adaptersCommandsExecutionCountCounter?.Decrement();
@@ -65,8 +79,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public void Finish()
         {
+            if (_lastResult != null)
+            {
+                this.ReleaseResult(_lastResult);
+                _lastResult = null;
+            }
             _commandDescriptor.Done();
-            _adapterWorker.FinalizeCommand(_commandDescriptor, _resultBuffer);
+            _adapterWorker.FinalizeCommand(_commandDescriptor, this._commandContext);
 
             this._adaptersCommandsExecutionCompletedCounter?.Increment();
             this._adaptersCommandsExecutionCountCounter?.Decrement();
@@ -96,6 +115,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public void PushResult(ICommandResultPart result)
         {
+            _lastResult = null;
             this._resultBuffer.Push(result);
         }
 
@@ -122,12 +142,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         public T TakeResult<T>(string key, ulong index, CommandResultStatus status) where T : ICommandResultPart
         {
+            if (_lastResult != null)
+            {
+                throw new InvalidOperationException("Last returned result pool object not returned to the result pool");
+            }
+
             var pool = this.GetResultPool<T>(key);
             var result = pool.Take();
             result.PoolKey = key;
             result.PoolId = Guid.NewGuid();
             result.PartIndex = index;
             result.Status = status;
+            _lastResult = result;
             return result;
         }
 
@@ -142,8 +168,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 
         private IObjectPool<T> GetResultPool<T>(string key)
         {
-            var poolKey = AdapterWorker.BuildPoolKey(_commandDescriptor.Command.Type, key);
-            var pool = _poolSite.GetPool<T>(poolKey);
+            var resultPoolKey = new ValueTuple<Type, CommandType, string>(typeof(T), _commandDescriptor.Command.Type, key); // AdapterWorker.BuildPoolKey(_commandDescriptor.Command.Type, key);
+            var pool = (IObjectPool<T>)_commandContext.ResultsPool[resultPoolKey];
             return pool;
         }
     }
