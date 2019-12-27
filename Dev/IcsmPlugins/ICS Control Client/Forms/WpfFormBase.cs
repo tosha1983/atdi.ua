@@ -23,6 +23,11 @@ namespace XICSM.ICSControlClient.Forms
         public readonly ElementHost _wpfElementHost;
         public WpfFormBase()
         {
+            var appSettings = ConfigurationManager.AppSettings;
+            string currentUICulture = appSettings["UICulture"];
+            if (!string.IsNullOrEmpty(currentUICulture))
+                System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo(currentUICulture);
+
             if (null == System.Windows.Application.Current)
             {
                 new System.Windows.Application();

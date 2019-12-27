@@ -423,9 +423,11 @@
       <DependentUpon>StationListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="WpfControls\Charts\LineChart.xaml">
@@ -485,6 +487,7 @@
 copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager UCRF"
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
-</PostBuildEvent>
+copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager UCRF\ru-RU\"
+copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager UCRF\uk-UA\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
