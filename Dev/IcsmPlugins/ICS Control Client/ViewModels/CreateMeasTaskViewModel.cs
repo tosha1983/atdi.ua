@@ -274,8 +274,13 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadShortSensors()
         {
-            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
+            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(); //.Where(c => c.Administration == "ADM").ToArray();
             this._shortSensors.Source = sdrSensors;
+            if (sdrSensors.Length > 0)
+            {
+                this._currentShortSensor = new List<ShortSensorViewModel>() { Mappers.Map(sdrSensors[0]) };
+                RedrawMap();
+            }
         }
         private void OnDoubleClickSensorCommand(object parameter)
         {

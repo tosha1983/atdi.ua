@@ -528,4 +528,7 @@
   <data name="VBWkHz" xml:space="preserve">
     <value>VBW, kHz</value>
   </data>
+  <data name="MeasTasks" xml:space="preserve">
+    <value>Meas tasks</value>
+  </data>
 </root>

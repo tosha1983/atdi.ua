@@ -700,6 +700,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Meas tasks.
+        /// </summary>
+        public static string MeasTasks {
+            get {
+                return ResourceManager.GetString("MeasTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MHz.
         /// </summary>
         public static string MHz {
