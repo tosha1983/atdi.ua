@@ -181,5 +181,89 @@ namespace Atdi.Test.Sdrn.DeviceServer.Processing.Measurements
             TimeSpan TimeSmmetric = DateTime.Now - startTime;
             */
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+           // double t = Atdi.Modules.Sdrn.SpecializedCalculation.TDOA.GeographicLocalization.GetYformX();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            double LonMin = 29;
+            double LonMax = 30;
+            double LatMin = 49;
+            double LatMax = 50;
+
+            double LonSt1 = 29.8;
+            double LatSt1 = 49.6;
+
+            double LonSt2 = 29.2;
+            double LatSt2 = 49.4;
+            double dist1 = 5;
+            double dist2 = -5;
+
+            double[] vs = Atdi.Modules.Sdrn.SpecializedCalculation.TDOA.GeographicLocalization.GetLineLonLat(LonMin, LonMax, LatMin, LatMax, LonSt1, LatSt1, LonSt2, LatSt2, dist1);
+            double[] vs1 = Atdi.Modules.Sdrn.SpecializedCalculation.TDOA.GeographicLocalization.GetLineLonLat(LonMin, LonMax, LatMin, LatMax, LonSt1, LatSt1, LonSt2, LatSt2, dist2);
+            Fill(vs, vs1, LonSt1, LatSt1, LonSt2, LatSt2, LonMin, LonMax, LatMin, LatMax);
+        }
+
+        private void Fill(/*Массив  Arr1*/
+                        double[] Arr1,
+                        /*Массив  Arr2*/
+                        double[] Arr2,
+                        /*Координаты станции 1*/
+                        double St1_Lon,
+                        double St1_Lat,
+                        /*Координаты станции 2*/
+                        double St2_Lon,
+                        double St2_Lat,
+                        /*Размеры области*/
+                        double LonMin,
+                        double LonMax,
+                        double LatMin,
+                        double LatMax)
+        {
+            zedGraphControl_P1.GraphPane.XAxis.IsShowGrid = true;
+            zedGraphControl_P1.GraphPane.YAxis.IsShowGrid = true;
+            zedGraphControl_P1.GraphPane.XAxis.GridDashOn = 10;
+            zedGraphControl_P1.GraphPane.XAxis.GridDashOff = 5;
+            zedGraphControl_P1.GraphPane.YAxis.GridDashOn = 10;
+            zedGraphControl_P1.GraphPane.YAxis.GridDashOff = 5;
+            ZedGraph.GraphPane myPane = zedGraphControl_P1.GraphPane;
+            myPane.CurveList.Clear();
+            ZedGraph.PointPairList listArr1 = new ZedGraph.PointPairList();
+            for (int i = 0; i < Arr1.Length; i = i + 2)
+            {
+                if ((i + 1) < Arr1.Length)
+                {
+                    listArr1.Add(Arr1[i], Arr1[i + 1]);
+                }
+            }
+
+            ZedGraph.PointPairList listArr2 = new ZedGraph.PointPairList();
+            for (int i = 0; i < Arr2.Length; i = i + 2)
+            {
+                if ((i + 1) < Arr2.Length)
+                {
+                    listArr2.Add(Arr2[i], Arr2[i + 1]);
+                }
+            }
+
+            myPane.XAxis.Min = LonMin;
+            myPane.XAxis.Max = LonMax;
+            myPane.YAxis.Min = LatMin;
+            myPane.YAxis.Max = LatMax;
+            ZedGraph.LineItem myCurveArr1 = myPane.AddCurve("Arr1", listArr1, Color.Blue, ZedGraph.SymbolType.None);
+            ZedGraph.LineItem myCurveArr2 = myPane.AddCurve("Arr2", listArr2, Color.Blue, ZedGraph.SymbolType.None);
+
+            ZedGraph.PointPairList listStation1 = new ZedGraph.PointPairList();
+            listStation1.Add(St1_Lon, St1_Lat);
+            ZedGraph.LineItem myCurveSt1 = myPane.AddCurve("Station 1", listStation1, Color.Red, ZedGraph.SymbolType.Diamond);
+            ZedGraph.PointPairList listStation2 = new ZedGraph.PointPairList();
+            listStation2.Add(St2_Lon, St2_Lat);
+            ZedGraph.LineItem myCurveSt2 = myPane.AddCurve("Station 2", listStation2, Color.Orange, ZedGraph.SymbolType.Diamond);
+            zedGraphControl_P1.AxisChange();
+            zedGraphControl_P1.Invalidate();
+        }
     }
 }
