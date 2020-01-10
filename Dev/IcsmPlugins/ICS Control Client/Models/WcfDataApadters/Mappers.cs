@@ -50,6 +50,35 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 TypeSensor = source.TypeSensor
             };
         }
+        public static VM.ShortSensorViewModel Map(SDR.ShortSensor source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.ShortSensorViewModel
+            {
+                Administration = source.Administration,
+                AntGainMax = source.AntGainMax.ToNull(),
+                Id = source.Id.Value,
+                AntManufacturer = source.AntManufacturer,
+                AntName = source.AntName,
+                BiuseDate = source.BiuseDate.ToNull(),
+                CreatedBy = source.CreatedBy,
+                DateCreated = source.DateCreated.ToNull(),
+                EouseDate = source.EouseDate.ToNull(),
+                EquipCode = source.EquipCode,
+                EquipManufacturer = source.EquipManufacturer,
+                EquipName = source.EquipName,
+                LowerFreq = source.LowerFreq.ToNull(),
+                Name = source.Name,
+                NetworkId = source.NetworkId,
+                RxLoss = source.RxLoss.ToNull(),
+                Status = source.Status,
+                UpperFreq = source.UpperFreq.ToNull()
+            };
+        }
         public static VM.SignSysInfoViewModel Map(SDR.SignalingSysInfo source)
         {
             if (source == null)

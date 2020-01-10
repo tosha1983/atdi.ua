@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Ivi.Visa.dll</HintPath>
+    </Reference>
     <Reference Include="RohdeSchwarz.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=edfec305b664d2b6, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\RohdeSchwarz.Visa.dll</HintPath>
@@ -91,6 +95,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DLL\Ivi.Visa.dll" />
     <Content Include="DLL\RohdeSchwarz.Visa.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

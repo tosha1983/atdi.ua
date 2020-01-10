@@ -22,7 +22,7 @@ namespace XICSM.ICSControlClient.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace XICSM.ICSControlClient.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("XICSM.ICSControlClient.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,1254 @@ namespace XICSM.ICSControlClient.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adm.
+        /// </summary>
+        public static string Adm {
+            get {
+                return ResourceManager.GetString("Adm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adress.
+        /// </summary>
+        public static string Adress {
+            get {
+                return ResourceManager.GetString("Adress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alt.
+        /// </summary>
+        public static string Alt {
+            get {
+                return ResourceManager.GetString("Alt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alt, m.
+        /// </summary>
+        public static string AltM {
+            get {
+                return ResourceManager.GetString("AltM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analysis only with contravention of Reference Level.
+        /// </summary>
+        public static string AnalysisOnlyWithContraventionOfReferenceLevel {
+            get {
+                return ResourceManager.GetString("AnalysisOnlyWithContraventionOfReferenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analyze Sys Info emission.
+        /// </summary>
+        public static string AnalyzeSysInfoEmission {
+            get {
+                return ResourceManager.GetString("AnalyzeSysInfoEmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Antenna.
+        /// </summary>
+        public static string Antenna {
+            get {
+                return ResourceManager.GetString("Antenna", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attenuation, dB.
+        /// </summary>
+        public static string AttenuationDB {
+            get {
+                return ResourceManager.GetString("AttenuationDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string Auto {
+            get {
+                return ResourceManager.GetString("Auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic division of emissions.
+        /// </summary>
+        public static string AutomaticDivisionOfEmissions {
+            get {
+                return ResourceManager.GetString("AutomaticDivisionOfEmissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bring into use.
+        /// </summary>
+        public static string BringIntoUse {
+            get {
+                return ResourceManager.GetString("BringIntoUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BW, kHz.
+        /// </summary>
+        public static string BWkHz {
+            get {
+                return ResourceManager.GetString("BWkHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CentralFrequencyMeas, MHz.
+        /// </summary>
+        public static string CentralFrequencyMeasMHz {
+            get {
+                return ResourceManager.GetString("CentralFrequencyMeasMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CentralFrequency, MHz.
+        /// </summary>
+        public static string CentralFrequencyMHz {
+            get {
+                return ResourceManager.GetString("CentralFrequencyMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CentrFreq, MHz      From.
+        /// </summary>
+        public static string CentrFreq_From {
+            get {
+                return ResourceManager.GetString("CentrFreq_From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centr. Freq, MHz.
+        /// </summary>
+        public static string CentrFreqMHz {
+            get {
+                return ResourceManager.GetString("CentrFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking emission in channels.
+        /// </summary>
+        public static string CheckingEmissionInChannels {
+            get {
+                return ResourceManager.GetString("CheckingEmissionInChannels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking level in the channel.
+        /// </summary>
+        public static string CheckingLevelInTheChannel {
+            get {
+                return ResourceManager.GetString("CheckingLevelInTheChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking the frequency channel.
+        /// </summary>
+        public static string CheckingTheFrequencyChannel {
+            get {
+                return ResourceManager.GetString("CheckingTheFrequencyChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Correlation coefficient.
+        /// </summary>
+        public static string CorrelationCoefficient {
+            get {
+                return ResourceManager.GetString("CorrelationCoefficient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CountStationMeasurements.
+        /// </summary>
+        public static string CountStationMeasurements {
+            get {
+                return ResourceManager.GetString("CountStationMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CountUnknownStationMeasurements.
+        /// </summary>
+        public static string CountUnknownStationMeasurements {
+            get {
+                return ResourceManager.GetString("CountUnknownStationMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreatedBy.
+        /// </summary>
+        public static string CreatedBy {
+            get {
+                return ResourceManager.GetString("CreatedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new.
+        /// </summary>
+        public static string CreateNew {
+            get {
+                return ResourceManager.GetString("CreateNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DateCreated.
+        /// </summary>
+        public static string DateCreated {
+            get {
+                return ResourceManager.GetString("DateCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date Start.
+        /// </summary>
+        public static string DateStart {
+            get {
+                return ResourceManager.GetString("DateStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date Stop.
+        /// </summary>
+        public static string DateStop {
+            get {
+                return ResourceManager.GetString("DateStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dBm.
+        /// </summary>
+        public static string dBm {
+            get {
+                return ResourceManager.GetString("dBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dBmkVm.
+        /// </summary>
+        public static string dBmkVm {
+            get {
+                return ResourceManager.GetString("dBmkVm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEC.
+        /// </summary>
+        public static string DEC {
+            get {
+                return ResourceManager.GetString("DEC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detailed measurements of the emission bandwith.
+        /// </summary>
+        public static string DetailedMeasurementsOfTheEmissionBandwith {
+            get {
+                return ResourceManager.GetString("DetailedMeasurementsOfTheEmissionBandwith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detector parameters.
+        /// </summary>
+        public static string DetectorParameters {
+            get {
+                return ResourceManager.GetString("DetectorParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diff. Timestamp, 10^-9.
+        /// </summary>
+        public static string DiffTimestamp10x9 {
+            get {
+                return ResourceManager.GetString("DiffTimestamp10x9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration, s.
+        /// </summary>
+        public static string DurationS {
+            get {
+                return ResourceManager.GetString("DurationS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End of use.
+        /// </summary>
+        public static string EndOfUse {
+            get {
+                return ResourceManager.GetString("EndOfUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Equipment.
+        /// </summary>
+        public static string Equipment {
+            get {
+                return ResourceManager.GetString("Equipment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ExecutionMode.
+        /// </summary>
+        public static string ExecutionMode {
+            get {
+                return ResourceManager.GetString("ExecutionMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frequency.
+        /// </summary>
+        public static string Frequency {
+            get {
+                return ResourceManager.GetString("Frequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From.
+        /// </summary>
+        public static string From {
+            get {
+                return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gain.
+        /// </summary>
+        public static string Gain {
+            get {
+                return ResourceManager.GetString("Gain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gain of preamplifier, dB.
+        /// </summary>
+        public static string GainOfPreamplifierDB {
+            get {
+                return ResourceManager.GetString("GainOfPreamplifierDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get CSV.
+        /// </summary>
+        public static string GetCSV {
+            get {
+                return ResourceManager.GetString("GetCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get Graphic.
+        /// </summary>
+        public static string GetGraphic {
+            get {
+                return ResourceManager.GetString("GetGraphic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GlobalSID.
+        /// </summary>
+        public static string GlobalSID {
+            get {
+                return ResourceManager.GetString("GlobalSID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide detail.
+        /// </summary>
+        public static string HideDetail {
+            get {
+                return ResourceManager.GetString("HideDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id.
+        /// </summary>
+        public static string Id {
+            get {
+                return ResourceManager.GetString("Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identification Station.
+        /// </summary>
+        public static string IdentificationStation {
+            get {
+                return ResourceManager.GetString("IdentificationStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IdMeasDevice.
+        /// </summary>
+        public static string IdMeasDevice {
+            get {
+                return ResourceManager.GetString("IdMeasDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IdSector.
+        /// </summary>
+        public static string IdSector {
+            get {
+                return ResourceManager.GetString("IdSector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IdStation.
+        /// </summary>
+        public static string IdStation {
+            get {
+                return ResourceManager.GetString("IdStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kHz.
+        /// </summary>
+        public static string kHz {
+            get {
+                return ResourceManager.GetString("kHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lat.
+        /// </summary>
+        public static string Lat {
+            get {
+                return ResourceManager.GetString("Lat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lat, DEC.
+        /// </summary>
+        public static string LatDEC {
+            get {
+                return ResourceManager.GetString("LatDEC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level.
+        /// </summary>
+        public static string Level {
+            get {
+                return ResourceManager.GetString("Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level, dBm.
+        /// </summary>
+        public static string LeveldBm {
+            get {
+                return ResourceManager.GetString("LeveldBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level, dBmkVm.
+        /// </summary>
+        public static string LeveldBmkVm {
+            get {
+                return ResourceManager.GetString("LeveldBmkVm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level for Bandwith estimation.
+        /// </summary>
+        public static string LevelForBandwithEstimation {
+            get {
+                return ResourceManager.GetString("LevelForBandwithEstimation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LevelMeasurements.
+        /// </summary>
+        public static string LevelMeasurements {
+            get {
+                return ResourceManager.GetString("LevelMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level of min. occupation, dBm.
+        /// </summary>
+        public static string LevelOfMinOccupationDBm {
+            get {
+                return ResourceManager.GetString("LevelOfMinOccupationDBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Levels difference for emission division, dB.
+        /// </summary>
+        public static string LevelsDifferenceForEmissionDivisionDB {
+            get {
+                return ResourceManager.GetString("LevelsDifferenceForEmissionDivisionDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lon.
+        /// </summary>
+        public static string Lon {
+            get {
+                return ResourceManager.GetString("Lon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lon, DEC.
+        /// </summary>
+        public static string LonDEC {
+            get {
+                return ResourceManager.GetString("LonDEC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low freq, MHz.
+        /// </summary>
+        public static string LowFreqMHz {
+            get {
+                return ResourceManager.GetString("LowFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to m.
+        /// </summary>
+        public static string m {
+            get {
+                return ResourceManager.GetString("m", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manufacturer.
+        /// </summary>
+        public static string Manufacturer {
+            get {
+                return ResourceManager.GetString("Manufacturer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Margin for Reference Level calculation, dB.
+        /// </summary>
+        public static string MarginForReferenceLevelCalculationDB {
+            get {
+                return ResourceManager.GetString("MarginForReferenceLevelCalculationDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Marker.
+        /// </summary>
+        public static string Marker {
+            get {
+                return ResourceManager.GetString("Marker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum frequency deviation.
+        /// </summary>
+        public static string MaximumFrequencyDeviation {
+            get {
+                return ResourceManager.GetString("MaximumFrequencyDeviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MeasGlobalSid.
+        /// </summary>
+        public static string MeasGlobalSID {
+            get {
+                return ResourceManager.GetString("MeasGlobalSID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meas task.
+        /// </summary>
+        public static string MeasTask {
+            get {
+                return ResourceManager.GetString("MeasTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meas tasks.
+        /// </summary>
+        public static string MeasTasks {
+            get {
+                return ResourceManager.GetString("MeasTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MHz.
+        /// </summary>
+        public static string MHz {
+            get {
+                return ResourceManager.GetString("MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string Mode {
+            get {
+                return ResourceManager.GetString("Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitoring emission parameters.
+        /// </summary>
+        public static string MonitoringEmissionParameters {
+            get {
+                return ResourceManager.GetString("MonitoringEmissionParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network.
+        /// </summary>
+        public static string Network {
+            get {
+                return ResourceManager.GetString("Network", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Noise Level.
+        /// </summary>
+        public static string NoiseLevel {
+            get {
+                return ResourceManager.GetString("NoiseLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of steps for measurements in channel.
+        /// </summary>
+        public static string NumberOfStepsForMeasurementsInChannel {
+            get {
+                return ResourceManager.GetString("NumberOfStepsForMeasurementsInChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number points of spectrum.
+        /// </summary>
+        public static string NumberPointsOfSpectrum {
+            get {
+                return ResourceManager.GetString("NumberPointsOfSpectrum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number total scan.
+        /// </summary>
+        public static string NumberTotalScan {
+            get {
+                return ResourceManager.GetString("NumberTotalScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OffsetFrequency, 10^-6.
+        /// </summary>
+        public static string OffsetFrequency10x6 {
+            get {
+                return ResourceManager.GetString("OffsetFrequency10x6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owner.
+        /// </summary>
+        public static string Owner {
+            get {
+                return ResourceManager.GetString("Owner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameters.
+        /// </summary>
+        public static string Parameters {
+            get {
+                return ResourceManager.GetString("Parameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Perc. of intersection of spectrums to combine emissions.
+        /// </summary>
+        public static string PercOfIntersectionOfSpectrumsToCombineEmissions {
+            get {
+                return ResourceManager.GetString("PercOfIntersectionOfSpectrumsToCombineEmissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Perc. of intersection of spectrums to combine emissions (low level signals).
+        /// </summary>
+        public static string PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals {
+            get {
+                return ResourceManager.GetString("PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission.
+        /// </summary>
+        public static string Permission {
+            get {
+                return ResourceManager.GetString("Permission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PointsNumber.
+        /// </summary>
+        public static string PointsNumber {
+            get {
+                return ResourceManager.GetString("PointsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RBW, kHz.
+        /// </summary>
+        public static string RBWkHz {
+            get {
+                return ResourceManager.GetString("RBWkHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reference Level, dBm.
+        /// </summary>
+        public static string ReferenceLevelDBm {
+            get {
+                return ResourceManager.GetString("ReferenceLevelDBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string Region {
+            get {
+                return ResourceManager.GetString("Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        public static string Results {
+            get {
+                return ResourceManager.GetString("Results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results of general.
+        /// </summary>
+        public static string ResultsOfGeneral {
+            get {
+                return ResourceManager.GetString("ResultsOfGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results of Stations.
+        /// </summary>
+        public static string ResultsOfStations {
+            get {
+                return ResourceManager.GetString("ResultsOfStations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        public static string Run {
+            get {
+                return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Station in ICSM.
+        /// </summary>
+        public static string SearchStationInICSM {
+            get {
+                return ResourceManager.GetString("SearchStationInICSM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SensorName.
+        /// </summary>
+        public static string SensorName {
+            get {
+                return ResourceManager.GetString("SensorName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sensors.
+        /// </summary>
+        public static string Sensors {
+            get {
+                return ResourceManager.GetString("Sensors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SensorTechId.
+        /// </summary>
+        public static string SensorTechId {
+            get {
+                return ResourceManager.GetString("SensorTechId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show detail.
+        /// </summary>
+        public static string ShowDetail {
+            get {
+                return ResourceManager.GetString("ShowDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SN.
+        /// </summary>
+        public static string SN {
+            get {
+                return ResourceManager.GetString("SN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectrum.
+        /// </summary>
+        public static string Spectrum {
+            get {
+                return ResourceManager.GetString("Spectrum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectrum coefficient from Emission.
+        /// </summary>
+        public static string SpectrumCoefficientFromEmission {
+            get {
+                return ResourceManager.GetString("SpectrumCoefficientFromEmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectrum Occupation Parameters.
+        /// </summary>
+        public static string SpectrumOccupationParameters {
+            get {
+                return ResourceManager.GetString("SpectrumOccupationParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard.
+        /// </summary>
+        public static string Standard {
+            get {
+                return ResourceManager.GetString("Standard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start freq, MHz.
+        /// </summary>
+        public static string StartFreqMHz {
+            get {
+                return ResourceManager.GetString("StartFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StationsNumber.
+        /// </summary>
+        public static string StationsNumber {
+            get {
+                return ResourceManager.GetString("StationsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Station Sys Info.
+        /// </summary>
+        public static string StationSysInfo {
+            get {
+                return ResourceManager.GetString("StationSysInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step of spectrum, kHz.
+        /// </summary>
+        public static string StepOfSpectrumkHz {
+            get {
+                return ResourceManager.GetString("StepOfSpectrumkHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step whith, kHz.
+        /// </summary>
+        public static string StepWhithkHz {
+            get {
+                return ResourceManager.GetString("StepWhithkHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string Stop {
+            get {
+                return ResourceManager.GetString("Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop freq, MHz.
+        /// </summary>
+        public static string StopFreqMHz {
+            get {
+                return ResourceManager.GetString("StopFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SubTaskId.
+        /// </summary>
+        public static string SubTaskId {
+            get {
+                return ResourceManager.GetString("SubTaskId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sweep number.
+        /// </summary>
+        public static string SweepNumber {
+            get {
+                return ResourceManager.GetString("SweepNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sweep time, s.
+        /// </summary>
+        public static string SweepTimeS {
+            get {
+                return ResourceManager.GetString("SweepTimeS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T1, MHz.
+        /// </summary>
+        public static string T1MHz {
+            get {
+                return ResourceManager.GetString("T1MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T2, MHz.
+        /// </summary>
+        public static string T2MHz {
+            get {
+                return ResourceManager.GetString("T2MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TaskId.
+        /// </summary>
+        public static string TaskId {
+            get {
+                return ResourceManager.GetString("TaskId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tasks.
+        /// </summary>
+        public static string Tasks {
+            get {
+                return ResourceManager.GetString("Tasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum number of scan per day.
+        /// </summary>
+        public static string TheMaximumNumberOfScanPerDay {
+            get {
+                return ResourceManager.GetString("TheMaximumNumberOfScanPerDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The minimum number of points a spectrum must contain in order not to measure bandwith.
+        /// </summary>
+        public static string TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith {
+            get {
+                return ResourceManager.GetString("TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The minimum number of points for finding emissions.
+        /// </summary>
+        public static string TheMinimumNumberOfPointsForFindingEmissions {
+            get {
+                return ResourceManager.GetString("TheMinimumNumberOfPointsForFindingEmissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of points in the channel during scanning.
+        /// </summary>
+        public static string TheNumberOfPointsInTheChannelDuringScanning {
+            get {
+                return ResourceManager.GetString("TheNumberOfPointsInTheChannelDuringScanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TimeFinishMeas.
+        /// </summary>
+        public static string TimeFinishMeas {
+            get {
+                return ResourceManager.GetString("TimeFinishMeas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time meas.
+        /// </summary>
+        public static string TimeMeas {
+            get {
+                return ResourceManager.GetString("TimeMeas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Start.
+        /// </summary>
+        public static string TimeStart {
+            get {
+                return ResourceManager.GetString("TimeStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TimeStartMeas.
+        /// </summary>
+        public static string TimeStartMeas {
+            get {
+                return ResourceManager.GetString("TimeStartMeas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Stop.
+        /// </summary>
+        public static string TimeStop {
+            get {
+                return ResourceManager.GetString("TimeStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string To {
+            get {
+                return ResourceManager.GetString("To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TypeMeasurements.
+        /// </summary>
+        public static string TypeMeasurements {
+            get {
+                return ResourceManager.GetString("TypeMeasurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type of detecting.
+        /// </summary>
+        public static string TypeOfDetecting {
+            get {
+                return ResourceManager.GetString("TypeOfDetecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TypeSpectrumOccupation.
+        /// </summary>
+        public static string TypeSpectrumOccupation {
+            get {
+                return ResourceManager.GetString("TypeSpectrumOccupation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up freq, MHz.
+        /// </summary>
+        public static string UpFreqMHz {
+            get {
+                return ResourceManager.GetString("UpFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using correlation analysis.
+        /// </summary>
+        public static string UsingCorrelationAnalysis {
+            get {
+                return ResourceManager.GetString("UsingCorrelationAnalysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using smoothing trace for analysis.
+        /// </summary>
+        public static string UsingSmoothingTraceForAnalysis {
+            get {
+                return ResourceManager.GetString("UsingSmoothingTraceForAnalysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VBW, kHz.
+        /// </summary>
+        public static string VBWkHz {
+            get {
+                return ResourceManager.GetString("VBWkHz", resourceCulture);
             }
         }
     }

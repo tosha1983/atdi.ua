@@ -19,6 +19,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters
         public bool MandatoryPPS; // обязательная привязка к PPS 
         public bool MandatorySignal; //  Снятие потока только при наличии наличия сигнала
         public long TimeStart; // Время старта записи IQ stream
+        public float TriggerLevel_dBm; // Пороговый уровень определения наличия сигнала
     }
 }
 

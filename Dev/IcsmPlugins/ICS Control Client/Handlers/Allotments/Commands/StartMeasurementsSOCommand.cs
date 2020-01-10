@@ -249,6 +249,12 @@ namespace XICSM.ICSControlClient.Handlers.AllotmentCommnads
                 result = false;
             }
 
+            if (allotment.PlanRef == null || allotment.PlanRef.Id == IM.NullI)
+            {
+                messages.AppendLine($"Undefined channelling plan");
+                result = false;
+            }
+
             //if (allotment.CustDate1.IsNull())
             //{
             //    messages.AppendLine($"Undefined a CUST_DAT1 of the allotment #{allotment.Id}");

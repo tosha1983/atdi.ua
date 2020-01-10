@@ -36,7 +36,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         ConsoleLogger logger;
         DummyAdapterHost adapterHost;
         //ADP.SignalHound.Adapter adapter;
-        ADP.SpectrumAnalyzer.Adapter ANadapter;
+        ADP.RSFPL.Adapter ANadapter;
         ADP.SignalHound.Adapter SHadapter;
 
         ADP.GPS.GPSAdapter GPSadapter;
@@ -81,23 +81,23 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             ////////////TimeThread.IsBackground = true;
             ////////////TimeThread.Start();
 
-            //ANThread = new Thread(ANWorks);
-            //ANThread.Name = "ANThread";
-            //ANThread.IsBackground = true;
-            //ANThread.Start();
-            //AND += ANConnect;
+            ANThread = new Thread(ANWorks);
+            ANThread.Name = "ANThread";
+            ANThread.IsBackground = true;
+            ANThread.Start();
+            AND += ANConnect;
 
-            SHThread = new Thread(SHWorks);
-            SHThread.Name = "SHThread";
-            SHThread.IsBackground = true;
-            SHThread.Start();
-            SHD += SHConnect;
+            //SHThread = new Thread(SHWorks);
+            //SHThread.Name = "SHThread";
+            //SHThread.IsBackground = true;
+            //SHThread.Start();
+            //SHD += SHConnect;
 
-            //GPSThread = new Thread(GPSWorks);
-            //GPSThread.Name = "GPSThread";
-            //GPSThread.IsBackground = true;
-            //GPSThread.Start();
-            //GPSD += GPSConnect;
+            GPSThread = new Thread(GPSWorks);
+            GPSThread.Name = "GPSThread";
+            GPSThread.IsBackground = true;
+            GPSThread.Start();
+            GPSD += GPSConnect;
 
         }
         //long NextSecond = 0;
@@ -139,17 +139,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             try
             {
-                var adapterConfig = new ADP.SpectrumAnalyzer.AdapterConfig()
+                var adapterConfig = new ADP.RSFPL.AdapterConfig()
                 {
                     SerialNumber = "101396",
                     IPAddress = "192.168.2.110",
                     DisplayUpdate = true,
                     OnlyAutoSweepTime = true,
                     Optimization = 2,
-                    ConnectionMode = 1,
+                    //ConnectionMode = 1
                 };
 
-                ANadapter = new ADP.SpectrumAnalyzer.Adapter(adapterConfig, logger, TimeService);
+                ANadapter = new ADP.RSFPL.Adapter(adapterConfig, logger, TimeService);
                 App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                 {
                     DS_AN.ANAdapter = ANadapter;
@@ -356,21 +356,45 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = -1;
-                command.Parameter.FreqStart_Hz = 1805000000;
-                command.Parameter.FreqStop_Hz = 1880000000;
-                command.Parameter.PreAmp_dB = -1;
-                command.Parameter.RBW_Hz = -1;
-                command.Parameter.VBW_Hz = -1;
+                decimal centr = 1000m * 1000000;
+                decimal span = 10.0m * 1000000;//0.025m
+
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
+                command.Parameter.Att_dB = 0;
+                command.Parameter.PreAmp_dB = 0;
+                command.Parameter.RBW_Hz = 100000;
+                command.Parameter.VBW_Hz = 100000;
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.SweepTime_s = 0.003;
+                command.Parameter.SweepTime_s = -1;// 0.003;
                 command.Parameter.TraceCount = 1;
-                command.Parameter.TracePoint = 3750;
+                command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
-
+                //long t1 = TimeService.TimeStamp.Ticks;
                 ANadapter.MesureTraceCommandHandler(command, context);
+                //long t2 = TimeService.TimeStamp.Ticks;
+
+
+                centr = 500m * 1000000;
+                span = 5.0m * 1000000;//0.025m
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
+                command.Parameter.RBW_Hz = 50000;
+                command.Parameter.VBW_Hz = 50000;
+                ANadapter.MesureTraceCommandHandler(command, context);
+
+                centr = 2000m * 1000000;
+                span = 20.0m * 1000000;//0.025m
+                command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
+                command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
+                command.Parameter.RBW_Hz = 300000;
+                command.Parameter.VBW_Hz = 300000;
+                ANadapter.MesureTraceCommandHandler(command, context);
+                //long t3 = TimeService.TimeStamp.Ticks;
+
+                //MessageBox.Show(new TimeSpan(t2 - t1).ToString() + "   \r\n" + new TimeSpan(t3 - t2).ToString());
             }
             finally
             {
@@ -448,7 +472,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.VBW_Hz = 30000;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 100;
+                command.Parameter.TraceCount = 1;
                 command.Parameter.TracePoint = 5100;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
@@ -891,8 +915,8 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureIQStreamCommand();
-                decimal centr = 935.2m * 1000000;
-                decimal span = 0.271m * 1000000;//0.025m
+                decimal centr = 1824.4m * 1000000;
+                decimal span = 1.25m * 1000000;//0.025m
 
                 command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = centr + span / 2;//
@@ -903,10 +927,10 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.Att_dB = 0;
                 command.Parameter.PreAmp_dB = 0;
                 command.Parameter.RefLevel_dBm = -40;
-                command.Parameter.BitRate_MBs = 0.6;
+                command.Parameter.BitRate_MBs = 1.6;
                 command.Parameter.IQBlockDuration_s = 0.2;
                 command.Parameter.IQReceivTime_s = 0.2;
-                command.Parameter.MandatoryPPS = true;
+                command.Parameter.MandatoryPPS = false;
                 command.Parameter.MandatorySignal = false;
 
                 long offset = (long)(0.04 * 10000000);
@@ -1609,7 +1633,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             object t = new Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureTraceResult()
             {
-                Level = new float[20000]
+                Level = new float[1000000]
             };
             return (T)t;
             //throw new NotImplementedException();
