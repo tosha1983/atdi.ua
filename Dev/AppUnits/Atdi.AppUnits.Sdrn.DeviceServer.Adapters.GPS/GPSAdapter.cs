@@ -204,9 +204,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.GPS
                         {
                             data = data.Insert(0, "$");
                         }
-
-
-                        var result = NMEAParser.Parse(data);
+                        NMEASentence result = null;
+                        try
+                        {
+                            result = NMEAParser.Parse(data);
+                        }
+                        catch (Exception)
+                        {
+                            result = null;
+                        }
                         if (result != null)
                         {
                             if (result is NMEAStandartSentence)
