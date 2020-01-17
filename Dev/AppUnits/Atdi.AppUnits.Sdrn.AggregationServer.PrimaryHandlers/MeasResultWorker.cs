@@ -87,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             }
             catch (Exception e)
             {
-                this._logger.Exception(Contexts.ThisComponent, Categories.Processing, e, this);
+                this._logger.Critical(Contexts.ThisComponent, Categories.Processing, e, this);
             }
         }
         private void SendMeasResult()
