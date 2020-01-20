@@ -10,13 +10,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
     {
         private readonly ILogger _logger;
         private readonly object _instance;
-        private readonly ResultHandlerDecriptor _descriptor;
+        private readonly ResultHandlerDescriptor _descriptor;
         private readonly IStatisticCounter _processedCounter;
         private readonly IStatisticCounter _processingCounter;
         private readonly IStatisticCounter _completedCounter;
         private readonly IStatisticCounter _abortedCounter;
 
-        public ResultHandler(ResultHandlerDecriptor descriptor, object instance, IStatistics statistics, ILogger logger)
+        public ResultHandler(ResultHandlerDescriptor descriptor, object instance, IStatistics statistics, ILogger logger)
         {
             this._logger = logger;
             this._descriptor = descriptor;

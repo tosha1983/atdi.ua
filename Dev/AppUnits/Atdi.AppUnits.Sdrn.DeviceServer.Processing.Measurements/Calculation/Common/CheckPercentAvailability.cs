@@ -16,14 +16,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         /// <param name="emittings"></param>
         public static void CheckPercent(ref Emitting[] emittings)
         {
-            for (int i=0; i< emittings.Length; i++)
+            for (var i =0; i< emittings.Length; i++)
             {
                 var valueEmit = emittings[i];
                 if (valueEmit!=null)
                 {
                     if (valueEmit.WorkTimes!=null)
                     {
-                        for (int j=0; j< valueEmit.WorkTimes.Length; j++)
+                        for (var j =0; j< valueEmit.WorkTimes.Length; j++)
                         {
                             var workTime = valueEmit.WorkTimes[j];
                             if (workTime!=null)

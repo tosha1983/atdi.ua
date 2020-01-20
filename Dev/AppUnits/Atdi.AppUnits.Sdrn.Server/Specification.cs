@@ -17,12 +17,14 @@ namespace Atdi.AppUnits.Sdrn.Server
         public static readonly EventCategory Declaring = "Declaring";
         public static readonly EventCategory Registration = "Registration";
         public static readonly EventCategory Processing = "Processing";
+        public static readonly EventCategory Subscribing = "Subscribing";
     }
 
     static class Events
     {
-        public static readonly EventText HandlerTypeWasRegistred = "The event subscriber type was registered successfully: '{0}'";
-        
+        public static readonly EventText HandlerTypeWasRegistered = "The event subscriber was registered: '{0}'";
+        public static readonly EventText HandlerTypeWasConnected = "The event subscriber was connected: '{0}'";
+
     }
     static class TraceScopeNames
     {

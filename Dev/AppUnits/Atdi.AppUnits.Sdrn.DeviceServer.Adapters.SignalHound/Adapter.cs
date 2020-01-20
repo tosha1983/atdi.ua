@@ -10,6 +10,7 @@ using COM = Atdi.DataModels.Sdrn.DeviceServer.Commands;
 using COMR = Atdi.DataModels.Sdrn.DeviceServer.Commands.Results;
 using EN = Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Enums;
 using MEN = Atdi.DataModels.Sdrn.DeviceServer.Adapters.Enums;
+using PEN = Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
@@ -18,12 +19,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
     /// </summary>
     public class Adapter : IAdapter
     {
-        private readonly ITimeService _timeService;
-        private readonly ILogger _logger;
-        private readonly AdapterConfig _adapterConfig;
-        private LocalParametersConverter LPC;
-        private CFG.ThisAdapterConfig TAC;
-        private CFG.AdapterMainConfig MainConfig;
+        private readonly ITimeService timeService;
+        private readonly ILogger logger;
+        private readonly AdapterConfig adapterConfig;
+        private LocalParametersConverter lpc;
+        private CFG.ThisAdapterConfig tac;
+        private CFG.AdapterMainConfig mainConfig;
 
         /// <summary>
         /// Все объекты адаптера создаются через DI-контейнер 
@@ -34,15 +35,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         /// <param name="timeService"></param>
         public Adapter(AdapterConfig adapterConfig, ILogger logger, ITimeService timeService)
         {
-            this._logger = logger;
-            this._adapterConfig = adapterConfig;
-            this._timeService = timeService;
-            LPC = new LocalParametersConverter();
-            FreqArr = new double[TracePoints];
-            LevelArr = new float[TracePoints];
-            for (int i = 0; i < TracePoints; i++)
+            this.logger = logger;
+            this.timeService = timeService;
+            if (ValidateAdapterConfig(adapterConfig))
             {
-                FreqArr[i] = (double)(FreqStart + FreqStep * i);
+                this.adapterConfig = adapterConfig;
+            }
+
+            lpc = new LocalParametersConverter(this.logger);
+
+            LevelArr = new float[tracePoints];
+            for (int i = 0; i < tracePoints; i++)
+            {
                 LevelArr[i] = -100;
             }
         }
@@ -58,30 +62,39 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 /// включем устройство
                 /// иницируем его параметрами сконфигурации
                 /// проверяем к чем оно готово
-
-                if (Connect(_adapterConfig.SerialNumber))
-                {
-                    string filename = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + Device_SerialNumber + ".xml";
-                    TAC = new CFG.ThisAdapterConfig() { };
-                    if (!TAC.GetThisAdapterConfig(filename))
+                if (Connect(adapterConfig.SerialNumber))
+                {                    
+                    string fileName = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + deviceSerialNumber + ".xml";
+                    tac = new CFG.ThisAdapterConfig() { };
+                    if (!tac.GetThisAdapterConfig(fileName))
                     {
-                        MainConfig = new CFG.AdapterMainConfig() { };
-                        SetDefaulConfig(ref MainConfig);
-                        TAC.SetThisAdapterConfig(MainConfig, filename);
+                        mainConfig = new CFG.AdapterMainConfig() { };
+                        SetDefaulConfig(ref mainConfig);
+                        tac.SetThisAdapterConfig(mainConfig, fileName);
                     }
                     else
                     {
-                        MainConfig = TAC.Main;
+                        if (tac.Main.AdapterTraceResultPools.Length == 0)
+                        {
+                            SetDefaulTraceResultPoolsConfig(ref tac.Main);
+                            tac.SetThisAdapterConfig(tac.Main, fileName);
+                            logger.Verbouse(Contexts.ThisComponent, "AdapterTraceResultPools were not found in the configuration " +
+                                "file and were replaced with the default values for this adapter.");
+                        }
+                        mainConfig = tac.Main;
                     }
-                    (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(MainConfig);
-                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, mtdp);
+                    (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
+
+                    IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = ValidateAdapterTracePoolMainConfig(mainConfig.AdapterTraceResultPools, fileName);
+
+                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
                 }
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Critical(Contexts.ThisComponent, exp);
                 throw new InvalidOperationException("Invalid initialize/connect adapter", exp);
             }
             #endregion
@@ -96,15 +109,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                /// освобождаем ресурсы и отключаем устройство
-                //TAC.Save();
-                IsRuning = false;
-                StatusError(AdapterDriver.bbCloseDevice(_Device_ID));
+                /// освобождаем ресурсы и отключаем устройство              
+                isRuning = false;
+                StatusError(AdapterDriver.bbCloseDevice(deviceId));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -114,7 +126,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                if (IsRuning)
+                if (isRuning)
                 {
                     /// если нужно проводим блокировку комманд который мы не сможем обслужить пока что то меряем в течении выполнени яэтой комманды
                     /// и подсказывая этим инфраструктуре что этот устрйостов некоторое время не сможет обрабатываить такие комманды
@@ -123,289 +135,44 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     // если нужно заблокировать выполняему комманду то достатчоно вызвать метод без параметров и блокируется комманда которая выполняется
                     context.Lock();
 
-                    // важно: если измерение идет в поток еадаптера то в принцпе в явных блокировках смысла нет - адаптер полностью занят и другие кломаныд обработаить не сможет
-                    // функции блокировки имеют смысл если мы для измерений создает отдельные потоки а этот освобождаем для прослушивани яследующих комманд
-
-                    // сценарйи в данном случаи за разарбочиком адаптера
-
-                    // что то меряем
-                    if (IdleState)
+                    if (idleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
-                        IdleState = false;
-                    }
-                    if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
-                    {
-                        FreqStart = LPC.FreqStart(this, command.Parameter.FreqStart_Hz);
-                        FreqStop = LPC.FreqStop(this, command.Parameter.FreqStop_Hz);
-                        StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
                     }
 
-                    EN.Attenuator att = LPC.Attenuator(command.Parameter.Att_dB);
-                    if (Attenuator != att || RefLevel != command.Parameter.RefLevel_dBm)
+                    ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, context);
+
+                    ValidateAndSetAttRefLevel(command.Parameter.Att_dB, command.Parameter.RefLevel_dBm, context);
+
+                    ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
+
+                    ValidateAndSetRBWVBWTracePointSweepTime(command.Parameter.RBW_Hz, command.Parameter.VBW_Hz, command.Parameter.TracePoint, command.Parameter.SweepTime_s, context);
+
+                    ValidateAndSetTraceCount(command.Parameter.TraceCount, context);
+
+                    ValidateAndSetTraceDetectors(command.Parameter.DetectorType, context);
+
+
+                    traceType = lpc.TraceType(command.Parameter.TraceType);
+                    LevelUnit = lpc.LevelUnit(command.Parameter.LevelUnit);
+
+                    if (deviceMode != EN.Mode.Sweeping || flagMode != EN.Flag.StreamIQ)
                     {
-                        Attenuator = att;
-                        if (command.Parameter.RefLevel_dBm == 1000000000)
-                        {
-                            RefLevel = -40;
-                        }
-                        else
-                        {
-                            RefLevel = command.Parameter.RefLevel_dBm;
-                        }
-
-                        StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
+                        deviceMode = EN.Mode.Sweeping;
+                        flagMode = EN.Flag.StreamIQ;
                     }
+                    StatusError(AdapterDriver.bbInitiate(deviceId, (uint)deviceMode, (uint)flagMode), context);
 
-                    EN.Gain gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                    if (gain != Gain)
-                    {
-                        Gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                        StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
-
-                    }
-
-                    if (command.Parameter.RBW_Hz < 0)
-                    {
-                        //decimal[] natrbw = new decimal[] { 0.301m, 0.602m, 1.204m, 2.4m, 4.81m, 9.63m, 19.26m, 38.52m, 77.05m, 154.11m, 308.22m, 616.45m, 1232, 2465, 4931, 9863, 19720, 39450, 78900, 157100, 315600, 631200, 1262000, 2525000, 5050000, 10100000};
-                        decimal[] ar = new decimal[] { 0.0078125m, 0.015625m, 0.03125m, 0.0625m, 0.125m, 0.25m, 0.5m, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
-                        decimal magic = 38.146966101334357m; //9.536741525333588m;
-                        decimal m1 = FreqSpan / command.Parameter.TracePoint;//хотим
-                        decimal m2 = m1 / magic;
-                        decimal delta = decimal.MaxValue;
-                        int index = 0;
-                        for (int i = 0; i < ar.Length; i++)
-                        {
-                            if (Math.Abs(ar[i] - m2) < delta)
-                            {
-                                delta = Math.Abs(ar[i] - m2);
-                                index = i;
-                            }
-                        }
-                        m2 = ar[index];
-                        decimal d = FreqSpan / magic / m2;
-                        if (((int)d) < command.Parameter.TracePoint && index > 0)
-                        {
-                            m2 = ar[index - 1];
-                        }
-                        decimal rbw = magic * m2 * 4;// (FreqSpan / command.Parameter.TracePoint) * 4.0m;
-                        if (rbw > RBWMax)
-                        {
-                            rbw = RBWMax;
-                        }
-                        decimal vbw = 0;
-                        if (command.Parameter.VBW_Hz < 0)
-                        {
-                            vbw = rbw;
-                        }
-                        else
-                        {
-                            vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
-                        }
-                        RBW = rbw;
-                        VBW = vbw;
-                        SweepTime = (decimal)command.Parameter.SweepTime_s;
-                        StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));
-
-                    }
-                    else
-                    {
-                        decimal rbw = LPC.RBW(this, (decimal)command.Parameter.RBW_Hz);
-                        decimal vbw = LPC.VBW(this, (decimal)command.Parameter.VBW_Hz);
-                        if (RBW != rbw || VBW != vbw || SweepTime != (decimal)command.Parameter.SweepTime_s)
-                        {
-                            RBW = rbw;
-                            VBW = vbw;
-                            SweepTime = (decimal)command.Parameter.SweepTime_s;
-                            StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection), context);
-                        }
-                    }
-
-                    if (command.Parameter.TraceCount > 0)
-                    {
-                        TraceCountToMeas = (ulong)command.Parameter.TraceCount;
-                        TraceCount = 0;
-                        TracePoints = command.Parameter.TracePoint;
-                    }
-                    else
-                    {
-                        throw new Exception("TraceCount must be set greater than zero.");
-                    }
-                    LPC.DetectorType(this, command.Parameter.DetectorType);
-                    StatusError(AdapterDriver.bbConfigureAcquisition(_Device_ID, (uint)DetectorToSet, (uint)Scale), context);
-
-                    TraceType = LPC.TraceType(command.Parameter.TraceType);
-                    LevelUnit = LPC.LevelUnit(command.Parameter.LevelUnit);
-
-                    if (DeviceMode != EN.Mode.Sweeping || FlagMode != EN.Flag.StreamIQ)
-                    {
-                        DeviceMode = EN.Mode.Sweeping;
-                        FlagMode = EN.Flag.StreamIQ;
-                    }
-                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
-
-                    IdleState = true;
+                    idleState = true;
                     //Меряем
-                    //Если TraceType ClearWrite то пушаем каждый результат
-                    if (TraceType == EN.TraceType.ClearWrite)
+
+                    GetAndPushTraceResults(command, context);
+
+                    if (idleState)
                     {
-                        for (ulong i = 0; i < TraceCountToMeas; i++)
-                        {
-                            if (GetTrace())
-                            {
-                                // пушаем результат
-                                var result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Next);
-                                TraceCount++;
-                                if (TraceCountToMeas == TraceCount)
-                                {
-                                    result = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Final);
-                                }
-                                result.Freq_Hz = new double[FreqArr.Length];
-                                result.Level = new float[FreqArr.Length];
-                                if (command.Parameter.RBW_Hz == -2)
-                                {
-                                    float adj = (float)(10 * Math.Log10((FreqArr[5] - FreqArr[4]) / (double)RBW));
-                                    for (int j = 0; j < FreqArr.Length; j++)
-                                    {
-                                        result.Freq_Hz[j] = FreqArr[j];
-                                        result.Level[j] = LevelArr[j] + adj;
-                                    }
-                                }
-                                else
-                                {
-                                    for (int j = 0; j < FreqArr.Length; j++)
-                                    {
-                                        result.Freq_Hz[j] = FreqArr[j];
-                                        result.Level[j] = LevelArr[j];
-                                    }
-                                }
-                                result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                                                                                   //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                                result.Att_dB = LPC.Attenuator(Attenuator);
-                                result.PreAmp_dB = LPC.Gain(Gain);
-                                result.RefLevel_dBm = (int)RefLevel;
-                                result.RBW_Hz = (double)RBW;
-                                result.VBW_Hz = (double)VBW;
-                                result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                                if (RFOverload == 1)
-                                {
-                                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                                }
-                                context.PushResult(result);
-                            }
-
-                            // иногда нужно проверять токен окончания работы комманды
-                            if (context.Token.IsCancellationRequested)
-                            {
-                                // все нужно остановиться
-
-                                // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-                                var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Ragged);
-                                result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                                context.PushResult(result2);
-
-
-                                // подтверждаем факт обработки отмены
-                                context.Cancel();
-                                // освобождаем поток 
-                                return;
-                            }
-
-                        }
-                    }
-                    //Если TraceType Average/MinHold/MaxHold то делаем измерений сколько сказали и пушаем только готовый результат
-                    else
-                    {
-                        TraceReset = true;///сбросим предыдущие результаты
-                        if (TraceType == EN.TraceType.Average)//назначим сколько усреднять
-                        {
-                            TraceAveraged.AveragingCount = (int)TraceCountToMeas;
-                        }
-                        bool _RFOverload = false;
-                        for (ulong i = 0; i < TraceCountToMeas; i++)
-                        {
-
-                            if (GetTrace())
-                            {
-                                TraceCount++;
-                                if (RFOverload == 1)
-                                {
-                                    _RFOverload = true;
-                                }
-                            }
-                            // иногда нужно проверять токен окончания работы комманды
-                            if (context.Token.IsCancellationRequested)
-                            {
-                                // все нужно остановиться
-
-                                // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-
-                                var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.Ragged);
-                                result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                                //Скорее нет результатов
-                                //result2.Freq_Hz = new double[FreqArr.Length];
-                                //result2.Level = new float[FreqArr.Length];
-                                //for (int j = 0; j < FreqArr.Length; j++)
-                                //{
-                                //    result2.Freq_Hz[j] = FreqArr[j];
-                                //    result2.Level[j] = LevelArr[j];
-                                //}
-                                //result2.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks; //пофиксить
-                                context.PushResult(result2);
-
-
-                                // подтверждаем факт обработки отмены
-                                context.Cancel();
-                                // освобождаем поток 
-                                return;
-                            }
-                        }
-                        if (TraceCountToMeas == TraceCount)
-                        {
-                            var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
-                            {
-                                Freq_Hz = new double[FreqArr.Length],
-                                Level = new float[FreqArr.Length],
-                                DeviceStatus = COMR.Enums.DeviceStatus.Normal
-                            };
-                            if (command.Parameter.RBW_Hz == -2)
-                            {
-                                float adj = (float)(10 * Math.Log10((FreqArr[5] - FreqArr[4]) / (double)RBW));
-                                for (int j = 0; j < FreqArr.Length; j++)
-                                {
-                                    result.Freq_Hz[j] = FreqArr[j];
-                                    result.Level[j] = LevelArr[j] + adj;
-                                }
-                            }
-                            else
-                            {
-                                for (int j = 0; j < FreqArr.Length; j++)
-                                {
-                                    result.Freq_Hz[j] = FreqArr[j];
-                                    result.Level[j] = LevelArr[j];
-                                }
-                            }
-                            
-                            result.TimeStamp = _timeService.GetGnssUtcTime().Ticks - UTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                                                                               //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                            result.Att_dB = LPC.Attenuator(Attenuator);
-                            result.PreAmp_dB = LPC.Gain(Gain);
-                            result.RefLevel_dBm = (int)RefLevel;
-                            result.RBW_Hz = (double)RBW;
-                            result.VBW_Hz = (double)VBW;
-                            result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                            if (_RFOverload)
-                            {
-                                result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                            }
-                            context.PushResult(result);
-                        }
-                    }
-
-                    if (IdleState)
-                    {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
-                        IdleState = false;
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
                     }
                     // снимаем блокировку с текущей команды
                     context.Unlock();
@@ -420,27 +187,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 else
                 {
-                    throw new Exception("The device with serial number " + Device_SerialNumber + " does not work");
+                    throw new Exception("The device with serial number " + deviceSerialNumber + " does not work");
                 }
             }
             catch (Exception e)
             {
                 try//знаю что плохо но нужно освободить железо если че
                 {
-                    if (IdleState)
+                    if (idleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
-                        IdleState = false;
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
                     }
                 }
                 catch { }
                 // желательно записать влог
-                _logger.Exception(Contexts.ThisComponent, e);
+                logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
-
         }
 
         /// <summary>
@@ -488,63 +254,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                if (IsRuning)
+                if (isRuning)
                 {
                     //context.Lock(CommandType.MesureIQStream);
                     context.Lock();
 
-                    if (IdleState)
+                    if (idleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
-                        IdleState = false;
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
                     }
-                    if (FreqStart != command.Parameter.FreqStart_Hz || FreqStop != command.Parameter.FreqStop_Hz)
+                    ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, context);
+
+                    ValidateAndSetAttRefLevel(command.Parameter.Att_dB, command.Parameter.RefLevel_dBm, context);
+
+                    ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
+
+                    downsampleFactor = lpc.IQDownsampleFactor(command.Parameter.BitRate_MBs, FreqSpan);
+                    StatusError(AdapterDriver.bbConfigureIQ(deviceId, downsampleFactor, (double)FreqSpan), context);
+
+                    if (deviceMode != EN.Mode.Streaming || flagMode != EN.Flag.StreamIQ)
                     {
-                        (FreqStart, FreqStop) = LPC.IQFreqStartStop(this, command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz);
-                        StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan), context);
+                        deviceMode = EN.Mode.Streaming;
+                        flagMode = EN.Flag.StreamIQ;
                     }
+                    StatusError(AdapterDriver.bbInitiate(deviceId, (uint)deviceMode, (uint)flagMode), context);
 
-                    EN.Attenuator att = LPC.Attenuator(command.Parameter.Att_dB);
-                    if (Attenuator != att || RefLevel != command.Parameter.RefLevel_dBm)
-                    {
-                        Attenuator = att;
-                        if (command.Parameter.RefLevel_dBm == 1000000000)
-                        {
-                            RefLevel = -40;
-                        }
-                        else
-                        {
-                            RefLevel = command.Parameter.RefLevel_dBm;
-                        }
-                        StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, RefLevel, (double)Attenuator), context);
-                    }
-
-                    EN.Gain gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                    if (gain != Gain)
-                    {
-                        Gain = LPC.Gain(command.Parameter.PreAmp_dB);
-                        StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain), context);
-                    }
-
-                    DownsampleFactor = LPC.IQDownsampleFactor(command.Parameter.BitRate_MBs, FreqSpan);
-                    StatusError(AdapterDriver.bbConfigureIQ(_Device_ID, DownsampleFactor, (double)FreqSpan), context);
-
-                    if (DeviceMode != EN.Mode.Streaming || FlagMode != EN.Flag.StreamIQ)
-                    {
-                        DeviceMode = EN.Mode.Streaming;
-                        FlagMode = EN.Flag.StreamIQ;
-                    }
-                    StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)FlagMode), context);
-
-                    (double BlockDuration, double ReceiveTime) = LPC.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
+                    (double BlockDuration, double ReceiveTime) = lpc.IQTimeParameters(command.Parameter.IQBlockDuration_s, command.Parameter.IQReceivTime_s);
 
                     //если доступенн ППС или если недоступен и ненужен
-                    if ((command.Parameter.MandatoryPPS && MainConfig.AvailabilityPPS) || !command.Parameter.MandatoryPPS)
+                    if ((command.Parameter.MandatoryPPS && mainConfig.AvailabilityPPS) || !command.Parameter.MandatoryPPS)
                     {
                         return_len = 0; samples_per_sec = 0; bandwidth = 0.0;
-                        StatusError(AdapterDriver.bbQueryStreamInfo(_Device_ID, ref return_len, ref bandwidth, ref samples_per_sec), context);
+                        StatusError(AdapterDriver.bbQueryStreamInfo(deviceId, ref return_len, ref bandwidth, ref samples_per_sec), context);
 
-                        IdleState = true;
+                        idleState = true;
 
                         //инициализация перед пуском, подготавливаемся к приему данных 
                         COMR.MesureIQStreamResult result = new COMR.MesureIQStreamResult(0, CommandResultStatus.Final)
@@ -555,67 +299,55 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         InitialReceivedIQStream(ref result, ref tiq, BlockDuration, ReceiveTime, command.Parameter.TimeStart * 100);
                         //закончили подготовку
 
-                        //психуем и принимаем все
+                        //запустимся как сможем пораньше и принимаем все
                         if (GetIQStream(ref result, tiq, context, command.Parameter.MandatoryPPS, command.Parameter.MandatorySignal))
                         {
                             //пушаем
                             context.PushResult(result);
-
-                            ///dell
-                            //string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(AppPath + "\\" + FreqCentr.ToString() + ".txt", false))
-                            //{
-                            //    for (int i = 0; i < result.iq_samples.Length; i++)
-                            //    {
-                            //        for (int j = 0; j < result.iq_samples[i].Length; j++)
-                            //        {
-                            //            file.Write(result.iq_samples[i][j].ToString("G")+";");
-                            //        }
-                            //    }
-                            //}
                         }
                     }
                     else
                     {
                         throw new Exception("According to the PPS configuration is not available");
                     }
-                    if (IdleState)
+                    if (idleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
-                        IdleState = false;
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
                     }
                     context.Unlock();
                     context.Finish();
                 }
                 else
                 {
-                    throw new Exception("The device with serial number " + Device_SerialNumber + " does not work");
+                    throw new Exception("The device with serial number " + deviceSerialNumber + " does not work");
                 }
             }
             catch (Exception e)
             {
                 try//знаю что плохо но нужно освободить железо если че
                 {
-                    if (IdleState)
+                    if (idleState)
                     {
-                        StatusError(AdapterDriver.bbAbort(_Device_ID), context);
-                        IdleState = false;
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
                     }
                 }
                 catch { }
                 // желательно записать влог
-                _logger.Exception(Contexts.ThisComponent, e);
+                logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
 
         }
+
         #region Param
-        private long UTCOffset = 621355968000000000;
+        private readonly long uTCOffset = 621355968000000000;
         public EN.Status Status = EN.Status.NoError;
-        private EN.Mode DeviceMode = EN.Mode.Sweeping;
-        private EN.Flag FlagMode = EN.Flag.StreamIQ;
+        private EN.Mode deviceMode = EN.Mode.Sweeping;
+        private EN.Flag flagMode = EN.Flag.StreamIQ;
         #region Freqs
         public decimal FreqCentr
         {
@@ -667,31 +399,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         #endregion Freqs
 
         #region RBW / VBW
-        private EN.Rejection Rejection = EN.Rejection.NoSpurReject;
-        private EN.RBWShape RBWShape = EN.RBWShape.Shape_FlatTop;
-        public decimal RBWMax = 10000000;
-        public decimal RBW = 10000;
-        public decimal[] RBWArr = new decimal[] { 1, 3, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000, 10000000 };
+        private EN.Rejection rejection = EN.Rejection.NoSpurReject;
+        private EN.RBWShape rBWShape = EN.RBWShape.Shape_FlatTop;
+        public double RBWMax = 10000000;
+        public double RBW = 10000;
+        public double[] RBWArr = new double[] { 1, 3, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000, 10000000 };
 
-        public decimal VBWMax = 10000000;
-        public decimal VBW = 10000;
+        public readonly double VBWMax = 10000000;
+        public double VBW = 10000;
         #endregion RBW / VBW
 
         #region Sweep
-        public decimal SweepTimeMin = 0.00001m;
-        public decimal SweepTimeMax = 0.1m;
-
-        public decimal SweepTime
-        {
-            get { return _SweepTime; }
-            set
-            {
-                if (value >= SweepTimeMin && value <= SweepTimeMax) _SweepTime = value;
-                else if (value < SweepTimeMin) _SweepTime = SweepTimeMin;
-                else if (value > SweepTimeMax) _SweepTime = SweepTimeMax;
-            }
-        }
-        private decimal _SweepTime = 0.00001m;
+        public readonly double SweepTimeMin = 0.00001;
+        public readonly double SweepTimeMax = 1.0;
+        public double SweepTime = 0.00001;
         #endregion
 
         #region Levels
@@ -703,40 +424,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         public int RFOverload = 0;
 
         #region уровни отображения
-        public double RefLevel
-        {
-            get { return _RefLevel; }
-            set
-            {
-                if (value > RefLevelMax)
-                {
-                    _RefLevel = RefLevelMax;
-                }
-                else if (value < RefLevelMin)
-                {
-                    _RefLevel = RefLevelMin;
-                }
-                else
-                {
-                    _RefLevel = value;
-                }
-                LowestLevel = _RefLevel - Range;
-            }
-        }
-        private double _RefLevel = -40;
-        private double RefLevelMin = -130;
-        private double RefLevelMax = 20;
+        public double RefLevel = -40;
 
-        public double Range
-        {
-            get { return _Range; }
-            set
-            {
-                _Range = value;
-                LowestLevel = _RefLevel - Range;
-            }
-        }
-        private double _Range = 100;
+
+        private double Range = 100;
 
         public double LowestLevel { get; set; } = -140;
         #endregion
@@ -748,128 +439,316 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         #region Trace Data
         //private bool NewTrace;
+        private int tracePointsMaxPool = 0;
+        private const int tracePointsMax = 2_000_000;
+        private double resFreqStart = 10000;
+        private double resFreqStep = 10000;
+        private double traceFreqStart = 0; //предвдущего прохода
+        private int tracePoints = 1601;
 
-        private decimal FreqStep = 10000;
+        private ulong traceCountToMeas = 1;
+        private ulong traceCount = 1;
 
-        private int TracePoints = 1601;
-
-        private ulong TraceCountToMeas = 1;
-        private ulong TraceCount = 1;
-
-        public double[] FreqArr;
+        private float[] sweepMax = new float[10000], sweepMin = new float[10000];
+        //public double[] FreqArr;
         public float[] LevelArr;
 
-        public float[] RealTimeFrame;
+        private bool traceReset;
+        private AveragedTrace traceAveraged = new AveragedTrace();
 
-        bool TraceReset;
-        private AveragedTrace TraceAveraged = new AveragedTrace();
 
-        public int RealTimeFrameWidth = 1;
-
-        public int RealTimeFrameHeight = 1;
-
-        decimal TraceFreqStart = 0;
-        double TraceFreqStop = 0;
 
         #region Trace
         public EN.Detector DetectorUse = EN.Detector.MaxOnly;
         public EN.Detector DetectorToSet = EN.Detector.MinAndMax;
-        private EN.TraceType TraceType = EN.TraceType.ClearWrite;
-        private EN.Unit VideoUnit = EN.Unit.Log;
+        private EN.TraceType traceType = EN.TraceType.ClearWrite;
+        private EN.Unit videoUnit = EN.Unit.Log;
         #endregion
         #endregion
 
         #region runs
-        private bool IsRuning;
-        private long LastUpdate;
+        private bool isRuning;
+        private long lastUpdate;
         #endregion
 
         #region Device info
-        public decimal FreqMin = 9000;
-        public decimal FreqMax = 6000000000;//6400000000;
+        public readonly decimal FreqMin = 9000;
+        public readonly decimal FreqMax = 6000000000;//6400000000;
 
 
-        bool IdleState = false;
-        /// <summary>
-        /// температура приемника от нее пляшем с калибровкой
-        /// </summary>
-        public double Device_BoardTemp;
-        /// <summary>
-        /// последняя температура калибровки
-        /// </summary>
-        //private double Device_LastCalcBoardTemp;
+        private bool idleState = false;
 
-        public double Device_USBVoltage;
+        public float DeviceBoardTemp;
+        public float DeviceUSBVoltage;
+        public float DeviceUSBCurrent;
 
-        public double Device_USBCurrent;
+        private int deviceId = -1;
 
-        public int Device_ID
-        {
-            get { return _Device_ID; }
-            set { _Device_ID = value; }
-        }
-        private int _Device_ID = -1;
+        private string deviceType = "";
 
-        public string Device_Type
-        {
-            get { return _Device_Type; }
-            set { _Device_Type = value; }
-        }
-        private string _Device_Type = "";
+        private uint deviceSerialNumber = 0;
 
-        public uint Device_SerialNumber = 0;
+        private int deviceFirmwareVersion = 0;
 
-        public int Device_FirmwareVersion = 0;
+        private int[] deviceFirmwareVersionActual = new int[] { 7, 8 };
 
-        public int[] Device_FirmwareVersionActual = new int[] { 7, 8 };
+        private string deviceAPIVersion = "";
 
-        public string Device_APIVersion = "";
-
-        public string Device_APIVersionActual = "4.2.0";
+        private readonly string deviceAPIVersionActual = "4.2.0";
         #endregion
 
         #region IQStream
-        private int DownsampleFactor;
+        private int downsampleFactor;
         private int return_len;
         private int samples_per_sec;
         private double bandwidth;
-        public decimal TriggerOffset { get; set; } = 10000;
-        public decimal OneSempleDuration;
+        public decimal TriggerOffset = 10000;
+        public decimal OneSampleDuration;
         #endregion IQStream
 
         #endregion Param
 
         #region Private Method
-        private bool Connect(string SN)
+        private bool ValidateAdapterConfig(AdapterConfig adapterConfig)
+        {
+            bool res = true;
+            if (adapterConfig.SerialNumber == int.MinValue ||
+                adapterConfig.SerialNumber == int.MaxValue ||
+                adapterConfig.SerialNumber == 0)
+            {
+                logger.Exception(Contexts.ThisComponent, new Exception("The serial number must be set correctly."));
+                res = false;
+            }
+            return res;
+        }
+
+        private IResultPoolDescriptor<COMR.MesureTraceResult>[] ValidateAdapterTracePoolMainConfig(CFG.AdapterResultPool[] adapterTraceResultPools, string fileName)
+        {
+            IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = null;
+
+            int poolMaxSize = 256_000_000;
+            int poolSize = 0;
+            for (int i = 0; i < adapterTraceResultPools.Length; i++)
+            {
+                if (adapterTraceResultPools[i].MinSize > 0)
+                {
+                    if (adapterTraceResultPools[i].MaxSize > 0)
+                    {
+                        if (adapterTraceResultPools[i].MinSize < adapterTraceResultPools[i].MaxSize)
+                        {
+                            if (adapterTraceResultPools[i].Size <= tracePointsMax)
+                            {
+                                poolSize += adapterTraceResultPools[i].MaxSize * adapterTraceResultPools[i].Size * sizeof(float);
+                                if (adapterTraceResultPools[i].Size >= tracePointsMaxPool)//ищем максимальный размер одного пула, потом этим пользуемся чтобы не выстрелить в ногу
+                                {
+                                    tracePointsMaxPool = adapterTraceResultPools[i].Size;
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("In the AdapterTraceResultPools element number " + i + ", " +
+                                    "the Size value is exceeded the maximum value (" + tracePointsMax + ") for the SignalHound adapter. File Name \"" + fileName + "\"");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("In the AdapterTraceResultPools element number " + i + ", " +
+                                "the MinSize value is greater than the MaxSize. File Name \"" + fileName + "\"");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("In the AdapterTraceResultPools item number " + i + ", " +
+                            "the MaxSize value is less than or equal to zero. File Name \"" + fileName + "\"");
+                    }
+                }
+                else
+                {
+                    throw new Exception("In the AdapterTraceResultPools item number " + i + ", " +
+                        "the MinSize value is less than or equal to zero. File Name \"" + fileName + "\"");
+                }
+            }
+            if (poolSize <= poolMaxSize)
+            {
+                rpd = new IResultPoolDescriptor<COMR.MesureTraceResult>[adapterTraceResultPools.Length];
+                for (int i = 0; i < adapterTraceResultPools.Length; i++)
+                {
+
+                    int count = adapterTraceResultPools[i].Size;
+                    rpd[i] = new ResultPoolDescriptor<COMR.MesureTraceResult>()
+                    {
+                        Key = count.ToString(),
+                        MinSize = adapterTraceResultPools[i].MinSize,
+                        MaxSize = adapterTraceResultPools[i].MaxSize,
+                        Factory = () =>
+                        {
+                            var result = new COMR.MesureTraceResult()
+                            {
+                                Level = new float[count]
+                            };
+                            return result;
+                        }
+                    };
+
+                }
+            }
+            else
+            {
+                throw new Exception("The AdapterTraceResultPools configuration exceeded the maximum pool size limit of " + poolMaxSize / 1000000 + " MB. File Name \"" + fileName + "\"");
+            }
+            return rpd;
+        }
+
+        private void ValidateAndSetFreqStartStop(decimal freqStart, decimal freqStop, IExecutionContext context)
+        {
+            if (FreqStart != freqStart || FreqStop != freqStop)
+            {
+                FreqStart = lpc.FreqStart(this, freqStart);
+                FreqStop = lpc.FreqStop(this, freqStop);
+                StatusError(AdapterDriver.bbConfigureCenterSpan(deviceId, (double)FreqCentr, (double)FreqSpan), context);
+            }
+        }
+
+        private void ValidateAndSetAttRefLevel(int att, int refLefel, IExecutionContext context)
+        {
+            EN.Attenuator at = lpc.Attenuator(att);
+            double refl = lpc.RefLevel(refLefel);
+            if (Attenuator != at || RefLevel != refl)
+            {
+                Attenuator = at;
+                RefLevel = refl;
+
+                StatusError(AdapterDriver.bbConfigureLevel(deviceId, RefLevel, (double)Attenuator), context);
+            }
+        }
+
+        private void ValidateAndSetGain(int gain, IExecutionContext context)
+        {
+            EN.Gain g = lpc.Gain(gain);
+            if (g != Gain)
+            {
+                Gain = g;
+                StatusError(AdapterDriver.bbConfigureGain(deviceId, (int)Gain), context);
+            }
+        }
+
+        private void ValidateAndSetRBWVBWTracePointSweepTime(double rbw, double vbw, int tracePoint, double sweepTime, IExecutionContext context)
+        {
+            sweepTime = lpc.SweepTime(this, sweepTime);
+            if (tracePoint > tracePointsMaxPool)
+            {
+                throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
+            }
+
+            if (rbw < 0)
+            {
+                //decimal[] natrbw = new decimal[] { 0.301m, 0.602m, 1.204m, 2.4m, 4.81m, 9.63m, 19.26m, 38.52m, 77.05m, 154.11m, 308.22m, 616.45m, 1232, 2465, 4931, 9863, 19720, 39450, 78900, 157100, 315600, 631200, 1262000, 2525000, 5050000, 10100000};
+                double[] ar = new double[] { 0.0078125, 0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
+                double magic = 38.146966101334357; //9.536741525333588m;
+                double m1 = (double)FreqSpan / tracePoint;//хотим
+                double m2 = m1 / magic;
+                double delta = double.MaxValue;
+                int index = 0;
+                for (int i = 0; i < ar.Length; i++)
+                {
+                    double temp = Math.Abs(ar[i] - m2);
+                    if (temp < delta)
+                    {
+                        delta = temp;
+                        index = i;
+                    }
+                }
+                m2 = ar[index];
+                double d = (double)FreqSpan / magic / m2;
+                if (((int)d) < tracePoint && index > 0)
+                {
+                    m2 = ar[index - 1];
+                }
+                double rbw2 = magic * m2 * 4;// (FreqSpan / command.Parameter.TracePoint) * 4.0m;
+                if (rbw2 > RBWMax)
+                {
+                    rbw2 = RBWMax;
+                }
+                double vbw2 = 0;
+                if (vbw < 0)
+                {
+                    vbw2 = rbw2;
+                }
+                else
+                {
+                    vbw2 = lpc.VBW(this, vbw);
+                }
+                RBW = rbw2;
+                VBW = vbw2;
+                if (sweepTime != SweepTime)
+                {
+                    SweepTime = sweepTime;
+                }
+                StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection));
+
+            }
+            else
+            {
+                double rbw2 = lpc.RBW(this, rbw);
+                double vbw2 = lpc.VBW(this, vbw);
+                if (RBW != rbw2 || VBW != vbw2 || SweepTime != sweepTime)
+                {
+                    RBW = rbw2;
+                    VBW = vbw2;
+                    SweepTime = sweepTime;
+                    StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection), context);
+                }
+            }
+        }
+
+        private void ValidateAndSetTraceCount(int traceCount, IExecutionContext context)
+        {
+            if (traceCount > 0)
+            {
+                traceCountToMeas = (ulong)traceCount;//т.к. отсюда берется индекс результата
+                this.traceCount = 0;
+            }
+            else
+            {
+                throw new Exception("TraceCount must be set greater than zero.");
+            }
+        }
+
+        private void ValidateAndSetTraceDetectors(PEN.DetectorType detectorType, IExecutionContext context)
+        {
+            (DetectorUse, DetectorToSet) = lpc.DetectorType(detectorType);
+            StatusError(AdapterDriver.bbConfigureAcquisition(deviceId, (uint)DetectorToSet, (uint)Scale), context);
+        }
+
+
+        private bool Connect(int serialNumber)
         {
             bool res = false;
             /// включем устройство
             /// иницируем его параметрами сконфигурации
             /// проверяем к чем оно готово
 
-            // StatusError(AdapterDriver.bbOpenDevice(ref _Device_ID));
-            int snac = int.Parse(SN);
-            bool err = StatusError(AdapterDriver.bbOpenDeviceBySerialNumber(ref _Device_ID, snac));
+            bool err = StatusError(AdapterDriver.bbOpenDeviceBySerialNumber(ref deviceId, serialNumber));
             if (!err)
             {
-                throw new Exception("Error: Unable to open BB60. Status:" + AdapterDriver.bbGetStatusString(Status));
+                throw new Exception("Error: Unable to open BB60. Status: " + AdapterDriver.bbGetStatusString(Status));
             }
             else
             {
-                Device_Type = AdapterDriver.bbGetDeviceName(_Device_ID);
+                deviceType = AdapterDriver.bbGetDeviceName(deviceId);
 
-                StatusError(AdapterDriver.bbGetSerialNumber(_Device_ID, ref Device_SerialNumber));
-                Device_APIVersion = AdapterDriver.bbGetAPIString();
-                if (Device_APIVersion != Device_APIVersionActual)
+                StatusError(AdapterDriver.bbGetSerialNumber(deviceId, ref deviceSerialNumber));
+                deviceAPIVersion = AdapterDriver.bbGetAPIString();
+                if (deviceAPIVersion != deviceAPIVersionActual)
                 {
                     throw new Exception("Unsupported version of API SignalHound");
                 }
-                StatusError(AdapterDriver.bbGetFirmwareVersion(_Device_ID, ref Device_FirmwareVersion));
+                StatusError(AdapterDriver.bbGetFirmwareVersion(deviceId, ref deviceFirmwareVersion));
 
                 bool Firmware = false;
-                for (int i = 0; i < Device_FirmwareVersionActual.Length; i++)
+                for (int i = 0; i < deviceFirmwareVersionActual.Length; i++)
                 {
-                    if (!Firmware && Device_FirmwareVersion == Device_FirmwareVersionActual[i])
+                    if (!Firmware && deviceFirmwareVersion == deviceFirmwareVersionActual[i])
                     {
                         Firmware = true;
                     }
@@ -887,9 +766,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 SetRbwVbwSweepTimeRbwType();
                 SetPortType();
 
-                StatusError(AdapterDriver.bbInitiate(_Device_ID, (uint)DeviceMode, (uint)EN.Flag.TimeStamp));
-                IsRuning = true;
-                IdleState = true;
+                StatusError(AdapterDriver.bbInitiate(deviceId, (uint)deviceMode, (uint)EN.Flag.TimeStamp));
+                isRuning = true;
+                idleState = true;
                 res = true;
             }
             return res;
@@ -907,7 +786,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             bool res = true;
             if (status != EN.Status.NoError)
             {
-                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                 res = false;
                 if (status == EN.Status.ADCOverflow)
                 {
@@ -931,29 +810,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 try
                 {
                     //отключим SignalHound по USB 
-                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
+                    DeviceReset.SignalHoundBB60StatePrepared(adapterConfig.SerialNumber.ToString(), false);
                     Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
-                    _logger.Exception(Contexts.ThisComponent, exp);
+                    logger.Exception(Contexts.ThisComponent, exp);
                 }
 
                 try
                 {
                     //подключим SignalHound по USB 
-                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
+                    DeviceReset.SignalHoundBB60StatePrepared(adapterConfig.SerialNumber.ToString(), true);
                     Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
-                    _logger.Exception(Contexts.ThisComponent, exp);
+                    logger.Exception(Contexts.ThisComponent, exp);
                 }
 
                 try
                 {
                     Disconnect();
-                    if (Connect(_adapterConfig.SerialNumber))
+                    if (Connect(adapterConfig.SerialNumber))
                     {
                         //оповестим о завершении перезапуска устройства
                         var result2 = new COMR.MesureTraceResult(0, CommandResultStatus.Final)
@@ -965,23 +844,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 catch (Exception exp)
                 {
-                    _logger.Exception(Contexts.ThisComponent, exp);
+                    logger.Exception(Contexts.ThisComponent, exp);
                     context.Abort(exp);
                 }
             }
             return res;
-        }/// <summary>
-         /// 
-         /// </summary>
-         /// <param name="status"></param>
-         /// <returns>true = NoErrore, false = AnyError</returns>
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns>true = NoErrore, false = AnyError</returns>
         private bool StatusError(EN.Status status)
         {
             Status = status;
             bool res = true;
             if (status != EN.Status.NoError)
             {
-                _logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
+                logger.Warning(Contexts.ThisComponent, AdapterDriver.bbGetStatusString(Status));
                 res = false;
                 if (status == EN.Status.ADCOverflow)
                 {
@@ -998,46 +878,34 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 try
                 {
                     //отключим SignalHound по USB 
-                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, false);
+                    DeviceReset.SignalHoundBB60StatePrepared(adapterConfig.SerialNumber.ToString(), false);
                     Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
-                    _logger.Exception(Contexts.ThisComponent, exp);
+                    logger.Exception(Contexts.ThisComponent, exp);
                 }
 
                 try
                 {
                     //подключим SignalHound по USB 
-                    DeviceReset.SignalHoundBB60StatePrepared(_adapterConfig.SerialNumber, true);
+                    DeviceReset.SignalHoundBB60StatePrepared(adapterConfig.SerialNumber.ToString(), true);
                     Thread.Sleep(5000);//надо подождать пока система все сделает
                 }
                 catch (Exception exp)
                 {
-                    _logger.Exception(Contexts.ThisComponent, exp);
+                    logger.Exception(Contexts.ThisComponent, exp);
                 }
 
                 try
                 {
                     Disconnect();
-                    Connect(_adapterConfig.SerialNumber);
+                    Connect(adapterConfig.SerialNumber);
                 }
                 catch (Exception exp)
                 {
-                    _logger.Exception(Contexts.ThisComponent, exp);
+                    logger.Exception(Contexts.ThisComponent, exp);
                 }
-
-
-                //var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.DeviceResetStarted);
-                //context.PushResult(result2);
-                //DeviceReset.SignalHoundBB60StatePrepared("16319373", false);
-                //Thread.Sleep(5000);
-                //DeviceReset.SignalHoundBB60StatePrepared("16319373", true);
-                //var result2 = new COMR.MesureTraceResult(TraceCount, CommandResultStatus.DeviceResetFinished);
-
-                //Thread.Sleep(5000);
-                //context.PushResult(result2);
-                //Что-то что переподлючит устройство               
             }
             return res;
         }
@@ -1046,13 +914,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                float temp = 0.0F, voltage = 0.0F, current = 0.0F;
-                StatusError(AdapterDriver.bbGetDeviceDiagnostics(_Device_ID, ref temp, ref voltage, ref current));
+                StatusError(AdapterDriver.bbGetDeviceDiagnostics(deviceId, ref DeviceBoardTemp, ref DeviceUSBVoltage, ref DeviceUSBCurrent));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1060,12 +927,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureAcquisition(_Device_ID, (uint)DetectorToSet, (uint)Scale));
+                StatusError(AdapterDriver.bbConfigureAcquisition(deviceId, (uint)DetectorToSet, (uint)Scale));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1073,12 +940,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureCenterSpan(_Device_ID, (double)FreqCentr, (double)FreqSpan));
+                StatusError(AdapterDriver.bbConfigureCenterSpan(deviceId, (double)FreqCentr, (double)FreqSpan));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1086,12 +953,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureLevel(_Device_ID, (double)RefLevel, (double)Attenuator));
+                StatusError(AdapterDriver.bbConfigureLevel(deviceId, RefLevel, (double)Attenuator));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1099,12 +966,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureGain(_Device_ID, (int)Gain));
+                StatusError(AdapterDriver.bbConfigureGain(deviceId, (int)Gain));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1112,12 +979,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureSweepCoupling(_Device_ID, (double)RBW, (double)VBW, (double)SweepTime, (uint)RBWShape, (uint)Rejection));
+                StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1127,15 +994,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 uint port1 = 0;
                 uint port2 = 0;
-                if (_adapterConfig.GPSPPSConnected)
+                if (adapterConfig.GPSPPSConnected)
                 {
                     port2 = (uint)EN.Port2.InTriggerRisingEdge;
                 }
-                if (_adapterConfig.Reference10MHzConnected)
+                if (adapterConfig.Reference10MHzConnected)
                 {
                     port1 = (uint)EN.Port1.ExtRefIn;
                 }
-                StatusError(AdapterDriver.bbConfigureIO(_Device_ID, port1, port2));
+                StatusError(AdapterDriver.bbConfigureIO(deviceId, port1, port2));
                 //пока неработает
                 //if (_adapterConfig.SyncCPUtoGPS)
                 //{
@@ -1169,7 +1036,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
@@ -1177,45 +1044,222 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         {
             try
             {
-                StatusError(AdapterDriver.bbConfigureProcUnits(_Device_ID, (uint)VideoUnit));
+                StatusError(AdapterDriver.bbConfigureProcUnits(deviceId, (uint)videoUnit));
             }
             #region Exception
             catch (Exception exp)
             {
-                _logger.Exception(Contexts.ThisComponent, exp);
+                logger.Exception(Contexts.ThisComponent, exp);
             }
             #endregion
         }
-        private void SetOverLoad(EN.Status value)
+
+        private void GetAndPushTraceResults(COM.MesureTraceCommand command, IExecutionContext context)
         {
-            if (value == EN.Status.ADCOverflow) { RFOverload = 1; }
-            else { RFOverload = 0; }
+            float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
+            string poolKeyName = "";
+            bool poolKeyFind = false;
+            //Если TraceType ClearWrite то пушаем каждый результат
+            if (traceType == EN.TraceType.ClearWrite)
+            {
+                for (ulong i = 0; i < traceCountToMeas; i++)
+                {
+                    if (GetTrace())
+                    {
+                        // пушаем результат
+                        traceCount++;
+                        if (!poolKeyFind)
+                        {
+                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                        }
+                        COMR.MesureTraceResult result;
+                        if (traceCountToMeas == traceCount)
+                        {
+                            result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Final);
+                        }
+                        else
+                        {
+                            result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Next);
+                        }
+
+                        if (command.Parameter.RBW_Hz == -2)
+                        {
+                            for (int j = 0; j < LevelArr.Length; j++)
+                            {
+                                result.Level[j] = LevelArr[j] + adj;
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < LevelArr.Length; j++)
+                            {
+                                result.Level[j] = LevelArr[j];
+                            }
+                        }
+                        result.LevelMaxIndex = LevelArr.Length;
+                        result.FrequencyStart_Hz = resFreqStart;
+                        result.FrequencyStep_Hz = resFreqStep;
+
+                        result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                                          //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                        result.Att_dB = lpc.Attenuator(Attenuator);
+                        result.PreAmp_dB = lpc.Gain(Gain);
+                        result.RefLevel_dBm = (int)RefLevel;
+                        result.RBW_Hz = RBW;
+                        result.VBW_Hz = VBW;
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                        if (RFOverload == 1)
+                        {
+                            result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                        }
+                        context.PushResult(result);
+                    }
+
+                    // иногда нужно проверять токен окончания работы комманды
+                    if (context.Token.IsCancellationRequested)
+                    {
+                        // все нужно остановиться
+
+                        // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
+                        var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Ragged);
+                        result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                        context.PushResult(result2);
+
+
+                        // подтверждаем факт обработки отмены
+                        context.Cancel();
+                        // освобождаем поток 
+                        return;
+                    }
+                }
+            }
+            //Если TraceType Average/MinHold/MaxHold то делаем измерений сколько сказали и пушаем только готовый результат
+            else
+            {
+                traceReset = true;///сбросим предыдущие результаты
+                if (traceType == EN.TraceType.Average)//назначим сколько усреднять
+                {
+                    traceAveraged.AveragingCount = (int)traceCountToMeas;
+                }
+                bool _RFOverload = false;
+                for (ulong i = 0; i < traceCountToMeas; i++)
+                {
+
+                    if (GetTrace())
+                    {
+                        traceCount++;
+                        if (RFOverload == 1)
+                        {
+                            _RFOverload = true;
+                        }
+                    }
+                    // иногда нужно проверять токен окончания работы комманды
+                    if (context.Token.IsCancellationRequested)
+                    {
+                        // все нужно остановиться
+
+                        // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
+                        if (!poolKeyFind)
+                        {
+                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                        }
+                        var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Ragged);
+                        result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                        //Скорее нет результатов
+                        context.PushResult(result2);
+                        // подтверждаем факт обработки отмены
+                        context.Cancel();
+                        // освобождаем поток 
+                        return;
+                    }
+                }
+                if (traceCountToMeas == traceCount)
+                {
+                    if (!poolKeyFind)
+                    {
+                        FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                    }
+                    var result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Final);
+
+                    if (command.Parameter.RBW_Hz == -2)
+                    {
+                        for (int j = 0; j < LevelArr.Length; j++)
+                        {
+                            result.Level[j] = LevelArr[j] + adj;
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < LevelArr.Length; j++)
+                        {
+                            result.Level[j] = LevelArr[j];
+                        }
+                    }
+                    result.LevelMaxIndex = LevelArr.Length;
+                    result.FrequencyStart_Hz = resFreqStart;
+                    result.FrequencyStep_Hz = resFreqStep;
+
+                    result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                                      //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                    result.Att_dB = lpc.Attenuator(Attenuator);
+                    result.PreAmp_dB = lpc.Gain(Gain);
+                    result.RefLevel_dBm = (int)RefLevel;
+                    result.RBW_Hz = RBW;
+                    result.VBW_Hz = VBW;
+
+                    if (_RFOverload)
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                    }
+                    else
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                    }
+                    context.PushResult(result);
+                }
+            }
+        }
+        private void FindTracePoolName(int size, ref bool state, ref string name)
+        {
+            if (size > tracePointsMaxPool)
+            {
+                throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
+            }
+            else
+            {
+                for (int p = 0; p < mainConfig.AdapterTraceResultPools.Length; p++)
+                {
+                    if (mainConfig.AdapterTraceResultPools[p].Size >= size && !state)
+                    {
+                        name = mainConfig.AdapterTraceResultPools[p].Size.ToString();
+                        state = true;
+                        break;
+                    }
+                }
+            }
         }
 
         private bool GetTrace()
         {
             bool res = true;
             //получаем спектр
-            uint trace_len = 0;
-            double bin_size = 0.0;
-            double start_freq = 0.0;
-            StatusError(AdapterDriver.bbQueryTraceInfo(_Device_ID, ref trace_len, ref bin_size, ref start_freq));
+            uint traceLen = 0;
 
-            FreqStep = (decimal)bin_size;
+            StatusError(AdapterDriver.bbQueryTraceInfo(deviceId, ref traceLen, ref resFreqStep, ref resFreqStart));
 
             if (Status != EN.Status.DeviceConnectionErr ||
                 Status != EN.Status.DeviceInvalidErr ||
                 Status != EN.Status.DeviceNotOpenErr ||
                 Status != EN.Status.USBTimeoutErr)
             {
-                IsRuning = true;
+                isRuning = true;
             }
-
-            float[] sweep_max, sweep_min;
-            sweep_max = new float[trace_len];
-            sweep_min = new float[trace_len];
-
-            StatusError(AdapterDriver.bbFetchTrace_32f(_Device_ID, unchecked((int)trace_len), sweep_min, sweep_max));
+            if (traceLen != sweepMax.Length)
+            {
+                sweepMax = new float[traceLen];
+                sweepMin = new float[traceLen];
+            }
+            StatusError(AdapterDriver.bbFetchTrace_32f(deviceId, unchecked((int)traceLen), sweepMin, sweepMax));
 
             if (Status == EN.Status.DeviceConnectionErr)
             {
@@ -1223,21 +1267,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             else
             {
-                SetTraceData((int)trace_len, sweep_min, sweep_max, (decimal)start_freq, (decimal)bin_size);
-                LastUpdate = DateTime.Now.Ticks;
+                SetTraceData((int)traceLen, sweepMin, sweepMax, resFreqStart, resFreqStep);
+                lastUpdate = DateTime.Now.Ticks;
             }
 
             return res;
         }
-        private void SetTraceData(int newLength, float[] mintrace, float[] maxtrace, decimal freqStart, decimal step)
+        private void SetTraceData(int newLength, float[] minTrace, float[] maxTrace, double freqStart, double step)
         {
-            if (maxtrace.Length > 0 && newLength > 0 && step > 0)
+            if (maxTrace.Length > 0 && newLength > 0 && step > 0)
             {
-                if (FreqArr.Length != newLength || (Math.Abs(TraceFreqStart - (decimal)freqStart) >= (decimal)step))
+                if (LevelArr.Length != newLength || (Math.Abs(traceFreqStart - freqStart) >= step))
                 {
-                    TraceFreqStart = freqStart;
-                    TracePoints = newLength;
-                    FreqArr = new double[newLength];
+                    traceFreqStart = freqStart;
+                    tracePoints = newLength;
                     LevelArr = new float[newLength];
                     if (LevelUnit == MEN.LevelUnit.dBm)
                     {
@@ -1245,16 +1288,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = (double)(freqStart + step * i);
-                                LevelArr[i] = maxtrace[i];
+                                LevelArr[i] = maxTrace[i];
                             }
                         }
                         else if (DetectorUse == EN.Detector.MinOnly)
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = (double)(freqStart + step * i);
-                                LevelArr[i] = mintrace[i];
+                                LevelArr[i] = minTrace[i];
                             }
                         }
                     }
@@ -1264,22 +1305,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = (double)(freqStart + step * i);
-                                LevelArr[i] = maxtrace[i] + 107;
+                                LevelArr[i] = maxTrace[i] + 107;
                             }
                         }
                         else if (DetectorUse == EN.Detector.MinOnly)
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                FreqArr[i] = (double)(freqStart + step * i);
-                                LevelArr[i] = mintrace[i] + 107;
+                                LevelArr[i] = minTrace[i] + 107;
                             }
                         }
                     }
-                    TraceFreqStop = FreqArr[FreqArr.Length - 1];
                 }
-                if (TraceType == EN.TraceType.ClearWrite)
+                if (traceType == EN.TraceType.ClearWrite)
                 {
                     if (LevelUnit == MEN.LevelUnit.dBm)
                     {
@@ -1287,14 +1325,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                LevelArr[i] = maxtrace[i];
+                                LevelArr[i] = maxTrace[i];
                             }
                         }
                         else if (DetectorUse == EN.Detector.MinOnly)
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                LevelArr[i] = mintrace[i];
+                                LevelArr[i] = minTrace[i];
                             }
                         }
                     }
@@ -1304,19 +1342,19 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                LevelArr[i] = maxtrace[i] + 107;
+                                LevelArr[i] = maxTrace[i] + 107;
                             }
                         }
                         else if (DetectorUse == EN.Detector.MinOnly)
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                LevelArr[i] = mintrace[i] + 107;
+                                LevelArr[i] = minTrace[i] + 107;
                             }
                         }
                     }
                 }
-                else if (TraceType == EN.TraceType.Average)//Average
+                else if (traceType == EN.TraceType.Average)//Average
                 {
                     float[] levels = new float[newLength];
                     if (LevelUnit == MEN.LevelUnit.dBm)
@@ -1325,14 +1363,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                levels[i] = maxtrace[i];
+                                levels[i] = maxTrace[i];
                             }
                         }
                         else if (DetectorUse == EN.Detector.MinOnly)
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                levels[i] = mintrace[i];
+                                levels[i] = minTrace[i];
                             }
                         }
                     }
@@ -1342,25 +1380,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                levels[i] = maxtrace[i] + 107;
+                                levels[i] = maxTrace[i] + 107;
                             }
                         }
                         else if (DetectorUse == EN.Detector.MinOnly)
                         {
                             for (int i = 0; i < newLength; i++)
                             {
-                                levels[i] = mintrace[i] + 107;
+                                levels[i] = minTrace[i] + 107;
                             }
                         }
                     }
-                    if (TraceReset) { TraceAveraged.Reset(); TraceReset = false; }
-                    TraceAveraged.AddTraceToAverade(FreqArr, levels, LevelUnit);
-                    LevelArr = TraceAveraged.AveragedLevels;
+                    if (traceReset) { traceAveraged.Reset(); traceReset = false; }
+                    traceAveraged.AddTraceToAverade(freqStart, step, levels, LevelUnit);
+                    LevelArr = traceAveraged.AveragedLevels;
 
                 }
-                else if (TraceType == EN.TraceType.MaxHold)
+                else if (traceType == EN.TraceType.MaxHold)
                 {
-                    if (TraceReset == false)
+                    if (traceReset == false)
                     {
                         if (LevelUnit == MEN.LevelUnit.dBm)
                         {
@@ -1368,14 +1406,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (maxtrace[i] > LevelArr[i]) LevelArr[i] = maxtrace[i];
+                                    if (maxTrace[i] > LevelArr[i]) LevelArr[i] = maxTrace[i];
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (mintrace[i] > LevelArr[i]) LevelArr[i] = mintrace[i];
+                                    if (minTrace[i] > LevelArr[i]) LevelArr[i] = minTrace[i];
                                 }
                             }
                         }
@@ -1385,14 +1423,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (maxtrace[i] + 107 > LevelArr[i]) LevelArr[i] = maxtrace[i] + 107;
+                                    if (maxTrace[i] + 107 > LevelArr[i]) LevelArr[i] = maxTrace[i] + 107;
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (mintrace[i] + 107 > LevelArr[i]) LevelArr[i] = mintrace[i] + 107;
+                                    if (minTrace[i] + 107 > LevelArr[i]) LevelArr[i] = minTrace[i] + 107;
                                 }
                             }
                         }
@@ -1405,14 +1443,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = maxtrace[i];
+                                    LevelArr[i] = maxTrace[i];
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = mintrace[i];
+                                    LevelArr[i] = minTrace[i];
                                 }
                             }
                         }
@@ -1422,23 +1460,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = maxtrace[i] + 107;
+                                    LevelArr[i] = maxTrace[i] + 107;
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = mintrace[i] + 107;
+                                    LevelArr[i] = minTrace[i] + 107;
                                 }
                             }
                         }
-                        TraceReset = false;
+                        traceReset = false;
                     }
                 }
-                else if (TraceType == EN.TraceType.MinHold)
+                else if (traceType == EN.TraceType.MinHold)
                 {
-                    if (TraceReset == false)
+                    if (traceReset == false)
                     {
                         if (LevelUnit == MEN.LevelUnit.dBm)
                         {
@@ -1446,14 +1484,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (maxtrace[i] < LevelArr[i]) LevelArr[i] = maxtrace[i];
+                                    if (maxTrace[i] < LevelArr[i]) LevelArr[i] = maxTrace[i];
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (mintrace[i] < LevelArr[i]) LevelArr[i] = mintrace[i];
+                                    if (minTrace[i] < LevelArr[i]) LevelArr[i] = minTrace[i];
                                 }
                             }
                         }
@@ -1463,14 +1501,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (maxtrace[i] + 107 < LevelArr[i]) LevelArr[i] = maxtrace[i] + 107;
+                                    if (maxTrace[i] + 107 < LevelArr[i]) LevelArr[i] = maxTrace[i] + 107;
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    if (mintrace[i] + 107 < LevelArr[i]) LevelArr[i] = mintrace[i] + 107;
+                                    if (minTrace[i] + 107 < LevelArr[i]) LevelArr[i] = minTrace[i] + 107;
                                 }
                             }
                         }
@@ -1483,14 +1521,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = maxtrace[i];
+                                    LevelArr[i] = maxTrace[i];
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = mintrace[i];
+                                    LevelArr[i] = minTrace[i];
                                 }
                             }
                         }
@@ -1500,25 +1538,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = maxtrace[i] + 107;
+                                    LevelArr[i] = maxTrace[i] + 107;
                                 }
                             }
                             else if (DetectorUse == EN.Detector.MinOnly)
                             {
                                 for (int i = 0; i < newLength; i++)
                                 {
-                                    LevelArr[i] = mintrace[i] + 107;
+                                    LevelArr[i] = minTrace[i] + 107;
                                 }
                             }
                         }
-                        TraceReset = false;
+                        traceReset = false;
                     }
                 }
-                // NewTrace = true;
             }
         }
 
-        private void InitialReceivedIQStream(ref COMR.MesureIQStreamResult IQStreamResult, ref TempIQData tempIQStream, double blockDuration, double receivTime, long timeStart)
+        private void InitialReceivedIQStream(ref COMR.MesureIQStreamResult iQStreamResult, ref TempIQData tempIQStream, double blockDuration, double receivTime, long timeStart)
         {
             // Формирование пустого места для записи данных
             tempIQStream.BlocksCount = (int)Math.Ceiling(blockDuration * samples_per_sec / return_len);
@@ -1529,7 +1566,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             tempIQStream.sampleLosses = new int[tempIQStream.BlocksCount];
 
             tempIQStream.OneSempleDuration = 1000000000 / samples_per_sec;
-            OneSempleDuration = ((decimal)tempIQStream.OneSempleDuration) / 1000000000;
+            OneSampleDuration = ((decimal)tempIQStream.OneSempleDuration) / 1000000000;
             tempIQStream.BlockTime = new long[100000];
             tempIQStream.BlockTimeDelta = new long[100000];
             tempIQStream.IQDataTemp = new float[return_len * 2];
@@ -1544,10 +1581,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 #if DEBUG
         public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
 #endif
-        private bool GetIQStream(ref COMR.MesureIQStreamResult IQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool WithPPS, bool JustWithSignal)
+
+        private bool GetIQStream(ref COMR.MesureIQStreamResult iQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool withPPS, bool justWithSignal)
         {
             bool done = false;
-            bool IsCancellationRequested = false;
+            bool isCancellationRequested = false;
             // расчет количества шагов которое мы должны записать. 
 
             int dataRemaining = 0, sampleLoss = 0, iqSec = 0, iqNano = 0;
@@ -1555,61 +1593,61 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             // Константы
             float noise = 0.0000004f; // уровень шума в mW^2
             float SN = 10; // превышение шума в разах 
-            float TrigerLevelPL = noise * SN;
-            float TrigerLevelMN = 0 - TrigerLevelPL;
+            float trigerLevelPL = noise * SN;
+            float trigerLevelMN = 0 - trigerLevelPL;
             // Конец констант 
 
-            bool SignalFound = false; //был ли сигнал
+            bool signalFound = false; //был ли сигнал
             int step = tempIQStream.IQData[0].Length / 1000;//шаг проверки уровней на предмет детектирования сигнала
             if (step < 1)
             {
                 step = 1;
             }
 
-            bool GetBlockOnTime = false;//тру то принимаем блоки до конца, фолс если недостигли времени приема то пока принимаем PPS
-            long BlockTime = return_len * tempIQStream.OneSempleDuration; //Длительность одного блока в нс
+            bool getBlockOnTime = false;//тру то принимаем блоки до конца, фолс если недостигли времени приема то пока принимаем PPS
+            long blockTime = return_len * tempIQStream.OneSempleDuration; //Длительность одного блока в нс
 
-            bool PPSDetected = false;//Детектирован ли PPS
-            long TimeToStartBlockWithPPS = 0;//Разница времени старта блока и PPS в нс, всегда положителен  (в блоке с PPS)            
+            bool pPSDetected = false;//Детектирован ли PPS
+            long timeToStartBlockWithPPS = 0;//Разница времени старта блока и PPS в нс, всегда положителен  (в блоке с PPS)            
 
-            long PrevBlockTime = 0;
-            long ThisBlockTime = 0;
+            long prevBlockTime = 0;
+            long thisBlockTime = 0;
 
-            long GNSSOffset = _timeService.TimeCorrection * 100;
+            long gNSSOffset = timeService.TimeCorrection * 100;
             int dTPPSIndex = 0;//индекс PPS в BlockTime
-            int IQStartIndex = 0;// иендекс Первого нужного IQ в BlockTime
-            int IQStopIndex = 0;// иендекс Последнего нужного IQ в BlockTime
+            int iQStartIndex = 0;// иендекс Первого нужного IQ в BlockTime
+            int iQStopIndex = 0;// иендекс Последнего нужного IQ в BlockTime
 
-            int AllBlockIndex = -1; //текущий принятый 
-            int NecessaryBlockIndex = -1;//Индекс нужного блока, т.е. того который в результаты
+            int allBlockIndex = -1; //текущий принятый 
+            int necessaryBlockIndex = -1;//Индекс нужного блока, т.е. того который в результаты
 
-            bool ReceivedBlockWithErrors = false; //Есть ли ошибки в нужных блоках
+            bool receivedBlockWithErrors = false; //Есть ли ошибки в нужных блоках
 
             for (int i = 0; i <= tempIQStream.BlocksAll; i++)
             {
-                AllBlockIndex++;
+                allBlockIndex++;
                 // снятие данных
                 #region
                 //полезные данные и до принимаем тут
-                if (NecessaryBlockIndex < tempIQStream.BlocksCount - 1)
+                if (necessaryBlockIndex < tempIQStream.BlocksCount - 1)
                 {
-                    NecessaryBlockIndex++;
-                    if (NecessaryBlockIndex == 0)
+                    necessaryBlockIndex++;
+                    if (necessaryBlockIndex == 0)
                     {
-                        IQStartIndex = AllBlockIndex;
+                        iQStartIndex = allBlockIndex;
 
                     }
-                    StatusError(AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQData[NecessaryBlockIndex], return_len, tempIQStream.TrDataTemp, 71, 1,
+                    StatusError(AdapterDriver.bbGetIQUnpacked(deviceId, tempIQStream.IQData[necessaryBlockIndex], return_len, tempIQStream.TrDataTemp, 71, 1,
                         ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano));
 
-                    if (!ReceivedBlockWithErrors && IQStopIndex == 0 && NecessaryBlockIndex == tempIQStream.BlocksCount - 1)
+                    if (!receivedBlockWithErrors && iQStopIndex == 0 && necessaryBlockIndex == tempIQStream.BlocksCount - 1)
                     {
-                        IQStopIndex = AllBlockIndex;
+                        iQStopIndex = allBlockIndex;
                     }
                 }
                 else//уже приняли нужные данные, то сюда
                 {
-                    StatusError(AdapterDriver.bbGetIQUnpacked(_Device_ID, tempIQStream.IQDataTemp, return_len, tempIQStream.TrDataTemp, 71, 1,
+                    StatusError(AdapterDriver.bbGetIQUnpacked(deviceId, tempIQStream.IQDataTemp, return_len, tempIQStream.TrDataTemp, 71, 1,
                        ref dataRemaining, ref sampleLoss, ref iqSec, ref iqNano), context);
                 }
 
@@ -1620,70 +1658,70 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
                 #endregion
 
-                tempIQStream.BlockTime[AllBlockIndex] = ((long)iqSec) * 1000000000 + iqNano + GNSSOffset;
-                PrevBlockTime = ThisBlockTime;
-                ThisBlockTime = tempIQStream.BlockTime[AllBlockIndex];
-                if (PrevBlockTime != 0)
+                tempIQStream.BlockTime[allBlockIndex] = ((long)iqSec) * 1000000000 + iqNano + gNSSOffset;
+                prevBlockTime = thisBlockTime;
+                thisBlockTime = tempIQStream.BlockTime[allBlockIndex];
+                if (prevBlockTime != 0)
                 {
-                    tempIQStream.BlockTimeDelta[AllBlockIndex] = ThisBlockTime - PrevBlockTime;
+                    tempIQStream.BlockTimeDelta[allBlockIndex] = thisBlockTime - prevBlockTime;
                 }
                 //определяем когда нужно начинать пытаться принять данные, попал ли этот блок на время начала приема
-                if (WithPPS)
+                if (withPPS)
                 {
                     if (tempIQStream.TrDataTemp[0] > 0)//заново задетектили PPS то все сбросим и начнем считать занов
                     {
-                        PPSDetected = true;
-                        TimeToStartBlockWithPPS = tempIQStream.TrDataTemp[0] * tempIQStream.OneSempleDuration;
+                        pPSDetected = true;
+                        timeToStartBlockWithPPS = tempIQStream.TrDataTemp[0] * tempIQStream.OneSempleDuration;
 
-                        dTPPSIndex = AllBlockIndex;///установили в каком блоке был ППС
+                        dTPPSIndex = allBlockIndex;///установили в каком блоке был ППС
                     }
                 }
-                if (!GetBlockOnTime)
+                if (!getBlockOnTime)
                 {
                     // Этот блок попал на время старта, начинаем слушать и сюда не возвращаемся
-                    if (tempIQStream.BlockTime[AllBlockIndex] <= tempIQStream.TimeStart && tempIQStream.TimeStart <= tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration)
+                    if (tempIQStream.BlockTime[allBlockIndex] <= tempIQStream.TimeStart && tempIQStream.TimeStart <= tempIQStream.BlockTime[allBlockIndex] + return_len * tempIQStream.OneSempleDuration)
                     {
-                        GetBlockOnTime = true;
-                        IQStartIndex = AllBlockIndex;
+                        getBlockOnTime = true;
+                        iQStartIndex = allBlockIndex;
                     }
                     else
                     {
                         //провтыкали время старта
-                        if (tempIQStream.BlockTime[AllBlockIndex] + return_len * tempIQStream.OneSempleDuration > tempIQStream.TimeStart)
+                        if (tempIQStream.BlockTime[allBlockIndex] + return_len * tempIQStream.OneSempleDuration > tempIQStream.TimeStart)
                         {
                             throw new Exception("The task was started after the required start time of the task.");//Задача была запущена после необходимого времени старта задачи
                         }
-                        NecessaryBlockIndex--;//т.к. не началось время прослушки данных то уменьшим индексм и на то же место запишем болок заново
+                        necessaryBlockIndex--;//т.к. не началось время прослушки данных то уменьшим индексм и на то же место запишем болок заново
                         i--;
                     }
                 }
 
-                if (GetBlockOnTime)
+                if (getBlockOnTime)
                 {
                     //проверяем наличие сигнала пока его не обнаружили
-                    if (JustWithSignal && !SignalFound)
+                    if (justWithSignal && !signalFound)
                     {
-                        for (int j = 0; tempIQStream.IQData[NecessaryBlockIndex].Length - 6 > j; j += step)
+                        for (int j = 0; tempIQStream.IQData[necessaryBlockIndex].Length - 6 > j; j += step)
                         {
-                            if (tempIQStream.IQData[NecessaryBlockIndex][j] > TrigerLevelPL || tempIQStream.IQData[NecessaryBlockIndex][j + 1] > TrigerLevelPL ||
-                                tempIQStream.IQData[NecessaryBlockIndex][j] < TrigerLevelMN || tempIQStream.IQData[NecessaryBlockIndex][j + 1] < TrigerLevelMN)
+                            if (tempIQStream.IQData[necessaryBlockIndex][j] > trigerLevelPL || tempIQStream.IQData[necessaryBlockIndex][j + 1] > trigerLevelPL ||
+                                tempIQStream.IQData[necessaryBlockIndex][j] < trigerLevelMN || tempIQStream.IQData[necessaryBlockIndex][j + 1] < trigerLevelMN)
                             {
-                                if (tempIQStream.IQData[NecessaryBlockIndex][j + 2] > TrigerLevelPL || tempIQStream.IQData[NecessaryBlockIndex][j + 3] > TrigerLevelPL ||
-                                    tempIQStream.IQData[NecessaryBlockIndex][j + 2] < TrigerLevelMN || tempIQStream.IQData[NecessaryBlockIndex][j + 3] < TrigerLevelMN)
+                                if (tempIQStream.IQData[necessaryBlockIndex][j + 2] > trigerLevelPL || tempIQStream.IQData[necessaryBlockIndex][j + 3] > trigerLevelPL ||
+                                    tempIQStream.IQData[necessaryBlockIndex][j + 2] < trigerLevelMN || tempIQStream.IQData[necessaryBlockIndex][j + 3] < trigerLevelMN)
                                 {
-                                    if (tempIQStream.IQData[NecessaryBlockIndex][j + 4] > TrigerLevelPL || tempIQStream.IQData[NecessaryBlockIndex][j + 5] > TrigerLevelPL ||
-                                        tempIQStream.IQData[NecessaryBlockIndex][j + 4] > TrigerLevelMN || tempIQStream.IQData[NecessaryBlockIndex][j + 5] > TrigerLevelMN)
+                                    if (tempIQStream.IQData[necessaryBlockIndex][j + 4] > trigerLevelPL || tempIQStream.IQData[necessaryBlockIndex][j + 5] > trigerLevelPL ||
+                                        tempIQStream.IQData[necessaryBlockIndex][j + 4] > trigerLevelMN || tempIQStream.IQData[necessaryBlockIndex][j + 5] > trigerLevelMN)
                                     {
-                                        SignalFound = true;//Есть сигнал 
-                                        IQStartIndex = AllBlockIndex;
+                                        signalFound = true;//Есть сигнал 
+                                        iQStartIndex = allBlockIndex;
                                         break;
                                     }
                                 }
                             }
                         }
-                        if (!SignalFound)//небыло сигнала то уменьшим индекс и перезапишем этот блок
+                        if (!signalFound)//небыло сигнала то уменьшим индекс и перезапишем этот блок
                         {
-                            NecessaryBlockIndex--;
+                            necessaryBlockIndex--;
                         }
                     }
 
@@ -1691,17 +1729,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     if (i >= tempIQStream.BlocksAll)
                     {
                         //хотели c сигналом 
-                        if (JustWithSignal)
+                        if (justWithSignal)
                         {
-                            if (SignalFound)//сигнал есть
+                            if (signalFound)//сигнал есть
                             {
-                                if (NecessaryBlockIndex != tempIQStream.BlocksCount - 1)//дослушаем необходимое время прослушки и выйдем
+                                if (necessaryBlockIndex != tempIQStream.BlocksCount - 1)//дослушаем необходимое время прослушки и выйдем
                                 {
                                     i--;
                                 }
                                 else
                                 {
-                                    if (WithPPS && PPSDetected)
+                                    if (withPPS && pPSDetected)
                                     {
                                         break;
                                     }
@@ -1710,30 +1748,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         }
                         else //Не хотели с сигналом и выйдем
                         {
-                            if (WithPPS && PPSDetected)
+                            if (withPPS && pPSDetected)
                             {
                                 break;
                             }
                         }
                     }
                     //В этом блоке есть пропук во времени, установим индекс конца блоков и продолжим слушать, может еще PPS нежен
-                    if (AllBlockIndex > 0 && tempIQStream.OneSempleDuration != tempIQStream.BlockTimeDelta[AllBlockIndex] / return_len)
+                    if (allBlockIndex > 0 && tempIQStream.OneSempleDuration != tempIQStream.BlockTimeDelta[allBlockIndex] / return_len)
                     {
-                        if (!ReceivedBlockWithErrors && IQStopIndex == 0)
+                        if (!receivedBlockWithErrors && iQStopIndex == 0)
                         {
                             //хотим с сигналом и есть сигнал!!! до этого момента нам всеравно
-                            if (JustWithSignal && SignalFound)
+                            if (justWithSignal && signalFound)
                             {
-                                IQStopIndex = AllBlockIndex - 1;
-                                ReceivedBlockWithErrors = true;
+                                iQStopIndex = allBlockIndex - 1;
+                                receivedBlockWithErrors = true;
                             }
-                            else if (JustWithSignal && !SignalFound)//хотим с сигналом и до того как появился сигнал нам на ошибку всеравно!!!
+                            else if (justWithSignal && !signalFound)//хотим с сигналом и до того как появился сигнал нам на ошибку всеравно!!!
                             {
                             }
-                            else if (!JustWithSignal) // просто хотим записать
+                            else if (!justWithSignal) // просто хотим записать
                             {
-                                IQStopIndex = AllBlockIndex - 1;
-                                ReceivedBlockWithErrors = true;
+                                iQStopIndex = allBlockIndex - 1;
+                                receivedBlockWithErrors = true;
                             }
                         }
 
@@ -1742,54 +1780,54 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
             }
             //если не попросили завершить раньше времени то пилим результат
-            if (!IsCancellationRequested)
+            if (!isCancellationRequested)
             {
                 #region обработка полученных данных
-                if (ReceivedBlockWithErrors)
+                if (receivedBlockWithErrors)
                 {
-                    IQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
+                    iQStreamResult = new COMR.MesureIQStreamResult(0, CommandResultStatus.Ragged)
                     {
-                        iq_samples = new float[IQStopIndex - IQStartIndex][]
+                        iq_samples = new float[iQStopIndex - iQStartIndex][]
                     };
-                    Array.Copy(tempIQStream.IQData, IQStreamResult.iq_samples, IQStopIndex - IQStartIndex);
-                    if (IQStartIndex > IQStopIndex)
+                    Array.Copy(tempIQStream.IQData, iQStreamResult.iq_samples, iQStopIndex - iQStartIndex);
+                    if (iQStartIndex > iQStopIndex)
                     {
                         throw new Exception("Data received with error, no valid data.");//Задача была запущена после необходимого времени старта задачи
                     }
                     else
                     {
-                        
+
                     }
                 }
                 else
                 {
-                    IQStreamResult.iq_samples = tempIQStream.IQData;
+                    iQStreamResult.iq_samples = tempIQStream.IQData;
                 }
-                
-                IQStreamResult.TimeStamp = tempIQStream.BlockTime[IQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                IQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
-                IQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                if (JustWithSignal && !SignalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
+
+                iQStreamResult.TimeStamp = tempIQStream.BlockTime[iQStartIndex] / 100;// DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                iQStreamResult.OneSempleDuration_ns = tempIQStream.OneSempleDuration;
+                iQStreamResult.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                if (justWithSignal && !signalFound) //Хотели сигнал но его небыло, согласно договоренности генерируем екзепшен
                 {
                     throw new Exception("Signal not detected");
                 }
-                if (WithPPS)//хотим с PPS
+                if (withPPS)//хотим с PPS
                 {
-                    if (PPSDetected)// PPS был за все время прослушки блоков
+                    if (pPSDetected)// PPS был за все время прослушки блоков
                     {
-                        IQStreamResult.PPSTimeDifference_ns = TimeToStartBlockWithPPS;
-                        if (dTPPSIndex < IQStartIndex)
+                        iQStreamResult.PPSTimeDifference_ns = timeToStartBlockWithPPS;
+                        if (dTPPSIndex < iQStartIndex)
                         {
-                            for (int t = dTPPSIndex; t < IQStartIndex; t++)
+                            for (int t = dTPPSIndex; t < iQStartIndex; t++)
                             {
-                                IQStreamResult.PPSTimeDifference_ns -= tempIQStream.BlockTimeDelta[t];
+                                iQStreamResult.PPSTimeDifference_ns -= tempIQStream.BlockTimeDelta[t];
                             }
                         }
-                        else if (IQStartIndex < dTPPSIndex)
+                        else if (iQStartIndex < dTPPSIndex)
                         {
-                            for (int t = IQStartIndex; t < dTPPSIndex; t++)
+                            for (int t = iQStartIndex; t < dTPPSIndex; t++)
                             {
-                                IQStreamResult.PPSTimeDifference_ns += tempIQStream.BlockTimeDelta[t];
+                                iQStreamResult.PPSTimeDifference_ns += tempIQStream.BlockTimeDelta[t];
                             }
                         }
                     }
@@ -1802,11 +1840,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 done = true;
 #if DEBUG
                 IQArr = new float[tempIQStream.IQData.Length * tempIQStream.IQData[0].Length];
-                for (int i = 0; i < IQStreamResult.iq_samples.Length; i++)
+                for (int i = 0; i < iQStreamResult.iq_samples.Length; i++)
                 {
-                    Array.Copy(IQStreamResult.iq_samples[i], 0, IQArr, 0 + i* IQStreamResult.iq_samples[i].Length, IQStreamResult.iq_samples[i].Length);
+                    Array.Copy(iQStreamResult.iq_samples[i], 0, IQArr, 0 + i * iQStreamResult.iq_samples[i].Length, iQStreamResult.iq_samples[i].Length);
                 }
-                TriggerOffset = ((decimal)IQStreamResult.PPSTimeDifference_ns) / 1000000000;
+                TriggerOffset = ((decimal)iQStreamResult.PPSTimeDifference_ns) / 1000000000;
 #endif
             }
             return done;
@@ -1845,6 +1883,57 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     DiagV = "POINT -90 20 0 0 90 10"//от -90  до 90 В конфиг
                 }
             };
+
+            SetDefaulTraceResultPoolsConfig(ref config);
+        }
+        private void SetDefaulTraceResultPoolsConfig(ref CFG.AdapterMainConfig config)
+        {
+            config.AdapterTraceResultPools = new CFG.AdapterResultPool[]
+            {
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 5000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 10000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 50,
+                    MaxSize = 100,
+                    Size = 20000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 25,
+                    MaxSize = 50,
+                    Size = 40000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 25,
+                    MaxSize = 50,
+                    Size = 100000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 200000
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 500000
+                },
+
+            };
         }
 
         private (MesureTraceDeviceProperties, MesureIQStreamDeviceProperties) GetProperties(CFG.AdapterMainConfig config)
@@ -1858,27 +1947,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 FreqMin_Hz = FreqMin,
                 PreAmpMax_dB = 30,
                 PreAmpMin_dB = 0,
-                RefLevelMax_dBm = (int)RefLevelMax,
-                RefLevelMin_dBm = (int)RefLevelMin,
+                RefLevelMax_dBm = 20,
+                RefLevelMin_dBm = -130,
                 EquipmentInfo = new EquipmentInfo()
                 {
                     AntennaCode = config.AdapterEquipmentInfo.AntennaSN,// "Omni",//S/N  В конфиг
                     AntennaManufacturer = config.AdapterEquipmentInfo.AntennaManufacturer,//"3anet",//В конфиг
                     AntennaName = config.AdapterEquipmentInfo.AntennaName,//"BC600",//В конфиг
                     EquipmentManufacturer = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI,
-                    EquipmentName = Device_Type,
+                    EquipmentName = deviceType,
                     EquipmentFamily = "SDR",//SDR/SpecAn/MonRec
-                    EquipmentCode = Device_SerialNumber.ToString(),//S/N
-
+                    EquipmentCode = deviceSerialNumber.ToString(),//S/N
                 },
                 RadioPathParameters = rrps
             };
             MesureTraceDeviceProperties mtdp = new MesureTraceDeviceProperties()
             {
-                RBWMax_Hz = (double)RBWMax,
+                RBWMax_Hz = RBWMax,
                 RBWMin_Hz = 3,
-                SweepTimeMin_s = (double)SweepTimeMin,
-                SweepTimeMax_s = (double)SweepTimeMax,
+                SweepTimeMin_s = SweepTimeMin,
+                SweepTimeMax_s = SweepTimeMax,
                 StandardDeviceProperties = sdp,
                 //DeviceId ничего не писать, ID этого экземпляра адаптера
             };

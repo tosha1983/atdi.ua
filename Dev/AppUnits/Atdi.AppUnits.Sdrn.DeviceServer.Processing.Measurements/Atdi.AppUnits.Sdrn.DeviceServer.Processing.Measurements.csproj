@@ -51,7 +51,6 @@
     <Compile Include="Calculation\Common\СorrelationСoefficient.cs" />
     <Compile Include="Calculation\Signalization\ReferenceSpectrum.cs" />
     <Compile Include="Calculation\Signalization\CalcNeedResearchSysInfo.cs" />
-    <Compile Include="Calculation\Signalization\CopyHelper.cs" />
     <Compile Include="Calculation\Signalization\EmissionCounting.cs" />
     <Compile Include="Calculation\Signalization\CalcEmittingSummuryByEmittingDetailed.cs" />
     <Compile Include="Calculation\Signalization\CalcGroupingEmitting.cs" />

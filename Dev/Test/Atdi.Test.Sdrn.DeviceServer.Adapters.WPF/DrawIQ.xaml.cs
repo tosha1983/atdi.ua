@@ -86,7 +86,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             get { return (string)GetValue(LevelUnitProperty); }
             set { SetValue(LevelUnitProperty, value); }
         }
-        public ADP.SpectrumAnalyzer.Adapter ANAdapter
+        public ADP.RSFPL.Adapter ANAdapter
         {
             get;
             set;
@@ -227,7 +227,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 {
                     IQ = SHAdapter.IQArr;
                     TriggerOffset = (double)SHAdapter.TriggerOffset;
-                    SampleTimeLength = (double)SHAdapter.OneSempleDuration;
+                    SampleTimeLength = (double)SHAdapter.OneSampleDuration;
                     HMin = 0;
                     HMax = IQ.Length / 2;
                 }

@@ -45,6 +45,7 @@
     <Compile Include="BusEventObserver.cs" />
     <Compile Include="Controller\AdapterFactory.cs" />
     <Compile Include="Controller\AdapterWorker.cs" />
+    <Compile Include="Controller\CommandContext.cs" />
     <Compile Include="Controller\CommandDescriptor.cs" />
     <Compile Include="Controller\CommandHandler.cs" />
     <Compile Include="Controller\CommandLock.cs" />

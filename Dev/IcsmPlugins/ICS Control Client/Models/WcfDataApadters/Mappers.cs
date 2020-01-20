@@ -50,6 +50,35 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 TypeSensor = source.TypeSensor
             };
         }
+        public static VM.ShortSensorViewModel Map(SDR.ShortSensor source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.ShortSensorViewModel
+            {
+                Administration = source.Administration,
+                AntGainMax = source.AntGainMax.ToNull(),
+                Id = source.Id.Value,
+                AntManufacturer = source.AntManufacturer,
+                AntName = source.AntName,
+                BiuseDate = source.BiuseDate.ToNull(),
+                CreatedBy = source.CreatedBy,
+                DateCreated = source.DateCreated.ToNull(),
+                EouseDate = source.EouseDate.ToNull(),
+                EquipCode = source.EquipCode,
+                EquipManufacturer = source.EquipManufacturer,
+                EquipName = source.EquipName,
+                LowerFreq = source.LowerFreq.ToNull(),
+                Name = source.Name,
+                NetworkId = source.NetworkId,
+                RxLoss = source.RxLoss.ToNull(),
+                Status = source.Status,
+                UpperFreq = source.UpperFreq.ToNull()
+            };
+        }
         public static VM.SignSysInfoViewModel Map(SDR.SignalingSysInfo source)
         {
             if (source == null)
@@ -297,17 +326,18 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Id = source.Id,
                 GlobalSID = source.GlobalSID,
                 LevelMeasurements = source.LevelMeasurements,
-                LevelMeasurementsLength = source.LevelMeasurements == null ? (int?)null : source.LevelMeasurements.Length,
                 MeasGlobalSID = source.MeasGlobalSID,
                 SectorId = source.IdSector.ToNull(),
                 StationId = source.Idstation,
                 Status = source.Status,
                 StationSysInfo = source.StationSysInfo,
                 Standard = source.Standard,
-                CentralFrequencyMeas_MHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequencyMeas : (double?)null,
+                //CentralFrequencyMeas_MHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequencyMeas : (double?)null,
                 CentralFrequencyMHz = source.CentralFrequencyMeas_MHz,
-                //CentralFrequencyMHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequency : (double?)null,
-                GeneralResults = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray() : null
+                ////CentralFrequencyMHz = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray()[0].CentralFrequency : (double?)null,
+                //GeneralResults = (source.GeneralResult != null && source.GeneralResult.Length > 0) ? source.GeneralResult.OrderByDescending(c => c.TimeStartMeas).ToArray() : null,
+                //CountLevelMeas = source.LevelMeasurements == null ? (int?)null : source.LevelMeasurements.Length,
+                //CountSpectrums = (source.GeneralResult != null && source.GeneralResult.Length > 0  && source.GeneralResult[0].LevelsSpecrum != null) ? source.GeneralResult[0].LevelsSpecrum.Length : (int?)null 
             };
         }
         public static VM.GeneralResultViewModel Map(SDR.MeasurementsParameterGeneral source)

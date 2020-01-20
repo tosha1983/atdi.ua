@@ -34,12 +34,7 @@
                     <local:DrawIQ x:Name="ANIQ" />
                     <local:DrawIQ x:Name="SHIQ" Grid.Row="1" />
                 </Grid>
-            </TabItem>
-            <TabItem Header="IQ">
-                <Grid>
-                    <local:DrawIQ x:Name="ANIQ2" />
-                </Grid>
-            </TabItem>
+            </TabItem>            
         </TabControl>
         
         

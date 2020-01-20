@@ -103,6 +103,8 @@ namespace Atdi.Modules.AmqpBroker
 
             try
             {
+                //var c = 0;
+                //var v = 1 / c;
                 this._connection = this._connectionFactory.CreateConnection(_config.ConnectionName);
 
                 this._connection.ConnectionRecoveryError += _connection_ConnectionRecoveryError;

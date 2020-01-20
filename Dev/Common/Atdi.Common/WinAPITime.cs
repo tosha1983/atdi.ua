@@ -8,18 +8,20 @@ namespace Atdi.Common
 {
     public static class WinAPITime
     {
-        const long FILETIME_TO_DATETIMETICKS = 504911232000000000;
         static string system = OSInfo.getOSInfo();
-        static readonly bool From = system.Contains("Windows 8") || system.Contains("Windows 10");//system.Contains("Windows 8.1")
+        static readonly bool From = system.Contains("Windows 8") || system.Contains("Windows 8.1") || system.Contains("Windows 10");//system.Contains("Windows 8.1")
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll", CallingConvention = System.Runtime.InteropServices.CallingConvention.Winapi)]
         static extern void GetSystemTimePreciseAsFileTime(out long filetime);
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll", CallingConvention = System.Runtime.InteropServices.CallingConvention.Winapi)]
+        static extern void GetSystemTimePreciseAsFileTime(out FILETIME lpSystemTimeAsFileTime);
+
+        [System.Runtime.InteropServices.DllImport("Kernel32.dll", CallingConvention = System.Runtime.InteropServices.CallingConvention.Winapi)]
         static extern void GetSystemTimeAsFileTime(out FILETIME lpSystemTimeAsFileTime);
 
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        public struct FILETIME
+        private struct FILETIME
         {
             public const long FILETIME_TO_DATETIMETICKS = 504911232000000000;   // 146097 = days in 400 year Gregorian calendar cycle. 504911232000000000 = 4 * 146097 * 86400 * 1E7
             public uint TimeLow;    // least significant digits
@@ -30,18 +32,15 @@ namespace Atdi.Common
         public static long GetTimeStamp()
         {
             FILETIME ft;
-            long tick = 0;
             if (From)
             {
-                GetSystemTimePreciseAsFileTime(out tick);
-                return tick;
+                GetSystemTimePreciseAsFileTime(out ft);
             }
             else
             {
                 GetSystemTimeAsFileTime(out ft);
-                return ft.Ticks;
             }
-
+            return ft.Ticks;
         }
     }
 }

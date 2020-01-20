@@ -131,9 +131,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     else
                         this._currentMeasTask.MeasTimeParamListPerStop = DateTime.Today.AddDays(1);
 
-                    if (rsAllot.GetD("Plan.CHANNEL_SEP") != IM.NullD && rsAllot.GetD("Plan.CHANNEL_SEP") != 0)
-                        this._currentMeasTask.MeasFreqParamStep = rsAllot.GetD("Plan.CHANNEL_SEP");
-                    else if (rsAllot.GetD("Plan.BANDWIDTH") != IM.NullD)
+                    if (rsAllot.GetD("Plan.BANDWIDTH") != IM.NullD)
                         this._currentMeasTask.MeasFreqParamStep = rsAllot.GetD("Plan.BANDWIDTH");
                     else
                         this._currentMeasTask.MeasFreqParamStep = 100;
@@ -276,8 +274,13 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadShortSensors()
         {
-            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
+            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(); //.Where(c => c.Administration == "ADM").ToArray();
             this._shortSensors.Source = sdrSensors;
+            if (sdrSensors.Length > 0)
+            {
+                this._currentShortSensor = new List<ShortSensorViewModel>() { Mappers.Map(sdrSensors[0]) };
+                RedrawMap();
+            }
         }
         private void OnDoubleClickSensorCommand(object parameter)
         {
@@ -367,6 +370,18 @@ namespace XICSM.ICSControlClient.ViewModels
                         MessageBox.Show("Lot of points, please change “Number of steps for measurements in channel” or number channel in plan");
                         return;
                     }
+                }
+
+                if (!minFq.HasValue || minFq < 0.009 || minFq > 6000 || !maxFq.HasValue || maxFq < 0.009 || maxFq > 6000)
+                {
+                    MessageBox.Show("Wrong frequency list values!");
+                    return;
+                }
+
+                if (!this._currentMeasTask.MeasFreqParamStep.HasValue)
+                {
+                    MessageBox.Show("Step with cannot be null!");
+                    return;
                 }
 
                 var measFreqParam = new SDR.MeasFreqParam() { Mode = this._currentMeasTask.MeasFreqParamMode, Step = this._currentMeasTask.MeasFreqParamStep };

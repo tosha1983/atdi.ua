@@ -47,7 +47,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             try
             {
-                _logger.Verbouse(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.StartSysInfoTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+                _logger.Info(Contexts.SysInfoTaskWorker, Categories.Measurements, Events.StartSysInfoTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -64,7 +64,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //
                 //////////////////////////////////////////////
 
-                for (int i = 0; i < context.Task.mesureSystemInfoParameters.Length; i++)
+                for (var i = 0; i < context.Task.mesureSystemInfoParameters.Length; i++)
                 {
 
 

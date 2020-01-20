@@ -28,13 +28,21 @@ namespace Atdi.Modules.LicenseGenerator
 
             //ICSControl_ForTesting_ClientMonitoring(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2019", 1);
 
-            ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2020");
+            //ICSControl_ForTesting_ClusterServers(@"C:\Projects\Licensing\Test\Sdrn\Licenses_2020");
 
-            Console.WriteLine("Process was finished");
+            //UpdatePeriod_ICSControl_ForUDCR_2020(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019");
+
+            //UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
+            //UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
+
+            UpdatePeriod_ICSControl_ForTest_2020();
+
+
+			Console.WriteLine("Process was finished");
             Console.ReadKey();
         }
 
-        static void UpdatePeriod_ICSControl_ForUDCR(string path)
+        static void UpdatePeriod_ICSControl_ForUDCR_2019(string path)
         {
             var startDate = new DateTime(2018, 12, 25);
             var stopDate = new DateTime(2020, 1, 1);
@@ -91,7 +99,173 @@ namespace Atdi.Modules.LicenseGenerator
             
         }
 
-        static void UpdatePeriod_ICSControl_ForTest(string path)
+        static void UpdatePeriod_ICSControl_ForUDCR_2020(string path)
+        {
+            var startDate = new DateTime(2018, 12, 25);
+            var stopDate = new DateTime(2021, 1, 1);
+            
+            var ownerId = "OID-BD13-G65-N00";
+            var ownerKey = "BD13-G65";
+            var year = (ushort) 2020;
+
+            // WebQuery Web Portal
+            var outPath = @"C:\Projects\Licensing\UDCR\WebQuery\AppServer\Licenses_2020";
+
+            UpdateLicesePeriod2(
+                sourcefileName: "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer\\BD13-G65\\ServerLicense\\LIC-WQASBD13-G65-605.APPSRV-WQBD13-G65-8673.lic",
+                productKey: "IV0O-6R1S-NU0P-6GWS-EWRX",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            // WebQuery Web Portal
+            outPath = @"C:\Projects\Licensing\UDCR\WebQuery\WebPortal\Licenses_2020";
+
+            UpdateLicesePeriod2(
+                sourcefileName: "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal\\BD13-G65\\ServerLicense\\LIC-WQWPBD13-G65-550.WBP-WQBD13-G65-9714.lic",
+                productKey: "NP0W-Q6B4-U0W3-9ZW1-IE7R",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            // SDRN
+            outPath = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020";
+            // server
+            UpdateLicesePeriod2(
+                sourcefileName: @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\BD13-G65\ServerLicense\LIC-SBD13-G65-607.SDRNSV-SBD13-G65-3690.lic",
+                productKey: "MGDM-RD0E-ER0I-6GJR-0DCS",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            var data = new string[][]
+            {
+                new string[] { "LIC-DBD13-G65-067.SENSOR-DBD13-G65-3668", "MGIN-1J63-6SAD-EE6P-CDJI" },
+                new string[] { "LIC-DBD13-G65-130.SENSOR-DBD13-G65-5854", "FY3I-0CBG-3G1V-DNA1-DBI3" },
+                new string[] { "LIC-DBD13-G65-131.SENSOR-DBD13-G65-7613", "J81L-DO1R-EC73-3ELP-8DI0" },
+                new string[] { "LIC-DBD13-G65-159.SENSOR-DBD13-G65-4850", "DEOO-TTCL-6S1V-9R3V-S4RN" },
+                new string[] { "LIC-DBD13-G65-252.SENSOR-DBD13-G65-1000", "IKBO-SSCS-D2YB-BMLL-ECTF" },
+                new string[] { "LIC-DBD13-G65-266.SENSOR-DBD13-G65-3206", "E5MD-35PO-YETY-CIEN-EZ0T" },
+                new string[] { "LIC-DBD13-G65-321.SENSOR-DBD13-G65-8938", "H0LZ-DR5E-NZVT-JCVV-DSSS" },
+                new string[] { "LIC-DBD13-G65-356.SENSOR-DBD13-G65-9832", "8EIN-KTNZ-UYS8-3NR6-NT09" },
+                new string[] { "LIC-DBD13-G65-515.SENSOR-DBD13-G65-4036", "SEE8-ONGD-4VC0-8NS2-HYN0" },
+                new string[] { "LIC-DBD13-G65-557.SENSOR-DBD13-G65-2516", "MNOS-7CDE-Q1XM-9Q1H-N3IE" },
+                new string[] { "LIC-DBD13-G65-599.SENSOR-DBD13-G65-6781", "DIVV-CWIC-GGOE-D5DD-OT9F" },
+                new string[] { "LIC-DBD13-G65-620.SENSOR-DBD13-G65-2314", "BQ35-02C7-ZBC6-DLCE-XG2C" },
+                new string[] { "LIC-DBD13-G65-629.SENSOR-DBD13-G65-5768", "CEXS-DL10-D3GD-ETB1-CIEC" },
+                new string[] { "LIC-DBD13-G65-680.SENSOR-DBD13-G65-3716", "EC6E-0DGD-5RDN-C6D5-KCCC" },
+                new string[] { "LIC-DBD13-G65-786.SENSOR-DBD13-G65-2440", "S715-OC0I-4DLR-E2DG-PIOG" },
+                new string[] { "LIC-DBD13-G65-804.SENSOR-DBD13-G65-0561", "EN0O-ISNC-9S1E-CCRZ-QDRD" },
+                new string[] { "LIC-DBD13-G65-847.SENSOR-DBD13-G65-6554", "NRD2-C1IS-DEGA-D4RL-ELCO" },
+                new string[] { "LIC-DBD13-G65-889.SENSOR-DBD13-G65-8386", "3B53-ELE1-QO02-BI4V-CT8E" },
+                new string[] { "LIC-DBD13-G65-898.SENSOR-DBD13-G65-6214", "NDDV-3N2O-L9NC-GTEG-5SCV" },
+                new string[] { "LIC-DBD13-G65-973.SENSOR-DBD13-G65-7870", "2JO3-N6I5-SLCG-RI5C-3VH5" },
+            };
+
+            foreach (var item in data)
+            {
+                UpdateLicesePeriod2(
+                sourcefileName: @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\BD13-G65\DeviceLicense\" + item[0] + ".lic",
+                productKey: item[1],
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year:year);
+            }
+            // dev 1
+
+        }
+
+		static void UpdatePeriod_ICSControl_ForTest_2020()
+		{
+			var startDate = new DateTime(2018, 12, 25);
+			var stopDate = new DateTime(2022, 1, 1);
+
+			var ownerId = "OID-BD12-A00-N00";
+			var ownerKey = "BD12-A00";
+			var year = (ushort)2021;
+
+			// WebQuery Web Portal
+			//var outPath = @"C:\Projects\Licensing\UDCR\WebQuery\AppServer\Licenses_2020";
+
+			//UpdateLicesePeriod2(
+			//	sourcefileName: "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer\\BD13-G65\\ServerLicense\\LIC-WQASBD13-G65-605.APPSRV-WQBD13-G65-8673.lic",
+			//	productKey: "IV0O-6R1S-NU0P-6GWS-EWRX",
+			//	outPath: outPath,
+			//	ownerId: ownerId,
+			//	ownerKey: ownerKey,
+			//	startDate: startDate,
+			//	stopDate: stopDate,
+			//	year: year);
+
+			// WebQuery Web Portal
+			//outPath = @"C:\Projects\Licensing\UDCR\WebQuery\WebPortal\Licenses_2020";
+
+			//UpdateLicesePeriod2(
+			//	sourcefileName: "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal\\BD13-G65\\ServerLicense\\LIC-WQWPBD13-G65-550.WBP-WQBD13-G65-9714.lic",
+			//	productKey: "NP0W-Q6B4-U0W3-9ZW1-IE7R",
+			//	outPath: outPath,
+			//	ownerId: ownerId,
+			//	ownerKey: ownerKey,
+			//	startDate: startDate,
+			//	stopDate: stopDate,
+			//	year: year);
+
+			//// SDRN
+			var outPath = @"C:\Projects\Licensing\Test\Sdrn\Licenses_2020";
+			//// server
+			//UpdateLicesePeriod2(
+			//	sourcefileName: @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\BD13-G65\ServerLicense\LIC-SBD13-G65-607.SDRNSV-SBD13-G65-3690.lic",
+			//	productKey: "MGDM-RD0E-ER0I-6GJR-0DCS",
+			//	outPath: outPath,
+			//	ownerId: ownerId,
+			//	ownerKey: ownerKey,
+			//	startDate: startDate,
+			//	stopDate: stopDate,
+			//	year: year);
+
+			var data = new string[][]
+			{
+				new string[] { "LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280", "0ZB0-DVZR-ATI1-WIHB-NC1B" },
+				new string[] { "LIC-DBD12-A00-192.SENSOR-DBD12-A00-0618", "BCBC-ECA1-L9EC-IR7E-V1AD" },
+				new string[] { "LIC-DBD12-A00-333.SENSOR-DBD12-A00-5140", "CCMR-RBZN-2C1D-OE40-EC23" },
+				new string[] { "LIC-DBD12-A00-442.SENSOR-DBD12-A00-5169", "ADL6-EDCV-NC1I-CE1N-DLH0" },
+				new string[] { "LIC-DBD12-A00-511.SENSOR-DBD12-A00-8429", "020B-CJHO-TDNI-ZEEO-2KDI" },
+				new string[] { "LIC-DBD12-A00-542.SENSOR-DBD12-A00-9792", "N8XE-HLRQ-DERB-NLIV-0DX2" },
+				new string[] { "LIC-DBD12-A00-668.SENSOR-DBD12-A00-8485", "ROL9-XSMC-WDCT-62ST-R5ER" },
+
+				new string[] { "LIC-DBD12-A00-722.SENSOR-DBD12-A00-1692", "BE1D-RLNN-S0S6-EN42-0028" },
+				new string[] { "LIC-DBD12-A00-787.SENSOR-DBD12-A00-3828", "NTC0-IODJ-7SC0-01EB-DVRV" },
+				new string[] { "LIC-DBD12-A00-878.SENSOR-DBD12-A00-8918", "0VE1-OCOL-S4S0-C1D1-SEXB" },
+			};
+
+			foreach (var item in data)
+			{
+				UpdateLicesePeriod2(
+				sourcefileName: @"C:\Projects\Licensing\Test\Sdrn\Licenses_2019\BD12-A00\DeviceLicense\" + item[0] + ".lic",
+				productKey: item[1],
+				outPath: outPath,
+				ownerId: ownerId,
+				ownerKey: ownerKey,
+				startDate: startDate,
+				stopDate: stopDate,
+				year: year);
+			}
+			// dev 1
+
+		}
+		static void UpdatePeriod_ICSControl_ForTest(string path)
         {
             var startDate = new DateTime(2018, 12, 25);
             var stopDate = new DateTime(2020, 1, 1);
@@ -153,9 +327,9 @@ namespace Atdi.Modules.LicenseGenerator
             var creator = new LicenseCreator();
             var result = creator.Create(new LicenseData[] { lic });
 
-            var directory = $"{outPath}\\{ownerKey}\\{lic.LicenseType}";
-            Directory.CreateDirectory(directory);
-            var newfileName = $"{directory}\\{lic.LicenseNumber}.{lic.Instance}.lic";
+            //var directory = $"{outPath}\\{ownerKey}\\{lic.LicenseType}";
+            Directory.CreateDirectory(outPath);
+            var newfileName = $"{outPath}\\{lic.LicenseNumber}.{lic.Instance}.lic";
 
             File.WriteAllBytes(newfileName, result.Body);
 
@@ -170,6 +344,65 @@ namespace Atdi.Modules.LicenseGenerator
                 ProductKey = lic.ProductKey,
                 LicenseType = lic.LicenseType,
                 Date = startDate
+            };
+
+            var cc = LicenseVerifier.Verify(vd, testLicBody);
+
+            Console.WriteLine($"Update license: '{productKey}' >>> {newfileName}");
+
+        }
+
+        static void UpdateLicesePeriod2(string sourcefileName, string productKey, string ownerKey, string ownerId, string outPath, DateTime startDate, DateTime stopDate, ushort year)
+        {
+            var licBody = File.ReadAllBytes(sourcefileName);
+            var lic = LicenseVerifier.GetLicenseInfo(ownerId, productKey, licBody);
+            var lic2 = new LicenseData2
+            {
+                Year = year,
+                LimitationTerms = LicenseLimitationTerms.Year,
+                Created = DateTime.Now,
+                Company = lic.Company,
+                Copyright = lic.Copyright,
+                Count = lic.Count,
+                Instance = lic.Instance,
+                LicenseNumber = lic.LicenseNumber,
+                LicenseType = lic.LicenseType,
+                OwnerId = lic.OwnerId,
+                OwnerName = lic.OwnerName,
+                ProductKey = lic.ProductKey,
+                ProductName = lic.ProductName,
+                StartDate = lic.StartDate,
+                StopDate = stopDate,
+                
+            };
+            //var licenseIndex = GetUnieIntegerKey(3);
+
+            //lic.Created = DateTime.Now;
+            //lic.StartDate = startDate;
+            //lic.StopDate = stopDate;
+            //lic.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+
+            var creator = new LicenseCreator();
+            var result = creator.Create(new LicenseData2[] { lic2 });
+
+            //var directory = $"{outPath}\\{ownerKey}\\{lic2.LicenseType}";
+            Directory.CreateDirectory(outPath);
+            var newfileName = $"{outPath}\\{lic2.LicenseNumber}.{lic2.Instance}.lic";
+
+            File.WriteAllBytes(newfileName, result.Body);
+
+            CreateLicenseDescriptionFile(lic2, newfileName);
+
+            var testLicBody = File.ReadAllBytes(newfileName);
+
+            var vd = new VerificationData2
+            {
+                OwnerId = lic2.OwnerId,
+                ProductName = lic2.ProductName,
+                ProductKey = lic2.ProductKey,
+                LicenseType = lic2.LicenseType,
+                Date = startDate,
+                YearHash = LicenseVerifier.EncodeYear(year)
             };
 
             var cc = LicenseVerifier.Verify(vd, testLicBody);
@@ -261,6 +494,82 @@ namespace Atdi.Modules.LicenseGenerator
 
             MakeLicense(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
         }
+
+
+        static void UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020()
+        {
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2021, 1, 1);
+            
+            var ownerId = "OID-CA10-B00-N00";
+            var ownerKey = "CA10-B00";
+
+            // server
+            var outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_Current\AppServer";
+            UpdateLicesePeriod(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\AppServer\CA10-B00\ServerLicense\LIC-WQASCA10-B00-857.APPSRV-WQCA10-B00-1782.lic",
+                productKey: "EDRA-9WNB-E8DC-VIEC-QYND",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate);
+
+            // WebPortal
+            outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_Current\WebPortal";
+            UpdateLicesePeriod(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\WebPortal\CA10-B00\ServerLicense\LIC-WQWPCA10-B00-718.WBP-WQCA10-B00-1437.lic",
+                productKey: "PAWE-ANNE-YC0I-R306-EICC",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate);
+
+        }
+
+        static void UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020()
+        {
+            var startDate = new DateTime(2018, 12, 17);
+            var stopDate = new DateTime(2021, 1, 1);
+
+            var ownerId = "OID-CA10-B00-N00";
+            var ownerKey = "CA10-B00";
+
+            var year = (ushort)2020;
+
+            // server
+            var outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_3.2.0\AppServer";
+            UpdateLicesePeriod2(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\AppServer\CA10-B00\ServerLicense\LIC-WQASCA10-B00-857.APPSRV-WQCA10-B00-1782.lic",
+                productKey: "EDRA-9WNB-E8DC-VIEC-QYND",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            // WebPortal
+            outPath = @"C:\Projects\Licensing\Bosny\WebQuery\Licenses_2020\Version_3.2.0\WebPortal";
+            UpdateLicesePeriod2(
+                sourcefileName: @"C:\Projects\Licensing\Bosny\WebQuery\WebPortal\CA10-B00\ServerLicense\LIC-WQWPCA10-B00-718.WBP-WQCA10-B00-1437.lic",
+                productKey: "PAWE-ANNE-YC0I-R306-EICC",
+                outPath: outPath,
+                ownerId: ownerId,
+                ownerKey: ownerKey,
+                startDate: startDate,
+                stopDate: stopDate,
+                year: year);
+
+            
+
+        }
+
+
+
+
+
 
         static void WebQueryAppServer_ForTesting(string path)
         {
@@ -655,7 +964,7 @@ namespace Atdi.Modules.LicenseGenerator
             verFileData.AppendLine($"Product Key  : '{l.ProductKey}'");
             verFileData.AppendLine("  ------------------ ");
             verFileData.AppendLine();
-            verFileData.AppendLine($"Created         : {l.Created}");
+            verFileData.AppendLine($"Created/Renewal : {l.Created}");
 
             if (l2 != null)
             {

@@ -90,11 +90,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
             }
 
             //TODO: Activate all consumers
-            dispatcher.Activate();
+           
 
             var hostLoader = this.Resolver.Resolve<IServerHostLoader>();
-            
-            hostLoader.RegisterTrigger("Running AMQP Measseges Processing", () =>
+
+            hostLoader.RegisterTrigger("Running Device Bus Consumers", () =>
+            {
+                dispatcher.Activate();
+            });
+
+            hostLoader.RegisterTrigger("Running AMQP Messages Processing", () =>
             {
                 var messagesProcessing = this.Resolver.Resolve<MessageProcessing>();
                 messagesProcessing.Run();
@@ -103,7 +108,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         protected override void OnDeactivateUnit()
         {
-
+            var dispatcher = this.Resolver.Resolve<ISdrnMessageDispatcher>();
+            dispatcher.Deactivate();
         }
         protected override void OnUninstallUnit()
         {

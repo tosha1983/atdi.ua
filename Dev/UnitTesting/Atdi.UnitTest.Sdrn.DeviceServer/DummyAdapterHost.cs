@@ -18,11 +18,13 @@ namespace Atdi.UnitTest.Sdrn.DeviceServer
             this._logger = logger;
         }
 
-        public void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler, IDeviceProperties deviceProperties = null) where TCommand : new()
+
+
+
+        public void RegisterHandler<TCommand, TResult>(Action<TCommand, IExecutionContext> commandHandler, IResultPoolDescriptor<TResult>[] poolDescriptors,
+            IDeviceProperties deviceProperties) where TCommand : new()
         {
             this._logger.Verbouse("DummyAdapterHost", "Call method", $"RegisterHandler");
         }
-
-
     }
 }

@@ -10,7 +10,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 {
     public class AdapterConfig
     {        
-        public string SerialNumber { get; set; }
+        public int SerialNumber { get; set; }
 
         public bool Reference10MHzConnected { get; set; }
         public bool GPSPPSConnected { get; set; }

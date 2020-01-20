@@ -88,10 +88,18 @@ namespace Atdi.DataModels.Sdrns
         /// </summary>
         //[EnumMember]
         //Signaling
+
+
         /// <summary>
         /// Specter
         /// </summary>
         [EnumMember]
-        Signaling
+        Signaling,
+
+        /// <summary>
+        /// Localization by TDOA
+        /// </summary>
+        [EnumMember]
+        Tdoa
     }
 }

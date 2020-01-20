@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 Gain = sensorParameters.Gain; // Пока костыль, но мы его изменим
                 ANT_VAL = Gain - Rx;
             }
-            for (int i = 0; F_Sem.Length > i; i++)
+            for (var i = 0; F_Sem.Length > i; i++)
             {
                 F_Sem[i].LeveldBmkVm = (float)(77.2 + 20 * Math.Log10(F_Sem[i].Freq) + F_Sem[i].LeveldBm - ANT_VAL);
             }

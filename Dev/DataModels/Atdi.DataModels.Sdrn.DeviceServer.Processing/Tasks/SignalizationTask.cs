@@ -34,6 +34,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public long durationForMeasSysInfo_ms; // в миллисекундах из файла конфигурации - максимальное время, выделяемое для выполнения измерения SysInfo
         public long durationForSendResultSysInfo;
         public long durationForSendResultSignaling;  // в миллисекундах из файла конфигурации - время в течении которого мы посылаем один результат (10 мин по умолчанию)
+        public float[] templevel; // временный массив
 
     }
    

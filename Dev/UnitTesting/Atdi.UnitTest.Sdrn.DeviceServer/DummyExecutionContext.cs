@@ -83,5 +83,16 @@ namespace Atdi.UnitTest.Sdrn.DeviceServer
         {
             this._logger.Verbouse("DummyExecutionContext", "Call method", $"Unlock");
         }
+
+        public T TakeResult<T>(string key, ulong index, CommandResultStatus status) where T : ICommandResultPart
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"TakeResult");
+            return default(T);
+        }
+
+        public void ReleaseResult<T>(T result) where T : ICommandResultPart
+        {
+            this._logger.Verbouse("DummyExecutionContext", "Call method", $"ReleaseResult");
+        }
     }
 }

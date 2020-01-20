@@ -56,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
 
-                _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+                _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -95,6 +95,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         continue;
                     }
 
+                    _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+
                     ////////////////////////////////////////////////////////////////////////////////////////////////////
                     // 
                     //  Определяеим актуальный период времени между единичными измерениями в общей задаче Signalization если оно отрицательное значит время измерения вышло пора закругляться
@@ -106,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         // обновление TaskParameters в БД
                         context.Task.taskParameters.status = StatusTask.C.ToString();
                         this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
-                        DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                        var deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
                         deviceCommandResult.Status = StatusTask.C.ToString();
@@ -274,7 +276,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                             //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
                             var arrEmit = new Emitting[outResultData.Emittings.Length];
-                                for (int i = 0; i < outResultData.Emittings.Length; i++)
+                                for (var i = 0; i < outResultData.Emittings.Length; i++)
                                 {
                                     var val = outResultData.Emittings[i];
                                     var emit = CopyHelper.CreateDeepCopy(val);
@@ -288,7 +290,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                             var newEmittingLevelsDistributionLevel = emit.LevelsDistribution.Levels;
                                             int startIndex = -1;
                                             int endIndex = -1;
-                                            for (int j = 0; j < newEmittingLevelsDistributionCount.Length; j++)
+                                            for (var j = 0; j < newEmittingLevelsDistributionCount.Length; j++)
                                             {
                                                 var valCount = newEmittingLevelsDistributionCount[j];
                                                 var valLevel = newEmittingLevelsDistributionLevel[j];
@@ -303,7 +305,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                                 }
                                             }
 
-                                            for (int j = newEmittingLevelsDistributionCount.Length - 1; j >= 0; j--)
+                                            for (var j = newEmittingLevelsDistributionCount.Length - 1; j >= 0; j--)
                                             {
                                                 var valCount = newEmittingLevelsDistributionCount[j];
                                                 var valLevel = newEmittingLevelsDistributionLevel[j];
@@ -320,7 +322,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                             if ((startIndex >= 0) && (endIndex >= 0))
                                             {
-                                                for (int k = startIndex; k <= endIndex; k++)
+                                                for (var k = startIndex; k <= endIndex; k++)
                                                 {
                                                     var valCount = newEmittingLevelsDistributionCount[k];
                                                     var valLevel = newEmittingLevelsDistributionLevel[k];
@@ -343,7 +345,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                 CheckPercentAvailability.CheckPercent(ref arrEmit);
 
-                                DM.MeasResults measResultsNew = new MeasResults()
+                                var measResultsNew = new MeasResults()
                                 {
                                     BandwidthResult = outResultData.BandwidthResult,
                                     Emittings = arrEmit,
@@ -424,7 +426,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             context.Task.taskParameters.status = StatusTask.C.ToString();
                             this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
 
-                            DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                            var deviceCommandResult = new DM.DeviceCommandResult();
                             deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                             deviceCommandResult.CustDate1 = DateTime.Now;
                             deviceCommandResult.Status = StatusTask.C.ToString();

@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
 {
-    class ResultHandlerDecriptor
+    internal class ResultHandlerDescriptor
     {
         public delegate void HandlerInvoker(object instance, ICommand command, ICommandResultPart resultPart, ITaskContext taskContext);
 
-        public ResultHandlerDecriptor(Type instanceType)
+        public ResultHandlerDescriptor(Type instanceType)
         {
             this.InstanceType = instanceType;
             var instanceInterface = instanceType.GetInterface(typeof(IResultHandler<,,,>).Name);
@@ -28,27 +28,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
             this.ResultType = instanceInterface.GenericTypeArguments[1];
             this.TaskType = instanceInterface.GenericTypeArguments[2];
             this.ProcessType = instanceInterface.GenericTypeArguments[3];
+            this.Key = BuildKey(CommandType, ResultType, TaskType, ProcessType);
             this.Invoker = CreateInvoker(instanceType.GetMethod("Handle"));
         }
 
-        public Type CommandType { get; private set; }
+        public Type CommandType { get; }
 
-        public Type ResultType { get; private set; }
+        public Type ResultType { get; }
 
-        public Type TaskType { get; private set; }
+        public Type TaskType { get; }
 
-        public Type ProcessType { get; private set; }
+        public Type ProcessType { get; }
 
-        public Type InstanceType { get; private set; }
+        public Type InstanceType { get; }
 
-        public string Key
-        {
-            get => BuildKey(CommandType, ResultType, TaskType, ProcessType);
-        }
+        public ValueTuple<Type, Type, Type, Type> Key { get; }
 
         public HandlerInvoker Invoker { get; private set; }
 
-        static HandlerInvoker CreateInvoker(MethodInfo method)
+        private static HandlerInvoker CreateInvoker(MethodInfo method)
         {
             var targetArg = Expression.Parameter(typeof(object));
             var commandParam = Expression.Parameter(typeof(ICommand));
@@ -86,9 +84,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Controller
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string BuildKey(Type commandType, Type resultType, Type taskType, Type processType)
+        public static ValueTuple<Type, Type, Type, Type> BuildKey(Type commandType, Type resultType, Type taskType, Type processType)
         {
-            return $"{commandType.FullName}.{resultType.FullName}.{taskType.FullName}.{processType.FullName}";
+            return new ValueTuple<Type, Type, Type, Type>(commandType, resultType, taskType, processType);
+            //return $"{commandType.FullName}.{resultType.FullName}.{taskType.FullName}.{processType.FullName}";
         }
     }
 }

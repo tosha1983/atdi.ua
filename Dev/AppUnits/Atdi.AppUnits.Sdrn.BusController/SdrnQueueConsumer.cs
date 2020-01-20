@@ -71,8 +71,6 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                 _logger.Verbouse(Contexts.ThisComponent, Categories.Processing, Events.ReceivedMessage.With(deliveryContext.ConsumerTag, deliveryContext.RoutingKey, deliveryContext.Exchange, deliveryContext.DeliveryTag, message.Type, message.Id));
 
-                var handlingResult = new SdrnMessageHandlingResult();
-
                 try
                 {
                     if (string.IsNullOrEmpty(message.Id)
@@ -81,8 +79,11 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         || string.IsNullOrEmpty(message.ContentType)
                         || message.Headers == null)
                     {
-                        handlingResult.Status = SdrnMessageHandlingStatus.Trash;
-                        handlingResult.ReasonFailure = "The message contains an incorrect header";
+                        var handlingResult = new SdrnMessageHandlingResult
+                        {
+                            Status = SdrnMessageHandlingStatus.Trash,
+                            ReasonFailure = "The message contains an incorrect header"
+                        };
                         this.RedirectMessage(message, deliveryContext, handlingResult);
                         return MessageHandlingResult.Confirm;
                     }
@@ -120,7 +121,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
                         .Insert()
                         .SetValue(c => c.StatusCode,
                             (byte) 0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
-                        .SetValue(c => c.StatusName, MessageProcessingStatus.Created.ToString())
+                        .SetValue(c => c.StatusName, "Created") //MessageProcessingStatus.Created.ToString())
                         .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
                         .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
                         .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
@@ -164,10 +165,11 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 catch (Exception e)
                 {
                     _logger.Exception(Contexts.ThisComponent, Categories.Processing, e);
-
-                    handlingResult.Status = SdrnMessageHandlingStatus.Error;
-                    handlingResult.ReasonFailure = e.Message;
-
+                    var handlingResult = new SdrnMessageHandlingResult
+                    {
+                        Status = SdrnMessageHandlingStatus.Error,
+                        ReasonFailure = e.Message
+                    };
                     this.RedirectMessage(message, deliveryContext, handlingResult);
                 }
 
@@ -190,47 +192,72 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         private void RedirectMessage(Message message, IDeliveryContext deliveryContext, ISdrnMessageHandlingResult handlingResult)
         {
-            string routingKey;
-            if (handlingResult.Status == SdrnMessageHandlingStatus.Error)
+            var routingKey = string.Empty;
+            try
             {
-                routingKey = _busControllerConfig.BuildServerErrorQueueRoute(this._routingKey);
-            }
-            else if (handlingResult.Status == SdrnMessageHandlingStatus.Rejected)
-            {
-                routingKey = _busControllerConfig.BuildServerRejectedQueueRoute(this._routingKey);
-            }
-            else if (handlingResult.Status == SdrnMessageHandlingStatus.Trash)
-            {
-                routingKey = _busControllerConfig.BuildServerTrashQueueRoute(this._routingKey);
-            }
-            else if (handlingResult.Status == SdrnMessageHandlingStatus.Unprocessed)
-            {
-                routingKey = _busControllerConfig.BuildServerUnprocessedQueueRoute(this._routingKey);
-            }
-            else
-            {
-                return;
-            }
-
-            var redirectedMessage = new Message
-            {
-                Id = message.Id,
-                Type = message.Type,
-                CorrelationId = message.Id,
-                ContentType = message.ContentType,
-                ContentEncoding = message.ContentEncoding,
-                Body = message.Body,
-                AppId = message.AppId,
-                Timestamp = message.Timestamp,
-                Headers = new Dictionary<string, object>(message.Headers)
+                
+                if (handlingResult.Status == SdrnMessageHandlingStatus.Error)
                 {
-                    ["Redirect.Created"] = DateTime.Now.ToString("o"),
-                    ["Redirect.Status"] = handlingResult.Status.ToString(),
-                    ["Redirect.Reason"] = handlingResult.ReasonFailure
+                    routingKey = _busControllerConfig.BuildServerErrorQueueRoute(this._routingKey);
                 }
-            };
+                else if (handlingResult.Status == SdrnMessageHandlingStatus.Rejected)
+                {
+                    routingKey = _busControllerConfig.BuildServerRejectedQueueRoute(this._routingKey);
+                }
+                else if (handlingResult.Status == SdrnMessageHandlingStatus.Trash)
+                {
+                    routingKey = _busControllerConfig.BuildServerTrashQueueRoute(this._routingKey);
+                }
+                else if (handlingResult.Status == SdrnMessageHandlingStatus.Unprocessed)
+                {
+                    routingKey = _busControllerConfig.BuildServerUnprocessedQueueRoute(this._routingKey);
+                }
+                else
+                {
+                    return;
+                }
 
-            _busConnection.Publish(_busControllerConfig.GetServerInnerExchangeName(), routingKey, redirectedMessage);
+                var redirectedMessage = new Message
+                {
+                    Id = message.Id,
+                    Type = message.Type,
+                    CorrelationId = message.Id,
+                    ContentType = message.ContentType,
+                    ContentEncoding = message.ContentEncoding,
+                    Body = message.Body,
+                    AppId = message.AppId,
+                    Timestamp = message.Timestamp
+                };
+                if (message.Headers != null && message.Headers.Count > 0)
+                {
+                    try
+                    {
+                        redirectedMessage.Headers = new Dictionary<string, object>(message.Headers);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Exception(Contexts.ThisComponent, Categories.Processing, e, this);
+                        redirectedMessage.Headers = new Dictionary<string, object>();
+                    }
+                    
+                }
+                else
+                {
+                    redirectedMessage.Headers = new Dictionary<string, object>();
+                }
+
+                redirectedMessage.Headers["Redirect.Created"] = DateTime.Now.ToString("o");
+                redirectedMessage.Headers["Redirect.Status"] = handlingResult.Status.ToString();
+                redirectedMessage.Headers["Redirect.Reason"] = handlingResult.ReasonFailure;
+
+                _busConnection.Publish(_busControllerConfig.GetServerInnerExchangeName(), routingKey, redirectedMessage);
+            }
+            catch (Exception e)
+            {
+                _logger.Exception(Contexts.ThisComponent, Categories.Processing, e, this);
+                _logger.Error(Contexts.ThisComponent, Categories.Processing, $"Failed to redirect message: Reason='{handlingResult?.ReasonFailure}', Status='{handlingResult?.Status.ToString()}', RoutingKey='{routingKey}', Message='{message?.Id}', Type='{message?.Type}', AppId='{message?.AppId}', ContentType='{message?.ContentType}'");
+            }
+           
         }
 
         public void Join()
