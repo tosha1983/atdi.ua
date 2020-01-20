@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="IQFilters.DrawIQ"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:IQFilters"
+             xmlns:gl="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid x:Name="glo">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Slider Orientation="Vertical" Minimum="0.0000001" Maximum="0.5" Value="{Binding RefLevel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.00000001" />
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <gl:OpenGLControl Name="openGLControl" OpenGLDraw="openGLControl_OpenGLDraw" Resized="openGLControl_Resized"  OpenGLInitialized="openGLControl_OpenGLInitialized"                         
+                          DrawFPS="True" FrameRate="60" OpenGLVersion="OpenGL2_0" MinHeight="10" MinWidth="10"/>
+            <gl:OpenGLControl Name="CircleGLControl" OpenGLDraw="CircleGLControl_OpenGLDraw" Resized="CircleGLControl_Resized"  OpenGLInitialized="CircleGLControl_OpenGLInitialized"                         
+                          Width="{Binding ElementName=CircleGLControl,Path=ActualHeight}"
+                              DrawFPS="True" FrameRate="60" OpenGLVersion="OpenGL2_0" MinHeight="10" MinWidth="10" Grid.Column="1"/>
+            <Slider Orientation="Vertical" Minimum="0.000001" Maximum="0.5" Value="{Binding CircleRefLevel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.00000001" Grid.Column="2" />
+            <Slider Orientation="Vertical" Minimum="0" Maximum="1.0" Value="{Binding OpaFrom,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.00000001" Grid.Column="3" />
+            <Slider Orientation="Vertical" Minimum="0" Maximum="1.0" Value="{Binding OpaTo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="0.00000001" Grid.Column="4" />
+        </Grid>
+
+
+        <Slider Orientation="Horizontal" Grid.Column="1" Minimum="0" Maximum="{Binding HMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                Value="{Binding HMarkerDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="1" Grid.Row="2" Margin="0,0,100,0" />
+        <TextBox Text="{Binding HMarkerDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" HorizontalAlignment="Right" Width="100" Grid.Column="1"/>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding HMinDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="100"/>
+            <Slider Orientation="Horizontal" Minimum="0" Maximum="{Binding HMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="{Binding HMinDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="2" Grid.Column="1" />
+            <Slider Orientation="Horizontal" Minimum="0" Maximum="{Binding HMax,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Value="{Binding HMaxDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SmallChange="2" Grid.Column="2" />
+            <TextBox Text="{Binding HMaxDraw,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="100" Grid.Column="3"/>
+        </Grid>
+    </Grid>
+</UserControl>
