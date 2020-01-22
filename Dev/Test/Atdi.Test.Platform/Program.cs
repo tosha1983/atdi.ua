@@ -22,18 +22,19 @@ namespace Atdi.Test.Platform
                 try
                 {
                     host.Start();
+
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
-                    var jobBroker = resolver.Resolve<IJobBroker>();
+                    //var jobBroker = resolver.Resolve<IJobBroker>();
                     var logger = resolver.Resolve<ILogger>();
                     
-                    JobsTest.Run(jobBroker, host.Container, logger);
+                    //JobsTest.Run(jobBroker, host.Container, logger);
 
                     //var calc = new CalclCrowed(logger);
                     // DataLayerTest.Run(resolver);
                     // EntityOrmTest.Run(resolver);
 
-                    // LoggerTest.Run(logger);
+                    LoggerTest.Run(logger);
 
                 }
                 catch (Exception e)
