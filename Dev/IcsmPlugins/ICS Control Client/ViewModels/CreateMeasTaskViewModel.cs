@@ -231,7 +231,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MeasOtherTypeSpectrumOccupation = SDR.SpectrumOccupationType.FreqChannelOccupation;
             this._currentMeasTask.MeasOtherLevelMinOccup = -75;
             this._currentMeasTask.MeasOtherSwNumber = 1;
-            this._currentMeasTask.MeasOtherNCount = 10000;
+            this._currentMeasTask.MeasOtherNCount = 1000;
             this._currentMeasTask.MeasOtherNChenal = 10;
             this._currentMeasTask.MeasOtherTypeSpectrumScan = SDR.SpectrumScanType.Sweep;
             this._currentMeasTask.ResultType = SDR.MeasTaskResultType.MeasurementResult;
@@ -248,8 +248,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.CrossingBWPercentageForBadSignals = 40;
             this._currentMeasTask.DiffLevelForCalcBW = 25;
             this._currentMeasTask.CorrelationAnalize = false;
-            this._currentMeasTask.CorrelationFactor = 0.95;
-            this._currentMeasTask.SignalizationNCount = 1000000;
+            this._currentMeasTask.CorrelationFactor = 0.75;
+            this._currentMeasTask.SignalizationNCount = 1000;
             this._currentMeasTask.SignalizationNChenal = 100;
             this._currentMeasTask.AnalyzeByChannel = false;
 
@@ -274,7 +274,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadShortSensors()
         {
-            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(); //.Where(c => c.Administration == "ADM").ToArray();
+            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
             if (sdrSensors.Length > 0)
             {
@@ -431,6 +431,87 @@ namespace XICSM.ICSControlClient.ViewModels
                         break;
                 }
 
+                if (_measType == SDR.MeasurementType.SpectrumOccupation)
+                {
+                    var val = (measFreqParam.MeasFreqs == null ? 1000 : measFreqParam.MeasFreqs.Length) * ((maxFq - minFq) / this._currentMeasTask.MeasFreqParamStep) * this._currentMeasTask.MeasOtherNChenal;
+
+                    if (val > 50000)
+                    {
+                        MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        return;
+                    }
+                    else if (val > 10000)
+                    { 
+                        if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                            return;
+                    }
+
+                    if (this._currentMeasTask.MeasOtherNCount.HasValue && this._currentMeasTask.MeasOtherNCount > 10000)
+                    {
+                        MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        return;
+                    }
+                    else if (this._currentMeasTask.MeasOtherNCount.HasValue && this._currentMeasTask.MeasOtherNCount > 1000)
+                    {
+                        if (MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                            return;
+                    }
+
+                    if (this._currentMeasTask.MeasOtherNChenal.HasValue && this._currentMeasTask.MeasOtherNChenal > 100)
+                    {
+                        MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        return;
+                    }
+                    else if (this._currentMeasTask.MeasOtherNChenal.HasValue && this._currentMeasTask.MeasOtherNChenal > 50)
+                    {
+                        if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                            return;
+                    }
+                }
+                if (_measType == SDR.MeasurementType.Signaling)
+                {
+                    double? val = 0;
+                    if (measFreqParam.Mode == SDR.FrequencyMode.FrequencyList)
+                        val = this.CurrentMeasTask.SignalizationNChenal * ((maxFq - minFq) / this._currentMeasTask.MeasFreqParamStep);
+                    else if (measFreqParam.Mode == SDR.FrequencyMode.FrequencyRange)
+                        val = this.CurrentMeasTask.SignalizationNChenal * ((this._currentMeasTask.MeasFreqParamRgU - this._currentMeasTask.MeasFreqParamRgL) / this._currentMeasTask.MeasFreqParamStep);
+                    if (val > 500)
+                    {
+                        MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        return;
+                    }
+                    else if (val > 100)
+                    {
+                        if (MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                            return;
+                    }
+
+                    if (this._currentMeasTask.SignalizationNCount.HasValue && this._currentMeasTask.SignalizationNCount > 1000000)
+                    {
+                        MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        return;
+                    }
+                    else if (this._currentMeasTask.SignalizationNCount.HasValue && this._currentMeasTask.SignalizationNCount > 1000)
+                    {
+                        if (MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                            return;
+                    }
+
+                    if (this._currentMeasTask.CorrelationAnalize.HasValue && this._currentMeasTask.CorrelationAnalize.Value)
+                    {
+                        if (this._currentMeasTask.CorrelationFactor.HasValue && this._currentMeasTask.CorrelationFactor > 1)
+                        {
+                            MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions.", "ISC Control Client");
+                            return;
+                        }
+                        else if (this._currentMeasTask.CorrelationFactor.HasValue && this._currentMeasTask.CorrelationFactor > 0.8)
+                        {
+                            if (MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                                return;
+                        }
+                    }
+
+                }
                 List<SDR.ReferenceSituation> listRef = new List<SDR.ReferenceSituation>();
 
                 if (this._currentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling)

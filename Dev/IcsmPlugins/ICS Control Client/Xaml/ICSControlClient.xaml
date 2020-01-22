@@ -87,7 +87,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <GroupBox  Header="  {x:Static res:Resources.MeasTasks}  " Margin="5, 5, 0, 0" Grid.Column="0" Grid.Row="0" >
+            <GroupBox  Header="{x:Static res:Resources.MeasTasks}" Margin="5, 5, 0, 0" Grid.Column="0" Grid.Row="0" >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -147,7 +147,7 @@
                       <GridSplitter Visibility="{Binding MeasTaskDetailVisibility}" Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                       </GridSplitter>
 
-                      <GroupBox Visibility="{Binding MeasTaskDetailVisibility}" Header=" {x:Static res:Resources.Parameters} "  Grid.Column="2" Grid.Row="0">
+                      <GroupBox Visibility="{Binding MeasTaskDetailVisibility}" Header="{x:Static res:Resources.Parameters}"  Grid.Column="2" Grid.Row="0">
                           <ScrollViewer>
                               <Grid DataContext="{Binding CurrentMeasTask}">
                                   <Grid.ColumnDefinitions>
@@ -357,7 +357,7 @@
                                       <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasOtherNChenal}"  IsReadOnly="True"/>
                                     </Grid>
                                 </Expander>
-                                  <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="{x:Static res:Resources.MonitoringEmissionParameters}">
+                                <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="{x:Static res:Resources.MonitoringEmissionParameters}">
                                   <Expander.Style>
                                     <Style TargetType="Expander">
                                       <Style.Triggers>
@@ -562,7 +562,7 @@
         
             <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
 
-            <GroupBox  Header="  {x:Static res:Resources.Results}  " Margin="5, 0, 0, 5"  Grid.Column="0" Grid.Row="2">
+            <GroupBox  Header="{x:Static res:Resources.Results}" Margin="5, 0, 0, 5"  Grid.Column="0" Grid.Row="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -614,9 +614,6 @@
                                 <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas}"></DataGridTextColumn>
-                            <!--<DataGridTextColumn Header="{x:Static res:Resources.IdMeasDevice}" Binding="{Binding Path=StationMeasurementsStationId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.№ Stations}" Binding="{Binding Path=StationsNumber}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.№ Points}" Binding="{Binding Path=PointsNumber}"></DataGridTextColumn>-->
                                 <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
@@ -628,7 +625,7 @@
                         <GridSplitter Visibility="{Binding ResultStationsVisibility}" Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         </GridSplitter>
 
-                        <GroupBox Visibility="{Binding ResultStationsVisibility}" Header=" {x:Static res:Resources.ResultsOfStations} "  Grid.Column="0" Grid.Row="2">
+                        <GroupBox Visibility="{Binding ResultStationsVisibility}" Header="{x:Static res:Resources.ResultsOfStations}"  Grid.Column="0" Grid.Row="2">
                           <Grid>
                             <Grid.ColumnDefinitions>
                               <ColumnDefinition Width="*" />
@@ -637,7 +634,7 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Expander Header="Filters" Grid.Column="0" Grid.Row="0">
+                            <Expander Header="{x:Static res:Resources.Filters}" Grid.Column="0" Grid.Row="0">
                               <Grid Grid.Column="0" Grid.Row="0">
                                 <Grid.ColumnDefinitions>
                                   <ColumnDefinition Width="Auto" />
@@ -680,11 +677,8 @@
                                 <DataGridTextColumn Header="{x:Static res:Resources.GlobalSID}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.MeasGlobalSID}" Binding="{Binding Path=MeasGlobalSID}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                                <!--<DataGridTextColumn Header="{x:Static res:Resources.№ Meas. Location}" Binding="{Binding Path=CountLevelMeas}"></DataGridTextColumn>-->
                                 <DataGridTextColumn Header="{x:Static res:Resources.CentrFreqMHz}" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-                                <!--<DataGridTextColumn Header="{x:Static res:Resources.CountSpectrums}" Binding="{Binding Path=CountSpectrums}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.CountLevelMeas}" Binding="{Binding Path=CountLevelMeas}"></DataGridTextColumn>-->
                               </DataGrid.Columns>
                             </DataGrid>
                           </Grid>                          
@@ -694,7 +688,7 @@
                     <GridSplitter Visibility="{Binding MeasResultsDetailVisibility}" Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                     </GridSplitter>
 
-                  <GroupBox Visibility="{Binding MeasResultsDetailVisibility}" Header=" {x:Static res:Resources.ResultsOfGeneral} "  Grid.Column="3" Grid.Row="0" Grid.RowSpan="2">
+                  <GroupBox Visibility="{Binding MeasResultsDetailVisibility}" Header="{x:Static res:Resources.ResultsOfGeneral}"  Grid.Column="3" Grid.Row="0" Grid.RowSpan="2">
                     <ScrollViewer>
                       <Grid>
                         <Grid.ColumnDefinitions>
@@ -956,7 +950,6 @@
                         <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5,0,0" Content="&lt;" Width="15" Height="15" Command="{Binding PrevSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
                         <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100" Visibility="{Binding ResIdStationVisibility}"/>
                         <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
-                        <!--<Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="50" Margin="150,5,0,0" Content="Get CSV" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>-->
 
                         <Expander Grid.Column="0" Grid.Row="5" Header="{x:Static res:Resources.TimeMeas}" Visibility="{Binding ResTimeMeasVisibility}">
                           <Grid DataContext="{Binding CurrentGeneralResult}">
@@ -1047,7 +1040,7 @@
 
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>
         
-            <GroupBox  Header="  {x:Static res:Resources.Sensors}  "  Margin="0, 5, 5, 5" Grid.Column="2" Grid.RowSpan="3" >
+            <GroupBox  Header="{x:Static res:Resources.Sensors}"  Margin="0, 5, 5, 5" Grid.Column="2" Grid.RowSpan="3" >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -1057,7 +1050,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <cdg:ShortSensorsCustomDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItem="{Binding CurrentShortSensor}">
+                    <cdg:ShortSensorsCustomDataGrid x:Name="GridSensor" Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItem="{Binding CurrentShortSensor}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>

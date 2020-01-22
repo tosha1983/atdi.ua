@@ -2000,8 +2000,11 @@ namespace XICSM.ICSControlClient.ViewModels
             _waitForm?.Dispose();
             _userActionTask?.Dispose();
         }
-        private double ConvertToDouble(string s)
+        private double? ConvertToDouble(string s)
         {
+            if (string.IsNullOrEmpty(s))
+                return null;
+
             char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
             double result = 0;
             try
@@ -2012,7 +2015,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     else
                         result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
             }
-            catch (Exception e)
+            catch
             {
                 try
                 {
@@ -2026,7 +2029,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                     catch
                     {
-                        throw new Exception("Wrong string-to-double format");
+                        //throw new Exception("Wrong string-to-double format");
+                        return null;
                     }
                 }
             }
