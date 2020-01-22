@@ -484,5 +484,25 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Status = source.Status
             };
         }
+        public static VM.MeasTaskShortViewModel Map(M.MeasTask source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+            return new VM.MeasTaskShortViewModel
+            {
+                MeasTaskId = source.MeasTaskId,
+                TaskType = source.TaskType,
+                TaskName = source.TaskName,
+                FqMin = source.FqMin,
+                FqMax = source.FqMax,
+                DateStart = source.DateStart,
+                DateStop = source.DateStop,
+                DateCreated = source.DateCreated,
+                CreatedBy = source.CreatedBy,
+                SensorIds = source.SensorIds
+            };
+        }
     }
 }

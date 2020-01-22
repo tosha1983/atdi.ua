@@ -223,6 +223,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string CancelCommand {
+            get {
+                return ResourceManager.GetString("CancelCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CentralFrequencyMeas, MHz.
         /// </summary>
         public static string CentralFrequencyMeasMHz {
@@ -255,6 +264,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string CentrFreqMHz {
             get {
                 return ResourceManager.GetString("CentrFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change time.
+        /// </summary>
+        public static string ChangeTimeCommand {
+            get {
+                return ResourceManager.GetString("ChangeTimeCommand", resourceCulture);
             }
         }
         
@@ -327,6 +345,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string CompareWithTransmitterMask {
             get {
                 return ResourceManager.GetString("CompareWithTransmitterMask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string ContinueCommand {
+            get {
+                return ResourceManager.GetString("ContinueCommand", resourceCulture);
             }
         }
         
@@ -597,6 +624,24 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Filters {
             get {
                 return ResourceManager.GetString("Filters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Freq Max.
+        /// </summary>
+        public static string FqMax {
+            get {
+                return ResourceManager.GetString("FqMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Freq Min.
+        /// </summary>
+        public static string FqMin {
+            get {
+                return ResourceManager.GetString("FqMin", resourceCulture);
             }
         }
         
@@ -1051,6 +1096,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MeasTaskId.
+        /// </summary>
+        public static string MeasTaskId {
+            get {
+                return ResourceManager.GetString("MeasTaskId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meas tasks.
         /// </summary>
         public static string MeasTasks {
@@ -1366,6 +1420,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sensor Ids.
+        /// </summary>
+        public static string SensorIds {
+            get {
+                return ResourceManager.GetString("SensorIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sensor Name.
         /// </summary>
         public static string SensorName {
@@ -1663,11 +1726,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Task Name.
+        /// </summary>
+        public static string TaskName {
+            get {
+                return ResourceManager.GetString("TaskName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tasks.
         /// </summary>
         public static string Tasks {
             get {
                 return ResourceManager.GetString("Tasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Type.
+        /// </summary>
+        public static string TaskType {
+            get {
+                return ResourceManager.GetString("TaskType", resourceCulture);
             }
         }
         

@@ -138,6 +138,12 @@
     <Compile Include="Forms\MeasStationsSignalizationForm.Designer.cs">
       <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MeasTaskListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasTaskListForm.Designer.cs">
+      <DependentUpon>MeasTaskListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasTaskSignalizationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,6 +260,7 @@
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
     <Compile Include="Models\Common\MeasStationsSignalization.cs" />
+    <Compile Include="Models\Common\MeasTask.cs" />
     <Compile Include="Models\Common\StationsEquipment.cs" />
     <Compile Include="Models\DataStore.cs" />
     <Compile Include="Models\DTO\Station.cs" />
@@ -288,6 +295,7 @@
     <Compile Include="Models\Views\LevelMeasurementsCarViewModel.cs" />
     <Compile Include="Models\Views\MeasStationsSignalizationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
+    <Compile Include="Models\Views\MeasTaskShortViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
     <Compile Include="Models\Views\OnlienrMeasParametersViewModel.cs" />
@@ -305,6 +313,7 @@
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\Mappers.cs" />
     <Compile Include="Models\WcfDataApadters\MeasStationsSignalizationDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\MeasTaskShortDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasurementResultsDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
@@ -339,6 +348,7 @@
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
+    <Compile Include="ViewModels\MeasTaskListViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
     <Compile Include="ViewModels\OnlineMeasurementViewModel.cs" />
@@ -395,6 +405,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasStationsSignalizationForm.resx">
       <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasTaskListForm.resx">
+      <DependentUpon>MeasTaskListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>

@@ -71,7 +71,7 @@
               </Style>
             </Map.Style>-->
           </maps:Map>
-          <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Content="AssociatedCommand" Command="{Binding AssociatedCommand}" Width="120" Height="40"/>
+          <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Content="{x:Static res:Resources.AssociatedCommand}" Command="{Binding AssociatedCommand}" Width="120" Height="40"/>
         </Grid>
     </Grid>
     </DockPanel>

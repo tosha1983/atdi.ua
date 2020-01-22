@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
+using XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Models.WcfDataApadters;
@@ -24,6 +25,10 @@ using System.IO;
 using System.ComponentModel;
 using INP = System.Windows.Input;
 using Atdi.DataModels.Sdrns.Device.OnlineMeasurement;
+using System.Net.Http;
+using System.Configuration;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -291,7 +296,7 @@ namespace XICSM.ICSControlClient.ViewModels
             if (this.CurrentMeasTask.MeasFreqParamStep.HasValue)
             {
                 if (this.CurrentMeasTask.MeasFreqParamRgL.HasValue)
-                    param.FreqStart_MHz = this.CurrentMeasTask.MeasFreqParamRgL - this.CurrentMeasTask.MeasFreqParamStep/2000;
+                    param.FreqStart_MHz = this.CurrentMeasTask.MeasFreqParamRgL - this.CurrentMeasTask.MeasFreqParamStep / 2000;
 
                 if (this.CurrentMeasTask.MeasFreqParamRgU.HasValue)
                     param.FreqStop_MHz = this.CurrentMeasTask.MeasFreqParamRgU + this.CurrentMeasTask.MeasFreqParamStep / 2000;
@@ -321,22 +326,22 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
-                //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
+                    //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
+                    //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
 
-                //if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
-                //    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
-                //if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
-                //    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
+                    //if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
+                    //    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+                    //if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
+                    //    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
-                //if (!this.CurrentMeasTask.ValidateStateModel())
-                //    return;
+                    //if (!this.CurrentMeasTask.ValidateStateModel())
+                    //    return;
 
-                //if (dateBg > dateEd)
-                //{
-                //    MessageBox.Show("Date Stop should be great of the Date Start!");
-                //    return;
-                //}
+                    //if (dateBg > dateEd)
+                    //{
+                    //    MessageBox.Show("Date Stop should be great of the Date Start!");
+                    //    return;
+                    //}
 
                 if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
@@ -512,8 +517,11 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
 
                 }
-                List<SDR.ReferenceSituation> listRef = new List<SDR.ReferenceSituation>();
 
+                if (!GetOthersMeastask())
+                    return;
+
+                List<SDR.ReferenceSituation> listRef = new List<SDR.ReferenceSituation>();
                 if (this._currentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling)
                 {
                     string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
@@ -594,7 +602,6 @@ namespace XICSM.ICSControlClient.ViewModels
                         }
                     }
                 }
-
 
                 List<SDR.MeasSensor> stationsList = new List<SDR.MeasSensor>();
                 foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
@@ -728,6 +735,86 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 MessageBox.Show(e.ToString());
             }
+        }
+        private bool GetOthersMeastask()
+        {
+            return true;
+            //var taskData = new List<MeasTask>();
+            //using (var wc = new HttpClient())
+            //{
+            //    var appSettings = ConfigurationManager.AppSettings;
+            //    string endpointUrls = appSettings["SdrnServerRestEndpoint"];
+
+            //    if (string.IsNullOrEmpty(endpointUrls))
+            //    {
+            //        MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
+            //        return false;
+            //    }
+
+            //    this._measType;
+            //    this._currentMeasTask.MeasTimeParamListPerStart;
+            //    this._currentMeasTask.MeasTimeParamListTimeStart;
+            //    this._currentMeasTask.MeasTimeParamListPerStop;
+            //    this._currentMeasTask.MeasTimeParamListTimeStop;
+            //    this._currentMeasTask.MeasFreqParamRgL;
+            //    this._currentMeasTask.MeasFreqParamRgU;
+            //    foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
+            //    {
+            //        shortSensor.Id;
+            //    }
+
+            //    var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/ResLevels?select=RES_MEAS.Id,FreqMeas,OccupancySpect,VMinLvl,VMMaxLvl,RES_MEAS.StartTime,RES_MEAS.StopTime,RES_MEAS.ScansNumber&filter=(RES_MEAS.Id in ({string.Join(",", ids)}))&orderBy=RES_MEAS.Id").Result;
+            //    if (response.StatusCode == HttpStatusCode.OK)
+            //    {
+
+
+
+
+            //        var dicFields = new Dictionary<string, int>();
+            //        var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+            //        foreach (var field in data.Fields)
+            //            dicFields[field.Path] = field.Index;
+
+            //        foreach (object[] record in data.Records)
+            //        {
+            //            var RESULT_ID = Convert.ToInt64(record[dicFields["RES_MEAS.Id"]]);
+            //            var FREQ_MEAS = (double)record[dicFields["FreqMeas"]];
+            //            var OCCUPANCY_SPECT = (double)record[dicFields["OccupancySpect"]];
+            //            var VMIN_LVL = (double)record[dicFields["VMinLvl"]];
+            //            var VMAX_LVL = (double)record[dicFields["VMMaxLvl"]];
+            //            var START_TIME = (DateTime)record[dicFields["RES_MEAS.StartTime"]];
+            //            var STOP_TIME = (DateTime)record[dicFields["RES_MEAS.StopTime"]];
+            //            var SCANS_NUMBER = Convert.ToInt32(record[dicFields["RES_MEAS.ScansNumber"]]);
+            //        }
+
+            //        MeasTask
+            //        MeasFreqParam
+            //        SubTaskSensor
+
+            //    }
+
+
+
+
+
+            //}
+
+
+
+            //if (taskData.Count > 0)
+            //    {
+            //        var dlgForm = new FM.MeasTaskListForm(taskData.ToArray());
+            //        dlgForm.ShowDialog();
+            //        dlgForm.Dispose();
+
+            //        if (!dlgForm.IsPresOK)
+            //            return false;
+            //        else
+            //            return true;
+            //    }
+            //    else
+            //        return true;
         }
         private bool GetRefSignalBySensor(ref SDR.ReferenceSignal refSig, SDR.SensorLocation sensorLocation, double d, double a)
         {

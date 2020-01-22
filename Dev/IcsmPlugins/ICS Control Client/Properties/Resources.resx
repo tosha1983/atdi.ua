@@ -729,4 +729,31 @@
   <data name="ZoomUndo" xml:space="preserve">
     <value>Zoom undo</value>
   </data>
+  <data name="CancelCommand" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ChangeTimeCommand" xml:space="preserve">
+    <value>Change time</value>
+  </data>
+  <data name="ContinueCommand" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="FqMax" xml:space="preserve">
+    <value>Freq Max</value>
+  </data>
+  <data name="FqMin" xml:space="preserve">
+    <value>Freq Min</value>
+  </data>
+  <data name="MeasTaskId" xml:space="preserve">
+    <value>MeasTaskId</value>
+  </data>
+  <data name="SensorIds" xml:space="preserve">
+    <value>Sensor Ids</value>
+  </data>
+  <data name="TaskName" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="TaskType" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
 </root>
