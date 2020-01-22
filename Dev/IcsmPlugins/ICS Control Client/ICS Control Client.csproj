@@ -95,11 +95,24 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\Base\DataGridFilters.cs" />
     <Compile Include="Forms\GraphicForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\GraphicForm.Designer.cs">
       <DependentUpon>GraphicForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Base\filterBool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\filterBool.Designer.cs">
+      <DependentUpon>filterBool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Base\filterNumeric.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\filterNumeric.Designer.cs">
+      <DependentUpon>filterNumeric.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MeasResultSignalizationViewForm.cs">
       <SubType>Form</SubType>
@@ -155,13 +168,13 @@
     <Compile Include="Forms\SignalizationSysInfoForm.Designer.cs">
       <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WaitForm.cs">
+    <Compile Include="Forms\Base\WaitForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\WaitForm.Designer.cs">
+    <Compile Include="Forms\Base\WaitForm.Designer.cs">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WpfFormBase.cs">
+    <Compile Include="Forms\Base\WpfFormBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
@@ -365,6 +378,12 @@
     <EmbeddedResource Include="Forms\GraphicForm.resx">
       <DependentUpon>GraphicForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\filterBool.resx">
+      <DependentUpon>filterBool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\filterNumeric.resx">
+      <DependentUpon>filterNumeric.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -392,7 +411,7 @@
     <EmbeddedResource Include="Forms\SignalizationSysInfoForm.resx">
       <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\WaitForm.resx">
+    <EmbeddedResource Include="Forms\Base\WaitForm.resx">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">

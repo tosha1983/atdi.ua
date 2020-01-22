@@ -52,19 +52,13 @@ namespace XICSM.ICSControlClient.Environment.Wpf
             this._data = dataRows.ToArray();
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
-
-        //public void Delete(TData[] rows)
-        //{
-        //    this._source.ToArray().De
-        //}
-
         public void ClearFilter()
         {
             this.Source = this._source;
         }
         public int Count()
         {
-            return this._data.Length;// .Count();
+            return this._data.Length;
         }
         public TSource[] Source
         {
@@ -72,7 +66,6 @@ namespace XICSM.ICSControlClient.Environment.Wpf
             {
                 return this._source;
             }
-
             set
             {
                 this._currentIndex = -1;
@@ -85,7 +78,6 @@ namespace XICSM.ICSControlClient.Environment.Wpf
                 {
                     this._data = new TData[] { };
                 }
-
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }

@@ -274,7 +274,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadShortSensors()
         {
-            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors(); //.Where(c => c.Administration == "ADM").ToArray();
+            var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
             if (sdrSensors.Length > 0)
             {
