@@ -355,7 +355,7 @@ namespace Atdi.Platform.Logging.EventsConsumers
             {
                 this.WriteLine($" -- Stack begin --", propColor);
                 this.WriteLine(exception.StackTrace.Replace(Environment.NewLine, Environment.NewLine + _offset));
-                this.WriteLine(" -- Satck end --", propColor);
+                this.WriteLine(" -- Stack end --", propColor);
             }
 
             if (exception.Inner != null)

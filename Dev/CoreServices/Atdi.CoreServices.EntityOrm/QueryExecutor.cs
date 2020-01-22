@@ -56,28 +56,28 @@ namespace Atdi.CoreServices.EntityOrm
     internal sealed class QueryExecutor : LoggedObject, IQueryExecutor
     {
         private readonly IDataEngine _dataEngine;
-        private readonly IEngineExecuter _engineExecuter;
+        private readonly IEngineExecuter _engineExecutor;
         private readonly PatternBuilderFactory _builderFactory;
 
-        public QueryExecutor(IDataEngine dataEngine, IEngineExecuter engineExecuter, PatternBuilderFactory builderFactory, ILogger logger) : base(logger) 
+        public QueryExecutor(IDataEngine dataEngine, IEngineExecuter engineExecutor, PatternBuilderFactory builderFactory, ILogger logger) : base(logger) 
         {
             this._dataEngine = dataEngine;
-            this._engineExecuter = engineExecuter;
+            this._engineExecutor = engineExecutor;
             this._builderFactory = builderFactory;
 
-            logger.Debug(Contexts.EntityOrm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
+            logger.Verbouse(Contexts.EntityOrm, Categories.CreatingInstance, Events.CreatedInstanceOfQueryExecutor);
         }
 
         public int Execute(IQueryStatement statement)
         {
-            if (_engineExecuter != null)
+            if (_engineExecutor != null)
             {
-                return Execute(statement, _engineExecuter);
+                return Execute(statement, _engineExecutor);
             }
 
-            using (var engineExecuter = this._dataEngine.CreateExecuter())
+            using (var engineExecutor = this._dataEngine.CreateExecuter())
             {
-                return Execute(statement, engineExecuter);
+                return Execute(statement, engineExecutor);
             }
         }
 
@@ -94,9 +94,9 @@ namespace Atdi.CoreServices.EntityOrm
 
         public object Execute(IQueryStatement statement, Type resultType)
         {
-            if (_engineExecuter != null)
+            if (_engineExecutor != null)
             {
-                return Execute(statement, resultType, _engineExecuter);
+                return Execute(statement, resultType, _engineExecutor);
             }
 
             using (var engineExecuter = this._dataEngine.CreateExecuter())
@@ -119,9 +119,9 @@ namespace Atdi.CoreServices.EntityOrm
 
         public TResult Execute<TResult>(IQueryStatement statement)
         {
-            if (_engineExecuter != null)
+            if (_engineExecutor != null)
             {
-                return Execute<TResult>(statement, _engineExecuter);
+                return Execute<TResult>(statement, _engineExecutor);
             }
 
             using (var engineExecuter = this._dataEngine.CreateExecuter())
@@ -143,9 +143,9 @@ namespace Atdi.CoreServices.EntityOrm
 
         public TResult ExecuteAndFetch<TResult>(IQueryStatement statement, Func<IDataReader, TResult> handler)
         {
-            if (_engineExecuter != null)
+            if (_engineExecutor != null)
             {
-                return ExecuteAndFetch(statement, handler, _engineExecuter);
+                return ExecuteAndFetch(statement, handler, _engineExecutor);
             }
 
             using (var engineExecuter = this._dataEngine.CreateExecuter())
@@ -168,9 +168,9 @@ namespace Atdi.CoreServices.EntityOrm
 
         public TResult ExecuteAndFetch<TModel, TResult>(IQueryStatement<TModel> statement, Func<IDataReader<TModel>, TResult> handler)
         {
-            if (_engineExecuter != null)
+            if (_engineExecutor != null)
             {
-                return ExecuteAndFetch(statement, handler, _engineExecuter);
+                return ExecuteAndFetch(statement, handler, _engineExecutor);
             }
 
             using (var engineExecuter = this._dataEngine.CreateExecuter())

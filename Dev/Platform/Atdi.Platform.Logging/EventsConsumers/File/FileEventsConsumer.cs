@@ -26,43 +26,46 @@ namespace Atdi.Platform.Logging.EventsConsumers
             if (events == null || events.Length == 0)
                 return;
 
-            //lock (this._locker)
-            //{
-                if (this._config.HasFilters)
-                {
-                    events = events.Where(@event => _config.Check(@event)).ToArray();
-                }
-                var folderName = string.Empty; // 2018_01_31
-                var fileName = string.Empty; // 14
-                var buffer = new StringBuilder();
+			var hasFilters = this._config.HasFilters;
 
-                var lastTime = events[0].Time;
-                for (int i = 0; i < events.Length; i++)
-                {
-                    var @event = events[i];
+            var buffer = new StringBuilder(events.Length * 100);
 
-                    var eventTime = @event.Time;
-                    if (lastTime.Year != eventTime.Year 
-                        || lastTime.Month != eventTime.Month 
-                        || lastTime.Day != eventTime.Day 
-                        || lastTime.Hour != eventTime.Hour )
+            var lastTime = events[0].Time;
+            for (var i = 0; i < events.Length; i++)
+            {
+                var @event = events[i];
+
+                if (hasFilters)
+                {
+                    if (!_config.Check(@event))
                     {
-                        if (buffer.Length > 0)
-                        {
-                            SaveEventsToFile(buffer, lastTime);
-                            buffer = new StringBuilder();
-                        }
+	                    continue;
                     }
-
-                    lastTime = eventTime;
-                    buffer.AppendLine(this._formatter.Format(@event));
                 }
 
-                if (buffer.Length > 0)
+				var eventTime = @event.Time;
+                if (lastTime.Year != eventTime.Year 
+                    || lastTime.Month != eventTime.Month 
+                    || lastTime.Day != eventTime.Day 
+                    || lastTime.Hour != eventTime.Hour )
                 {
-                    SaveEventsToFile(buffer, lastTime);
+                    if (buffer.Length > 0)
+                    {
+                        SaveEventsToFile(buffer, lastTime);
+                        buffer = new StringBuilder();
+                    }
                 }
-            //}
+
+                lastTime = eventTime;
+                buffer.AppendLine(this._formatter.Format(@event));
+            }
+
+            if (buffer.Length > 0)
+            {
+                SaveEventsToFile(buffer, lastTime);
+            }
+
+			//System.Diagnostics.Debug.WriteLine($"FileEventsConsumer: {events.Length}" );
         }
 
         private void SaveEventsToFile(StringBuilder buffer, DateTime time)

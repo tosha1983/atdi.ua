@@ -30,9 +30,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             pattern.DefResult<EngineExecutionReaderResult<System.Data.IDataReader>>()
                 .Handler = (reader) => handler(reader);
 
-            using (var executer = dataEngine.CreateExecuter())
+            using (var executor = dataEngine.CreateExecuter())
             {
-                executer.Execute(pattern);
+                executor.Execute(pattern);
             }
         }
 
@@ -45,9 +45,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             pattern.DefResult<EngineExecutionReaderResult<IEngineDataReader>>()
                 .Handler = (reader) => handler(reader);
 
-            using (var executer = dataEngine.CreateExecuter())
+            using (var executor = dataEngine.CreateExecuter())
             {
-                executer.Execute(pattern);
+                executor.Execute(pattern);
             }
         }
 
@@ -59,9 +59,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             };
             pattern.DefResult<EngineExecutionRowsAffectedResult>();
 
-            using (var executer = dataEngine.CreateExecuter())
+            using (var executor = dataEngine.CreateExecuter())
             {
-                executer.Execute(pattern);
+                executor.Execute(pattern);
             }
 
             return pattern.AsResult<EngineExecutionRowsAffectedResult>().RowsAffected;
@@ -75,9 +75,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             };
             pattern.DefResult<EngineExecutionScalarResult<object>>();
 
-            using (var executer = dataEngine.CreateExecuter())
+            using (var executor = dataEngine.CreateExecuter())
             {
-                executer.Execute(pattern);
+                executor.Execute(pattern);
             }
 
             return pattern.AsResult<EngineExecutionScalarResult<object>>().Value;
