@@ -118,7 +118,7 @@ namespace XICSM.ICSControlClient.ViewModels
         #endregion
         private void SetDefaultVaues()
         {
-            if (_allotId.HasValue && (_measType == SDR.MeasurementType.Signaling || _measType == SDR.MeasurementType.SpectrumOccupation)) 
+            if (_allotId.HasValue && (_measType == SDR.MeasurementType.Signaling || _measType == SDR.MeasurementType.SpectrumOccupation))
             {
                 IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadOnly);
                 rsAllot.SetWhere("ID", IMRecordset.Operation.Eq, _allotId.Value);
@@ -326,22 +326,22 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                    //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
-                    //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
+                //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
+                //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
 
-                    //if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
-                    //    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
-                    //if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
-                    //    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
+                //if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
+                //    dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+                //if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
+                //    dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
-                    //if (!this.CurrentMeasTask.ValidateStateModel())
-                    //    return;
+                //if (!this.CurrentMeasTask.ValidateStateModel())
+                //    return;
 
-                    //if (dateBg > dateEd)
-                    //{
-                    //    MessageBox.Show("Date Stop should be great of the Date Start!");
-                    //    return;
-                    //}
+                //if (dateBg > dateEd)
+                //{
+                //    MessageBox.Show("Date Stop should be great of the Date Start!");
+                //    return;
+                //}
 
                 if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
@@ -446,7 +446,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         return;
                     }
                     else if (val > 10000)
-                    { 
+                    {
                         if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                             return;
                     }
@@ -651,7 +651,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         ReferenceLevel = this._currentMeasTask.IsAutoMeasDtParamReferenceLevel == true ? 1000000000 : this._currentMeasTask.MeasDtParamReferenceLevel,
                         IfAttenuation = this._currentMeasTask.MeasDtParamIfAttenuation,
                         NumberTotalScan = this._currentMeasTask.MeasOtherNCount,
-                        
+
                     },
                     MeasTimeParamList = new SDR.MeasTimeParamList()
                     {
@@ -738,83 +738,151 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private bool GetOthersMeastask()
         {
-            return true;
-            //var taskData = new List<MeasTask>();
-            //using (var wc = new HttpClient())
-            //{
-            //    var appSettings = ConfigurationManager.AppSettings;
-            //    string endpointUrls = appSettings["SdrnServerRestEndpoint"];
+            var prevTaskData = new List<MeasTask>();
+            var taskData = new List<MeasTask>();
 
-            //    if (string.IsNullOrEmpty(endpointUrls))
-            //    {
-            //        MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
-            //        return false;
-            //    }
+            var appSettings = ConfigurationManager.AppSettings;
+            string endpointUrls = appSettings["SdrnServerRestEndpoint"];
 
-            //    this._measType;
-            //    this._currentMeasTask.MeasTimeParamListPerStart;
-            //    this._currentMeasTask.MeasTimeParamListTimeStart;
-            //    this._currentMeasTask.MeasTimeParamListPerStop;
-            //    this._currentMeasTask.MeasTimeParamListTimeStop;
-            //    this._currentMeasTask.MeasFreqParamRgL;
-            //    this._currentMeasTask.MeasFreqParamRgU;
-            //    foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
-            //    {
-            //        shortSensor.Id;
-            //    }
+            if (string.IsNullOrEmpty(endpointUrls))
+            {
+                MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
+                return false;
+            }
 
-            //    var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/ResLevels?select=RES_MEAS.Id,FreqMeas,OccupancySpect,VMinLvl,VMMaxLvl,RES_MEAS.StartTime,RES_MEAS.StopTime,RES_MEAS.ScansNumber&filter=(RES_MEAS.Id in ({string.Join(",", ids)}))&orderBy=RES_MEAS.Id").Result;
-            //    if (response.StatusCode == HttpStatusCode.OK)
-            //    {
+            var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
+            var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
+            if (this._currentMeasTask.MeasTimeParamListTimeStart.HasValue)
+                dateBg = dateBg.AddHours(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStart.Value.Minute);
+            if (this._currentMeasTask.MeasTimeParamListTimeStop.HasValue)
+                dateEd = dateEd.AddHours(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Hour).AddMinutes(this._currentMeasTask.MeasTimeParamListTimeStop.Value.Minute);
 
+            using (var wc = new HttpClient())
+            {
+                var sensorsIds = new List<long>();
+                foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
+                    sensorsIds.Add(shortSensor.Id);
 
+                string fields = "SUBTASK.MEAS_TASK.Id,SUBTASK.MEAS_TASK.Type,SUBTASK.MEAS_TASK.Name,SUBTASK.MEAS_TASK.PerStart,SUBTASK.MEAS_TASK.TimeStart,SUBTASK.MEAS_TASK.PerStop,SUBTASK.MEAS_TASK.TimeStop,SUBTASK.MEAS_TASK.DateCreated,SUBTASK.MEAS_TASK.CreatedBy,SENSOR.Id";
+                string filter = $"((SENSOR.Id in ({string.Join(",", sensorsIds)}))and(SUBTASK.MEAS_TASK.Type eq '{this._measType.ToString()}')and(SUBTASK.MEAS_TASK.PerStop Ge {this._currentMeasTask.MeasTimeParamListPerStart.Date.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")}))";
 
+                var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/SubTaskSensor?select={fields}&filter={filter}&orderBy=SUBTASK.MEAS_TASK.Id").Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var dicFields = new Dictionary<string, int>();
+                    var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
 
-            //        var dicFields = new Dictionary<string, int>();
-            //        var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+                    foreach (var field in data.Fields)
+                        dicFields[field.Path] = field.Index;
 
-            //        foreach (var field in data.Fields)
-            //            dicFields[field.Path] = field.Index;
+                    long lastMeasTaskId = 0; 
 
-            //        foreach (object[] record in data.Records)
-            //        {
-            //            var RESULT_ID = Convert.ToInt64(record[dicFields["RES_MEAS.Id"]]);
-            //            var FREQ_MEAS = (double)record[dicFields["FreqMeas"]];
-            //            var OCCUPANCY_SPECT = (double)record[dicFields["OccupancySpect"]];
-            //            var VMIN_LVL = (double)record[dicFields["VMinLvl"]];
-            //            var VMAX_LVL = (double)record[dicFields["VMMaxLvl"]];
-            //            var START_TIME = (DateTime)record[dicFields["RES_MEAS.StartTime"]];
-            //            var STOP_TIME = (DateTime)record[dicFields["RES_MEAS.StopTime"]];
-            //            var SCANS_NUMBER = Convert.ToInt32(record[dicFields["RES_MEAS.ScansNumber"]]);
-            //        }
+                    foreach (object[] record in data.Records)
+                    {
+                        long measTaskId = Convert.ToInt64(record[dicFields["SUBTASK.MEAS_TASK.Id"]]);
+                        var measTask = new MeasTask();
+                        var sensors = new List<long>();
 
-            //        MeasTask
-            //        MeasFreqParam
-            //        SubTaskSensor
+                        if (lastMeasTaskId != measTaskId)
+                        {
+                            lastMeasTaskId = measTaskId;
+                            sensors = new List<long>();
 
-            //    }
+                            measTask = new MeasTask();
+                            measTask.MeasTaskId = measTaskId;
+                            measTask.TaskType = (string)record[dicFields["SUBTASK.MEAS_TASK.Type"]];
+                            measTask.TaskName = (string)record[dicFields["SUBTASK.MEAS_TASK.Name"]];
 
+                            measTask.DateStart = (DateTime)record[dicFields["SUBTASK.MEAS_TASK.PerStart"]];
+                            var timeStart = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.TimeStart"]];
+                            if (timeStart.HasValue)
+                                measTask.DateStart.AddHours(timeStart.Value.Hour).AddMinutes(timeStart.Value.Minute);
 
+                            measTask.DateStop = (DateTime)record[dicFields["SUBTASK.MEAS_TASK.PerStop"]];
+                            var timeStop = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.TimeStop"]];
+                            if (timeStop.HasValue)
+                                measTask.DateStop.AddHours(timeStop.Value.Hour).AddMinutes(timeStop.Value.Minute);
 
+                            measTask.DateCreated = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.DateCreated"]];
+                            measTask.CreatedBy = (string)record[dicFields["SUBTASK.MEAS_TASK.CreatedBy"]];
 
+                            prevTaskData.Add(measTask);
+                        }
+                        sensors.Add(Convert.ToInt64(record[dicFields["SENSOR.Id"]]));
+                        measTask.SensorIds = string.Join(",", sensors);
+                    }
+                }
+            }
 
-            //}
+            foreach (var task in prevTaskData)
+            {
+                if (task.DateStop > dateBg && task.DateStart < dateEd)
+                {
+                    if (this._currentMeasTask.MeasFreqParamRgL.HasValue && this._currentMeasTask.MeasFreqParamRgU.HasValue)
+                    {
+                        using (var wc = new HttpClient())
+                        {
+                            string fields = "Rgl,Rgu";
+                            string filter = $"(MEAS_TASK.Id Eq {task.MeasTaskId})";
 
+                            double? freqMin = null;
+                            double? freqMax = null;
 
+                            var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/MeasFreqParam?select={fields}&filter={filter}").Result;
+                            if (response.StatusCode == HttpStatusCode.OK)
+                            {
+                                var dicFields = new Dictionary<string, int>();
+                                var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
 
-            //if (taskData.Count > 0)
-            //    {
-            //        var dlgForm = new FM.MeasTaskListForm(taskData.ToArray());
-            //        dlgForm.ShowDialog();
-            //        dlgForm.Dispose();
+                                foreach (var field in data.Fields)
+                                    dicFields[field.Path] = field.Index;
 
-            //        if (!dlgForm.IsPresOK)
-            //            return false;
-            //        else
-            //            return true;
-            //    }
-            //    else
-            //        return true;
+                                foreach (object[] record in data.Records)
+                                {
+                                    var fqMin = (double?)record[dicFields["Rgl"]];
+                                    var fqMax = (double?)record[dicFields["Rgu"]];
+
+                                    if (fqMin.HasValue && (!freqMin.HasValue || freqMin.Value > fqMin))
+                                        freqMin = fqMin;
+
+                                    if (fqMax.HasValue && (!freqMax.HasValue || freqMax.Value < fqMax))
+                                        freqMax = fqMax;
+                                }
+                            }
+                            if (freqMin.HasValue && freqMax.HasValue)
+                            {
+                                var df_min = Math.Min((this._currentMeasTask.MeasFreqParamRgU.Value - this._currentMeasTask.MeasFreqParamRgL.Value), (freqMax.Value - freqMin.Value));
+                                var intrseption = Math.Min(this._currentMeasTask.MeasFreqParamRgU.Value, freqMax.Value) - Math.Max(this._currentMeasTask.MeasFreqParamRgL.Value, freqMin.Value);
+
+                                if (intrseption > 0)
+                                {
+                                    var p_calc = 100 * intrseption / df_min;
+                                    if (p_calc >= 10)
+                                    {
+                                        task.FqMin = freqMin;
+                                        task.FqMax = freqMax;
+                                        taskData.Add(task);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (taskData.Count > 0)
+            {
+                var dlgForm = new FM.MeasTaskListForm(taskData.ToArray());
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+
+                if (!dlgForm.IsPresOK)
+                    return false;
+                else
+                    return true;
+            }
+            else
+                return true;
         }
         private bool GetRefSignalBySensor(ref SDR.ReferenceSignal refSig, SDR.SensorLocation sensorLocation, double d, double a)
         {
