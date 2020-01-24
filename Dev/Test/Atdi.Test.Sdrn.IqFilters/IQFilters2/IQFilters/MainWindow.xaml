@@ -1,0 +1,42 @@
+﻿<Window x:Class="IQFilters.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IQFilters"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <local:DrawIQ x:Name="IQDraw"/>
+        <StackPanel Grid.Column="1" >
+            <Button Content="Calc" Click="Calc_Click" VerticalAlignment="Top" Width="100" Height="30"/>
+            <ComboBox Name="FilterType" Loaded="FilterType_Loaded" SelectionChanged="FilterType_SelectionChanged" />
+            <DockPanel>
+                <TextBlock Text="F1 Hz"/>
+                <TextBox Name="F1" Text="271000"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="F2 Hz"/>
+                <TextBox Name="F2" Text="0"/>
+            </DockPanel>
+            
+            <DockPanel>
+                <TextBlock Text="TrBand Hz"/>
+                <TextBox Name="Band" Text="1355"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="ATT dB"/>
+                <TextBox Name="ATT" Text="30"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="Ripple dB"/>
+                <TextBox Name="Ripple" Text="0.2"/>
+            </DockPanel>
+        </StackPanel>
+        
+    </Grid>
+</Window>

@@ -95,11 +95,24 @@
     <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\Base\DataGridFilters.cs" />
     <Compile Include="Forms\GraphicForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\GraphicForm.Designer.cs">
       <DependentUpon>GraphicForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Base\filterBool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\filterBool.Designer.cs">
+      <DependentUpon>filterBool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Base\filterNumeric.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\filterNumeric.Designer.cs">
+      <DependentUpon>filterNumeric.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MeasResultSignalizationViewForm.cs">
       <SubType>Form</SubType>
@@ -124,6 +137,12 @@
     </Compile>
     <Compile Include="Forms\MeasStationsSignalizationForm.Designer.cs">
       <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MeasTaskListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MeasTaskListForm.Designer.cs">
+      <DependentUpon>MeasTaskListForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MeasTaskSignalizationForm.cs">
       <SubType>Form</SubType>
@@ -155,13 +174,13 @@
     <Compile Include="Forms\SignalizationSysInfoForm.Designer.cs">
       <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WaitForm.cs">
+    <Compile Include="Forms\Base\WaitForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\WaitForm.Designer.cs">
+    <Compile Include="Forms\Base\WaitForm.Designer.cs">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WpfFormBase.cs">
+    <Compile Include="Forms\Base\WpfFormBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
@@ -241,6 +260,7 @@
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
     <Compile Include="Models\Common\MeasStationsSignalization.cs" />
+    <Compile Include="Models\Common\MeasTask.cs" />
     <Compile Include="Models\Common\StationsEquipment.cs" />
     <Compile Include="Models\DataStore.cs" />
     <Compile Include="Models\DTO\Station.cs" />
@@ -275,6 +295,7 @@
     <Compile Include="Models\Views\LevelMeasurementsCarViewModel.cs" />
     <Compile Include="Models\Views\MeasStationsSignalizationViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskDetailStationViewModel.cs" />
+    <Compile Include="Models\Views\MeasTaskShortViewModel.cs" />
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
     <Compile Include="Models\Views\OnlienrMeasParametersViewModel.cs" />
@@ -292,6 +313,7 @@
     <Compile Include="Models\WcfDataApadters\LevelMeasurementsCarDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\Mappers.cs" />
     <Compile Include="Models\WcfDataApadters\MeasStationsSignalizationDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\MeasTaskShortDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasurementResultsDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
@@ -326,6 +348,7 @@
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
+    <Compile Include="ViewModels\MeasTaskListViewModel.cs" />
     <Compile Include="ViewModels\MeasTaskSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasResultsViewModel.cs" />
     <Compile Include="ViewModels\OnlineMeasurementViewModel.cs" />
@@ -365,6 +388,12 @@
     <EmbeddedResource Include="Forms\GraphicForm.resx">
       <DependentUpon>GraphicForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\filterBool.resx">
+      <DependentUpon>filterBool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\filterNumeric.resx">
+      <DependentUpon>filterNumeric.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -376,6 +405,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasStationsSignalizationForm.resx">
       <DependentUpon>MeasStationsSignalizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MeasTaskListForm.resx">
+      <DependentUpon>MeasTaskListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasTaskSignalizationForm.resx">
       <DependentUpon>MeasTaskSignalizationForm.cs</DependentUpon>
@@ -392,7 +424,7 @@
     <EmbeddedResource Include="Forms\SignalizationSysInfoForm.resx">
       <DependentUpon>SignalizationSysInfoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\WaitForm.resx">
+    <EmbeddedResource Include="Forms\Base\WaitForm.resx">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Handlers\Allotments\Forms\CalcSODlg1Form.resx">
@@ -423,9 +455,11 @@
       <DependentUpon>StationListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="WpfControls\Charts\LineChart.xaml">
@@ -485,6 +519,7 @@
 copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICS Manager UCRF"
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
-</PostBuildEvent>
+copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager UCRF\ru-RU\"
+copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager UCRF\uk-UA\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -100,7 +100,7 @@ namespace Atdi.Platform.Logging
                     if (this._events.TryTake(out var entry, 1000))
                     {
                         tookEntries.Add(entry);
-                        cancel = tookEntries.Count >= 1000; // _taskCapacity;
+                        cancel = tookEntries.Count >= 10000; // _taskCapacity;
                     }
                     else
                     {

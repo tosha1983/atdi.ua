@@ -49,17 +49,17 @@ namespace Atdi.AppUnits.Sdrn.Server
         {
             if (string.IsNullOrEmpty(licenseFileName))
             {
-                throw new ArgumentException("message", nameof(licenseFileName));
+                throw new ArgumentNullException(nameof(licenseFileName));
             }
 
             if (string.IsNullOrEmpty(ownerId))
             {
-                throw new ArgumentException("message", nameof(ownerId));
+                throw new ArgumentNullException(nameof(ownerId));
             }
 
             if (string.IsNullOrEmpty(productKey))
             {
-                throw new ArgumentException("message", nameof(productKey));
+                throw new ArgumentNullException(nameof(productKey));
             }
 
             try

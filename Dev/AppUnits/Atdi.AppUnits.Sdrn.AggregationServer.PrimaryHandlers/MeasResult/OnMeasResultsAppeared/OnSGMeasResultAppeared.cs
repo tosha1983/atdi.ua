@@ -61,7 +61,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             }
 
             var builderResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().From();
-            builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id, c => c.Status, c => c.TimeMeas);
+            builderResMeas.Select(c => c.SUBTASK_SENSOR.Id, c => c.Status, c => c.TimeMeas);
             builderResMeas.Where(c => c.Id, ConditionOperator.Equal, measResultId);
             
             this._queryExecutor.Fetch(builderResMeas, readerResMeas =>
@@ -82,7 +82,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                             var builderUpdateIResMeas = this._dataLayer.GetBuilder<MD.IResMeasSignaling>().Update();
                             builderUpdateIResMeas.SetValue(c => c.IsSend, true);
                             builderUpdateIResMeas.Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.Between, timeMeas.Value.Date, new DateTime(timeMeas.Value.Year, timeMeas.Value.Month, timeMeas.Value.Day, 23, 59, 59));
-                            builderUpdateIResMeas.Where(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Id));
+                            builderUpdateIResMeas.Where(c => c.RES_MEAS.SUBTASK_SENSOR.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.SUBTASK_SENSOR.Id));
                             scope.Executor.Execute(builderUpdateIResMeas);
                         }
                     }

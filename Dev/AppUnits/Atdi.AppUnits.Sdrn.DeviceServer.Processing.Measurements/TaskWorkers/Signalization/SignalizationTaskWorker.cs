@@ -56,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
 
-                _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+                _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -94,6 +94,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                         continue;
                     }
+
+                    _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
 
                     ////////////////////////////////////////////////////////////////////////////////////////////////////
                     // 

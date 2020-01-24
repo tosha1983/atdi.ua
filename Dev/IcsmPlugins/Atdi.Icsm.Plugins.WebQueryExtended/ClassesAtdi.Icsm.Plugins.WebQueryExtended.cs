@@ -323,4 +323,102 @@ namespace OrmCs
 			public DatPtr z_count_appl { get { return new DatPtr(this,6); } }
 	}
 
+	public class YXvWebLicenceChannel : Yyy
+	{
+		public YXvWebLicenceChannel() { construct("XV_WEB_LICENCE_CHANNEL",null); }
+		public YXvWebLicenceChannel(OrmLinker lk) { construct("XV_WEB_LICENCE_CHANNEL",lk); }
+		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
+			public DatPtr z_id { get { return new DatPtr(this,0); } }
+		public YLicence m_WebQuery_Licence_Channel { get { return (YLicence)getYyy(1); }  set { setYyy(1,value); } }
+		public string m_standard { get { return getString(2); } set { setString(2,10,value); } }
+			public DatPtr z_standard { get { return new DatPtr(this,2); } }
+		public string m_radiotech_name { get { return getString(3); } set { setString(3,255,value); } }
+			public DatPtr z_radiotech_name { get { return new DatPtr(this,3); } }
+		public int m_owner_id { get { return getInt(4); } set { setInt(4,value); } }
+			public DatPtr z_owner_id { get { return new DatPtr(this,4); } }
+		public string m_edrpou { get { return getString(5); } set { setString(5,50,value); } }
+			public DatPtr z_edrpou { get { return new DatPtr(this,5); } }
+		public string m_number_lic { get { return getString(6); } set { setString(6,50,value); } }
+			public DatPtr z_number_lic { get { return new DatPtr(this,6); } }
+		public string m_status_lic { get { return getString(7); } set { setString(7,1,value); } }
+			public DatPtr z_status_lic { get { return new DatPtr(this,7); } }
+		public string m_issued_by { get { return getString(8); } set { setString(8,7,value); } }
+			public DatPtr z_issued_by { get { return new DatPtr(this,8); } }
+		public DateTime m_singing_date { get { return getDateTime(9); } set { setDateTime(9,value); } }
+			public DatPtr z_singing_date { get { return new DatPtr(this,9); } }
+		public DateTime m_start_date { get { return getDateTime(10); } set { setDateTime(10,value); } }
+			public DatPtr z_start_date { get { return new DatPtr(this,10); } }
+		public DateTime m_stop_date { get { return getDateTime(11); } set { setDateTime(11,value); } }
+			public DatPtr z_stop_date { get { return new DatPtr(this,11); } }
+		public DateTime m_end_date { get { return getDateTime(12); } set { setDateTime(12,value); } }
+			public DatPtr z_end_date { get { return new DatPtr(this,12); } }
+		public string m_plan_name { get { return getString(13); } set { setString(13,50,value); } }
+			public DatPtr z_plan_name { get { return new DatPtr(this,13); } }
+		public string m_area_name { get { return getString(14); } set { setString(14,255,value); } }
+			public DatPtr z_area_name { get { return new DatPtr(this,14); } }
+		public string m_channels { get { return getString(15); } set { setString(15,2000,value); } }
+			public DatPtr z_channels { get { return new DatPtr(this,15); } }
+	}
+
+	public class YXvWebDocfiles : Yyy
+	{
+		public YXvWebDocfiles() { construct("XV_WEB_DOCFILES",null); }
+		public YXvWebDocfiles(OrmLinker lk) { construct("XV_WEB_DOCFILES",lk); }
+		public int m_id { get { return getInt(0); } set { setInt(0,value); } }
+			public DatPtr z_id { get { return new DatPtr(this,0); } }
+		public YLicence m_WebQuery_DocFiles { get { return (YLicence)getYyy(1); }  set { setYyy(1,value); } }
+		public int m_nid { get { return getInt(2); } set { setInt(2,value); } }
+			public DatPtr z_nid { get { return new DatPtr(this,2); } }
+		public string m_sstandard { get { return getString(3); } set { setString(3,50,value); } }
+			public DatPtr z_sstandard { get { return new DatPtr(this,3); } }
+		public string m_sieee { get { return getString(4); } set { setString(4,100,value); } }
+			public DatPtr z_sieee { get { return new DatPtr(this,4); } }
+		public string m_sspecial_state { get { return getString(5); } set { setString(5,50,value); } }
+			public DatPtr z_sspecial_state { get { return new DatPtr(this,5); } }
+		public string m_sappl_type { get { return getString(6); } set { setString(6,20,value); } }
+			public DatPtr z_sappl_type { get { return new DatPtr(this,6); } }
+		public string m_sstatus { get { return getString(7); } set { setString(7,4,value); } }
+			public DatPtr z_sstatus { get { return new DatPtr(this,7); } }
+		public int m_nowner_id { get { return getInt(8); } set { setInt(8,value); } }
+			public DatPtr z_nowner_id { get { return new DatPtr(this,8); } }
+		public string m_suser_name { get { return getString(9); } set { setString(9,200,value); } }
+			public DatPtr z_suser_name { get { return new DatPtr(this,9); } }
+		public string m_sedrpou { get { return getString(10); } set { setString(10,50,value); } }
+			public DatPtr z_sedrpou { get { return new DatPtr(this,10); } }
+		public string m_scity { get { return getString(11); } set { setString(11,50,value); } }
+			public DatPtr z_scity { get { return new DatPtr(this,11); } }
+		public string m_ssubprovince { get { return getString(12); } set { setString(12,50,value); } }
+			public DatPtr z_ssubprovince { get { return new DatPtr(this,12); } }
+		public string m_sprovince { get { return getString(13); } set { setString(13,50,value); } }
+			public DatPtr z_sprovince { get { return new DatPtr(this,13); } }
+		public string m_sadm_code { get { return getString(14); } set { setString(14,50,value); } }
+			public DatPtr z_sadm_code { get { return new DatPtr(this,14); } }
+		public string m_sconc_num { get { return getString(15); } set { setString(15,200,value); } }
+			public DatPtr z_sconc_num { get { return new DatPtr(this,15); } }
+		public DateTime m_dconc_date_from { get { return getDateTime(16); } set { setDateTime(16,value); } }
+			public DatPtr z_dconc_date_from { get { return new DatPtr(this,16); } }
+		public DateTime m_dconc_date_to { get { return getDateTime(17); } set { setDateTime(17,value); } }
+			public DatPtr z_dconc_date_to { get { return new DatPtr(this,17); } }
+		public string m_sdozv_num { get { return getString(18); } set { setString(18,200,value); } }
+			public DatPtr z_sdozv_num { get { return new DatPtr(this,18); } }
+		public DateTime m_ddozv_date_from { get { return getDateTime(19); } set { setDateTime(19,value); } }
+			public DatPtr z_ddozv_date_from { get { return new DatPtr(this,19); } }
+		public DateTime m_ddozv_date_to { get { return getDateTime(20); } set { setDateTime(20,value); } }
+			public DatPtr z_ddozv_date_to { get { return new DatPtr(this,20); } }
+		public DateTime m_ddozv_date_cancel { get { return getDateTime(21); } set { setDateTime(21,value); } }
+			public DatPtr z_ddozv_date_cancel { get { return new DatPtr(this,21); } }
+		public int m_ede_id { get { return getInt(22); } set { setInt(22,value); } }
+			public DatPtr z_ede_id { get { return new DatPtr(this,22); } }
+		public int m_edes_id { get { return getInt(23); } set { setInt(23,value); } }
+			public DatPtr z_edes_id { get { return new DatPtr(this,23); } }
+		public int m_eve_id { get { return getInt(24); } set { setInt(24,value); } }
+			public DatPtr z_eve_id { get { return new DatPtr(this,24); } }
+		public int m_eves_id { get { return getInt(25); } set { setInt(25,value); } }
+			public DatPtr z_eves_id { get { return new DatPtr(this,25); } }
+		public int m_sde_id { get { return getInt(26); } set { setInt(26,value); } }
+			public DatPtr z_sde_id { get { return new DatPtr(this,26); } }
+		public int m_sve_id { get { return getInt(27); } set { setInt(27,value); } }
+			public DatPtr z_sve_id { get { return new DatPtr(this,27); } }
+	}
+
 }
