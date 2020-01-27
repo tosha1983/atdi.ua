@@ -65,11 +65,13 @@
     <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverageForMobStation2.cs" />
     <Compile Include="CalcCoverage\Handlers\Manage\CalcFinalCoverageForMobStation.cs" />
     <Compile Include="CalcCoverage\Handlers\Transliteration\Transliteration.cs" />
+    <Compile Include="CalcCoverage\Handlers\Utils\Utils.cs" />
     <Compile Include="CalcCoverage\Models\ConcatBlankWithStation\DataForThread.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ArgumentsConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CodeOperatorAndStatusConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CodeOperatorConfig.cs" />
+    <Compile Include="CalcCoverage\Models\Config\ProvinceCodeConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ColorConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CommandConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CommandsConfig.cs" />

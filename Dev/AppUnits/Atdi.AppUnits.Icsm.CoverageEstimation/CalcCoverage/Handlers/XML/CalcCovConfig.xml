@@ -2,6 +2,70 @@
 <SettingCoverageCalculation>
   <Params>
     <ObjectDataConfig tag="CoverageConfig" Ident="b7e5691f-6b22-4649-a2e0-f1f2d2d5e17c">
+     <GroupsMobStationConfig>
+  <CodeOperatorAndStatusConfig>
+    <Standard>
+      <Name>LTE-1800</Name>
+      <Description>Description standard LTE-1800</Description>
+      <Provinces>
+        <Province>
+          <Name>Севастополь,Автономна Республіка Крим,Черкаська,Чернігівська,Чернівецька,Дніпропетровська,Донецька,Херсонська,Хмельницька,Івано-Франківська,Харківська,Кіровоградська,Київська,Київ,Луганська,Львівська,Миколаївська,Одеська,Полтавська,Рівненська,Сумська,Тернопільська,Вінницька,Волинська,Закарпатська,Запорізька,Житомирська</Name>
+          <ICSTelecomProjectFile>
+            <Value>D:\CalculationCoverage\Projects\PRO\UKR_LTE-1800.PRO</Value>
+          </ICSTelecomProjectFile>
+          <BlankTIFFFile>
+            <Value>D:\CalculationCoverage\Projects\EWF\UKR_LTE-1800\UKR_LTE-1800.tif</Value>
+          </BlankTIFFFile>
+          <NameEwxFile>
+            <Value>D:\CalculationCoverage\Projects\EWF\UKR_LTE-1800\1station.EWX</Value>
+          </NameEwxFile>
+          <OutTIFFFilesDirectory>
+            <Value>D:\CalculationCoverage\Output\Kyivstar_1800\</Value>
+          </OutTIFFFilesDirectory>
+	        <CodeOperators>
+             <CodeOperator>
+                <Code>36367001</Code>
+                 <Name>Kyivstar</Name>
+                 <Description>Kyivstar</Description>
+             </CodeOperator>
+         </CodeOperators>
+        </Province>
+      </Provinces>
+    </Standard>
+    <Status>P</Status>
+  </CodeOperatorAndStatusConfig>
+  <CodeOperatorAndStatusConfig>
+    <Standard>
+      <Name>LTE-2600</Name>
+      <Description>Description standard LTE-2600</Description>
+      <Provinces>
+        <Province>
+          <Name>Севастополь,Автономна Республіка Крим,Черкаська,Чернігівська,Чернівецька,Дніпропетровська,Донецька,Херсонська,Хмельницька,Івано-Франківська,Харківська,Кіровоградська,Київська,Київ,Луганська,Львівська,Миколаївська,Одеська,Полтавська,Рівненська,Сумська,Тернопільська,Вінницька,Волинська,Закарпатська,Запорізька,Житомирська</Name>
+          <ICSTelecomProjectFile>
+            <Value>D:\CalculationCoverage\Projects\PRO\UKR_LTE-2600.PRO</Value>
+          </ICSTelecomProjectFile>
+          <BlankTIFFFile>
+            <Value>D:\CalculationCoverage\Projects\EWF\UKR_LTE-2600\UKR_LTE-2600.tif</Value>
+          </BlankTIFFFile>
+          <NameEwxFile>
+            <Value>D:\CalculationCoverage\Projects\EWF\UKR_LTE-2600\1station.EWX</Value>
+          </NameEwxFile>
+          <OutTIFFFilesDirectory>
+            <Value>D:\CalculationCoverage\Output\Kyivstar_2600\</Value>
+          </OutTIFFFilesDirectory>
+ 	        <CodeOperators>
+           <CodeOperator>
+              <Code>36367001</Code>
+             <Name>Kyivstar</Name>
+             <Description>Kyivstar</Description>
+           </CodeOperator>
+        </CodeOperators>
+        </Province>
+      </Provinces>
+    </Standard>
+    <Status>P</Status>
+  </CodeOperatorAndStatusConfig>
+  </GroupsMobStationConfig>
       <GroupsMobStation2Config>
         <CodeOperatorAndStatusConfig>
           <Frequency>
@@ -27,282 +91,10 @@
           <Status>P</Status>
         </CodeOperatorAndStatusConfig>
       </GroupsMobStation2Config>
-      <GroupsMobStationConfig>
-        <CodeOperatorAndStatusConfig>
-          <Standard>
-            <Name>LTE-2600</Name>
-            <Description>Description standard LTE-2600</Description>
-            <Provinces>
-              <Province>
-                <Name>Кіровоградська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Kyrovogradska_obl_LTE-2600.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_LTE-2600\kyrovogradska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_LTE-2600\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Кіровоградська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Миколаївська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Mykolayvska_obl_LTE-2600.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_LTE-2600\mykolayvska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_LTE-2600\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Миколаївська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Тернопільська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Ternopilska_obl_LTE-2600.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_LTE-2600\ternopilska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_LTE-2600\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Тернопільська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-            </Provinces>
-          </Standard>
-          <Status>P</Status>
-        </CodeOperatorAndStatusConfig>
-        <CodeOperatorAndStatusConfig>
-          <Standard>
-            <Name>CDMA-800</Name>
-            <Description>Description standard CDMA_800</Description>
-            <Provinces>
-              <Province>
-                <Name>Кіровоградська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Kyrovogradska_obl_CDMA-800.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_CDMA-800\kyrovogradska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_CDMA-800\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Кіровоградська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Миколаївська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Mykolayvska_obl_CDMA-800.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_CDMA-800\mykolayvska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_CDMA-800\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Миколаївська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Тернопільська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Ternopilska_obl_CDMA-800.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_CDMA-800\ternopilska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_CDMA-800\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Тернопільська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-            </Provinces>
-          </Standard>
-          <Status>P</Status>
-        </CodeOperatorAndStatusConfig>
-        <CodeOperatorAndStatusConfig>
-          <Standard>
-            <Name>GSM-900</Name>
-            <Description>Description standard GSM-900</Description>
-            <Provinces>
-              <Province>
-                <Name>Кіровоградська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Kyrovogradska_obl_GSM-900.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_GSM-900\kyrovogradska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_GSM-900\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Кіровоградська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Миколаївська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Mykolayvska_obl_GSM-900.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_GSM-900\mykolayvska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_GSM-900\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Миколаївська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Тернопільська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Ternopilska_obl_GSM-900.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_GSM-900\ternopilska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_GSM-900\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Тернопільська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-            </Provinces>
-          </Standard>
-          <Status>P</Status>
-        </CodeOperatorAndStatusConfig>
-        <CodeOperatorAndStatusConfig>
-          <Standard>
-            <Name>LTE-1800</Name>
-            <Description>Description standard LTE-1800</Description>
-            <Provinces>
-              <Province>
-                <Name>Кіровоградська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Kyrovogradska_obl_LTE-1800.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_LTE-1800\kyrovogradska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_LTE-1800\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Кіровоградська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Миколаївська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Mykolayvska_obl_LTE-1800.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_LTE-1800\mykolayvska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_LTE-1800\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Миколаївська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Тернопільська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Ternopilska_obl_LTE-1800.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_LTE-1800\ternopilska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_LTE-1800\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Тернопільська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-            </Provinces>
-          </Standard>
-          <Status>P</Status>
-        </CodeOperatorAndStatusConfig>
-        <CodeOperatorAndStatusConfig>
-          <Standard>
-            <Name>UMTS</Name>
-            <Description>Description standard UMTS</Description>
-            <Provinces>
-              <Province>
-                <Name>Кіровоградська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Kyrovogradska_obl_UMTS.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_UMTS\kyrovogradska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Kyrovogradska_obl_UMTS\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Кіровоградська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Миколаївська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Mykolayvska_obl_UMTS.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_UMTS\mykolayvska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Mykolayvska_obl_UMTS\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Миколаївська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-              <Province>
-                <Name>Тернопільська</Name>
-                <ICSTelecomProjectFile>
-                  <Value>D:\CalculationCoverage\Projects\PRO\Ternopilska_obl_UMTS.PRO</Value>
-                </ICSTelecomProjectFile>
-                <BlankTIFFFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_UMTS\ternopilska.tif</Value>
-                </BlankTIFFFile>
-                <NameEwxFile>
-                  <Value>D:\CalculationCoverage\Projects\EWF\Ternopilska_obl_UMTS\1station.EWX</Value>
-                </NameEwxFile>
-                <OutTIFFFilesDirectory>
-                  <Value>D:\CalculationCoverage\Output\Тернопільська\</Value>
-                </OutTIFFFilesDirectory>
-              </Province>
-            </Provinces>
-          </Standard>
-          <Status>P</Status>
-        </CodeOperatorAndStatusConfig>
-      </GroupsMobStationConfig>
-      <GroupsColorConfig>
+	  <GroupsColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>37</Value>
+            <Value>30</Value>
           </GrayComponent>
           <RedComponent>
             <Value>0</Value>
@@ -336,7 +128,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>59</Value>
+            <Value>61</Value>
           </GrayComponent>
           <RedComponent>
             <Value>1</Value>
@@ -353,7 +145,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>64</Value>
+            <Value>68</Value>
           </GrayComponent>
           <RedComponent>
             <Value>1</Value>
@@ -370,7 +162,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>69</Value>
+            <Value>75</Value>
           </GrayComponent>
           <RedComponent>
             <Value>12</Value>
@@ -387,7 +179,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>74</Value>
+            <Value>82</Value>
           </GrayComponent>
           <RedComponent>
             <Value>79</Value>
@@ -404,7 +196,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>79</Value>
+            <Value>89</Value>
           </GrayComponent>
           <RedComponent>
             <Value>254</Value>
@@ -421,7 +213,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>84</Value>
+            <Value>96</Value>
           </GrayComponent>
           <RedComponent>
             <Value>255</Value>
@@ -438,7 +230,7 @@
         </ColorConfig>
         <ColorConfig>
           <GrayComponent>
-            <Value>89</Value>
+            <Value>103</Value>
           </GrayComponent>
           <RedComponent>
             <Value>254</Value>
@@ -471,6 +263,224 @@
           </AlphaComponent>
         </ColorConfig>
       </GroupsColorConfig>
+      <GroupsProvinceConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Автономна Республіка Крим</Value>
+          </NameProvince>
+          <Code>
+            <Value>KRM</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Вінницька</Value>
+          </NameProvince>
+          <Code>
+            <Value>VIN</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Волинська</Value>
+          </NameProvince>
+          <Code>
+            <Value>VOL</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Дніпропетровська</Value>
+          </NameProvince>
+          <Code>
+            <Value>DNP</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Донецька</Value>
+          </NameProvince>
+          <Code>
+            <Value>DON</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Житомирська</Value>
+          </NameProvince>
+          <Code>
+            <Value>ZHY</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Закарпатська</Value>
+          </NameProvince>
+          <Code>
+            <Value>ZAK</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Запорізька</Value>
+          </NameProvince>
+          <Code>
+            <Value>ZAP</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Івано-Франківська</Value>
+          </NameProvince>
+          <Code>
+            <Value>IFR</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Київська</Value>
+          </NameProvince>
+          <Code>
+            <Value>KYI</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Київ</Value>
+          </NameProvince>
+          <Code>
+            <Value>KYI</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Кіровоградська</Value>
+          </NameProvince>
+          <Code>
+            <Value>KRV</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Луганська</Value>
+          </NameProvince>
+          <Code>
+            <Value>LUG</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Львівська</Value>
+          </NameProvince>
+          <Code>
+            <Value>LVI</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Миколаївська</Value>
+          </NameProvince>
+          <Code>
+            <Value>MYK</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Одеська</Value>
+          </NameProvince>
+          <Code>
+            <Value>ODE</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Полтавська</Value>
+          </NameProvince>
+          <Code>
+            <Value>POL</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Рівненська</Value>
+          </NameProvince>
+          <Code>
+            <Value>RIV</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Севастополь</Value>
+          </NameProvince>
+          <Code>
+            <Value>SEV</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Сумська</Value>
+          </NameProvince>
+          <Code>
+            <Value>SUM</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Тернопільська</Value>
+          </NameProvince>
+          <Code>
+            <Value>TER</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Харківська</Value>
+          </NameProvince>
+          <Code>
+            <Value>KHA</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Херсонська</Value>
+          </NameProvince>
+          <Code>
+            <Value>KHE</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Хмельницька</Value>
+          </NameProvince>
+          <Code>
+            <Value>KHM</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Черкаська</Value>
+          </NameProvince>
+          <Code>
+            <Value>CHK</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Чернівецька</Value>
+          </NameProvince>
+          <Code>
+            <Value>CHV</Value>
+          </Code>
+        </ProvinceCodeConfig>
+        <ProvinceCodeConfig>
+          <NameProvince>
+            <Value>Чернігівська</Value>
+          </NameProvince>
+          <Code>
+            <Value>CHG</Value>
+          </Code>
+        </ProvinceCodeConfig>
+      </GroupsProvinceConfig>
       <DirectoryConfig>
         <TempTIFFFilesDirectory>
           <Value>D:\CalculationCoverage\TempFiles\</Value>
@@ -504,12 +514,21 @@
             </Command>
           </Commands>
         </RunCommandICSTelecom>
+        <SpecifiedLogFile>
+          <Value>c:\TEMP\Logs2\2020-01-22\Log.txt</Value>
+        </SpecifiedLogFile>
         <BinICSTelecomDirectory>
           <Value>C:\ATDI\ICS telecom EV x64\</Value>
         </BinICSTelecomDirectory>
         <TempEwxFilesDirectory>
           <Value>D:\CalculationCoverage\TempFilesEwx\</Value>
         </TempEwxFilesDirectory>
+        <TemplateOutputFileNameForMobStation>
+          <Value>Province-Standard-Operator-Date</Value>
+        </TemplateOutputFileNameForMobStation>
+        <TemplateOutputFileNameForMobStation2>
+          <Value>Province-Freq-Operator-Date</Value>
+        </TemplateOutputFileNameForMobStation2>
         <ICSTelecomProjectDirectory>
           <Value></Value>
         </ICSTelecomProjectDirectory>
