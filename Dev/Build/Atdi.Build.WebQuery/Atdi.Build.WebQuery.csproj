@@ -213,6 +213,7 @@ copy "$(TargetDir)\Newtonsoft.Json.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppS
 copy "$(TargetDir)\System.Net.Http.Formatting.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\System.Web.Http.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 copy "$(TargetDir)\System.Web.Http.SelfHost.dll" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
+copy "$(TargetDir)\CalcCoverage\Handlers\XML\CalcCovConfig.xml" "..\..\..\..\Delivery\Atdi.WebQuery\AppServer\Bin$(ConfigurationName)"
 
 copy "$(TargetDir)Atdi.DataModels.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.DataModels.Identity.dll" "..\..\..\..\Delivery\Atdi.WebQuery\WcfClient\Bin$(ConfigurationName)"
