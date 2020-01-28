@@ -158,8 +158,6 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                             Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру формування переліку станцій для генерації ewx - файлів завершено успішно");
                             if (ewx.Length == 0)
                             {
-                                this._logger.Error(Contexts.CalcCoverages, string.Format(Exceptions.ErrorCopyStationsIntoEwxFile, codeOperatorAndStatusesConfig.StandardConfig.Name, provincesConfig.Name));
-                                Utils.LogError(loadConfig, Contexts.CalcCoverages, string.Format(Exceptions.ErrorCopyStationsIntoEwxFile, codeOperatorAndStatusesConfig.StandardConfig.Name, provincesConfig.Name));
 
                                 //очистка временных файлов с директории dataConfig.DirectoryConfig.TempTIFFFilesDirectory
                                 this._logger.Info(Contexts.CalcCoverages, $"Розпочато процедуру очищення директорії {dataConfig.DirectoryConfig.TempTIFFFilesDirectory}");
@@ -184,6 +182,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                                 this._logger.Info(Contexts.CalcCoverages, $"Процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' успішно завершено");
                                 Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру видалення файлу протоколу останньої операції '{this._appServerComponentConfig.ProtocolOperationFileNameForMobStation}' успішно завершено");
 
+
+                                throw new Exception(string.Format(Exceptions.ErrorCopyStationsIntoEwxFile, codeOperatorAndStatusesConfig.StandardConfig.Name, provincesConfig.Name));
 
                             }
                             else
