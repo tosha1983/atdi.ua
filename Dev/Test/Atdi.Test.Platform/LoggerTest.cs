@@ -1,5 +1,7 @@
 ﻿using Atdi.Platform.Logging;
 using System;
+using System.IO;
+using System.Text;
 using System.Threading;
 
 namespace Atdi.Test.Platform
@@ -8,7 +10,22 @@ namespace Atdi.Test.Platform
     {
         public static void Run(ILogger logger)
         {
-            const int count = 200000;
+	  //      var dataCount = 1000_000;
+	  //      var data = GetTestData(dataCount);
+
+	  //      for (int i = 0; i < 10; i++)
+	  //      {
+			//	StartTest(Save1, data, @"C:\Temp\Logger\save_1.log", "Save1");
+			//	StartTest(Save2, data, @"C:\Temp\Logger\save_2.log", "Save2");
+			//	StartTest(Save3, data, @"C:\Temp\Logger\save_3.log", "Save3");
+			//	StartTest(Save4, data, @"C:\Temp\Logger\save_4.log", "Save4");
+			//	StartTest(Save5, data, @"C:\Temp\Logger\save_5.log", "Save5");
+			//}
+			
+
+			//return;
+
+			const int count =  200_000;
 
             var thread1 = CreateThread(logger, count, 1);
 			var thread2 = CreateThread(logger, count, 2);
@@ -90,5 +107,118 @@ namespace Atdi.Test.Platform
 
             Console.WriteLine($"Finish thread: Name = '{current.Name}', ID = #{current.ManagedThreadId} ");
         }
-    }
+
+
+
+        private static string[] GetTestData(int count)
+        {
+			var data = new string[count];
+			var r = new Random();
+			for (int i = 0; i < count; i++)
+			{
+				var c = r.Next(30, 250);
+				var row = new char[c];
+				for (int j = 0; j < c; j++)
+				{
+					row[j] = Convert.ToChar(r.Next(60, 90));
+				}
+
+				data[i] = new string(row);
+			}
+
+			return data;
+        }
+
+		private static void Save1(string[] events, string filePath)
+		{
+			var buffer = new StringBuilder();
+			for (int i = 0; i < events.Length; i++)
+			{
+				var @event = events[i];
+				for (int j = 0; j < @event.Length; j++)
+				{
+					buffer.Append(@event[j]);
+				}
+				buffer.AppendLine();
+			}
+
+			File.AppendAllText(filePath, buffer.ToString(), Encoding.UTF8);
+		}
+
+		private static void Save2(string[] events, string filePath)
+		{
+			using (var writer = (TextWriter) new StreamWriter(filePath, true, Encoding.UTF8))
+			{
+				for (int i = 0; i < events.Length; i++)
+				{
+					var @event = events[i];
+					for (int j = 0; j < @event.Length; j++)
+					{
+						writer.Write(@event[j]);
+					}
+					writer.WriteLine();
+				}
+			}
+		}
+
+		private static void Save3(string[] events, string filePath)
+		{
+			char c = 'A';
+			using (var writer = (TextWriter)new StreamWriter(filePath, true, Encoding.UTF8))
+			{
+				for (int i = 0; i < events.Length; i++)
+				{
+					var @event = events[i];
+					for (int j = 0; j < @event.Length; j++)
+					{
+						c = @event[j];
+					}
+					writer.WriteLine(@event);
+				}
+			}
+
+			filePath += Convert.ToString(c);
+		}
+
+		private static void Save4(string[] events, string filePath)
+		{
+			using (var writer = (TextWriter)new StreamWriter(filePath, true, Encoding.UTF8, 65535))
+			{
+				for (int i = 0; i < events.Length; i++)
+				{
+					var @event = events[i];
+					for (int j = 0; j < @event.Length; j++)
+					{
+						writer.Write(@event[j]);
+					}
+					writer.WriteLine();
+				}
+			}
+		}
+
+		private static void Save5(string[] events, string filePath)
+		{
+			using (var writer = (TextWriter)new StreamWriter(filePath, true, Encoding.UTF8, 5000000))
+			{
+				for (int i = 0; i < events.Length; i++)
+				{
+					var @event = events[i];
+					for (int j = 0; j < @event.Length; j++)
+					{
+						writer.Write(@event[j]);
+					}
+					writer.WriteLine();
+				}
+			}
+		}
+
+		private static void StartTest(Action<string[], string> testAction, string[] events, string filePath, string name)
+		{
+			//Console.WriteLine("TEST: Start - " + name);
+			var timer = System.Diagnostics.Stopwatch.StartNew();
+			testAction(events, filePath);
+			timer.Stop();
+			Console.WriteLine($"TEST: {name} - " + timer.Elapsed.TotalMilliseconds);
+		}
+	}
 }

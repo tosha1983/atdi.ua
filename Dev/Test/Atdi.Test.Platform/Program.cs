@@ -16,8 +16,11 @@ namespace Atdi.Test.Platform
         {
             Console.WriteLine($"Press any key to start ATDI Platform ...");
             Console.ReadLine();
+            //LoggerTest.Run(null);
+            //Console.WriteLine($"Press any key to stop SDRN App Server (AK) ...");
+            //Console.ReadLine();
 
-            using (var host = PlatformConfigurator.BuildHost())
+			using (var host = PlatformConfigurator.BuildHost())
             {
                 try
                 {
