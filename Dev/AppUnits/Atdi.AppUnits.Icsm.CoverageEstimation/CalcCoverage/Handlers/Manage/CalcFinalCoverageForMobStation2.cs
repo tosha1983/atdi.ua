@@ -49,6 +49,9 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
                 //Загрузка конфигурационного файла
                 var loadConfig = dataConfig;
+
+                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Розпочато процедуру розрахунку покриття для секції 'GroupsMobStation2Config'");
+
                 var gdalCalc = new GdalCalc(this._logger);
                 
 
@@ -402,6 +405,8 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 // очистка итоговых  списка поддиректорий, соответствующих перечню значений Province
                 //gdalCalc.ClearOutTIFFFilesDirectory(loadConfig);
                 this._logger.Info(Contexts.CalcCoverages, string.Format(Events.EndIterationNumber.ToString(), iterationNumber));
+
+                Utils.LogInfo(loadConfig, Contexts.CalcCoverages, $"Процедуру розрахунку покриття для секції 'GroupsMobStation2Config'успішно завершено");
             }
             catch (Exception e)
             {
