@@ -204,6 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
@@ -337,6 +338,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }

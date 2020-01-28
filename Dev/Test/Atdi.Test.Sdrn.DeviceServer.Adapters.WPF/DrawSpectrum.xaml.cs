@@ -174,7 +174,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 #region Device Drawing
                 #region
 
-                if (this.Name == "DS_AN")
+                if (this.Name == "DS_AN" || this.Name == "DS_AN2")
                 {
                     if (ANAdapter != null)
                     {
@@ -288,7 +288,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     }
                 }
 
-                if (this.Name == "DS_AN" && ANAdapter != null)
+                if ((this.Name == "DS_AN" || this.Name == "DS_AN2") && ANAdapter != null)
                 {
                     gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
                     Math.Round(ANAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));

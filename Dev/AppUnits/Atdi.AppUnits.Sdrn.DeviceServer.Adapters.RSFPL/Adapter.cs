@@ -375,6 +375,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, v_exp);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(v_exp);
                 // дальше кода быть не должно, освобождаем поток
             }
@@ -383,6 +384,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
@@ -436,6 +438,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
