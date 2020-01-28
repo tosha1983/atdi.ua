@@ -515,7 +515,7 @@
           </Commands>
         </RunCommandICSTelecom>
         <SpecifiedLogFile>
-          <Value>c:\TEMP\Logs2\2020-01-22\Log.txt</Value>
+          <Value>c:\TEMP\SpecialLogs\Log.txt</Value>
         </SpecifiedLogFile>
         <BinICSTelecomDirectory>
           <Value>C:\ATDI\ICS telecom EV x64\</Value>
