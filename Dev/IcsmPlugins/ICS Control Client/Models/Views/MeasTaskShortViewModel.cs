@@ -21,6 +21,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public DateTime DateStop { get; set; }
         public DateTime? DateCreated { get; set; }
         public string CreatedBy { get; set; }
+        public string Status { get; set; }
         public string SensorIds { get; set; }
     }
 }

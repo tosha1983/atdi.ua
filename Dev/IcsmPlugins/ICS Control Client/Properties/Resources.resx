@@ -756,4 +756,7 @@
   <data name="TaskType" xml:space="preserve">
     <value>Task Type</value>
   </data>
+  <data name="Stations" xml:space="preserve">
+    <value>Stations</value>
+  </data>
 </root>

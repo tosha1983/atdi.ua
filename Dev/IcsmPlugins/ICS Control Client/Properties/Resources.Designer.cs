@@ -1582,6 +1582,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stations.
+        /// </summary>
+        public static string Stations {
+            get {
+                return ResourceManager.GetString("Stations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to StationsNumber.
         /// </summary>
         public static string StationsNumber {

@@ -201,55 +201,64 @@ namespace XICSM.ICSControlClient.Forms
         }
         private void DataGrid_MenuClick(object sender, EventArgs e)
         {
-            //var menuItem = sender as CTR.MenuItem;
-            //var contextMenu = menuItem.Parent as CTR.ContextMenu;
-            //var grid = contextMenu.PlacementTarget as CTR.DataGrid;
-            //SaveFileDialog sfd = new SaveFileDialog()
-            //{
-            //    Filter = "CSV (*.csv)|*.csv",
-            //    FileName = "DataGrid_.csv"
-            //};
-            //if (sfd.ShowDialog() == DialogResult.OK)
-            //{
-            //    int recCount = grid.Items.Count;
-            //    string[] output = new string[recCount + 1];
+            var menuItem = sender as CTR.MenuItem;
+            if (menuItem.Name == "SaveToCSV")
+            {
+                var contextMenu = menuItem.Parent as CTR.ContextMenu;
+                var grid = contextMenu.PlacementTarget as CTR.DataGrid;
+                SaveFileDialog sfd = new SaveFileDialog()
+                {
+                    Filter = "CSV (*.csv)|*.csv",
+                    FileName = $"DataGrid_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.csv"
+                };
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    int recCount = grid.Items.Count;
+                    string[] output = new string[recCount + 1];
 
-            //    var csvRow = new List<string>(); 
-            //    int colCount = grid.Columns.Count;
-            //    foreach (var column in grid.Columns)
-            //    {
-            //        csvRow.Add(column.Header.ToString());
-            //    } 
-            //    output[0] += string.Join(";", csvRow);
+                    
+                    var csvRow = new List<string>();
+                    var columnsBindName = new List<string>();
+                    
+                    foreach (var column in grid.Columns)
+                    {
+                        var columnName = (((column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
+                        columnsBindName.Add(columnName);
+                        csvRow.Add(column.Header.ToString());
+                    }
+                    output[0] += string.Join(";", csvRow);
 
-            //    int i = 0;
+                    int i = 1;
 
-            //    foreach (DataRowView row in grid.ItemsSource)
-            //    {
+                    if (grid.SelectedItems.Count > 1)
+                        foreach (dynamic row in grid.SelectedItems)
+                        {
+                            csvRow = new List<string>();
 
+                            foreach (var columnName in columnsBindName)
+                            {
+                                var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                                csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
+                            }
+                            output[i++] += string.Join(";", csvRow);
+                        }
+                    else
+                        foreach (dynamic row in grid.Items)
+                        {
+                            csvRow = new List<string>();
 
+                            foreach (var columnName in columnsBindName)
+                            {
+                                var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                                csvRow.Add(cellValue == null ? ""  : $"\"{cellValue.ToString()}\"");
+                            }
+                            output[i++] += string.Join(";", csvRow);
+                        }
 
-
-
-            //        //csvRow = new List<string>();
-            //        //foreach (var item in row.Row.ItemArray)
-            //        //{
-            //        //    csvRow.Add(item.ToString());
-            //        //}
-            //        //output[i++ + 1] += string.Join(";", csvRow);
-            //    }
-
-
-            //    //    if (leveldBmkVm > 0)
-            //    //        output[i + 1] += ms.Lon.ToString() + ";" + ms.Lat.ToString() + ";" + leveldBmkVm.ToString() + ";";
-            //    //}
-            //    System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
-            //    System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
-            //}
-
-
-
-
+                    System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                    System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
+                }
+            }
         }
         void DataGridApplyFilters(CTR.DataGrid grid)
         {
@@ -459,18 +468,11 @@ namespace XICSM.ICSControlClient.Forms
 
             foreach (var grd in FindVisualChildren<CTR.DataGrid>(_wpfElementHost.Child))
             {
-                //var item = new CTR.MenuItem() { Header = "Save to CSV", Name = "SaveToCSV" };
-                //item.Click += DataGrid_MenuClick;
-                //grd.ContextMenu = new CTR.ContextMenu();
-                //grd.ContextMenu.Items.Add(item);
+                var itemCSV = new CTR.MenuItem() { Header = "Save to CSV", Name = "SaveToCSV" };
+                itemCSV.Click += DataGrid_MenuClick;
+                grd.ContextMenu = new CTR.ContextMenu();
+                grd.ContextMenu.Items.Add(itemCSV);
 
-                //foreach (var col in grd.Columns)
-                //{
-                //    var item = new CTR.MenuItem() { Header = "Filter...", Name = "Filter" };
-                //    item.Click += DataGrid_Column_MenuClick;
-                //    (col.Header as TextBlock).ContextMenu = new CTR.ContextMenu();
-                //    //grd.ContextMenu.Items.Add(item);
-                //}
                 //if (grd.Name == "GridSensor" || grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")
                 if (grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")
                     {

@@ -251,6 +251,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasFreqParamStep = source.MeasFreqParam.Step.ToNull(),
 
                 MeasOtherLevelMinOccup = source.MeasOther.LevelMinOccup.ToNull(),
+                MeasOtherNCount = source.MeasDtParam.NumberTotalScan.ToNull(),
                 MeasOtherNChenal = source.MeasOther.NChenal.ToNull(),
                 MeasOtherSwNumber = source.MeasOther.SwNumber.ToNull(),
                 MeasOtherTypeSpectrumOccupation = source.MeasOther.TypeSpectrumOccupation,
@@ -501,6 +502,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 DateStop = source.DateStop,
                 DateCreated = source.DateCreated,
                 CreatedBy = source.CreatedBy,
+                Status = source.Status,
                 SensorIds = source.SensorIds
             };
         }

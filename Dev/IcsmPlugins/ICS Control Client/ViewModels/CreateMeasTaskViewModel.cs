@@ -281,7 +281,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
-            if (sdrSensors.Length > 0)
+            if (sdrSensors.Length == 1)
             {
                 this._currentShortSensor = new List<ShortSensorViewModel>() { Mappers.Map(sdrSensors[0]) };
                 RedrawMap();
@@ -326,6 +326,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
+                bool result = true;
                 //var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
                 //var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
 
@@ -361,6 +362,12 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 }
 
+                if (string.IsNullOrEmpty(this._currentMeasTask.Name))
+                {
+                    MessageBox.Show("Undefined task name!");
+                    return;
+                }
+
                 if (this._currentShortSensor == null)
                 {
                     MessageBox.Show("Undefined sensor!");
@@ -373,7 +380,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     if (points > 200)
                     {
                         MessageBox.Show("Lot of points, please change “Number of steps for measurements in channel” or number channel in plan");
-                        return;
+                        result = false;
                     }
                 }
 
@@ -443,34 +450,34 @@ namespace XICSM.ICSControlClient.ViewModels
                     if (val > 50000)
                     {
                         MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", "ISC Control Client");
-                        return;
+                        result = false;
                     }
                     else if (val > 10000)
                     {
                         if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                            return;
+                            result = false;
                     }
 
                     if (this._currentMeasTask.MeasOtherNCount.HasValue && this._currentMeasTask.MeasOtherNCount > 10000)
                     {
                         MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources.", "ISC Control Client");
-                        return;
+                        result = false;
                     }
                     else if (this._currentMeasTask.MeasOtherNCount.HasValue && this._currentMeasTask.MeasOtherNCount > 1000)
                     {
                         if (MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                            return;
+                            result = false;
                     }
 
                     if (this._currentMeasTask.MeasOtherNChenal.HasValue && this._currentMeasTask.MeasOtherNChenal > 100)
                     {
                         MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", "ISC Control Client");
-                        return;
+                        result = false;
                     }
                     else if (this._currentMeasTask.MeasOtherNChenal.HasValue && this._currentMeasTask.MeasOtherNChenal > 50)
                     {
                         if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                            return;
+                            result = false;
                     }
                 }
                 if (_measType == SDR.MeasurementType.Signaling)
@@ -483,23 +490,23 @@ namespace XICSM.ICSControlClient.ViewModels
                     if (val > 500)
                     {
                         MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources.", "ISC Control Client");
-                        return;
+                        result = false;
                     }
                     else if (val > 100)
                     {
                         if (MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                            return;
+                            result = false;
                     }
 
                     if (this._currentMeasTask.SignalizationNCount.HasValue && this._currentMeasTask.SignalizationNCount > 1000000)
                     {
                         MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources.", "ISC Control Client");
-                        return;
+                        result = false;
                     }
                     else if (this._currentMeasTask.SignalizationNCount.HasValue && this._currentMeasTask.SignalizationNCount > 1000)
                     {
                         if (MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                            return;
+                            result = false;
                     }
 
                     if (this._currentMeasTask.CorrelationAnalize.HasValue && this._currentMeasTask.CorrelationAnalize.Value)
@@ -507,16 +514,18 @@ namespace XICSM.ICSControlClient.ViewModels
                         if (this._currentMeasTask.CorrelationFactor.HasValue && this._currentMeasTask.CorrelationFactor > 1)
                         {
                             MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions.", "ISC Control Client");
-                            return;
+                            result = false;
                         }
                         else if (this._currentMeasTask.CorrelationFactor.HasValue && this._currentMeasTask.CorrelationFactor > 0.8)
                         {
                             if (MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                                return;
+                                result = false;
                         }
                     }
 
                 }
+                if (!result)
+                    return;
 
                 if (!GetOthersMeastask())
                     return;
@@ -763,7 +772,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
                     sensorsIds.Add(shortSensor.Id);
 
-                string fields = "SUBTASK.MEAS_TASK.Id,SUBTASK.MEAS_TASK.Type,SUBTASK.MEAS_TASK.Name,SUBTASK.MEAS_TASK.PerStart,SUBTASK.MEAS_TASK.TimeStart,SUBTASK.MEAS_TASK.PerStop,SUBTASK.MEAS_TASK.TimeStop,SUBTASK.MEAS_TASK.DateCreated,SUBTASK.MEAS_TASK.CreatedBy,SENSOR.Id";
+                string fields = "SUBTASK.MEAS_TASK.Id,SUBTASK.MEAS_TASK.Type,SUBTASK.MEAS_TASK.Name,SUBTASK.MEAS_TASK.PerStart,SUBTASK.MEAS_TASK.TimeStart,SUBTASK.MEAS_TASK.PerStop,SUBTASK.MEAS_TASK.TimeStop,SUBTASK.MEAS_TASK.DateCreated,SUBTASK.MEAS_TASK.CreatedBy,SUBTASK.MEAS_TASK.Status,SENSOR.Id";
                 string filter = $"((SENSOR.Id in ({string.Join(",", sensorsIds)}))and(SUBTASK.MEAS_TASK.Type eq '{this._measType.ToString()}')and(SUBTASK.MEAS_TASK.PerStop Ge {this._currentMeasTask.MeasTimeParamListPerStart.Date.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")}))";
 
                 var response = wc.GetAsync(endpointUrls + $"api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/SubTaskSensor?select={fields}&filter={filter}&orderBy=SUBTASK.MEAS_TASK.Id").Result;
@@ -792,6 +801,7 @@ namespace XICSM.ICSControlClient.ViewModels
                             measTask.MeasTaskId = measTaskId;
                             measTask.TaskType = (string)record[dicFields["SUBTASK.MEAS_TASK.Type"]];
                             measTask.TaskName = (string)record[dicFields["SUBTASK.MEAS_TASK.Name"]];
+                            measTask.Status = (string)record[dicFields["SUBTASK.MEAS_TASK.Status"]];
 
                             measTask.DateStart = (DateTime)record[dicFields["SUBTASK.MEAS_TASK.PerStart"]];
                             var timeStart = (DateTime?)record[dicFields["SUBTASK.MEAS_TASK.TimeStart"]];
@@ -816,7 +826,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             foreach (var task in prevTaskData)
             {
-                if (task.DateStop > dateBg && task.DateStart < dateEd)
+                if (task.DateStop > dateBg && task.DateStart < dateEd && !"Z".Equals(task.Status, StringComparison.OrdinalIgnoreCase))
                 {
                     if (this._currentMeasTask.MeasFreqParamRgL.HasValue && this._currentMeasTask.MeasFreqParamRgU.HasValue)
                     {

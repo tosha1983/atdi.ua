@@ -17,6 +17,7 @@ namespace XICSM.ICSControlClient.Models
         public DateTime DateStop;
         public DateTime? DateCreated;
         public string CreatedBy;
+        public string Status;
         public string SensorIds;
     }
 }
