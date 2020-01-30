@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.CalcServer.Entities
+namespace Atdi.DataModels.Sdrn.CalcServer
 {
-    public class Class1
-    {
-    }
+	public enum CalcTaskType
+	{
+	}
 }

@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICalcServerConfig.cs" />
+    <Compile Include="ICalcContextHandle.cs" />
+    <Compile Include="ITaskDispatcher.cs" />
+    <Compile Include="ITaskObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

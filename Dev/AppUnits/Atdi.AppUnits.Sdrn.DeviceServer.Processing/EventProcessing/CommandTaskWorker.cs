@@ -159,7 +159,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             for (int i = 0; i < loadData.Length; i++)
             {
                 var tskParam = loadData[i];
-
+                
                 context.Task.taskParameters = tskParam;
                 if ((tskParam.status == StatusTask.N.ToString()) || (tskParam.status == StatusTask.A.ToString()) || (tskParam.status == StatusTask.F.ToString()) || (tskParam.status == StatusTask.Z.ToString()))
                 {
@@ -250,7 +250,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         System.Threading.Thread.Sleep(this._config.DurationWaitingCheckNewTasks);
                         // проверка признака поступления новых тасков в БД
                         var deviceCommands = this._repositoryDeviceCommand.LoadAllObjects();
-                        if ((deviceCommands != null) && (deviceCommands.Length>0))
+                        if ((deviceCommands != null) && (deviceCommands.Length > 0))
                         {
                             for (int i = 0; i < deviceCommands.Length; i++)
                             {
@@ -273,6 +273,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                     context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
                                                 }
                                             }
+                                            if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
+                                            {
+                                                var findDefferedTask = context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
+                                                if (findDefferedTask != null)
+                                                {
+                                                    findDefferedTask.status = tskParam.status;
+                                                }
+                                            }
+
                                         }
                                         else if (tskParam.MeasurementType == MeasType.Signaling)
                                         {
@@ -286,6 +295,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                     context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
                                                 }
                                             }
+                                            if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
+                                            {
+                                                var findDefferedTask = context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
+                                                if (findDefferedTask != null)
+                                                {
+                                                    findDefferedTask.status = tskParam.status;
+                                                }
+                                            }
                                         }
                                         else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
                                         {
@@ -297,6 +314,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                                 if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
                                                 {
                                                     context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
+                                                }
+                                            }
+                                            if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
+                                            {
+                                                var findDefferedTask = context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
+                                                if (findDefferedTask != null)
+                                                {
+                                                    findDefferedTask.status = tskParam.status;
                                                 }
                                             }
                                         }

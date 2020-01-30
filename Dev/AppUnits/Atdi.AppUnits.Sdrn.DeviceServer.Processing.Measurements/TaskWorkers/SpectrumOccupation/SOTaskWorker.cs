@@ -87,6 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         if (DateTime.Now > context.Task.taskParameters.StopTime)
                         {
+                            context.Task.taskParameters.status = StatusTask.Z.ToString();
+                            this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                             context.Cancel();
                             _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                             break;
@@ -149,6 +151,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             if (DateTime.Now > context.Task.taskParameters.StopTime)
                             {
+                                context.Task.taskParameters.status = StatusTask.Z.ToString();
+                                this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                 context.Cancel();
                                 _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                                 break;

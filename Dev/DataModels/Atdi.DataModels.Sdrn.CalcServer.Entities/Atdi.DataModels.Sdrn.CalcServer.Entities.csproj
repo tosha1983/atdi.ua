@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Entities\ICalcResult.cs" />
+    <Compile Include="Entities\ICalcTask.cs" />
+    <Compile Include="Entities\IProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,14 +67,28 @@
     <Content Include="Metadata\DataTypes\ClrObject\Long.INT64.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\String.NTEXT.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\Time.TIME.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Double.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Float.xml" />
+    <Content Include="Metadata\DataTypes\Database\Array.Integer.xml" />
     <Content Include="Metadata\DataTypes\Database\Boolean.xml" />
+    <Content Include="Metadata\DataTypes\Database\Byte.xml" />
     <Content Include="Metadata\DataTypes\Database\Bytes.MAX.xml" />
+    <Content Include="Metadata\DataTypes\Database\Char.xml" />
+    <Content Include="Metadata\DataTypes\Database\Chars.250.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.Guid.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.32.xml" />
+    <Content Include="Metadata\DataTypes\Database\Code.u08.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Counter.64.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.DateTimeOffset.xml" />
+    <Content Include="Metadata\DataTypes\Database\Counter.Guid.xml" />
+    <Content Include="Metadata\DataTypes\Database\Date.xml" />
     <Content Include="Metadata\DataTypes\Database\DateTime.xml" />
+    <Content Include="Metadata\DataTypes\Database\DateTimeOffset.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.22.8.xml" />
     <Content Include="Metadata\DataTypes\Database\Decimal.30.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Double.30.10.xml" />
+    <Content Include="Metadata\DataTypes\Database\Float.22.8.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
@@ -88,7 +104,12 @@
     <Content Include="Metadata\DataTypes\Database\Text.4000.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.450.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\CalcResult.xml" />
+    <Content Include="Metadata\Entities\CalcTask.xml" />
+    <Content Include="Metadata\Entities\Project.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounter.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounterKey.xml" />
@@ -112,7 +133,6 @@
     <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
     <Folder Include="DataLayer\SqlServer\Tables\" />
-    <Folder Include="Entities\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

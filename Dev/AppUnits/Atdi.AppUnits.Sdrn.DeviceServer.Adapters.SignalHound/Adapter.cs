@@ -204,6 +204,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
@@ -337,6 +338,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 // желательно записать влог
                 logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }
@@ -1932,7 +1934,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     MaxSize = 20,
                     Size = 500000
                 },
-
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 1000000
+                },
             };
         }
 
