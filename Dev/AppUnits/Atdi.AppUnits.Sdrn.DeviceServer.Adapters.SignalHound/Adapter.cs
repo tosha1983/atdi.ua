@@ -1934,7 +1934,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     MaxSize = 20,
                     Size = 500000
                 },
-
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 1000000
+                },
             };
         }
 
