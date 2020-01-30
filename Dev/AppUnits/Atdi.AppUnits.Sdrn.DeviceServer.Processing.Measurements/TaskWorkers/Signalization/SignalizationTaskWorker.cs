@@ -87,6 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         if (DateTime.Now > context.Task.taskParameters.StopTime)
                         {
+                            context.Task.taskParameters.status = StatusTask.Z.ToString();
+                            this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                             context.Cancel();
                             _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                             break;
@@ -108,14 +110,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         // обновление TaskParameters в БД
                         context.Task.taskParameters.status = StatusTask.C.ToString();
                         this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
-                        DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                        var deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
                         deviceCommandResult.Status = StatusTask.C.ToString();
                         deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
-                        
+
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
-                        
+
                         _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
                         //context.Cancel();
                         //break;
@@ -137,6 +139,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             if (DateTime.Now > context.Task.taskParameters.StopTime)
                             {
+                                context.Task.taskParameters.status = StatusTask.Z.ToString();
+                                this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                 context.Cancel();
                                 _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                                 break;
@@ -219,20 +223,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                         var action = new Action(() =>
                         {
-                        //реакция на принятые результаты измерения
-                        if (outResultData != null)
+                            //реакция на принятые результаты измерения
+                            if (outResultData != null)
                             {
-                            //////////////////////////////////////////////
-                            // 
-                            //  Здесь получаем данные с GPS приемника
-                            //  
-                            //////////////////////////////////////////////
-                            //outResultData.ResultId = Guid.NewGuid().ToString();
-                            context.Task.CountSendResults++;
+                                //////////////////////////////////////////////
+                                // 
+                                //  Здесь получаем данные с GPS приемника
+                                //  
+                                //////////////////////////////////////////////
+                                //outResultData.ResultId = Guid.NewGuid().ToString();
+                                context.Task.CountSendResults++;
                                 outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
                                 outResultData.ResultId = Guid.NewGuid().ToString();
-                            //outResultData.ScansNumber = context.Task.CountSendResults;
-                            outResultData.Status = "N";
+                                //outResultData.ScansNumber = context.Task.CountSendResults;
+                                outResultData.Status = "N";
                                 outResultData.ScansNumber = context.Task.CountMeasurementDone;
                                 outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
                                 outResultData.StartTime = context.Task.LastTimeSend.Value;
@@ -274,9 +278,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                     _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                                 }
 
-                            //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
-                            var arrEmit = new Emitting[outResultData.Emittings.Length];
-                                for (int i = 0; i < outResultData.Emittings.Length; i++)
+                                //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
+                                var arrEmit = new Emitting[outResultData.Emittings.Length];
+                                for (var i = 0; i < outResultData.Emittings.Length; i++)
                                 {
                                     var val = outResultData.Emittings[i];
                                     var emit = CopyHelper.CreateDeepCopy(val);
@@ -290,7 +294,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                             var newEmittingLevelsDistributionLevel = emit.LevelsDistribution.Levels;
                                             int startIndex = -1;
                                             int endIndex = -1;
-                                            for (int j = 0; j < newEmittingLevelsDistributionCount.Length; j++)
+                                            for (var j = 0; j < newEmittingLevelsDistributionCount.Length; j++)
                                             {
                                                 var valCount = newEmittingLevelsDistributionCount[j];
                                                 var valLevel = newEmittingLevelsDistributionLevel[j];
@@ -305,7 +309,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                                 }
                                             }
 
-                                            for (int j = newEmittingLevelsDistributionCount.Length - 1; j >= 0; j--)
+                                            for (var j = newEmittingLevelsDistributionCount.Length - 1; j >= 0; j--)
                                             {
                                                 var valCount = newEmittingLevelsDistributionCount[j];
                                                 var valLevel = newEmittingLevelsDistributionLevel[j];
@@ -322,7 +326,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                             if ((startIndex >= 0) && (endIndex >= 0))
                                             {
-                                                for (int k = startIndex; k <= endIndex; k++)
+                                                for (var k = startIndex; k <= endIndex; k++)
                                                 {
                                                     var valCount = newEmittingLevelsDistributionCount[k];
                                                     var valLevel = newEmittingLevelsDistributionLevel[k];
@@ -345,7 +349,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                 CheckPercentAvailability.CheckPercent(ref arrEmit);
 
-                                DM.MeasResults measResultsNew = new MeasResults()
+                                var measResultsNew = new MeasResults()
                                 {
                                     BandwidthResult = outResultData.BandwidthResult,
                                     Emittings = arrEmit,
@@ -426,7 +430,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             context.Task.taskParameters.status = StatusTask.C.ToString();
                             this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
 
-                            DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                            var deviceCommandResult = new DM.DeviceCommandResult();
                             deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                             deviceCommandResult.CustDate1 = DateTime.Now;
                             deviceCommandResult.Status = StatusTask.C.ToString();

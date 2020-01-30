@@ -87,6 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         if (DateTime.Now > context.Task.taskParameters.StopTime)
                         {
+                            context.Task.taskParameters.status = StatusTask.Z.ToString();
+                            this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                             context.Cancel();
                             _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                             break;
@@ -112,7 +114,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
 
 
-                        DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                        var deviceCommandResult = new DM.DeviceCommandResult();
                         deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                         deviceCommandResult.CustDate1 = DateTime.Now;
                         deviceCommandResult.Status = StatusTask.C.ToString();
@@ -149,6 +151,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             if (DateTime.Now > context.Task.taskParameters.StopTime)
                             {
+                                context.Task.taskParameters.status = StatusTask.Z.ToString();
+                                this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                 context.Cancel();
                                 _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                                 break;
@@ -225,7 +229,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             //реакция на принятые результаты измерения
                             if (outSpectrumOcupation.fSemplesResult != null)
                             {
-                                DM.MeasResults measResult = new DM.MeasResults();
+                                var measResult = new DM.MeasResults();
                                 measResult.Status = "N";
                                 context.Task.CountSendResults++;
                                 //outResultData.ScansNumber = context.Task.CountMeasurementDone;
@@ -341,7 +345,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             context.Task.taskParameters.status = StatusTask.C.ToString();
                             this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
 
-                            DM.DeviceCommandResult deviceCommandResult = new DM.DeviceCommandResult();
+                            var deviceCommandResult = new DM.DeviceCommandResult();
                             deviceCommandResult.CommandId = "UpdateStatusMeasTask";
                             deviceCommandResult.CustDate1 = DateTime.Now;
                             deviceCommandResult.CustTxt1 = "";
