@@ -33,7 +33,7 @@
         <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}"  SelectedItem="{Binding CurrentStation}">
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.IcsmId}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.StationName}" Binding="{Binding Path=StationName}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standart}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
