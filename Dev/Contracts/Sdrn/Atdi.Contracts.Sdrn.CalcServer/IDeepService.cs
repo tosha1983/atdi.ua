@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.CalcServer
 {
-	public interface ITaskObserver
+	public interface IDeepService : IDisposable
 	{
-		void OnCompleted(ICalcContextHandle context);
-
-		void OnEvent(ICalcContextHandle context, ICalcEvent @event);
-
 	}
 }
