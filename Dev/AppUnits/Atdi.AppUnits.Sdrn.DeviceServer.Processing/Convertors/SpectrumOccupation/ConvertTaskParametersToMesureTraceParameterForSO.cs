@@ -26,13 +26,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             mesureTraceParameter.TraceCount = 1; // константа для SO
             mesureTraceParameter.LevelUnit = LevelUnit.dBm; // константа для SO
             mesureTraceParameter.VBW_Hz = -1; // константа для SO
-            mesureTraceParameter.RBW_Hz = -1; // константа для SO
+            mesureTraceParameter.RBW_Hz = -2; // константа для SO
 
             //авто
 
             mesureTraceParameter.RefLevel_dBm = (int)taskParameters.RefLevel_dBm.Value;
-            mesureTraceParameter.Att_dB = taskParameters.RfAttenuation_dB.Value;    // константа для SO
-            mesureTraceParameter.PreAmp_dB = taskParameters.Preamplification_dB.Value; // константа для SO
+            mesureTraceParameter.Att_dB = taskParameters.RfAttenuation_dB.Value;
+            mesureTraceParameter.PreAmp_dB = taskParameters.Preamplification_dB.Value;
             switch (taskParameters.DetectType)
             {
                 case DataModels.Sdrns.DetectingType.Average:
