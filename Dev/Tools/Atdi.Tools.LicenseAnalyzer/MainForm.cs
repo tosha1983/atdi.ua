@@ -92,8 +92,12 @@ namespace Atdi.Tools.LicenseAnalyzer
             {
                 sharedSecret = "Atdi.Tools.Sdrn.Client";
             }
+            else if (cmbConfigType.SelectedIndex == 5)
+            {
+	            sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
+            }
 
-            txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
+			txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
             txtEncryptedProductKey.Text = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, sharedSecret);
             txtEncryptedPassword.Text = Encryptor.EncryptStringAES(txtPassword.Text, sharedSecret);
 

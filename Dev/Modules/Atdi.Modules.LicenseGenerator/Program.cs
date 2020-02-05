@@ -35,7 +35,9 @@ namespace Atdi.Modules.LicenseGenerator
             //UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
             //UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
 
-            UpdatePeriod_ICSControl_ForTest_2020();
+            //UpdatePeriod_ICSControl_ForTest_2020();
+
+			ICSControl_ForTesting_CalcServer(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\CalcServerLicense", 1);
 
 
 			Console.WriteLine("Process was finished");
@@ -662,7 +664,30 @@ namespace Atdi.Modules.LicenseGenerator
             
         }
 
-        static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
+        static void ICSControl_ForTesting_CalcServer(string path, int count = 2)
+        {
+	        const string ownerId = "OID-BD12-A00-N00";
+	        const string ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string company = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string ownerKey = "BD12-A00";
+	        var startDate = new DateTime(2020, 2, 5);
+	        var stopDate = new DateTime(2025, 8, 20);
+	        const ushort year = 2020;
+	        //MakeServerLicense();
+	        for (int i = 0; i < count; i++)
+	        {
+		        var srvLicenseIndex = GetUniqueIntegerKey(3);
+		        var instanceIndex = GetUniqueIntegerKey(4);
+		        var srvLicPrefix = "LIC-C";
+		        var srvInstancePrefix = "SDRNSV-C";
+
+		        MakeLicense2(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "SDRN Calc Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate, year);
+	        }
+
+
+        }
+
+		static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
         {
             //var ownerId = "OID-BD13-G65-N00"; //  Сам УДЦР
             var ownerId = "OID-BD13-G65-N01"; //  лицензии для УДЦР выданы УНИКОМ
