@@ -44,10 +44,13 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="CalcServerConfig.cs" />
+    <Compile Include="IterationsPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventSystemObserver.cs" />
     <Compile Include="EventSystemSubscriberActivator.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="TaskDispatcher.cs" />
+    <Compile Include="TasksFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EventSystem\Atdi.Api.EventSystem.csproj">

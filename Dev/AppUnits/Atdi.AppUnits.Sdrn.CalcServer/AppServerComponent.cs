@@ -32,6 +32,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var serverConfig = new CalcServerConfig(componentConfig);
 			this.Container.RegisterInstance<ICalcServerConfig>(serverConfig, ServiceLifetime.Singleton);
 
+			// среда сервера расчетов
+			this.Container.Register<ITasksFactory, TasksFactory>(ServiceLifetime.Singleton);
+			this.Container.Register<IIterationsPool, IterationsPool>(ServiceLifetime.Singleton);
+			this.Container.Register<ITaskDispatcher, TaskDispatcher>(ServiceLifetime.Singleton);
+
 			// система событий
 			var eventSiteConfig = new EventSiteConfig();
 			eventSiteConfig.SetValue(EventSiteConfig.ApiVersion, componentConfig.EventSystemApiVersion);
@@ -55,13 +60,91 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.Container.Register<IEventEmitter, EventEmitter>(ServiceLifetime.PerThread);
 			this.Container.Register<IEventDispatcher, EventDispatcher>(ServiceLifetime.Singleton);
 
+			// шина данных 
 		}
 
 		protected override void OnActivateUnit()
 		{
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 
-			// 
+			// подключаем обработчики задач
+			var taskFactory = this.Resolver.Resolve<ITasksFactory>();
+			var taskHandlerInterfaceType = typeof(ITaskHandler);
+			var taskHandlerTypes = typeResolver.ForeachInAllAssemblies(
+				(type) =>
+				{
+					if (!type.IsClass
+					    || type.IsAbstract
+					    || type.IsInterface
+					    || type.IsEnum)
+					{
+						return false;
+					}
+
+					var ft = type.GetInterface(taskHandlerInterfaceType.FullName);
+					return ft != null;
+				}
+			).ToArray();
+
+			foreach (var taskHandlerType in taskHandlerTypes)
+			{
+				try
+				{
+					var taskHandlerAttr = taskHandlerType.GetAttributeByType<TaskHandlerAttribute>();
+					if (taskHandlerAttr != null)
+					{
+						taskFactory.Register(taskHandlerAttr.CalcType, taskHandlerType);
+						this.Container.Register(taskHandlerType, taskHandlerType, ServiceLifetime.Transient);
+						Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.TaskHandlerTypeWasRegistered.With(taskHandlerType.AssemblyQualifiedName));
+					}
+					else
+					{
+						throw new InvalidOperationException("Detected the task handler without attribute [TaskHandler]. It's ignored");
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
+				}
+			}
+
+
+			// подключаем обработчики итераций
+			var iterationsPool = this.Resolver.Resolve<IIterationsPool>();
+			var iterationHandlerInterfaceType = typeof(IIterationHandler<,>);
+			var iterationHandlerTypes = typeResolver.ForeachInAllAssemblies(
+				(type) =>
+				{
+					if (!type.IsClass
+					    || type.IsAbstract
+					    || type.IsInterface
+					    || type.IsEnum)
+					{
+						return false;
+					}
+
+					var ft = type.GetInterface(iterationHandlerInterfaceType.FullName);
+					return ft != null;
+				}
+			).ToArray();
+
+			foreach (var iterationHandlerType in iterationHandlerTypes)
+			{
+				try
+				{
+					iterationsPool.Register(iterationHandlerType);
+					this.Container.Register(iterationHandlerType, iterationHandlerType, ServiceLifetime.Transient);
+					Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.IterationHandlerTypeWasRegistered.With(iterationHandlerType.AssemblyQualifiedName));
+					
+				}
+				catch (Exception e)
+				{
+					Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
+				}
+			}
+
+
+			// подключаем обработчики событий
 			var eventDispatcher = this.Resolver.Resolve<IEventDispatcher>();
 			var eventSubscribeInterfaceType = typeof(IEventSubscriber<>);
 
@@ -114,9 +197,6 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 			});
 
-
-			// автоматическая регистрация обработчиков итераций
-			// автоматическая регистрация реализации низкоуровневых сервисов
 		}
 	}
 }
