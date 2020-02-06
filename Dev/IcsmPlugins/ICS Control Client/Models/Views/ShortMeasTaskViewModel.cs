@@ -36,6 +36,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("Measurements Type", WidthRule = ColumnWidthRule.AutoSize, Width = 100)]
         public MeasurementType TypeMeasurements { get; set; }
 
+        [WpfColumn("Measurements Type", WidthRule = ColumnWidthRule.AutoSize, Width = 100)]
+        public string TypeMeasurementsString { get; set; }
+
         [WpfColumn("MAX Time, Bs", WidthRule = ColumnWidthRule.AutoSize, Width = 60)]
         public int? MaxTimeBs { get; set; }
 
