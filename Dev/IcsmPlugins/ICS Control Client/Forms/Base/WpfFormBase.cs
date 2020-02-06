@@ -488,10 +488,25 @@ namespace XICSM.ICSControlClient.Forms
                             columnHeader.ContextMenu.Items.Add(item);
                         //}
                     }
+                    //grd.SourceUpdated += DataGrid_SourceChanged;
+                    //grd.DataContextChanged += DataGrid_SourceChanged;
+                    //grd.Loaded += DataGrid_SourceChanged;
+                    //grd.
+
                     _dataGridFilters.Add(grd, new DataGridFilters() { FiltersNumeric = new Dictionary<string, DataGridFilterNumeric>(), FiltersBool = new Dictionary<string, DataGridFilterBool>() });
                 }
             }
         }
+
+        //private void DataGrid_SourceChanged(object sender, RoutedEventArgs e)
+        //{
+        //    DataGridApplyFilters(sender as CTR.DataGrid);
+        //}
+
+        //private void DataGrid_SourceChanged(object sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //    DataGridApplyFilters(sender as CTR.DataGrid);
+        //}
         void InitializeSplitters()
         {
             foreach (var spl in FindVisualChildren<CTR.GridSplitter>(_wpfElementHost.Child))
