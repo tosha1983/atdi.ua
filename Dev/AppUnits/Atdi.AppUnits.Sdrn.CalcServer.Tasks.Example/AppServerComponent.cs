@@ -21,13 +21,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example
 
 		protected override void OnInstallUnit()
 		{
-
-
-			// из контейнера получаем фабрику обработчиков задач
-			var tasksFactory = this.Resolver.Resolve<ITasksFactory>();
-			// регестрируем обработчик ассоцированый с конкретным расчетов
-			tasksFactory.Register(CalcTaskType.FirstExampleTask, typeof(FirstTask));
-
+			
 		}
 	}
 }

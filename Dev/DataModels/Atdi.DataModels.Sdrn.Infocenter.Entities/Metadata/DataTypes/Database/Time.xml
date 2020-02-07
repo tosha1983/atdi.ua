@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Time"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  <CodeVarType>Time</CodeVarType>
+  <SourceVarType>TIME</SourceVarType>  
+</DataType>

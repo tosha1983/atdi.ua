@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name="String.NTEXT" 
+  DataSourceType="ClrObject" 
+  xmlns="http://schemas.atdi.com/orm/entity.xsd">
+  
+  <CodeVarType>String</CodeVarType>
+  <SourceVarType>NTEXT</SourceVarType>
+
+</DataType>
