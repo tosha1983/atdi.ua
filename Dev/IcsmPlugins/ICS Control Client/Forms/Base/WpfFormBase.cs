@@ -20,6 +20,7 @@ using System.Windows.Controls.Primitives;
 using FM = XICSM.ICSControlClient.Forms;
 using System.Windows.Controls;
 using ADP = XICSM.ICSControlClient.Models.WcfDataApadters;
+using System.Windows.Data;
 
 namespace XICSM.ICSControlClient.Forms
 {
