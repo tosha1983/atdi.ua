@@ -596,7 +596,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
-                      <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResult}" SelectedItemsList="{Binding CurrentMeasurementResults, Mode=TwoWay}" >
+                      <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, Mode=OneWay}" SelectedItem="{Binding CurrentMeasurementResult}" SelectedItemsList="{Binding CurrentMeasurementResults, Mode=TwoWay}" >
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
                                     <Style.Triggers>
