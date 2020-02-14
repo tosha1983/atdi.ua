@@ -83,12 +83,22 @@ namespace OrmCs
 			public DatPtr z_edrpou { get { return new DatPtr(this,35); } }
 		public string m_status { get { return getString(36); } set { setString(36,4,value); } }
 			public DatPtr z_status { get { return new DatPtr(this,36); } }
-		public string m_ident_rez { get { return getString(37); } set { setString(37,100,value); } }
+		public string m_ident_rez { get { return getString(37); } set { setString(37,50,value); } }
 			public DatPtr z_ident_rez { get { return new DatPtr(this,37); } }
-		public string m_scanpath_conc { get { return getString(38); } set { setString(38,500,value); } }
-			public DatPtr z_scanpath_conc { get { return new DatPtr(this,38); } }
-		public string m_scanpath_dozv { get { return getString(39); } set { setString(39,500,value); } }
-			public DatPtr z_scanpath_dozv { get { return new DatPtr(this,39); } }
+		public int m_ede_id { get { return getInt(38); } set { setInt(38,value); } }
+			public DatPtr z_ede_id { get { return new DatPtr(this,38); } }
+		public int m_edes_id { get { return getInt(39); } set { setInt(39,value); } }
+			public DatPtr z_edes_id { get { return new DatPtr(this,39); } }
+		public int m_de_s_id { get { return getInt(40); } set { setInt(40,value); } }
+			public DatPtr z_de_s_id { get { return new DatPtr(this,40); } }
+		public int m_eve_id { get { return getInt(41); } set { setInt(41,value); } }
+			public DatPtr z_eve_id { get { return new DatPtr(this,41); } }
+		public int m_eves_id { get { return getInt(42); } set { setInt(42,value); } }
+			public DatPtr z_eves_id { get { return new DatPtr(this,42); } }
+		public int m_ve_s_id { get { return getInt(43); } set { setInt(43,value); } }
+			public DatPtr z_ve_s_id { get { return new DatPtr(this,43); } }
+		public double m_tx_freq_simple { get { return getDouble(44); } set { setDouble(44,value); } }
+			public DatPtr z_tx_freq_simple { get { return new DatPtr(this,44); } }
 	}
 
 	public class YXvWebRr : Yyy
@@ -124,74 +134,88 @@ namespace OrmCs
 			public DatPtr z_dozv_date_to { get { return new DatPtr(this,13); } }
 		public DateTime m_dozv_date_cancel { get { return getDateTime(14); } set { setDateTime(14,value); } }
 			public DatPtr z_dozv_date_cancel { get { return new DatPtr(this,14); } }
-		public int m_em_id { get { return getInt(15); } set { setInt(15,value); } }
-			public DatPtr z_em_id { get { return new DatPtr(this,15); } }
-		public string m_equip_name { get { return getString(16); } set { setString(16,50,value); } }
-			public DatPtr z_equip_name { get { return new DatPtr(this,16); } }
-		public int m_equip_id { get { return getInt(17); } set { setInt(17,value); } }
-			public DatPtr z_equip_id { get { return new DatPtr(this,17); } }
-		public string m_eq_freq_range { get { return getString(18); } set { setString(18,164,value); } }
-			public DatPtr z_eq_freq_range { get { return new DatPtr(this,18); } }
-		public double m_duplex { get { return getDouble(19); } set { setDouble(19,value); } }
-			public DatPtr z_duplex { get { return new DatPtr(this,19); } }
-		public double m_bw { get { return getDouble(20); } set { setDouble(20,value); } }
-			public DatPtr z_bw { get { return new DatPtr(this,20); } }
-		public double m_step { get { return getDouble(21); } set { setDouble(21,value); } }
-			public DatPtr z_step { get { return new DatPtr(this,21); } }
-		public string m_modulation { get { return getString(22); } set { setString(22,4000,value); } }
-			public DatPtr z_modulation { get { return new DatPtr(this,22); } }
-		public string m_address { get { return getString(23); } set { setString(23,4000,value); } }
-			public DatPtr z_address { get { return new DatPtr(this,23); } }
-		public int m_pos_id { get { return getInt(24); } set { setInt(24,value); } }
-			public DatPtr z_pos_id { get { return new DatPtr(this,24); } }
-		public double m_longitude { get { return getDouble(25); } set { setDouble(25,value); } }
-			public DatPtr z_longitude { get { return new DatPtr(this,25); } }
-		public double m_latitude { get { return getDouble(26); } set { setDouble(26,value); } }
-			public DatPtr z_latitude { get { return new DatPtr(this,26); } }
-		public string m_province { get { return getString(27); } set { setString(27,50,value); } }
-			public DatPtr z_province { get { return new DatPtr(this,27); } }
-		public double m_power { get { return getDouble(28); } set { setDouble(28,value); } }
-			public DatPtr z_power { get { return new DatPtr(this,28); } }
-		public string m_antenna_name { get { return getString(29); } set { setString(29,50,value); } }
-			public DatPtr z_antenna_name { get { return new DatPtr(this,29); } }
-		public int m_antenna_id { get { return getInt(30); } set { setInt(30,value); } }
-			public DatPtr z_antenna_id { get { return new DatPtr(this,30); } }
-		public string m_gain { get { return getString(31); } set { setString(31,274,value); } }
-			public DatPtr z_gain { get { return new DatPtr(this,31); } }
-		public string m_agl { get { return getString(32); } set { setString(32,274,value); } }
-			public DatPtr z_agl { get { return new DatPtr(this,32); } }
-		public string m_angle_elev { get { return getString(33); } set { setString(33,274,value); } }
-			public DatPtr z_angle_elev { get { return new DatPtr(this,33); } }
-		public string m_angle_elev_e { get { return getString(34); } set { setString(34,40,value); } }
-			public DatPtr z_angle_elev_e { get { return new DatPtr(this,34); } }
-		public string m_diag { get { return getString(35); } set { setString(35,4000,value); } }
-			public DatPtr z_diag { get { return new DatPtr(this,35); } }
-		public string m_polarization { get { return getString(36); } set { setString(36,4,value); } }
-			public DatPtr z_polarization { get { return new DatPtr(this,36); } }
-		public string m_azimuth { get { return getString(37); } set { setString(37,274,value); } }
-			public DatPtr z_azimuth { get { return new DatPtr(this,37); } }
-		public string m_tx_losses { get { return getString(38); } set { setString(38,274,value); } }
-			public DatPtr z_tx_losses { get { return new DatPtr(this,38); } }
-		public string m_channels { get { return getString(39); } set { setString(39,4000,value); } }
-			public DatPtr z_channels { get { return new DatPtr(this,39); } }
-		public string m_tx_freq { get { return getString(40); } set { setString(40,4000,value); } }
-			public DatPtr z_tx_freq { get { return new DatPtr(this,40); } }
-		public string m_rx_freq { get { return getString(41); } set { setString(41,4000,value); } }
-			public DatPtr z_rx_freq { get { return new DatPtr(this,41); } }
-		public string m_des_emission { get { return getString(42); } set { setString(42,9,value); } }
-			public DatPtr z_des_emission { get { return new DatPtr(this,42); } }
-		public string m_sector_number { get { return getString(43); } set { setString(43,1,value); } }
-			public DatPtr z_sector_number { get { return new DatPtr(this,43); } }
-		public string m_edrpou { get { return getString(44); } set { setString(44,50,value); } }
-			public DatPtr z_edrpou { get { return new DatPtr(this,44); } }
-		public string m_status { get { return getString(45); } set { setString(45,4,value); } }
-			public DatPtr z_status { get { return new DatPtr(this,45); } }
-		public string m_ident_rez { get { return getString(46); } set { setString(46,100,value); } }
-			public DatPtr z_ident_rez { get { return new DatPtr(this,46); } }
-		public string m_scanpath_conc { get { return getString(47); } set { setString(47,500,value); } }
-			public DatPtr z_scanpath_conc { get { return new DatPtr(this,47); } }
-		public string m_scanpath_dozv { get { return getString(48); } set { setString(48,500,value); } }
-			public DatPtr z_scanpath_dozv { get { return new DatPtr(this,48); } }
+		public string m_station_name { get { return getString(15); } set { setString(15,100,value); } }
+			public DatPtr z_station_name { get { return new DatPtr(this,15); } }
+		public int m_em_id { get { return getInt(16); } set { setInt(16,value); } }
+			public DatPtr z_em_id { get { return new DatPtr(this,16); } }
+		public string m_equip_name { get { return getString(17); } set { setString(17,50,value); } }
+			public DatPtr z_equip_name { get { return new DatPtr(this,17); } }
+		public int m_equip_id { get { return getInt(18); } set { setInt(18,value); } }
+			public DatPtr z_equip_id { get { return new DatPtr(this,18); } }
+		public string m_eq_freq_range { get { return getString(19); } set { setString(19,164,value); } }
+			public DatPtr z_eq_freq_range { get { return new DatPtr(this,19); } }
+		public double m_duplex { get { return getDouble(20); } set { setDouble(20,value); } }
+			public DatPtr z_duplex { get { return new DatPtr(this,20); } }
+		public double m_bw { get { return getDouble(21); } set { setDouble(21,value); } }
+			public DatPtr z_bw { get { return new DatPtr(this,21); } }
+		public double m_step { get { return getDouble(22); } set { setDouble(22,value); } }
+			public DatPtr z_step { get { return new DatPtr(this,22); } }
+		public string m_modulation { get { return getString(23); } set { setString(23,4000,value); } }
+			public DatPtr z_modulation { get { return new DatPtr(this,23); } }
+		public string m_address { get { return getString(24); } set { setString(24,4000,value); } }
+			public DatPtr z_address { get { return new DatPtr(this,24); } }
+		public int m_pos_id { get { return getInt(25); } set { setInt(25,value); } }
+			public DatPtr z_pos_id { get { return new DatPtr(this,25); } }
+		public double m_longitude { get { return getDouble(26); } set { setDouble(26,value); } }
+			public DatPtr z_longitude { get { return new DatPtr(this,26); } }
+		public double m_latitude { get { return getDouble(27); } set { setDouble(27,value); } }
+			public DatPtr z_latitude { get { return new DatPtr(this,27); } }
+		public string m_province { get { return getString(28); } set { setString(28,50,value); } }
+			public DatPtr z_province { get { return new DatPtr(this,28); } }
+		public double m_power { get { return getDouble(29); } set { setDouble(29,value); } }
+			public DatPtr z_power { get { return new DatPtr(this,29); } }
+		public double m_npwr_ant { get { return getDouble(30); } set { setDouble(30,value); } }
+			public DatPtr z_npwr_ant { get { return new DatPtr(this,30); } }
+		public string m_antenna_name { get { return getString(31); } set { setString(31,50,value); } }
+			public DatPtr z_antenna_name { get { return new DatPtr(this,31); } }
+		public int m_antenna_id { get { return getInt(32); } set { setInt(32,value); } }
+			public DatPtr z_antenna_id { get { return new DatPtr(this,32); } }
+		public string m_gain { get { return getString(33); } set { setString(33,274,value); } }
+			public DatPtr z_gain { get { return new DatPtr(this,33); } }
+		public string m_agl { get { return getString(34); } set { setString(34,274,value); } }
+			public DatPtr z_agl { get { return new DatPtr(this,34); } }
+		public string m_angle_elev { get { return getString(35); } set { setString(35,274,value); } }
+			public DatPtr z_angle_elev { get { return new DatPtr(this,35); } }
+		public string m_angle_elev_e { get { return getString(36); } set { setString(36,40,value); } }
+			public DatPtr z_angle_elev_e { get { return new DatPtr(this,36); } }
+		public string m_diag { get { return getString(37); } set { setString(37,4000,value); } }
+			public DatPtr z_diag { get { return new DatPtr(this,37); } }
+		public string m_polarization { get { return getString(38); } set { setString(38,4,value); } }
+			public DatPtr z_polarization { get { return new DatPtr(this,38); } }
+		public string m_azimuth { get { return getString(39); } set { setString(39,274,value); } }
+			public DatPtr z_azimuth { get { return new DatPtr(this,39); } }
+		public string m_tx_losses { get { return getString(40); } set { setString(40,274,value); } }
+			public DatPtr z_tx_losses { get { return new DatPtr(this,40); } }
+		public string m_channels { get { return getString(41); } set { setString(41,4000,value); } }
+			public DatPtr z_channels { get { return new DatPtr(this,41); } }
+		public string m_tx_freq { get { return getString(42); } set { setString(42,4000,value); } }
+			public DatPtr z_tx_freq { get { return new DatPtr(this,42); } }
+		public string m_rx_freq { get { return getString(43); } set { setString(43,4000,value); } }
+			public DatPtr z_rx_freq { get { return new DatPtr(this,43); } }
+		public string m_des_emission { get { return getString(44); } set { setString(44,9,value); } }
+			public DatPtr z_des_emission { get { return new DatPtr(this,44); } }
+		public string m_sector_number { get { return getString(45); } set { setString(45,1,value); } }
+			public DatPtr z_sector_number { get { return new DatPtr(this,45); } }
+		public string m_edrpou { get { return getString(46); } set { setString(46,50,value); } }
+			public DatPtr z_edrpou { get { return new DatPtr(this,46); } }
+		public string m_status { get { return getString(47); } set { setString(47,4,value); } }
+			public DatPtr z_status { get { return new DatPtr(this,47); } }
+		public string m_ident_rez { get { return getString(48); } set { setString(48,50,value); } }
+			public DatPtr z_ident_rez { get { return new DatPtr(this,48); } }
+		public int m_ede_id { get { return getInt(49); } set { setInt(49,value); } }
+			public DatPtr z_ede_id { get { return new DatPtr(this,49); } }
+		public int m_edes_id { get { return getInt(50); } set { setInt(50,value); } }
+			public DatPtr z_edes_id { get { return new DatPtr(this,50); } }
+		public int m_de_s_id { get { return getInt(51); } set { setInt(51,value); } }
+			public DatPtr z_de_s_id { get { return new DatPtr(this,51); } }
+		public int m_eve_id { get { return getInt(52); } set { setInt(52,value); } }
+			public DatPtr z_eve_id { get { return new DatPtr(this,52); } }
+		public int m_eves_id { get { return getInt(53); } set { setInt(53,value); } }
+			public DatPtr z_eves_id { get { return new DatPtr(this,53); } }
+		public int m_ve_s_id { get { return getInt(54); } set { setInt(54,value); } }
+			public DatPtr z_ve_s_id { get { return new DatPtr(this,54); } }
+		public double m_tx_freq_simple { get { return getDouble(55); } set { setDouble(55,value); } }
+			public DatPtr z_tx_freq_simple { get { return new DatPtr(this,55); } }
 	}
 
 	public class YXvWebRs : Yyy
@@ -263,12 +287,20 @@ namespace OrmCs
 			public DatPtr z_edrpou { get { return new DatPtr(this,31); } }
 		public string m_status { get { return getString(32); } set { setString(32,4,value); } }
 			public DatPtr z_status { get { return new DatPtr(this,32); } }
-		public string m_ident_rez { get { return getString(33); } set { setString(33,10,value); } }
+		public string m_ident_rez { get { return getString(33); } set { setString(33,50,value); } }
 			public DatPtr z_ident_rez { get { return new DatPtr(this,33); } }
-		public string m_scanpath_conc { get { return getString(34); } set { setString(34,500,value); } }
-			public DatPtr z_scanpath_conc { get { return new DatPtr(this,34); } }
-		public string m_scanpath_dozv { get { return getString(35); } set { setString(35,500,value); } }
-			public DatPtr z_scanpath_dozv { get { return new DatPtr(this,35); } }
+		public int m_ede_id { get { return getInt(34); } set { setInt(34,value); } }
+			public DatPtr z_ede_id { get { return new DatPtr(this,34); } }
+		public int m_edes_id { get { return getInt(35); } set { setInt(35,value); } }
+			public DatPtr z_edes_id { get { return new DatPtr(this,35); } }
+		public int m_de_s_id { get { return getInt(36); } set { setInt(36,value); } }
+			public DatPtr z_de_s_id { get { return new DatPtr(this,36); } }
+		public int m_eve_id { get { return getInt(37); } set { setInt(37,value); } }
+			public DatPtr z_eve_id { get { return new DatPtr(this,37); } }
+		public int m_eves_id { get { return getInt(38); } set { setInt(38,value); } }
+			public DatPtr z_eves_id { get { return new DatPtr(this,38); } }
+		public int m_ve_s_id { get { return getInt(39); } set { setInt(39,value); } }
+			public DatPtr z_ve_s_id { get { return new DatPtr(this,39); } }
 	}
 
 	public class YXvWebLicence : Yyy

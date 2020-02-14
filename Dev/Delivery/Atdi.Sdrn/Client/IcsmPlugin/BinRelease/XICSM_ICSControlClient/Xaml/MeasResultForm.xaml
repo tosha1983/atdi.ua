@@ -134,7 +134,7 @@
                                     <RowDefinition Height="*"></RowDefinition>
                                   </Grid.RowDefinitions>
                                   <Label    Height="18" Grid.Column="0" Grid.Row="0" Padding="0,5,5,0" Content = "{x:Static res:Resources.MeasGlobalSID}"  />
-                                  <TextBox  Height="18" Grid.Column="1" Grid.Row="0" Width="50" Text="{Binding Path=MeasGlobalSID}"/>
+                                  <TextBox  Height="18" Grid.Column="1" Grid.Row="0" Width="50" Text="{Binding Path=MeasGlobalSid}"/>
                                   <Label    Height="18" Grid.Column="2" Grid.Row="0" Padding="10,5,5,0" Content = "{x:Static res:Resources.Standard}"  />
                                   <TextBox  Height="18" Grid.Column="3" Grid.Row="0" Width="50" Text="{Binding Path=Standard}"/>
                                   <Label    Height="18" Grid.Column="4" Grid.Row="0" Padding="10,5,5,0" Content = "{x:Static res:Resources.CentrFreq_From}"  />

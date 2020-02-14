@@ -150,7 +150,7 @@
                 <DataGridTextColumn Header="{x:Static res:Resources.UpperFreq}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-                <DataGridTextColumn Header="{x:Static res:Resources.IcsmId}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
               </DataGrid.Columns>
             </cdg:CustomDataGridEquipments> 
           </GroupBox>

@@ -41,10 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalcServerDataContext.cs" />
+    <Compile Include="ICalcEvent.cs" />
     <Compile Include="ICalcServerConfig.cs" />
     <Compile Include="ICalcContextHandle.cs" />
+    <Compile Include="IDeepService.cs" />
+    <Compile Include="IIterationHandler.cs" />
+    <Compile Include="IIterationsPool.cs" />
+    <Compile Include="ITaskContext.cs" />
     <Compile Include="ITaskDispatcher.cs" />
+    <Compile Include="ITaskHandler.cs" />
     <Compile Include="ITaskObserver.cs" />
+    <Compile Include="ITasksFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +63,10 @@
     <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{E5011DD5-16C5-4CD0-ADA3-D783F11C7C61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,16 +10,16 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
 
     internal static class Events
     {
-        public static readonly EventText StartIterationNumber = "Start iteration number : {0}";
-        public static readonly EventText EndIterationNumber = "End iteration number : {0}";
-        public static readonly EventText ClearFilesFromOutTIFFFilesDirectory = "The operation to clear files from the 'OutTIFFFilesDirectory' directory is completed successfully";
-        public static readonly EventText ClearFilesFromICSTelecomProjectDir = "The operation to clear files from the 'ICSTelecomProjectDir' directory is completed successfully";
-        public static readonly EventText ClearFilesFromTempTIFFFilesDirectory = "The operation to clear files from the 'TempTIFFFilesDirectory' directory is completed successfully";
-        public static readonly EventText OperationSaveImageFileCompleted = "The operation to saved image file '{0}' to DB is completed successfully";
-        public static readonly EventText OperationSaveFinalCovarageFileCompleted = "The operation to saved final covarage file '{0}' is completed successfully";
-        public static readonly EventText OperationSaveTempCovarageFileCompleted = "The operation to saved temp covarage file '{0}' is completed successfully";
-        public static readonly EventText RequestDBStationsCompletedSuccessfully = "A request to the DB for a sample of stations was completed successfully";
-        public static readonly EventText OperationSaveEWXFileCompleted = "The operation created EWX file '{0}' is completed successfully";
+        public static readonly EventText StartIterationNumber = "Початковий номер ітерації: {0}";
+        public static readonly EventText EndIterationNumber = "Останній номер ітерації: {0}";
+        public static readonly EventText ClearFilesFromOutTIFFFilesDirectory = "Операція очищення файлів з каталогу 'OutTIFFFilesDirectory' успішно завершена";
+        public static readonly EventText ClearFilesFromICSTelecomProjectDir = "Операція очищення файлів із каталогу 'ICSTelecomProjectDir' успішно завершена";
+        public static readonly EventText ClearFilesFromTempTIFFFilesDirectory = "Операція очищення файлів з каталогу 'TempTIFFFilesDirectory' успішно завершена";
+        public static readonly EventText OperationSaveImageFileCompleted = "Операція зі збереження графічного файлу '{0}' в БД успішно завершена";
+        public static readonly EventText OperationSaveFinalCovarageFileCompleted = "Операція зі збереження остаточного файлу покриття '{0}' успішно завершена";
+        public static readonly EventText OperationSaveTempCovarageFileCompleted = "Операція зі збереження  тимчасового файлу покриття '{0}' успішно завершена";
+        public static readonly EventText RequestDBStationsCompletedSuccessfully = "Запит до БД для завантаження даних по станціях було успішно виконано";
+        public static readonly EventText OperationSaveEWXFileCompleted = "Операція створення файла EWX '{0}', успішно завершена";
 
     }
 
@@ -40,27 +40,27 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation
 
     internal static class Exceptions
     {
-        public static readonly string FinalCoverageFileTifNotWritenIntoDB = "The final coverage file was not written to the database, because it was not found along the '{0}' path";
-        public static readonly string FinalCoverageFileTifNotWritenIntoPath = "The final coverage file was not written to the '{0}' path (for Radiotech = '{1}')";
-        public static readonly string FinalCoverageFileTifNotWritenIntoPath2 = "The final coverage file was not written to the '{0}' path (for FreqConfig = '{1}')";
-        public static readonly string OccurredWhilePreparingTemporaryImageTIF = "An error occurred while preparing temporary image files(TIF), which are the result of the operation of combining the contents of the blank TIF file and a  coverages files (for Radiotech = '{0}')";
-        public static readonly string OccurredWhilePreparingTemporaryImageTIF2 = "An error occurred while preparing temporary image files(TIF), which are the result of the operation of combining the contents of the blank TIF file and a  coverages files (for FreqConfig = '{0}')";
-        public static readonly string ResultRequestWebQueryEmptyRecordset = "Result of request to the WebQuery is empty recordset";
-        public static readonly string CodeOperatorAndStatusConfigBlockIsEmpty = "Block 'CodeOperatorAndStatusConfig' in config file is empty";
-        public static readonly string CountCodeOperatorAndStatusConfigBlocksLengthZero = "Count of blocks 'CodeOperatorAndStatusConfig' equal zero";
-        public static readonly string ErrorCallMethodAuthenticateUser = "'AuthenticateUser' method call error ";
-        public static readonly string ErrorCallMethodGetQueryGroups = "'GetQueryGroups' method call error ";
-        public static readonly string ErrorCallMethodGetQueryMetadata = "'GetQueryMetadata' method call error ";
-        public static readonly string TokenStationsCalcCoverageNotFound = "Token for query code 'StationsCalcCoverage' not found";
-        public static readonly string TokenResultCalcCoverageNotFound = "Token for query code 'ResultCalcCoverage' not found";
-        public static readonly string BlockCodeOperatorAndStatusConfigIsNull = "Block 'CodeOperatorAndStatusConfig' is null";
-        public static readonly string CountBlock_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigEqualZero = "Count blocks CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig equal zero";
-        public static readonly string Block_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigIsNull = "Block CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig is null";
-        public static readonly string ICSTelecomProjectFileIsNullOrEmpty = "Project file name of ICS Telecom is null or empty";
-        public static readonly string ErrorCopyStationsIntoEwxFile = "An error occurred while copying stations to the EWX file (for Radiotech = '{0}' and Province = '{1}') ";
-        public static readonly string ErrorCopyStationsIntoEwxFile2 = "An error occurred while copying stations to the EWX file (for FreqConfig = '{0}' and Province = '{1}'))";
-        public static readonly string Block_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigIsNull = "Block CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig is null";
-        public static readonly string CountBlock_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigEqualZero = "Count blocks CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig equal zero";
+        public static readonly string FinalCoverageFileTifNotWritenIntoDB = "Остаточний файл покриття не був записаний у базу даних, оскільки його не було знайдено по шляху '{0}'";
+        public static readonly string FinalCoverageFileTifNotWritenIntoPath = "Остаточний файл покриття не було збережено по шляху '{0}' (для Radiotech = '{1}')";
+        public static readonly string FinalCoverageFileTifNotWritenIntoPath2 = "Остаточний файл покриття не було збережено  по шляху '{0}' (для FreqConfig = '{1}')";
+        public static readonly string OccurredWhilePreparingTemporaryImageTIF = "Під час підготовки тимчасових файлів зображень (TIF) сталася помилка, яка є результатом операції поєднання вмісту  файлу TIF-бланку та розрахункових файлів покриття (для Radiotech = '{0}')";
+        public static readonly string OccurredWhilePreparingTemporaryImageTIF2 = "Під час підготовки тимчасових файлів зображень (TIF) сталася помилка, яка є результатом операції поєднання вмісту файлу TIF-бланку та розрахункових файлів покриття (для FreqConfig = '{0}')";
+        public static readonly string ResultRequestWebQueryEmptyRecordset = "Результатом запиту до WebQuery є порожній набір ";
+        public static readonly string CodeOperatorAndStatusConfigBlockIsEmpty = "Блок 'CodeOperatorAndStatusConfig' у конфігураційному файлі порожній";
+        public static readonly string CountCodeOperatorAndStatusConfigBlocksLengthZero = "Кількість блоків 'CodeOperatorAndStatusConfig' дорівнює нулю";
+        public static readonly string ErrorCallMethodAuthenticateUser = "Помилка виклику методу 'AuthenticateUser'";
+        public static readonly string ErrorCallMethodGetQueryGroups = "Помилка виклику методу 'GetQueryGroups' ";
+        public static readonly string ErrorCallMethodGetQueryMetadata = "Помилка виклику методу 'GetQueryMetadata'";
+        public static readonly string TokenStationsCalcCoverageNotFound = "Токен для коду запиту 'StationsCalcCoverage' не знайдено";
+        public static readonly string TokenResultCalcCoverageNotFound = "Токен для коду запиту 'ResultCalcCoverage' не знайдено";
+        public static readonly string BlockCodeOperatorAndStatusConfigIsNull = "Блок 'CodeOperatorAndStatusConfig' є пустим";
+        public static readonly string CountBlock_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigEqualZero = "Кількість блоків CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig дорівнює нулю";
+        public static readonly string Block_CodeOperatorAndStatusConfig_StandardConfig_provincesConfigIsNull = "Блок CodeOperatorAndStatusConfig.StandardConfig.ProvincesConfig є пустим";
+        public static readonly string ICSTelecomProjectFileIsNullOrEmpty = "Ім'я файлу проекту ICS Telecom відстунє або порожнє";
+        public static readonly string ErrorCopyStationsIntoEwxFile = "Під час копіювання станцій у файл EWX сталася помилка (для Radiotech = '{0}' та Province = '{1}')";
+        public static readonly string ErrorCopyStationsIntoEwxFile2 = "Під час копіювання станцій у файл EWX сталася помилка(для FreqConfig = '{0}' та Province = '{1}')";
+        public static readonly string Block_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigIsNull = "Блок CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig відстуній або порожній";
+        public static readonly string CountBlock_CodeOperatorAndStatusConfig_FreqConfig_provincesConfigEqualZero = "Кількість блоків CodeOperatorAndStatusConfig.FreqConfig.ProvincesConfig дорівнює нулю";
 
 
     }
