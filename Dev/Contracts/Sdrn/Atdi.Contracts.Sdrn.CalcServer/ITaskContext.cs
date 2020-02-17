@@ -12,7 +12,7 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 
 		CalculationStatus Status { get; }
 
-		int TaskId { get; }
+		long TaskId { get; }
 
 		void SendEvent(ICalcEvent @event);
 

@@ -47,6 +47,7 @@
     <Compile Include="ICalcContextHandle.cs" />
     <Compile Include="IDeepService.cs" />
     <Compile Include="IIterationHandler.cs" />
+    <Compile Include="IIterationsPool.cs" />
     <Compile Include="ITaskContext.cs" />
     <Compile Include="ITaskDispatcher.cs" />
     <Compile Include="ITaskHandler.cs" />
