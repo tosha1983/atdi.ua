@@ -265,7 +265,16 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                 System.Windows.Forms.MessageBox.Show("Unknown error", "Add association station by emitting faild!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
+        public static bool UpdateSensorTitle(long id, string title)
+        {
+            var result = Execute(contract => contract.UpdateSensorTitle(id, title));
 
+            if (!result)
+            {
+                System.Windows.Forms.MessageBox.Show("Unknown error", $"Update sensor with Id #{id}", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+            return result;
+        }
         public static OnlineMeasurementInitiationResult InitOnlineMeasurement(long sensorId, TimeSpan period)
         {
             var options = new OnlineMeasurementOptions

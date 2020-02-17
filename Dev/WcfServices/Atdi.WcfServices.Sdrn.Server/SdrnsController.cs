@@ -405,9 +405,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                 throw;
             }
         }
+        public bool UpdateSensorTitle(long id, string title)
+        {
+            var saveDb = new SaveSensor(_dataLayer, _logger);
+            return saveDb.UpdateSensorTitle(id, title);
+        }
     }
-   
-
 }
 
 
