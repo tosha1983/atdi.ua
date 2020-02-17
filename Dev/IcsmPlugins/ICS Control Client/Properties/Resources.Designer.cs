@@ -61,7 +61,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Association Station.
+        ///   Looks up a localized string similar to Add ICSM Station.
         /// </summary>
         public static string AddAssociationStation {
             get {
@@ -142,6 +142,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string ApplyCommand {
+            get {
+                return ResourceManager.GetString("ApplyCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Associated.
         /// </summary>
         public static string AssociatedCommand {
@@ -178,7 +187,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BandWidth Hz.
+        ///   Looks up a localized string similar to BW, Hz.
         /// </summary>
         public static string BandwidthHz {
             get {
@@ -187,7 +196,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bandwidth, kHz.
+        ///   Looks up a localized string similar to BW, kHz.
         /// </summary>
         public static string BandwidthKHz {
             get {
@@ -232,7 +241,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CentralFrequencyMeas, MHz.
+        ///   Looks up a localized string similar to Central Frequency, MHz.
         /// </summary>
         public static string CentralFrequencyMeasMHz {
             get {
@@ -241,7 +250,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CentralFrequency, MHz.
+        ///   Looks up a localized string similar to Central Frequency, MHz.
         /// </summary>
         public static string CentralFrequencyMHz {
             get {
@@ -250,7 +259,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CentrFreq, MHz      From.
+        ///   Looks up a localized string similar to Centr. Freq, MHz From.
         /// </summary>
         public static string CentrFreq_From {
             get {
@@ -277,7 +286,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ChannelNumber.
+        ///   Looks up a localized string similar to Channel Number.
         /// </summary>
         public static string ChannelNumber {
             get {
@@ -367,7 +376,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CorrectnessEstimations.
+        ///   Looks up a localized string similar to Correctness Estimations.
         /// </summary>
         public static string CorrectnessEstimations {
             get {
@@ -385,7 +394,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CountStationMeasurements.
+        ///   Looks up a localized string similar to Number of stations.
         /// </summary>
         public static string CountStationMeasurements {
             get {
@@ -394,7 +403,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CountUnknownStationMeasurements.
+        ///   Looks up a localized string similar to Number of unknown stations.
         /// </summary>
         public static string CountUnknownStationMeasurements {
             get {
@@ -403,7 +412,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CreatedBy.
+        ///   Looks up a localized string similar to Created By.
         /// </summary>
         public static string CreatedBy {
             get {
@@ -430,7 +439,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CurentPower, dBm.
+        ///   Looks up a localized string similar to Curent Power, dBm.
         /// </summary>
         public static string CurentPowerDBm {
             get {
@@ -439,7 +448,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DateCreated.
+        ///   Looks up a localized string similar to Date Created.
         /// </summary>
         public static string DateCreated {
             get {
@@ -520,7 +529,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DesigEmission.
+        ///   Looks up a localized string similar to Design Emission.
         /// </summary>
         public static string DesigEmission {
             get {
@@ -529,7 +538,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detailed measurements of the emission bandwith.
+        ///   Looks up a localized string similar to Detailed measurements BW.
         /// </summary>
         public static string DetailedMeasurementsOfTheEmissionBandwith {
             get {
@@ -583,7 +592,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EmissionFreq, MHz.
+        ///   Looks up a localized string similar to Emission Freq, MHz.
         /// </summary>
         public static string EmissionFreqMHz {
             get {
@@ -610,7 +619,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ExecutionMode.
+        ///   Looks up a localized string similar to Execution Mode.
         /// </summary>
         public static string ExecutionMode {
             get {
@@ -727,7 +736,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get CSV.
+        ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string GetCSV {
             get {
@@ -736,7 +745,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Graphic.
+        ///   Looks up a localized string similar to Graphic.
         /// </summary>
         public static string GetGraphic {
             get {
@@ -745,7 +754,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GlobalSID.
+        ///   Looks up a localized string similar to Global SID.
         /// </summary>
         public static string GlobalSID {
             get {
@@ -772,7 +781,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to HitCount.
+        ///   Looks up a localized string similar to Hit Count.
         /// </summary>
         public static string HitCount {
             get {
@@ -781,7 +790,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Icsm Id.
+        ///   Looks up a localized string similar to ICSM ID.
         /// </summary>
         public static string IcsmID {
             get {
@@ -790,7 +799,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Icsm Table.
+        ///   Looks up a localized string similar to ICSM Table.
         /// </summary>
         public static string IcsmTable {
             get {
@@ -799,7 +808,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Id.
+        ///   Looks up a localized string similar to ID.
         /// </summary>
         public static string Id {
             get {
@@ -808,7 +817,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Identification Station.
+        ///   Looks up a localized string similar to Station ID.
         /// </summary>
         public static string IdentificationStation {
             get {
@@ -817,7 +826,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IdMeasDevice.
+        ///   Looks up a localized string similar to Device ID.
         /// </summary>
         public static string IdMeasDevice {
             get {
@@ -826,7 +835,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IdSector.
+        ///   Looks up a localized string similar to Sector ID.
         /// </summary>
         public static string IdSector {
             get {
@@ -835,7 +844,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IdStation.
+        ///   Looks up a localized string similar to Station ID.
         /// </summary>
         public static string IdStation {
             get {
@@ -907,7 +916,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Level for Bandwith estimation.
+        ///   Looks up a localized string similar to Level for BW estimation.
         /// </summary>
         public static string LevelForBandwithEstimation {
             get {
@@ -916,7 +925,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LevelMeasurements.
+        ///   Looks up a localized string similar to Level Measurements.
         /// </summary>
         public static string LevelMeasurements {
             get {
@@ -961,7 +970,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LowerFreq.
+        ///   Looks up a localized string similar to Lower Freq.
         /// </summary>
         public static string LowerFreq {
             get {
@@ -970,7 +979,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LowFreq.
+        ///   Looks up a localized string similar to Low Freq.
         /// </summary>
         public static string LowFreq {
             get {
@@ -1024,7 +1033,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Margin for Reference Level calculation, dB.
+        ///   Looks up a localized string similar to Margin, dB.
         /// </summary>
         public static string MarginForReferenceLevelCalculationDB {
             get {
@@ -1042,7 +1051,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum frequency deviation.
+        ///   Looks up a localized string similar to Max freq. deviation.
         /// </summary>
         public static string MaximumFrequencyDeviation {
             get {
@@ -1051,7 +1060,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MaxPower.
+        ///   Looks up a localized string similar to Max power.
         /// </summary>
         public static string MaxPower {
             get {
@@ -1069,7 +1078,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MeanDeviationFromReference.
+        ///   Looks up a localized string similar to Mean Deviation From Reference.
         /// </summary>
         public static string MeanDeviationFromReference {
             get {
@@ -1078,7 +1087,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MeasGlobalSid.
+        ///   Looks up a localized string similar to Global SID.
         /// </summary>
         public static string MeasGlobalSID {
             get {
@@ -1087,7 +1096,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Meas task.
+        ///   Looks up a localized string similar to Task.
         /// </summary>
         public static string MeasTask {
             get {
@@ -1096,7 +1105,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MeasTaskId.
+        ///   Looks up a localized string similar to Task ID.
         /// </summary>
         public static string MeasTaskId {
             get {
@@ -1105,7 +1114,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Meas tasks.
+        ///   Looks up a localized string similar to Measurements tasks.
         /// </summary>
         public static string MeasTasks {
             get {
@@ -1177,7 +1186,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of steps for measurements in channel.
+        ///   Looks up a localized string similar to Steps in channel.
         /// </summary>
         public static string NumberOfStepsForMeasurementsInChannel {
             get {
@@ -1204,11 +1213,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OffsetFrequency, 10^-6.
+        ///   Looks up a localized string similar to Offset Frequency, 10^-6.
         /// </summary>
         public static string OffsetFrequency10x6 {
             get {
                 return ResourceManager.GetString("OffsetFrequency10x6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On-line.
+        /// </summary>
+        public static string OnLine {
+            get {
+                return ResourceManager.GetString("OnLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On-line measurement.
+        /// </summary>
+        public static string OnLineCommand {
+            get {
+                return ResourceManager.GetString("OnLineCommand", resourceCulture);
             }
         }
         
@@ -1231,7 +1258,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Perc. of intersection of spectrums to combine emissions.
+        ///   Looks up a localized string similar to % spectrums intersection.
         /// </summary>
         public static string PercOfIntersectionOfSpectrumsToCombineEmissions {
             get {
@@ -1240,7 +1267,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Perc. of intersection of spectrums to combine emissions (low level signals).
+        ///   Looks up a localized string similar to % for low level signal.
         /// </summary>
         public static string PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals {
             get {
@@ -1258,7 +1285,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PersentAvailability.
+        ///   Looks up a localized string similar to Persent Availability.
         /// </summary>
         public static string PersentAvailability {
             get {
@@ -1267,7 +1294,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PointsNumber.
+        ///   Looks up a localized string similar to Points Number.
         /// </summary>
         public static string PointsNumber {
             get {
@@ -1303,7 +1330,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refersh Meas Tasks.
+        ///   Looks up a localized string similar to Refersh Tasks.
         /// </summary>
         public static string RefershMeasTasks {
             get {
@@ -1375,7 +1402,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RollOffFactor.
+        ///   Looks up a localized string similar to Roll Off Factor.
         /// </summary>
         public static string RollOffFactor {
             get {
@@ -1402,7 +1429,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ScansNumber.
+        ///   Looks up a localized string similar to Scans Number.
         /// </summary>
         public static string ScansNumber {
             get {
@@ -1420,7 +1447,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensor Ids.
+        ///   Looks up a localized string similar to Sensor ID.
         /// </summary>
         public static string SensorIds {
             get {
@@ -1447,7 +1474,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SensorTechId.
+        ///   Looks up a localized string similar to Sensor Tech ID.
         /// </summary>
         public static string SensorTechId {
             get {
@@ -1483,7 +1510,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SignalLevel, dBm.
+        ///   Looks up a localized string similar to Signal/Level, dBm.
         /// </summary>
         public static string SignalLevelDBm {
             get {
@@ -1510,7 +1537,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spectrum coefficient from Emission.
+        ///   Looks up a localized string similar to Spectrum coefficient.
         /// </summary>
         public static string SpectrumCoefficientFromEmission {
             get {
@@ -1519,7 +1546,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spectrum Occupation Parameters.
+        ///   Looks up a localized string similar to Spectrum occupation parameters.
         /// </summary>
         public static string SpectrumOccupationParameters {
             get {
@@ -1537,7 +1564,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to StandardBW.
+        ///   Looks up a localized string similar to Standard BW.
         /// </summary>
         public static string StandardBW {
             get {
@@ -1555,7 +1582,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to StartEmitting.
+        ///   Looks up a localized string similar to Start Emitting.
         /// </summary>
         public static string StartEmitting {
             get {
@@ -1591,7 +1618,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to StationsNumber.
+        ///   Looks up a localized string similar to Stations Number.
         /// </summary>
         public static string StationsNumber {
             get {
@@ -1618,20 +1645,20 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Step, kHz.
+        /// </summary>
+        public static string StepkHz {
+            get {
+                return ResourceManager.GetString("StepkHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Step of spectrum, kHz.
         /// </summary>
         public static string StepOfSpectrumkHz {
             get {
                 return ResourceManager.GetString("StepOfSpectrumkHz", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Step whith, kHz.
-        /// </summary>
-        public static string StepWhithkHz {
-            get {
-                return ResourceManager.GetString("StepWhithkHz", resourceCulture);
             }
         }
         
@@ -1645,7 +1672,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to StopEmitting.
+        ///   Looks up a localized string similar to Stop Emitting.
         /// </summary>
         public static string StopEmitting {
             get {
@@ -1672,7 +1699,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SubTaskId.
+        ///   Looks up a localized string similar to SubTask ID.
         /// </summary>
         public static string SubTaskId {
             get {
@@ -1681,7 +1708,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SumHitCount.
+        ///   Looks up a localized string similar to Sum Hit Count.
         /// </summary>
         public static string SumHitCount {
             get {
@@ -1726,7 +1753,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TaskId.
+        ///   Looks up a localized string similar to Task ID.
         /// </summary>
         public static string TaskId {
             get {
@@ -1753,7 +1780,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Task Type.
+        ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string TaskType {
             get {
@@ -1762,7 +1789,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The maximum number of scan per day.
+        ///   Looks up a localized string similar to Scan/day.
         /// </summary>
         public static string TheMaximumNumberOfScanPerDay {
             get {
@@ -1789,7 +1816,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of points in the channel during scanning.
+        ///   Looks up a localized string similar to Points in the channel .
         /// </summary>
         public static string TheNumberOfPointsInTheChannelDuringScanning {
             get {
@@ -1798,7 +1825,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TimeFinishMeas.
+        ///   Looks up a localized string similar to Time Finish.
         /// </summary>
         public static string TimeFinishMeas {
             get {
@@ -1816,7 +1843,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time meas.
+        ///   Looks up a localized string similar to Time.
         /// </summary>
         public static string TimeMeas {
             get {
@@ -1834,7 +1861,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TimeStartMeas.
+        ///   Looks up a localized string similar to Time Start.
         /// </summary>
         public static string TimeStartMeas {
             get {
@@ -1861,6 +1888,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To.
         /// </summary>
         public static string To {
@@ -1870,7 +1906,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TraceCount.
+        ///   Looks up a localized string similar to Trace Count.
         /// </summary>
         public static string TraceCount {
             get {
@@ -1879,7 +1915,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TriggerDeviationFromReference.
+        ///   Looks up a localized string similar to Trigger Deviation From Reference.
         /// </summary>
         public static string TriggerDeviationFromReference {
             get {
@@ -1888,7 +1924,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TypeMeasurements.
+        ///   Looks up a localized string similar to Type Measurements.
         /// </summary>
         public static string Type_Measurements {
             get {
@@ -1897,7 +1933,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TypeMeasurements.
+        ///   Looks up a localized string similar to Type Measurements.
         /// </summary>
         public static string TypeMeasurements {
             get {
@@ -1915,7 +1951,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TypeSpectrumOccupation.
+        ///   Looks up a localized string similar to Type Spectrum Occupation.
         /// </summary>
         public static string TypeSpectrumOccupation {
             get {
@@ -1924,7 +1960,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UpFreq.
+        ///   Looks up a localized string similar to Up Freq.
         /// </summary>
         public static string UpFreq {
             get {
@@ -1942,7 +1978,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UpperFreq.
+        ///   Looks up a localized string similar to Upper Freq.
         /// </summary>
         public static string UpperFreq {
             get {
@@ -1951,7 +1987,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using correlation analysis.
+        ///   Looks up a localized string similar to Correlation analysis.
         /// </summary>
         public static string UsingCorrelationAnalysis {
             get {
@@ -1960,7 +1996,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using smoothing trace for analysis.
+        ///   Looks up a localized string similar to Smoothing trace.
         /// </summary>
         public static string UsingSmoothingTraceForAnalysis {
             get {

@@ -262,7 +262,7 @@
                           </TextBox.Style>
                         </TextBox>
                         
-                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepWhithkHz}">
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepkHz}">
                           <!--<Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -1139,20 +1139,21 @@
                     </Grid.RowDefinitions>
                     <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
                       <DataGrid.Columns>
-                          <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Adm" Binding="{Binding Path=Administration}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Network" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="LowFreq" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="UpFreq" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Equipment" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="SN" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Antenna" Binding="{Binding Path=AntName}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Gain" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="Bring into use" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
-                          <DataGridTextColumn Header="End of use" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
                       </DataGrid.Columns>
                       <DataGrid.InputBindings>
                         <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickSensorCommand}" CommandParameter="{Binding ShortSensors/}"/>

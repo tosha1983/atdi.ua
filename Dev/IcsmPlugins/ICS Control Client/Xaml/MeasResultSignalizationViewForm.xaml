@@ -174,8 +174,8 @@
               </Grid.RowDefinitions>
               <DataGrid x:Name="GridWorkTimes" Grid.Column="0" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding EmittingWorkTimes}">
                 <DataGrid.Columns>
-                  <DataGridTextColumn Header="{x:Static res:Resources.StartEmitting}" Binding="{Binding Path=StartEmitting}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="{x:Static res:Resources.StopEmitting}" Binding="{Binding Path=StopEmitting}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.StartEmitting}" Binding="{Binding Path=StartEmitting, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.StopEmitting}" Binding="{Binding Path=StopEmitting, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.HitCount}" Binding="{Binding Path=HitCount}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.PersentAvailability}" Binding="{Binding Path=PersentAvailability}"></DataGridTextColumn>
                 </DataGrid.Columns>

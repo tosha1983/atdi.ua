@@ -18,6 +18,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
     {
         long? SensorIdentifierId { get; set; }
         string Status { get; set; }
+        string Title { get; set; }
         string Name { get; set; }
         string Administration { get; set; }
         string NetworkId { get; set; }

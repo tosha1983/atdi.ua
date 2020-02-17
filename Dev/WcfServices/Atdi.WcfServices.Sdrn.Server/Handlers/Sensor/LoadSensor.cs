@@ -760,6 +760,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderSelectSensor.Select(c => c.DateCreated);
                 builderSelectSensor.Select(c => c.EouseDate);
                 builderSelectSensor.Select(c => c.Name);
+                builderSelectSensor.Select(c => c.Title);
                 builderSelectSensor.Select(c => c.NetworkId);
                 builderSelectSensor.Select(c => c.RxLoss);
                 builderSelectSensor.Select(c => c.Status);
@@ -776,13 +777,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                         val.DateCreated = reader.GetValue(c => c.DateCreated);
                         val.EouseDate = reader.GetValue(c => c.EouseDate);
                         val.Name = reader.GetValue(c => c.Name);
+                        val.Title = reader.GetValue(c => c.Title);
                         val.NetworkId = reader.GetValue(c => c.NetworkId);
                         val.RxLoss = reader.GetValue(c => c.RxLoss);
                         val.Status = reader.GetValue(c => c.Status);
                         val.Id = new SensorIdentifier();
                         val.Id.Value = reader.GetValue(c => c.Id);
-
-
 
                         var builderSelectSensorAntenna = this._dataLayer.GetBuilder<MD.ISensorAntenna>().From();
                         builderSelectSensorAntenna.Select(c => c.GainMax);
