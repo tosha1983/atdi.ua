@@ -28,6 +28,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             double? CorrelationFactor = null;
             bool? CheckFreqChannel = null;
             bool? AnalyzeByChannel = null;
+            bool? CollectEmissionInstrumentalEstimation = null;
             bool? AnalyzeSysInfoEmission = null;
             bool? DetailedMeasurementsBWEmission = null;
             string Standard = null;
@@ -69,6 +70,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                 {
                     AnalyzeByChannel = configMessaging.AnalyzeByChannel;
                 }
+
+                ///////////// CollectEmissionInstrumentalEstimation /////////////
+                if (taskSDR.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation != null)
+                {
+                    CollectEmissionInstrumentalEstimation = taskSDR.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
+                }
+                else
+                {
+                    CollectEmissionInstrumentalEstimation = false;
+                }
+
+                
 
                 ///////////// AnalyzeSysInfoEmission /////////////
                 if (taskSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
@@ -365,6 +378,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             }
             else
             {
+                CollectEmissionInstrumentalEstimation = false;
                 CompareTraceJustWithRefLevels = configMessaging.CompareTraceJustWithRefLevels;
                 FiltrationTrace = configMessaging.FiltrationTrace;
                 allowableExcess_dB = configMessaging.allowableExcess_dB;
@@ -413,6 +427,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             {
                 signalingMeasTask.AnalyzeByChannel = AnalyzeByChannel.Value;
             }
+            if (CollectEmissionInstrumentalEstimation != null)
+            {
+                signalingMeasTask.CollectEmissionInstrumentalEstimation = CollectEmissionInstrumentalEstimation.Value;
+            }
+
             if (AnalyzeSysInfoEmission != null)
             {
                 signalingMeasTask.AnalyzeSysInfoEmission = AnalyzeSysInfoEmission.Value;
