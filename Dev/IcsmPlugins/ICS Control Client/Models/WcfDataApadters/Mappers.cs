@@ -225,6 +225,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Standard = source.SignalingMeasTaskParameters.Standard,
                 triggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? null : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz,
                 IsAutoTriggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999),
+                CollectEmissionInstrumentalEstimation = source.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation,
 
                 CrossingBWPercentageForBadSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals.ToNull(),
                 CrossingBWPercentageForGoodSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.ToNull(),
@@ -242,7 +243,6 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 NumberIgnoredPoints = source.SignalingMeasTaskParameters.InterruptionParameters.NumberIgnoredPoints.ToNull(),
                 NumberPointForChangeExcess = source.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.ToNull(),
                 windowBW = source.SignalingMeasTaskParameters.InterruptionParameters.windowBW.ToNull(),
-
 
                 MeasFreqParamMeasFreqs = (source.MeasFreqParam.MeasFreqs ?? (new SDR.MeasFreq[] { })).Select(i => i.Freq).ToArray(),
                 MeasFreqParamMode = source.MeasFreqParam.Mode,

@@ -340,6 +340,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collect emission for instrumental estimation.
+        /// </summary>
+        public static string CollectEmissionForInstrumentalEstimation {
+            get {
+                return ResourceManager.GetString("CollectEmissionForInstrumentalEstimation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compare with emission on other sensors.
         /// </summary>
         public static string CompareWithEmissionOnOtherSensors {

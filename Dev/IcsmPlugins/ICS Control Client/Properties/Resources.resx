@@ -785,4 +785,7 @@
   <data name="EditSensorTitle" xml:space="preserve">
     <value>Edit sensor title</value>
   </data>
+  <data name="CollectEmissionForInstrumentalEstimation" xml:space="preserve">
+    <value>Collect emission for instrumental estimation</value>
+  </data>
 </root>
