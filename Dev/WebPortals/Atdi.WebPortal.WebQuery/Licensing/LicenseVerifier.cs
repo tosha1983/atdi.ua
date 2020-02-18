@@ -27,6 +27,11 @@ namespace Atdi.WebPortal.WebQuery.Licensing
                 {
                     return typeof(LicenseData2);
                 }
+
+                if (typeName == "Atdi.Modules.Licensing.LicenseLimitationTerms")
+                {
+	                return typeof(LicenseLimitationTerms);
+				}
                 var type = Type.GetType(String.Format("{0}, {1}", typeName, assemblyName));
                 return type;
             }

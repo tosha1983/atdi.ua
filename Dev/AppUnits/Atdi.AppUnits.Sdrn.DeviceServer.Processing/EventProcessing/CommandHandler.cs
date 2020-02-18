@@ -16,21 +16,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
     /// 
     /// </summary>
     public class CommandHandler<Task, Process>
-        where Task: MeasurementTaskBase
-        where Process: IProcess
+        where Task : MeasurementTaskBase
+        where Process : IProcess
     {
         private readonly ILogger _logger;
         private readonly ConfigProcessing _config;
         private readonly IRepository<TaskParameters, string> _repositoryTaskParametersByString;
 
-        public CommandHandler(ILogger logger,  IRepository<TaskParameters, string> repositoryTaskParametersByString,  ConfigProcessing config)
+        public CommandHandler(ILogger logger, IRepository<TaskParameters, string> repositoryTaskParametersByString, ConfigProcessing config)
         {
             this._logger = logger;
             this._config = config;
             this._repositoryTaskParametersByString = repositoryTaskParametersByString;
         }
 
-        public bool StartCommand(TaskParameters tskParam,  List<ITaskContext<Task, Process>> contextTasks,  Action action,  ref List<TaskParameters> listDeferredTasks, ref List<string> listRunTask, int cntActiveTaskParameters)
+        public bool StartCommand(TaskParameters tskParam, List<ITaskContext<Task, Process>> contextTasks, Action action, ref List<TaskParameters> listDeferredTasks, ref List<string> listRunTask, int cntActiveTaskParameters)
         {
             bool isSuccess = true;
             try
@@ -142,7 +142,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 tskParam.status = StatusTask.F.ToString();
                                 action.Invoke();
                                 //System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
-                                
+
                                 this._repositoryTaskParametersByString.Update(tskParam);
                             }
                             else
@@ -151,6 +151,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 {
                                     tskParam.status = StatusTask.C.ToString();
                                     this._repositoryTaskParametersByString.Update(tskParam);
+                                }
+                                else
+                                {
+                                    if (tskParam.StartTime.Value > DateTime.Now)
+                                    {
+                                        var findDefferedTask = listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
+                                        if (findDefferedTask == null)
+                                        {
+                                            listDeferredTasks.Add(tskParam);
+                                        }
+                                    }
                                 }
                             }
                         }

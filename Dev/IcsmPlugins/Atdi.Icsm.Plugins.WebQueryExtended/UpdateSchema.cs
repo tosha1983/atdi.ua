@@ -91,9 +91,16 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("SECTOR_NUMBER", "VARCHAR(1)", null, null, null);
                 s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
                 s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
-                s.DeclareField("IDENT_REZ", "VARCHAR(100)", null, null, null);
-                s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
-                s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
+                s.DeclareField("IDENT_REZ", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EDE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("DE_S_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("TX_FREQ_SIMPLE", "NUMBER(22,8)", null, null, null);
+                //s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
+                //s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
             }
 
             //===============================================
@@ -113,6 +120,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("DOZV_DATE_FROM", "DATE", "Date", null, null);
                 s.DeclareField("DOZV_DATE_TO", "DATE", "Date", null, null);
                 s.DeclareField("DOZV_DATE_CANCEL", "DATE", "Date", null, null);
+                s.DeclareField("STATION_NAME", "VARCHAR(100)", null, null, null);
                 s.DeclareField("EM_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("EQUIP_NAME", "VARCHAR(50)", null, null, null);
                 s.DeclareField("EQUIP_ID", "NUMBER(9,0)", null, null, null);
@@ -127,6 +135,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("LATITUDE", "NUMBER(10,6)", null, null, null);
                 s.DeclareField("PROVINCE", "VARCHAR(50)", null, null, null);
                 s.DeclareField("POWER", "NUMBER(22,8)", null, null, null);
+                s.DeclareField("NPWR_ANT", "NUMBER(22,8)", null, null, null);
                 s.DeclareField("ANTENNA_NAME", "VARCHAR(50)", null, null, null);
                 s.DeclareField("ANTENNA_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("GAIN", "VARCHAR(274)", null, null, null);
@@ -144,9 +153,16 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("SECTOR_NUMBER", "VARCHAR(1)", null, null, null);
                 s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
                 s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
-                s.DeclareField("IDENT_REZ", "VARCHAR(100)", null, null, null);
-                s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
-                s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
+                s.DeclareField("IDENT_REZ", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EDE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("DE_S_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("TX_FREQ_SIMPLE", "NUMBER(22,8)", null, null, null);
+                //s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
+                //s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
 
             }
 
@@ -185,9 +201,15 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("DES_EMISSION", "VARCHAR(9)", null, null, null);
                 s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
                 s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
-                s.DeclareField("IDENT_REZ", "VARCHAR(10)", null, null, null);
-                s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
-                s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
+                s.DeclareField("IDENT_REZ", "VARCHAR(50)", null, null, null);
+                s.DeclareField("EDE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("DE_S_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
+                //s.DeclareField("SCANPATH_CONC", "VARCHAR(500)", null, null, null);
+                //s.DeclareField("SCANPATH_DOZV", "VARCHAR(500)", null, null, null);
             }
 
             //===============================================
@@ -216,6 +238,56 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("PROVINCE", "VARCHAR(1000)", null, null, null);
                 s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
                 s.DeclareField("COUNT_APPL", "NUMBER(9,0)", null, null, null);
+            }
+
+            //===============================================
+            CreateViewForAccess(s, "XV_WEB_LICENCE_CHANNEL", "WebQuery_Licence_Channel_View", plugin3, "LICENCE", "WebQuery_Licence_Channel");
+            {
+                //s.DeclareField("ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("STANDARD", "VARCHAR(10)", null, null, null);
+                s.DeclareField("RADIOTECH_NAME", "VARCHAR(255)", null, null, null);
+                s.DeclareField("OWNER_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
+                s.DeclareField("NUMBER_LIC", "VARCHAR(50)", null, null, null);
+                s.DeclareField("STATUS_LIC", "VARCHAR(1)", null, null, null);
+                s.DeclareField("ISSUED_BY", "VARCHAR(7)", null, null, null);
+                s.DeclareField("SINGING_DATE", "DATE", "Date", null, null);
+                s.DeclareField("START_DATE", "DATE", "Date", null, null);
+                s.DeclareField("STOP_DATE", "DATE", "Date", null, null);
+                s.DeclareField("END_DATE", "DATE", "Date", null, null);
+                s.DeclareField("PLAN_NAME", "VARCHAR(50)", null, null, null);
+                s.DeclareField("AREA_NAME", "VARCHAR(255)", null, null, null);
+                s.DeclareField("CHANNELS", "VARCHAR(2000)", null, null, null);
+            }
+
+            CreateViewForAccess(s, "XV_WEB_DOCFILES", "WebQuery_WebDocFiles_View", plugin3, "LICENCE", "WebQuery_DocFiles");
+            {
+                s.DeclareField("NID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("SSTANDARD", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SIEEE", "VARCHAR(100)", null, null, null);
+                s.DeclareField("SSPECIAL_STATE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SAPPL_TYPE", "VARCHAR(20)", null, null, null);
+                s.DeclareField("SSTATUS", "VARCHAR(4)", null, null, null);
+                s.DeclareField("NOWNER_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("SUSER_NAME", "VARCHAR(200)", null, null, null);
+                s.DeclareField("SEDRPOU", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SCITY", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SSUBPROVINCE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SPROVINCE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SADM_CODE", "VARCHAR(50)", null, null, null);
+                s.DeclareField("SCONC_NUM", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DCONC_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("DCONC_DATE_TO", "DATE", "Date", null, null);
+                s.DeclareField("SDOZV_NUM", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DDOZV_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("DDOZV_DATE_TO", "DATE", "Date", null, null);
+                s.DeclareField("DDOZV_DATE_CANCEL", "DATE", "Date", null, null);
+                s.DeclareField("EDE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("SDE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("SVE_ID", "NUMBER(9,0)", null, null, null);
             }
         }
 

@@ -10,17 +10,17 @@ namespace Atdi.AppUnits.Sdrn.BusController
 {
     internal sealed class Compressor
     {
-        private static void CopyTo(Stream src, Stream dest)
-        {
-            byte[] bytes = new byte[4096];
+        //private static void CopyTo(Stream src, Stream dest)
+        //{
+        //    byte[] bytes = new byte[4096];
 
-            int cnt;
+        //    int cnt;
 
-            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
-            {
-                dest.Write(bytes, 0, cnt);
-            }
-        }
+        //    while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+        //    {
+        //        dest.Write(bytes, 0, cnt);
+        //    }
+        //}
 
         public static byte[] Compress(byte[] bytes)
         {
@@ -33,15 +33,16 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 return new byte[] { };
             }
 
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+            //using (var msi = new MemoryStream(bytes))
+            using (var compressedStream = new MemoryStream())
             {
-                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                using (var gs = new GZipStream(compressedStream, CompressionMode.Compress))
                 {
-                    CopyTo(msi, gs);
+					gs.Write(bytes, 0, bytes.Length);
+	                //CopyTo(msi, gs);
                 }
 
-                return mso.ToArray();
+                return compressedStream.ToArray();
             }
         }
 
@@ -49,45 +50,46 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             var bytes = Encoding.UTF8.GetBytes(source);
 
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+            //using (var msi = new MemoryStream(bytes))
+            using (var compressedStream = new MemoryStream())
             {
-                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                using (var gs = new GZipStream(compressedStream, CompressionMode.Compress))
                 {
-                    CopyTo(msi, gs);
+	                gs.Write(bytes, 0, bytes.Length);
+					//CopyTo(msi, gs);
                 }
 
-                return Convert.ToBase64String(mso.ToArray());
+                return Convert.ToBase64String(compressedStream.ToArray());
             }
         }
 
         public static byte[] Decompress(byte[] bytes)
         {
 
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+            using (var compressedStream = new MemoryStream(bytes))
+            using (var resultStream = new MemoryStream())
             {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+                using (var gzipStream  = new GZipStream(compressedStream, CompressionMode.Decompress))
                 {
-                    CopyTo(gs, mso);
-                }
+	                gzipStream.CopyTo(resultStream);
+				}
 
-                return mso.ToArray();
+                return resultStream.ToArray();
             }
         }
 
         public static string Decompress(string source)
         {
             var bytes = Convert.FromBase64String(source);
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+            using (var compressedStream = new MemoryStream(bytes))
+            using (var resultStream = new MemoryStream())
             {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
+                using (var gzipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
                 {
-                    CopyTo(gs, mso);
-                }
+					gzipStream.CopyTo(resultStream);
+				}
 
-                return Encoding.UTF8.GetString(mso.ToArray());
+                return Encoding.UTF8.GetString(resultStream.ToArray());
             }
         }
     }

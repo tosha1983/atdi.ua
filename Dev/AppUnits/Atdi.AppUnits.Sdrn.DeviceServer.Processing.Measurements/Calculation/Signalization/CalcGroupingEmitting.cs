@@ -149,7 +149,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
-                if ((UkraineNationalMonitoring)&&(CorrelationAdaptation))
+                if ((UkraineNationalMonitoring) && (CorrelationAdaptation) && (emittingsTempTemp.Count < CountMaxEmission) && (emittingsSummaryTemp.Count < CountMaxEmission))
                 {
                     DeliteRedundantUncorrelationEmission(emittingsTempTemp, logger, NoiseLevel_dBm);
                     DeliteRedundantUncorrelationEmission(emittingsSummaryTemp, logger, NoiseLevel_dBm);
@@ -418,113 +418,121 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         }
                     }
                 }
-                // обединение масивов времени
-                if ((AttachableEmitting.WorkTimes != null) && (MasterEmitting.WorkTimes != null) && ((MasterEmitting.WorkTimes.Length == 1) || (AttachableEmitting.WorkTimes.Length == 1)))
+                //// обединение масивов времени
+                //if ((AttachableEmitting.WorkTimes != null) && (MasterEmitting.WorkTimes != null) && ((MasterEmitting.WorkTimes.Length == 1) || (AttachableEmitting.WorkTimes.Length == 1)))
+                //{
+                //    bool MasterISFirst;
+                //    if ((MasterEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes.Length == 1))
+                //    {
+                //        if (MasterEmitting.WorkTimes[0].StopEmitting < AttachableEmitting.WorkTimes[0].StopEmitting)
+                //        { MasterISFirst = true; }
+                //        else
+                //        { MasterISFirst = false; }
+                //    }
+                //    else
+                //    {
+                //        if (MasterEmitting.WorkTimes.Length == 1)
+                //        { MasterISFirst = false; }
+                //        else
+                //        { MasterISFirst = true; }
+                //    }
+                //    if (MasterISFirst)
+                //    {
+                //        TimeSpan timeSpan = AttachableEmitting.WorkTimes[0].StartEmitting - MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
+                //        if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
+                //        { // если пауза затянулась более TimeBetweenWorkTimes_sec
+                //            var workTimesTemp = MasterEmitting.WorkTimes.ToList();
+                //            if ((AttachableEmitting.WorkTimes[0].ScanCount == 0) && (AttachableEmitting.WorkTimes[0].TempCount == 0))
+                //            {
+                //                AttachableEmitting.WorkTimes[0].ScanCount = 1;
+                //            }
+                //            workTimesTemp.Add(AttachableEmitting.WorkTimes[0]);
+                //            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                //        }
+                //        else
+                //        { // если пауза не большая
+                //            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting = AttachableEmitting.WorkTimes[0].StopEmitting;
+                //            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount + AttachableEmitting.WorkTimes[0].HitCount;
+                //            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount + MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount
+                //                + AttachableEmitting.WorkTimes[0].ScanCount + AttachableEmitting.WorkTimes[0].TempCount;
+                //            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount = 0;
+                //            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].PersentAvailability = 100 * MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount / MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        TimeSpan timeSpan = MasterEmitting.WorkTimes[0].StartEmitting - AttachableEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
+                //        if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
+                //        { // если пауза затянулась более TimeBetweenWorkTimes_sec
+                //            var workTimesTemp = AttachableEmitting.WorkTimes.ToList();
+                //            if ((MasterEmitting.WorkTimes[0].ScanCount == 0) && (MasterEmitting.WorkTimes[0].TempCount == 0))
+                //            {
+                //                MasterEmitting.WorkTimes[0].ScanCount = 1;
+                //            }
+                //            workTimesTemp.Add(MasterEmitting.WorkTimes[0]);
+                //            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                //        }
+                //        else
+                //        { // если пауза не большая
+                //            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].StopEmitting = MasterEmitting.WorkTimes[0].StopEmitting;
+                //            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount = AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount + MasterEmitting.WorkTimes[0].HitCount;
+                //            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount = AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount + AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].TempCount
+                //                + MasterEmitting.WorkTimes[0].ScanCount + MasterEmitting.WorkTimes[0].TempCount;
+                //            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].TempCount = 0;
+                //            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].PersentAvailability = 100 * AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount / AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount;
+                //            var workTimesTemp = AttachableEmitting.WorkTimes.ToList();
+                //            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                // обединяем массивы
+                var workTimes1 = new List<WorkTime>();
+                if (MasterEmitting.WorkTimes != null)
                 {
-                    bool MasterISFirst;
-                    if ((MasterEmitting.WorkTimes.Length == 1) && (AttachableEmitting.WorkTimes.Length == 1))
-                    {
-                        if (MasterEmitting.WorkTimes[0].StopEmitting < AttachableEmitting.WorkTimes[0].StopEmitting)
-                        { MasterISFirst = true; }
-                        else
-                        { MasterISFirst = false; }
-                    }
-                    else
-                    {
-                        if (MasterEmitting.WorkTimes.Length == 1)
-                        { MasterISFirst = false; }
-                        else
-                        { MasterISFirst = true; }
-                    }
-                    if (MasterISFirst)
-                    {
-                        TimeSpan timeSpan = AttachableEmitting.WorkTimes[0].StartEmitting - MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
-                        if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
-                        { // если пауза затянулась более TimeBetweenWorkTimes_sec
-                            var workTimesTemp = MasterEmitting.WorkTimes.ToList();
-                            if ((AttachableEmitting.WorkTimes[0].ScanCount == 0) && (AttachableEmitting.WorkTimes[0].TempCount == 0))
-                            {
-                                AttachableEmitting.WorkTimes[0].ScanCount = 1;
-                            }
-                            workTimesTemp.Add(AttachableEmitting.WorkTimes[0]);
-                            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
-                        }
-                        else
-                        { // если пауза не большая
-                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting = AttachableEmitting.WorkTimes[0].StopEmitting;
-                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount + AttachableEmitting.WorkTimes[0].HitCount;
-                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount = MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount + MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount
-                                + AttachableEmitting.WorkTimes[0].ScanCount + AttachableEmitting.WorkTimes[0].TempCount;
-                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].TempCount = 0;
-                            MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].PersentAvailability = 100 * MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].HitCount / MasterEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].ScanCount;
-                        }
-                    }
-                    else
-                    {
-                        TimeSpan timeSpan = MasterEmitting.WorkTimes[0].StartEmitting - AttachableEmitting.WorkTimes[MasterEmitting.WorkTimes.Length - 1].StopEmitting;
-                        if (timeSpan.TotalSeconds > TimeBetweenWorkTimes_sec)
-                        { // если пауза затянулась более TimeBetweenWorkTimes_sec
-                            var workTimesTemp = AttachableEmitting.WorkTimes.ToList();
-                            if ((MasterEmitting.WorkTimes[0].ScanCount == 0) && (MasterEmitting.WorkTimes[0].TempCount == 0))
-                            {
-                                MasterEmitting.WorkTimes[0].ScanCount = 1;
-                            }
-                            workTimesTemp.Add(MasterEmitting.WorkTimes[0]);
-                            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
-                        }
-                        else
-                        { // если пауза не большая
-                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].StopEmitting = MasterEmitting.WorkTimes[0].StopEmitting;
-                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount = AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount + MasterEmitting.WorkTimes[0].HitCount;
-                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount = AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount + AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].TempCount
-                                + MasterEmitting.WorkTimes[0].ScanCount + MasterEmitting.WorkTimes[0].TempCount;
-                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].TempCount = 0;
-                            AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].PersentAvailability = 100 * AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].HitCount / AttachableEmitting.WorkTimes[AttachableEmitting.WorkTimes.Length - 1].ScanCount;
-                            var workTimesTemp = AttachableEmitting.WorkTimes.ToList();
-                            MasterEmitting.WorkTimes = workTimesTemp.ToArray();
-                        }
-                    }
+                    workTimes1 = MasterEmitting.WorkTimes.ToList();
                 }
-                else
+                var workTimes2 = new List<WorkTime>();
+                if (AttachableEmitting.WorkTimes != null)
                 {
-                    // обединяем массивы
-                    var workTimes1 = new List<WorkTime>();
-                    if (MasterEmitting.WorkTimes != null)
-                    {
-                        workTimes1 = MasterEmitting.WorkTimes.ToList();
-                    }
-                    var workTimes2 = new List<WorkTime>();
-                    if (AttachableEmitting.WorkTimes != null)
-                    {
-                        workTimes2 = AttachableEmitting.WorkTimes.ToList();
-                    }
-                    if ((workTimes2 != null) && (workTimes1 != null))
-                    {
-                        workTimes1.AddRange(workTimes2);
-                        var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
-                        var WorkTimes = NewWorkTimes.ToList();
+                    workTimes2 = AttachableEmitting.WorkTimes.ToList();
+                }
+                if ((workTimes2 != null) && (workTimes1 != null))
+                {
+                    workTimes1.AddRange(workTimes2);
+                    var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
+                    var WorkTimes = NewWorkTimes.ToList();
 
-                        // найдем и удалим пересечения 
-                        for (var i = 0; WorkTimes.Count - 1 > i; i++)
-                        {
-                            TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
-                            if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
-                            {// производим обединение и удаление лишнего
-                                WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
-                                if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
-                                {
-                                    WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting;
-                                }
-                                WorkTimes[i].ScanCount = WorkTimes[i].ScanCount + WorkTimes[i + 1].ScanCount + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount; ;
-                                WorkTimes[i].TempCount = 0;
-                                WorkTimes[i].PersentAvailability = 100 * WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
-                                WorkTimes.RemoveRange(i + 1, 1);
-                                i--;
+                    // найдем и удалим пересечения 
+                    for (var i = 0; WorkTimes.Count - 1 > i; i++)
+                    {
+                        TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
+                        if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
+                        {// производим обединение и удаление лишнего
+                            WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
+                            if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
+                            {
+                                WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting;
                             }
+
+                            WorkTimes[i].ScanCount = Math.Max(WorkTimes[i].ScanCount, 1) + Math.Max(WorkTimes[i + 1].ScanCount, 1) + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount; 
+                            WorkTimes[i].TempCount = 0;
+                            WorkTimes[i].PersentAvailability = 100 * WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
+                            WorkTimes.RemoveRange(i + 1, 1);
+                            i--;
                         }
-                        MasterEmitting.WorkTimes = WorkTimes.ToArray();
                     }
+                    for (var i = 0; WorkTimes.Count - 1 > i; i++)
+                    {
+                        if (WorkTimes[i].ScanCount == 0)
+                        {
+                            WorkTimes[i].ScanCount = 1;
+                        }
+                    }
+                    MasterEmitting.WorkTimes = WorkTimes.ToArray();
                 }
+                //}
                 // обединение уровней
                 // код не достежим
                 //if (TypeJoinSpectrum != 0)
@@ -712,108 +720,112 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         }
         private static void DeliteRedundantUncorrelationEmission(List<Emitting> emittings, ILogger logger, double NoiseLevel_dBm)
         { // НЕ ТЕСТИЛ по идее функция должна удалить все излучения оставив там какоето количество
-            // считаем количество излучений на частоте
-            var EmittingOnFreq = new int[emittings.Count];
-            int MaxNumber = 0;
-            for (var i = 0; emittings.Count > i; i++)
+          // считаем количество излучений на частоте
+            while (true)
             {
-                int count = 0;
-                for (var j = 0; emittings.Count > j; j++)
-                {
-                    if (i != j)
-                    {
-                        if (MatchCheckEmitting(emittings[i], emittings[j]))
-                        { count++; }
-                    }
-                }
-                EmittingOnFreq[i] = count;
-                if (count > MaxNumber) {MaxNumber = count;}
-            }
-            if (MaxNumber < MaxNumberEmitingOnFreq)
-            {
-                return; // выход поскольку все хорошо
-            }
-            // Надо ужимать пройдемся нет ли дублирующих сигналов
-            var CorrelationFactors = new double[emittings.Count];// В данном месте мы собираем максимальную кореляцию для сигнала по соотношению с другими сигналами
-            for (var i = 0; emittings.Count > i; i++)
-            {
-                double MaxCorelationFactors = 0;
-                for (int j = i + 1; emittings.Count > j; j++)
-                {
-                    bool existTheSameEmitting = MatchCheckEmitting(emittings[i], emittings[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor, out double RealCorrelation);
-                    if (existTheSameEmitting)
-                    {
-                        var em = emittings[i];
-                        JoinEmmiting(ref em, emittings[j], logger, NoiseLevel_dBm);
-                        emittings[i] = em;
-                        emittings.RemoveRange(j, 1);
-                        j--;
-                    }
-                    else
-                    {
-                        if ((RealCorrelation > MaxCorelationFactors)&&(RealCorrelation>-1))
-                        {
-                            MaxCorelationFactors = RealCorrelation;
-                        }
-                    }
-                }
-                CorrelationFactors[i] = MaxCorelationFactors;
-            }
-            // повторная оценка после сжатия
-            EmittingOnFreq = new int[emittings.Count];
-            MaxNumber = 0;
-            for (var i = 0; emittings.Count > i; i++)
-            {
-                int count = 0;
-                for (var j = 0; emittings.Count > j; j++)
-                {
-                    if (i != j)
-                    {
-                        if (MatchCheckEmitting(emittings[i], emittings[j]))
-                        { count++; }
-                    }
-                }
-                EmittingOnFreq[i] = count;
-                if (count > MaxNumber) { MaxNumber = count; }
-            }
-            if (MaxNumber < MaxNumberEmitingOnFreq)
-            {
-                return; // выход поскольку все хорошо
-            }
-            // тут все плохо и необходимо уменьшать коэффициент корреляции если можно
-            if (CorrelationFactor > MinCoeffCorrelation)
-            { // Уменьшеаем коэфициент корреляции и заходим в рекурсию. при повторном ужимании мы сократимся
-                CorrelationFactor = CorrelationFactor - 0.01;
-                DeliteRedundantUncorrelationEmission(emittings, logger, NoiseLevel_dBm);
-            }
-            else
-            {
-                // уменьшать нельзя поэтому будем удалять излучения на частотах которые наиболее забиты притом удаляем 1/10 от общего количество
-                // считаем массив хитов
-                var ArrHit = new int[emittings.Count];
+
+                var EmittingOnFreq = new int[emittings.Count];
+                int MaxNumber = 0;
                 for (var i = 0; emittings.Count > i; i++)
                 {
-                    int hit = 0;
-                    for (var j = 0; emittings[i].WorkTimes.Length > j; j++)
+                    int count = 0;
+                    for (var j = 0; emittings.Count > j; j++)
                     {
-                        hit = hit + emittings[i].WorkTimes[j].HitCount;
+                        if (i != j)
+                        {
+                            if (MatchCheckEmitting(emittings[i], emittings[j]))
+                            { count++; }
+                        }
                     }
-                    ArrHit[i] = hit;
+                    EmittingOnFreq[i] = count;
+                    if (count > MaxNumber) { MaxNumber = count; }
                 }
-                int numberDel = (int) (MaxNumber/10.0); // определяем количество элементов которые стоит удалить 
-                if (MaxNumber - numberDel > MaxNumberEmitingOnFreq) { numberDel = MaxNumber - MaxNumberEmitingOnFreq;}
-                // определяем кого удалять
-                var IndexDel = BedCorrelationEmitting(ArrHit, CorrelationFactors, EmittingOnFreq, numberDel);
-                // удаляем
-                if (IndexDel != null)
+                if (MaxNumber < MaxNumberEmitingOnFreq)
                 {
-                    for (int i = 0; IndexDel.Length > i; i++)
-                    {
-                        emittings.RemoveRange(i, 1);
-                    }
+                    return; // выход поскольку все хорошо
                 }
-                // рекурсивный прогон
-                DeliteRedundantUncorrelationEmission(emittings, logger, NoiseLevel_dBm);
+                // Надо ужимать пройдемся нет ли дублирующих сигналов
+                var CorrelationFactors = new double[emittings.Count];// В данном месте мы собираем максимальную кореляцию для сигнала по соотношению с другими сигналами
+                for (var i = 0; emittings.Count > i; i++)
+                {
+                    double MaxCorelationFactors = 0;
+                    for (int j = i + 1; emittings.Count > j; j++)
+                    {
+                        bool existTheSameEmitting = MatchCheckEmitting(emittings[i], emittings[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor, out double RealCorrelation);
+                        if (existTheSameEmitting)
+                        {
+                            var em = emittings[i];
+                            JoinEmmiting(ref em, emittings[j], logger, NoiseLevel_dBm);
+                            emittings[i] = em;
+                            emittings.RemoveRange(j, 1);
+                            j--;
+                        }
+                        else
+                        {
+                            if ((RealCorrelation > MaxCorelationFactors) && (RealCorrelation > -1))
+                            {
+                                MaxCorelationFactors = RealCorrelation;
+                            }
+                        }
+                    }
+                    CorrelationFactors[i] = MaxCorelationFactors;
+                }
+                // повторная оценка после сжатия
+                EmittingOnFreq = new int[emittings.Count];
+                MaxNumber = 0;
+                for (var i = 0; emittings.Count > i; i++)
+                {
+                    int count = 0;
+                    for (var j = 0; emittings.Count > j; j++)
+                    {
+                        if (i != j)
+                        {
+                            if (MatchCheckEmitting(emittings[i], emittings[j]))
+                            { count++; }
+                        }
+                    }
+                    EmittingOnFreq[i] = count;
+                    if (count > MaxNumber) { MaxNumber = count; }
+                }
+                if (MaxNumber < MaxNumberEmitingOnFreq)
+                {
+                    return; // выход поскольку все хорошо
+                }
+                // тут все плохо и необходимо уменьшать коэффициент корреляции если можно
+                if (CorrelationFactor > MinCoeffCorrelation)
+                { // Уменьшеаем коэфициент корреляции и заходим в рекурсию. при повторном ужимании мы сократимся
+                    CorrelationFactor = CorrelationFactor - 0.01;
+                    //DeliteRedundantUncorrelationEmission(emittings, logger, NoiseLevel_dBm);
+                }
+                else
+                {
+                    // уменьшать нельзя поэтому будем удалять излучения на частотах которые наиболее забиты притом удаляем 1/10 от общего количество
+                    // считаем массив хитов
+                    var ArrHit = new int[emittings.Count];
+                    for (var i = 0; emittings.Count > i; i++)
+                    {
+                        int hit = 0;
+                        for (var j = 0; emittings[i].WorkTimes.Length > j; j++)
+                        {
+                            hit = hit + emittings[i].WorkTimes[j].HitCount;
+                        }
+                        ArrHit[i] = hit;
+                    }
+                    int numberDel = (int)(MaxNumber / 10.0); // определяем количество элементов которые стоит удалить 
+                    if (MaxNumber - numberDel > MaxNumberEmitingOnFreq) { numberDel = MaxNumber - MaxNumberEmitingOnFreq; }
+                    // определяем кого удалять
+                    var IndexDel = BedCorrelationEmitting(ArrHit, CorrelationFactors, EmittingOnFreq, numberDel);
+                    // удаляем
+                    if (IndexDel != null)
+                    {
+                        for (int i = 0; IndexDel.Length > i; i++)
+                        {
+                            emittings.RemoveRange(i, 1);
+                        }
+                    }
+                    // рекурсивный прогон
+                    //DeliteRedundantUncorrelationEmission(emittings, logger, NoiseLevel_dBm);
+                }
             }
         }
         private static int[] BedCorrelationEmitting(int[] ArrHit, double[] CoordinationFactors, int[] EmittingOnFreq, int deleted)

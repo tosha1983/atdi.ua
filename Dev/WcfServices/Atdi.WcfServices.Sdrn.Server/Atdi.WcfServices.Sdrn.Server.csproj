@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\Sensor\SaveSensor.cs" />
     <Compile Include="Mappers\MapperForMeasTask.cs" />
     <Compile Include="Handlers\Analitics\SOFrequencyTemp.cs" />
     <Compile Include="Handlers\Analitics\Hit.cs" />

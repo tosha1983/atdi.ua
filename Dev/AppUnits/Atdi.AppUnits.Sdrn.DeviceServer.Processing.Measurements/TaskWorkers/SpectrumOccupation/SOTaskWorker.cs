@@ -56,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             try
             {
-                _logger.Verbouse(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+                _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.StartSOTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -87,6 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         if (DateTime.Now > context.Task.taskParameters.StopTime)
                         {
+                            context.Task.taskParameters.status = StatusTask.Z.ToString();
+                            this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                             context.Cancel();
                             _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                             break;
@@ -149,6 +151,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             if (DateTime.Now > context.Task.taskParameters.StopTime)
                             {
+                                context.Task.taskParameters.status = StatusTask.Z.ToString();
+                                this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                 context.Cancel();
                                 _logger.Info(Contexts.SOTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                                 break;

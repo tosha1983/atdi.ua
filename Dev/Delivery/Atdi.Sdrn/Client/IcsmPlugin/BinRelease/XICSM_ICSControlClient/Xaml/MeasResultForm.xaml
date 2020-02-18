@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
@@ -20,7 +21,7 @@
         <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>
-
+    
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
         <Grid >
@@ -76,45 +77,86 @@
                               <RowDefinition Height="*"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
+                            <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.Type_Measurements}"  />
                             <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}"/>
 
                             <DataGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasResultsSpecial}" SelectedItem="{Binding CurrentMeasurementResults}" >
                               <DataGrid.Columns>
-                                      <DataGridTextColumn Header="Id" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="TaskId" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="TimeMeas" Binding="{Binding Path=TimeMeas}"></DataGridTextColumn>
-                                      <!--<DataGridTextColumn Header="IdMeasDevice" Binding="{Binding Path=StationMeasurementsStationId}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="№ Stations" Binding="{Binding Path=StationsNumber}"></DataGridTextColumn>
-                                      <DataGridTextColumn Header="№ Points" Binding="{Binding Path=PointsNumber}"></DataGridTextColumn>-->
-                                    <DataGridTextColumn Header="SubTaskId" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="SensorTechId" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="CountStationMeasurements" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="CountUnknownStationMeasurements" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
-                                  </DataGrid.Columns>                        
+                                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.CountStationMeasurements}" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.CountUnknownStationMeasurements}" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
+                              </DataGrid.Columns>                        
                               </DataGrid>
-                              <CheckBox Grid.Column="0" Grid.Row="2" Content="Show only this task" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding TaskOnlyChecked}"/>
-                              <CheckBox Grid.Column="1" Grid.Row="2" Content="Show only this sensor" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding SensorOnlyChecked}"/>
+                              <CheckBox Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resources.ShowOnlyThisTask}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding TaskOnlyChecked}"/>
+                              <CheckBox Grid.Column="1" Grid.Row="2" Content="{x:Static res:Resources.ShowOnlyThisSensor}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding SensorOnlyChecked}"/>
                         </Grid>
                           
                         <GridSplitter Grid.Column="0" Grid.Row="1" Visibility="{Binding ResultStationsVisibility}" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         </GridSplitter>
 
-                        <GroupBox Header=" Results of Stations "  Grid.Column="0" Grid.Row="2" Visibility="{Binding ResultStationsVisibility}">
-                            <DataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ResultsMeasurementsStations}" SelectedItem="{Binding CurrentResultsMeasurementsStation}">
+                        <GroupBox Header="{x:Static res:Resources.ResultsOfStations}"  Grid.Column="0" Grid.Row="2" Visibility="{Binding ResultStationsVisibility}">
+                          <Grid>
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                              <RowDefinition Height="Auto"></RowDefinition>
+                              <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Expander Header="{x:Static res:Resources.Filters}" Grid.Column="0" Grid.Row="0">
+                              <Grid Grid.Column="0" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="Auto"/>
+                                  <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                  <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid DataContext="{Binding CurrentStationsGolbalFilter}">
+                                  <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                  </Grid.ColumnDefinitions>
+                                  <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                  </Grid.RowDefinitions>
+                                  <Label    Height="18" Grid.Column="0" Grid.Row="0" Padding="0,5,5,0" Content = "{x:Static res:Resources.MeasGlobalSID}"  />
+                                  <TextBox  Height="18" Grid.Column="1" Grid.Row="0" Width="50" Text="{Binding Path=MeasGlobalSid}"/>
+                                  <Label    Height="18" Grid.Column="2" Grid.Row="0" Padding="10,5,5,0" Content = "{x:Static res:Resources.Standard}"  />
+                                  <TextBox  Height="18" Grid.Column="3" Grid.Row="0" Width="50" Text="{Binding Path=Standard}"/>
+                                  <Label    Height="18" Grid.Column="4" Grid.Row="0" Padding="10,5,5,0" Content = "{x:Static res:Resources.CentrFreq_From}"  />
+                                  <TextBox  Height="18" Grid.Column="5" Grid.Row="0" Width="50" Text="{Binding Path=FreqBg}"/>
+                                  <Label    Height="18" Grid.Column="6" Grid.Row="0" Padding="5,5,5,0" Content = "{x:Static res:Resources.To}"  />
+                                  <TextBox  Height="18" Grid.Column="7" Grid.Row="0" Width="50" Text="{Binding Path=FreqEd}"/>
+                                </Grid>
+                                <Button Grid.Column="1" Grid.Row="0" Margin="10,0,0,0"  Content="Apply" Width="30" Height="18" Command="{Binding FilterApplyCommand}"/>
+                              </Grid>
+                            </Expander>
+                            <DataGrid Grid.Column="0" Grid.Row="1" IsReadOnly="True" Margin="0,5,0,0" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ResultsMeasurementsStations}" SelectedItem="{Binding CurrentResultsMeasurementsStation}">
                               <DataGrid.Columns>
-                                <DataGridTextColumn Header="IdStation" Binding="{Binding Path=StationId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="IdSector" Binding="{Binding Path=SectorId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="GlobalSID" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="MeasGlobalSID" Binding="{Binding Path=MeasGlobalSID}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="№ Meas. Location" Binding="{Binding Path=LevelMeasurementsLength}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Standard" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-                              </DataGrid.Columns> 
+                                <DataGridTextColumn Header="{x:Static res:Resources.IdStation}" Binding="{Binding Path=StationId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.IdSector}" Binding="{Binding Path=SectorId}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.GlobalSID}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.MeasGlobalSID}" Binding="{Binding Path=MeasGlobalSID}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.CentrFreqMHz}" Binding="{Binding Path=CentralFrequencyMHz}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+                              </DataGrid.Columns>
                             </DataGrid>
+                          </Grid>
                         </GroupBox>
                     </Grid>
                   
@@ -131,7 +173,7 @@
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                     
-                        <GroupBox Header=" Results of General "  Grid.Column="0" Grid.Row="0">
+                        <GroupBox Header="{x:Static res:Resources.ResultsOfGeneral}"  Grid.Column="0" Grid.Row="0">
                             <ScrollViewer>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -163,33 +205,33 @@
                                             <RowDefinition Height="Auto"></RowDefinition>
                                             <RowDefinition Height="Auto"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
-                                        </Grid.RowDefinitions>                                  
-                                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Id"  />
+                                        </Grid.RowDefinitions>
+                                        <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.Id}"  />
                                         <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=MeasSdrResultsId}"  IsReadOnly="True"/>
 
-                                        <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "TaskId"  />
+                                        <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.TaskId}"  />
                                         <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=MeasTaskId}"  IsReadOnly="True" />
 
-                                        <Label Grid.Column="4" Grid.Row="0" Padding="5,0,0,0" Content = "SubTaskId"  />
+                                        <Label Grid.Column="4" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.SubTaskId}"  />
                                         <TextBox Grid.Column="5" Grid.Row="0" Text="{Binding Path=SubMeasTaskId}"  IsReadOnly="True" />
 
-                                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "IdMeasDevice"  />
+                                        <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.IdMeasDevice}"  />
                                         <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasDeviceId}"  IsReadOnly="True" />
 
-                                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "StationsNumber"  />
+                                        <Label Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StationsNumber}"  />
                                         <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=StationsNumber}"  IsReadOnly="True" />
                                         
-                                        <Label Grid.Column="4" Grid.Row="1" Padding="5,0,0,0" Content = "PointsNumber"  />
+                                        <Label Grid.Column="4" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.PointsNumber}"  />
                                         <TextBox Grid.Column="5" Grid.Row="1" Text="{Binding Path=PointsNumber}"  IsReadOnly="True" />
                                   
-                                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "TimeMeas"  />
+                                        <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeMeas}"  />
                                         <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="5" Text="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
                                   
-                                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "TypeMeasurements"  />
+                                        <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.TypeMeasurements}"  />
                                         <TextBox Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="5" Text="{Binding Path=TypeMeasurements}"  IsReadOnly="True" />
                                     </Grid>
 
-                                    <Expander Grid.Column="0" Grid.Row="1" Header="Frequency" Visibility="{Binding ResFreq1Visibility}">
+                                    <Expander Grid.Column="0" Grid.Row="1" Header="{x:Static res:Resources.Frequency}" Visibility="{Binding ResFreq1Visibility}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="110" />
@@ -199,14 +241,14 @@
                                                 <RowDefinition Height="Auto"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Low freq, MHz"  />
+                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.LowFreqMHz}"  />
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding LowFreq, StringFormat='{}{0:##0.000}'}"  IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Up freq, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding UpFreq, StringFormat='{}{0:##0.000}'}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.UpFreqMHz}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding UpFreq, StringFormat='{}{0:##0.000}'}" IsReadOnly="True"/>
                                          </Grid>
                                     </Expander>                                 
-                                    <Expander Grid.Column="0" Grid.Row="2" Header="Identification Station" Visibility="{Binding ResIdStationVisibility}">
+                                    <Expander Grid.Column="0" Grid.Row="2" Header="{x:Static res:Resources.IdentificationStation}" Visibility="{Binding ResIdStationVisibility}">
                                         <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="110" />
@@ -218,20 +260,20 @@
                                                 <RowDefinition Height="Auto"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "IdStation"  />
+                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.IdStation}"  />
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=StationId}"  IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "IdSector"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SectorId}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.IdSector}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SectorId}" IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "GlobalSID"  />
-                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GlobalSID}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.GlobalSID}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GlobalSID}" IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "MeasGlobalSID"  />
-                                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasGlobalSID}"  IsReadOnly="True"/>
+                                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.MeasGlobalSID}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=MeasGlobalSID}"  IsReadOnly="True"/>                                          
                                          </Grid>
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="3" Header="Frequency" Visibility="{Binding ResFreq2Visibility}">
+                                    <Expander Grid.Column="0" Grid.Row="3" Header="{x:Static res:Resources.Frequency}" Visibility="{Binding ResFreq2Visibility}">
                                         <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
@@ -242,17 +284,17 @@
                                                 <RowDefinition Height="Auto"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "CentralFrequency, MHz"  />
+                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.CentralFrequencyMHz}"  />
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=CentralFrequency}"  IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "CentralFrequencyMeas, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=CentralFrequencyMeas}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.CentralFrequencyMeasMHz}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=CentralFrequencyMeas}" IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "OffsetFrequency, 10^-6"  />
-                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=OffsetFrequency}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.OffsetFrequency10x6}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=OffsetFrequency}" IsReadOnly="True"/>
                                          </Grid>
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="4" Header="Spectrum" Visibility="{Binding ResSpecVisibility}">
+                                    <Expander Grid.Column="0" Grid.Row="4" Header="{x:Static res:Resources.Spectrum}" Visibility="{Binding ResSpecVisibility}">
                                         <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
@@ -265,21 +307,20 @@
                                               <RowDefinition Height="Auto"></RowDefinition>
                                               <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
-
-                                          <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Number points of spectrum"  />
+                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberPointsOfSpectrum}"  />
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=NumberPointsOfSpectrum}"  IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Step of spectrum, kHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SpecrumSteps}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepOfSpectrumkHz}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=SpecrumSteps}" IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "T1, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=T1}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.T1MHz}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=T1}" IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "T2, MHz"  />
-                                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=T2}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.T2MHz}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=T2}" IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Marker"  />
-                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MarkerIndex}"  IsReadOnly="True" />
+                                            <Label Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.Marker}"  />
+                                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=MarkerIndex}" IsReadOnly="True"/>
                                          </Grid>
                                     </Expander>
 
@@ -287,7 +328,7 @@
                                   <Label Grid.Column="0" Grid.Row="4" Content="{Binding SpecLabelText}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="85,5,0,0" Width="100" Visibility="{Binding ResIdStationVisibility}"/>
                                   <Button Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,5,0,0" Content="&gt;" Width="15" Height="15" Command="{Binding NextSpecCommand}" Visibility="{Binding ResIdStationVisibility}"/>
 
-                                  <Expander Grid.Column="0" Grid.Row="5" Header="TimeMeas" Visibility="{Binding ResTimeMeasVisibility}">
+                                  <Expander Grid.Column="0" Grid.Row="5" Header="{x:Static res:Resources.TimeMeas}" Visibility="{Binding ResTimeMeasVisibility}">
                                         <Grid DataContext="{Binding CurrentGeneralResult}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="150" />
@@ -297,15 +338,15 @@
                                                 <RowDefinition Height="Auto"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TimeStartMeas"  />
+                                            <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeStartMeas}"  />
                                             <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=TimeStartMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True"/>
 
-                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "TimeFinishMeas"  />
+                                            <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeFinishMeas}"  />
                                             <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeFinishMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"  IsReadOnly="True" />
                                     
                                          </Grid>
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="6" Header="LevelMeasurements" Visibility="{Binding ResLevelMes1Visibility}">
+                                    <Expander Grid.Column="0" Grid.Row="6" Header="{x:Static res:Resources.LevelMeasurements}" Visibility="{Binding ResLevelMes1Visibility}">
                                         <Grid>
                                           <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -321,26 +362,26 @@
                                             <RowDefinition Height="20"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
                                           </Grid.RowDefinitions>
-                                          <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Content="Search Station in ICSM" Command="{Binding SearchStationCommand}"/>
-                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="Get CSV" Command="{Binding GetCSVCommand}"/>
+                                          <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Content="{x:Static res:Resources.SearchStationInICSM}" Command="{Binding SearchStationCommand}"/>
+                                          <Button Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Content="{x:Static res:Resources.GetCSV}" Command="{Binding GetCSVCommand}"/>
                                           <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding LevelMeasurements}" SelectedItem="{Binding CurrentLevelMeasurements}">
                                             <DataGrid.Columns>
-                                              <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Lat, DEC" Binding="{Binding Path=Lat}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Alt, m" Binding="{Binding Path=Altitude}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Level, dBm" Binding="{Binding Path=LeveldBm}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Level, dBmkVm" Binding="{Binding Path=LeveldBmkVm}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Time Meas" Binding="{Binding Path=TimeOfMeasurements}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Centr. freq, MHz" Binding="{Binding Path=CentralFrequency}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="BW, kHz" Binding="{Binding Path=BW}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="Diff.Timestamp, 10^-9" Binding="{Binding Path=DifferenceTimestamp}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="RBW, kHz" Binding="{Binding Path=RBW}"></DataGridTextColumn>
-                                              <DataGridTextColumn Header="VBW, kHz" Binding="{Binding Path=VBW}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.LonDEC}" Binding="{Binding Path=Lon}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.LatDEC}" Binding="{Binding Path=Lat}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.AltM}" Binding="{Binding Path=Altitude}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.LeveldBm}" Binding="{Binding Path=LeveldBm}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.LeveldBmkVm}" Binding="{Binding Path=LeveldBmkVm}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeOfMeasurements}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.CentralFrequencyMHz}" Binding="{Binding Path=CentralFrequency}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.BWkHz}" Binding="{Binding Path=BW}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.DiffTimestamp10x9}" Binding="{Binding Path=DifferenceTimestamp}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.RBWkHz}" Binding="{Binding Path=RBW}"></DataGridTextColumn>
+                                              <DataGridTextColumn Header="{x:Static res:Resources.VBWkHz}" Binding="{Binding Path=VBW}"></DataGridTextColumn>
                                             </DataGrid.Columns>
                                           </DataGrid>
                                         </Grid>                                      
                                     </Expander>
-                                    <Expander Grid.Column="0" Grid.Row="7" Header="Station Sys Info" Visibility="{Binding ResIdStationVisibility}">
+                                    <Expander Grid.Column="0" Grid.Row="7" Header="{x:Static res:Resources.StationSysInfo}" Visibility="{Binding ResIdStationVisibility}">
                                       <Grid DataContext="{Binding CurrentResultsMeasurementsStationData}">
                                         <Grid.ColumnDefinitions>
                                           <ColumnDefinition Width="*" />
@@ -358,7 +399,7 @@
                         <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         </GridSplitter>
 
-                        <GroupBox Header=" Graphic "  Grid.Column="0" Grid.Row="2">
+                        <GroupBox Header="{x:Static res:Resources.Graphic}"  Grid.Column="0" Grid.Row="2">
                             <cs:LineChart  Option="{Binding CurrentChartOption}">
                             </cs:LineChart>
                         </GroupBox>                  

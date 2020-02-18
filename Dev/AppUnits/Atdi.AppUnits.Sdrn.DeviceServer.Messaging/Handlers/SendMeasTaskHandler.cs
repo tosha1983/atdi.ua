@@ -73,6 +73,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                         });
 
                         this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, Events.CreateNewTaskParameters);
+                        this._logger.Info(Contexts.ThisComponent, Categories.SendMeasTaskHandlerStart, $"New task '{message.Data.TaskId}' accepted in work");
 
                         message.Result = MessageHandlingResult.Confirmed;
 

@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddAssociationStation" xml:space="preserve">
+    <value>Add ICSM Station</value>
+  </data>
   <data name="Adm" xml:space="preserve">
     <value>Adm</value>
   </data>
   <data name="Adress" xml:space="preserve">
     <value>Adress</value>
+  </data>
+  <data name="AGLM" xml:space="preserve">
+    <value>AGL, m</value>
   </data>
   <data name="Alt" xml:space="preserve">
     <value>Alt</value>
@@ -138,6 +144,9 @@
   <data name="Antenna" xml:space="preserve">
     <value>Antenna</value>
   </data>
+  <data name="AssociatedCommand" xml:space="preserve">
+    <value>Associated</value>
+  </data>
   <data name="AttenuationDB" xml:space="preserve">
     <value>Attenuation, dB</value>
   </data>
@@ -147,23 +156,41 @@
   <data name="AutomaticDivisionOfEmissions" xml:space="preserve">
     <value>Automatic division of emissions</value>
   </data>
+  <data name="BandwidthHz" xml:space="preserve">
+    <value>BW, Hz</value>
+  </data>
+  <data name="BandwidthKHz" xml:space="preserve">
+    <value>BW, kHz</value>
+  </data>
   <data name="BringIntoUse" xml:space="preserve">
     <value>Bring into use</value>
+  </data>
+  <data name="BSIC" xml:space="preserve">
+    <value>BSIC</value>
   </data>
   <data name="BWkHz" xml:space="preserve">
     <value>BW, kHz</value>
   </data>
+  <data name="CancelCommand" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="CentralFrequencyMeasMHz" xml:space="preserve">
-    <value>CentralFrequencyMeas, MHz</value>
+    <value>Central Frequency, MHz</value>
   </data>
   <data name="CentralFrequencyMHz" xml:space="preserve">
-    <value>CentralFrequency, MHz</value>
+    <value>Central Frequency, MHz</value>
   </data>
   <data name="CentrFreqMHz" xml:space="preserve">
     <value>Centr. Freq, MHz</value>
   </data>
   <data name="CentrFreq_From" xml:space="preserve">
-    <value>CentrFreq, MHz      From</value>
+    <value>Centr. Freq, MHz From</value>
+  </data>
+  <data name="ChangeTimeCommand" xml:space="preserve">
+    <value>Change time</value>
+  </data>
+  <data name="ChannelNumber" xml:space="preserve">
+    <value>Channel Number</value>
   </data>
   <data name="CheckingEmissionInChannels" xml:space="preserve">
     <value>Checking emission in channels</value>
@@ -174,23 +201,51 @@
   <data name="CheckingTheFrequencyChannel" xml:space="preserve">
     <value>Checking the frequency channel</value>
   </data>
+  <data name="CID" xml:space="preserve">
+    <value>CID</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="CompareWithEmissionOnOtherSensors" xml:space="preserve">
+    <value>Compare with emission on other sensors</value>
+  </data>
+  <data name="CompareWithTransmitterMask" xml:space="preserve">
+    <value>Compare with transmitter mask</value>
+  </data>
+  <data name="ContinueCommand" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Contravention" xml:space="preserve">
+    <value>Contravention</value>
+  </data>
+  <data name="CorrectnessEstimations" xml:space="preserve">
+    <value>Correctness Estimations</value>
+  </data>
   <data name="CorrelationCoefficient" xml:space="preserve">
     <value>Correlation coefficient</value>
   </data>
   <data name="CountStationMeasurements" xml:space="preserve">
-    <value>CountStationMeasurements</value>
+    <value>Number of stations</value>
   </data>
   <data name="CountUnknownStationMeasurements" xml:space="preserve">
-    <value>CountUnknownStationMeasurements</value>
+    <value>Number of unknown stations</value>
+    <comment>Number of unknown stations that don't have associated permissions in ICSM</comment>
   </data>
   <data name="CreatedBy" xml:space="preserve">
-    <value>CreatedBy</value>
+    <value>Created By</value>
   </data>
   <data name="CreateNew" xml:space="preserve">
     <value>Create new</value>
   </data>
+  <data name="CtoI" xml:space="preserve">
+    <value>CtoI</value>
+  </data>
+  <data name="CurentPowerDBm" xml:space="preserve">
+    <value>Curent Power, dBm</value>
+  </data>
   <data name="DateCreated" xml:space="preserve">
-    <value>DateCreated</value>
+    <value>Date Created</value>
   </data>
   <data name="DateStart" xml:space="preserve">
     <value>Date Start</value>
@@ -207,11 +262,21 @@
   <data name="DEC" xml:space="preserve">
     <value>DEC</value>
   </data>
+  <data name="DefaultZoom" xml:space="preserve">
+    <value>Default Zoom</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="DeleteEmission" xml:space="preserve">
+    <value>Delete Emission</value>
+  </data>
+  <data name="DesigEmission" xml:space="preserve">
+    <value>Design Emission</value>
+  </data>
   <data name="DetailedMeasurementsOfTheEmissionBandwith" xml:space="preserve">
-    <value>Detailed measurements of the emission bandwith</value>
+    <value>Detailed measurements BW</value>
+    <comment>Detailed measurements of the emission bandwith</comment>
   </data>
   <data name="DetectorParameters" xml:space="preserve">
     <value>Detector parameters</value>
@@ -219,8 +284,17 @@
   <data name="DiffTimestamp10x9" xml:space="preserve">
     <value>Diff. Timestamp, 10^-9</value>
   </data>
+  <data name="DistanceKm" xml:space="preserve">
+    <value>Distance, km</value>
+  </data>
   <data name="DurationS" xml:space="preserve">
     <value>Duration, s</value>
+  </data>
+  <data name="EIRPdBW" xml:space="preserve">
+    <value>EIRP, dBW</value>
+  </data>
+  <data name="EmissionFreqMHz" xml:space="preserve">
+    <value>Emission Freq, MHz</value>
   </data>
   <data name="EndOfUse" xml:space="preserve">
     <value>End of use</value>
@@ -229,10 +303,34 @@
     <value>Equipment</value>
   </data>
   <data name="ExecutionMode" xml:space="preserve">
-    <value>ExecutionMode</value>
+    <value>Execution Mode</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="FqMax" xml:space="preserve">
+    <value>Freq Max</value>
+  </data>
+  <data name="FqMin" xml:space="preserve">
+    <value>Freq Min</value>
+  </data>
+  <data name="FreqHz" xml:space="preserve">
+    <value>Freq Hz</value>
+  </data>
+  <data name="FreqListMHz" xml:space="preserve">
+    <value>Freq list, MHz</value>
+  </data>
+  <data name="FreqMHz" xml:space="preserve">
+    <value>Freq, MHz</value>
   </data>
   <data name="Frequency" xml:space="preserve">
     <value>Frequency</value>
+  </data>
+  <data name="FrequencyFromMHz" xml:space="preserve">
+    <value>Frequency from, MHz</value>
+  </data>
+  <data name="FrequencyToMHz" xml:space="preserve">
+    <value>Frequency to, MHz</value>
   </data>
   <data name="From" xml:space="preserve">
     <value>From</value>
@@ -244,34 +342,49 @@
     <value>Gain of preamplifier, dB</value>
   </data>
   <data name="GetCSV" xml:space="preserve">
-    <value>Get CSV</value>
+    <value>Export</value>
   </data>
   <data name="GetGraphic" xml:space="preserve">
-    <value>Get Graphic</value>
+    <value>Graphic</value>
   </data>
   <data name="GlobalSID" xml:space="preserve">
-    <value>GlobalSID</value>
+    <value>Global SID</value>
+  </data>
+  <data name="Graphic" xml:space="preserve">
+    <value>Graphic</value>
   </data>
   <data name="HideDetail" xml:space="preserve">
     <value>Hide detail</value>
   </data>
+  <data name="HitCount" xml:space="preserve">
+    <value>Hit Count</value>
+  </data>
+  <data name="IcsmID" xml:space="preserve">
+    <value>ICSM ID</value>
+  </data>
+  <data name="IcsmTable" xml:space="preserve">
+    <value>ICSM Table</value>
+  </data>
   <data name="Id" xml:space="preserve">
-    <value>Id</value>
+    <value>ID</value>
   </data>
   <data name="IdentificationStation" xml:space="preserve">
-    <value>Identification Station</value>
+    <value>Station ID</value>
   </data>
   <data name="IdMeasDevice" xml:space="preserve">
-    <value>IdMeasDevice</value>
+    <value>Device ID</value>
   </data>
   <data name="IdSector" xml:space="preserve">
-    <value>IdSector</value>
+    <value>Sector ID</value>
   </data>
   <data name="IdStation" xml:space="preserve">
-    <value>IdStation</value>
+    <value>Station ID</value>
   </data>
   <data name="kHz" xml:space="preserve">
     <value>kHz</value>
+  </data>
+  <data name="LAC" xml:space="preserve">
+    <value>LAC</value>
   </data>
   <data name="Lat" xml:space="preserve">
     <value>Lat</value>
@@ -289,10 +402,10 @@
     <value>Level, dBmkVm</value>
   </data>
   <data name="LevelForBandwithEstimation" xml:space="preserve">
-    <value>Level for Bandwith estimation</value>
+    <value>Level for BW estimation</value>
   </data>
   <data name="LevelMeasurements" xml:space="preserve">
-    <value>LevelMeasurements</value>
+    <value>Level Measurements</value>
   </data>
   <data name="LevelOfMinOccupationDBm" xml:space="preserve">
     <value>Level of min. occupation, dBm</value>
@@ -306,32 +419,63 @@
   <data name="LonDEC" xml:space="preserve">
     <value>Lon, DEC</value>
   </data>
+  <data name="LowerFreq" xml:space="preserve">
+    <value>Lower Freq</value>
+  </data>
+  <data name="LowFreq" xml:space="preserve">
+    <value>Low Freq</value>
+  </data>
   <data name="LowFreqMHz" xml:space="preserve">
     <value>Low freq, MHz</value>
   </data>
   <data name="m" xml:space="preserve">
     <value>m</value>
   </data>
+  <data name="MandatoryFrequencyIntersection" xml:space="preserve">
+    <value>Mandatory frequency intersection</value>
+  </data>
+  <data name="MandatoryTimeIntersection" xml:space="preserve">
+    <value>Mandatory time intersection</value>
+  </data>
   <data name="Manufacturer" xml:space="preserve">
     <value>Manufacturer</value>
   </data>
   <data name="MarginForReferenceLevelCalculationDB" xml:space="preserve">
-    <value>Margin for Reference Level calculation, dB</value>
+    <value>Margin, dB</value>
+    <comment>Margin for Reference Level calculation, dB</comment>
   </data>
   <data name="Marker" xml:space="preserve">
     <value>Marker</value>
   </data>
   <data name="MaximumFrequencyDeviation" xml:space="preserve">
-    <value>Maximum frequency deviation</value>
+    <value>Max freq. deviation</value>
+  </data>
+  <data name="MaxPower" xml:space="preserve">
+    <value>Max power</value>
+  </data>
+  <data name="MCC" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="MeanDeviationFromReference" xml:space="preserve">
+    <value>Mean Deviation From Reference</value>
   </data>
   <data name="MeasGlobalSID" xml:space="preserve">
-    <value>MeasGlobalSid</value>
+    <value>Global SID</value>
   </data>
   <data name="MeasTask" xml:space="preserve">
-    <value>Meas task</value>
+    <value>Task</value>
+  </data>
+  <data name="MeasTaskId" xml:space="preserve">
+    <value>Task ID</value>
+  </data>
+  <data name="MeasTasks" xml:space="preserve">
+    <value>Measurements tasks</value>
   </data>
   <data name="MHz" xml:space="preserve">
     <value>MHz</value>
+  </data>
+  <data name="MNC" xml:space="preserve">
+    <value>MNC</value>
   </data>
   <data name="Mode" xml:space="preserve">
     <value>Mode</value>
@@ -349,7 +493,8 @@
     <value>Noise Level</value>
   </data>
   <data name="NumberOfStepsForMeasurementsInChannel" xml:space="preserve">
-    <value>Number of steps for measurements in channel</value>
+    <value>Steps in channel</value>
+    <comment>Number of steps for measurements in channel</comment>
   </data>
   <data name="NumberPointsOfSpectrum" xml:space="preserve">
     <value>Number points of spectrum</value>
@@ -358,7 +503,7 @@
     <value>Number total scan</value>
   </data>
   <data name="OffsetFrequency10x6" xml:space="preserve">
-    <value>OffsetFrequency, 10^-6</value>
+    <value>Offset Frequency, 10^-6</value>
   </data>
   <data name="Owner" xml:space="preserve">
     <value>Owner</value>
@@ -367,16 +512,24 @@
     <value>Parameters</value>
   </data>
   <data name="PercOfIntersectionOfSpectrumsToCombineEmissions" xml:space="preserve">
-    <value>Perc. of intersection of spectrums to combine emissions</value>
+    <value>% spectrums intersection</value>
+    <comment>% spectrums intersection to combine emissions</comment>
   </data>
   <data name="PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals" xml:space="preserve">
-    <value>Perc. of intersection of spectrums to combine emissions (low level signals)</value>
+    <value>% for low level signal</value>
+    <comment>% spectrums intersection to combine emissions (low level signals)</comment>
   </data>
   <data name="Permission" xml:space="preserve">
     <value>Permission</value>
   </data>
+  <data name="PersentAvailability" xml:space="preserve">
+    <value>Persent Availability</value>
+  </data>
   <data name="PointsNumber" xml:space="preserve">
-    <value>PointsNumber</value>
+    <value>Points Number</value>
+  </data>
+  <data name="Power" xml:space="preserve">
+    <value>Power</value>
   </data>
   <data name="RBWkHz" xml:space="preserve">
     <value>RBW, kHz</value>
@@ -384,11 +537,17 @@
   <data name="ReferenceLevelDBm" xml:space="preserve">
     <value>Reference Level, dBm</value>
   </data>
+  <data name="RefershMeasTasks" xml:space="preserve">
+    <value>Refersh Tasks</value>
+  </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
   <data name="Region" xml:space="preserve">
     <value>Region</value>
+  </data>
+  <data name="RelivedLeveldBm" xml:space="preserve">
+    <value>Relived Level, dBm</value>
   </data>
   <data name="Results" xml:space="preserve">
     <value>Results</value>
@@ -399,23 +558,47 @@
   <data name="ResultsOfStations" xml:space="preserve">
     <value>Results of Stations</value>
   </data>
+  <data name="RNC" xml:space="preserve">
+    <value>RNC</value>
+  </data>
+  <data name="RollOffFactor" xml:space="preserve">
+    <value>Roll Off Factor</value>
+  </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
+  </data>
+  <data name="RunMeasTask" xml:space="preserve">
+    <value>Run Meas Task</value>
+  </data>
+  <data name="ScansNumber" xml:space="preserve">
+    <value>Scans Number</value>
   </data>
   <data name="SearchStationInICSM" xml:space="preserve">
     <value>Search Station in ICSM</value>
   </data>
+  <data name="SensorIds" xml:space="preserve">
+    <value>Sensor ID</value>
+  </data>
   <data name="SensorName" xml:space="preserve">
-    <value>SensorName</value>
+    <value>Sensor Name</value>
   </data>
   <data name="Sensors" xml:space="preserve">
     <value>Sensors</value>
   </data>
   <data name="SensorTechId" xml:space="preserve">
-    <value>SensorTechId</value>
+    <value>Sensor Tech ID</value>
   </data>
   <data name="ShowDetail" xml:space="preserve">
     <value>Show detail</value>
+  </data>
+  <data name="ShowOnlyThisSensor" xml:space="preserve">
+    <value>Show only this sensor</value>
+  </data>
+  <data name="ShowOnlyThisTask" xml:space="preserve">
+    <value>Show only this task</value>
+  </data>
+  <data name="SignalLevelDBm" xml:space="preserve">
+    <value>Signal/Level, dBm</value>
   </data>
   <data name="SN" xml:space="preserve">
     <value>SN</value>
@@ -424,19 +607,35 @@
     <value>Spectrum</value>
   </data>
   <data name="SpectrumCoefficientFromEmission" xml:space="preserve">
-    <value>Spectrum coefficient from Emission</value>
+    <value>Spectrum coefficient</value>
+    <comment>Spectrum coefficient from Emission</comment>
   </data>
   <data name="SpectrumOccupationParameters" xml:space="preserve">
-    <value>Spectrum Occupation Parameters</value>
+    <value>Spectrum occupation parameters</value>
   </data>
   <data name="Standard" xml:space="preserve">
     <value>Standard</value>
   </data>
+  <data name="StandardBW" xml:space="preserve">
+    <value>Standard BW</value>
+  </data>
+  <data name="StartCommand" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StartEmitting" xml:space="preserve">
+    <value>Start Emitting</value>
+  </data>
   <data name="StartFreqMHz" xml:space="preserve">
     <value>Start freq, MHz</value>
   </data>
+  <data name="StationName" xml:space="preserve">
+    <value>Station Name</value>
+  </data>
+  <data name="Stations" xml:space="preserve">
+    <value>Stations</value>
+  </data>
   <data name="StationsNumber" xml:space="preserve">
-    <value>StationsNumber</value>
+    <value>Stations Number</value>
   </data>
   <data name="StationSysInfo" xml:space="preserve">
     <value>Station Sys Info</value>
@@ -447,17 +646,26 @@
   <data name="StepOfSpectrumkHz" xml:space="preserve">
     <value>Step of spectrum, kHz</value>
   </data>
-  <data name="StepWhithkHz" xml:space="preserve">
-    <value>Step whith, kHz</value>
+  <data name="StepkHz" xml:space="preserve">
+    <value>Step, kHz</value>
   </data>
   <data name="Stop" xml:space="preserve">
     <value>Stop</value>
   </data>
+  <data name="StopEmitting" xml:space="preserve">
+    <value>Stop Emitting</value>
+  </data>
   <data name="StopFreqMHz" xml:space="preserve">
     <value>Stop freq, MHz</value>
   </data>
+  <data name="StopMeasTask" xml:space="preserve">
+    <value>Stop Meas Task</value>
+  </data>
   <data name="SubTaskId" xml:space="preserve">
-    <value>SubTaskId</value>
+    <value>SubTask ID</value>
+  </data>
+  <data name="SumHitCount" xml:space="preserve">
+    <value>Sum Hit Count</value>
   </data>
   <data name="SweepNumber" xml:space="preserve">
     <value>Sweep number</value>
@@ -472,13 +680,20 @@
     <value>T2, MHz</value>
   </data>
   <data name="TaskId" xml:space="preserve">
-    <value>TaskId</value>
+    <value>Task ID</value>
+  </data>
+  <data name="TaskName" xml:space="preserve">
+    <value>Task Name</value>
   </data>
   <data name="Tasks" xml:space="preserve">
     <value>Tasks</value>
   </data>
+  <data name="TaskType" xml:space="preserve">
+    <value>Type</value>
+  </data>
   <data name="TheMaximumNumberOfScanPerDay" xml:space="preserve">
-    <value>The maximum number of scan per day</value>
+    <value>Scan/day</value>
+    <comment>The maximum number of scan per day</comment>
   </data>
   <data name="TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith" xml:space="preserve">
     <value>The minimum number of points a spectrum must contain in order not to measure bandwith</value>
@@ -487,45 +702,90 @@
     <value>The minimum number of points for finding emissions</value>
   </data>
   <data name="TheNumberOfPointsInTheChannelDuringScanning" xml:space="preserve">
-    <value>The number of points in the channel during scanning</value>
+    <value>Points in the channel </value>
+    <comment>The number of points in the channel during scanning</comment>
   </data>
   <data name="TimeFinishMeas" xml:space="preserve">
-    <value>TimeFinishMeas</value>
+    <value>Time Finish</value>
+  </data>
+  <data name="TimeFrom" xml:space="preserve">
+    <value>Time From</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Time meas</value>
+    <value>Time</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
     <value>Time Start</value>
   </data>
   <data name="TimeStartMeas" xml:space="preserve">
-    <value>TimeStartMeas</value>
+    <value>Time Start</value>
   </data>
   <data name="TimeStop" xml:space="preserve">
     <value>Time Stop</value>
   </data>
+  <data name="TimeTo" xml:space="preserve">
+    <value>Time To</value>
+  </data>
   <data name="To" xml:space="preserve">
     <value>To</value>
   </data>
+  <data name="TraceCount" xml:space="preserve">
+    <value>Trace Count</value>
+  </data>
+  <data name="TriggerDeviationFromReference" xml:space="preserve">
+    <value>Trigger Deviation From Reference</value>
+  </data>
   <data name="TypeMeasurements" xml:space="preserve">
-    <value>TypeMeasurements</value>
+    <value>Type Measurements</value>
   </data>
   <data name="TypeOfDetecting" xml:space="preserve">
     <value>Type of detecting</value>
   </data>
   <data name="TypeSpectrumOccupation" xml:space="preserve">
-    <value>TypeSpectrumOccupation</value>
+    <value>Type Spectrum Occupation</value>
+  </data>
+  <data name="Type_Measurements" xml:space="preserve">
+    <value>Type Measurements</value>
+  </data>
+  <data name="UpFreq" xml:space="preserve">
+    <value>Up Freq</value>
   </data>
   <data name="UpFreqMHz" xml:space="preserve">
     <value>Up freq, MHz</value>
   </data>
+  <data name="UpperFreq" xml:space="preserve">
+    <value>Upper Freq</value>
+  </data>
   <data name="UsingCorrelationAnalysis" xml:space="preserve">
-    <value>Using correlation analysis</value>
+    <value>Correlation analysis</value>
+    <comment>Using correlation analysis</comment>
   </data>
   <data name="UsingSmoothingTraceForAnalysis" xml:space="preserve">
-    <value>Using smoothing trace for analysis</value>
+    <value>Smoothing trace</value>
+    <comment>Using smoothing trace for analysis</comment>
   </data>
   <data name="VBWkHz" xml:space="preserve">
     <value>VBW, kHz</value>
+  </data>
+  <data name="ZoomUndo" xml:space="preserve">
+    <value>Zoom undo</value>
+  </data>
+  <data name="ApplyCommand" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="OnLine" xml:space="preserve">
+    <value>On-line</value>
+  </data>
+  <data name="OnLineCommand" xml:space="preserve">
+    <value>On-line measurement</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="EditSensorTitle" xml:space="preserve">
+    <value>Edit sensor title</value>
+  </data>
+  <data name="CollectEmissionForInstrumentalEstimation" xml:space="preserve">
+    <value>Collect emission for instrumental estimation</value>
   </data>
 </root>

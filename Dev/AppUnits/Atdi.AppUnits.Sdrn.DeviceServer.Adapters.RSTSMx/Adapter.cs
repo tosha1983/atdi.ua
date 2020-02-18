@@ -754,6 +754,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx
                 // желательно записать влог
                 _logger.Exception(Contexts.ThisComponent, e);
                 // этот вызов обязательный в случаи обрыва
+                context.Unlock();
                 context.Abort(e);
                 // дальше кода быть не должно, освобождаем поток
             }

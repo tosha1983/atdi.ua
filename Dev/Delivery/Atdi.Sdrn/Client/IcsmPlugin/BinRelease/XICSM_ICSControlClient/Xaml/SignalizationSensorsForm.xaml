@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
@@ -64,7 +65,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
               </Grid.RowDefinitions>
-              <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mandatory time intersection"  />
+              <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.MandatoryTimeIntersection}"  />
               <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=IsUseTime}"/>
               <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Path=TimeIntersection}">
                 <TextBox.Style>
@@ -82,11 +83,11 @@
               </TextBox>
               <Label Height="18" Grid.Column="3" Grid.Row="0" Padding="5,0,0,0" Content = "%"  />
 
-              <Label Height="18" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Padding="5,0,0,0" Content = "Mandatory frequency intersection"  />
+              <Label Height="18" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.MandatoryFrequencyIntersection}"  />
               <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding Path=FreqIntersection}"/>
               <Label Height="18" Grid.Column="3" Grid.Row="1" Padding="5,0,0,0" Content = "%"  />
 
-              <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Content="Start" Command="{Binding StartCommand}" Width="100" Height="30" Margin="10,0,0,0" HorizontalAlignment="Center"/>
+              <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Content="{x:Static res:Resources.StartCommand}" Command="{Binding StartCommand}" Width="100" Height="30" Margin="10,0,0,0" HorizontalAlignment="Center"/>
             </Grid>
           </GroupBox>
           <GroupBox  Header=""  Margin="5, 5, 5, 5" Grid.Column="0">
@@ -116,7 +117,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
               </Grid.RowDefinitions>
-              <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Time From"  />
+              <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeFrom}"  />
               <DatePicker Grid.Column="1" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <DatePicker.SelectedDate>
                   <Binding Path="DateFrom" StringFormat='{}{0:dd.MM.yyyy}'>
@@ -125,7 +126,7 @@
               </DatePicker>
               <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=TimeFrom, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}" Width="50" HorizontalAlignment="Left"/>
 
-              <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Time From"  />
+              <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeTo}"  />
               <DatePicker Grid.Column="1" Grid.Row="1" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <DatePicker.SelectedDate>
                   <Binding Path="DateTo" StringFormat='{}{0:dd.MM.yyyy}'>
@@ -134,32 +135,32 @@
               </DatePicker>
               <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=TimeTo, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}" Width="50" HorizontalAlignment="Left"/>
 
-              <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Frequency from, MHz"  />
+              <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.FrequencyFromMHz}"  />
               <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Path=FreqFrom}" Width="140" HorizontalAlignment="Left"/>
 
-              <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Frequency to, MHz"  />
+              <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.FrequencyToMHz}"  />
               <TextBox Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding Path=FreqTo}" Width="140" HorizontalAlignment="Left"/>
 
-              <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Content="Start" Command="{Binding StartCommand}" Width="100" Height="30" Margin="10,0,0,0" HorizontalAlignment="Center"/>
+              <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Content="{x:Static res:Resources.StartCommand}" Command="{Binding StartCommand}" Width="100" Height="30" Margin="10,0,0,0" HorizontalAlignment="Center"/>
             </Grid>
           </GroupBox>          
           <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
           <cdg:CustomDataGridSignSensors Grid.Column="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensors, Mode=TwoWay}">
             <DataGrid.Columns>
-              <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Adm" Binding="{Binding Path=Administration}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Network" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
-              <DataGridTextColumn Header="LowFreq" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-              <DataGridTextColumn Header="UpFreq" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Equipment" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
-              <DataGridTextColumn Header="SN" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Antenna" Binding="{Binding Path=AntName}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Gain" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
-              <DataGridTextColumn Header="Bring into use" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
-              <DataGridTextColumn Header="End of use" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.LowFreq}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.UpFreq}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
             </DataGrid.Columns>
           </cdg:CustomDataGridSignSensors>
         </Grid>

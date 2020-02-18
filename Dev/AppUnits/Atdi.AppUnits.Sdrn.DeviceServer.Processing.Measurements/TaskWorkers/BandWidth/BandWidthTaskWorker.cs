@@ -53,7 +53,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             try
             {
-                _logger.Verbouse(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.StartBandWidthTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+                _logger.Info(Contexts.BandWidthTaskWorker, Categories.Measurements, Events.StartBandWidthTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)

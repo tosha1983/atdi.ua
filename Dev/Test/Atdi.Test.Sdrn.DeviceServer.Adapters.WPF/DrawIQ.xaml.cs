@@ -215,7 +215,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 #region Device Drawing
                 #region
-                if (this.Name == "ANIQ" && ANAdapter != null)
+                if ((this.Name == "ANIQ"|| this.Name == "AN2IQ") && ANAdapter != null)
                 {
                     IQ = ANAdapter.IQArr;
                     TriggerOffset = (double)ANAdapter.TriggerOffset;
@@ -326,7 +326,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 }
                 gl.Flush();
 
-                if (this.Name == "ANIQ" && ANAdapter != null)
+                if ((this.Name == "ANIQ"|| this.Name == "AN2IQ") && ANAdapter != null)
                 {
                     //double d = 0;
                     //gl.Begin(BeginMode.LineStrip);

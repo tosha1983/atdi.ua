@@ -350,6 +350,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasTaskSignaling.Select(c => c.MaxFreqDeviation);
                         builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
                         builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
+                        builderMeasTaskSignaling.Select(c => c.CollectEmissionInstrumentalEstimation);
+                        
 
 
                         builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
@@ -375,6 +377,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.SignalizationNChenal = readerMeasTaskSignaling.GetValue(c => c.SignalizationNChenal);
                                 measTask.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
                                 measTask.SignalingMeasTaskParameters.AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
+                                measTask.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(c => c.CollectEmissionInstrumentalEstimation);
                                 measTask.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = readerMeasTaskSignaling.GetValue(c => c.AnalyzeSysInfoEmission);
                                 measTask.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = readerMeasTaskSignaling.GetValue(c => c.DetailedMeasurementsBWEmission);
                                 measTask.SignalingMeasTaskParameters.Standard = readerMeasTaskSignaling.GetValue(c => c.Standard);
@@ -835,6 +838,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderMeasTaskSignaling.Select(c => c.MaxFreqDeviation);
                         builderMeasTaskSignaling.Select(c => c.CheckLevelChannel);
                         builderMeasTaskSignaling.Select(c => c.MinPointForDetailBW);
+                        builderMeasTaskSignaling.Select(c => c.CollectEmissionInstrumentalEstimation);
                         builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerMeasTask.GetValue(c => c.Id));
                         queryExecuter.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
                         {
@@ -858,6 +862,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 measTask.SignalingMeasTaskParameters.SignalizationNChenal = readerMeasTaskSignaling.GetValue(c => c.SignalizationNChenal);
                                 measTask.SignalingMeasTaskParameters.SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
                                 measTask.SignalingMeasTaskParameters.AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
+                                measTask.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(c => c.CollectEmissionInstrumentalEstimation);
                                 measTask.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = readerMeasTaskSignaling.GetValue(c => c.AnalyzeSysInfoEmission);
                                 measTask.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = readerMeasTaskSignaling.GetValue(c => c.DetailedMeasurementsBWEmission);
                                 measTask.SignalingMeasTaskParameters.Standard = readerMeasTaskSignaling.GetValue(c => c.Standard);

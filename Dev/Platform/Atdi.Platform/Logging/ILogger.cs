@@ -33,7 +33,12 @@ namespace Atdi.Platform.Logging
             writer.Exception(context, category, e, BuildSource(source, memberName), (IReadOnlyDictionary<string, object>)null);
         }
 
-        public static ITraceScope StartTrace(this ILogger writer, EventContext context, EventCategory category, object source, [CallerMemberName] string memberName = null)
+        public static void Critical(this ILogger writer, EventContext context, EventCategory category, Exception e, object source, [CallerMemberName] string memberName = null)
+        {
+	        writer.Critical(context, category, e, BuildSource(source, memberName), (IReadOnlyDictionary<string, object>)null);
+        }
+
+		public static ITraceScope StartTrace(this ILogger writer, EventContext context, EventCategory category, object source, [CallerMemberName] string memberName = null)
         {
             return writer.StartTrace(context, category, BuildSource(source, memberName));
         }

@@ -10,6 +10,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         //public CodeOperatorAndStatusConfig[] CodeOperatorAndStatusesConfig { get; set; }
         public BlockStationsConfig BlockStationsConfig { get; set; }
         public ColorConfig[] ColorsConfig { get; set; }
+        public ProvinceCodeConfig[] ProvinceCodeConfig { get; set; }
         public DirectoryConfig DirectoryConfig { get; set; }
     }
 

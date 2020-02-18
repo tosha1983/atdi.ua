@@ -87,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             }
             catch (Exception e)
             {
-                this._logger.Exception(Contexts.ThisComponent, Categories.Processing, e, this);
+                this._logger.Critical(Contexts.ThisComponent, Categories.Processing, e, this);
             }
         }
         private void SendMeasResult()
@@ -95,14 +95,14 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             var measResults = new List<MyMeasResult>();
             var lastDate = DateTime.Today;
             var lastWorkedDate = DateTime.Today;
-            long lastSensor = 0;
+            long lastSubTask = 0;
             int i = 0;
             var builderResMeas = this._dataLayer.GetBuilder<MD.IResMeasSignaling>().From();
-            builderResMeas.Select(c => c.RES_MEAS.TimeMeas, c => c.RES_MEAS.Id, c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id);
+            builderResMeas.Select(c => c.RES_MEAS.TimeMeas, c => c.RES_MEAS.Id, c => c.RES_MEAS.SUBTASK_SENSOR.Id);
             builderResMeas.Where(c => c.IsSend, ConditionOperator.Equal, false);
             builderResMeas.Where(c => c.RES_MEAS.TypeMeasurements, ConditionOperator.Equal, MeasurementType.Signaling.ToString());
             builderResMeas.Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.LessThan, DateTime.Now);
-            builderResMeas.OrderByAsc(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id);
+            builderResMeas.OrderByAsc(c => c.RES_MEAS.SUBTASK_SENSOR.Id);
             builderResMeas.OrderByDesc(c => c.RES_MEAS.TimeMeas);
             this._queryExecutor.Fetch(builderResMeas, readerResMeas =>
             {
@@ -110,16 +110,16 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                 {
                     var timeMeas = (readerResMeas.GetValue(c => c.RES_MEAS.TimeMeas));
                     if (timeMeas.HasValue)
-                        measResults.Add(new MyMeasResult() { Id = readerResMeas.GetValue(c => c.RES_MEAS.Id), SensorId = readerResMeas.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id), MeasDate = timeMeas.Value });
+                        measResults.Add(new MyMeasResult() { Id = readerResMeas.GetValue(c => c.RES_MEAS.Id), SubTaskId = readerResMeas.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.Id), MeasDate = timeMeas.Value });
                 }
                 return true;
             });
 
             foreach (var measResult in measResults)
             {
-                if (lastSensor != measResult.SensorId)
+                if (lastSubTask != measResult.SubTaskId)
                 {
-                    lastSensor = measResult.SensorId;
+                    lastSubTask = measResult.SubTaskId;
                     i = 0;
                     lastDate = DateTime.Today;
                     lastWorkedDate = DateTime.Today;
@@ -146,7 +146,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                         var builderUpdateIResMeas = this._dataLayer.GetBuilder<MD.IResMeasSignaling>().Update();
                         builderUpdateIResMeas.SetValue(c => c.IsSend, true);
                         builderUpdateIResMeas.Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.Between, lastWorkedDate.Date, new DateTime(lastWorkedDate.Year, lastWorkedDate.Month, lastWorkedDate.Day, 23, 59, 59));
-                        builderUpdateIResMeas.Where(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id, ConditionOperator.Equal, lastSensor);
+                        builderUpdateIResMeas.Where(c => c.RES_MEAS.SUBTASK_SENSOR.Id, ConditionOperator.Equal, lastSubTask);
                         scope.Executor.Execute(builderUpdateIResMeas);
                     }
                 }
@@ -156,7 +156,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
     class MyMeasResult
     {
         public long Id;
-        public long SensorId;
+        public long SubTaskId;
         public DateTime MeasDate;
     }
 }

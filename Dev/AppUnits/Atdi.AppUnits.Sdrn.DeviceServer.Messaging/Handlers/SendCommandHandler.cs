@@ -76,6 +76,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Handlers
                                 this._repositoryTaskParametersByString.Update(taskParams);
 
                                 this._logger.Info(Contexts.ThisComponent, Categories.SendCommandHandlerHandlerStart, Events.UpdateTaskParameters);
+                                this._logger.Info(Contexts.ThisComponent, Categories.SendCommandHandlerHandlerStart, $"New command '{message.Data.Command}' for '{idsTask}' accepted in work");
                             }
                         }
                     }

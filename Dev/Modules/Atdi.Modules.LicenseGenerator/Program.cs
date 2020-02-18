@@ -32,11 +32,18 @@ namespace Atdi.Modules.LicenseGenerator
 
             //UpdatePeriod_ICSControl_ForUDCR_2020(@"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019");
 
-            UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
-            UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
+            //UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
+            //UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
 
-            Console.WriteLine("Process was finished");
-            Console.ReadKey();
+            //UpdatePeriod_ICSControl_ForTest_2020();
+
+			//ICSControl_ForTesting_CalcServer(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\CalcServerLicense", 1);
+
+			WebQuery_ForKazahstan(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Kzh\WebQuery");
+
+			Console.WriteLine("Process was finished");
+
+			Console.ReadKey();
         }
 
         static void UpdatePeriod_ICSControl_ForUDCR_2019(string path)
@@ -184,7 +191,85 @@ namespace Atdi.Modules.LicenseGenerator
 
         }
 
-        static void UpdatePeriod_ICSControl_ForTest(string path)
+		static void UpdatePeriod_ICSControl_ForTest_2020()
+		{
+			var startDate = new DateTime(2018, 12, 25);
+			var stopDate = new DateTime(2022, 1, 1);
+
+			var ownerId = "OID-BD12-A00-N00";
+			var ownerKey = "BD12-A00";
+			var year = (ushort)2021;
+
+			// WebQuery Web Portal
+			//var outPath = @"C:\Projects\Licensing\UDCR\WebQuery\AppServer\Licenses_2020";
+
+			//UpdateLicesePeriod2(
+			//	sourcefileName: "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer\\BD13-G65\\ServerLicense\\LIC-WQASBD13-G65-605.APPSRV-WQBD13-G65-8673.lic",
+			//	productKey: "IV0O-6R1S-NU0P-6GWS-EWRX",
+			//	outPath: outPath,
+			//	ownerId: ownerId,
+			//	ownerKey: ownerKey,
+			//	startDate: startDate,
+			//	stopDate: stopDate,
+			//	year: year);
+
+			// WebQuery Web Portal
+			//outPath = @"C:\Projects\Licensing\UDCR\WebQuery\WebPortal\Licenses_2020";
+
+			//UpdateLicesePeriod2(
+			//	sourcefileName: "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal\\BD13-G65\\ServerLicense\\LIC-WQWPBD13-G65-550.WBP-WQBD13-G65-9714.lic",
+			//	productKey: "NP0W-Q6B4-U0W3-9ZW1-IE7R",
+			//	outPath: outPath,
+			//	ownerId: ownerId,
+			//	ownerKey: ownerKey,
+			//	startDate: startDate,
+			//	stopDate: stopDate,
+			//	year: year);
+
+			//// SDRN
+			var outPath = @"C:\Projects\Licensing\Test\Sdrn\Licenses_2020";
+			//// server
+			//UpdateLicesePeriod2(
+			//	sourcefileName: @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2019\BD13-G65\ServerLicense\LIC-SBD13-G65-607.SDRNSV-SBD13-G65-3690.lic",
+			//	productKey: "MGDM-RD0E-ER0I-6GJR-0DCS",
+			//	outPath: outPath,
+			//	ownerId: ownerId,
+			//	ownerKey: ownerKey,
+			//	startDate: startDate,
+			//	stopDate: stopDate,
+			//	year: year);
+
+			var data = new string[][]
+			{
+				new string[] { "LIC-DBD12-A00-187.SENSOR-DBD12-A00-1280", "0ZB0-DVZR-ATI1-WIHB-NC1B" },
+				new string[] { "LIC-DBD12-A00-192.SENSOR-DBD12-A00-0618", "BCBC-ECA1-L9EC-IR7E-V1AD" },
+				new string[] { "LIC-DBD12-A00-333.SENSOR-DBD12-A00-5140", "CCMR-RBZN-2C1D-OE40-EC23" },
+				new string[] { "LIC-DBD12-A00-442.SENSOR-DBD12-A00-5169", "ADL6-EDCV-NC1I-CE1N-DLH0" },
+				new string[] { "LIC-DBD12-A00-511.SENSOR-DBD12-A00-8429", "020B-CJHO-TDNI-ZEEO-2KDI" },
+				new string[] { "LIC-DBD12-A00-542.SENSOR-DBD12-A00-9792", "N8XE-HLRQ-DERB-NLIV-0DX2" },
+				new string[] { "LIC-DBD12-A00-668.SENSOR-DBD12-A00-8485", "ROL9-XSMC-WDCT-62ST-R5ER" },
+
+				new string[] { "LIC-DBD12-A00-722.SENSOR-DBD12-A00-1692", "BE1D-RLNN-S0S6-EN42-0028" },
+				new string[] { "LIC-DBD12-A00-787.SENSOR-DBD12-A00-3828", "NTC0-IODJ-7SC0-01EB-DVRV" },
+				new string[] { "LIC-DBD12-A00-878.SENSOR-DBD12-A00-8918", "0VE1-OCOL-S4S0-C1D1-SEXB" },
+			};
+
+			foreach (var item in data)
+			{
+				UpdateLicesePeriod2(
+				sourcefileName: @"C:\Projects\Licensing\Test\Sdrn\Licenses_2019\BD12-A00\DeviceLicense\" + item[0] + ".lic",
+				productKey: item[1],
+				outPath: outPath,
+				ownerId: ownerId,
+				ownerKey: ownerKey,
+				startDate: startDate,
+				stopDate: stopDate,
+				year: year);
+			}
+			// dev 1
+
+		}
+		static void UpdatePeriod_ICSControl_ForTest(string path)
         {
             var startDate = new DateTime(2018, 12, 25);
             var stopDate = new DateTime(2020, 1, 1);
@@ -581,7 +666,65 @@ namespace Atdi.Modules.LicenseGenerator
             
         }
 
-        static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
+        static void ICSControl_ForTesting_CalcServer(string path, int count = 2)
+        {
+	        const string ownerId = "OID-BD12-A00-N00";
+	        const string ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string company = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string ownerKey = "BD12-A00";
+	        var startDate = new DateTime(2020, 2, 5);
+	        var stopDate = new DateTime(2025, 8, 20);
+	        const ushort year = 2020;
+	        //MakeServerLicense();
+	        for (int i = 0; i < count; i++)
+	        {
+		        var srvLicenseIndex = GetUniqueIntegerKey(3);
+		        var instanceIndex = GetUniqueIntegerKey(4);
+		        var srvLicPrefix = "LIC-C";
+		        var srvInstancePrefix = "SDRNSV-C";
+
+		        MakeLicense2(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "SDRN Calc Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate, year);
+	        }
+
+
+        }
+
+        static void WebQuery_ForKazahstan(string path)
+        {
+			var ownerKey = "BD71-F23";
+			var ownerId = "OID-BD71-F23-N00";
+			var ownerName = "Республиканское государственное предприятие на праве хозяйственного ведения(РГП) «Государственная радиочастотная служба» Министерства цифрового развития, инноваций и аэрокосмической промышленности Республики Казахстан";
+			var company = "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 02, 06);
+			var stopDate = new DateTime(2020, 03, 31);
+			var productName = "WebQuery Web Portal";
+			var licenseType = "ServerLicense";
+
+			var srvLicenseIndex = GetUniqueIntegerKey(3);
+			var instanceIndex = GetUniqueIntegerKey(4);
+
+			var licPrefix = "LIC-WQWP";
+			var instancePrefix = "WBP-WQ";
+
+			MakeLicense3(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+
+
+
+
+			 productName = "WebQuery Application Server";
+			 licenseType = "ServerLicense";
+
+			 srvLicenseIndex = GetUniqueIntegerKey(3);
+			 instanceIndex = GetUniqueIntegerKey(4);
+
+			 licPrefix = "LIC-WQAS";
+			 instancePrefix = "APPSRV-WQ";
+
+			MakeLicense3(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+		}
+
+		static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
         {
             //var ownerId = "OID-BD13-G65-N00"; //  Сам УДЦР
             var ownerId = "OID-BD13-G65-N01"; //  лицензии для УДЦР выданы УНИКОМ
@@ -864,7 +1007,84 @@ namespace Atdi.Modules.LicenseGenerator
             return productKey;
         }
 
-        private static void CreateLicenseDescriptionFile(LicenseData l, string fileName)
+		private static string MakeLicense3(string path, string licPrefix, string instancePrefix, string licenseType, string productName, string licenseIndex, string instanceIndex, string ownerName, string ownerId, string ownerKey, string company, DateTime startDate, DateTime stopDate)
+		{
+			var productKey = string.Empty;
+
+			var c = new LicenseCreator();
+
+			var l = new LicenseData2()
+			{
+				//LicenseNumber = $"LIC-D{ownerKey}-{licenseIndex}",
+				LicenseType = licenseType, //"DeviceLicense",
+				Company = company,
+				Copyright = "",
+				OwnerId = ownerId,
+				OwnerName = ownerName,
+				Created = DateTime.Now,
+				StartDate = startDate,
+				StopDate = stopDate,
+				ProductKey = productKey,
+				ProductName = productName,
+				Count = 1,
+				LimitationTerms = LicenseLimitationTerms.TimePeriod,
+				Year = 2020
+				//Instance = $"SENSOR-D{ownerKey}-{deviceIndex}"
+			};
+
+			if ("DeviceLicense".Equals(licenseType))
+			{
+				l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+				l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+			}
+			else if ("ServerLicense".Equals(licenseType))
+			{
+				l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+				l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+			}
+			else if ("ClientLicense".Equals(licenseType))
+			{
+				l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+				l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+			}
+			else
+			{
+
+				throw new InvalidOperationException($"Invalid the license type '{licenseType}'");
+			}
+
+			productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);
+			l.ProductKey = productKey;
+
+			var result = c.Create(new LicenseData2[] { l });
+
+			var directory = $"{path}\\{ownerKey}\\{licenseType}";
+			Directory.CreateDirectory(directory);
+
+			var fileName = $"{directory}\\{l.LicenseNumber}.{l.Instance}.lic";
+
+			File.WriteAllBytes(fileName, result.Body);
+			CreateLicenseDescriptionFile(l, fileName);
+
+			var licBody = File.ReadAllBytes(fileName);
+
+			var vd = new VerificationData2
+			{
+				OwnerId = l.OwnerId,
+				ProductName = l.ProductName,
+				ProductKey = l.ProductKey,
+				LicenseType = l.LicenseType,
+				Date = startDate,
+				YearHash = LicenseVerifier.EncodeYear(2020)
+			};
+
+			var cc = LicenseVerifier.Verify(vd, licBody);
+
+			Console.WriteLine($"Made license: '{productKey}' >>> {fileName}");
+			return productKey;
+		}
+
+		private static void CreateLicenseDescriptionFile(LicenseData l, string fileName)
         {
             var l2 = l as LicenseData2;
 

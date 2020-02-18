@@ -44,6 +44,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? MaxFreqDeviation { get; set; }
         bool? CheckLevelChannel { get; set; }
         int? MinPointForDetailBW { get; set; }
+        bool? CollectEmissionInstrumentalEstimation { get; set; }
         IMeasTask MEAS_TASK { get; set; }
     }
 }

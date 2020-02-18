@@ -56,7 +56,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             try
             {
 
-                _logger.Verbouse(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
+                _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
                 if (context.Process.Parent != null)
                 {
                     if (context.Process.Parent is DispatchProcess)
@@ -87,6 +87,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         if (DateTime.Now > context.Task.taskParameters.StopTime)
                         {
+                            context.Task.taskParameters.status = StatusTask.Z.ToString();
+                            this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                             context.Cancel();
                             _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                             break;
@@ -94,6 +96,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         Thread.Sleep((int)context.Task.SleepTimePeriodForWaitingStartingMeas); // засыпание потока на время SleepTimePeriodForWaitingStartingMeas_ms
                         continue;
                     }
+
+                    _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.StartSignalizationTaskWorker.With(context.Task.taskParameters.SDRTaskId));
 
                     ////////////////////////////////////////////////////////////////////////////////////////////////////
                     // 
@@ -111,9 +115,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         deviceCommandResult.CustDate1 = DateTime.Now;
                         deviceCommandResult.Status = StatusTask.C.ToString();
                         deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
-                        
+
                         this._repositoryDeviceCommandResult.Create(deviceCommandResult);
-                        
+
                         _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.MaximumDurationMeas);
                         //context.Cancel();
                         //break;
@@ -135,6 +139,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             if (DateTime.Now > context.Task.taskParameters.StopTime)
                             {
+                                context.Task.taskParameters.status = StatusTask.Z.ToString();
+                                this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                 context.Cancel();
                                 _logger.Info(Contexts.SignalizationTaskWorker, Categories.Measurements, Events.TaskIsCancled.With(context.Task.taskParameters.SDRTaskId));
                                 break;
@@ -217,20 +223,20 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                         var action = new Action(() =>
                         {
-                        //реакция на принятые результаты измерения
-                        if (outResultData != null)
+                            //реакция на принятые результаты измерения
+                            if (outResultData != null)
                             {
-                            //////////////////////////////////////////////
-                            // 
-                            //  Здесь получаем данные с GPS приемника
-                            //  
-                            //////////////////////////////////////////////
-                            //outResultData.ResultId = Guid.NewGuid().ToString();
-                            context.Task.CountSendResults++;
+                                //////////////////////////////////////////////
+                                // 
+                                //  Здесь получаем данные с GPS приемника
+                                //  
+                                //////////////////////////////////////////////
+                                //outResultData.ResultId = Guid.NewGuid().ToString();
+                                context.Task.CountSendResults++;
                                 outResultData.TaskId = context.Task.taskParameters.SDRTaskId;
                                 outResultData.ResultId = Guid.NewGuid().ToString();
-                            //outResultData.ScansNumber = context.Task.CountSendResults;
-                            outResultData.Status = "N";
+                                //outResultData.ScansNumber = context.Task.CountSendResults;
+                                outResultData.Status = "N";
                                 outResultData.ScansNumber = context.Task.CountMeasurementDone;
                                 outResultData.Measurement = DataModels.Sdrns.MeasurementType.Signaling;
                                 outResultData.StartTime = context.Task.LastTimeSend.Value;
@@ -272,8 +278,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                     _logger.Error(Contexts.SignalizationTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                                 }
 
-                            //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
-                            var arrEmit = new Emitting[outResultData.Emittings.Length];
+                                //outResultData.TaskId = CommonConvertors.GetTaskId(outResultData.ResultId);
+                                var arrEmit = new Emitting[outResultData.Emittings.Length];
                                 for (var i = 0; i < outResultData.Emittings.Length; i++)
                                 {
                                     var val = outResultData.Emittings[i];
@@ -377,6 +383,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 context.Task.MeasResults = null;
                                 context.Task.LastTimeSend = currTime;
                                 context.Task.CounterCallSignaling = 0;
+
+                                var collectEmissionInstrumentalEstimation = context.Task.taskParameters.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
+                                if ((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == true))
+                                {
+                                    context.Task.EmittingsSummary = null;
+                                    context.Task.EmittingsTemp = null;
+                                }
                             }
                         });
 

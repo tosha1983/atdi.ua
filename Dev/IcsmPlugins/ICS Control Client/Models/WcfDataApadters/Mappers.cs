@@ -50,6 +50,35 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 TypeSensor = source.TypeSensor
             };
         }
+        public static VM.ShortSensorViewModel Map(SDR.ShortSensor source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new VM.ShortSensorViewModel
+            {
+                Administration = source.Administration,
+                AntGainMax = source.AntGainMax.ToNull(),
+                Id = source.Id.Value,
+                AntManufacturer = source.AntManufacturer,
+                AntName = source.AntName,
+                BiuseDate = source.BiuseDate.ToNull(),
+                CreatedBy = source.CreatedBy,
+                DateCreated = source.DateCreated.ToNull(),
+                EouseDate = source.EouseDate.ToNull(),
+                EquipCode = source.EquipCode,
+                EquipManufacturer = source.EquipManufacturer,
+                EquipName = source.EquipName,
+                LowerFreq = source.LowerFreq.ToNull(),
+                Name = source.Name,
+                NetworkId = source.NetworkId,
+                RxLoss = source.RxLoss.ToNull(),
+                Status = source.Status,
+                UpperFreq = source.UpperFreq.ToNull()
+            };
+        }
         public static VM.SignSysInfoViewModel Map(SDR.SignalingSysInfo source)
         {
             if (source == null)
@@ -196,6 +225,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Standard = source.SignalingMeasTaskParameters.Standard,
                 triggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? null : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz,
                 IsAutoTriggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999),
+                CollectEmissionInstrumentalEstimation = source.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation,
 
                 CrossingBWPercentageForBadSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals.ToNull(),
                 CrossingBWPercentageForGoodSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForGoodSignals.ToNull(),
@@ -214,7 +244,6 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 NumberPointForChangeExcess = source.SignalingMeasTaskParameters.InterruptionParameters.NumberPointForChangeExcess.ToNull(),
                 windowBW = source.SignalingMeasTaskParameters.InterruptionParameters.windowBW.ToNull(),
 
-
                 MeasFreqParamMeasFreqs = (source.MeasFreqParam.MeasFreqs ?? (new SDR.MeasFreq[] { })).Select(i => i.Freq).ToArray(),
                 MeasFreqParamMode = source.MeasFreqParam.Mode,
                 MeasFreqParamRgL = source.MeasFreqParam.RgL.ToNull(),
@@ -222,6 +251,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasFreqParamStep = source.MeasFreqParam.Step.ToNull(),
 
                 MeasOtherLevelMinOccup = source.MeasOther.LevelMinOccup.ToNull(),
+                MeasOtherNCount = source.MeasDtParam.NumberTotalScan.ToNull(),
                 MeasOtherNChenal = source.MeasOther.NChenal.ToNull(),
                 MeasOtherSwNumber = source.MeasOther.SwNumber.ToNull(),
                 MeasOtherTypeSpectrumOccupation = source.MeasOther.TypeSpectrumOccupation,
@@ -270,8 +300,10 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SubMeasTaskStationId = source.Id.SubMeasTaskStationId,
                 TimeMeas = source.TimeMeas,
                 TypeMeasurements = source.TypeMeasurements,
-                LowFreq = source.FrequenciesMeasurements == null ? (double?)null : (source.FrequenciesMeasurements.Length == 0 ? 0 : source.FrequenciesMeasurements.Min(f => f.Freq)),
-                UpFreq = source.FrequenciesMeasurements == null ? (double?)null : (source.FrequenciesMeasurements.Length == 0 ? 0 : source.FrequenciesMeasurements.Max(f => f.Freq)),
+                //LowFreq = source.FrequenciesMeasurements == null ? (double?)null : (source.FrequenciesMeasurements.Length == 0 ? 0 : source.FrequenciesMeasurements.Min(f => f.Freq)),
+                //UpFreq = source.FrequenciesMeasurements == null ? (double?)null : (source.FrequenciesMeasurements.Length == 0 ? 0 : source.FrequenciesMeasurements.Max(f => f.Freq)),
+                LowFreq = source.LowFreq,
+                UpFreq = source.UpFreq,
                 MeasDeviceId = source.StationMeasurements == null ? (long?)null : source.StationMeasurements.StationId.Value,
                 StationsNumber = source.ResultsMeasStation == null ? (int?)null : source.ResultsMeasStation.Length,
                 PointsNumber = source.MeasurementsResults == null ? (int?)null : source.MeasurementsResults.Length,
@@ -453,6 +485,27 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 IcsmId = source.IcsmId,
                 IcsmTable = source.IcsmTable,
                 Status = source.Status
+            };
+        }
+        public static VM.MeasTaskShortViewModel Map(M.MeasTask source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+            return new VM.MeasTaskShortViewModel
+            {
+                MeasTaskId = source.MeasTaskId,
+                TaskType = source.TaskType,
+                TaskName = source.TaskName,
+                FqMin = source.FqMin,
+                FqMax = source.FqMax,
+                DateStart = source.DateStart,
+                DateStop = source.DateStop,
+                DateCreated = source.DateCreated,
+                CreatedBy = source.CreatedBy,
+                Status = source.Status,
+                SensorIds = source.SensorIds
             };
         }
     }

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2A1AC919-F042-4F43-9B00-27BF0D1B6BF2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example</RootNamespace>
+    <AssemblyName>Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppServerComponent.cs" />
+    <Compile Include="DataModels\SecondIterationData.cs" />
+    <Compile Include="DataModels\FirstIterationData.cs" />
+    <Compile Include="DataModels\SecondIterationResult.cs" />
+    <Compile Include="DataModels\FirstIterationResult.cs" />
+    <Compile Include="DeepServices\ExampleDeepService.cs" />
+    <Compile Include="Iterations\SecondIteration.cs" />
+    <Compile Include="Iterations\FirstIteration.cs" />
+    <Compile Include="Iterations\VoidIteration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\FirstTask.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
+      <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
+      <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.EntityOrm\Atdi.Contracts.CoreServices.EntityOrm.csproj">
+      <Project>{4247b867-4fab-40de-a539-7026d30cc245}</Project>
+      <Name>Atdi.Contracts.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices\Atdi.Contracts.Sdrn.CalcServer.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer\Atdi.Contracts.Sdrn.CalcServer.csproj">
+      <Project>{7fba1c75-c990-4ff4-9989-397599ee9c00}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
+      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Internal\Atdi.DataModels.Sdrn.CalcServer.Internal.csproj">
+      <Project>{04ab56c1-7a30-411d-9bb2-be4b641cf268}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer\Atdi.DataModels.Sdrn.CalcServer.csproj">
+      <Project>{ba1bb2b6-ec14-4224-8d5d-20d6a6f7041c}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2C2B4FDF-FF87-49B5-8080-DA8A5715710A}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
+      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
+      <Name>Atdi.AppUnits</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

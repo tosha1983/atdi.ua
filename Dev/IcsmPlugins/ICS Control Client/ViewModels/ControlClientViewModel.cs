@@ -30,6 +30,7 @@ using System.Net.Http;
 using System.Configuration;
 using System.Globalization;
 using TR = System.Threading;
+using Microsoft.VisualBasic;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -59,32 +60,6 @@ namespace XICSM.ICSControlClient.ViewModels
         }
 
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasTasks), new PropertyMetadata(null));
-    }
-
-    public class ShortSensorsCustomDataGrid : DataGrid
-    {
-        public ShortSensorsCustomDataGrid()
-        {
-            this.MouseDoubleClick += DoubleClick;
-        }
-        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-            foreach (ShortSensorViewModel item in this.SelectedItemsList)
-            {
-                var dlgForm = new FM.OnlineMeasurementForm(item, null);
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
-                return;
-            }
-        }
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(ShortSensorsCustomDataGrid), new PropertyMetadata(null));
     }
 
     public class ControlClientViewModel : WpfViewModelBase, IDisposable
@@ -140,7 +115,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private GeneralResultDataAdapter _generalResults;
         private ResultsMeasurementsStationFilters _currentStationsGolbalFilter;
 
-        private Visibility _measTaskDetailVisibility = Visibility.Hidden;
+        private Visibility _measTaskDetailVisibility = Visibility.Visible;
         private Visibility _measResultsDetailVisibility = Visibility.Hidden;
         private Visibility _taskStationsVisibility = Visibility.Hidden;
         private Visibility _resultStationsVisibility = Visibility.Hidden;
@@ -180,6 +155,8 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand ShowHideMeasResultsDetailCommand { get; set; }
         public WpfCommand MeasResultCommand { get; set; }
         public WpfCommand FilterApplyCommand { get; set; }
+        public WpfCommand DoubleClickSensorCommand { get; set; }
+        public WpfCommand EditSensorTitleCommand { get; set; }
 
         #endregion
 
@@ -237,6 +214,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this.RefreshShortSensorsCommand = new WpfCommand(this.OnRefreshShortSensorsCommand);
             this.ShowHideMeasTaskDetailCommand = new WpfCommand(this.OnShowHideMeasTaskDetailCommand);
             this.ShowHideMeasResultsDetailCommand = new WpfCommand(this.OnShowHideMeasResultsDetailCommand);
+            this.DoubleClickSensorCommand = new WpfCommand(this.OnDoubleClickSensorCommand);
+            this.EditSensorTitleCommand = new WpfCommand(this.OnEditSensorTitleCommand);
             this.MeasResultCommand = new WpfCommand(this.OnMeasResultCommand);
 
             this._shortMeasTasks = new ShortMeasTaskDataAdatper();
@@ -255,6 +234,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this.ReloadShortMeasTasks();
             this.ReloadShortSensors(this.CurrentMeasTask);
+            this.RedrawMap();
 
             this.ResFreq1Visibility = Visibility.Collapsed;
             this.ResFreq2Visibility = Visibility.Collapsed;
@@ -408,6 +388,11 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 Debug.Print($"OnChangedCurrentShortMeasTaskAction: ID = 'is null'");
             }
+
+            if (shortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation || shortMeasTask.TypeMeasurements == SDR.MeasurementType.Signaling)
+                MeasResultsDetailVisibility = Visibility.Hidden;
+            else
+                MeasResultsDetailVisibility = Visibility.Visible;
 
             ReloadShortMeasResults(shortMeasTask);
             var currentMeasTask = ReloadCurrentMeasTask(shortMeasTask);
@@ -714,34 +699,32 @@ namespace XICSM.ICSControlClient.ViewModels
 
             if (this.MeasTaskDetailVisibility == Visibility.Visible && this._measTaskDetailStations != null)
             {
-
                 if (measTask != null)
                 {
-                    //this._measTaskDetailStations.Source = task.StationsForMeasurements;
-                    this._measTaskDetailStations.Source = _dataStore.GetStationDataForMeasurementsByTaskId(measTask.Id); // SVC.SdrnsControllerWcfClient.GetStationDataForMeasurementsByTaskId(measTask.Id);
+                    this._measTaskDetailStations.Source = _dataStore.GetStationDataForMeasurementsByTaskId(measTask.Id);
                 }
                 else
                 {
                     this._measTaskDetailStations.Source = null;
                 }
             }
-
             if (measTask == null)
             {
                 this.TaskStationsVisibility = Visibility.Hidden;
                 return;
             }
-
             if (measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations && this.MeasTaskDetailVisibility == Visibility.Visible)
             {
-                this.TaskStationsVisibility = Visibility.Visible;
+                if (this._measTaskDetailStations.Source != null && this._measTaskDetailStations.Source.Length > 0)
+                    this.TaskStationsVisibility = Visibility.Visible;
+                else
+                    this.TaskStationsVisibility = Visibility.Hidden;
             }
             else
             {
                 this.TaskStationsVisibility = Visibility.Hidden;
             }
-
-            ReloadDetailVisible(measTask);
+            //ReloadDetailVisible(measTask);
         }
         private void ReloadDetailVisible(MeasTaskViewModel measTask)
         {
@@ -889,11 +872,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 if (measTask.Sensors != null && measTask.Sensors.Length > 0)
                 {
-                    sensors = sensors
-                        .Where(sdrSensor => measTask.Sensors
-                                .FirstOrDefault(s => s.SensorId.Value == sdrSensor.Id.Value) != null
-                            )
-                        .ToArray();
+                    sensors = sensors.Where(sdrSensor => measTask.Sensors.FirstOrDefault(s => s.SensorId.Value == sdrSensor.Id.Value) != null).ToArray();
                 }
                 else
                 {
@@ -1399,7 +1378,27 @@ namespace XICSM.ICSControlClient.ViewModels
                     break;
             }
         }
-
+        private void OnDoubleClickSensorCommand(object parameter)
+        {
+            if (this._currentShortSensor != null)
+            {
+                var dlgForm = new FM.OnlineMeasurementForm(this._currentShortSensor, null);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+            }
+        }
+        private void OnEditSensorTitleCommand(object parameter)
+        {
+            if (this._currentShortSensor != null)
+            {
+                var newTitle = Interaction.InputBox("Enter title", "ICS Control Client");
+                if (!string.IsNullOrEmpty(newTitle))
+                {
+                    SVC.SdrnsControllerWcfClient.UpdateSensorTitle(this._currentShortSensor.Id, newTitle);
+                    this.ReloadShortSensors(this.CurrentMeasTask);
+                }
+            }
+        }
         private void UpdateCurrentChartOption(MeasurementResultsViewModel measurementResults)
         {
             if (this.MeasResultsDetailVisibility != Visibility.Visible)
@@ -1712,32 +1711,11 @@ namespace XICSM.ICSControlClient.ViewModels
             var polygons = new List<MP.MapDrawingDataPolygon>();
             var points = new List<MP.MapDrawingDataPoint>();
 
-            //if (this._currentMeasurementResult == null)
-            //{
-            //    this.CurrentMapData = null;
-            //    return;
-            //}
-
             if (this.CurrentShortSensor != null)
-            {
-                var svcSensor = _dataStore.GetSensorById(this.CurrentShortSensor.Id);// SVC.SdrnsControllerWcfClient.GetSensorById(this.CurrentShortSensor.Id);
-                if (svcSensor != null)
-                {
-                    var modelSensor = Mappers.Map(svcSensor);
-                    if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
-                    {
-                        var sensorPoints = modelSensor.Locations
-                            .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
-                                    || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
-                                    && l.Lon.HasValue
-                                    && l.Lat.HasValue)
-                            .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
-                            .ToArray();
-
-                        points.AddRange(sensorPoints);
-                    }
-                }
-            }
+                DrawSensor(points, this.CurrentShortSensor.Id);
+            else if (this._shortSensors.Source != null && this._shortSensors.Source.Length > 0)
+                foreach (var sensor in this._shortSensors.Source)
+                    DrawSensor(points, sensor.Id.Value);
 
             if (this._currentMeasurementResult != null)
             {
@@ -1890,6 +1868,26 @@ namespace XICSM.ICSControlClient.ViewModels
             }));
 
         }
+        private void DrawSensor(List<MP.MapDrawingDataPoint> points, long sensorId)
+        {
+            var svcSensor = _dataStore.GetSensorById(sensorId);
+            if (svcSensor != null)
+            {
+                var modelSensor = Mappers.Map(svcSensor);
+                if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
+                {
+                    var sensorPoints = modelSensor.Locations
+                        .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+                                || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+                                && l.Lon.HasValue
+                                && l.Lat.HasValue)
+                        .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                        .ToArray();
+                    points.AddRange(sensorPoints);
+                }
+            }
+        }
+
         string GetTimeVal(TimeSpan val)
         {
             return String.Format("{0:00}:{1:00}:{2:00}.{3:00}", val.Hours, val.Minutes, val.Seconds, val.Milliseconds / 10);
@@ -1986,10 +1984,10 @@ namespace XICSM.ICSControlClient.ViewModels
         }
 
 
-        private void ShortSensorsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            MessageBox.Show($"ShortSensorsDataGrid_MouseDoubleClick: {e.ClickCount}");
-        }
+        //private void ShortSensorsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    MessageBox.Show($"ShortSensorsDataGrid_MouseDoubleClick: {e.ClickCount}");
+        //}
 
         public void Dispose()
         {
@@ -2000,8 +1998,11 @@ namespace XICSM.ICSControlClient.ViewModels
             _waitForm?.Dispose();
             _userActionTask?.Dispose();
         }
-        private double ConvertToDouble(string s)
+        private double? ConvertToDouble(string s)
         {
+            if (string.IsNullOrEmpty(s))
+                return null;
+
             char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
             double result = 0;
             try
@@ -2012,7 +2013,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     else
                         result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
             }
-            catch (Exception e)
+            catch
             {
                 try
                 {
@@ -2026,7 +2027,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                     catch
                     {
-                        throw new Exception("Wrong string-to-double format");
+                        //throw new Exception("Wrong string-to-double format");
+                        return null;
                     }
                 }
             }

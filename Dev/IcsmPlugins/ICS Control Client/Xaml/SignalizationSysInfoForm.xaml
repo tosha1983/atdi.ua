@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -29,28 +30,28 @@
         </Grid.RowDefinitions>
         <DataGrid Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding SysInfos}" SelectedItem="{Binding CurrentSysInfo}">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Freq Hz" Binding="{Binding Path=Freq_Hz}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
-            <DataGridTextColumn Header="BandWidth Hz" Binding="{Binding Path=BandWidth_Hz}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Level dBm" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
-            <DataGridTextColumn Header="CID" Binding="{Binding Path=CID}"></DataGridTextColumn>
-            <DataGridTextColumn Header="MCC" Binding="{Binding Path=MCC}"></DataGridTextColumn>
-            <DataGridTextColumn Header="MNC" Binding="{Binding Path=MNC}"></DataGridTextColumn>
-            <DataGridTextColumn Header="BSIC" Binding="{Binding Path=BSIC}"></DataGridTextColumn>
-            <DataGridTextColumn Header="ChannelNumber" Binding="{Binding Path=ChannelNumber}"></DataGridTextColumn>
-            <DataGridTextColumn Header="LAC" Binding="{Binding Path=LAC}"></DataGridTextColumn>
-            <DataGridTextColumn Header="RNC" Binding="{Binding Path=RNC}"></DataGridTextColumn>
-            <DataGridTextColumn Header="CtoI" Binding="{Binding Path=CtoI}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Power" Binding="{Binding Path=Power}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.FreqHz}" Binding="{Binding Path=Freq_Hz}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standart}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.BandwidthHz}" Binding="{Binding Path=BandWidth_Hz}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.LeveldBm}" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.CID}" Binding="{Binding Path=CID}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.MCC}" Binding="{Binding Path=MCC}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.MNC}" Binding="{Binding Path=MNC}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.BSIC}" Binding="{Binding Path=BSIC}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.ChannelNumber}" Binding="{Binding Path=ChannelNumber}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.LAC}" Binding="{Binding Path=LAC}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.RNC}" Binding="{Binding Path=RNC}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.CtoI}" Binding="{Binding Path=CtoI}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Power}" Binding="{Binding Path=Power}"></DataGridTextColumn>
           </DataGrid.Columns>
         </DataGrid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <DataGrid Grid.Row="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding SysInfoWorkTimes}">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="StartEmitting" Binding="{Binding Path=StartEmitting}"></DataGridTextColumn>
-            <DataGridTextColumn Header="StopEmitting" Binding="{Binding Path=StopEmitting}"></DataGridTextColumn>
-            <DataGridTextColumn Header="HitCount" Binding="{Binding Path=HitCount}"></DataGridTextColumn>
-            <DataGridTextColumn Header="PersentAvailability" Binding="{Binding Path=PersentAvailability}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.StartEmitting}" Binding="{Binding Path=StartEmitting}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.StopEmitting}" Binding="{Binding Path=StopEmitting}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.HitCount}" Binding="{Binding Path=HitCount}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.PersentAvailability}" Binding="{Binding Path=PersentAvailability}"></DataGridTextColumn>            
           </DataGrid.Columns>
         </DataGrid>
       </Grid>

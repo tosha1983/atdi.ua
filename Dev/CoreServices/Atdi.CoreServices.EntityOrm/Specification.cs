@@ -1,39 +1,33 @@
 ﻿using Atdi.Platform.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Atdi.Platform;
 
 namespace Atdi.CoreServices.EntityOrm
 {
-    static class Contexts
+	internal static class Contexts
     {
         
-        public static readonly EventContext QueryExecutor = "QueryExecutor";
-        public static readonly EventContext DataLayerCoreServices = "DataLayer Core Services";
-        public static readonly EventContext SqlServerEngine = "SQL Server Engine";
-        public static readonly EventContext OracleEngine = "Oracle Engine";
+        //public static readonly EventContext QueryExecutor = "QueryExecutor";
+        //public static readonly EventContext DataLayerCoreServices = "DataLayer Core Services";
+        //public static readonly EventContext SqlServerEngine = "SQL Server Engine";
+        //public static readonly EventContext OracleEngine = "Oracle Engine";
         public static readonly EventContext EntityOrm = "EntityOrm";
-        public static readonly EventContext BuidJoinRelation = "Build Join Releation";
-        public static readonly EventContext BuidJoinExtension= "Build Join Extension";
-        public static readonly EventContext BuidJoinReference = "Build Join Reference";
+        //public static readonly EventContext BuidJoinRelation = "Build Join Releation";
+        //public static readonly EventContext BuidJoinExtension= "Build Join Extension";
+        //public static readonly EventContext BuidJoinReference = "Build Join Reference";
     }
 
 
-    static class Templates
-    {
-        public static readonly string CommmentsBuildJoin = " /* This Join is Base type between  '{0}' and '{1}'  */";
-        public static readonly string CommmentsBuildJoinExtension = " /* This Join is Extension type between  '{0}' and '{1}'  */";
-        public static readonly string CommmentsBuildJoinRelation = " /* This Join is Relation type between  '{0}' and '{1}'  */";
-        public static readonly string CommmentsBuildJoinReference = " /* This Join is Reference type between  '{0}' and '{1}'  */";
+    //internal static class Templates
+    //{
+    //    public static readonly string CommmentsBuildJoin = " /* This Join is Base type between  '{0}' and '{1}'  */";
+    //    public static readonly string CommmentsBuildJoinExtension = " /* This Join is Extension type between  '{0}' and '{1}'  */";
+    //    public static readonly string CommmentsBuildJoinRelation = " /* This Join is Relation type between  '{0}' and '{1}'  */";
+    //    public static readonly string CommmentsBuildJoinReference = " /* This Join is Reference type between  '{0}' and '{1}'  */";
        
-    }
+    //}
 
 
-
-    static class Categories
+    internal static class Categories
     {
         public static readonly EventCategory Creation = "Creation";
 
@@ -51,7 +45,7 @@ namespace Atdi.CoreServices.EntityOrm
 
     }
 
-    static class Events
+    internal static class Events
     {
         public static readonly EventText ObjectWasCreated = "The object of {0} was created";
 
@@ -64,7 +58,8 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly EventText ServiceHostDescriptor = "{0}";
         public static readonly EventText NoFieldsSpecified = "No fields specified(empty)";
     }
-    static class TraceScopeNames
+
+    internal static class TraceScopeNames
     {
         public static readonly TraceScopeName GetQueriesTree = "GetQueriesTree";
         public static readonly TraceScopeName GetQueryMetadata = "GetQueryMetadata";
@@ -72,7 +67,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly TraceScopeName SaveChanges = "SaveChanges";
     }
 
-    static class Exceptions
+    internal static class Exceptions
     {
         public static readonly ExceptionText UndefinedRootPath = "Undefined a config parameter Root Path";
         public static readonly ExceptionText UndefinedEntitiesPath = "Undefined a config parameter Entities Path";
@@ -82,7 +77,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly ExceptionText LogicalOperatorNotSupported = "The logical operator with name '{0}' is not supported";
         public static readonly ExceptionText NotRecognizeAlias = "The alias of main table not found {0}";
         public static readonly ExceptionText ValueTypeNotSupported = "The value type {0} is not supported.";
-        public static readonly ExceptionText ExpresionRefersToMemberThatNotFromType = "Expresion '{0}' refers to a member that is not from type {1}.";
+        public static readonly ExceptionText ExpressionRefersToMemberThatNotFromType = "Expression '{0}' refers to a member that is not from type {1}.";
         public static readonly ExceptionText ColumnValueTypeNotSupported = "The value type {0} is not supported for column with name '{1}'.";
         public static readonly ExceptionText ExpressionNotSupported = "The expression '{0}' is not supported.";
         public static readonly ExceptionText ExpressionTypeNotSupported = "The expression type {0} is not supported.";
@@ -114,7 +109,7 @@ namespace Atdi.CoreServices.EntityOrm
         public static readonly ExceptionText FailedToBuildAndExecute = "Failed to build pattern and execute by the query statement type '{0}'";
     }
 
-    static class ConfigParameters
+    internal static class ConfigParameters
     {
         public static readonly string DataContexts = "DataContexts";
     }

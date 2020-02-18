@@ -3,28 +3,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:StyleAlias="clr-namespace:XICSM.ICSControlClient.Models.Views"
              xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
-             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        
         <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
-
         <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Center" />
         </Style>
         <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>
-
         <Style TargetType="TextBox">
           <Style.Triggers>
             <Trigger Property="Validation.HasError" Value="True">
@@ -55,13 +52,6 @@
             </Trigger>
           </Style.Triggers>
         </Style>
-
-      <!--<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type System:Enum}" x:Key="TypeMeasurementsValues">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="StyleAlias:MeasDtParamTypeMeasurements" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>-->
-    
     </UserControl.Resources>
     <DockPanel LastChildFill="True" MinHeight="30">
         <Grid >
@@ -76,7 +66,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <GroupBox  Header="  Parameters  "  Margin="0, 5, 5, 5" Grid.Column="0" Grid.RowSpan="3" >
+            <GroupBox  Header="{x:Static res:Resources.Parameters}"  Margin="0, 5, 5, 5" Grid.Column="0" Grid.RowSpan="3" >
               <Grid>
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="*" />
@@ -103,13 +93,13 @@
                       <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <Label Height="18" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Name"  />
+                    <Label Height="18" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.Name}"  />
                     <TextBox Height="18" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding Path=Name}"/>
 
-                    <Label Height="18" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "Type Measurements"  />
+                    <Label Height="18" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.Type_Measurements}"  />
                     <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}" IsEnabled="False"/>
 
-                    <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="TimeMeas" IsExpanded="true">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="{x:Static res:Resources.TimeMeas}" IsExpanded="true">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="75" />
@@ -122,7 +112,7 @@
                           <!--<RowDefinition Height="Auto"></RowDefinition>-->
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Date Start"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.DateStart}"  />
                         <DatePicker x:Name="MeasTimeParamListPerStart" Grid.Column="1" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
                           <DatePicker.SelectedDate>
                             <Binding Path="MeasTimeParamListPerStart" StringFormat='{}{0:dd.MM.yyyy}'>
@@ -133,7 +123,7 @@
                           </DatePicker.SelectedDate>
                         </DatePicker>                          
 
-                        <Label Height="18" Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "Date Stop"  />
+                        <Label Height="18" Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.DateStop}"  />
                         <DatePicker x:Name="MeasTimeParamListPerStop" Grid.Column="3" Grid.Row="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top">
                           <DatePicker.SelectedDate>
                             <Binding Path="MeasTimeParamListPerStop" StringFormat='{}{0:dd.MM.yyyy}'>
@@ -144,13 +134,13 @@
                           </DatePicker.SelectedDate>
                         </DatePicker>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Time Start"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeStart}"  />
                         <TextBox x:Name="MeasTimeParamListTimeStart" Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStart, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
 
-                        <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Time Stop"  />
+                        <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeStop}"  />
                         <TextBox x:Name="MeasTimeParamListTimeStop" Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
 
-                        <!--<Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Duration, s"  />
+                        <!--<Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.DurationS}"  />
                         <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=MeasTimeParamListPerInterval}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -170,7 +160,7 @@
                         </TextBox>-->
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="Frequency" IsExpanded="false">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="{x:Static res:Resources.Frequency}" IsExpanded="false">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="100" />
@@ -183,7 +173,7 @@
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Mode"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.Mode}"  />
                         <ComboBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" SelectedValue="{Binding MeasFreqParamMode, Mode=TwoWay}" ItemsSource="{Binding MeasFreqParamModeValues}">
                           <ComboBox.Style>
                             <Style TargetType="ComboBox">
@@ -202,7 +192,7 @@
                           </ComboBox.Style>                          
                         </ComboBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Start freq, MHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StartFreqMHz}">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -237,7 +227,7 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "Stop freq, MHz">
+                        <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StopFreqMHz}">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -272,7 +262,7 @@
                           </TextBox.Style>
                         </TextBox>
                         
-                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Step whith, kHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepkHz}">
                           <!--<Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -307,7 +297,7 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq, MHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.FreqMHz}">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -341,7 +331,7 @@
                             </Style>
                           </TextBox.Style>
                         </TextBox>
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Freq list, MHz">
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.FreqListMHz}">
                           <Label.Style>
                             <Style TargetType="Label">
                               <Style.Triggers>
@@ -386,7 +376,7 @@
                         </TextBox>                          
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="Detector Parameters" IsExpanded="false">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="{x:Static res:Resources.DetectorParameters}" IsExpanded="false">
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="130" />
@@ -405,7 +395,7 @@
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         
-                        <Label Height="18" Grid.Column="1" Grid.Row="0" Padding="5,0,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"/>
                         <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding Path=IsAutoMeasDtParamRBW, Mode=TwoWay}">
                           <CheckBox.Style>
                             <Style TargetType="CheckBox">
@@ -423,7 +413,7 @@
                             </Style>
                           </CheckBox.Style>
                         </CheckBox>
-                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "RBW, kHz"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.RBWkHz}"  />
                         <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=MeasDtParamRBW}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -439,7 +429,7 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="1" Grid.Row="1" Padding="5,0,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.VBWkHz}"  />
                         <CheckBox Grid.Column="2" Grid.Row="1" IsChecked="{Binding Path=IsAutoMeasDtParamVBW}">
                           <CheckBox.Style>
                             <Style TargetType="CheckBox">
@@ -457,7 +447,7 @@
                             </Style>
                           </CheckBox.Style>
                         </CheckBox>
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "VBW, kHz"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"/>
                         <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -473,9 +463,9 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="1" Grid.Row="2" Padding="5,0,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"  />
                         <CheckBox Grid.Column="2" Grid.Row="2" IsChecked="{Binding Path=IsAutoMeasDtParamMeasTime}"/>
-                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Sweep time, s"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.SweepTimeS}"/>
                         <TextBox x:Name="MeasDtParamMeasTime" Grid.Column="3" Grid.Row="2">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -509,7 +499,7 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Type of detecting"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.TypeOfDetecting}"/>
                         <ComboBox Grid.Column="3" Grid.Row="3" SelectedValue="{Binding MeasDtParamDetectType, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamDetectTypeValues}">
                           <ComboBox.Style>
                             <Style TargetType="ComboBox">
@@ -528,9 +518,9 @@
                           </ComboBox.Style>
                         </ComboBox>
 
-                        <Label Height="18" Grid.Column="1" Grid.Row="4" Padding="5,0,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"  />
                         <CheckBox Grid.Column="2" Grid.Row="4" IsChecked="{Binding Path=IsAutoMeasDtParamRfAttenuation}"/>
-                        <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Attenuation, dB"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.AttenuationDB}"/>
                         <TextBox x:Name="MeasDtParamRfAttenuation" Grid.Column="3" Grid.Row="4">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -563,9 +553,9 @@
                           </TextBox.Text>                          
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="1" Grid.Row="5" Padding="5,0,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="5" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"  />
                         <CheckBox Grid.Column="2" Grid.Row="5" IsChecked="{Binding Path=IsAutoMeasDtParamPreamplification}"/>
-                        <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Gain of preamplifier, dB"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "{x:Static res:Resources.GainOfPreamplifierDB}"/>
                         <TextBox x:Name="MeasDtParamPreamplification" Grid.Column="3" Grid.Row="5">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -598,9 +588,9 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="1" Grid.Row="6" Padding="5,0,0,0" Content = "Auto"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="6" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"  />
                         <CheckBox Grid.Column="2" Grid.Row="6" IsChecked="{Binding Path=IsAutoMeasDtParamReferenceLevel}"/>
-                        <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Reference Level, dBm"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "{x:Static res:Resources.ReferenceLevelDBm}"/>
                         <TextBox x:Name="MeasDtParamReferenceLevel" Grid.Column="3" Grid.Row="6">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -633,7 +623,7 @@
                           </TextBox.Text>
                         </TextBox>
                         
-                        <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Sweep number"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "{x:Static res:Resources.SweepNumber}"/>
                         <TextBox x:Name="MeasOtherSwNumber" Grid.Column="3" Grid.Row="7" >
                           <TextBox.Text>
                             <Binding Path="MeasOtherSwNumber">
@@ -645,8 +635,7 @@
                         </TextBox>
                     </Grid>
                     </Expander>
-                    
-                    <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="Spectrum Occupation Parameters" IsExpanded="true">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="5" Header="{x:Static res:Resources.SpectrumOccupationParameters}" IsExpanded="true">
                       <Expander.Style>
                         <Style TargetType="Expander">
                           <Style.Triggers>
@@ -673,10 +662,10 @@
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "TypeSpectrumOccupation"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.TypeSpectrumOccupation}"  />
                         <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasOtherTypeSpectrumOccupation, Mode=TwoWay}" ItemsSource="{Binding MeasOtherTypeSpectrumOccupationValues}"/>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Level of min. occupation, dBm"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.LevelOfMinOccupationDBm}"  />
                         <TextBox x:Name="MeasOtherLevelMinOccup" Grid.Column="1" Grid.Row="1">
                           <TextBox.Text>
                             <Binding Path="MeasOtherLevelMinOccup">
@@ -687,7 +676,7 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Number total scan"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberTotalScan}"  />
                         <TextBox x:Name="MeasOtherNCount" Grid.Column="1" Grid.Row="2">
                           <TextBox.Text>
                             <Binding Path="MeasOtherNCount">
@@ -698,7 +687,7 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Number of steps for measurements in channel"  />
+                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
                         <TextBox x:Name="MeasOtherNChenal" Grid.Column="1" Grid.Row="3">
                           <TextBox.Text>
                             <Binding Path="MeasOtherNChenal">
@@ -708,10 +697,9 @@
                             </Binding>
                           </TextBox.Text>
                         </TextBox>
-
                       </Grid>
                     </Expander>
-                    <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="Monitoring emission parameters" IsExpanded="true">
+                    <Expander Grid.ColumnSpan="4" Grid.Row="6" Header="{x:Static res:Resources.MonitoringEmissionParameters}" IsExpanded="true">
                       <Expander.Style>
                         <Style TargetType="Expander">
                           <Style.Triggers>
@@ -755,13 +743,14 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
+                              <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             
-                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Using smoothing trace for analysis"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.UsingSmoothingTraceForAnalysis}"/>
                             <CheckBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" IsChecked="{Binding Path=FiltrationTrace}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Spectrum coefficient from Emission"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.SpectrumCoefficientFromEmission}"  />
                             <TextBox x:Name="windowBW" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="windowBW">
@@ -772,7 +761,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Margin for Reference Level calculation, dB"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.MarginForReferenceLevelCalculationDB}"  />
                             <TextBox x:Name="AllowableExcess_dB" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="AllowableExcess_dB">
@@ -783,8 +772,8 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Noise Level"  />
-                            <Label Height="18" Grid.Column="1" Grid.Row="3" Padding="5,0,0,0" Content = "Auto"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.NoiseLevel}"  />
+                            <Label Height="18" Grid.Column="1" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"  />
                             <CheckBox Grid.Column="2" Grid.Row="3" IsChecked="{Binding Path=IsAutoTriggerLevel_dBm_Hz}"/>
                             <TextBox x:Name="triggerLevel_dBm_Hz" Grid.Column="3" Grid.Row="3" >
                               <TextBox.Style>
@@ -818,7 +807,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Perc. of intersection of spectrums to combine emissions"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.PercOfIntersectionOfSpectrumsToCombineEmissions}"  />
                             <TextBox x:Name="CrossingBWPercentageForGoodSignals" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="CrossingBWPercentageForGoodSignals">
@@ -829,7 +818,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "Perc. of intersection of spectrums to combine emissions (low level signals)"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "{x:Static res:Resources.PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals}"  />
                             <TextBox x:Name="CrossingBWPercentageForBadSignals" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="CrossingBWPercentageForBadSignals">
@@ -840,7 +829,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Level for Bandwith estimation"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "{x:Static res:Resources.LevelForBandwithEstimation}"  />
                             <TextBox x:Name="DiffLevelForCalcBW" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="DiffLevelForCalcBW">
@@ -851,10 +840,10 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "Using correlation analysis"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "{x:Static res:Resources.UsingCorrelationAnalysis}"/>
                             <CheckBox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" IsChecked="{Binding Path=CorrelationAnalize}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "Correlation coefficient"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "{x:Static res:Resources.CorrelationCoefficient}"  />
                             <TextBox x:Name="CorrelationFactor" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3" >
                               <TextBox.Style>
                                 <Style TargetType="TextBox">
@@ -887,7 +876,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "The maximum number of scan per day"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="9" Padding="5,0,0,0" Content = "{x:Static res:Resources.TheMaximumNumberOfScanPerDay}"  />
                             <TextBox x:Name="SignalizationNCount" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="SignalizationNCount">
@@ -898,7 +887,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "The number of points in the channel during scanning"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="10" Padding="5,0,0,0" Content = "{x:Static res:Resources.TheNumberOfPointsInTheChannelDuringScanning}"  />
                             <TextBox x:Name="SignalizationNChenal" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" >
                               <TextBox.Text>
                                 <Binding Path="SignalizationNChenal">
@@ -909,8 +898,11 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="11" Padding="5,0,0,0" Content = "Checking emission in channels"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="11" Padding="5,0,0,0" Content = "{x:Static res:Resources.CheckingEmissionInChannels}"/>
                             <CheckBox Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3" IsChecked="{Binding Path=AnalyzeByChannel}"/>
+
+                            <Label Height="18" Grid.Column="0" Grid.Row="12" Padding="5,0,0,0" Content = "{x:Static res:Resources.CollectEmissionForInstrumentalEstimation}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="3" IsChecked="{Binding Path=CollectEmissionInstrumentalEstimation}"/>
                           </Grid>
                         </GroupBox>
                         <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">
@@ -938,15 +930,16 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
+                              <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Analysis only with contravention of Reference Level"/>
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.AnalysisOnlyWithContraventionOfReferenceLevel}"/>
                             <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CompareTraceJustWithRefLevels}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Automatic division of emissions"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.AutomaticDivisionOfEmissions}"  />
                             <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding Path=AutoDivisionEmitting}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Levels difference for emission division, dB"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.LevelsDifferenceForEmissionDivisionDB}"  />
                             <TextBox x:Name="DifferenceMaxMax" Grid.Column="1" Grid.Row="2" >
                               <TextBox.Style>
                                 <Style TargetType="TextBox">
@@ -979,7 +972,7 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "The minimum number of points for finding emissions"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.TheMinimumNumberOfPointsForFindingEmissions}"  />
                             <TextBox x:Name="NumberPointForChangeExcess" Grid.Column="1" Grid.Row="3" >
                               <TextBox.Text>
                                 <Binding Path="NumberPointForChangeExcess">
@@ -990,10 +983,10 @@
                               </TextBox.Text>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "Detailed measurements of the emission bandwith"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.DetailedMeasurementsOfTheEmissionBandwith}"  />
                             <CheckBox Grid.Column="1" Grid.Row="4" IsChecked="{Binding Path=DetailedMeasurementsBWEmission}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "The minimum number of points a spectrum must contain in order not to measure bandwith"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "{x:Static res:Resources.TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith}"  />
                             <TextBox x:Name="MinPointForDetailBW" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MinPointForDetailBW}" >
                               <TextBox.Style>
                                 <Style TargetType="TextBox">
@@ -1009,8 +1002,38 @@
                               </TextBox.Style>
                             </TextBox>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "Analyze Sys Info emission"  />
-                            <CheckBox Grid.Column="1" Grid.Row="6" IsChecked="{Binding Path=AnalyzeSysInfoEmission}"/>                            
+                            <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "{x:Static res:Resources.AnalyzeSysInfoEmission}"  />
+                            <CheckBox Grid.Column="1" Grid.Row="6" IsChecked="{Binding Path=AnalyzeSysInfoEmission}"/>
+
+                            <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "{x:Static res:Resources.Standard}">
+                              <Label.Style>
+                                <Style TargetType="Label">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Label.Style>
+                          </Label>
+                            <ComboBox Grid.Column="3" Grid.Row="7" SelectedValue="{Binding StandardInstEstim, Mode=TwoWay}" ItemsSource="{Binding StandardInstEstimValues}">
+                              <ComboBox.Style>
+                                <Style TargetType="ComboBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </ComboBox.Style>
+                            </ComboBox>
+
                           </Grid>
                         </GroupBox>
                         <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">
@@ -1037,10 +1060,10 @@
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "Checking the frequency channel"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.CheckingTheFrequencyChannel}"  />
                             <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CheckFreqChannel}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "Maximum frequency deviation"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.MaximumFrequencyDeviation}"  />
                             <TextBox x:Name="MaxFreqDeviation" Grid.Column="1" Grid.Row="1" >
                               <TextBox.Style>
                                 <Style TargetType="TextBox">
@@ -1073,10 +1096,10 @@
                               </TextBox.Text>                              
                             </TextBox>                            
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "Checking level in the channel"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.CheckingLevelInTheChannel}"  />
                             <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Path=CheckLevelChannel}"/>
 
-                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "Standard"  />
+                            <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.Standard}"  />
                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=Standard}" Height="15" IsEnabled="False"/>
                           </Grid>
                         </GroupBox>
@@ -1093,7 +1116,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                   </Grid.RowDefinitions>
-                  <Button Grid.Row="1" Content="Start" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40">
+                  <Button Grid.Row="1" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40">
                     <Button.Style>
                       <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="False"/>
@@ -1138,10 +1161,8 @@
                 </Grid> 
               </Grid>
             </GroupBox>
-
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>
-        
-            <GroupBox  Header="  Sensors  "  Margin="0, 5, 5, 5" Grid.Column="2" Grid.RowSpan="3" >
+            <GroupBox  Header="{x:Static res:Resources.Sensors}"  Margin="0, 5, 5, 5" Grid.Column="2" Grid.RowSpan="3" >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -1153,24 +1174,25 @@
                     </Grid.RowDefinitions>
                     <cdg:CustomDataGridSensors Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensor, Mode=TwoWay}">
                       <DataGrid.Columns>
-                          <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Adm" Binding="{Binding Path=Administration}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Network" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="LowFreq" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="UpFreq" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Equipment" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="SN" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Antenna" Binding="{Binding Path=AntName}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Gain" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Bring into use" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="End of use" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                        <DataGrid.InputBindings>
-                          <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickSensorCommand}" CommandParameter="{Binding ShortSensors/}"/>
-                        </DataGrid.InputBindings>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
+                      </DataGrid.Columns>
+                      <DataGrid.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickSensorCommand}" CommandParameter="{Binding ShortSensors/}"/>
+                      </DataGrid.InputBindings>
                     </cdg:CustomDataGridSensors>
                     <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
                     <maps:Map Grid.Column="0" Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>

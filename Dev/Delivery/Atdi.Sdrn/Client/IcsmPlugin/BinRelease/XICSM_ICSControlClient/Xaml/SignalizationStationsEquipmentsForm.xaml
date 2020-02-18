@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
              xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
@@ -94,8 +95,8 @@
               </Grid.RowDefinitions>
               <WrapPanel Grid.Column="1" Grid.ColumnSpan="18"  >
                 <Label VerticalAlignment="Center" Padding="5,0,0,0" Content = "{Binding RBW}"  />
-                <Button Content="  Zoom undo  " Margin="10,0,0,0" Command="{Binding ZoomUndoCommand}" Height="30"/>
-                <Button Content="  Default Zoom  " Margin="10,0,0,0" Command="{Binding ZoomDefaultCommand}" Height="30"/>
+                <Button Content="{x:Static res:Resources.ZoomUndo}" Margin="10,0,0,0" Command="{Binding ZoomUndoCommand}" Height="30"/>
+                <Button Content="{x:Static res:Resources.DefaultZoom}" Margin="10,0,0,0" Command="{Binding ZoomDefaultCommand}" Height="30"/>
               </WrapPanel>
             </Grid>
             <cs:LineChart Grid.Row="1" Option="{Binding CurrentChartOption}" SelectedRangeX="{Binding SelectedRangeX, Mode=TwoWay}" MouseClickPoint="{Binding MouseClickPoint, Mode=TwoWay}" MenuClick="{Binding MenuClick, Mode=TwoWay}" />
@@ -114,24 +115,24 @@
           <GroupBox Grid.Column="0" Header="{Binding EmittingCaption}" Margin="0, 5, 5, 5">
             <DataGrid Grid.Column="0" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" AlternatingRowBackground="LightCyan" AlternationCount="3" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItem="{Binding CurrentEmitting}">
               <DataGrid.Columns>
-                <DataGridTextColumn Header="StartFreq_MHz" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="StopFreq_MHz" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="CurentPower_dBm" Binding="{Binding Path=CurentPower_dBm}"></DataGridTextColumn>
-                <DataGridTextColumn Header="ReferenceLevel_dBm" Binding="{Binding Path=ReferenceLevel_dBm}"></DataGridTextColumn>
-                <DataGridTextColumn Header="EmissionFreqMHz" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Bandwidth_kHz" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="CorrectnessEstimations" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Contravention" Binding="{Binding Path=Contravention}"></DataGridTextColumn>
-                <DataGridTextColumn Header="TraceCount" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
-                <DataGridTextColumn Header="SignalLevel_dBm" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
-                <DataGridTextColumn Header="RollOffFactor" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
-                <DataGridTextColumn Header="StandardBW" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
-                <DataGridTextColumn Header="SensorName" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="SumHitCount" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IcsmID" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-                <DataGridTextColumn Header="MeanDeviationFromReference" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
-                <DataGridTextColumn Header="TriggerDeviationFromReference" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StartFreqMHz}" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StopFreqMHz}" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CurentPowerDBm}" Binding="{Binding Path=CurentPower_dBm}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.ReferenceLevelDBm}" Binding="{Binding Path=ReferenceLevel_dBm}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.EmissionFreqMHz}" Binding="{Binding Path=EmissionFreqMHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.BandwidthKHz}" Binding="{Binding Path=Bandwidth_kHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.CorrectnessEstimations}" Binding="{Binding Path=CorrectnessEstimations}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Contravention}" Binding="{Binding Path=Contravention}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TraceCount}" Binding="{Binding Path=TraceCount}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.SignalLevelDBm}" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.RollOffFactor}" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.StandardBW}" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.SumHitCount}" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MeanDeviationFromReference}" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.TriggerDeviationFromReference}" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>                
               </DataGrid.Columns>
             </DataGrid>
           </GroupBox>
@@ -139,19 +140,19 @@
           <GroupBox Grid.Column="2" Header="{Binding EquipmentCaption}" Margin="0, 5, 5, 5">
             <cdg:CustomDataGridEquipments ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Equipments}" SelectedItem="{Binding CurrentEquipment}" SelectedItemsList="{Binding CurrentEquipments, Mode=TwoWay}">
               <DataGrid.Columns>
-                <DataGridTextColumn Header="Freq_MHz" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Code" Binding="{Binding Path=Code}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=Manufacturer}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                <DataGridTextColumn Header="DesigEmission" Binding="{Binding Path=DesigEmission}"></DataGridTextColumn>
-                <DataGridTextColumn Header="MaxPower" Binding="{Binding Path=MaxPower}"></DataGridTextColumn>
-                <DataGridTextColumn Header="LowerFreq" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-                <DataGridTextColumn Header="UpperFreq" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IcsmTable" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IcsmId" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.FreqMHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Code}" Binding="{Binding Path=Code}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=Manufacturer}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.DesigEmission}" Binding="{Binding Path=DesigEmission}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.MaxPower}" Binding="{Binding Path=MaxPower}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.LowerFreq}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.UpperFreq}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+                <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
               </DataGrid.Columns>
-            </cdg:CustomDataGridEquipments>
+            </cdg:CustomDataGridEquipments> 
           </GroupBox>
         </Grid>
     </Grid>

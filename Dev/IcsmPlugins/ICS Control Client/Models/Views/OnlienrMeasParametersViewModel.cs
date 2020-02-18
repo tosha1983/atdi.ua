@@ -252,6 +252,10 @@ namespace XICSM.ICSControlClient.Models.Views
                         {
                             error = "The start frequency should be less than the stop frequency";
                         }
+                        if (FreqStart_MHz < 0.009 || FreqStart_MHz > 6000) 
+                        {
+                            error = "The value must be greater or equal to '0.009 MHz' and less or equal to '6000 MHz'.";
+                        }
                         break;
                     case "FreqStop_MHz":
                         if ((FreqStop_MHz <= 0))
@@ -261,6 +265,10 @@ namespace XICSM.ICSControlClient.Models.Views
                         if (FreqStart_MHz >= FreqStop_MHz)
                         {
                             error = "The start frequency should be less than the stop frequency";
+                        }
+                        if (FreqStop_MHz < 0.009 || FreqStop_MHz > 6000)
+                        {
+                            error = "The value must be greater or equal to '0.009 MHz' and less or equal to '6000 MHz'.";
                         }
                         break;
                     case "TraceCount":

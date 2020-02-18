@@ -1067,6 +1067,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             if (string.IsNullOrEmpty(s))
                 return null;
+
             char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
             double result = 0;
             try

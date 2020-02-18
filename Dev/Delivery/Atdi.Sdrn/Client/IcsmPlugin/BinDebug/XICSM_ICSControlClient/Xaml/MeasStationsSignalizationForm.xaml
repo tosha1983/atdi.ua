@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
@@ -31,20 +32,20 @@
         </Grid.RowDefinitions>
         <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}"  SelectedItem="{Binding CurrentStation}">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Icsm Table" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Icsm Id" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Station Name" Binding="{Binding Path=StationName}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Standart" Binding="{Binding Path=Standart}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Lon, DEC" Binding="{Binding Path=Lon}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Lat, DEC" Binding="{Binding Path=Lat}"></DataGridTextColumn>
-            <DataGridTextColumn Header="AGL, m" Binding="{Binding Path=Agl}"></DataGridTextColumn>
-            <DataGridTextColumn Header="EIRP, dBW" Binding="{Binding Path=Eirp}"></DataGridTextColumn>
-            <DataGridTextColumn Header="BW, kHz" Binding="{Binding Path=Bw}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Freq" Binding="{Binding Path=Freq}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Owner" Binding="{Binding Path=Owner}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Relived Level, dBm" Binding="{Binding Path=RelivedLevel}"></DataGridTextColumn>
-            <DataGridTextColumn Header="Distance, km" Binding="{Binding Path=Distance}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.StationName}" Binding="{Binding Path=StationName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standart}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.LonDEC}" Binding="{Binding Path=Lon}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.LatDEC}" Binding="{Binding Path=Lat}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.AGLM}" Binding="{Binding Path=Agl}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.EIRPdBW}" Binding="{Binding Path=Eirp}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.BWkHz}" Binding="{Binding Path=Bw}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Frequency}" Binding="{Binding Path=Freq}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Owner}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.RelivedLeveldBm}" Binding="{Binding Path=RelivedLevel}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.DistanceKm}" Binding="{Binding Path=Distance}"></DataGridTextColumn>
           </DataGrid.Columns>
         </cdg:CustomDataGridStations>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
@@ -70,7 +71,7 @@
               </Style>
             </Map.Style>-->
           </maps:Map>
-          <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Content="Associated" Command="{Binding AssociatedCommand}" Width="120" Height="40"/>
+          <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Content="{x:Static res:Resources.AssociatedCommand}" Command="{Binding AssociatedCommand}" Width="120" Height="40"/>
         </Grid>
     </Grid>
     </DockPanel>

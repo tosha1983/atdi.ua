@@ -149,6 +149,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public int? ScansNumber;
-
+        /// <summary>
+        /// LowFreq
+        /// </summary>
+        [DataMember]
+        public double? LowFreq;
+        /// <summary>
+        /// UpFreq
+        /// </summary>
+        [DataMember]
+        public double? UpFreq;
     }
 }

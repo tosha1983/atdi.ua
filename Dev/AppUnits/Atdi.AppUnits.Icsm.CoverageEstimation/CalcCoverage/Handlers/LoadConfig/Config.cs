@@ -44,6 +44,31 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                     }
 
 
+                    if ((xel.Name.ToString() == "TemplateOutputFileNameForMobStation") || (xel.Name.LocalName == "TemplateOutputFileNameForMobStation"))
+                    {
+                        if (!string.IsNullOrEmpty(xel.Value))
+                        {
+                            directoryConfiguration.TemplateOutputFileNameForMobStation = xel.Value;
+                        }
+                    }
+
+                    if ((xel.Name.ToString() == "TemplateOutputFileNameForMobStation2") || (xel.Name.LocalName == "TemplateOutputFileNameForMobStation2"))
+                    {
+                        if (!string.IsNullOrEmpty(xel.Value))
+                        {
+                            directoryConfiguration.TemplateOutputFileNameForMobStation2 = xel.Value;
+                        }
+                    }
+
+                    if ((xel.Name.ToString() == "SpecifiedLogFile") || (xel.Name.LocalName == "SpecifiedLogFile"))
+                    {
+                        if (!string.IsNullOrEmpty(xel.Value))
+                        {
+                            directoryConfiguration.SpecifiedLogFile = xel.Value;
+                        }
+                    }
+
+
                     if ((xel.Name.ToString() == "BinICSTelecomDirectory") || (xel.Name.LocalName == "BinICSTelecomDirectory"))
                     {
                         if (!string.IsNullOrEmpty(xel.Value))
@@ -182,6 +207,42 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 }
             }
             return colorConfigs;
+        }
+
+
+        private ProvinceCodeConfig[] GetGroupsProvinceCodeConfig(XDocument xdoc)
+        {
+            ProvinceCodeConfig[] provinceCodeConfigs = null;
+            var settingProvinceCodeConfig = xdoc.Element("SettingCoverageCalculation").Element("Params").Element("ObjectDataConfig").Element("GroupsProvinceConfig").Elements("ProvinceCodeConfig");
+            var provConfig = settingProvinceCodeConfig;
+            if ((provConfig != null) && (provConfig.Count() > 0))
+            {
+                provinceCodeConfigs = new ProvinceCodeConfig[provConfig.Count()];
+                int index = 0;
+                foreach (var x in provConfig)
+                {
+                    provinceCodeConfigs[index] = new ProvinceCodeConfig();
+                    foreach (var xel in x.Elements())
+                    {
+                        if ((xel.Name.ToString() == "NameProvince") || (xel.Name.LocalName == "NameProvince"))
+                        {
+                            if (!string.IsNullOrEmpty(xel.Value))
+                            {
+                                provinceCodeConfigs[index].NameProvince = xel.Value;
+                            }
+                        }
+                        if ((xel.Name.ToString() == "Code") || (xel.Name.LocalName == "Code"))
+                        {
+                            if (!string.IsNullOrEmpty(xel.Value))
+                            {
+                                provinceCodeConfigs[index].Code = xel.Value;
+                            }
+                        }
+                    }
+                    index++;
+                }
+            }
+            return provinceCodeConfigs;
         }
 
         private CodeOperatorAndStatusConfig[] GetConfigGroupsMobStation2(XDocument xdoc)
@@ -502,6 +563,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 config.BlockStationsConfig.MobStation2Config = GetConfigGroupsMobStation2(xdoc);
                 config.BlockStationsConfig.MobStationConfig = GetConfigGroupsMobStation(xdoc);
                 config.ColorsConfig = GetColorConfig(xdoc);
+                config.ProvinceCodeConfig = GetGroupsProvinceCodeConfig(xdoc);
                 config.DirectoryConfig = GetDirectoryConfig(xdoc);
             }
             return config;

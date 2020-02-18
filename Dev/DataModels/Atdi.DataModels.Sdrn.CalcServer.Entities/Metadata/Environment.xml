@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Environment Name="SDRN.CalcServer.ORM" Version="1.0.0.1" xmlns="http://schemas.atdi.com/orm/entity.xsd">
+  <RootPath>\</RootPath>
+  <Assembly>Atdi.DataModels.Sdrn.CalcServer.Entities</Assembly>
+  <Namespace>Atdi.DataModels.Sdrn.CalcServer.Entities</Namespace>
+  <EntitiesPath>Entities</EntitiesPath>
+  <DataTypesPath>DataTypes</DataTypesPath>
+  <UnitsPath>Units</UnitsPath>
+</Environment>
