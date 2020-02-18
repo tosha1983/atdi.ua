@@ -583,6 +583,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit sensor title.
+        /// </summary>
+        public static string EditSensorTitle {
+            get {
+                return ResourceManager.GetString("EditSensorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EIRP, dBW.
         /// </summary>
         public static string EIRPdBW {

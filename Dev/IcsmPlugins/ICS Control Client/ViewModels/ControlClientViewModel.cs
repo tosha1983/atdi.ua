@@ -30,6 +30,7 @@ using System.Net.Http;
 using System.Configuration;
 using System.Globalization;
 using TR = System.Threading;
+using Microsoft.VisualBasic;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -155,6 +156,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand MeasResultCommand { get; set; }
         public WpfCommand FilterApplyCommand { get; set; }
         public WpfCommand DoubleClickSensorCommand { get; set; }
+        public WpfCommand EditSensorTitleCommand { get; set; }
 
         #endregion
 
@@ -213,6 +215,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ShowHideMeasTaskDetailCommand = new WpfCommand(this.OnShowHideMeasTaskDetailCommand);
             this.ShowHideMeasResultsDetailCommand = new WpfCommand(this.OnShowHideMeasResultsDetailCommand);
             this.DoubleClickSensorCommand = new WpfCommand(this.OnDoubleClickSensorCommand);
+            this.EditSensorTitleCommand = new WpfCommand(this.OnEditSensorTitleCommand);
             this.MeasResultCommand = new WpfCommand(this.OnMeasResultCommand);
 
             this._shortMeasTasks = new ShortMeasTaskDataAdatper();
@@ -385,6 +388,11 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 Debug.Print($"OnChangedCurrentShortMeasTaskAction: ID = 'is null'");
             }
+
+            if (shortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation || shortMeasTask.TypeMeasurements == SDR.MeasurementType.Signaling)
+                MeasResultsDetailVisibility = Visibility.Hidden;
+            else
+                MeasResultsDetailVisibility = Visibility.Visible;
 
             ReloadShortMeasResults(shortMeasTask);
             var currentMeasTask = ReloadCurrentMeasTask(shortMeasTask);
@@ -716,7 +724,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 this.TaskStationsVisibility = Visibility.Hidden;
             }
-            ReloadDetailVisible(measTask);
+            //ReloadDetailVisible(measTask);
         }
         private void ReloadDetailVisible(MeasTaskViewModel measTask)
         {
@@ -1377,6 +1385,18 @@ namespace XICSM.ICSControlClient.ViewModels
                 var dlgForm = new FM.OnlineMeasurementForm(this._currentShortSensor, null);
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
+            }
+        }
+        private void OnEditSensorTitleCommand(object parameter)
+        {
+            if (this._currentShortSensor != null)
+            {
+                var newTitle = Interaction.InputBox("Enter title", "ICS Control Client");
+                if (!string.IsNullOrEmpty(newTitle))
+                {
+                    SVC.SdrnsControllerWcfClient.UpdateSensorTitle(this._currentShortSensor.Id, newTitle);
+                    this.ReloadShortSensors(this.CurrentMeasTask);
+                }
             }
         }
         private void UpdateCurrentChartOption(MeasurementResultsViewModel measurementResults)

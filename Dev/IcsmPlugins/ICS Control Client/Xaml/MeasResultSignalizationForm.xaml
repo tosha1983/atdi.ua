@@ -53,9 +53,9 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="*" MinHeight="100"></RowDefinition>
           <RowDefinition Height="Auto"></RowDefinition>
-          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
         <GroupBox Header="" Grid.Row="0">
           <Grid>
@@ -106,9 +106,9 @@
         <GroupBox Grid.Row="2" Header="{Binding EmittingCaption}" Margin="0, 5, 5, 5">
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" MinWidth="100"/>
               <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="*"></RowDefinition>
@@ -173,9 +173,9 @@
             <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>
             <Grid Grid.Column="2">
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="100"/>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="100"/>
               </Grid.ColumnDefinitions>
               <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>

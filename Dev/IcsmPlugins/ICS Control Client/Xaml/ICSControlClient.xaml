@@ -621,15 +621,17 @@
                                 </Style>
                             </DataGrid.Style>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.CountStationMeasurements}" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.CountUnknownStationMeasurements}" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowFreq}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpFreq}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.CountStationMeasurements}" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.CountUnknownStationMeasurements}" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
                             </DataGrid.Columns>                        
                         </cdg:CustomDataGridMeasResult>
 
@@ -1043,9 +1045,8 @@
                       </Grid>
                     </ScrollViewer>
                   </GroupBox>
-
-                    <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="80" Margin="50,5,0,0" Content="{x:Static res:Resources.GetCSV}" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>
-                    <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="80" Margin="160,5,0,0" Content="{x:Static res:Resources.GetGraphic}" Command="{Binding GetGraphicCommand}" Visibility="{Binding ResGetGraphicVisibility}"/>
+                  <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="50" Margin="5,5,0,0" Content="{x:Static res:Resources.GetCSV}" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>
+                  <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="50" Margin="65,5,0,0" Content="{x:Static res:Resources.GetGraphic}" Command="{Binding GetGraphicCommand}" Visibility="{Binding ResGetGraphicVisibility}"/>
                 </Grid>
             </GroupBox>
 
@@ -1083,6 +1084,7 @@
                         <ContextMenu>
                           <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding RefreshShortSensorsCommand}"/>
                           <MenuItem Header="{x:Static res:Resources.OnLineCommand}" Command="{Binding DoubleClickSensorCommand}"/>
+                          <MenuItem Header="{x:Static res:Resources.EditSensorTitle}" Command="{Binding EditSensorTitleCommand}"/>
                         </ContextMenu>
                       </DataGrid.ContextMenu>
                     </DataGrid>
