@@ -91,7 +91,7 @@
                           <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.StopFreqMHz}"/>
                           <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=MeasFreqParamRgU}"  IsReadOnly="True" />
 
-                          <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepWhithkHz}"/>
+                          <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepkHz}"/>
                           <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Path=MeasFreqParamStep}"  IsReadOnly="True" />
 
                           <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.Mode}"/>

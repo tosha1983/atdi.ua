@@ -468,6 +468,10 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         {
                                             builderInsertMeasTaskSignaling.SetValue(c => c.AnalyzeByChannel, measTaskSignaling.SignalingMeasTaskParameters.AnalyzeByChannel);
                                         }
+                                        if (measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation != null)
+                                        {
+                                            builderInsertMeasTaskSignaling.SetValue(c => c.CollectEmissionInstrumentalEstimation, measTaskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation);
+                                        }
                                         if (measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
                                         {
                                             builderInsertMeasTaskSignaling.SetValue(c => c.AnalyzeSysInfoEmission, measTaskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission);
@@ -964,6 +968,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         MTSDR.SignalingMeasTaskParameters.SignalizationNChenal = taskSignaling.SignalingMeasTaskParameters.SignalizationNChenal;
                                         MTSDR.SignalingMeasTaskParameters.SignalizationNCount = taskSignaling.SignalingMeasTaskParameters.SignalizationNCount;
                                         MTSDR.SignalingMeasTaskParameters.AnalyzeByChannel = taskSignaling.SignalingMeasTaskParameters.AnalyzeByChannel;
+                                        MTSDR.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation = taskSignaling.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
                                         MTSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission = taskSignaling.SignalingMeasTaskParameters.AnalyzeSysInfoEmission;
                                         MTSDR.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission = taskSignaling.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission;
                                         MTSDR.SignalingMeasTaskParameters.Standard = taskSignaling.SignalingMeasTaskParameters.Standard;

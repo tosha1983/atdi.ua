@@ -43,8 +43,16 @@ namespace Atdi.Contracts.Api.EventSystem
                 typeof(TAttribute), true
             ).ToArray() as TAttribute[];
         }
-        
-        public static TValue[] GetAttributesValues<TAttribute, TValue>(
+
+		public static TAttribute GetAttributeByType<TAttribute>(this Type type)
+			where TAttribute : Attribute
+		{
+			return type.GetCustomAttributes(
+				typeof(TAttribute), true
+			).FirstOrDefault() as TAttribute;
+		}
+
+		public static TValue[] GetAttributesValues<TAttribute, TValue>(
             this Type type,
             Func<TAttribute, TValue> valueSelector)
             where TAttribute : Attribute

@@ -2899,6 +2899,23 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 return true;
                             });
                         }
+                        if (outResType == MeasurementType.SpectrumOccupation || outResType == MeasurementType.Signaling)
+                        {
+                            var builderFrequency = this._dataLayer.GetBuilder<MD.IMeasFreqParam>().From();
+                            builderFrequency.Select(c => c.Rgl);
+                            builderFrequency.Select(c => c.Rgu);
+                            builderFrequency.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id));
+                            builderFrequency.OrderByAsc(c => c.Id);
+                            queryExecuter.Fetch(builderFrequency, readerFrequency =>
+                            {
+                                while (readerFrequency.Read())
+                                {
+                                    levelmeasurementResults.LowFreq = readerFrequency.GetValue(c => c.Rgl);
+                                    levelmeasurementResults.UpFreq = readerFrequency.GetValue(c => c.Rgu);
+                                }
+                                return true;
+                            });
+                        }
 
                         results.Add(levelmeasurementResults);
                     }

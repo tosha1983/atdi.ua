@@ -27,10 +27,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Status = source.Status,
                 Task = source.Task,
                 Type = source.Type,
-                TypeMeasurements = source.TypeMeasurements
+                TypeMeasurements = source.TypeMeasurements,
+                TypeMeasurementsString = source.TypeMeasurements.ToString()
             };
         }
-
-
     }
 }

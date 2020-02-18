@@ -383,6 +383,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 context.Task.MeasResults = null;
                                 context.Task.LastTimeSend = currTime;
                                 context.Task.CounterCallSignaling = 0;
+
+                                var collectEmissionInstrumentalEstimation = context.Task.taskParameters.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
+                                if ((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == true))
+                                {
+                                    context.Task.EmittingsSummary = null;
+                                    context.Task.EmittingsTemp = null;
+                                }
                             }
                         });
 

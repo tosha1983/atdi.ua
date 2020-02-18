@@ -51,5 +51,7 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 		TaskLaunchHandle LaunchHandle { get; }
 
 		CalculationStatus Status { get; }
-	} 
+	}
+
+	
 }

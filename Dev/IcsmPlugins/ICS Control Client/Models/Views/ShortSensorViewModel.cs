@@ -13,6 +13,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("ID", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public long Id { get; set; }
 
+        [WpfColumn("Title", WidthRule = ColumnWidthRule.AutoSize, Width = 150, CellStyle = "", HeaderStyle = "")]
+        public string Title { get; set; }
+
         [WpfColumn("Name", WidthRule = ColumnWidthRule.AutoSize, Width = 150, CellStyle = "", HeaderStyle = "")]
         public string Name { get; set; }
 

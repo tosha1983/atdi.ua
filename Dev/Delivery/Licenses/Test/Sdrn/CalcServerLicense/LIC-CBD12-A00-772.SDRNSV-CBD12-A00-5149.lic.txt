@@ -1,0 +1,24 @@
+﻿
+  -- License Data -- 
+License Number    : 'LIC-CBD12-A00-772'
+License Type      : ServerLicense
+Issued by Company : ТОВ 'Лабораторія інформаційних систем'
+  ------------------ 
+
+Owner Id     : 'OID-BD12-A00-N00'
+Owner Name   : 'ТОВ 'Лабораторія інформаційних систем''
+Product Name : 'SDRN Calc Server'
+Product Key  : 'EODR-SLWL-RMD1-C2TX-89DZ'
+  ------------------ 
+
+Created/Renewal : 05.02.2020 15:43:57
+Limitation Terms: TimePeriod, Year
+Start Date      : 05.02.2020 0:00:00
+Stop Date       : 20.08.2025 0:00:00
+Year            : 2020
+Version         : 
+AssemblyFullName: 
+  ------------------ 
+
+Instance : 'SDRNSV-CBD12-A00-5149'
+  ------------------ 

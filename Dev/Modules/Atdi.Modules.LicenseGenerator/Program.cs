@@ -35,11 +35,15 @@ namespace Atdi.Modules.LicenseGenerator
             //UpdatePeriod_WebQueryAppServer_ForBosny_version_1_2020();
             //UpdatePeriod_WebQueryAppServer_ForBosny_version_2_2020();
 
-            UpdatePeriod_ICSControl_ForTest_2020();
+            //UpdatePeriod_ICSControl_ForTest_2020();
 
+			//ICSControl_ForTesting_CalcServer(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\CalcServerLicense", 1);
+
+			WebQuery_ForKazahstan(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Kzh\WebQuery");
 
 			Console.WriteLine("Process was finished");
-            Console.ReadKey();
+
+			Console.ReadKey();
         }
 
         static void UpdatePeriod_ICSControl_ForUDCR_2019(string path)
@@ -662,7 +666,65 @@ namespace Atdi.Modules.LicenseGenerator
             
         }
 
-        static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
+        static void ICSControl_ForTesting_CalcServer(string path, int count = 2)
+        {
+	        const string ownerId = "OID-BD12-A00-N00";
+	        const string ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string company = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string ownerKey = "BD12-A00";
+	        var startDate = new DateTime(2020, 2, 5);
+	        var stopDate = new DateTime(2025, 8, 20);
+	        const ushort year = 2020;
+	        //MakeServerLicense();
+	        for (int i = 0; i < count; i++)
+	        {
+		        var srvLicenseIndex = GetUniqueIntegerKey(3);
+		        var instanceIndex = GetUniqueIntegerKey(4);
+		        var srvLicPrefix = "LIC-C";
+		        var srvInstancePrefix = "SDRNSV-C";
+
+		        MakeLicense2(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "SDRN Calc Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate, year);
+	        }
+
+
+        }
+
+        static void WebQuery_ForKazahstan(string path)
+        {
+			var ownerKey = "BD71-F23";
+			var ownerId = "OID-BD71-F23-N00";
+			var ownerName = "Республиканское государственное предприятие на праве хозяйственного ведения(РГП) «Государственная радиочастотная служба» Министерства цифрового развития, инноваций и аэрокосмической промышленности Республики Казахстан";
+			var company = "ТОВ 'Лабораторія інформаційних систем'";
+
+			var startDate = new DateTime(2020, 02, 06);
+			var stopDate = new DateTime(2020, 03, 31);
+			var productName = "WebQuery Web Portal";
+			var licenseType = "ServerLicense";
+
+			var srvLicenseIndex = GetUniqueIntegerKey(3);
+			var instanceIndex = GetUniqueIntegerKey(4);
+
+			var licPrefix = "LIC-WQWP";
+			var instancePrefix = "WBP-WQ";
+
+			MakeLicense3(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+
+
+
+
+			 productName = "WebQuery Application Server";
+			 licenseType = "ServerLicense";
+
+			 srvLicenseIndex = GetUniqueIntegerKey(3);
+			 instanceIndex = GetUniqueIntegerKey(4);
+
+			 licPrefix = "LIC-WQAS";
+			 instancePrefix = "APPSRV-WQ";
+
+			MakeLicense3(path, licPrefix, instancePrefix, licenseType, productName, srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+		}
+
+		static void ICSControl_ForUDCR(string path, int serverCount, int deviceCount, int clientCount)
         {
             //var ownerId = "OID-BD13-G65-N00"; //  Сам УДЦР
             var ownerId = "OID-BD13-G65-N01"; //  лицензии для УДЦР выданы УНИКОМ
@@ -945,7 +1007,84 @@ namespace Atdi.Modules.LicenseGenerator
             return productKey;
         }
 
-        private static void CreateLicenseDescriptionFile(LicenseData l, string fileName)
+		private static string MakeLicense3(string path, string licPrefix, string instancePrefix, string licenseType, string productName, string licenseIndex, string instanceIndex, string ownerName, string ownerId, string ownerKey, string company, DateTime startDate, DateTime stopDate)
+		{
+			var productKey = string.Empty;
+
+			var c = new LicenseCreator();
+
+			var l = new LicenseData2()
+			{
+				//LicenseNumber = $"LIC-D{ownerKey}-{licenseIndex}",
+				LicenseType = licenseType, //"DeviceLicense",
+				Company = company,
+				Copyright = "",
+				OwnerId = ownerId,
+				OwnerName = ownerName,
+				Created = DateTime.Now,
+				StartDate = startDate,
+				StopDate = stopDate,
+				ProductKey = productKey,
+				ProductName = productName,
+				Count = 1,
+				LimitationTerms = LicenseLimitationTerms.TimePeriod,
+				Year = 2020
+				//Instance = $"SENSOR-D{ownerKey}-{deviceIndex}"
+			};
+
+			if ("DeviceLicense".Equals(licenseType))
+			{
+				l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+				l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+			}
+			else if ("ServerLicense".Equals(licenseType))
+			{
+				l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+				l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+			}
+			else if ("ClientLicense".Equals(licenseType))
+			{
+				l.LicenseNumber = $"{licPrefix}{ownerKey}-{licenseIndex}";
+				l.Instance = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+			}
+			else
+			{
+
+				throw new InvalidOperationException($"Invalid the license type '{licenseType}'");
+			}
+
+			productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);
+			l.ProductKey = productKey;
+
+			var result = c.Create(new LicenseData2[] { l });
+
+			var directory = $"{path}\\{ownerKey}\\{licenseType}";
+			Directory.CreateDirectory(directory);
+
+			var fileName = $"{directory}\\{l.LicenseNumber}.{l.Instance}.lic";
+
+			File.WriteAllBytes(fileName, result.Body);
+			CreateLicenseDescriptionFile(l, fileName);
+
+			var licBody = File.ReadAllBytes(fileName);
+
+			var vd = new VerificationData2
+			{
+				OwnerId = l.OwnerId,
+				ProductName = l.ProductName,
+				ProductKey = l.ProductKey,
+				LicenseType = l.LicenseType,
+				Date = startDate,
+				YearHash = LicenseVerifier.EncodeYear(2020)
+			};
+
+			var cc = LicenseVerifier.Verify(vd, licBody);
+
+			Console.WriteLine($"Made license: '{productKey}' >>> {fileName}");
+			return productKey;
+		}
+
+		private static void CreateLicenseDescriptionFile(LicenseData l, string fileName)
         {
             var l2 = l as LicenseData2;
 

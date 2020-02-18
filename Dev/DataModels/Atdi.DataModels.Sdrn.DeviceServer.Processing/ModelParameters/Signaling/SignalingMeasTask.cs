@@ -29,5 +29,6 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public int? MaxNumberEmitingOnFreq { get; set; } // брать из файла конфигурации.
         public double? MinCoeffCorrelation { get; set; } // брать из файла конфигурации.
         public bool? UkraineNationalMonitoring { get; set; } // признак что делается все для Украины
+        public bool? CollectEmissionInstrumentalEstimation { get; set; } // true значит, что  после отправления результатов матрицы, которые содержат результаты измерений (EmittingSum, EmittingTemp) должны обнуляться,  (по умолчанию false)
     }
 }

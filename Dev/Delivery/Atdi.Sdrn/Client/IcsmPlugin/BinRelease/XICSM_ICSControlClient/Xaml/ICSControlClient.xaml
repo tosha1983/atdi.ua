@@ -137,7 +137,7 @@
                               <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
                               <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
                               <DataGridTextColumn Header="{x:Static res:Resources.ExecutionMode}" Binding="{Binding Path=ExecutionMode}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.TypeMeasurements}" Binding="{Binding Path=TypeMeasurements}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.TypeMeasurements}" Binding="{Binding Path=TypeMeasurementsString}"></DataGridTextColumn>
                               <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated}"></DataGridTextColumn>
                               <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
                           </DataGrid.Columns>

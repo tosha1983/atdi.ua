@@ -34,10 +34,10 @@ namespace XICSM.ICSControlClient
 
             public static class Tools
             {
-                public static readonly string Run = "Run ...";
+                public static readonly string Run = "Open plugin";
                 public static readonly string About = "About";
                 public static readonly string MeasResults = "Meas. results";
-                public static readonly string AnalyzeEmissions = "Analyze Emissions";
+                public static readonly string AnalyzeEmissions = "Analysis of emissions";
             }
         }
 

@@ -487,43 +487,51 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 //}
                 //else
                 //{
-                    // обединяем массивы
-                    var workTimes1 = new List<WorkTime>();
-                    if (MasterEmitting.WorkTimes != null)
-                    {
-                        workTimes1 = MasterEmitting.WorkTimes.ToList();
-                    }
-                    var workTimes2 = new List<WorkTime>();
-                    if (AttachableEmitting.WorkTimes != null)
-                    {
-                        workTimes2 = AttachableEmitting.WorkTimes.ToList();
-                    }
-                    if ((workTimes2 != null) && (workTimes1 != null))
-                    {
-                        workTimes1.AddRange(workTimes2);
-                        var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
-                        var WorkTimes = NewWorkTimes.ToList();
+                // обединяем массивы
+                var workTimes1 = new List<WorkTime>();
+                if (MasterEmitting.WorkTimes != null)
+                {
+                    workTimes1 = MasterEmitting.WorkTimes.ToList();
+                }
+                var workTimes2 = new List<WorkTime>();
+                if (AttachableEmitting.WorkTimes != null)
+                {
+                    workTimes2 = AttachableEmitting.WorkTimes.ToList();
+                }
+                if ((workTimes2 != null) && (workTimes1 != null))
+                {
+                    workTimes1.AddRange(workTimes2);
+                    var NewWorkTimes = from z in workTimes1 orderby z.StartEmitting ascending select z;
+                    var WorkTimes = NewWorkTimes.ToList();
 
-                        // найдем и удалим пересечения 
-                        for (var i = 0; WorkTimes.Count - 1 > i; i++)
-                        {
-                            TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
-                            if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
-                            {// производим обединение и удаление лишнего
-                                WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
-                                if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
-                                {
-                                    WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting;
-                                }
-                                WorkTimes[i].ScanCount = WorkTimes[i].ScanCount + WorkTimes[i + 1].ScanCount + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount; ;
-                                WorkTimes[i].TempCount = 0;
-                                WorkTimes[i].PersentAvailability = 100 * WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
-                                WorkTimes.RemoveRange(i + 1, 1);
-                                i--;
+                    // найдем и удалим пересечения 
+                    for (var i = 0; WorkTimes.Count - 1 > i; i++)
+                    {
+                        TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
+                        if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
+                        {// производим обединение и удаление лишнего
+                            WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
+                            if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
+                            {
+                                WorkTimes[i].StopEmitting = WorkTimes[i + 1].StopEmitting;
                             }
+
+                            WorkTimes[i].ScanCount = Math.Max(WorkTimes[i].ScanCount, 1) + Math.Max(WorkTimes[i + 1].ScanCount, 1) + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount; 
+                            WorkTimes[i].TempCount = 0;
+                            WorkTimes[i].PersentAvailability = 100 * WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
+                            WorkTimes.RemoveRange(i + 1, 1);
+                            i--;
                         }
-                        MasterEmitting.WorkTimes = WorkTimes.ToArray();
                     }
+                    for (var i = 0; WorkTimes.Count - 1 > i; i++)
+                    {
+                        if (WorkTimes[i].ScanCount == 0)
+                        {
+                            WorkTimes[i].ScanCount = 1;
+                        }
+                    }
+                    MasterEmitting.WorkTimes = WorkTimes.ToArray();
+                }
                 //}
                 // обединение уровней
                 // код не достежим

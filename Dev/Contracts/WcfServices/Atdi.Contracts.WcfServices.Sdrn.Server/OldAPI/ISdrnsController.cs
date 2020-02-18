@@ -374,6 +374,13 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
         SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken);
 
-
+        /// <summary>
+        /// Update Sensor Title
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool UpdateSensorTitle(long id, string title);
     }
 }
