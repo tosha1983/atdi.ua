@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreateMaskFromSpectrum.cs" />
+    <Compile Include="EmittingProcessing.cs" />
     <Compile Include="REMEZ\FirFilter.cs" />
     <Compile Include="TDOA\GeographicLocalization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
