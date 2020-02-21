@@ -384,12 +384,20 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         bool UpdateSensorTitle(long id, string title);
 
         /// <summary>
-        /// Import RefSpectrum into DB
+        /// Import RefSpectrum into DB SDRN
         /// </summary>
         /// <param name="refSpectrum"></param>
         /// <returns></returns>
         [OperationContract]
         long? ImportRefSpectrum(RefSpectrum refSpectrum);
+
+        /// <summary>
+        /// Delete RefSpectrum from DB SDRN
+        /// </summary>
+        /// <param name="refSpectrum"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN);
 
         /// <summary>
         /// Get all RefSpectrum

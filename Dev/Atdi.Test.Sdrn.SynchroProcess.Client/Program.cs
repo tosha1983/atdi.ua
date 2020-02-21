@@ -21,7 +21,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             var sdrnServer = GetServicByEndpoint("SdrnServerBasicHttpEndpoint");
 
 
-
+            bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
 
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();
             dataSynchronizationBase.CreatedBy = "ICSM";

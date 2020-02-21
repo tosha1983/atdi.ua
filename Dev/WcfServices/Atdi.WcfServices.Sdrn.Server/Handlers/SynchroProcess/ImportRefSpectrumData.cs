@@ -169,6 +169,43 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return headRefSpectrumId;
         }
+
+        public bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN)
+        {
+            var isSuccess = false;
+            try
+            {
+
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+
+                    for (int i = 0; i < RefSpectrumIdsBySDRN.Length; i++)
+                    {
+
+                        var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
+                        builderDeleteRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, RefSpectrumIdsBySDRN[i]);
+                        scope.Executor.Execute(builderDeleteRefSpectrum);
+
+
+                        var builderDeleteHeadRefSpectrum = this._dataLayer.GetBuilder<MD.IHeadRefSpectrum>().Delete();
+                        builderDeleteHeadRefSpectrum.Where(c => c.Id, ConditionOperator.Equal, RefSpectrumIdsBySDRN[i]);
+                        scope.Executor.Execute(builderDeleteHeadRefSpectrum);
+                    }
+
+                    scope.Commit();
+                }
+
+                
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
     }
 }
 

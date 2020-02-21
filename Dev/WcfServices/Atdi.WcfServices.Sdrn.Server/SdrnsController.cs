@@ -444,6 +444,13 @@ namespace Atdi.WcfServices.Sdrn.Server
             return loadSynchroProcessData.CurrentDataSynchronizationProcess();
         }
 
+        public bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN)
+        {
+            var importRefSpectrum = new ImportRefSpectrumData(_dataLayer, _logger);
+            return importRefSpectrum.DeleteRefSpectrum(RefSpectrumIdsBySDRN);
+        }
+        
+
         /// <summary>
         /// Run DataSynchronizationProcess
         /// </summary>

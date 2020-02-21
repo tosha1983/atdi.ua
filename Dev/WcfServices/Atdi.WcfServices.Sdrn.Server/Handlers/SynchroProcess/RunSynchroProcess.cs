@@ -572,66 +572,9 @@ namespace Atdi.WcfServices.Sdrn.Server
         public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings)
         {
             var lstProtocols = new List<Protocols>();
-
-            /*
-            int? prmTimeBetweenWorkTimes_sec;
-            int? prmTypeJoinSpectrum;
-            double? prmCrossingBWPercentageForGoodSignals;
-            double? prmCrossingBWPercentageForBadSignals;
-            bool? prmAnalyzeByChannel;
-            bool? prmCorrelationAnalize;
-            double? prmCorrelationFactor;
-            double? prmMaxFreqDeviation;
-            bool? prmCorrelationAdaptation;
-            int? prmMaxNumberEmitingOnFreq;
-            double? prmMinCoeffCorrelation;
-            bool? prmUkraineNationalMonitoring;
-
-            
-            // здесь надо проинициализировать все параметры
-            prmTimeBetweenWorkTimes_sec = -1;
-            prmTypeJoinSpectrum = -1;
-            prmCrossingBWPercentageForGoodSignals = -1;
-            prmCrossingBWPercentageForBadSignals = -1;
-            prmAnalyzeByChannel = false;
-            prmCorrelationAnalize = false;
-            prmCorrelationFactor = -1;
-            prmMaxFreqDeviation = -1;
-            prmCorrelationAdaptation = false;
-            prmMaxNumberEmitingOnFreq = -1;
-            prmMinCoeffCorrelation = -1;
-            prmUkraineNationalMonitoring = false;
-
-
-
-            //Групируем сырые данные измерений к существующим
-            Calculation.Emitting[] EmittingsRaw = ConvertEmittings.ConvertArray(emittingsRaw);
-            Calculation.Emitting[] EmittingsTemp = ConvertEmittings.ConvertArray(emittingsTemp);
-            Calculation.Emitting[] EmittingsSummary = ConvertEmittings.ConvertArray(emittingsSummary);
-
-
-            bool isSuccessCalcGrouping = Calculation.CalcGroupingEmitting.CalcGrouping(
-                prmTimeBetweenWorkTimes_sec,
-                prmTypeJoinSpectrum,
-                prmCrossingBWPercentageForGoodSignals,
-                prmCrossingBWPercentageForBadSignals,
-                prmAnalyzeByChannel,
-                prmCorrelationAnalize,
-                ref prmCorrelationFactor,
-                prmMaxFreqDeviation,
-                prmCorrelationAdaptation,
-                prmMaxNumberEmitingOnFreq,
-                prmMinCoeffCorrelation,
-                prmUkraineNationalMonitoring,
-                ref EmittingsRaw, ref EmittingsTemp, ref EmittingsSummary, taskContext.Task.NoiseLevel_dBm, this._configMeasurements.CountMaxEmission);
-            if (isSuccessCalcGrouping == false)
-            {
-
-            }
-            */  
-
+           
             // Ниже приведен пример цикла, в котором идет последовательная обработка записей RefSpectrum
-            /*
+            
             for (int i = 0; i < refSpectrums.Length; i++)
             {
                 var RefSpectrum = new RefSpectrum();
@@ -639,59 +582,63 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     // получение очередного значения dataRefSpectrum
                     var dataRefSpectrum = refSpectrums[i].DataRefSpectrum[j];
+
+                    // обявляем очередной экземпляр переменной Protocols
+                    var protocol = new Protocols();
+                    protocol.DataRefSpectrum = new DataRefSpectrum();
+                    // копируем данные с переменной dataRefSpectrum
+                    protocol.DataRefSpectrum = dataRefSpectrum;
+
+                    
+                    
+                    // объявление новой промежуточной переменной, которая должна заполняться в блоке ниже:
+                    var calculatedEmitting = new Emitting();
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////
+                    /////
+                    /////         ЗДЕСЬ НЕКОТОРЫЙ АЛГОРИТМ ОПРЕДЕЛЕНИЯ EMITTING: 
+                    /////         нужно заполнить поля переменной CalculatedEmitting, которая затем будет использована для формирования очередной записи ProtocolsWithEmittings (ниже)
+                    /////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                    // если связь с Emitting обнаружена - тогда необходимо заполнить свосйтво ProtocolsLinkedWithEmittings:
+                    protocol.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
+                    protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz = calculatedEmitting.Spectrum.Bandwidth_kHz;
+                    protocol.ProtocolsLinkedWithEmittings.Contravention = calculatedEmitting.Spectrum.Contravention;
+                    protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations = calculatedEmitting.Spectrum.CorrectnessEstimations;
+                    protocol.ProtocolsLinkedWithEmittings.Count = calculatedEmitting.LevelsDistribution.Count;
+                    protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm = calculatedEmitting.CurentPower_dBm;
+                    protocol.ProtocolsLinkedWithEmittings.Freq_kHz = calculatedEmitting.SignalMask.Freq_kHz;
+                    protocol.ProtocolsLinkedWithEmittings.Levels = calculatedEmitting.LevelsDistribution.Levels;
+                    protocol.ProtocolsLinkedWithEmittings.Levels_dBm = calculatedEmitting.Spectrum.Levels_dBm;
+                    protocol.ProtocolsLinkedWithEmittings.Loss_dB = calculatedEmitting.SignalMask.Loss_dB;
+                    protocol.ProtocolsLinkedWithEmittings.MarkerIndex = calculatedEmitting.Spectrum.MarkerIndex;
+                    protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference = calculatedEmitting.MeanDeviationFromReference;
+                    //protocol.ProtocolsLinkedWithEmittings.Probability = здесь заполнить вероятность;
+                    protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm = calculatedEmitting.ReferenceLevel_dBm;
+                    protocol.ProtocolsLinkedWithEmittings.RollOffFactor = calculatedEmitting.EmittingParameters.RollOffFactor;
+                    protocol.ProtocolsLinkedWithEmittings.StandardBW = calculatedEmitting.EmittingParameters.StandardBW;
+                    protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm = calculatedEmitting.Spectrum.SignalLevel_dBm;
+                    protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz = calculatedEmitting.Spectrum.SpectrumStartFreq_MHz;
+                    protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz = calculatedEmitting.Spectrum.SpectrumSteps_kHz;
+                    protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz = calculatedEmitting.StartFrequency_MHz;
+                    protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz = calculatedEmitting.StopFrequency_MHz;
+                    protocol.ProtocolsLinkedWithEmittings.T1 = calculatedEmitting.Spectrum.T1;
+                    protocol.ProtocolsLinkedWithEmittings.T2 = calculatedEmitting.Spectrum.T2;
+                    protocol.ProtocolsLinkedWithEmittings.TraceCount = calculatedEmitting.Spectrum.TraceCount;
+                    protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = calculatedEmitting.TriggerDeviationFromReference;
+
+                    var workTimes = calculatedEmitting.WorkTimes.ToList();
+                    var minStart = workTimes.Min(z => z.StartEmitting);
+                    var maxStop = workTimes.Min(z => z.StopEmitting);
+                    protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
+                    protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
+
+                    lstProtocols.Add(protocol);
                 }
             }
-            */
-
-
-            // Ниже приведен пример обязательного заполнения двух свойств - DataRefSpectrum, ProtocolsLinkedWithEmittings
-
-            // var protocol = new Protocols();
-            //protocol.DataRefSpectrum = new DataRefSpectrum();
-            //protocol.DataRefSpectrum.DateMeas - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.DispersionLow - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.DispersionUp - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.Freq_MHz - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.GlobalSID - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.Id - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.IdNum - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.Level_dBm - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.Percent - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.SensorId - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.TableId - заполнить с refSpectrums
-            //protocol.DataRefSpectrum.TableName - заполнить с refSpectrums
-
-
-            // если связь с Emitting обнаружена - тогда необходимо заполнить свосйтво ProtocolsLinkedWithEmittings:
-
-            //protocol.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
-            //protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz = emittings[0].Spectrum.Bandwidth_kHz;
-            //protocol.ProtocolsLinkedWithEmittings.Contravention = emittings[0].Spectrum.Contravention;
-            //protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations =  emittings[0].Spectrum.CorrectnessEstimations;
-            //protocol.ProtocolsLinkedWithEmittings.Count = emittings[0].LevelsDistribution.Count;
-            //protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm = emittings[0].CurentPower_dBm;
-            //protocol.ProtocolsLinkedWithEmittings.Freq_kHz = emittings[0].SignalMask.Freq_kHz;
-            //protocol.ProtocolsLinkedWithEmittings.Levels = emittings[0].LevelsDistribution.Levels;
-            //protocol.ProtocolsLinkedWithEmittings.Levels_dBm = emittings[0].Spectrum.Levels_dBm;
-            //protocol.ProtocolsLinkedWithEmittings.Loss_dB = emittings[0].SignalMask.Loss_dB;
-            //protocol.ProtocolsLinkedWithEmittings.MarkerIndex = emittings[0].Spectrum.MarkerIndex;
-            //protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference = emittings[0].MeanDeviationFromReference;
-            //protocol.ProtocolsLinkedWithEmittings.Probability = здесь заполнить вероятность;
-            //protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm = emittings[0].ReferenceLevel_dBm;
-            //protocol.ProtocolsLinkedWithEmittings.RollOffFactor = emittings[0].EmittingParameters.RollOffFactor;
-            //protocol.ProtocolsLinkedWithEmittings.StandardBW = emittings[0].EmittingParameters.StandardBW;
-            //protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm = emittings[0].Spectrum.SignalLevel_dBm;
-            //protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz = emittings[0].Spectrum.SpectrumStartFreq_MHz;
-            //protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz = emittings[0].Spectrum.SpectrumSteps_kHz;
-            //protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz = emittings[0].StartFrequency_MHz;
-            //protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz = emittings[0].StopFrequency_MHz;
-            //protocol.ProtocolsLinkedWithEmittings.T1 = emittings[0].Spectrum.T1;
-            //protocol.ProtocolsLinkedWithEmittings.T2 = emittings[0].Spectrum.T2;
-            //protocol.ProtocolsLinkedWithEmittings.TraceCount = emittings[0].Spectrum.TraceCount;
-            //protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = emittings[0].TriggerDeviationFromReference;
-            //protocol.ProtocolsLinkedWithEmittings.WorkTimeStart - здесь заполнить метку времени;
-            //protocol.ProtocolsLinkedWithEmittings.WorkTimeStop- здесь заполнить метку времени;
-
             return lstProtocols.ToArray();
         }
 
