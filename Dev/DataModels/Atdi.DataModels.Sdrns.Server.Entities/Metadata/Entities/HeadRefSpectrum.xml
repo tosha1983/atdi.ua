@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "HeadRefSpectrum"
+  Title       = "Head RefSpectrum"
+  Desc        = "Head RefSpectrum"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>HEAD_REF_SPECTRUM</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the HeadRefSpectrum record" Title="Id record"/>
+    <Field Name="FileName" DataType="Text.250" SourceName="FILE_NAME" SourceType="Column" Required="true" Desc="Name of the file" Title="Name of the file"/>
+    <Field Name="CreatedDate" DataType="DateTime" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="true"/>
+    <Field Name="CreatedBy" DataType="Text.50" SourceName="CREATED_BY" SourceType="Column" Required="true" Desc="CreatedBy" Title="CreatedBy"/>
+    <Field Name="CountImportRecords" DataType="Integer.32" SourceName="COUNT_IMPORT_RECORDS" SourceType="Column" Desc="The count imported records in csv - file" Title="The count imported records in csv - file"  Required="false"/>
+    <Field Desc="MinFreqMHz" Title="MinFreqMHz" Name="MinFreqMHz" DataType="Double.30.10" SourceName="MIN_FREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Desc="MaxFreqMHz" Title="MaxFreqMHz" Name="MaxFreqMHz" DataType="Double.30.10" SourceName="MAX_FREQ_MHZ" SourceType="Column" Required="false"/>
+    <Field Name="CountSensors" DataType="Integer.32" SourceName="COUNT_SENSORS" SourceType="Column" Desc="Count sensors" Title="Count sensors"  Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

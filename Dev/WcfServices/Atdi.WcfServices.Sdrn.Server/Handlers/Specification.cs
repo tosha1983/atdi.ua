@@ -17,6 +17,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static readonly EventCategory Declaring = "Declaring";
         public static readonly EventCategory Registration = "Registration";
         public static readonly EventCategory Processing = "Processing";
+        public static readonly EventCategory ImportData = "ImportData";
     }
 
     static class Events
@@ -58,6 +59,18 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static readonly EventText HandlerGetStationLevelsByTaskMethod = "Call 'GetStationLevelsByTask' method";
         public static readonly EventText HandlerCallGetRoutesMethod = "Call 'GetRoutes' method";
         public static readonly EventText HandlerLoadObjectSensorMethod = "Call 'LoadObjectSensor' method";
+        public static readonly EventText HandlerGetAllRefSpectrumMethod = "Call 'GetAllRefSpectrum' method";
+        public static readonly EventText HandlerImportRefSpectrumMethod = "Call 'ImportRefSpectrum' method";
+        public static readonly EventText HandlerSynchroAreasMethod = "Call 'SynchroAreas' method";
+        public static readonly EventText HandlerSynchroStationsExtendedMethod = "Call 'SynchroStationsExtended' method";
+        public static readonly EventText HandlerCreateDataSynchronizationProcessMethod = "Call 'CreateDataSynchronizationProcess' method";
+        public static readonly EventText HandlerCurrentDataSynchronizationProcessMethod = "Call 'CurrentDataSynchronizationProcess' method";
+        public static readonly EventText HandlerSaveOutputProtocolsToDBMethod = "Call 'SaveOutputProtocolsToDB' method";
+        public static readonly EventText HandlerClearProtocolMethod = "Call 'ClearProtocol' method";
+        public static readonly EventText HandlerSaveDataSynchronizationProcessToDBMethod = "Call 'SaveDataSynchronizationProcessToDB' method";
+        public static readonly EventText HandlerGetRefSpectrumByIdsMethod = "Call 'GetRefSpectrumByIds' method";
+        
+
     }
     static class TraceScopeNames
     {

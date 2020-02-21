@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "SynchroProcess"
+  Title       = "Synchronization emitting and identifiers"
+  Desc        = "Synchronization emitting and identifiers"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>SYNCHRO_PROCESS</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the SynchroProcess record" Title="Id record"/>
+    <Field Name="CreatedBy" DataType="Text.50" SourceName="CREATED_BY" SourceType="Column" Required="true" Desc="CreatedBy" Title="CreatedBy"/>
+    <Field Name="CreatedDate" DataType="DateTime" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="true"/>
+    <Field Name="Status" DataType="Text.20" SourceName="STATUS" SourceType="Column" Required="false" Desc="Status" Title="Status"/>
+    <Field Name="DateStart" DataType="DateTime" SourceName="DATE_START" SourceType="Column" Desc="The date of start" Title="Date start" Required="true"/>
+    <Field Name="DateEnd" DataType="DateTime" SourceName="DATE_END" SourceType="Column" Desc="The date of end" Title="Date end" Required="true"/>
+    <Field Name="CountRecordsImported" DataType="Integer.32" SourceName="COUNT_RECORDS_IMPORTED" SourceType="Column" Desc="The count records imported" Title="The count records imported" Required="false"/>
+    <Field Name="CountRecordsOutput" DataType="Integer.32" SourceName="COUNT_RECORDS_OUT" SourceType="Column" Desc="The count records output" Title="The count records output" Required="false"/>
+    <Field Name="CountRecordsOutputWithoutEmitting" DataType="Integer.32" SourceName="COUNT_RECORDS_OUT_WITHOUT_EMITTING" SourceType="Column" Desc="The count records output without Emitting" Title="The count records output without Emitting" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

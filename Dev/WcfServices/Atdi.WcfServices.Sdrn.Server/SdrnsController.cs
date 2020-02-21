@@ -410,6 +410,48 @@ namespace Atdi.WcfServices.Sdrn.Server
             var saveDb = new SaveSensor(_dataLayer, _logger);
             return saveDb.UpdateSensorTitle(id, title);
         }
+
+        /// <summary>
+        /// Import RefSpectrum into DB
+        /// </summary>
+        /// <param name="refSpectrum"></param>
+        /// <returns></returns>
+
+        public long? ImportRefSpectrum(RefSpectrum refSpectrum)
+        {
+            var importRefSpectrum = new ImportRefSpectrumData(_dataLayer, _logger);
+            return importRefSpectrum.ImportSpectrum(refSpectrum);
+        }
+
+
+        /// <summary>
+        /// Get all RefSpectrum
+        /// </summary>
+        /// <returns></returns>
+        public RefSpectrum[] GetAllRefSpectrum()
+        {
+            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
+            return loadSynchroProcessData.GetAllRefSpectrum();
+        }
+
+        /// <summary>
+        /// Data all DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        public DataSynchronizationProcess CurrentDataSynchronizationProcess()
+        {
+            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
+            return loadSynchroProcessData.CurrentDataSynchronizationProcess();
+        }
+
+        /// <summary>
+        /// Run DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
+        {
+            return false;
+        }
     }
 }
 

@@ -42,11 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\ILinkSensorsWithSynchroProcess.cs" />
+    <Compile Include="Entities\ILinkHeadRefSpectrum.cs" />
+    <Compile Include="Entities\ILinkArea.cs" />
+    <Compile Include="Entities\IArea.cs" />
     <Compile Include="Entities\IAmqpEvent.cs" />
     <Compile Include="Entities\IAmqpMessage.cs" />
     <Compile Include="Entities\IAntennaPattern.cs" />
     <Compile Include="Entities\IEmitting.cs" />
+    <Compile Include="Entities\ILinkProtocolsWithEmittings.cs" />
+    <Compile Include="Entities\IProtocols.cs" />
+    <Compile Include="Entities\IAreaLocation.cs" />
+    <Compile Include="Entities\IStationExtended.cs" />
+    <Compile Include="Entities\ISynchroProcess.cs" />
+    <Compile Include="Entities\IRefSpectrum.cs" />
     <Compile Include="Entities\ILinkSubTaskSensorMasterId.cs" />
+    <Compile Include="Entities\IHeadRefSpectrum.cs" />
     <Compile Include="Entities\IMeasTaskSignaling.cs" />
     <Compile Include="Entities\ILinkOnlineMesurement.cs" />
     <Compile Include="Entities\IReferenceLevels.cs" />
@@ -332,6 +343,16 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\HeadRefSpectrum.xml" />
+    <Content Include="Metadata\Entities\LinkHeadRefSpectrum.xml" />
+    <Content Include="Metadata\Entities\LinkProtocolsWithEmittings.xml" />
+    <Content Include="Metadata\Entities\LinkSensorsWithSynchroProcess.xml" />
+    <Content Include="Metadata\Entities\Protocols.xml" />
+    <Content Include="Metadata\Entities\StationExtended.xml" />
+    <Content Include="Metadata\Entities\RefSpectrum.xml" />
+    <Content Include="Metadata\Entities\SynchroProcess.xml" />
+    <Content Include="Metadata\Entities\Area.xml" />
+    <Content Include="Metadata\Entities\LinkArea.xml" />
     <Content Include="Metadata\Entities\LinkOnlineMesurement.xml" />
     <Content Include="Metadata\Entities\LinkSubTaskSensorMasterId.xml" />
     <Content Include="Metadata\Entities\LinkAggregationSensor.xml" />
@@ -343,6 +364,7 @@
     <Content Include="Metadata\Entities\Monitoring\StatisticCounterRecord.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
     <Content Include="Metadata\Entities\OnlineMesurement.xml" />
+    <Content Include="Metadata\Entities\AreaLocation.xml" />
     <Content Include="Metadata\Entities\SignalingSysInfo.xml" />
     <Content Include="Metadata\Entities\TestDataTypeSql.xml" />
     <Content Include="Metadata\Entities\TestEntityRef3.xml" />

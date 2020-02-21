@@ -382,5 +382,35 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         bool UpdateSensorTitle(long id, string title);
+
+        /// <summary>
+        /// Import RefSpectrum into DB
+        /// </summary>
+        /// <param name="refSpectrum"></param>
+        /// <returns></returns>
+        [OperationContract]
+        long? ImportRefSpectrum(RefSpectrum refSpectrum);
+
+        /// <summary>
+        /// Get all RefSpectrum
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        RefSpectrum[] GetAllRefSpectrum();
+
+        /// <summary>
+        /// Data all DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        DataSynchronizationProcess CurrentDataSynchronizationProcess();
+
+
+        /// <summary>
+        /// Run DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended);
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity 
+  Name        = "AreaLocation" 
+  Title       = "AreaLocation" 
+  Desc        = "The AreaLocation table"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>AREA_LOCATION</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Lon" DataType="Double.30.10" SourceName="LON" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
+    <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Lat" DataType="Double.30.10" SourceName="LAT" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
+    <Field Name="AREA" SourceName="Area" SourceType="Reference" Required="true" Desc="" Title="Relation AreaLocation to Area"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
