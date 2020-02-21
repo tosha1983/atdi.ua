@@ -257,6 +257,7 @@ namespace XICSM.ICSControlClient.ViewModels
             if (_measType == SDR.MeasurementType.Signaling)
             {
                 this._currentMeasTask.IsAutoTriggerLevel_dBm_Hz = true;
+                this._currentMeasTask.CollectEmissionInstrumentalEstimation = false;
             }
 
             this._currentMeasTask.MeasOtherTypeSpectrumOccupation = SDR.SpectrumOccupationType.FreqChannelOccupation;
@@ -295,6 +296,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MaxFreqDeviation = 0.0001;
             this._currentMeasTask.CheckLevelChannel = true;
             this._currentMeasTask.Standard = "GSM";
+            this._currentMeasTask.StandardInstEstim = "GSM";
 
             this._currentMeasTask.AnalyzeSysInfoEmission = false;
             this._currentMeasTask.nDbLevel_dB = 15;
@@ -731,8 +733,9 @@ namespace XICSM.ICSControlClient.ViewModels
                         CorrelationAnalize = this._currentMeasTask.CorrelationAnalize,
                         CorrelationFactor = this._currentMeasTask.CorrelationFactor,
                         DetailedMeasurementsBWEmission = this._currentMeasTask.DetailedMeasurementsBWEmission,
-                        Standard = this._currentMeasTask.Standard,
-                        triggerLevel_dBm_Hz = this.CurrentMeasTask.IsAutoTriggerLevel_dBm_Hz == true ? -999 : this._currentMeasTask.triggerLevel_dBm_Hz
+                        Standard = (this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard,
+                        triggerLevel_dBm_Hz = this.CurrentMeasTask.IsAutoTriggerLevel_dBm_Hz == true ? -999 : this._currentMeasTask.triggerLevel_dBm_Hz,
+                        CollectEmissionInstrumentalEstimation = this.CurrentMeasTask.CollectEmissionInstrumentalEstimation
                     },
                     Sensors = stationsList.ToArray(),
                     Task = SDR.MeasTaskType.Scan,

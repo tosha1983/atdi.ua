@@ -195,12 +195,12 @@ namespace Atdi.Test.Sdrn.DeviceServer.Processing.Measurements
             double LatMax = 50;
 
             double LonSt1 = 29.8;
-            double LatSt1 = 49.6;
+            double LatSt1 = 49.5;
 
             double LonSt2 = 29.2;
-            double LatSt2 = 49.4;
-            double dist1 = 5;
-            double dist2 = -5;
+            double LatSt2 = 49.5;
+            double dist1 = -14.8;
+            double dist2 = -15.2;
 
             double[] vs = Atdi.Modules.Sdrn.SpecializedCalculation.TDOA.GeographicLocalization.GetLineLonLat(LonMin, LonMax, LatMin, LatMax, LonSt1, LatSt1, LonSt2, LatSt2, dist1);
             double[] vs1 = Atdi.Modules.Sdrn.SpecializedCalculation.TDOA.GeographicLocalization.GetLineLonLat(LonMin, LonMax, LatMin, LatMax, LonSt1, LatSt1, LonSt2, LatSt2, dist2);

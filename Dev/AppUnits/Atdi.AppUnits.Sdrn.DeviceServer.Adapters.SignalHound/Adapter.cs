@@ -1058,7 +1058,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         private void GetAndPushTraceResults(COM.MesureTraceCommand command, IExecutionContext context)
         {
-            float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
+            
             string poolKeyName = "";
             bool poolKeyFind = false;
             //Если TraceType ClearWrite то пушаем каждый результат
@@ -1086,6 +1086,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                         if (command.Parameter.RBW_Hz == -2)
                         {
+                            float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
                             for (int j = 0; j < LevelArr.Length; j++)
                             {
                                 result.Level[j] = LevelArr[j] + adj;
@@ -1185,6 +1186,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     if (command.Parameter.RBW_Hz == -2)
                     {
+                        float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
                         for (int j = 0; j < LevelArr.Length; j++)
                         {
                             result.Level[j] = LevelArr[j] + adj;

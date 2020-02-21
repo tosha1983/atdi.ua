@@ -158,6 +158,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public int? SignalizationNCount { get; set; }
         public int? SignalizationNChenal { get; set; }
         public bool? AnalyzeByChannel { get; set; }
+        public bool? CollectEmissionInstrumentalEstimation { get; set; }
 
         public bool? CompareTraceJustWithRefLevels { get; set; }
         public bool? AutoDivisionEmitting { get; set; }
@@ -170,6 +171,11 @@ namespace XICSM.ICSControlClient.Models.Views
         public double? MaxFreqDeviation { get; set; }
         public bool? CheckLevelChannel { get; set; }
         public string Standard { get; set; }
+        public string StandardInstEstim { get; set; }
+        public IList<string> StandardInstEstimValues
+        {
+            get { return new List<string>() { "GSM", "CDMA", "LTE", "UMTS" }; }
+        }
 
         public bool? AnalyzeSysInfoEmission { get; set; }
         public double? nDbLevel_dB { get; set; } 

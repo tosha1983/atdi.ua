@@ -135,6 +135,10 @@
     <Compile Include="Tasks\SpectrumOccupationMeasParam.cs" />
     <Compile Include="Tasks\MeasTask.cs" />
     <Compile Include="Tasks\MeasuredFrequencies.cs" />
+    <Compile Include="TDOA\Enums\TDOAType.cs" />
+    <Compile Include="TDOA\SignalLocation.cs" />
+    <Compile Include="TDOA\SignalSignature.cs" />
+    <Compile Include="TDOA\TDOAParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.Sdrns\Atdi.DataModels.Sdrns.csproj">
