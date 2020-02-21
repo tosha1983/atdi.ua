@@ -26,8 +26,8 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();
             dataSynchronizationBase.CreatedBy = "ICSM";
             dataSynchronizationBase.DateCreated = DateTime.Now;
-            dataSynchronizationBase.DateStart = DateTime.Now;
-            dataSynchronizationBase.DateEnd = DateTime.Now;
+            dataSynchronizationBase.DateStart = DateTime.Now.AddDays(-2);
+            dataSynchronizationBase.DateEnd = DateTime.Now.AddDays(100);
 
             RefSpectrum refSpectrum = new RefSpectrum();
             refSpectrum.CreatedBy = "ICSM";
@@ -63,8 +63,63 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
 
 
             //long? id = sdrnServer.ImportRefSpectrum(refSpectrum);
-            var refSpectrums = sdrnServer.GetAllRefSpectrum();
-            // var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, );
+            //var refSpectrums = sdrnServer.GetAllRefSpectrum();
+
+            //var refSpectrums = sdrnServer.CurrentDataSynchronizationProcess();
+
+
+            Area area = new Area();
+            area.CreatedBy = "ICSM";
+            area.DateCreated = DateTime.Now;
+            area.IdentifierFromICSM = 11;
+            area.Name = "Київська";
+            area.TypeArea = "область";
+            area.Location = new DataLocation[3];
+            area.Location[0] = new DataLocation();
+            area.Location[0].Longitude = 29.203392;
+            area.Location[0].Latitude = 51.240697;
+            area.Location[1] = new DataLocation();
+            area.Location[1].Longitude = 29.240742;
+            area.Location[1].Latitude = 51.252762;
+            area.Location[2] = new DataLocation();
+            area.Location[2].Longitude = 29.282385;
+            area.Location[2].Latitude = 51.245312;
+
+            StationExtended stationExtended1 = new StationExtended();
+            stationExtended1.Address = "Address 1";
+            stationExtended1.BandWidth = 200;
+            stationExtended1.DesigEmission = "1E34--";
+            stationExtended1.Location = new DataLocation();
+            stationExtended1.Location.Longitude= 29.282385;
+            stationExtended1.Location.Latitude = 51.245312;
+            stationExtended1.OwnerName = "Киевстар";
+            stationExtended1.PermissionNumber = "CA-46-65754-53464456";
+            stationExtended1.PermissionStart = DateTime.Now;
+            stationExtended1.PermissionStop = DateTime.Now.AddDays(30);
+            stationExtended1.Province = "Київська";
+            stationExtended1.Standard = "GSM-1800";
+            stationExtended1.StandardName= "GSM-1800";
+            stationExtended1.TableId = 22346;
+            stationExtended1.TableName = "MOB_STATION";
+
+            StationExtended stationExtended2 = new StationExtended();
+            stationExtended2.Address = "Address 2";
+            stationExtended2.BandWidth = 130;
+            stationExtended2.DesigEmission = "2E34--";
+            stationExtended2.Location = new DataLocation();
+            stationExtended2.Location.Longitude = 29.282383;
+            stationExtended2.Location.Latitude = 51.245313;
+            stationExtended2.OwnerName = "Киевстар";
+            stationExtended2.PermissionNumber = "CA-46-65754-53464457";
+            stationExtended2.PermissionStart = DateTime.Now;
+            stationExtended2.PermissionStop = DateTime.Now.AddDays(30);
+            stationExtended2.Province = "Київська";
+            stationExtended2.Standard = "GSM-1800";
+            stationExtended2.StandardName = "GSM-1800";
+            stationExtended2.TableId = 22345;
+            stationExtended2.TableName = "MOB_STATION";
+
+            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { 8 }, new long[] { 1 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
 
 
             Console.WriteLine($"Test was finished. Press any key to exit.");

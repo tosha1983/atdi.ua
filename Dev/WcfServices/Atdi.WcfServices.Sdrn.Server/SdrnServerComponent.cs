@@ -26,6 +26,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         protected override void OnInstall()
         {
             base.OnInstall();
+            this.Container.Register<RunSynchroProcess, RunSynchroProcess>(ServiceLifetime.Singleton);
         }
 
         protected override void OnActivate()
@@ -36,7 +37,8 @@ namespace Atdi.WcfServices.Sdrn.Server
 
             hostLoader.RegisterTrigger("Check running  process synchronize refspectrum and emittings", () =>
             {
-                RunSynchroProcess.RecoveryDataSynchronization();
+                var messagesProcessing = this.Resolver.Resolve<RunSynchroProcess>();
+                messagesProcessing.RecoveryDataSynchronizationProcess();
             });
         }
 

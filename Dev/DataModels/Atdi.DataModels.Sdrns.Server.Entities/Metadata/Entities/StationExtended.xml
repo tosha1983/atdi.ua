@@ -22,7 +22,7 @@
     <Field Desc="Address" Title="Address" Name="Address" DataType="Text.1000" SourceName="ADDRESS" SourceType="Column" Required="false"/>
     <Field Desc="Longitude" Title="Longitude" Name="Longitude" DataType="Double.30.10" SourceName="LONGITUDE" SourceType="Column" Required="false"/>
     <Field Desc="Latitude" Title="Latitude" Name="Latitude" DataType="Double.30.10" SourceName="LATITUDE" SourceType="Column" Required="false"/>
-    <Field Desc="BandWidth" Title="BandWidth" Name="Latitude" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="BandWidth" Title="BandWidth" Name="BandWidth" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
     <Field Desc="DesigEmission" Title="DesigEmission" Name="DesigEmission" DataType="Text.25" SourceName="DESIG_EMISSION" SourceType="Column" Required="false"/>
     <Field Desc="Province" Title="Province" Name="Province" DataType="Text.100" SourceName="PROVINCE" SourceType="Column" Required="false"/>
   </Fields>

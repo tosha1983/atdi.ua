@@ -18,7 +18,7 @@
     <Field Name="DateEnd" DataType="DateTime" SourceName="DATE_END" SourceType="Column" Desc="The date of end" Title="Date end" Required="true"/>
     <Field Name="CountRecordsImported" DataType="Integer.32" SourceName="COUNT_RECORDS_IMPORTED" SourceType="Column" Desc="The count records imported" Title="The count records imported" Required="false"/>
     <Field Name="CountRecordsOutput" DataType="Integer.32" SourceName="COUNT_RECORDS_OUT" SourceType="Column" Desc="The count records output" Title="The count records output" Required="false"/>
-    <Field Name="CountRecordsOutputWithoutEmitting" DataType="Integer.32" SourceName="COUNT_RECORDS_OUT_WITHOUT_EMITTING" SourceType="Column" Desc="The count records output without Emitting" Title="The count records output without Emitting" Required="false"/>
+    <Field Name="CountRecordsOutputWithoutEmitting" DataType="Integer.32" SourceName="COUNT_RECORDS_OUT_WITHOUT_EMIT" SourceType="Column" Desc="The count records output without Emitting" Title="The count records output without Emitting" Required="false"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

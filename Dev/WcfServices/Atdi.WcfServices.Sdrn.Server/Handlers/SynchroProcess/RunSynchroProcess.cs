@@ -11,6 +11,7 @@ using Atdi.Contracts.WcfServices.Sdrn.Server;
 using System.Xml;
 using System.Linq;
 using Atdi.Common;
+using Calculation = Atdi.Modules.Sdrn.Calculation;
 
 
 namespace Atdi.WcfServices.Sdrn.Server
@@ -284,7 +285,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderStationExtendedInsert.SetValue(c => c.PermissionNumber, stationsExtended[i].PermissionNumber);
                             builderStationExtendedInsert.SetValue(c => c.PermissionStart, stationsExtended[i].PermissionStart);
                             builderStationExtendedInsert.SetValue(c => c.PermissionStop, stationsExtended[i].PermissionStop);
-                            builderStationExtendedInsert.SetValue(c => c.Province, stationsExtended[i].Province);
                             builderStationExtendedInsert.SetValue(c => c.Standard, stationsExtended[i].Standard);
                             builderStationExtendedInsert.SetValue(c => c.StandardName, stationsExtended[i].StandardName);
                             builderStationExtendedInsert.SetValue(c => c.TableId, stationsExtended[i].TableId);
@@ -319,7 +319,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderSynchroProcessInsert.SetValue(c => c.DateStart, dataSynchronization.DateStart);
                     builderSynchroProcessInsert.SetValue(c => c.DateEnd, dataSynchronization.DateEnd);
                     builderSynchroProcessInsert.SetValue(c => c.CreatedBy, dataSynchronization.CreatedBy);
-                    builderSynchroProcessInsert.SetValue(c => c.DateEnd, dataSynchronization.DateCreated);
+                    builderSynchroProcessInsert.SetValue(c => c.CreatedDate, dataSynchronization.DateCreated);
                     builderSynchroProcessInsert.SetValue(c => c.Status, Status.A.ToString());
 
                     var synchroProcessIdValue = scope.Executor.Execute<MD.ISynchroProcess_PK>(builderSynchroProcessInsert);
@@ -365,15 +365,15 @@ namespace Atdi.WcfServices.Sdrn.Server
             try
             {
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var queryLinkAreaFrom = this._dataLayer.GetBuilder<MD.ILinkArea>()
+                var queryLinkAreaFrom = this._dataLayer.GetBuilder<MD.IArea>()
                 .From()
-                .Select(c => c.Id, c => c.AREA.Id, c => c.AREA.IdentifierFromICSM)
-                .Where(c => c.AREA.IdentifierFromICSM, ConditionOperator.Equal, IdentifierFromICSM);
+                .Select(c => c.Id, c => c.IdentifierFromICSM)
+                .Where(c => c.IdentifierFromICSM, ConditionOperator.Equal, IdentifierFromICSM);
                 queryExecuter.Fetch(queryLinkAreaFrom, readerLinkAreaFrom =>
                 {
                     while (readerLinkAreaFrom.Read())
                     {
-                        areaId = readerLinkAreaFrom.GetValue(c => c.AREA.Id);
+                        areaId = readerLinkAreaFrom.GetValue(c => c.Id);
                         break;
                     }
                     return true;
@@ -459,13 +459,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var findDataRep = listDataRefSpectrum.FindAll(x => (x.DateMeas >= dataSynchronization.DateStart && x.DateMeas <= dataSynchronization.DateEnd) == false);
                 if (findDataRep != null)
                 {
-                    if (findDataRep != null)
+                    if ((findDataRep != null) && (findDataRep.Count>0))
                     {
-                        var findDataArray = findDataRep.ToArray();
-                        for (int g = 0; g < findDataArray.Length; g++)
-                        {
-                            listDataRefSpectrumForDelete.AddRange(findDataRep);
-                        }
+                        listDataRefSpectrumForDelete.AddRange(findDataRep);
                     }
                 }
 
@@ -483,9 +479,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var checkLocation = new CheckLocation(fndStation.Location.Longitude, fndStation.Location.Latitude);
                                 var listPolyg = lstPolygons[f].ToList();
-                                if (!checkLocation.CheckHitting(listPolyg))
+                                if (checkLocation.CheckHitting(listPolyg))
                                 {
-                                    listDataRefSpectrumForDelete.Add(listDataRefSpectrum[h]);
+                                    var fnd = listDataRefSpectrumForDelete.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
+                                    if (fnd == null)
+                                    {
+                                        listDataRefSpectrumForDelete.Add(listDataRefSpectrum[h]);
+                                    }
                                 }
                             }
                         }
@@ -572,6 +572,63 @@ namespace Atdi.WcfServices.Sdrn.Server
         public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings)
         {
             var lstProtocols = new List<Protocols>();
+
+            /*
+            int? prmTimeBetweenWorkTimes_sec;
+            int? prmTypeJoinSpectrum;
+            double? prmCrossingBWPercentageForGoodSignals;
+            double? prmCrossingBWPercentageForBadSignals;
+            bool? prmAnalyzeByChannel;
+            bool? prmCorrelationAnalize;
+            double? prmCorrelationFactor;
+            double? prmMaxFreqDeviation;
+            bool? prmCorrelationAdaptation;
+            int? prmMaxNumberEmitingOnFreq;
+            double? prmMinCoeffCorrelation;
+            bool? prmUkraineNationalMonitoring;
+
+            
+            // здесь надо проинициализировать все параметры
+            prmTimeBetweenWorkTimes_sec = -1;
+            prmTypeJoinSpectrum = -1;
+            prmCrossingBWPercentageForGoodSignals = -1;
+            prmCrossingBWPercentageForBadSignals = -1;
+            prmAnalyzeByChannel = false;
+            prmCorrelationAnalize = false;
+            prmCorrelationFactor = -1;
+            prmMaxFreqDeviation = -1;
+            prmCorrelationAdaptation = false;
+            prmMaxNumberEmitingOnFreq = -1;
+            prmMinCoeffCorrelation = -1;
+            prmUkraineNationalMonitoring = false;
+
+
+
+            //Групируем сырые данные измерений к существующим
+            Calculation.Emitting[] EmittingsRaw = ConvertEmittings.ConvertArray(emittingsRaw);
+            Calculation.Emitting[] EmittingsTemp = ConvertEmittings.ConvertArray(emittingsTemp);
+            Calculation.Emitting[] EmittingsSummary = ConvertEmittings.ConvertArray(emittingsSummary);
+
+
+            bool isSuccessCalcGrouping = Calculation.CalcGroupingEmitting.CalcGrouping(
+                prmTimeBetweenWorkTimes_sec,
+                prmTypeJoinSpectrum,
+                prmCrossingBWPercentageForGoodSignals,
+                prmCrossingBWPercentageForBadSignals,
+                prmAnalyzeByChannel,
+                prmCorrelationAnalize,
+                ref prmCorrelationFactor,
+                prmMaxFreqDeviation,
+                prmCorrelationAdaptation,
+                prmMaxNumberEmitingOnFreq,
+                prmMinCoeffCorrelation,
+                prmUkraineNationalMonitoring,
+                ref EmittingsRaw, ref EmittingsTemp, ref EmittingsSummary, taskContext.Task.NoiseLevel_dBm, this._configMeasurements.CountMaxEmission);
+            if (isSuccessCalcGrouping == false)
+            {
+
+            }
+            */  
 
             // Ниже приведен пример цикла, в котором идет последовательная обработка записей RefSpectrum
             /*
@@ -808,13 +865,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     scope.BeginTran();
 
-                    var builderLinkProtocolsWithEmittingsClear = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().Delete();
-                    builderLinkProtocolsWithEmittingsClear.Where(c => c.PROTOCOLS.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
-                    scope.Executor.Execute(builderLinkProtocolsWithEmittingsClear);
-
                     var builderProtocolsClear = this._dataLayer.GetBuilder<MD.IProtocols>().Delete();
                     builderProtocolsClear.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
                     scope.Executor.Execute(builderProtocolsClear);
+
+                    var builderLinkProtocolsWithEmittingsClear = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().Delete();
+                    builderLinkProtocolsWithEmittingsClear.Where(c => c.PROTOCOLS.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
+                    scope.Executor.Execute(builderLinkProtocolsWithEmittingsClear);
+                 
 
                     scope.Commit();
                 }
@@ -828,7 +886,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return isSuccess;
         }
 
-        public bool SaveDataSynchronizationProcessToDB(Protocols[] protocolsOutput, RefSpectrum[] refSpectrums)
+        public bool SaveDataSynchronizationProcessToDB(Protocols[] protocolsOutput, RefSpectrum[] refSpectrums, long synchroProcessId)
         {
             bool isSuccess = false;
             var CountRecordsImported = 0;
@@ -859,6 +917,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderSynchroProcessInsert.SetValue(c => c.CountRecordsOutput, CountRecordsOutput);
                     builderSynchroProcessInsert.SetValue(c => c.CountRecordsOutputWithoutEmitting, CountRecordsOutputWithoutEmitting);
                     builderSynchroProcessInsert.SetValue(c => c.Status, Status.C.ToString());
+                    builderSynchroProcessInsert.Where(c => c.Id, ConditionOperator.Equal, synchroProcessId);
                     scope.Executor.Execute(builderSynchroProcessInsert);
 
                     scope.Commit();
@@ -1279,7 +1338,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var queryAreaLocationFrom = this._dataLayer.GetBuilder<MD.IAreaLocation>()
                             .From()
                             .Select(c => c.Id, c => c.Latitude, c => c.Longitude)
-                            .Where(c => c.Id, ConditionOperator.Equal, areaIds[i]);
+                            .Where(c => c.AREA.Id, ConditionOperator.Equal, areaIds[i]);
                             queryExecuter.Fetch(queryAreaLocationFrom, readerAreaLocationFrom =>
                             {
                                 while (readerAreaLocationFrom.Read())
@@ -1333,8 +1392,18 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 stationExtended.Address = readerStationExtendedFrom.GetValue(c=>c.Address);
                                 stationExtended.BandWidth = readerStationExtendedFrom.GetValue(c => c.BandWidth);
                                 stationExtended.DesigEmission = readerStationExtendedFrom.GetValue(c => c.DesigEmission);
-                                stationExtended.DesigEmission = readerStationExtendedFrom.GetValue(c => c.DesigEmission);
-
+                                stationExtended.Location = new DataLocation();
+                                stationExtended.Location.Longitude = readerStationExtendedFrom.GetValue(c => c.Longitude);
+                                stationExtended.Location.Latitude = readerStationExtendedFrom.GetValue(c => c.Latitude);
+                                stationExtended.OwnerName = readerStationExtendedFrom.GetValue(c => c.OwnerName);
+                                stationExtended.PermissionNumber = readerStationExtendedFrom.GetValue(c => c.PermissionNumber);
+                                stationExtended.PermissionStart = readerStationExtendedFrom.GetValue(c => c.PermissionStart);
+                                stationExtended.PermissionStop = readerStationExtendedFrom.GetValue(c => c.PermissionStop);
+                                stationExtended.Province = readerStationExtendedFrom.GetValue(c => c.Province);
+                                stationExtended.Standard = readerStationExtendedFrom.GetValue(c => c.Standard);
+                                stationExtended.StandardName = readerStationExtendedFrom.GetValue(c => c.StandardName);
+                                stationExtended.TableId = readerStationExtendedFrom.GetValue(c => c.TableId);
+                                stationExtended.TableName = readerStationExtendedFrom.GetValue(c => c.TableName);
                                 stationsExtended.Add(stationExtended);
                             }
                             return true;
@@ -1350,10 +1419,6 @@ namespace Atdi.WcfServices.Sdrn.Server
             return stationsExtended.ToArray();
         }
 
-        public static void RecoveryDataSynchronization()
-        {
-
-        }
 
         public  void RecoveryDataSynchronizationProcess()
         {
@@ -1429,7 +1494,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         // здесь вызов процецедуры сохранения массива значений protocol
                         var isSuccessOperation = SaveOutputProtocolsToDB(arrayProtocols);
                         // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                        var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum);
+                        var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, dataSynchronization.Id.Value);
                     }
                 }
             }
@@ -1505,7 +1570,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 // здесь вызов процецедуры сохранения массива значений protocol
                                 var isSuccessOperation = SaveOutputProtocolsToDB(arrayProtocols);
                                 // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                                var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum);
+                                var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, synchroProcessId.Value);
                             }
                         }
                     }
