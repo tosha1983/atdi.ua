@@ -59,7 +59,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				var verificationData = new VerificationData2
 				{
 					OwnerId = ownerId,
-					ProductName = "SDRN Infocenter",
+					ProductName = "SDRN Infocenter Server",
 					ProductKey = productKey,
 					LicenseType = "ServerLicense",
 					Date = DateTime.Now,

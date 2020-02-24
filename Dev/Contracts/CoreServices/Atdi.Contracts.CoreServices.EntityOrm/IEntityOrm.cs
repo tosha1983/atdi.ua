@@ -23,7 +23,9 @@ namespace Atdi.Contracts.CoreServices.EntityOrm
 
         object CreatePrimaryKeyInstance(IEntityMetadata entity);
 
-    }
+		Type GetPrimaryKeyInstanceType(IEntityMetadata entity);
+
+	}
 
     public static class EntityOrmExtensions
     {

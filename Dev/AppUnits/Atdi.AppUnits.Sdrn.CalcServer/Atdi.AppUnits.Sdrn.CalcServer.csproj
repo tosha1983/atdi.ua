@@ -44,7 +44,13 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="CalcServerConfig.cs" />
+    <Compile Include="DataModel\CalcTaskResultData.cs" />
+    <Compile Include="DataModel\ProjectMapData.cs" />
+    <Compile Include="DataModel\SourceMapData.cs" />
+    <Compile Include="Helpers\Compressor.cs" />
     <Compile Include="IterationsPool.cs" />
+    <Compile Include="MapBuilder.cs" />
+    <Compile Include="ProcessJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventSystemObserver.cs" />
     <Compile Include="EventSystemSubscriberActivator.cs" />
@@ -85,6 +91,10 @@
       <Project>{7fba1c75-c990-4ff4-9989-397599ee9c00}</Project>
       <Name>Atdi.Contracts.Sdrn.CalcServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.Infocenter\Atdi.Contracts.Sdrn.Infocenter.csproj">
+      <Project>{B1074928-0E74-4230-A326-2A387D4D1A12}</Project>
+      <Name>Atdi.Contracts.Sdrn.Infocenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.DataBus\Atdi.DataModels.Api.DataBus.csproj">
       <Project>{f43550a2-fb1b-459c-a839-ea13cd5cd95b}</Project>
       <Name>Atdi.DataModels.Api.DataBus</Name>
@@ -101,9 +111,17 @@
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Internal\Atdi.DataModels.Sdrn.CalcServer.Internal.csproj">
+      <Project>{04AB56C1-7A30-411D-9BB2-BE4B641CF268}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer\Atdi.DataModels.Sdrn.CalcServer.csproj">
       <Project>{ba1bb2b6-ec14-4224-8d5d-20d6a6f7041c}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
@@ -125,5 +143,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

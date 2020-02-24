@@ -41,8 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Iterations\CoverageProfileData.cs" />
     <Compile Include="Iterations\VoidData.cs" />
     <Compile Include="Iterations\VoidResult.cs" />
+    <Compile Include="Maps\ProjectMapType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -9,5 +9,8 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     public interface IDataOrm
     {
         string Name { get; }
-    }
+
+        string Context { get; }
+	}
+
 }

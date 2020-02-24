@@ -60,5 +60,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 		[ComponentConfigProperty("EventSystem.UseCompression")]
 		public bool? EventSystemUseCompression { get; set; }
 
+
+
+		[ComponentConfigProperty("ProcessJob.StartDelay")]
+		public int? ProcessJobStartDelay { get; set; }
+
+		[ComponentConfigProperty("ProcessJob.RepeatDelay")]
+		public int? ProcessJobRepeatDelay { get; set; }
+
+		[ComponentConfigProperty("Threshold.MaxSteps")]
+		public int? ThresholdMaxSteps { get; set; }
+
 	}
 }

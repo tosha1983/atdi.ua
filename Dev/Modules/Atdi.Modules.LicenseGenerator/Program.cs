@@ -39,7 +39,9 @@ namespace Atdi.Modules.LicenseGenerator
 
 			//ICSControl_ForTesting_CalcServer(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\CalcServerLicense", 1);
 
-			WebQuery_ForKazahstan(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Kzh\WebQuery");
+			//WebQuery_ForKazahstan(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Kzh\WebQuery");
+
+			ICSControl_ForTesting_Infocentr(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\InfocentrLicense", 1);
 
 			Console.WriteLine("Process was finished");
 
@@ -689,7 +691,30 @@ namespace Atdi.Modules.LicenseGenerator
 
         }
 
-        static void WebQuery_ForKazahstan(string path)
+        static void ICSControl_ForTesting_Infocentr(string path, int count = 2)
+        {
+	        const string ownerId = "OID-BD12-A00-N00";
+	        const string ownerName = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string company = "ТОВ 'Лабораторія інформаційних систем'";
+	        const string ownerKey = "BD12-A00";
+	        var startDate = new DateTime(2020, 2, 5);
+	        var stopDate = new DateTime(2025, 8, 20);
+	        const ushort year = 2020;
+	        //MakeServerLicense();
+	        for (int i = 0; i < count; i++)
+	        {
+		        var srvLicenseIndex = GetUniqueIntegerKey(3);
+		        var instanceIndex = GetUniqueIntegerKey(4);
+		        var srvLicPrefix = "LIC-I";
+		        var srvInstancePrefix = "SDRNSV-I";
+
+		        MakeLicense2(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "SDRN Infocenter Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate, year);
+	        }
+
+
+        }
+
+		static void WebQuery_ForKazahstan(string path)
         {
 			var ownerKey = "BD71-F23";
 			var ownerId = "OID-BD71-F23-N00";

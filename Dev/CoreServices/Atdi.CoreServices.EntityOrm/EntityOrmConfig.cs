@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using System.IO;
 using Atdi.CoreServices.EntityOrm;
+using Atdi.CoreServices.EntityOrm.Metadata;
 using Atdi.DataModels.DataConstraint;
 
 
@@ -22,6 +23,7 @@ namespace Atdi.CoreServices.EntityOrm
     {
 
         private readonly IComponentConfig _config;
+
         public string Name { get; set; }
         public string Version { get; set; }
         public string RootPath { get; set; }
@@ -32,46 +34,41 @@ namespace Atdi.CoreServices.EntityOrm
         public string UnitsPath { get; set; }
 
 
-        public EntityOrmConfig(IComponentConfig config)
+        public EntityOrmConfig(string path)
         {
             try
             {
-                this._config = config;
-                var dataContextsParam = config["EnvironmentFileName"];
-                if (dataContextsParam != null)
+	            if (string.IsNullOrEmpty(path))
+	            {
+					return;
+	            }
+
+	            var directory = System.IO.Path.GetDirectoryName(path);
+	            var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef));
+                using (var reader = new StreamReader(path))
                 {
-                    string directory = System.IO.Path.GetDirectoryName(Convert.ToString(dataContextsParam));
-                    var dataContextsString = Convert.ToString(dataContextsParam);
-                    if (!string.IsNullOrEmpty(dataContextsString))
-                    {
-                        var serializer = new XmlSerializer(typeof(Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef));
-                        var reader = new StreamReader(dataContextsString);
-                        object resenvironment = serializer.Deserialize(reader);
-                        if (resenvironment is Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef)
-                        {
-                            var environment = resenvironment as Atdi.CoreServices.EntityOrm.Metadata.EnvironmentDef;
-                            if (environment != null)
-                            {
-                                Name = environment.Name;
-                                Version = environment.Version;
-                                RootPath = environment.RootPath.Value.Replace(".", @"\");
-                                Assembly = environment.Assembly.Value;
-                                Namespace = environment.Namespace.Value;
-                                if (RootPath != @"\")
-                                {
-                                    EntitiesPath = string.Format(@"{0}\{1}\{2}", directory, RootPath, environment.EntitiesPath.Value);
-                                    DataTypesPath = string.Format(@"{0}\{1}\{2}", directory, RootPath, environment.DataTypesPath.Value);
-                                    UnitsPath = string.Format(@"{0}\{1}\{2}", directory, RootPath, environment.UnitsPath.Value);
-                                }
-                                else
-                                {
-                                    EntitiesPath = string.Format(@"{0}\{1}", directory, environment.EntitiesPath.Value);
-                                    DataTypesPath = string.Format(@"{0}\{1}", directory, environment.DataTypesPath.Value);
-                                    UnitsPath = string.Format(@"{0}\{1}", directory, environment.UnitsPath.Value);
-                                }
-                            }
-                        }
-                    }
+	                var source = serializer.Deserialize(reader);
+	                if (!(source is EnvironmentDef environment))
+	                {
+		                return;
+	                }
+	                Name = environment.Name;
+	                Version = environment.Version;
+	                RootPath = environment.RootPath.Value.Replace(".", @"\");
+	                Assembly = environment.Assembly.Value;
+	                Namespace = environment.Namespace.Value;
+	                if (RootPath != @"\")
+	                {
+		                EntitiesPath = $@"{directory}\{RootPath}\{environment.EntitiesPath.Value}";
+		                DataTypesPath = $@"{directory}\{RootPath}\{environment.DataTypesPath.Value}";
+		                UnitsPath = $@"{directory}\{RootPath}\{environment.UnitsPath.Value}";
+	                }
+	                else
+	                {
+		                EntitiesPath = $@"{directory}\{environment.EntitiesPath.Value}";
+		                DataTypesPath = $@"{directory}\{environment.DataTypesPath.Value}";
+		                UnitsPath = $@"{directory}\{environment.UnitsPath.Value}";
+	                }
                 }
             }
             catch (Exception e)

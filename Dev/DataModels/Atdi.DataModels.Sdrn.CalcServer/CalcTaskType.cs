@@ -9,9 +9,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer
 	public enum CalcTaskType
 	{
 		/// <summary>
-		/// Переименовать, и индексация использовать начиная с 1
+		/// Расчет профилей покрытия относительно одной произволной точки 
 		/// </summary>
-		RenamedTask = 1,
+		CoverageProfilesCalc = 1,
 
 
 		/// <summary>

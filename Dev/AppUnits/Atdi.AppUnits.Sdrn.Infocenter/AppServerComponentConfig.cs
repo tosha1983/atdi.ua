@@ -60,5 +60,14 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 		[ComponentConfigProperty("EventSystem.UseCompression")]
 		public bool? EventSystemUseCompression { get; set; }
 
+		[ComponentConfigProperty("AutoImport.Maps.Folder")]
+		public string AutoImportMapsFolder { get; set; }
+
+		[ComponentConfigProperty("AutoImport.Maps.StartDelay")]
+		public int? AutoImportMapsStartDelay { get; set; }
+
+		[ComponentConfigProperty("AutoImport.Maps.RepeatDelay")]
+		public int? AutoImportMapsRepeatDelay { get; set; }
+
 	}
 }

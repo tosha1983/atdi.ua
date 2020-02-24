@@ -11,6 +11,7 @@ using Atdi.Platform.AppComponent;
 using Atdi.Platform.AppServer;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
+using Atdi.Platform.Workflows;
 
 namespace Atdi.AppUnits.Sdrn.Infocenter
 {
@@ -55,13 +56,14 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			this.Container.Register<IEventSite, EventSite>(ServiceLifetime.Singleton);
 			this.Container.Register<IEventEmitter, EventEmitter>(ServiceLifetime.PerThread);
 			this.Container.Register<IEventDispatcher, EventDispatcher>(ServiceLifetime.Singleton);
+
+			this.Container.Register<MapsAutoImportJob>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()
 		{
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
-
-			
+			var appConfig = this.Resolver.Resolve<AppServerComponentConfig>();
 
 			// подключаем обработчики событий
 			var eventDispatcher = this.Resolver.Resolve<IEventDispatcher>();
@@ -116,6 +118,30 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				}
 			});
 
+			var jobBroker = this.Resolver.Resolve<IJobBroker>();
+			hostLoader.RegisterTrigger("Running Jobs ...", () =>
+			{
+				var startDelaySeconds = appConfig.AutoImportMapsStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				var repeatDelaySeconds = appConfig.AutoImportMapsRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 0;
+				}
+				var jobDef = new JobDefinition<MapsAutoImportJob>()
+				{
+					Name = "Maps Auto Import Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerSecond * repeatDelaySeconds.Value)
+				};
+
+				jobBroker.Run(jobDef);
+			});
 		}
 	}
 }

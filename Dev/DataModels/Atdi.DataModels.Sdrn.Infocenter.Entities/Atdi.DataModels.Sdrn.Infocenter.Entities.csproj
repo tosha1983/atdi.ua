@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="InfocenterEntityOrmContext.cs" />
+    <Compile Include="Entities\IMapSector.cs" />
+    <Compile Include="Entities\IMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +97,8 @@
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
+    <Content Include="Metadata\Entities\MapSector.xml" />
+    <Content Include="Metadata\Entities\Map.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounter.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounterKey.xml" />
@@ -118,7 +122,12 @@
     <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
     <Folder Include="DataLayer\SqlServer\Tables\" />
-    <Folder Include="Entities\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
+      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
+      <Name>Atdi.DataModels.EntityOrm</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

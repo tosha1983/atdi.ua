@@ -91,6 +91,7 @@
     <Compile Include="Descriptors\InsertQueryDescriptor.cs" />
     <Compile Include="Descriptors\SelectQueryDescriptor.cs" />
     <Compile Include="Descriptors\SortableFieldDescriptor.cs" />
+    <Compile Include="EntityOrmComponentConfig.cs" />
     <Compile Include="OLD\FieldProperties.cs" />
     <Compile Include="OLD\ConditionParser.cs" />
     <Compile Include="EntityOrmDataLayer.cs" />

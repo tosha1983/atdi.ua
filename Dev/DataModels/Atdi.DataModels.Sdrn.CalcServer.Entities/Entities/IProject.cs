@@ -17,7 +17,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	{
 		string Name { get; set; }
 
-		string Desc { get; set; }
+		string Note { get; set; }
 
 		string OwnerInstance { get; set; }
 
@@ -25,5 +25,36 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		DateTimeOffset CreatedDate { get; set; }
 
+		byte StatusCode { get; set; }
+
+		string StatusName { get; set; }
+
+		string StatusNote { get; set; }
+
+	}
+
+	public enum ProjectStatusCode
+	{
+		/// <summary>
+		/// Проект создан но не доступна для использования
+		/// В этой фазе обычно формируют остальные элементы структуры проекта 
+		/// </summary>
+		Created = 0,
+		/// <summary>
+		/// Проект изменяется
+		/// </summary>
+		Modifying = 1,
+		/// <summary>
+		/// Проект полностью сформирована, парамтеры определены и ее можно использовать для иницирования рассчетов
+		/// </summary>
+		Available = 2,
+		/// <summary>
+		/// Проект временно заблокирован для иницирования рассчетов
+		/// </summary>
+		Locked = 3,
+		/// <summary>
+		/// Проект неактуален
+		/// </summary>
+		Archived = 4
 	}
 }
