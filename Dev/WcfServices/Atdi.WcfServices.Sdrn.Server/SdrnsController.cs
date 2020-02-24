@@ -457,8 +457,20 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <returns></returns>
         public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
-            var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
-            return runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
+            try
+            {
+                var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
+                System.Threading.Tasks.Task.Run(() =>   
+                {
+                    runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
+                });
+                return true;
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+                return false;
+            }
         }
     }
 }

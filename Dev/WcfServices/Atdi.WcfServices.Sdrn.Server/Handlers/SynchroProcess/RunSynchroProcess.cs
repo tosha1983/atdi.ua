@@ -91,7 +91,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         {
                                             while (readerAreaLocation.Read())
                                             {
-                                                if ((readerAreaLocation.GetValue(c => c.Latitude) == location.Latitude) && (readerAreaLocation.GetValue(c => c.Longitude) == location.Longitude))
+                                                if (Math.Abs(readerAreaLocation.GetValue(c => c.Latitude) - location.Latitude) < 0.000001 && Math.Abs(readerAreaLocation.GetValue(c => c.Longitude) - location.Longitude) < 0.000001)
                                                 {
                                                     isFindLocation = true;
                                                     break;
@@ -121,7 +121,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     {
                                         while (readerAreaLocation.Read())
                                         {
-                                            var findLocation = listLocations.Find(x => x.Latitude == readerAreaLocation.GetValue(c => c.Latitude) && x.Longitude == readerAreaLocation.GetValue(c => c.Longitude));
+                                            var findLocation = listLocations.Find(x => Math.Abs(x.Latitude - readerAreaLocation.GetValue(c => c.Latitude))<0.000001 && (x.Longitude - readerAreaLocation.GetValue(c => c.Longitude))< 0.000001);
                                             if (findLocation == null)
                                             {
                                                 forDeleteIdsLocation.Add(readerAreaLocation.GetValue(c => c.Id));
