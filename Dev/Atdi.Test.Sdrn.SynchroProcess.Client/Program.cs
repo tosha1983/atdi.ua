@@ -21,12 +21,12 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             var sdrnServer = GetServicByEndpoint("SdrnServerBasicHttpEndpoint");
 
 
-            bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
+            //bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
 
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();
             dataSynchronizationBase.CreatedBy = "ICSM";
             dataSynchronizationBase.DateCreated = DateTime.Now;
-            dataSynchronizationBase.DateStart = DateTime.Now.AddDays(-2);
+            dataSynchronizationBase.DateStart = new DateTime(2019, 07, 01);
             dataSynchronizationBase.DateEnd = DateTime.Now.AddDays(100);
 
             RefSpectrum refSpectrum = new RefSpectrum();
@@ -38,7 +38,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             refSpectrum.DataRefSpectrum[0].DateMeas = DateTime.Now;
             refSpectrum.DataRefSpectrum[0].DispersionLow = 20.344;
             refSpectrum.DataRefSpectrum[0].DispersionUp = 30.123;
-            refSpectrum.DataRefSpectrum[0].Freq_MHz = 2000;
+            refSpectrum.DataRefSpectrum[0].Freq_MHz = 421.0455000714;
             refSpectrum.DataRefSpectrum[0].GlobalSID = "SID2000";
             refSpectrum.DataRefSpectrum[0].IdNum = 1;
             refSpectrum.DataRefSpectrum[0].Level_dBm = 5;
@@ -51,7 +51,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             refSpectrum.DataRefSpectrum[1].DateMeas = DateTime.Now;
             refSpectrum.DataRefSpectrum[1].DispersionLow = 10.133;
             refSpectrum.DataRefSpectrum[1].DispersionUp = 20.346;
-            refSpectrum.DataRefSpectrum[1].Freq_MHz = 3000.4533;
+            refSpectrum.DataRefSpectrum[1].Freq_MHz = 421.0455000715;
             refSpectrum.DataRefSpectrum[1].GlobalSID = "SID2001";
             refSpectrum.DataRefSpectrum[1].IdNum = 2;
             refSpectrum.DataRefSpectrum[1].Level_dBm = 3.5;
@@ -62,7 +62,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
 
 
 
-            //long? id = sdrnServer.ImportRefSpectrum(refSpectrum);
+            long? id = sdrnServer.ImportRefSpectrum(refSpectrum);
             //var refSpectrums = sdrnServer.GetAllRefSpectrum();
 
             //var refSpectrums = sdrnServer.CurrentDataSynchronizationProcess();
@@ -76,22 +76,22 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             area.TypeArea = "область";
             area.Location = new DataLocation[3];
             area.Location[0] = new DataLocation();
-            area.Location[0].Longitude = 29.203392;
-            area.Location[0].Latitude = 51.240697;
+            area.Location[0].Longitude = 30.509033203125004;
+            area.Location[0].Latitude = 50.57626025689928;
             area.Location[1] = new DataLocation();
-            area.Location[1].Longitude = 29.240742;
-            area.Location[1].Latitude = 51.252762;
+            area.Location[1].Longitude = 30.3057861328125;
+            area.Location[1].Latitude = 50.31565429419651;
             area.Location[2] = new DataLocation();
-            area.Location[2].Longitude = 29.282385;
-            area.Location[2].Latitude = 51.245312;
+            area.Location[2].Longitude = 30.758972167968754;
+            area.Location[2].Latitude = 50.31039245071915;
 
             StationExtended stationExtended1 = new StationExtended();
             stationExtended1.Address = "Address 1";
             stationExtended1.BandWidth = 200;
             stationExtended1.DesigEmission = "1E34--";
             stationExtended1.Location = new DataLocation();
-            stationExtended1.Location.Longitude= 29.282385;
-            stationExtended1.Location.Latitude = 51.245312;
+            stationExtended1.Location.Longitude= 30.555725097656254;
+            stationExtended1.Location.Latitude = 50.41726883571085;
             stationExtended1.OwnerName = "Киевстар";
             stationExtended1.PermissionNumber = "CA-46-65754-53464456";
             stationExtended1.PermissionStart = DateTime.Now;
@@ -107,8 +107,8 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             stationExtended2.BandWidth = 130;
             stationExtended2.DesigEmission = "2E34--";
             stationExtended2.Location = new DataLocation();
-            stationExtended2.Location.Longitude = 29.282383;
-            stationExtended2.Location.Latitude = 51.245313;
+            stationExtended2.Location.Longitude = 30.514526367187504;
+            stationExtended2.Location.Latitude = 50.44176389056172;
             stationExtended2.OwnerName = "Киевстар";
             stationExtended2.PermissionNumber = "CA-46-65754-53464457";
             stationExtended2.PermissionStart = DateTime.Now;
@@ -119,7 +119,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             stationExtended2.TableId = 22345;
             stationExtended2.TableName = "MOB_STATION";
 
-            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { 8 }, new long[] { 1 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
+            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { id.Value }, new long[] { 1 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
 
 
             Console.WriteLine($"Test was finished. Press any key to exit.");

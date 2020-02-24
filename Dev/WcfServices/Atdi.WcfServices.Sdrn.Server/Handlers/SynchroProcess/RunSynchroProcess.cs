@@ -479,7 +479,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 var checkLocation = new CheckLocation(fndStation.Location.Longitude, fndStation.Location.Latitude);
                                 var listPolyg = lstPolygons[f].ToList();
-                                if (checkLocation.CheckHitting(listPolyg))
+                                if (!checkLocation.CheckHitting(listPolyg))
                                 {
                                     var fnd = listDataRefSpectrumForDelete.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
                                     if (fnd == null)
@@ -602,41 +602,59 @@ namespace Atdi.WcfServices.Sdrn.Server
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+                    var emit = emittings.ToList();
+                    var  fndEmit = emit.Find(x => x.StartFrequency_MHz <= dataRefSpectrum.Freq_MHz && x.StopFrequency_MHz >= dataRefSpectrum.Freq_MHz);
+                    if (fndEmit != null)
+                    {
+                        calculatedEmitting = fndEmit;
 
-                    // если связь с Emitting обнаружена - тогда необходимо заполнить свосйтво ProtocolsLinkedWithEmittings:
-                    protocol.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
-                    protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz = calculatedEmitting.Spectrum.Bandwidth_kHz;
-                    protocol.ProtocolsLinkedWithEmittings.Contravention = calculatedEmitting.Spectrum.Contravention;
-                    protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations = calculatedEmitting.Spectrum.CorrectnessEstimations;
-                    protocol.ProtocolsLinkedWithEmittings.Count = calculatedEmitting.LevelsDistribution.Count;
-                    protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm = calculatedEmitting.CurentPower_dBm;
-                    protocol.ProtocolsLinkedWithEmittings.Freq_kHz = calculatedEmitting.SignalMask.Freq_kHz;
-                    protocol.ProtocolsLinkedWithEmittings.Levels = calculatedEmitting.LevelsDistribution.Levels;
-                    protocol.ProtocolsLinkedWithEmittings.Levels_dBm = calculatedEmitting.Spectrum.Levels_dBm;
-                    protocol.ProtocolsLinkedWithEmittings.Loss_dB = calculatedEmitting.SignalMask.Loss_dB;
-                    protocol.ProtocolsLinkedWithEmittings.MarkerIndex = calculatedEmitting.Spectrum.MarkerIndex;
-                    protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference = calculatedEmitting.MeanDeviationFromReference;
-                    //protocol.ProtocolsLinkedWithEmittings.Probability = здесь заполнить вероятность;
-                    protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm = calculatedEmitting.ReferenceLevel_dBm;
-                    protocol.ProtocolsLinkedWithEmittings.RollOffFactor = calculatedEmitting.EmittingParameters.RollOffFactor;
-                    protocol.ProtocolsLinkedWithEmittings.StandardBW = calculatedEmitting.EmittingParameters.StandardBW;
-                    protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm = calculatedEmitting.Spectrum.SignalLevel_dBm;
-                    protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz = calculatedEmitting.Spectrum.SpectrumStartFreq_MHz;
-                    protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz = calculatedEmitting.Spectrum.SpectrumSteps_kHz;
-                    protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz = calculatedEmitting.StartFrequency_MHz;
-                    protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz = calculatedEmitting.StopFrequency_MHz;
-                    protocol.ProtocolsLinkedWithEmittings.T1 = calculatedEmitting.Spectrum.T1;
-                    protocol.ProtocolsLinkedWithEmittings.T2 = calculatedEmitting.Spectrum.T2;
-                    protocol.ProtocolsLinkedWithEmittings.TraceCount = calculatedEmitting.Spectrum.TraceCount;
-                    protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = calculatedEmitting.TriggerDeviationFromReference;
+                        // если связь с Emitting обнаружена - тогда необходимо заполнить свосйтво ProtocolsLinkedWithEmittings:
+                        protocol.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
+                        protocol.ProtocolsLinkedWithEmittings.Count = calculatedEmitting.LevelsDistribution.Count;
+                        protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm = calculatedEmitting.CurentPower_dBm;
 
-                    var workTimes = calculatedEmitting.WorkTimes.ToList();
-                    var minStart = workTimes.Min(z => z.StartEmitting);
-                    var maxStop = workTimes.Min(z => z.StopEmitting);
-                    protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
-                    protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
+                        protocol.ProtocolsLinkedWithEmittings.Levels = calculatedEmitting.LevelsDistribution.Levels;
 
-                    lstProtocols.Add(protocol);
+                        if (calculatedEmitting.SignalMask != null)
+                        {
+                            protocol.ProtocolsLinkedWithEmittings.Freq_kHz = calculatedEmitting.SignalMask.Freq_kHz;
+                            protocol.ProtocolsLinkedWithEmittings.Loss_dB = calculatedEmitting.SignalMask.Loss_dB;
+                        }
+                        protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference = calculatedEmitting.MeanDeviationFromReference;
+                        //protocol.ProtocolsLinkedWithEmittings.Probability = здесь заполнить вероятность;
+                        protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm = calculatedEmitting.ReferenceLevel_dBm;
+                        if (calculatedEmitting.EmittingParameters != null)
+                        {
+                            protocol.ProtocolsLinkedWithEmittings.RollOffFactor = calculatedEmitting.EmittingParameters.RollOffFactor;
+                            protocol.ProtocolsLinkedWithEmittings.StandardBW = calculatedEmitting.EmittingParameters.StandardBW;
+                        }
+                        if (calculatedEmitting.Spectrum != null)
+                        {
+                            protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm = calculatedEmitting.Spectrum.SignalLevel_dBm;
+                            protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz = calculatedEmitting.Spectrum.SpectrumStartFreq_MHz;
+                            protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz = calculatedEmitting.Spectrum.SpectrumSteps_kHz;
+                            protocol.ProtocolsLinkedWithEmittings.T1 = calculatedEmitting.Spectrum.T1;
+                            protocol.ProtocolsLinkedWithEmittings.T2 = calculatedEmitting.Spectrum.T2;
+                            protocol.ProtocolsLinkedWithEmittings.TraceCount = calculatedEmitting.Spectrum.TraceCount;
+                            protocol.ProtocolsLinkedWithEmittings.MarkerIndex = calculatedEmitting.Spectrum.MarkerIndex;
+                            protocol.ProtocolsLinkedWithEmittings.Levels_dBm = calculatedEmitting.Spectrum.Levels_dBm;
+                            protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz = calculatedEmitting.Spectrum.Bandwidth_kHz;
+                            protocol.ProtocolsLinkedWithEmittings.Contravention = calculatedEmitting.Spectrum.Contravention;
+                            protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations = calculatedEmitting.Spectrum.CorrectnessEstimations;
+                        }
+                        protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz = calculatedEmitting.StartFrequency_MHz;
+                        protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz = calculatedEmitting.StopFrequency_MHz;
+                        protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = calculatedEmitting.TriggerDeviationFromReference;
+                        if (calculatedEmitting.WorkTimes != null)
+                        {
+                            var workTimes = calculatedEmitting.WorkTimes.ToList();
+                            var minStart = workTimes.Min(z => z.StartEmitting);
+                            var maxStop = workTimes.Min(z => z.StopEmitting);
+                            protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
+                            protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
+                        }
+                        lstProtocols.Add(protocol);
+                    }
                 }
             }
             return lstProtocols.ToArray();
@@ -748,8 +766,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderProtocolsInsert.SetValue(c => c.SensorLat, sensorData.Lat);
                             builderProtocolsInsert.SetValue(c => c.SensorLon, sensorData.Lon);
                         }
-                        builderProtocolsInsert.SetValue(c => c.SensorName, protocol.Sensor.Name);
-                        var synchroProcessIdValue = scope.Executor.Execute<MD.ISynchroProcess_PK>(builderProtocolsInsert);
+                        var synchroProcessIdValue = scope.Executor.Execute<MD.IProtocols_PK>(builderProtocolsInsert);
                         if (synchroProcessIdValue != null)
                         {
                             long protocolInsertId = synchroProcessIdValue.Id;
@@ -853,7 +870,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                     for (int i = 0; i < protocolsOutput.Count(); i++)
                     {
-                        if (protocolsOutput[i].ProtocolsLinkedWithEmittings!=null)
+                        if (protocolsOutput[i].ProtocolsLinkedWithEmittings==null)
                         {
                             CountRecordsOutputWithoutEmitting = CountRecordsOutputWithoutEmitting + 1;
                         }
@@ -912,12 +929,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         while (readerMeasTaskSignaling.Read())
                         {
-                            collectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(x => x.CollectEmissionInstrumentalEstimation);
+                             var measTaskId = readerMeasTaskSignaling.GetValue(x => x.MEAS_TASK.Id);
+                             collectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(x => x.CollectEmissionInstrumentalEstimation);
                         }
                         return true;
                     });
 
-                    if ((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == false))
+                    if (((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == false)) || (collectEmissionInstrumentalEstimation==null))
                     {
                         continue;
                     }
