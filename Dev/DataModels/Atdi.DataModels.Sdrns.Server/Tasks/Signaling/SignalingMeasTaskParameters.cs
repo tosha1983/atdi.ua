@@ -44,5 +44,7 @@ namespace Atdi.DataModels.Sdrns.Server
         public SignalingInterruptionParameters InterruptionParameters;
         [DataMember]
         public SignalingGroupingParameters GroupingParameters;
+        [DataMember]
+        public bool? CollectEmissionInstrumentalEstimation { get; set; } // true значит, что  после отправления результатов матрицы, которые содержат результаты измерений (EmittingSum, EmittingTemp) должны обнуляться,  (по умолчанию false)
     }
 }

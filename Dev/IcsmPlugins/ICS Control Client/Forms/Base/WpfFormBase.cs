@@ -20,6 +20,7 @@ using System.Windows.Controls.Primitives;
 using FM = XICSM.ICSControlClient.Forms;
 using System.Windows.Controls;
 using ADP = XICSM.ICSControlClient.Models.WcfDataApadters;
+using System.Windows.Data;
 
 namespace XICSM.ICSControlClient.Forms
 {
@@ -64,23 +65,17 @@ namespace XICSM.ICSControlClient.Forms
                 {
                     var grid = grd as CTR.Grid;
 
-                    if (splRow > 0)
+                    if (splRow > 0 && grid.RowDefinitions.Count > splRow && grid.RowDefinitions[splRow - 1].Height.Value > 0 && grid.RowDefinitions[splRow + 1].Height.Value > 0)
                     {
                         SaveSetting(key + "/R1/Type", grid.RowDefinitions[splRow - 1].Height.GridUnitType.ToString());
                         SaveSetting(key + "/R1/Value", grid.RowDefinitions[splRow - 1].Height.Value.ToString());
-                    }
-                    if (splRow > 0 && grid.RowDefinitions.Count > splRow)
-                    {
                         SaveSetting(key + "/R2/Type", grid.RowDefinitions[splRow + 1].Height.GridUnitType.ToString());
                         SaveSetting(key + "/R2/Value", grid.RowDefinitions[splRow + 1].Height.Value.ToString());
                     }
-                    if (splCol > 0)
+                    if (splCol > 0 && grid.ColumnDefinitions.Count > splCol && grid.ColumnDefinitions[splCol - 1].Width.Value > 0 && grid.ColumnDefinitions[splCol + 1].Width.Value > 0)
                     {
                         SaveSetting(key + "/C1/Type", grid.ColumnDefinitions[splCol - 1].Width.GridUnitType.ToString());
                         SaveSetting(key + "/C1/Value", grid.ColumnDefinitions[splCol - 1].Width.Value.ToString());
-                    }
-                    if (splCol > 0 && grid.ColumnDefinitions.Count > splCol)
-                    {
                         SaveSetting(key + "/C2/Type", grid.ColumnDefinitions[splCol + 1].Width.GridUnitType.ToString());
                         SaveSetting(key + "/C2/Value", grid.ColumnDefinitions[splCol + 1].Width.Value.ToString());
                     }
@@ -119,7 +114,7 @@ namespace XICSM.ICSControlClient.Forms
                 var dlgForm = new FM.gridFilterNumeric();
                 dlgForm.Left = pointToScreen.X;
                 dlgForm.Top = pointToScreen.Y;
-                dlgForm.Text = column.Content.ToString();
+                dlgForm.Text = column.Column.Header.ToString();
                 if (_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
                 {
                     dlgForm.FilterFromValue = _dataGridFilters[grd].FiltersNumeric[columnName].FromValue;
@@ -138,15 +133,15 @@ namespace XICSM.ICSControlClient.Forms
                         _dataGridFilters[grd].FiltersNumeric[columnName].FromValue = dlgForm.FilterFromValue;
                         _dataGridFilters[grd].FiltersNumeric[columnName].ToValue = dlgForm.FilterToValue;
 
-                        column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Content.ToString().IndexOf(" (Filter:") > 0)
-                            column.Content = column.Content.ToString().Remove(column.Content.ToString().IndexOf(" (Filter:"));
-                        column.Content = column.Content + " (Filter:";
+                        //column.Foreground = new SolidColorBrush(Colors.Green);
+                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
+                        column.Column.Header = column.Column.Header + " (Filter:";
                         if (dlgForm.FilterFromValue.HasValue)
-                            column.Content = column.Content + " >= " + dlgForm.FilterFromValue.ToString() + ";";
+                            column.Column.Header = column.Column.Header + " >= " + dlgForm.FilterFromValue.ToString() + ";";
                         if (dlgForm.FilterToValue.HasValue)
-                            column.Content = column.Content + " <= " + dlgForm.FilterToValue.ToString() + ";";
-                        column.Content = column.Content + ")";
+                            column.Column.Header = column.Column.Header + " <= " + dlgForm.FilterToValue.ToString() + ";";
+                        column.Column.Header = column.Column.Header + ")";
                     }
                     else
                     {
@@ -154,8 +149,8 @@ namespace XICSM.ICSControlClient.Forms
                             _dataGridFilters[grd].FiltersNumeric.Remove(columnName);
 
                         column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Content.ToString().IndexOf(" (Filter:") > 0)
-                            column.Content = column.Content.ToString().Remove(column.Content.ToString().IndexOf(" (Filter:"));
+                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
                     }
                 }
             }
@@ -164,7 +159,7 @@ namespace XICSM.ICSControlClient.Forms
                 var dlgForm = new FM.gridFilterBool();
                 dlgForm.Left = pointToScreen.X;
                 dlgForm.Top = pointToScreen.Y;
-                dlgForm.Text = column.Content.ToString();
+                dlgForm.Text = column.Column.Header.ToString();
                 if (_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
                 {
                     dlgForm.FilterValue = _dataGridFilters[grd].FiltersBool[columnName].Value;
@@ -181,10 +176,10 @@ namespace XICSM.ICSControlClient.Forms
 
                         _dataGridFilters[grd].FiltersBool[columnName].Value = dlgForm.FilterValue;
 
-                        column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Content.ToString().IndexOf(" (Filter:") > 0)
-                            column.Content = column.Content.ToString().Remove(column.Content.ToString().IndexOf(" (Filter:"));
-                        column.Content = column.Content + " (Filter: =" + dlgForm.FilterValue.Value.ToString() + ";)";
+                        //column.Foreground = new SolidColorBrush(Colors.Green);
+                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
+                        column.Column.Header = column.Column.Header + " (Filter: =" + dlgForm.FilterValue.Value.ToString() + ";)";
                     }
                     else
                     {
@@ -192,73 +187,94 @@ namespace XICSM.ICSControlClient.Forms
                             _dataGridFilters[grd].FiltersBool.Remove(columnName);
 
                         column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Content.ToString().IndexOf(" (Filter:") > 0)
-                            column.Content = column.Content.ToString().Remove(column.Content.ToString().IndexOf(" (Filter:"));
+                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
                     }
                 }
             }
             DataGridApplyFilters(grd);
         }
-        private void DataGrid_MenuClick(object sender, EventArgs e)
+        private void DataGrid_MenuClick_ClearAllFilters(object sender, EventArgs e)
         {
             var menuItem = sender as CTR.MenuItem;
-            if (menuItem.Name == "SaveToCSV")
+            var contextMenu = menuItem.Parent as CTR.ContextMenu;
+            var grd = contextMenu.PlacementTarget as CTR.DataGrid;
+
+            _dataGridFilters[grd].FiltersNumeric.Clear();
+            _dataGridFilters[grd].FiltersBool.Clear();
+            foreach (var column in grd.Columns)
             {
-                var contextMenu = menuItem.Parent as CTR.ContextMenu;
-                var grid = contextMenu.PlacementTarget as CTR.DataGrid;
-                SaveFileDialog sfd = new SaveFileDialog()
+                if (column.Header.ToString().IndexOf(" (Filter:") > 0)
                 {
-                    Filter = "CSV (*.csv)|*.csv",
-                    FileName = $"DataGrid_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.csv"
-                };
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    int recCount = grid.Items.Count;
-                    string[] output = new string[recCount + 1];
+                    column.Header = column.Header.ToString().Remove(column.Header.ToString().IndexOf(" (Filter:"));
 
-                    
-                    var csvRow = new List<string>();
-                    var columnsBindName = new List<string>();
-                    
-                    foreach (var column in grid.Columns)
-                    {
-                        var columnName = (((column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
-                        columnsBindName.Add(columnName);
-                        csvRow.Add(column.Header.ToString());
-                    }
-                    output[0] += string.Join(";", csvRow);
-
-                    int i = 1;
-
-                    if (grid.SelectedItems.Count > 1)
-                        foreach (dynamic row in grid.SelectedItems)
-                        {
-                            csvRow = new List<string>();
-
-                            foreach (var columnName in columnsBindName)
-                            {
-                                var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
-                                csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
-                            }
-                            output[i++] += string.Join(";", csvRow);
-                        }
-                    else
-                        foreach (dynamic row in grid.Items)
-                        {
-                            csvRow = new List<string>();
-
-                            foreach (var columnName in columnsBindName)
-                            {
-                                var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
-                                csvRow.Add(cellValue == null ? ""  : $"\"{cellValue.ToString()}\"");
-                            }
-                            output[i++] += string.Join(";", csvRow);
-                        }
-
-                    System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
-                    System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
+                    //Style style = new Style(typeof(DataGridColumnHeader));
+                    //style.Setters.Add(new Setter { Property = CTR.Control.ForegroundProperty, Value = new SolidColorBrush(Colors.Black)});
+                    //style.TargetType = typeof(DataGridColumnHeader);
+                    //column.HeaderStyle = style;
                 }
             }
+
+            DataGridApplyFilters(grd);
+        }
+        private void DataGrid_MenuClick_SaveToCSV(object sender, EventArgs e)
+        {
+            var menuItem = sender as CTR.MenuItem;
+            var contextMenu = menuItem.Parent as CTR.ContextMenu;
+            var grid = contextMenu.PlacementTarget as CTR.DataGrid;
+            SaveFileDialog sfd = new SaveFileDialog()
+            {
+                Filter = "CSV (*.csv)|*.csv",
+                FileName = $"DataGrid_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.csv"
+            };
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                int recCount = grid.Items.Count;
+                string[] output = new string[recCount + 1];
+
+                    
+                var csvRow = new List<string>();
+                var columnsBindName = new List<string>();
+                    
+                foreach (var column in grid.Columns)
+                {
+                    var columnName = (((column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
+                    columnsBindName.Add(columnName);
+                    csvRow.Add(column.Header.ToString());
+                }
+                output[0] += string.Join(";", csvRow);
+
+                int i = 1;
+
+                if (grid.SelectedItems.Count > 1)
+                    foreach (dynamic row in grid.SelectedItems)
+                    {
+                        csvRow = new List<string>();
+
+                        foreach (var columnName in columnsBindName)
+                        {
+                            var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                            csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
+                        }
+                        output[i++] += string.Join(";", csvRow);
+                    }
+                else
+                    foreach (dynamic row in grid.Items)
+                    {
+                        csvRow = new List<string>();
+
+                        foreach (var columnName in columnsBindName)
+                        {
+                            var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                            csvRow.Add(cellValue == null ? ""  : $"\"{cellValue.ToString()}\"");
+                        }
+                        output[i++] += string.Join(";", csvRow);
+                    }
+
+                System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
+            }
+            
         }
         void DataGridApplyFilters(CTR.DataGrid grid)
         {
@@ -468,14 +484,21 @@ namespace XICSM.ICSControlClient.Forms
 
             foreach (var grd in FindVisualChildren<CTR.DataGrid>(_wpfElementHost.Child))
             {
+                if (grd.ContextMenu == null)
+                    grd.ContextMenu = new CTR.ContextMenu();
+
                 var itemCSV = new CTR.MenuItem() { Header = "Save to CSV", Name = "SaveToCSV" };
-                itemCSV.Click += DataGrid_MenuClick;
-                grd.ContextMenu = new CTR.ContextMenu();
+                itemCSV.Click += DataGrid_MenuClick_SaveToCSV;
                 grd.ContextMenu.Items.Add(itemCSV);
+
+                var itemClearFilter = new CTR.MenuItem() { Header = "Clear all filters", Name = "ClearAllFilters" };
+                itemClearFilter.Click += DataGrid_MenuClick_ClearAllFilters;
+                grd.ContextMenu.Items.Add(itemClearFilter);
+
 
                 //if (grd.Name == "GridSensor" || grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")
                 if (grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")
-                    {
+                {
                     List<DataGridColumnHeader> columnHeaders = GetVisualChildCollection<DataGridColumnHeader>(grd);
                     foreach (DataGridColumnHeader columnHeader in columnHeaders)
                     {
@@ -512,7 +535,8 @@ namespace XICSM.ICSControlClient.Forms
                         {
                             Enum.TryParse<GridUnitType>(stringType, out GridUnitType type);
                             double.TryParse(stringVal, out double val);
-                            grid.RowDefinitions[splRow - 1].Height = new GridLength(val, type);
+                            if (val > 0)
+                                grid.RowDefinitions[splRow - 1].Height = new GridLength(val, type);
                         }
                     }
                     if (splRow > 0 && grid.RowDefinitions.Count > splRow)
@@ -523,7 +547,8 @@ namespace XICSM.ICSControlClient.Forms
                         {
                             Enum.TryParse<GridUnitType>(stringType, out GridUnitType type);
                             double.TryParse(stringVal, out double val);
-                            grid.RowDefinitions[splRow + 1].Height = new GridLength(val, type);
+                            if (val > 0)
+                                grid.RowDefinitions[splRow + 1].Height = new GridLength(val, type);
                         }
                     }
                     if (splCol > 0)
@@ -534,7 +559,8 @@ namespace XICSM.ICSControlClient.Forms
                         {
                             Enum.TryParse<GridUnitType>(stringType, out GridUnitType type);
                             double.TryParse(stringVal, out double val);
-                            grid.ColumnDefinitions[splCol - 1].Width = new GridLength(val, type);
+                            if (val > 0)
+                                grid.ColumnDefinitions[splCol - 1].Width = new GridLength(val, type);
                         }
                     }
                     if (splCol > 0 && grid.ColumnDefinitions.Count > splCol)
@@ -545,7 +571,8 @@ namespace XICSM.ICSControlClient.Forms
                         {
                             Enum.TryParse<GridUnitType>(stringType, out GridUnitType type);
                             double.TryParse(stringVal, out double val);
-                            grid.ColumnDefinitions[splCol + 1].Width = new GridLength(val, type);
+                            if (val > 0)
+                                grid.ColumnDefinitions[splCol + 1].Width = new GridLength(val, type);
                         }
                     }
                 }
@@ -600,7 +627,6 @@ namespace XICSM.ICSControlClient.Forms
             GetVisualChildCollection(parent as DependencyObject, visualCollection);
             return visualCollection;
         }
-
         private void GetVisualChildCollection<T>(DependencyObject parent, List<T> visualCollection) where T : Visual
         {
             int count = VisualTreeHelper.GetChildrenCount(parent);

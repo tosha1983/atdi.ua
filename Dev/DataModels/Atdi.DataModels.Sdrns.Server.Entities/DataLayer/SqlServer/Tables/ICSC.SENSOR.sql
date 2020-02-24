@@ -5,6 +5,7 @@ create table [ICSC].[SENSOR] (
 	[ID] 	[bigint] identity (1,1) not null,
 	[SENSORIDENTIFIER_ID]	[bigint] null,
 	[STATUS]	[nvarchar](25) null,
+	[TITLE]	[nvarchar](250) null,
 	[NAME]	[nvarchar](150) null,
 	[ADMINISTRATION]	[nvarchar](50) null,
 	[NETWORKID]	[nvarchar](150) null,

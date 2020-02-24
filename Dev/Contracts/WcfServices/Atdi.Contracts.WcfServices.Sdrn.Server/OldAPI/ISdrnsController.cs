@@ -374,6 +374,51 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [OperationContract]
         SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken);
 
+        /// <summary>
+        /// Update Sensor Title
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool UpdateSensorTitle(long id, string title);
 
+        /// <summary>
+        /// Import RefSpectrum into DB SDRN
+        /// </summary>
+        /// <param name="refSpectrum"></param>
+        /// <returns></returns>
+        [OperationContract]
+        long? ImportRefSpectrum(RefSpectrum refSpectrum);
+
+        /// <summary>
+        /// Delete RefSpectrum from DB SDRN
+        /// </summary>
+        /// <param name="refSpectrum"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN);
+
+        /// <summary>
+        /// Get all RefSpectrum
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        RefSpectrum[] GetAllRefSpectrum();
+
+        /// <summary>
+        /// Data all DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        DataSynchronizationProcess CurrentDataSynchronizationProcess();
+
+
+        /// <summary>
+        /// Run DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended);
     }
 }

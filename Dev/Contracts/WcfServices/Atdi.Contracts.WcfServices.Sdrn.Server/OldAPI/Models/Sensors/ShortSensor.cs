@@ -25,6 +25,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public string Status;
         /// <summary>
+        /// Title
+        /// </summary>
+        [DataMember]
+        public string Title;
+        /// <summary>
         /// Name
         /// </summary>
         [DataMember]

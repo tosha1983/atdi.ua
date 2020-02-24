@@ -50,6 +50,31 @@ namespace XICSM.ICSControlClient.ViewModels
 
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridSensors), new PropertyMetadata(null));
     }
+    public class ShortSensorsCustomDataGrid : DataGrid
+    {
+        //public ShortSensorsCustomDataGrid()
+        //{
+        //    this.MouseDoubleClick += DoubleClick;
+        //}
+        //private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
+        //{
+        //    this.SelectedItemsList = this.SelectedItems;
+        //    foreach (ShortSensorViewModel item in this.SelectedItemsList)
+        //    {
+        //        var dlgForm = new FM.OnlineMeasurementForm(item, null);
+        //        dlgForm.ShowDialog();
+        //        dlgForm.Dispose();
+        //        return;
+        //    }
+        //}
+        public IList SelectedItemsList
+        {
+            get { return (IList)GetValue(SelectedItemsListProperty); }
+            set { SetValue(SelectedItemsListProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(ShortSensorsCustomDataGrid), new PropertyMetadata(null));
+    }
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
         #region Current Objects
@@ -81,6 +106,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._measType = measType;
             this.SetDefaultVaues();
             this.ReloadShortSensors();
+            this.RedrawMap();
         }
         public MP.MapDrawingData CurrentMapData
         {
@@ -231,6 +257,7 @@ namespace XICSM.ICSControlClient.ViewModels
             if (_measType == SDR.MeasurementType.Signaling)
             {
                 this._currentMeasTask.IsAutoTriggerLevel_dBm_Hz = true;
+                this._currentMeasTask.CollectEmissionInstrumentalEstimation = false;
             }
 
             this._currentMeasTask.MeasOtherTypeSpectrumOccupation = SDR.SpectrumOccupationType.FreqChannelOccupation;
@@ -269,6 +296,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MaxFreqDeviation = 0.0001;
             this._currentMeasTask.CheckLevelChannel = true;
             this._currentMeasTask.Standard = "GSM";
+            this._currentMeasTask.StandardInstEstim = "GSM";
 
             this._currentMeasTask.AnalyzeSysInfoEmission = false;
             this._currentMeasTask.nDbLevel_dB = 15;
@@ -705,8 +733,9 @@ namespace XICSM.ICSControlClient.ViewModels
                         CorrelationAnalize = this._currentMeasTask.CorrelationAnalize,
                         CorrelationFactor = this._currentMeasTask.CorrelationFactor,
                         DetailedMeasurementsBWEmission = this._currentMeasTask.DetailedMeasurementsBWEmission,
-                        Standard = this._currentMeasTask.Standard,
-                        triggerLevel_dBm_Hz = this.CurrentMeasTask.IsAutoTriggerLevel_dBm_Hz == true ? -999 : this._currentMeasTask.triggerLevel_dBm_Hz
+                        Standard = (this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard,
+                        triggerLevel_dBm_Hz = this.CurrentMeasTask.IsAutoTriggerLevel_dBm_Hz == true ? -999 : this._currentMeasTask.triggerLevel_dBm_Hz,
+                        CollectEmissionInstrumentalEstimation = this.CurrentMeasTask.CollectEmissionInstrumentalEstimation
                     },
                     Sensors = stationsList.ToArray(),
                     Task = SDR.MeasTaskType.Scan,
@@ -999,31 +1028,33 @@ namespace XICSM.ICSControlClient.ViewModels
             var points = new List<MP.MapDrawingDataPoint>();
 
             if (this._currentShortSensor != null)
-            {
-                foreach (ShortSensorViewModel shortSensor in this._currentShortSensor)
-                {
-                    var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(shortSensor.Id);
-                    if (svcSensor != null)
-                    {
-                        var modelSensor = Mappers.Map(svcSensor);
-                        if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
-                        {
-                            var sensorPoints = modelSensor.Locations
-                                .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
-                                        || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
-                                        && l.Lon.HasValue
-                                        && l.Lat.HasValue)
-                                .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
-                                .ToArray();
+                foreach (ShortSensorViewModel sensor in this._currentShortSensor)
+                    DrawSensor(points, sensor.Id);
+            else if (this._shortSensors.Source != null && this._shortSensors.Source.Length > 0)
+                foreach (var sensor in this._shortSensors.Source)
+                    DrawSensor(points, sensor.Id.Value);
 
-                            points.AddRange(sensorPoints);
-                        }
-                    }
-                }
-            }
             data.Points = points.ToArray();
             this.CurrentMapData = data;
         }
-
+        private void DrawSensor(List<MP.MapDrawingDataPoint> points, long sensorId)
+        {
+            var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(sensorId);
+            if (svcSensor != null)
+            {
+                var modelSensor = Mappers.Map(svcSensor);
+                if (modelSensor.Locations != null && modelSensor.Locations.Length > 0)
+                {
+                    var sensorPoints = modelSensor.Locations
+                        .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+                                || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+                                && l.Lon.HasValue
+                                && l.Lat.HasValue)
+                        .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                        .ToArray();
+                    points.AddRange(sensorPoints);
+                }
+            }
+        }
     }
 }

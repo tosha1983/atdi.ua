@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Atdi.Modules.Sdrn.Calculation</RootNamespace>
     <AssemblyName>Atdi.Modules.Sdrn.Calculation</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,9 +43,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateMaskFromSpectrum.cs" />
+    <Compile Include="Signaling\CalcGroupingEmitting.cs" />
+    <Compile Include="Signaling\CalcSignalization.cs" />
+    <Compile Include="Models\Signaling\Emitting.cs" />
+    <Compile Include="Models\Signaling\EmittingParameters.cs" />
+    <Compile Include="Models\Signaling\LevelsDistribution.cs" />
+    <Compile Include="Models\Signaling\ReferenceLevels.cs" />
+    <Compile Include="Models\Signaling\SignalingSysInfo.cs" />
+    <Compile Include="Models\Signaling\SignalMask.cs" />
+    <Compile Include="Models\Signaling\Spectrum.cs" />
+    <Compile Include="Models\Signaling\WorkTime.cs" />
     <Compile Include="REMEZ\FirFilter.cs" />
+    <Compile Include="Specification.cs" />
     <Compile Include="TDOA\GeographicLocalization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

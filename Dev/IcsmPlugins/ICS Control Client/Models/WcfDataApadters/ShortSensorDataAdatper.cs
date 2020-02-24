@@ -28,6 +28,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 EquipManufacturer = source.EquipManufacturer,
                 EquipName = source.EquipName,
                 LowerFreq = source.LowerFreq.ToNull(),
+                Title = source.Title,
                 Name = source.Name,
                 NetworkId = source.NetworkId,
                 RxLoss = source.RxLoss.ToNull(),
