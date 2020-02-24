@@ -33,7 +33,24 @@ namespace Atdi.DataModels.EntityOrm.Api
         object[] Record { get; set; }
     }
 
-    public interface IDataSetResult : IRequestResult
+    public interface IRecordCreateResult : IRequestResult
+    {
+	    int Count { get; set; }
+
+	    object PrimaryKey { get; set; }
+	}
+
+    public interface IRecordUpdateResult : IRequestResult
+    {
+	    int Count { get; set; }
+    }
+
+    public interface IRecordDeleteResult : IRequestResult
+    {
+	    int Count { get; set; }
+    }
+
+	public interface IDataSetResult : IRequestResult
     {
         IFieldDescriptor[] Fields { get; set; }
 

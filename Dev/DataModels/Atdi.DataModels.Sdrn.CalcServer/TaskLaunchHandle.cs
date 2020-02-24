@@ -11,7 +11,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer
 		/// <summary>
 		/// Идентификатора ранее подготовленой задачи расчета
 		/// </summary>
-		public int TaskId { get; set; }
+		public long TaskId { get; set; }
 
 		public string CallerInstance { get; set; }
 

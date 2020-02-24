@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ProjectMapContentSource"
+  Title       = "Project Map Content"
+  Desc        = "The map source of map content of the project"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>PROJECT_MAP_CONTENT_SOURCES</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Source ID" Desc="The identifier of the map source record"/>
+
+    <Field Name="CONTENT" SourceType="Reference" SourceName="ProjectMapContent"  Required="true" Title="Map Project" Desc="The project in which the map is created" />
+
+    <Field Name="InfocMapId" DataType="Integer.32" SourceName="INFOC_MAP_ID" SourceType="Column" Desc="The Map ID from Infocentr" Title="Map ID" Required="true"/>
+    <Field Name="InfocMapName" DataType="Text.450" SourceName="INFOC_MAP_NAME" SourceType="Column" Desc="The Map Name from Infocentr" Title="Map Name" Required="true"/>
+
+    <Field Name="Coverage" DataType="Decimal.22.8" SourceName="COVERAGE" SourceType="Column" Desc="The coverage percent" Title="Coverage" Required="false"/>
+
+    <Field Name="UpperLeftX" DataType="Integer.32"  SourceName="CRD_UPL_X" SourceType="Column" Desc="The Upper Left X" Title="Upper Left X" Required="true"/>
+    <Field Name="UpperLeftY" DataType="Integer.32"  SourceName="CRD_UPL_Y" SourceType="Column" Desc="The Upper Left Y" Title="Upper Left Y" Required="true"/>
+    <Field Name="LowerRightX" DataType="Integer.32" SourceName="CRD_LWR_X" SourceType="Column" Desc="The Lower Right X" Title="Lower Right X" Required="true"/>
+    <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_lWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="true"/>
+
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

@@ -25,7 +25,7 @@ namespace Atdi.Test.Platform
 
 			//return;
 
-			const int count =  200_000;
+			const int count =  600_000;
 
             var thread1 = CreateThread(logger, count, 1);
 			var thread2 = CreateThread(logger, count, 2);

@@ -468,7 +468,8 @@
             "WebQuery Application Server",
             "WebQuery Web Portal",
             "ICS Control Client (Monitoring or other)",
-            "SDRN Calc Server"});
+            "SDRN Calc Server",
+            "SDRN Infocentr Server"});
 			this.cmbConfigType.Location = new System.Drawing.Point(81, 27);
 			this.cmbConfigType.Name = "cmbConfigType";
 			this.cmbConfigType.Size = new System.Drawing.Size(303, 21);

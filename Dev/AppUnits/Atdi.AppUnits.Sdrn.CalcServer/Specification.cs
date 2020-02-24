@@ -9,7 +9,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
     internal static class Categories
     {
-        public static readonly EventCategory Declaring = "Declaring";
+		public static readonly EventCategory MapPreparation = "MapPreparation";
+		public static readonly EventCategory TaskRunning = "TaskRunning";
+		public static readonly EventCategory Declaring = "Declaring";
         public static readonly EventCategory Registration = "Registration";
         public static readonly EventCategory Processing = "Processing";
         public static readonly EventCategory Subscribing = "Subscribing";

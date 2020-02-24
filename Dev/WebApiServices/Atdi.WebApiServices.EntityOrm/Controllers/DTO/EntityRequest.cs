@@ -40,7 +40,29 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 
     }
 
-    public class FieldValueRequest : EntityRequest, API.IFieldValueRequest
+    public class DataRecordCreateRequest : EntityRequest, API.IDataRecordCreateRequest
+    {
+	    public string[] Fields { get; set; }
+
+		public object[] Values { get; set; }
+    }
+
+    public class DataRecordUpdateRequest : EntityRequest, API.IDataRecordCreateRequest
+    {
+	    public string PrimaryKey { get; set; }
+
+		public string[] Fields { get; set; }
+
+	    public object[] Values { get; set; }
+    }
+
+    public class DataRecordDeleteRequest : EntityRequest, API.IDataRecordDeleteRequest
+    {
+	    public string PrimaryKey { get; set; }
+
+    }
+
+	public class FieldValueRequest : EntityRequest, API.IFieldValueRequest
     {
 
         public string PrimaryKey { get; set; }

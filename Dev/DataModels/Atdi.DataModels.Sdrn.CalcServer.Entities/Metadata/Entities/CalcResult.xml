@@ -7,7 +7,7 @@
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>CALCRESULTS</Name>
-    <Schema>CLS</Schema>
+    <Schema>CALC</Schema>
   </DataSource>
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Task ID" Desc="The identifier of the calculation result"/>

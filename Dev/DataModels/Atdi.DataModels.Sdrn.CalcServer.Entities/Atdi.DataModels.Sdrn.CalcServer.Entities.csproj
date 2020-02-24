@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SSDTUnitTestPath Condition="'$(SSDTUnitTestPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB</SSDTUnitTestPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SSDTPath Condition="'$(SSDTPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB\DAC\130</SSDTPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,7 +52,11 @@
   <ItemGroup>
     <Compile Include="Entities\ICalcResult.cs" />
     <Compile Include="Entities\ICalcTask.cs" />
+    <Compile Include="Entities\IProjectMapContentSource.cs" />
+    <Compile Include="Entities\IProjectMapContent.cs" />
+    <Compile Include="Entities\IProjectMap.cs" />
     <Compile Include="Entities\IProject.cs" />
+    <Compile Include="CalcServerEntityOrmContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +70,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECTS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAPS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENT_SOURCES.sql" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.Object.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\CT.ReadOnlyDictionary.String.String.xml" />
     <Content Include="Metadata\DataTypes\ClrObject\DateTime.DATETIME.xml" />
@@ -109,6 +128,9 @@
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
     <Content Include="Metadata\Entities\CalcTask.xml" />
+    <Content Include="Metadata\Entities\ProjectMapContentSource.xml" />
+    <Content Include="Metadata\Entities\ProjectMapContent.xml" />
+    <Content Include="Metadata\Entities\ProjectMap.xml" />
     <Content Include="Metadata\Entities\Project.xml" />
     <Content Include="Metadata\Entities\Monitoring\LogEvent.xml" />
     <Content Include="Metadata\Entities\Monitoring\StatisticCounter.xml" />
@@ -132,7 +154,12 @@
     <Folder Include="DataLayer\Oracle\Functions\" />
     <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
-    <Folder Include="DataLayer\SqlServer\Tables\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <SsdtUnitTestVersion>3.1</SsdtUnitTestVersion>
+  </PropertyGroup>
+  <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' == ''" />
 </Project>

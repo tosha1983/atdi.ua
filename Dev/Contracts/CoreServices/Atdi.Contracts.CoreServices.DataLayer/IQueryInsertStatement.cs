@@ -50,7 +50,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                         Value = ((IntegerValueOperand)value).Value
                     };
                     break;
-                case DataType.DateTime:
+                case DataType.Long:
+	                result = new LongColumnValue
+	                {
+		                Value = ((LongValueOperand)value).Value
+	                };
+	                break;
+                case DataType.UnsignedLong:
+	                result = new UnsignedLongColumnValue()
+	                {
+		                Value = ((UnsignedLongValueOperand)value).Value
+	                };
+	                break;
+				case DataType.DateTime:
                     result = new DateTimeColumnValue
                     {
                         Value = ((DateTimeValueOperand)value).Value

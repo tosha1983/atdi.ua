@@ -43,28 +43,33 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		Created = 0,
 
 		/// <summary>
+		/// Фаза ожидания запуска процесса расчета
+		/// </summary>
+		Pending = 1,
+
+		/// <summary>
 		/// Расчет выполняется
 		/// </summary>
-		Processing = 1,
+		Processing = 2,
 
 		/// <summary>
 		/// Расчет завершен
 		/// </summary>
-		Completed = 2,
+		Completed = 3,
 
 		/// <summary>
 		/// Расчет был отменен по внешней причине
 		/// </summary>
-		Canceled = 3,
+		Canceled = 4,
 
 		/// <summary>
 		/// Расчет был прерван по внутреней причине
 		/// </summary>
-		Aborted = 4,
+		Aborted = 5,
 
 		/// <summary>
 		/// Попытка запуска завершилась не удачей
 		/// </summary>
-		Failed = 5
+		Failed = 6
 	}
 }

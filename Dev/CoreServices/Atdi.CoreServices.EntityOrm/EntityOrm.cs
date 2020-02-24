@@ -1801,7 +1801,25 @@ namespace Atdi.CoreServices.EntityOrm
             return insatnce;
         }
 
-        static Type GenerateProxyType(Type baseInterface)
+		public Type GetPrimaryKeyInstanceType(IEntityMetadata entity)
+		{
+			var primaryKey = entity.DefinePrimaryKey();
+			if (primaryKey == null)
+			{
+				return null;
+			}
+			//var pkTypeName = $"{_config.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
+			var pkTypeName = $"{entity.Namespace}.I{entity.Name}_PK, {_config.Assembly}";
+			var pkType = Type.GetType(pkTypeName);
+			if (pkType == null)
+			{
+				throw new InvalidOperationException($"Cann't found PrimaryKey Intreface by name '{pkTypeName}'");
+			}
+
+			return pkType;
+		}
+
+		static Type GenerateProxyType(Type baseInterface)
         {
             var ns = baseInterface.Namespace;
             var name = baseInterface.Name.Substring(1, baseInterface.Name.Length - 1);
