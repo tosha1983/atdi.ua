@@ -209,6 +209,36 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             return colorConfigs;
         }
 
+        private AnotherParameters GetAnotherParametersConfig(XDocument xdoc)
+        {
+            AnotherParameters anotherParameters = new AnotherParameters(); ;
+            var settingAnotherParametersConfigs = xdoc.Element("SettingCoverageCalculation").Element("Params").Element("ObjectDataConfig").Elements("AnotherParameters");
+            var anotherParametersConfig = settingAnotherParametersConfigs;
+            if ((anotherParametersConfig != null) && (anotherParametersConfig.Count() > 0))
+            {
+                foreach (var xel in anotherParametersConfig.Elements())
+                {
+                    if ((xel.Name.ToString() == "CountStationsInEwxFile") || (xel.Name.LocalName == "CountStationsInEwxFile"))
+                    {
+                        if (!string.IsNullOrEmpty(xel.Value))
+                        {
+                            anotherParameters.CountStationsInEwxFile = Convert.ToInt32(xel.Value);
+                        }
+                    }
+                    if ((xel.Name.ToString() == "Elevation") || (xel.Name.LocalName == "Elevation"))
+                    {
+                        if (!string.IsNullOrEmpty(xel.Value))
+                        {
+                            anotherParameters.Elevation = Convert.ToDouble(xel.Value);
+                        }
+                    }
+                }
+            }
+            return anotherParameters;
+        }
+
+        
+
 
         private ProvinceCodeConfig[] GetGroupsProvinceCodeConfig(XDocument xdoc)
         {
@@ -565,6 +595,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                 config.ColorsConfig = GetColorConfig(xdoc);
                 config.ProvinceCodeConfig = GetGroupsProvinceCodeConfig(xdoc);
                 config.DirectoryConfig = GetDirectoryConfig(xdoc);
+                config.AnotherParameters = GetAnotherParametersConfig(xdoc);
             }
             return config;
         }
