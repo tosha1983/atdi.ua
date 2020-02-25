@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
              xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
-             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.WpfControls;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -138,7 +138,7 @@
           </GroupBox>
           <GridSplitter Grid.Column="1" ShowsPreview="False" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="3"/>
           <GroupBox Grid.Column="2" Header="{Binding EquipmentCaption}" Margin="0, 5, 5, 5">
-            <cdg:CustomDataGridEquipments ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Equipments}" SelectedItem="{Binding CurrentEquipment}" SelectedItemsList="{Binding CurrentEquipments, Mode=TwoWay}">
+            <cdg:CustomDataGrid ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5" SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Equipments}" SelectedItem="{Binding CurrentEquipment}" SelectedItemsList="{Binding CurrentEquipments, Mode=TwoWay}">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="{x:Static res:Resources.FreqMHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.Code}" Binding="{Binding Path=Code}"></DataGridTextColumn>
@@ -152,7 +152,7 @@
                 <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
                 <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
               </DataGrid.Columns>
-            </cdg:CustomDataGridEquipments> 
+            </cdg:CustomDataGrid> 
           </GroupBox>
         </Grid>
     </Grid>

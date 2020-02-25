@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
              xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
-             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.WpfControls;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -145,7 +145,7 @@
             </Grid>
           </GroupBox>          
           <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
-          <cdg:CustomDataGridSignSensors Grid.Column="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensors, Mode=TwoWay}">
+          <cdg:CustomDataGrid Grid.Column="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItemsList="{Binding CurrentShortSensors, Mode=TwoWay}">
             <DataGrid.Columns>
               <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
@@ -162,7 +162,7 @@
               <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
               <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
             </DataGrid.Columns>
-          </cdg:CustomDataGridSignSensors>
+          </cdg:CustomDataGrid>
         </Grid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"/>
