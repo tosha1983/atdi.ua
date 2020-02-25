@@ -96,15 +96,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         //
                         //////////////////////////////////////////////
                         System.Threading.Thread.Sleep(this._configProcessing.PeriodSendCoordinatesToSDRNS);
-
-                        GpsResult gpsResult = null;
-                        bool isWait = context.WaitEvent<GpsResult>(out gpsResult, this._configProcessing.DurationWaitingRceivingGPSCoord);
-                        if (isWait)
+                        if ((context.Task.Lon != null) && (context.Task.Asl != null) && (context.Task.Lat != null))
                         {
-                            context.Process.Asl = gpsResult.Asl.Value;
-                            context.Process.Lon = gpsResult.Lon.Value;
-                            context.Process.Lat = gpsResult.Lat.Value;
-
 
                             if (_sensor != null)
                             {
