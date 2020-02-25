@@ -352,7 +352,6 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
         {
-
             try
             {
                 if (serverToken == null)
@@ -471,6 +470,36 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Exception(Contexts.ThisComponent, e);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Get Protocols by parameters
+        /// </summary>
+        /// <param name="createdBy"> DataSynchronizationBase.CreatedBy</param>
+        /// <param name="DateCreated">DataSynchronizationBase.CreatedBy</param>
+        /// <param name="DateMeas">DataSynchronizationBase.DateCreated</param>
+        /// <param name="freq">DataRefSpectrum.Freq_Mhz</param>
+        /// <param name="probability">ProtocolsWithEmittings.probability</param>
+        /// <param name="standard">StationExtended.standard</param>
+        /// <param name="province">StationExtended.Province</param>
+        /// <param name="ownerName">StationExtended.OwnerName</param>
+        /// <param name="permissionNumber">StationExtended.permissionNumber</param>
+        /// <param name="permissionStart">StationExtended.permissionStart</param>
+        /// <param name="permissionStop">StationExtended.PermissionStop</param>
+        /// <returns></returns>
+        public Protocols[] GetProtocolsByParameters(string createdBy,
+                                                    DateTime? DateCreated,
+                                                    DateTime? DateMeas,
+                                                    double? freq,
+                                                    double? probability,
+                                                    string standard,
+                                                    string province,
+                                                    string ownerName,
+                                                    string permissionNumber,
+                                                    DateTime? permissionStart,
+                                                    DateTime? permissionStop)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -46,6 +46,7 @@
     <Compile Include="Handlers\Sensor\SaveSensor.cs" />
     <Compile Include="Handlers\SynchroProcess\CheckLocation.cs" />
     <Compile Include="Handlers\SynchroProcess\ConvertEmittings.cs" />
+    <Compile Include="Handlers\SynchroProcess\LoadProtocols.cs" />
     <Compile Include="Handlers\SynchroProcess\RunSynchroProcess.cs" />
     <Compile Include="Handlers\SynchroProcess\ImportRefSpectrumData.cs" />
     <Compile Include="Handlers\SynchroProcess\LoadSynchroProcessData.cs" />
