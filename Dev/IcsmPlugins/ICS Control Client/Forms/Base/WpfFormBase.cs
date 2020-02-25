@@ -491,9 +491,9 @@ namespace XICSM.ICSControlClient.Forms
                 itemCSV.Click += DataGrid_MenuClick_SaveToCSV;
                 grd.ContextMenu.Items.Add(itemCSV);
 
-                var itemClearFilter = new CTR.MenuItem() { Header = "Clear all filters", Name = "ClearAllFilters" };
-                itemClearFilter.Click += DataGrid_MenuClick_ClearAllFilters;
-                grd.ContextMenu.Items.Add(itemClearFilter);
+                //var itemClearFilter = new CTR.MenuItem() { Header = "Clear all filters", Name = "ClearAllFilters" };
+                //itemClearFilter.Click += DataGrid_MenuClick_ClearAllFilters;
+                //grd.ContextMenu.Items.Add(itemClearFilter);
 
 
                 //if (grd.Name == "GridSensor" || grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")

@@ -56,7 +56,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             return result ?? new MeasurementResults[] { };
         }
-      
+
         public static Sensor GetSensorById(long sensorId)
         {
             var result = Execute(contract => contract.GetSensor(new SensorIdentifier { Value = sensorId }));
@@ -287,14 +287,31 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 
             return result;
         }
-
         public static SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
         {
             var result = Execute(contract => contract.GetSensorAvailabilityForOnlineMesurement(serverToken));
             return result;
         }
-
-
         #endregion
+        public static long? ImportRefSpectrum(RefSpectrum refSpectrum)
+        {
+            return Execute(contract => contract.ImportRefSpectrum(refSpectrum));
+        }
+        public static bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN)
+        {
+            return Execute(contract => contract.DeleteRefSpectrum(RefSpectrumIdsBySDRN));
+        }
+        public static RefSpectrum[] GetAllRefSpectrum()
+        {
+            return Execute(contract => contract.GetAllRefSpectrum());
+        }
+        public static DataSynchronizationProcess CurrentDataSynchronizationProcess()
+        {
+            return Execute(contract => contract.CurrentDataSynchronizationProcess());
+        }
+        public static bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
+        {
+            return Execute(contract => contract.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended));
+        }
     }
 }

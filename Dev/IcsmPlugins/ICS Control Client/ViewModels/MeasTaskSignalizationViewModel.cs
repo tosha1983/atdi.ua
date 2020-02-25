@@ -22,38 +22,6 @@ using System.Collections;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGridMeasResult : DataGrid
-    {
-        public CustomDataGridMeasResult()
-        {
-            this.MouseDoubleClick += DoubleClick;
-            this.SelectionChanged += CustomDataGrid_SelectionChanged;
-        }
-        void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-        }
-        private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-            foreach (MeasurementResultsViewModel item in this.SelectedItemsList)
-            {
-                if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
-                { 
-                    var dlgForm = new FM.MeasResultSignalizationForm(item.MeasSdrResultsId, 0, null, null);
-                    dlgForm.ShowDialog();
-                    dlgForm.Dispose();
-                }
-            }
-        }
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasResult), new PropertyMetadata(null));
-    }
     public class MeasTaskSignalizationViewModel : WpfViewModelBase
     {
         private long _taskId;

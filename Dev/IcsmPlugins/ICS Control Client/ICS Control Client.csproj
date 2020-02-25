@@ -114,6 +114,12 @@
     <Compile Include="Forms\Base\filterNumeric.Designer.cs">
       <DependentUpon>filterNumeric.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\GroupeEmissionWithStationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GroupeEmissionWithStationForm.Designer.cs">
+      <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasResultSignalizationViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -289,6 +295,7 @@
     <Compile Include="Models\Processes\SynchroInspections\Inspection.cs" />
     <Compile Include="Models\Processes\SynchroInspections\Tour.cs" />
     <Compile Include="Models\ResultsMeasurementsStationFilters.cs" />
+    <Compile Include="Models\Views\AreasViewModel.cs" />
     <Compile Include="Models\Views\EmittingViewModel.cs" />
     <Compile Include="Models\Views\EmittingWorkTimeViewModel.cs" />
     <Compile Include="Models\Views\GeneralResultViewModel.cs" />
@@ -299,6 +306,7 @@
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
     <Compile Include="Models\Views\OnlienrMeasParametersViewModel.cs" />
+    <Compile Include="Models\Views\RefSpectrumViewModel.cs" />
     <Compile Include="Models\Views\ResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\SensorViewModel.cs" />
     <Compile Include="Models\Views\ShortMeasTaskViewModel.cs" />
@@ -307,6 +315,7 @@
     <Compile Include="Models\Views\ShortSensorViewModel.cs" />
     <Compile Include="Models\Views\SignSysInfoViewModel.cs" />
     <Compile Include="Models\Views\StationsEquipmentViewModel.cs" />
+    <Compile Include="Models\WcfDataApadters\AreasDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\GeneralResultDataAdapter.cs" />
@@ -316,6 +325,7 @@
     <Compile Include="Models\WcfDataApadters\MeasTaskShortDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasurementResultsDataAdatper.cs" />
+    <Compile Include="Models\WcfDataApadters\RefSpectrumDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasTaskDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasurementResultsDataAdatper.cs" />
@@ -345,6 +355,7 @@
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\GrapficViewModel.cs" />
+    <Compile Include="ViewModels\GroupeEmissionWithStationModelViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
@@ -370,6 +381,7 @@
     <Compile Include="WpfControls\Charts\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WpfControls\CustomDataGrid.cs" />
     <Compile Include="WpfControls\MainFormWpfControl.xaml.cs">
       <DependentUpon>MainFormWpfControl.xaml</DependentUpon>
     </Compile>
@@ -393,6 +405,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Base\filterNumeric.resx">
       <DependentUpon>filterNumeric.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GroupeEmissionWithStationForm.resx">
+      <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>

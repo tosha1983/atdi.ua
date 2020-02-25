@@ -403,6 +403,24 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count import records.
+        /// </summary>
+        public static string CountImportRecords {
+            get {
+                return ResourceManager.GetString("CountImportRecords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Count sensors.
+        /// </summary>
+        public static string CountSensors {
+            get {
+                return ResourceManager.GetString("CountSensors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of stations.
         /// </summary>
         public static string CountStationMeasurements {
@@ -646,6 +664,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Name.
+        /// </summary>
+        public static string FileName {
+            get {
+                return ResourceManager.GetString("FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filters.
         /// </summary>
         public static string Filters {
@@ -871,6 +898,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import from CSV.
+        /// </summary>
+        public static string ImportFromCSV {
+            get {
+                return ResourceManager.GetString("ImportFromCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to kHz.
         /// </summary>
         public static string kHz {
@@ -1069,6 +1105,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max freq MHz.
+        /// </summary>
+        public static string MaxFreqMHz {
+            get {
+                return ResourceManager.GetString("MaxFreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max freq. deviation.
         /// </summary>
         public static string MaximumFrequencyDeviation {
@@ -1146,6 +1191,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string MHz {
             get {
                 return ResourceManager.GetString("MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min freq MHz.
+        /// </summary>
+        public static string MinFreqMHz {
+            get {
+                return ResourceManager.GetString("MinFreqMHz", resourceCulture);
             }
         }
         
@@ -1947,6 +2001,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Type_Measurements {
             get {
                 return ResourceManager.GetString("Type_Measurements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type Area.
+        /// </summary>
+        public static string TypeArea {
+            get {
+                return ResourceManager.GetString("TypeArea", resourceCulture);
             }
         }
         
