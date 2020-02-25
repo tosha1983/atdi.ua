@@ -27,6 +27,5 @@ namespace XICSM.ICSControlClient.WpfControls
             set { SetValue(SelectedItemsListProperty, value); }
         }
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new PropertyMetadata(null));
-
     }
 }

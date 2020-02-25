@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
              xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
-             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.WpfControls;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -30,7 +30,7 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <cdg:CustomDataGridStations Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}"  SelectedItem="{Binding CurrentStation}">
+        <cdg:CustomDataGrid Grid.Column="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Stations}" SelectedItemsList="{Binding CurrentStations, Mode=TwoWay}" SelectedItem="{Binding CurrentStation}">
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmId}"></DataGridTextColumn>
@@ -47,7 +47,7 @@
             <DataGridTextColumn Header="{x:Static res:Resources.RelivedLeveldBm}" Binding="{Binding Path=RelivedLevel}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.DistanceKm}" Binding="{Binding Path=Distance}"></DataGridTextColumn>
           </DataGrid.Columns>
-        </cdg:CustomDataGridStations>
+        </cdg:CustomDataGrid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <Grid Grid.Row="2">
           <Grid.ColumnDefinitions>

@@ -6,7 +6,6 @@
              xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
-             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
              xmlns:Charts="clr-namespace:Atdi.WpfControls.Charts;assembly=Atdi.WpfControls.Charts"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
