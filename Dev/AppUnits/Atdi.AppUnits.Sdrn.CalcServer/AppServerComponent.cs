@@ -211,7 +211,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				{
 					startDelaySeconds = 0;
 				}
-				var repeatDelaySeconds = appConfig.ProccesJobRepeatDelay;
+				var repeatDelaySeconds = appConfig.ProcessJobRepeatDelay;
 				if (!repeatDelaySeconds.HasValue)
 				{
 					repeatDelaySeconds = 5000;
