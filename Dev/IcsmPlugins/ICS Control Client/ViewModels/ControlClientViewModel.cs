@@ -34,34 +34,6 @@ using Microsoft.VisualBasic;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGridMeasTasks : DataGrid
-    {
-        public CustomDataGridMeasTasks()
-        {
-            //this.MouseDoubleClick += DoubleClick;
-        }
-        //private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        //{
-        //    this.SelectedItemsList = this.SelectedItems;
-        //    foreach (ShortMeasTaskViewModel item in this.SelectedItemsList)
-        //    {
-        //        if (item.TypeMeasurements == SDR.MeasurementType.Signaling)
-        //        {
-        //            var dlgForm = new FM.MeasTaskSignalizationForm(item.Id);
-        //            dlgForm.ShowDialog();
-        //            dlgForm.Dispose();
-        //        }
-        //    }
-        //}
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridMeasTasks), new PropertyMetadata(null));
-    }
-
     public class ControlClientViewModel : WpfViewModelBase, IDisposable
     {
         public enum ModelType
@@ -155,6 +127,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand ShowHideMeasResultsDetailCommand { get; set; }
         public WpfCommand MeasResultCommand { get; set; }
         public WpfCommand FilterApplyCommand { get; set; }
+        public WpfCommand DoubleClickResultCommand { get; set; }
         public WpfCommand DoubleClickSensorCommand { get; set; }
         public WpfCommand EditSensorTitleCommand { get; set; }
 
@@ -215,6 +188,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ShowHideMeasTaskDetailCommand = new WpfCommand(this.OnShowHideMeasTaskDetailCommand);
             this.ShowHideMeasResultsDetailCommand = new WpfCommand(this.OnShowHideMeasResultsDetailCommand);
             this.DoubleClickSensorCommand = new WpfCommand(this.OnDoubleClickSensorCommand);
+            this.DoubleClickResultCommand = new WpfCommand(this.OnDoubleClickResultCommand);
             this.EditSensorTitleCommand = new WpfCommand(this.OnEditSensorTitleCommand);
             this.MeasResultCommand = new WpfCommand(this.OnMeasResultCommand);
 
@@ -1048,20 +1022,20 @@ namespace XICSM.ICSControlClient.ViewModels
                 SDR.MeasurementResults _measResult = null;
                 GeneralResultViewModel _generalResult = null;
 
-                if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
+                if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.MonitoringStations)
                 {
                     _generalResult = this._currentGeneralResult;
                 }
-                else if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
+                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
                 {
                     _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
-                else if (this.CurrentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Level)
+                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.Level)
                 {
                     _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
 
-                var form = new FM.GraphicForm(this.CurrentMeasTask.MeasDtParamTypeMeasurements, _measResult, _generalResult);
+                var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult);
                 form.ShowDialog();
                 form.Dispose();
             }
@@ -1380,9 +1354,15 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnDoubleClickSensorCommand(object parameter)
         {
-            if (this._currentShortSensor != null)
+            var dlgForm = new FM.OnlineMeasurementForm(this._currentShortSensor, null);
+            dlgForm.ShowDialog();
+            dlgForm.Dispose();
+        }
+        private void OnDoubleClickResultCommand(object parameter)
+        {
+            if (this._currentMeasurementResult != null)
             {
-                var dlgForm = new FM.OnlineMeasurementForm(this._currentShortSensor, null);
+                var dlgForm = new FM.MeasResultSignalizationForm(this._currentMeasurementResult.MeasSdrResultsId, 0, null, null);
                 dlgForm.ShowDialog();
                 dlgForm.Dispose();
             }

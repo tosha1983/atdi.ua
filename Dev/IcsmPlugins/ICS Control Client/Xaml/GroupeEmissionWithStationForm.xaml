@@ -1,0 +1,135 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
+             xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
+             xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
+             xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.WpfControls;assembly=XICSM_ICSControlClient"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>
+    <Style x:Key="DataGridHeaderCentered" TargetType="DataGridColumnHeader">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="DataGridCellCentered" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridCellRighted" TargetType="DataGridCell">
+      <Setter Property="TextBlock.TextAlignment" Value="Right" />
+    </Style>
+  </UserControl.Resources>
+  <DockPanel LastChildFill="True" MinHeight="30">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" MinWidth="250"/>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" MinWidth="100"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+      <Grid Grid.Column="0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" MinHeight="200"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="*" MinHeight="100"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Margin="5" Height="95" VerticalAlignment="Top">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="50"/>
+              <ColumnDefinition Width="75"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="5"></RowDefinition>
+              <RowDefinition Height="40"></RowDefinition>
+              <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Height="18" Grid.Column="0" Grid.Row="1" Content = "{x:Static res:Resources.DateStart}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <DatePicker x:Name="MeasTimeParamListPerStart" Grid.Column="1" Grid.Row="1" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center">
+              <DatePicker.SelectedDate>
+                <Binding Path="DateStart" StringFormat='{}{0:dd.MM.yyyy}'>
+                </Binding>
+              </DatePicker.SelectedDate>
+            </DatePicker>
+            <Label Height="18" Grid.Column="0" Grid.Row="2" Content = "{x:Static res:Resources.DateStop}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <DatePicker x:Name="MeasTimeParamListPerStop" Grid.Column="1" Grid.Row="2" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center">
+              <DatePicker.SelectedDate>
+                <Binding Path="DateStop" StringFormat='{}{0:dd.MM.yyyy}'>
+                </Binding>
+              </DatePicker.SelectedDate>
+            </DatePicker>
+            <Button Grid.Column="2" Grid.RowSpan="3" Margin="5, 5, 40, 5" IsEnabled="{Binding IsEnabledStart}" Content="{x:Static res:Resources.StartCommand}" Command="{Binding StartCommand}" Width="50" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+          </Grid>          
+        </GroupBox>
+        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5, 105, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Areas}" SelectedItemsList="{Binding CurrentAreas, Mode=TwoWay}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=IdentifierFromICSM}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.TypeArea}" Binding="{Binding Path=TypeArea}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated}"></DataGridTextColumn>
+          </DataGrid.Columns>
+        </cdg:CustomDataGrid>        
+        <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
+        <cdg:CustomDataGrid Grid.Row="2" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding RefSpectrums}" SelectedItemsList="{Binding CurrentRefSpectrums, Mode=TwoWay}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.FileName}" Binding="{Binding Path=FileName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.CountImportRecords}" Binding="{Binding Path=CountImportRecords}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.MinFreqMHz}" Binding="{Binding Path=MinFreqMHz}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.MaxFreqMHz}" Binding="{Binding Path=MaxFreqMHz}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.CountSensors}" Binding="{Binding Path=CountSensors}"></DataGridTextColumn>
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{x:Static res:Resources.ImportFromCSV}" Command="{Binding ImportRefSpectrumFromCSVCommand}"/>
+              <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteRefSpectrumCommand}"/>
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </cdg:CustomDataGrid>
+      </Grid>
+      <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
+      <Grid Grid.Column="2">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" MinHeight="100"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="*" MinHeight="100"></RowDefinition>
+        </Grid.RowDefinitions>
+        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
+          </DataGrid.Columns>
+        </cdg:CustomDataGrid>
+        <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
+        <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
+      </Grid>
+    </Grid>
+  </DockPanel>
+</UserControl>

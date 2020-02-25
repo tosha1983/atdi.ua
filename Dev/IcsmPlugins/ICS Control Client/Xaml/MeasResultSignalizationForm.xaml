@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:XICSM.ICSControlClient.WpfControls"
              xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
-             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.WpfControls;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -140,7 +140,7 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
               </Grid.RowDefinitions>
-              <cdg:CustomDataGridEmitting x:Name="GridEmittings" Grid.ColumnSpan="20" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" AlternatingRowBackground="LightCyan" AlternationCount="3" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItemsList="{Binding CurrentEmittings, Mode=TwoWay}" SelectedItem="{Binding CurrentEmitting}">
+              <cdg:CustomDataGrid x:Name="GridEmittings" Grid.ColumnSpan="20" ColumnHeaderHeight="30" RowHeight="20" RowBackground="White" AlternatingRowBackground="LightCyan" AlternationCount="3" VerticalGridLinesBrush="LightBlue" HorizontalGridLinesBrush="LightBlue" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding Emittings}" SelectedItemsList="{Binding CurrentEmittings, Mode=TwoWay}" SelectedItem="{Binding CurrentEmitting}">
                 <DataGrid.Columns>
                   <DataGridTextColumn Header="{x:Static res:Resources.StartFreqMHz}" Binding="{Binding Path=StartFrequency_MHz}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.StopFreqMHz}" Binding="{Binding Path=StopFrequency_MHz}"></DataGridTextColumn>
@@ -161,7 +161,7 @@
                   <DataGridTextColumn Header="{x:Static res:Resources.MeanDeviationFromReference}" Binding="{Binding Path=MeanDeviationFromReference}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.TriggerDeviationFromReference}" Binding="{Binding Path=TriggerDeviationFromReference}"></DataGridTextColumn>
                 </DataGrid.Columns>
-              </cdg:CustomDataGridEmitting>
+              </cdg:CustomDataGrid>
               <WrapPanel Grid.Row="1" Grid.ColumnSpan="20" >
                 <Button Content="{x:Static res:Resources.AddAssociationStation}" Margin="10,20,0,0" Command="{Binding AddAssociationStationCommand}" Height="30"/>
                 <Button Content="{x:Static res:Resources.DeleteEmission}" Margin="10,20,0,0" Command="{Binding DeleteEmissionCommand}" Height="30" HorizontalAlignment="Right"/>

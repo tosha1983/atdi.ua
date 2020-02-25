@@ -32,49 +32,6 @@ using Newtonsoft.Json;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGridSensors : DataGrid
-    {
-        public CustomDataGridSensors()
-        {
-            this.SelectionChanged += CustomDataGrid_SelectionChanged;
-        }
-        void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-        }
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridSensors), new PropertyMetadata(null));
-    }
-    public class ShortSensorsCustomDataGrid : DataGrid
-    {
-        //public ShortSensorsCustomDataGrid()
-        //{
-        //    this.MouseDoubleClick += DoubleClick;
-        //}
-        //private void DoubleClick(object sender, INP.MouseButtonEventArgs e)
-        //{
-        //    this.SelectedItemsList = this.SelectedItems;
-        //    foreach (ShortSensorViewModel item in this.SelectedItemsList)
-        //    {
-        //        var dlgForm = new FM.OnlineMeasurementForm(item, null);
-        //        dlgForm.ShowDialog();
-        //        dlgForm.Dispose();
-        //        return;
-        //    }
-        //}
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(ShortSensorsCustomDataGrid), new PropertyMetadata(null));
-    }
     public class CreateMeasTaskViewModel : WpfViewModelBase
     {
         #region Current Objects
@@ -302,7 +259,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.nDbLevel_dB = 15;
             this._currentMeasTask.NumberIgnoredPoints = 1;
             this._currentMeasTask.MinExcessNoseLevel_dB = 5;
-            this._currentMeasTask.TimeBetweenWorkTimes_sec = 60;
+            this._currentMeasTask.TimeBetweenWorkTimes_sec = null; // 60;
             this._currentMeasTask.TypeJoinSpectrum = 0;
         }
         private void ReloadShortSensors()

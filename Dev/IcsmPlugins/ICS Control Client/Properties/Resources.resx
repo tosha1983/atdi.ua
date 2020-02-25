@@ -788,4 +788,25 @@
   <data name="CollectEmissionForInstrumentalEstimation" xml:space="preserve">
     <value>Collect emission for instrumental estimation</value>
   </data>
+  <data name="TypeArea" xml:space="preserve">
+    <value>Type Area</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="CountImportRecords" xml:space="preserve">
+    <value>Count import records</value>
+  </data>
+  <data name="CountSensors" xml:space="preserve">
+    <value>Count sensors</value>
+  </data>
+  <data name="ImportFromCSV" xml:space="preserve">
+    <value>Import from CSV</value>
+  </data>
+  <data name="MaxFreqMHz" xml:space="preserve">
+    <value>Max freq MHz</value>
+  </data>
+  <data name="MinFreqMHz" xml:space="preserve">
+    <value>Min freq MHz</value>
+  </data>
 </root>
