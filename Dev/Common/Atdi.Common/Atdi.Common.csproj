@@ -42,12 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BreakDownElemBlocks.cs" />
-    <Compile Include="Calculation\Signaling\BandwidthEstimation.cs" />
-    <Compile Include="Calculation\Signaling\CalcBWSignalization.cs" />
-    <Compile Include="Calculation\Signaling\EmittingProcessing.cs" />
-    <Compile Include="Calculation\Signaling\SmoothTrace.cs" />
-    <Compile Include="Calculation\Signaling\StandartBW.cs" />
-    <Compile Include="Calculation\Signaling\СorrelationСoefficient.cs" />
     <Compile Include="CopyHelper.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />

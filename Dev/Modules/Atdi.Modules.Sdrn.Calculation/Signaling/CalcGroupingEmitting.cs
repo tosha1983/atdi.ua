@@ -62,6 +62,23 @@ namespace Atdi.Modules.Sdrn.Calculation
             }
 
             CountMaxEmission = CountMaxEmissionFromConfig;
+            TimeBetweenWorkTimes_sec = 600;
+            TypeJoinSpectrum = 0;
+            CrossingBWPercentageForGoodSignals = 70;
+            CrossingBWPercentageForBadSignals = 40;
+            AnalyzeByChannel = false;
+            CorrelationAnalize = false;
+            MaxFreqDeviation = 0.0001;
+            CorrelationFactor = 0.85;
+            CorrelationAdaptation = true;
+            MaxNumberEmitingOnFreq = 75;
+            MinCoeffCorrelation = 0.9;
+            UkraineNationalMonitoring = true;
+            CountMaxEmissionFromConfig = 1000;
+            NoiseLevel_dBm = -100;
+
+            /*
+            CountMaxEmission = CountMaxEmissionFromConfig;
             TimeBetweenWorkTimes_sec = prmTimeBetweenWorkTimes_sec.Value;
             TypeJoinSpectrum = prmTypeJoinSpectrum.Value;
             CrossingBWPercentageForGoodSignals = prmCrossingBWPercentageForGoodSignals.Value;
@@ -74,7 +91,7 @@ namespace Atdi.Modules.Sdrn.Calculation
             MaxNumberEmitingOnFreq = prmMaxNumberEmitingOnFreq.Value;
             MinCoeffCorrelation = prmMinCoeffCorrelation.Value;
             UkraineNationalMonitoring = prmUkraineNationalMonitoring.Value;
-
+            */
 
             // Увеличиваем счетчики у всех излучений
             if (EmittingsSummary != null)

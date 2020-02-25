@@ -55,20 +55,21 @@
     <Compile Include="Models\Signaling\Spectrum.cs" />
     <Compile Include="Models\Signaling\WorkTime.cs" />
     <Compile Include="REMEZ\FirFilter.cs" />
+    <Compile Include="Signaling\Calculation\Signaling\BandwidthEstimation.cs" />
+    <Compile Include="Signaling\Calculation\Signaling\CalcBWSignalization.cs" />
+    <Compile Include="Signaling\Calculation\Signaling\EmittingProcessing.cs" />
+    <Compile Include="Signaling\Calculation\Signaling\SmoothTrace.cs" />
+    <Compile Include="Signaling\Calculation\Signaling\StandartBW.cs" />
+    <Compile Include="Signaling\Calculation\Signaling\СorrelationСoefficient.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="TDOA\GeographicLocalization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
