@@ -481,6 +481,14 @@
           </Code>
         </ProvinceCodeConfig>
       </GroupsProvinceConfig>
+      <AnotherParameters>
+        <CountStationsInEwxFile>
+          <Value>100</Value>
+        </CountStationsInEwxFile>
+        <Elevation>
+          <Value>-9</Value>
+        </Elevation>
+      </AnotherParameters>
       <DirectoryConfig>
         <TempTIFFFilesDirectory>
           <Value>D:\CalculationCoverage\TempFiles\</Value>
