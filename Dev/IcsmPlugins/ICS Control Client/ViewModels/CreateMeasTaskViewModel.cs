@@ -274,7 +274,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.nDbLevel_dB = 15;
             this._currentMeasTask.NumberIgnoredPoints = 1;
             this._currentMeasTask.MinExcessNoseLevel_dB = 5;
-            this._currentMeasTask.TimeBetweenWorkTimes_sec = 60;
+            this._currentMeasTask.TimeBetweenWorkTimes_sec = null; // 60;
             this._currentMeasTask.TypeJoinSpectrum = 0;
         }
         private void ReloadShortSensors()
