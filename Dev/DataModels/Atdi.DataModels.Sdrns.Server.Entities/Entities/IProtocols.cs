@@ -29,6 +29,7 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? DispersionLow { get; set; }
         double? DispersionUp { get; set; }
         double? Percent { get; set; }
+        long? SensorId { get; set; }
         IStationExtended STATION_EXTENDED { get; set; }
         ISynchroProcess SYNCHRO_PROCESS { get; set; }
     }

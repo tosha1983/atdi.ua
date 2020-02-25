@@ -667,6 +667,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <returns></returns>
         public void FillingProtocolStationData(ref Protocols[] protocolsOutput, Sensor[] sensors, StationExtended[] stationsExtended, long? synchroProcessId)
         {
+            var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
             Protocols[] protocolsInput = protocolsOutput;
             var lstProtocols = new List<Protocols>();
             var lstStationsExtended = stationsExtended.ToList();
@@ -674,7 +675,9 @@ namespace Atdi.WcfServices.Sdrn.Server
             for (int h = 0; h < protocolsOutput.Length; h++)
             {
                 var protocol = protocolsOutput[h];
-                protocol.SynchroProcessId = synchroProcessId;
+                
+                protocol.DataSynchronizationProcess = new DataSynchronizationProcess();
+                protocol.DataSynchronizationProcess = loadSynchroProcessData.CurrentSynchronizationProcesByIds(synchroProcessId);
                 if (protocol.DataRefSpectrum!=null)
                 {
                     var fndSensor = lstSensors.Find(z => z.Id.Value == protocol.DataRefSpectrum.SensorId);
@@ -700,7 +703,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     protocol.StationExtended.TableId = fndStation.TableId;
                     protocol.StationExtended.TableName = fndStation.TableName;
                     protocol.StationExtended.Location = fndStation.Location;
-                    protocol.StationExtendedId = fndStation.Id;
+                    protocol.StationExtended.Id = fndStation.Id;
                 }
                 lstProtocols.Add(protocol);
             }
@@ -742,8 +745,16 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var sensorData = lstSensors.Find(x => x.Status == Status.A.ToString());
 
                         var builderProtocolsInsert = this._dataLayer.GetBuilder<MD.IProtocols>().Insert();
-                        builderProtocolsInsert.SetValue(c => c.SYNCHRO_PROCESS.Id, protocol.SynchroProcessId);
-                        builderProtocolsInsert.SetValue(c => c.STATION_EXTENDED.Id, protocol.StationExtendedId);
+                        builderProtocolsInsert.SetValue(c => c.SYNCHRO_PROCESS.Id, protocol.DataSynchronizationProcess.Id);
+                        builderProtocolsInsert.SetValue(c => c.STATION_EXTENDED.Id, protocol.StationExtended.Id);
+
+                        if (protocol.Sensor != null)
+                        {
+                            if (protocol.Sensor.Id != null)
+                            {
+                                builderProtocolsInsert.SetValue(c => c.SensorId, protocol.Sensor.Id.Value);
+                            }
+                        }
                         if (protocol.DataRefSpectrum != null)
                         {
                             builderProtocolsInsert.SetValue(c => c.DateMeas, protocol.DataRefSpectrum.DateMeas);
@@ -753,6 +764,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderProtocolsInsert.SetValue(c => c.GlobalSID, protocol.DataRefSpectrum.GlobalSID);
                             builderProtocolsInsert.SetValue(c => c.Level_dBm, protocol.DataRefSpectrum.Level_dBm);
                             builderProtocolsInsert.SetValue(c => c.Percent, protocol.DataRefSpectrum.Percent);
+                           
+                            
                         }
                         if (protocol.StationExtended != null)
                         {

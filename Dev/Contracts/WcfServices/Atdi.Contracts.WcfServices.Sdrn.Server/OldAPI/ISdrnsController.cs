@@ -420,5 +420,25 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended);
+
+
+        /// <summary>
+        /// Get Protocols by parameters
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        Protocols[] GetProtocolsByParameters(
+                                    string createdBy,
+                                    DateTime? DateCreated,
+                                    DateTime? DateMeas,
+                                    double? freq,
+                                    double? probability,
+                                    string standard,
+                                    string province,
+                                    string ownerName,
+                                    string permissionNumber,
+                                    DateTime? permissionStart,
+                                    DateTime? PermissionStop);
+
     }
 }

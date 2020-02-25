@@ -69,8 +69,9 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static readonly EventText HandlerClearProtocolMethod = "Call 'ClearProtocol' method";
         public static readonly EventText HandlerSaveDataSynchronizationProcessToDBMethod = "Call 'SaveDataSynchronizationProcessToDB' method";
         public static readonly EventText HandlerGetRefSpectrumByIdsMethod = "Call 'GetRefSpectrumByIds' method";
-        
+        public static readonly EventText HandlerGetProtocolsByParametersMethod = "Call 'GetProtocolsByParameters' method";
 
+        
     }
     static class TraceScopeNames
     {
