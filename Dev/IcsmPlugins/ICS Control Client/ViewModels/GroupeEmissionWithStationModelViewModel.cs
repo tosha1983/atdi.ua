@@ -379,9 +379,9 @@ namespace XICSM.ICSControlClient.ViewModels
                         rs2.SetWhere("OBJ_ID1", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                         {
-                            stationExtended.PermissionNumber = rs.GetS("PERM_NUM");
-                            stationExtended.PermissionStart = rs.GetT("PERM_DATE");
-                            stationExtended.PermissionStop = rs.GetT("PERM_DATE_STOP");
+                            stationExtended.PermissionNumber = rs2.GetS("PERM_NUM");
+                            stationExtended.PermissionStart = rs2.GetT("PERM_DATE");
+                            stationExtended.PermissionStop = rs2.GetT("PERM_DATE_STOP");
                         }
                         if (rs2.IsOpen())
                             rs2.Close();
