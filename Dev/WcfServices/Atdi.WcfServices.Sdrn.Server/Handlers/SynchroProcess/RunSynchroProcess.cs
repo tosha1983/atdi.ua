@@ -147,24 +147,29 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (isFindIdentifierFromICSM == false)
                         {
-
-                            var builderAreaInsert = this._dataLayer.GetBuilder<MD.IArea>().Insert();
-                            builderAreaInsert.SetValue(c => c.CreatedBy, areas[i].CreatedBy);
-                            builderAreaInsert.SetValue(c => c.CreatedDate, areas[i].DateCreated);
-                            builderAreaInsert.SetValue(c => c.IdentifierFromICSM, areas[i].IdentifierFromICSM);
-                            builderAreaInsert.SetValue(c => c.Name, areas[i].Name);
-                            builderAreaInsert.SetValue(c => c.TypeOfArea, areas[i].TypeArea);
-                            var areaId = scope.Executor.Execute<MD.IArea_PK>(builderAreaInsert);
-                            if (areaId != null)
+                            if (areas[i].Name != "Вся Україна")
                             {
-                                for (int k = 0; k < areas[i].Location.Length; k++)
+                                var builderAreaInsert = this._dataLayer.GetBuilder<MD.IArea>().Insert();
+                                builderAreaInsert.SetValue(c => c.CreatedBy, areas[i].CreatedBy);
+                                builderAreaInsert.SetValue(c => c.CreatedDate, areas[i].DateCreated);
+                                builderAreaInsert.SetValue(c => c.IdentifierFromICSM, areas[i].IdentifierFromICSM);
+                                builderAreaInsert.SetValue(c => c.Name, areas[i].Name);
+                                builderAreaInsert.SetValue(c => c.TypeOfArea, areas[i].TypeArea);
+                                var areaId = scope.Executor.Execute<MD.IArea_PK>(builderAreaInsert);
+                                if (areaId != null)
                                 {
-                                    var loc = areas[i].Location[k];
-                                    var builderInsAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>().Insert();
-                                    builderInsAreaLocation.SetValue(c => c.Latitude, loc.Latitude);
-                                    builderInsAreaLocation.SetValue(c => c.Longitude, loc.Longitude);
-                                    builderInsAreaLocation.SetValue(c => c.AREA.Id, areaId.Id);
-                                    scope.Executor.Execute<MD.IAreaLocation_PK>(builderInsAreaLocation);
+                                    if (areas[i].Location != null)
+                                    {
+                                        for (int k = 0; k < areas[i].Location.Length; k++)
+                                        {
+                                            var loc = areas[i].Location[k];
+                                            var builderInsAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>().Insert();
+                                            builderInsAreaLocation.SetValue(c => c.Latitude, loc.Latitude);
+                                            builderInsAreaLocation.SetValue(c => c.Longitude, loc.Longitude);
+                                            builderInsAreaLocation.SetValue(c => c.AREA.Id, areaId.Id);
+                                            scope.Executor.Execute<MD.IAreaLocation_PK>(builderInsAreaLocation);
+                                        }
+                                    }
                                 }
                             }
                         }
