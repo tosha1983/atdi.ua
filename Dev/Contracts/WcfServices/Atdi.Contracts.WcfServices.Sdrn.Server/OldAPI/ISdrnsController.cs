@@ -428,17 +428,19 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         Protocols[] GetProtocolsByParameters(
-                                    string createdBy,
-                                    DateTime? DateCreated,
-                                    DateTime? DateMeas,
-                                    double? freq,
-                                    double? probability,
-                                    string standard,
-                                    string province,
-                                    string ownerName,
-                                    string permissionNumber,
-                                    DateTime? permissionStart,
-                                    DateTime? PermissionStop);
+                                                    string createdBy,
+                                                    DateTime? DateCreated,
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop,
+                                                    DateTime? DateMeas,
+                                                    double? freq,
+                                                    double? probability,
+                                                    string standard,
+                                                    string province,
+                                                    string ownerName,
+                                                    string permissionNumber,
+                                                    DateTime? permissionStart,
+                                                    DateTime? permissionStop);
 
     }
 }

@@ -477,18 +477,22 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// </summary>
         /// <param name="createdBy"> DataSynchronizationBase.CreatedBy</param>
         /// <param name="DateCreated">DataSynchronizationBase.CreatedBy</param>
-        /// <param name="DateMeas">DataSynchronizationBase.DateCreated</param>
-        /// <param name="freq">DataRefSpectrum.Freq_Mhz</param>
+        /// <param name="DateMeas">IProtocols.DateMeas</param>
+        /// <param name="DateStart">IProtocols.DateMeas</param>
+        /// <param name="DateStop">IProtocols.DateMeas</param>
+        /// <param name="freq">IProtocols.Freq_Mhz</param>
         /// <param name="probability">ProtocolsWithEmittings.probability</param>
         /// <param name="standard">StationExtended.standard</param>
         /// <param name="province">StationExtended.Province</param>
         /// <param name="ownerName">StationExtended.OwnerName</param>
-        /// <param name="permissionNumber">StationExtended.permissionNumber</param>
-        /// <param name="permissionStart">StationExtended.permissionStart</param>
-        /// <param name="permissionStop">StationExtended.PermissionStop</param>
+        /// <param name="permissionNumber">IProtocols.permissionNumber</param>
+        /// <param name="permissionStart">IProtocols.permissionStart</param>
+        /// <param name="permissionStop">IProtocols.PermissionStop</param>
         /// <returns></returns>
         public Protocols[] GetProtocolsByParameters(string createdBy,
                                                     DateTime? DateCreated,
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop,
                                                     DateTime? DateMeas,
                                                     double? freq,
                                                     double? probability,
