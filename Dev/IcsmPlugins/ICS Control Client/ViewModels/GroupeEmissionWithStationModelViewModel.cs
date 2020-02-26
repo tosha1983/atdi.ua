@@ -373,10 +373,10 @@ namespace XICSM.ICSControlClient.ViewModels
                             rs.Close();
                         rs.Destroy();
 
-                        IMRecordset rs2 = new IMRecordset("XNRFA_APPL", IMRecordset.Mode.ReadOnly);
+                        IMRecordset rs2 = new IMRecordset("ALLSTATIONS", IMRecordset.Mode.ReadOnly);
                         rs2.Select("PERM_NUM,PERM_DATE,PERM_DATE_STOP");
-                        rs2.SetWhere("OBJ_TABLE", IMRecordset.Operation.Eq, dataSpectrum.TableName);
-                        rs2.SetWhere("OBJ_ID1", IMRecordset.Operation.Eq, dataSpectrum.TableId);
+                        rs2.SetWhere("TABLE_NAME", IMRecordset.Operation.Eq, dataSpectrum.TableName);
+                        rs2.SetWhere("TABLE_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                         {
                             stationExtended.PermissionNumber = rs2.GetS("PERM_NUM");
