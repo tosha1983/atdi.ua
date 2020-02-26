@@ -354,11 +354,11 @@ namespace XICSM.ICSControlClient.ViewModels
                         var stationExtended = new StationExtended();
 
                         IMRecordset rs = new IMRecordset(dataSpectrum.TableName, IMRecordset.Mode.ReadOnly);
-                        rs.Select("Position.NAME");
+                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION");
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                         {
-                            stationExtended.Address = rs.GetS("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION");
+                            stationExtended.Address = rs.GetS("Position.NAME");
                             stationExtended.Location = new DataLocation() { Latitude = rs.GetD("Position.LATITUDE"), Longitude = rs.GetD("Position.LONGITUDE") };
                             stationExtended.BandWidth = rs.GetD("BW");
                             stationExtended.OwnerName = rs.GetS("Owner.NAME");
