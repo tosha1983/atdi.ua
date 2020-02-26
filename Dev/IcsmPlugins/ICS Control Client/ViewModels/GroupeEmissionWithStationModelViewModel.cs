@@ -354,11 +354,11 @@ namespace XICSM.ICSControlClient.ViewModels
                         var stationExtended = new StationExtended();
 
                         IMRecordset rs = new IMRecordset(dataSpectrum.TableName, IMRecordset.Mode.ReadOnly);
-                        rs.Select("Position.NAME");
+                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION");
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                         {
-                            stationExtended.Address = rs.GetS("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION");
+                            stationExtended.Address = rs.GetS("Position.NAME");
                             stationExtended.Location = new DataLocation() { Latitude = rs.GetD("Position.LATITUDE"), Longitude = rs.GetD("Position.LONGITUDE") };
                             stationExtended.BandWidth = rs.GetD("BW");
                             stationExtended.OwnerName = rs.GetS("Owner.NAME");
@@ -373,10 +373,10 @@ namespace XICSM.ICSControlClient.ViewModels
                             rs.Close();
                         rs.Destroy();
 
-                        IMRecordset rs2 = new IMRecordset("XNRFA_APPL", IMRecordset.Mode.ReadOnly);
+                        IMRecordset rs2 = new IMRecordset("ALLSTATIONS", IMRecordset.Mode.ReadOnly);
                         rs2.Select("PERM_NUM,PERM_DATE,PERM_DATE_STOP");
-                        rs2.SetWhere("OBJ_TABLE", IMRecordset.Operation.Eq, dataSpectrum.TableName);
-                        rs2.SetWhere("OBJ_ID1", IMRecordset.Operation.Eq, dataSpectrum.TableId);
+                        rs2.SetWhere("TABLE_NAME", IMRecordset.Operation.Eq, dataSpectrum.TableName);
+                        rs2.SetWhere("TABLE_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                         {
                             stationExtended.PermissionNumber = rs2.GetS("PERM_NUM");
