@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkArea"
+  Title       = "LinkArea"
+  Desc        = "The link to area table"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_AREA</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="AREA" SourceName="Area" SourceType="Reference" Required="true" Desc="" Title="Relation LinkArea to Area"/>
+    <Field Name="SYNCHRO_PROCESS" SourceName="SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation LinkArea to SynchroProcess"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
