@@ -52,6 +52,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 if (readerAreaFrom.GetValue(c => c.IdentifierFromICSM) == areas[i].IdentifierFromICSM)
                                 {
                                     isFindIdentifierFromICSM = true;
+                                    bool isChanged = false;
 
                                     var builderUpdateArea = this._dataLayer.GetBuilder<MD.IArea>().Update();
                                     builderUpdateArea.Where(c => c.IdentifierFromICSM, ConditionOperator.Equal, areas[i].IdentifierFromICSM);
@@ -59,54 +60,63 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     if (readerAreaFrom.GetValue(c => c.CreatedBy) != areas[i].CreatedBy)
                                     {
                                         builderUpdateArea.SetValue(c => c.CreatedBy, areas[i].CreatedBy);
+                                        isChanged = true;
                                     }
                                     if (readerAreaFrom.GetValue(c => c.CreatedDate) != areas[i].DateCreated)
                                     {
                                         builderUpdateArea.SetValue(c => c.CreatedDate, areas[i].DateCreated);
+                                        isChanged = true;
                                     }
 
                                     if (readerAreaFrom.GetValue(c => c.Name) != areas[i].Name)
                                     {
                                         builderUpdateArea.SetValue(c => c.Name, areas[i].Name);
+                                        isChanged = true;
                                     }
 
                                     if (readerAreaFrom.GetValue(c => c.TypeOfArea) != areas[i].TypeArea)
                                     {
                                         builderUpdateArea.SetValue(c => c.TypeOfArea, areas[i].TypeArea);
+                                        isChanged = true;
                                     }
 
-                                    scope.Executor.Execute(builderUpdateArea);
+                                    if (isChanged)
+                                    {
+                                        scope.Executor.Execute(builderUpdateArea);
+                                    }
 
 
                                     for (int j = 0; j < areas[i].Location.Length; j++)
                                     {
                                         var location = areas[i].Location[j];
-
-                                        bool isFindLocation = false;
-                                        var queryAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>()
-                                        .From()
-                                        .Select(c => c.Id, c => c.Latitude, c => c.Longitude, c => c.AREA.Id, c => c.AREA.IdentifierFromICSM)
-                                        .Where(c => c.AREA.Id, ConditionOperator.Equal, readerAreaFrom.GetValue(c => c.Id));
-                                        scope.Executor.Fetch(queryAreaLocation, readerAreaLocation =>
+                                        if (location != null)
                                         {
-                                            while (readerAreaLocation.Read())
+                                            bool isFindLocation = false;
+                                            var queryAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>()
+                                            .From()
+                                            .Select(c => c.Id, c => c.Latitude, c => c.Longitude, c => c.AREA.Id, c => c.AREA.IdentifierFromICSM)
+                                            .Where(c => c.AREA.Id, ConditionOperator.Equal, readerAreaFrom.GetValue(c => c.Id));
+                                            scope.Executor.Fetch(queryAreaLocation, readerAreaLocation =>
                                             {
-                                                if (Math.Abs(readerAreaLocation.GetValue(c => c.Latitude) - location.Latitude) < 0.000001 && Math.Abs(readerAreaLocation.GetValue(c => c.Longitude) - location.Longitude) < 0.000001)
+                                                while (readerAreaLocation.Read())
                                                 {
-                                                    isFindLocation = true;
-                                                    break;
+                                                    if (Math.Abs(readerAreaLocation.GetValue(c => c.Latitude) - location.Latitude) < 0.000001 && Math.Abs(readerAreaLocation.GetValue(c => c.Longitude) - location.Longitude) < 0.000001)
+                                                    {
+                                                        isFindLocation = true;
+                                                        break;
+                                                    }
                                                 }
+                                                return true;
+                                            });
+                                            // Если заданніе координаты в таблице не найдены, тогда добавляем их
+                                            if (isFindLocation == false)
+                                            {
+                                                var builderAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>().Insert();
+                                                builderAreaLocation.SetValue(c => c.Latitude, location.Latitude);
+                                                builderAreaLocation.SetValue(c => c.Longitude, location.Longitude);
+                                                builderAreaLocation.SetValue(c => c.AREA.Id, readerAreaFrom.GetValue(c => c.Id));
+                                                scope.Executor.Execute<MD.IAreaLocation_PK>(builderAreaLocation);
                                             }
-                                            return true;
-                                        });
-                                        // Если заданніе координаты в таблице не найдены, тогда добавляем их
-                                        if (isFindLocation == false)
-                                        {
-                                            var builderAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>().Insert();
-                                            builderAreaLocation.SetValue(c => c.Latitude, location.Latitude);
-                                            builderAreaLocation.SetValue(c => c.Longitude, location.Longitude);
-                                            builderAreaLocation.SetValue(c => c.AREA.Id, readerAreaFrom.GetValue(c => c.Id));
-                                            scope.Executor.Execute<MD.IAreaLocation_PK>(builderAreaLocation);
                                         }
 
                                     }
@@ -147,7 +157,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (isFindIdentifierFromICSM == false)
                         {
-                            if (areas[i].Name != "Вся Україна")
+                            if ((areas[i].Name != "Вся Україна") && (areas[i].Name != "Київ") && (areas[i].Name != "Севастополь"))
                             {
                                 var builderAreaInsert = this._dataLayer.GetBuilder<MD.IArea>().Insert();
                                 builderAreaInsert.SetValue(c => c.CreatedBy, areas[i].CreatedBy);
@@ -163,11 +173,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         for (int k = 0; k < areas[i].Location.Length; k++)
                                         {
                                             var loc = areas[i].Location[k];
-                                            var builderInsAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>().Insert();
-                                            builderInsAreaLocation.SetValue(c => c.Latitude, loc.Latitude);
-                                            builderInsAreaLocation.SetValue(c => c.Longitude, loc.Longitude);
-                                            builderInsAreaLocation.SetValue(c => c.AREA.Id, areaId.Id);
-                                            scope.Executor.Execute<MD.IAreaLocation_PK>(builderInsAreaLocation);
+                                            if (loc != null)
+                                            {
+                                                var builderInsAreaLocation = this._dataLayer.GetBuilder<MD.IAreaLocation>().Insert();
+                                                builderInsAreaLocation.SetValue(c => c.Latitude, loc.Latitude);
+                                                builderInsAreaLocation.SetValue(c => c.Longitude, loc.Longitude);
+                                                builderInsAreaLocation.SetValue(c => c.AREA.Id, areaId.Id);
+                                                scope.Executor.Execute<MD.IAreaLocation_PK>(builderInsAreaLocation);
+                                            }
                                         }
                                     }
                                 }
@@ -213,61 +226,76 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                                     stationsExtended[i].Id = readerStationExtendedFrom.GetValue(c => c.Id);
 
+                                    bool isChanged = false;
+
                                     var builderUpdateStationExtended = this._dataLayer.GetBuilder<MD.IStationExtended>().Update();
                                     builderUpdateStationExtended.Where(c => c.TableId, ConditionOperator.Equal, stationsExtended[i].TableId);
                                     builderUpdateStationExtended.Where(c => c.TableName, ConditionOperator.Equal, stationsExtended[i].TableName);
 
                                     if (readerStationExtendedFrom.GetValue(c => c.Address) != stationsExtended[i].Address)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.Address, stationsExtended[i].Address);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.BandWidth) != stationsExtended[i].BandWidth)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.BandWidth, stationsExtended[i].BandWidth);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.DesigEmission) != stationsExtended[i].DesigEmission)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.DesigEmission, stationsExtended[i].DesigEmission);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.Latitude) != stationsExtended[i].Location.Latitude)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.Latitude, stationsExtended[i].Location.Latitude);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.Longitude) != stationsExtended[i].Location.Longitude)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.Longitude, stationsExtended[i].Location.Longitude);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.OwnerName) != stationsExtended[i].OwnerName)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.OwnerName, stationsExtended[i].OwnerName);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.PermissionNumber) != stationsExtended[i].PermissionNumber)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.PermissionNumber, stationsExtended[i].PermissionNumber);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.PermissionStart) != stationsExtended[i].PermissionStart)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.PermissionStart, stationsExtended[i].PermissionStart);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.PermissionStop) != stationsExtended[i].PermissionStop)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.PermissionStop, stationsExtended[i].PermissionStop);
                                     }
 
                                     if (readerStationExtendedFrom.GetValue(c => c.Province) != stationsExtended[i].Province)
                                     {
+                                        isChanged = true;
                                         builderUpdateStationExtended.SetValue(c => c.Province, stationsExtended[i].Province);
                                     }
 
-                                    scope.Executor.Execute(builderUpdateStationExtended);
+                                    if (isChanged)
+                                    {
+                                        scope.Executor.Execute(builderUpdateStationExtended);
+                                    }
 
                                     break;
                                 }
@@ -284,8 +312,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderStationExtendedInsert.SetValue(c => c.Address, stationsExtended[i].Address);
                             builderStationExtendedInsert.SetValue(c => c.BandWidth, stationsExtended[i].BandWidth);
                             builderStationExtendedInsert.SetValue(c => c.DesigEmission, stationsExtended[i].DesigEmission);
-                            builderStationExtendedInsert.SetValue(c => c.Latitude, stationsExtended[i].Location.Latitude);
-                            builderStationExtendedInsert.SetValue(c => c.Longitude, stationsExtended[i].Location.Longitude);
+                            if (stationsExtended[i].Location != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.Latitude, stationsExtended[i].Location.Latitude);
+                                builderStationExtendedInsert.SetValue(c => c.Longitude, stationsExtended[i].Location.Longitude);
+                            }
                             builderStationExtendedInsert.SetValue(c => c.OwnerName, stationsExtended[i].OwnerName);
                             builderStationExtendedInsert.SetValue(c => c.PermissionNumber, stationsExtended[i].PermissionNumber);
                             builderStationExtendedInsert.SetValue(c => c.PermissionStart, stationsExtended[i].PermissionStart);
@@ -295,6 +326,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderStationExtendedInsert.SetValue(c => c.TableId, stationsExtended[i].TableId);
                             builderStationExtendedInsert.SetValue(c => c.TableName, stationsExtended[i].TableName);
                             var stationExtendedId = scope.Executor.Execute<MD.IStationExtended_PK>(builderStationExtendedInsert);
+                            if (stationExtendedId != null)
+                            {
+                                stationsExtended[i].Id = stationExtendedId.Id;
+                            }
                         }
                     }
                     scope.Commit();
@@ -348,10 +383,13 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                     for (int k = 0; k < areas.Length; k++)
                     {
-                        var builderLinkAreaInsert = this._dataLayer.GetBuilder<MD.ILinkArea>().Insert();
-                        builderLinkAreaInsert.SetValue(c => c.AREA.Id, GetAreaIdByICSMId(areas[k].IdentifierFromICSM));
-                        builderLinkAreaInsert.SetValue(c => c.SYNCHRO_PROCESS.Id, synchroProcessInsertId);
-                        var builderLinkAreaInsertIdValue = scope.Executor.Execute<MD.ILinkArea_PK>(builderLinkAreaInsert);
+                        if (GetAreaIdByICSMId(areas[k].IdentifierFromICSM) != null)
+                        {
+                            var builderLinkAreaInsert = this._dataLayer.GetBuilder<MD.ILinkArea>().Insert();
+                            builderLinkAreaInsert.SetValue(c => c.AREA.Id, GetAreaIdByICSMId(areas[k].IdentifierFromICSM));
+                            builderLinkAreaInsert.SetValue(c => c.SYNCHRO_PROCESS.Id, synchroProcessInsertId);
+                            var builderLinkAreaInsertIdValue = scope.Executor.Execute<MD.ILinkArea_PK>(builderLinkAreaInsert);
+                        }
                     }
 
                     scope.Commit();
@@ -394,9 +432,9 @@ namespace Atdi.WcfServices.Sdrn.Server
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var polygonAll = new List<DataLocation[]>();
-            var polygon = new List<DataLocation>();
             for (int i = 0; i < areas.Length; i++)
             {
+                var polygon = new List<DataLocation>();
                 var queryAreaLocationFrom = this._dataLayer.GetBuilder<MD.IAreaLocation>()
                 .From()
                 .Select(c => c.Id, c => c.Latitude, c => c.Longitude, c => c.AREA.IdentifierFromICSM, c => c.AREA.Id)
@@ -478,20 +516,26 @@ namespace Atdi.WcfServices.Sdrn.Server
                     var fndStation = lstStationsExtended.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
                     if (fndStation != null)
                     {
+                        var checkLocation = new CheckLocation(fndStation.Location.Longitude, fndStation.Location.Latitude);
+                        bool isCheckedLocation = false;
                         for (int f = 0; f < lstPolygons.Count; f++)
                         {
                             if ((lstPolygons[f] != null) && (lstPolygons[f].Length>0))
                             {
-                                var checkLocation = new CheckLocation(fndStation.Location.Longitude, fndStation.Location.Latitude);
                                 var listPolyg = lstPolygons[f].ToList();
-                                if (!checkLocation.CheckHitting(listPolyg))
+                                if (checkLocation.CheckHitting(listPolyg))
                                 {
-                                    var fnd = listDataRefSpectrumForDelete.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
-                                    if (fnd == null)
-                                    {
-                                        listDataRefSpectrumForDelete.Add(listDataRefSpectrum[h]);
-                                    }
+                                    isCheckedLocation = true;
+                                    break;
                                 }
+                            }
+                        }
+                        if ((isCheckedLocation == false) && (lstPolygons.Count>0))
+                        {
+                            var fnd = listDataRefSpectrumForDelete.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
+                            if (fnd == null)
+                            {
+                                listDataRefSpectrumForDelete.Add(listDataRefSpectrum[h]);
                             }
                         }
                     }
@@ -574,12 +618,22 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="refSpectrums">массив RefSpectrum, который соответствует группе сенсора groupSensor</param>
         /// <param name="emittings">массив Emitting, соответствующий  группе сенсора groupSensor</param>
         /// <returns></returns>
-        public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings)
+        public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, ReferenceLevels[] referenceLevels)
         {
             var lstProtocols = new List<Protocols>();
-           
+            var lstEmittingReferenceLevels = new List<EmittingReferenceLevels>();
+            for (int i = 0; i < emittings.Length; i++)
+            {
+                var emittingReferenceLevels = new EmittingReferenceLevels()
+                {
+                    Emitting = emittings[i],
+                    ReferenceLevels = referenceLevels[i]
+                };
+                lstEmittingReferenceLevels.Add(emittingReferenceLevels);
+            }
+
             // Ниже приведен пример цикла, в котором идет последовательная обработка записей RefSpectrum
-            
+
             for (int i = 0; i < refSpectrums.Length; i++)
             {
                 var RefSpectrum = new RefSpectrum();
@@ -657,6 +711,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var maxStop = workTimes.Min(z => z.StopEmitting);
                             protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
                             protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
+                        }
+
+                        var fndEmittingReferenceLevels = lstEmittingReferenceLevels.Find(x => x.Emitting.Id == fndEmit.Id);
+                        if (fndEmittingReferenceLevels != null)
+                        {
+                            protocol.ProtocolsLinkedWithEmittings.ReferenceLevels = fndEmittingReferenceLevels.ReferenceLevels;
                         }
                         lstProtocols.Add(protocol);
                     }
@@ -913,17 +973,52 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return isSuccess;
         }
-        
 
-        public Emitting[] GetEmittings(DateTime startDate, DateTime stopDate, GroupSensors groupSensor)
+        public ReferenceLevels GetReferenceLevelsByResId(long resId)
         {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var referenceLevels = new ReferenceLevels();
+            var level = new ReferenceLevels();
+            var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
+           .From()
+           .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
+           .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, resId);
+            queryExecuter.Fetch(queryLevels, readerLevels =>
+            {
+                while (readerLevels.Read())
+                {
+                    if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue)
+                    {
+                        level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
+                    }
+
+                    if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue)
+                    {
+                        level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
+                    }
+
+                    if (readerLevels.GetValue(c => c.RefLevels) != null)
+                    {
+                        level.levels = readerLevels.GetValue(c => c.RefLevels);
+                    }
+                }
+                return true;
+            });
+            referenceLevels = level;
+            return referenceLevels;
+        }
+
+        public Emitting[] GetEmittings(DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out ReferenceLevels[] referenceLevels)
+        {
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            referenceLevels = null;
             var listIdsEmittings = new List<long>();
             var listEmitings = new List<KeyValuePair<long, Emitting>>();
             var listWorkTimes = new List<KeyValuePair<long, WorkTime>>();
             var listSpectrum = new List<KeyValuePair<long, Spectrum>>();
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var listSensors = new List<Sensor>();
             var listEmitting = new List<Emitting>();
+            var listReferenceLevels = new List<ReferenceLevels>();
 
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
@@ -1217,8 +1312,33 @@ namespace Atdi.WcfServices.Sdrn.Server
                     }
                     listSpectrum.RemoveAll(c => c.Key == id);
                     listEmitting.Add(emitting);
+
+
+
+                    var level = new ReferenceLevels();
+                    var queryLevels = this._dataLayer.GetBuilder<MD.IEmitting>()
+                   .From()
+                   .Select(c => c.Id, c => c.RES_MEAS.Id)
+                   .Where(c => c.Id, ConditionOperator.Equal, fndEmitings.Key);
+                    queryExecuter.Fetch(queryLevels, readerLevels =>
+                    {
+                        while (readerLevels.Read())
+                        {
+                            var val = GetReferenceLevelsByResId(readerLevels.GetValue(c => c.RES_MEAS.Id));
+                            if (val != null)
+                            {
+                                listReferenceLevels.Add(val);
+                            }
+                            break;
+                        }
+                        return true;
+                    });
                 }
                 listEmitings.RemoveAll(c => c.Key == id);
+            }
+            if (listReferenceLevels != null)
+            {
+                referenceLevels = listReferenceLevels.ToArray();
             }
             return listEmitting.ToArray();
         }
@@ -1285,16 +1405,14 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
                 var queryLinkAreaFrom = this._dataLayer.GetBuilder<MD.ILinkArea>()
                 .From()
-                .Select(c => c.Id, c => c.AREA.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate)
-                .Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.Equal, dataSynchronization.DateStart)
-                .Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.Equal, dataSynchronization.DateEnd)
-                .Where(c => c.SYNCHRO_PROCESS.CreatedBy, ConditionOperator.Equal, dataSynchronization.CreatedBy)
-                .Where(c => c.SYNCHRO_PROCESS.CreatedDate, ConditionOperator.Equal, dataSynchronization.DateCreated);
+                .Select(c => c.Id, c => c.AREA.Id)
+                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
                 queryExecuter.Fetch(queryLinkAreaFrom, readerLinkAreaFrom =>
                 {
                     while (readerLinkAreaFrom.Read())
                     {
-                        areaIds.Add(readerLinkAreaFrom.GetValue(c => c.AREA.Id));
+                        var areaId = readerLinkAreaFrom.GetValue(c => c.AREA.Id);
+                        areaIds.Add(areaId);
                     }
                     return true;
                 });
@@ -1387,6 +1505,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 stationExtended.StandardName = readerStationExtendedFrom.GetValue(c => c.StandardName);
                                 stationExtended.TableId = readerStationExtendedFrom.GetValue(c => c.TableId);
                                 stationExtended.TableName = readerStationExtendedFrom.GetValue(c => c.TableName);
+                                stationExtended.Id = readerStationExtendedFrom.GetValue(c => c.Id);
                                 stationsExtended.Add(stationExtended);
                             }
                             return true;
@@ -1455,10 +1574,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         // -сенсор где был получен результат совпадает с ID Sensor
                         //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
 
-                        var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h]);
+                        var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out ReferenceLevels[] referenceLevels);
 
                         // Синхронизация излучений с записями группы сенсора
-                        var protocol = SynchroEmittings(refSpectrum, emittings);
+                        var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels);
 
                         listProtocolsOutput.AddRange(protocol);
                     }
@@ -1499,10 +1618,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                     sensors[j] = loadSensor.LoadBaseDateSensor(sensorIdsBySDRN[j]);
                 }
 
-                // обновление областей и контуров
-                var isSuccessUpdateAreas = SynchroAreas(areas);
                 // обновление перечня станций
                 var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
+
+                // обновление областей и контуров
+                var isSuccessUpdateAreas = SynchroAreas(areas);
+                
 
                 if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
                 { 
@@ -1531,10 +1652,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 // -сенсор где был получен результат совпадает с ID Sensor
                                 //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
 
-                                var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h]);
+                                var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out ReferenceLevels[] referenceLevels);
 
                                 // Синхронизация излучений с записями группы сенсора
-                                var protocol = SynchroEmittings(refSpectrum, emittings);
+                                var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels);
 
                                 listProtocolsOutput.AddRange(protocol);
                             }

@@ -400,6 +400,13 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN);
 
         /// <summary>
+        /// Get all DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        DataSynchronizationProcess[] GetAllDataSynchronizationProcess();
+
+        /// <summary>
         /// Get all RefSpectrum
         /// </summary>
         /// <returns></returns>
@@ -427,7 +434,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         /// <returns></returns>
         [OperationContract]
-        Protocols[] GetProtocolsByParameters(
+        Protocols[] GetProtocolsByParameters(       long? protocolId,
                                                     string createdBy,
                                                     DateTime? DateCreated,
                                                     DateTime? DateStart,

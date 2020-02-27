@@ -31,6 +31,7 @@ namespace Atdi.WcfServices.Sdrn.Server
    
 
         public Protocols[] GetProtocolsByParameters(
+                                 long? protocolId,
                                  string createdBy,
                                  DateTime? DateCreated,
                                  DateTime? DateStart,
@@ -87,6 +88,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         c => c.SYNCHRO_PROCESS.Id
 
                                         );
+                
+                if (protocolId != null)
+                {
+                    builderProtocols.Where(c => c.Id, ConditionOperator.Equal, protocolId);
+                }
+
                 if (freq != null)
                 {
                     builderProtocols.Where(c => c.Freq_MHz, ConditionOperator.Equal, freq);
@@ -143,7 +150,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderProtocols.Where(c => c.STATION_EXTENDED.OwnerName, ConditionOperator.Equal, ownerName);
                 }
 
-                if ((freq == null) && (permissionStart == null) && (permissionStop == null) && (DateMeas == null) && string.IsNullOrEmpty(permissionNumber))
+                if ((protocolId == null) && (freq == null) && (permissionStart == null) && (permissionStop == null) && (DateMeas == null) && string.IsNullOrEmpty(permissionNumber))
                 {
                     throw new Exception("");
                 }

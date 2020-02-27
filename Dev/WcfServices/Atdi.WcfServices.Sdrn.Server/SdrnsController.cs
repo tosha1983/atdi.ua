@@ -477,10 +477,10 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// </summary>
         /// <param name="createdBy"> DataSynchronizationBase.CreatedBy</param>
         /// <param name="DateCreated">DataSynchronizationBase.CreatedBy</param>
-        /// <param name="DateMeas">IProtocols.DateMeas</param>
-        /// <param name="DateStart">IProtocols.DateMeas</param>
-        /// <param name="DateStop">IProtocols.DateMeas</param>
-        /// <param name="freq">IProtocols.Freq_Mhz</param>
+        /// <param name="DateMeas">Protocols.DateMeas</param>
+        /// <param name="DateStart">Protocols.DateMeas</param>
+        /// <param name="DateStop">Protocols.DateMeas</param>
+        /// <param name="freq">Protocols.Freq_Mhz</param>
         /// <param name="probability">ProtocolsWithEmittings.probability</param>
         /// <param name="standard">StationExtended.standard</param>
         /// <param name="province">StationExtended.Province</param>
@@ -489,7 +489,8 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="permissionStart">IProtocols.permissionStart</param>
         /// <param name="permissionStop">IProtocols.PermissionStop</param>
         /// <returns></returns>
-        public Protocols[] GetProtocolsByParameters(string createdBy,
+        public Protocols[] GetProtocolsByParameters(long? protocolId,
+                                                    string createdBy,
                                                     DateTime? DateCreated,
                                                     DateTime? DateStart,
                                                     DateTime? DateStop,
@@ -503,7 +504,26 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     DateTime? permissionStart,
                                                     DateTime? permissionStop)
         {
-            throw new NotImplementedException();
+            var loadProtocols = new LoadProtocols(_dataLayer, _logger);
+            return loadProtocols.GetProtocolsByParameters(protocolId, createdBy,
+                                                    DateCreated,
+                                                    DateStart,
+                                                    DateStop,
+                                                    DateMeas,
+                                                    freq,
+                                                    probability,
+                                                    standard,
+                                                    province,
+                                                    ownerName,
+                                                    permissionNumber,
+                                                    permissionStart,
+                                                    permissionStop);
+        }
+
+        public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
+        {
+            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
+            return loadSynchroProcessData.GetAllDataSynchronizationProcess();
         }
     }
 }

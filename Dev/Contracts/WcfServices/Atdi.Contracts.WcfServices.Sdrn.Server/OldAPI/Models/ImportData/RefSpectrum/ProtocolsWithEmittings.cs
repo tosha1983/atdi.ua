@@ -94,5 +94,9 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
 
         [DataMember]
         public double? StandardBW { get; set; } // or channel BW
+
+        [DataMember]
+        public ReferenceLevels  ReferenceLevels { get; set; } 
+        
     }
 }

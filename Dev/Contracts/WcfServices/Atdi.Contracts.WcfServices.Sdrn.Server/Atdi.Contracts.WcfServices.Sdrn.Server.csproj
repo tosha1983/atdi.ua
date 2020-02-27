@@ -69,6 +69,7 @@
     <Compile Include="OldAPI\Models\Analitics\StationLevelsByTask.cs" />
     <Compile Include="OldAPI\Models\ImportData\Area\Area.cs" />
     <Compile Include="OldAPI\Models\ImportData\Area\DataLocation.cs" />
+    <Compile Include="OldAPI\Models\ImportData\Emittings\EmittingReferenceLevels.cs" />
     <Compile Include="OldAPI\Models\ImportData\RefSpectrum\ProtocolsWithEmittings.cs" />
     <Compile Include="OldAPI\Models\ImportData\RefSpectrum\Protocols.cs" />
     <Compile Include="OldAPI\Models\ImportData\RefSpectrum\GroupSensors.cs" />
