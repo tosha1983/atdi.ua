@@ -543,16 +543,19 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                  // непосредственное удаление записей из БД
                 var arr = listDataRefSpectrumForDelete.ToArray();
-                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                if ((arr != null) && (arr.Length > 0))
                 {
-                    scope.BeginTran();
-                    for (int h = 0; h < arr.Length; h++)
+                    using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                     {
-                        var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
-                        builderDeleteRefSpectrum.Where(c => c.Id, ConditionOperator.Equal, arr[h].Id);
-                        scope.Executor.Execute(builderDeleteRefSpectrum);
+                        scope.BeginTran();
+                        for (int h = 0; h < arr.Length; h++)
+                        {
+                            var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
+                            builderDeleteRefSpectrum.Where(c => c.Id, ConditionOperator.Equal, arr[h].Id);
+                            scope.Executor.Execute(builderDeleteRefSpectrum);
+                        }
+                        scope.Commit();
                     }
-                    scope.Commit();
                 }
                 isSuccess = true;
             }
@@ -878,6 +881,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.TriggerDeviationFromReference, protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference);
                                 builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.WorkTimeStart, protocol.ProtocolsLinkedWithEmittings.WorkTimeStart);
                                 builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.WorkTimeStop, protocol.ProtocolsLinkedWithEmittings.WorkTimeStop);
+                                if (protocol.ProtocolsLinkedWithEmittings.ReferenceLevels!=null)
+                                {
+                                    if (protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.levels != null)
+                                    {
+                                        builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RefLevels, protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.levels);
+                                        builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RefLevelsStartFrequency_Hz, protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.StartFrequency_Hz);
+                                        builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RefLevelsStepFrequency_Hz, protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.StepFrequency_Hz);
+                                    }
+                                }
                                 builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.PROTOCOLS.Id, protocolInsertId);
                                 var linkProtocolsWithEmittingsIdValue = scope.Executor.Execute<MD.ILinkProtocolsWithEmittings_PK>(builderLinkProtocolsWithEmittingsInsert);
                             }
@@ -1325,10 +1337,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         while (readerLevels.Read())
                         {
                             var val = GetReferenceLevelsByResId(readerLevels.GetValue(c => c.RES_MEAS.Id));
-                            if (val != null)
-                            {
-                                listReferenceLevels.Add(val);
-                            }
+                            listReferenceLevels.Add(val);
                             break;
                         }
                         return true;

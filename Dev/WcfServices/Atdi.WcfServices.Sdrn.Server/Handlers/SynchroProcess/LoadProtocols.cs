@@ -200,7 +200,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
                         var builderLinkProtocolsWithEmittings = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().From();
-                        builderLinkProtocolsWithEmittings.Select(c => c.Bandwidth_kHz, c => c.Contravention, c => c.CorrectnessEstimations, c => c.CurentPower_dBm, c => c.Freq_kHz, c => c.Id, c => c.LevelsDistributionCount, c => c.LevelsDistributionLvl, c => c.Levels_dBm, c => c.Loss_dB, c => c.MarkerIndex, c => c.MeanDeviationFromReference, c => c.Probability, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.T1, c => c.T2, c => c.TraceCount, c => c.TriggerDeviationFromReference, c => c.WorkTimeStart, c => c.WorkTimeStop);
+                        builderLinkProtocolsWithEmittings.Select(c => c.Bandwidth_kHz, c => c.Contravention, c => c.CorrectnessEstimations, c => c.CurentPower_dBm, c => c.Freq_kHz, c => c.Id, c => c.LevelsDistributionCount, c => c.LevelsDistributionLvl, c => c.Levels_dBm, c => c.Loss_dB, c => c.MarkerIndex, c => c.MeanDeviationFromReference, c => c.Probability, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.SignalLevel_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.T1, c => c.T2, c => c.TraceCount, c => c.TriggerDeviationFromReference, c => c.WorkTimeStart, c => c.WorkTimeStop, c => c.RefLevels, c => c.RefLevelsStartFrequency_Hz, c => c.RefLevelsStepFrequency_Hz);
                         builderLinkProtocolsWithEmittings.Where(c => c.PROTOCOLS.Id, ConditionOperator.Equal, readerProtocols.GetValue(c => c.Id));
                         builderLinkProtocolsWithEmittings.Where(c => c.PROTOCOLS.SensorId, ConditionOperator.Equal, readerProtocols.GetValue(c => c.SensorId));
                         if (probability != null)
@@ -238,6 +238,19 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 protocols.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = readerLinkProtocolsWithEmittings.GetValue(c => c.TriggerDeviationFromReference);
                                 protocols.ProtocolsLinkedWithEmittings.WorkTimeStart = readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStart);
                                 protocols.ProtocolsLinkedWithEmittings.WorkTimeStop = readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStop);
+                                protocols.ProtocolsLinkedWithEmittings.ReferenceLevels = new ReferenceLevels();
+                                if (readerLinkProtocolsWithEmittings.GetValue(c => c.RefLevels) != null)
+                                {
+                                    protocols.ProtocolsLinkedWithEmittings.ReferenceLevels.levels = readerLinkProtocolsWithEmittings.GetValue(c => c.RefLevels);
+                                }
+                                if (readerLinkProtocolsWithEmittings.GetValue(c => c.RefLevelsStartFrequency_Hz) != null)
+                                {
+                                    protocols.ProtocolsLinkedWithEmittings.ReferenceLevels.StartFrequency_Hz = readerLinkProtocolsWithEmittings.GetValue(c => c.RefLevelsStartFrequency_Hz).Value;
+                                }
+                                if (readerLinkProtocolsWithEmittings.GetValue(c => c.RefLevelsStepFrequency_Hz) != null)
+                                {
+                                    protocols.ProtocolsLinkedWithEmittings.ReferenceLevels.StepFrequency_Hz = readerLinkProtocolsWithEmittings.GetValue(c => c.RefLevelsStepFrequency_Hz).Value;
+                                }
                             }
                             return true;
                         });

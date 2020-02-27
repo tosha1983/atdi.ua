@@ -27,7 +27,10 @@
   CONTRAVENTION              NUMBER(9),
   WORK_TIME_START            DATE,
   WORK_TIME_STOP             DATE,
-  PROTOCOLS_ID               NUMBER(15)
+  PROTOCOLS_ID               NUMBER(15),
+  REF_LVL_STARTFREQ_HZ       NUMBER(30,10),
+  REF_LVL_STEPFREQ_HZ        NUMBER(30,10),
+  REF_LEVELS                 BLOB
 )
 TABLESPACE USERS
 PCTUSED    0
