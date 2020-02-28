@@ -1619,27 +1619,29 @@ namespace Atdi.WcfServices.Sdrn.Server
             //если процесс синхронизации не запущен, тогда создаем новый
             if (currentDataSynchronizationProcess == null)
             {
-                var loadSensor = new LoadSensor(this._dataLayer, this._logger);
-
-                var sensors = new Sensor[sensorIdsBySDRN.Length];
-                for (int j = 0; j < sensorIdsBySDRN.Length; j++)
-                {
-                    sensors[j] = loadSensor.LoadBaseDateSensor(sensorIdsBySDRN[j]);
-                }
-
-                // обновление перечня станций
-                var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
-
-                // обновление областей и контуров
-                var isSuccessUpdateAreas = SynchroAreas(areas);
-                
-
-                if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
-                { 
                 // создаем запись в таблице SynchroProcess
                 var synchroProcessId = CreateDataSynchronizationProcess(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas);
-                    if (synchroProcessId != null)
+                if (synchroProcessId != null)
+                {
+
+                    var loadSensor = new LoadSensor(this._dataLayer, this._logger);
+
+                    var sensors = new Sensor[sensorIdsBySDRN.Length];
+                    for (int j = 0; j < sensorIdsBySDRN.Length; j++)
                     {
+                        sensors[j] = loadSensor.LoadBaseDateSensor(sensorIdsBySDRN[j]);
+                    }
+
+                    // обновление перечня станций
+                    var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
+
+                    // обновление областей и контуров
+                    var isSuccessUpdateAreas = SynchroAreas(areas);
+
+
+                    if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
+                    {
+
                         var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
                         if (isSuccessDeleteRefSpectrum == true)
                         {
