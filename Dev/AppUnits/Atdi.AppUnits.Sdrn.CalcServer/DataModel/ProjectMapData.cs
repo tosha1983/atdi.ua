@@ -72,5 +72,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 				Y = this.UpperLeftY - this.AxisYStep * yIndex - this.AxisYStep
 			};
 		}
+
+		public AreaCoordinates IndexToArea(int xIndex, int yIndex)
+		{
+			return new AreaCoordinates
+			{
+				UpperLeft = IndexToUpperLeftCoordinate(xIndex, yIndex),
+				LowerRight = IndexToLowerRightCoordinate(xIndex, yIndex)
+			};
+		}
 	}
 }

@@ -44,6 +44,7 @@
     <Compile Include="Iterations\CoverageProfileData.cs" />
     <Compile Include="Iterations\VoidData.cs" />
     <Compile Include="Iterations\VoidResult.cs" />
+    <Compile Include="Maps\AreaCoordinates.cs" />
     <Compile Include="Maps\Coordinate.cs" />
     <Compile Include="Maps\Indexer.cs" />
     <Compile Include="Maps\ProjectMapType.cs" />

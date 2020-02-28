@@ -94,6 +94,23 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 			return this.CoverageArea > 0;
 		}
 
+		public bool IntersectWith(AreaCoordinates area, out AreaCoordinates coverageArea)
+		{
+			coverageArea.UpperLeft = new Coordinate()
+			{
+				X = Math.Max(area.UpperLeft.X, this.UpperLeftX),
+				Y = Math.Min(area.UpperLeft.Y, this.UpperLeftY)
+			};
+
+			coverageArea.LowerRight = new Coordinate()
+			{
+				X = Math.Min(area.LowerRight.X, this.LowerRightX),
+				Y = Math.Max(area.LowerRight.Y, this.LowerRightY)
+			};
+
+			return coverageArea.Area > 0;
+		}
+
 		public Coordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)
 		{
 			return new Coordinate

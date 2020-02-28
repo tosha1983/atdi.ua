@@ -22,6 +22,63 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 {
 	internal class MapBuilder
 	{
+		private struct CoverageSourceMapCell
+		{
+			public int XIndex;
+			public int YIndex;
+			public Coordinate UpperLeft;
+			public byte[] CellArea;
+			public int Amount;
+
+			public void RegionOut(AreaCoordinates region, int xStep, int yStep)
+			{
+				if (this.Amount <= 0)
+				{
+					return;
+				}
+
+				// минусуем
+				for (int y = 0; y < yStep; y++)
+				{
+					for (int x = 0; x < xStep; x++)
+					{
+						if (this.CellArea[y * xStep + x] != 0)
+						{ 
+							if (region.Has(this.UpperLeft.X + x, (this.UpperLeft.Y - 1) - y))
+							{
+								--this.Amount;
+								this.CellArea[y * xStep + x] = (byte)0;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private struct CoverageSourceMapArea
+		{
+			public DM.SourceMapData SourceMap;
+			public CoverageSourceMapCell[] Cells;
+
+			/// <summary>
+			/// Площадь которубю покрывает карта на целеовой ячейке 
+			/// </summary>
+			public AreaCoordinates CoverageArea;
+
+
+			public void RegionOut(AreaCoordinates region)
+			{
+				for (int i = 0; i < Cells.Length; i++)
+				{
+					Cells[i].RegionOut(region, SourceMap.AxisXStep, SourceMap.AxisYStep);
+				}
+
+				Cells = Cells.Where(c => c.Amount > 0).ToArray();
+			}
+		}
+
+
+
 		private struct MapCellDescriptor<T>
 			where T : struct
 		{
@@ -242,11 +299,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			{
 				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
 				{
+					var area = projectMap.IndexToArea(xIndex, yIndex);
 					cellDescriptors[yIndex * projectMap.AxisXNumber + xIndex] = new MapCellDescriptor<T>()
 					{
 						XIndex = xIndex,
 						YIndex = yIndex,
-						Maps = this.DefineSourceMaps<T>(xIndex, yIndex, mapContent, sourceMaps)
+						Maps = this.DefineSourceMaps<T>(xIndex, yIndex, area, mapContent, sourceMaps)
 					};
 				}
 			}
@@ -458,20 +516,124 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			}
 			throw new InvalidOperationException($"Unsupported encoding '{encoding}'");
 		}
-		private MapReference<T>[] DefineSourceMaps<T>(int xIndex, int yIndex, DM.MapContentData<T> mapContent, DM.SourceMapData[] sourceMaps)
+		private MapReference<T>[] DefineSourceMaps<T>(int xIndex, int yIndex, AreaCoordinates area, DM.MapContentData<T> mapContent, DM.SourceMapData[] sourceMaps)
 			where T : struct
 		{
-			// получаем координаты по индексу
-			var upperLeft = mapContent.ProjectMap.IndexToUpperLeftCoordinate(xIndex, yIndex);
-			var lowerRight = mapContent.ProjectMap.IndexToLowerRightCoordinate(xIndex, yIndex);
 
-			var refMaps = new List<MapReference<T>>();
-
+			/*
+			 * Возможное описание алгоритма (основняа идея отнять пересекающуюся площадь вверхлежащей карты во всех карта лежащих ниже текущей):
+			 * 1. Бежим по картам от приоритетных к менее приоритетны пока
+			 *    не найдем карту покрывающую полностью всю ячейку основания или достигнем конца.
+			 *    Найденнаяч карта является самой "низкой"
+			 * 2. в цыкле от низкой карты поднимаемся в "верх" по картам, при этом на каждой итерации
+			 *		2.1. Вычислем набор чеек попадающих в зону покрытия и расчитываем по каждой плоащадь
+			 *	    2.2. Считаем сумарную площадь покрытия
+			 *      2.3. Организовываем цыкл от этой карты в низ лежащим картам
+			 *           и на каждйо итерации отнимаем пересекающие области в ячейках низ лежащих карт.
+			 *           При этом если для ячейки площадь ушла в 0 удаляем ячейку из набора
+			 *
+			 *     Для каждой чейки строим метрову матрицу для фикисрования разницы 
+			 */
+			var coveredSourceMapsCount = 0; // индекс самой низкой карты
+			var coveredSourceMaps = new CoverageSourceMapArea[sourceMaps.Length];
 			for (int i = 0; i < sourceMaps.Length; i++)
 			{
 				var sourceMap = sourceMaps[i];
+				if (!sourceMap.IntersectWith(area, out var coverageArea))
+				{
+					// карта которая не покрывает ячейку [yIndex,xIndex] нам не интересна, отбрасываем ее
+					continue;
+				}
+				// есть покрытие. фикисруем карту - возможно это последня карта по ряду причин (их две)
+
+				coveredSourceMaps[coveredSourceMapsCount++] = new CoverageSourceMapArea
+				{
+					SourceMap = sourceMap,
+					CoverageArea = coverageArea,
+					Cells = this.DecomposeIntoCells(sourceMap, coverageArea)
+				};
+				
+				if (area.Area == coverageArea.Area)
+				{
+					// это полное покрытие целевой ячейки [yIndex,xIndex] 
+					// больше сканировать не нужно
+					break;
+				}
+				// частичное покрытие, бежим глубже
 			}
-			return refMaps.ToArray();
+
+			// теперь бежим с низу в верх и отнимаем с верзу в низ площади
+			for (int i = coveredSourceMapsCount - 1; i >= 0 ; i--)
+			{
+
+				if (i + 1 > coveredSourceMapsCount)
+				{
+					// раскладываем карту на молекули - ячейки по метрам
+					var coveredSourceMapArea = coveredSourceMaps[i];
+
+					for (int j = i + 1; j < coveredSourceMapsCount; j++)
+					{
+						var lowerCoveredSourceMapArea = coveredSourceMaps[j];
+						lowerCoveredSourceMapArea.RegionOut(coveredSourceMapArea.CoverageArea);
+					}
+				}
+			}
+
+			return coveredSourceMaps
+				.SelectMany(
+					m => m.Cells
+						.Select( 
+							c=> new MapReference<T>
+							{
+								InfocenterMap = m.SourceMap,
+								XIndex = c.XIndex,
+								YIndex = c.YIndex,
+								CoverageArea = c.Amount
+							})
+					).ToArray();
+		}
+
+		private CoverageSourceMapCell[] DecomposeIntoCells(DM.SourceMapData sourceMap, AreaCoordinates coverageArea)
+		{
+			// верхний индекс - при определни смещаемся на один метр
+			var upperLeftIndexer = sourceMap.CoordinateToIndexes(coverageArea.UpperLeft.X, coverageArea.UpperLeft.Y - 1);
+			var lowerRightIndexer = sourceMap.CoordinateToIndexes(coverageArea.LowerRight.X - 1, coverageArea.LowerRight.Y);
+			var yCount = lowerRightIndexer.YIndex - upperLeftIndexer.YIndex;
+			var xCount = lowerRightIndexer.XIndex - upperLeftIndexer.XIndex;
+
+			var cells = new CoverageSourceMapCell[yCount * xCount];
+			var position = 0;
+			for (var yIndex = upperLeftIndexer.YIndex; yIndex <= lowerRightIndexer.YIndex; yIndex++)
+			{
+				for (var xIndex = upperLeftIndexer.XIndex; xIndex <= lowerRightIndexer.XIndex; xIndex++)
+				{
+					var cell = new CoverageSourceMapCell()
+					{
+						XIndex = xIndex,
+						YIndex = yIndex,
+						UpperLeft = sourceMap.IndexToUpperLeftCoordinate(xIndex, yIndex),
+						CellArea = new byte[sourceMap.AxisYStep * sourceMap.AxisXStep]
+					};
+					
+					// определдяем реальнео персечение
+					for (int y = 0; y < sourceMap.AxisYStep; y++)
+					{
+						var yy = y * sourceMap.AxisXStep;
+						var upperLeftYY = (cell.UpperLeft.Y - 1) - y;
+						for (int x = 0; x < sourceMap.AxisXStep; x++)
+						{
+							if (coverageArea.Has(cell.UpperLeft.X + x, upperLeftYY))
+							{
+								++cell.Amount;
+								cell.CellArea[yy + x] = (byte) 1;
+							}
+						}
+					}
+
+					cells[position++] = cell;
+				}
+			}
+			return cells;
 		}
 
 		private long SaveProjectMapContent<T>(IDataLayerScope calcDbScope, DM.MapContentData<T> mapContent)
