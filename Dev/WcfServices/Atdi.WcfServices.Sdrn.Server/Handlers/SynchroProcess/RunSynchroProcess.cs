@@ -832,8 +832,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderProtocolsInsert.SetValue(c => c.GlobalSID, protocol.DataRefSpectrum.GlobalSID);
                             builderProtocolsInsert.SetValue(c => c.Level_dBm, protocol.DataRefSpectrum.Level_dBm);
                             builderProtocolsInsert.SetValue(c => c.Percent, protocol.DataRefSpectrum.Percent);
-                           
-                            
+                          
+                        }
+                        {
+                            //builderProtocolsInsert.SetValue(c => c.RadioControlBandWidth, ????);
+                            //builderProtocolsInsert.SetValue(c => c.RadioControlMeasFreq_MHz, ????);
                         }
                         if (protocol.StationExtended != null)
                         {

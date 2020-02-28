@@ -44,6 +44,13 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public DataSynchronizationProcess DataSynchronizationProcess { get; set; }
 
+        /// <summary>
+        /// Radio Control Params
+        /// </summary>
+        [DataMember]
+        public RadioControlParams RadioControlParams { get; set; }
 
+
+        
     }
 }

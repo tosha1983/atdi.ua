@@ -70,6 +70,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         c => c.SensorLon,
                                         c => c.SensorName,
                                         c => c.SensorId,
+                                        c => c.RadioControlBandWidth,
+                                        c => c.RadioControlMeasFreq_MHz,
                                         c => c.STATION_EXTENDED.TableId,
                                         c => c.STATION_EXTENDED.TableName,
                                         c => c.STATION_EXTENDED.Address,
@@ -174,7 +176,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                         }
                         protocols.DataRefSpectrum.TableId= readerProtocols.GetValue(c => c.STATION_EXTENDED.TableId);
                         protocols.DataRefSpectrum.TableName = readerProtocols.GetValue(c => c.STATION_EXTENDED.TableName);
-                        
+
+                        if ((readerProtocols.GetValue(c => c.RadioControlBandWidth) != null) && (readerProtocols.GetValue(c => c.RadioControlMeasFreq_MHz) != null))
+                        {
+                            var radioControlParams = new RadioControlParams();
+                            radioControlParams.RadioControlBandWidth = readerProtocols.GetValue(c => c.RadioControlBandWidth);
+                            radioControlParams.RadioControlMeasFreq_MHz = readerProtocols.GetValue(c => c.RadioControlMeasFreq_MHz);
+                        }
 
                         protocols.StationExtended = new StationExtended();
                         protocols.StationExtended.Address = readerProtocols.GetValue(c => c.STATION_EXTENDED.Address);

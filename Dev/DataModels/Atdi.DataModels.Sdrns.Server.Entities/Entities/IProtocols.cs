@@ -30,6 +30,8 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         double? DispersionUp { get; set; }
         double? Percent { get; set; }
         long? SensorId { get; set; }
+        double? RadioControlMeasFreq_MHz { get; set; }
+        double? RadioControlBandWidth { get; set; }
         IStationExtended STATION_EXTENDED { get; set; }
         ISynchroProcess SYNCHRO_PROCESS { get; set; }
     }
