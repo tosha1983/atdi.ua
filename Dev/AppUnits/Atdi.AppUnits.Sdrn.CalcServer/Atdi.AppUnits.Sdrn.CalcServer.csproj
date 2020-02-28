@@ -45,9 +45,12 @@
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="CalcServerConfig.cs" />
     <Compile Include="DataModel\CalcTaskResultData.cs" />
+    <Compile Include="DataModel\MapContentData.cs" />
     <Compile Include="DataModel\ProjectMapData.cs" />
     <Compile Include="DataModel\SourceMapData.cs" />
+    <Compile Include="DataModel\SourceMapSectorData.cs" />
     <Compile Include="Helpers\Compressor.cs" />
+    <Compile Include="IterationDescriptor.cs" />
     <Compile Include="IterationsPool.cs" />
     <Compile Include="MapBuilder.cs" />
     <Compile Include="ProcessJob.cs" />
@@ -55,8 +58,10 @@
     <Compile Include="EventSystemObserver.cs" />
     <Compile Include="EventSystemSubscriberActivator.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="TaskContext.cs" />
     <Compile Include="TaskDispatcher.cs" />
     <Compile Include="TasksFactory.cs" />
+    <Compile Include="TaskWorkerJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EventSystem\Atdi.Api.EventSystem.csproj">

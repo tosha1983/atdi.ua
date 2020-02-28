@@ -9,6 +9,7 @@ using Atdi.AppUnits.Sdrn.Infocenter.DataModels;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Infocenter;
+using Atdi.DataModels.DataConstraint;
 using ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
@@ -157,6 +158,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 					section.Content.Size = buffer.Length;
 
 					this.SaveSectorToDb(dbScope, section);
+					this.SaveMapStatistics(dbScope, mapPk.Id, 1, 1);
 				}
 				else
 				{
@@ -309,6 +311,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 						// смещаемся в буфере
 						yFileOffset += ySegmentIndex * mapFile.AxisX.Number * mapFile.StepDataSize;
 					}
+
+					this.SaveMapStatistics(dbScope, mapPk.Id, xSectorCount, ySectorCount);
 				}
 				return mapPk.Id;
 			}
@@ -534,6 +538,19 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				return AtdiMapType.Building;
 			}
 			throw new InvalidOperationException($"Unsupported file extension '{ext}'");
+		}
+
+		private bool SaveMapStatistics(IDataLayerScope dbScope, long mapId, int sectorsXCount, int sectorsYCount)
+		{
+			var mapQuery = _dataLayer.GetBuilder<ES.IMap>()
+					.Update()
+					.SetValue(c => c.SectorsCount, sectorsXCount * sectorsYCount)
+					.SetValue(c => c.SectorsXCount, sectorsXCount)
+					.SetValue(c => c.SectorsYCount, sectorsYCount)
+					.Where(c => c.Id, ConditionOperator.Equal, mapId)
+				;
+
+			return dbScope.Executor.Execute(mapQuery) > 0;
 		}
 	}
 }

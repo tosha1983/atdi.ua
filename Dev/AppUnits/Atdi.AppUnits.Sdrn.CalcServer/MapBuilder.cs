@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,74 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using IC=Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using DM = Atdi.AppUnits.Sdrn.CalcServer.DataModel;
+using Atdi.Common.Extensions;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer
 {
 	internal class MapBuilder
 	{
+		private struct MapCellDescriptor<T>
+			where T : struct
+		{
+			public int XIndex;
+			public int YIndex;
+
+			/// <summary>
+			/// Карты покрывающие заданную индексами площадь
+			/// </summary>
+			public MapReference<T>[] Maps;
+		}
+
+		private struct MapRocessingRecord<T>
+			where T : struct
+		{
+			/// <summary>
+			/// Индекс расчетного бокса по X
+			/// </summary>
+			public int XIndex;
+
+			/// <summary>
+			/// Индекс расчетного бокса по Y
+			/// </summary>
+			public int YIndex;
+
+			// ссылка на участок на карте источнике и его значение в покрываемой области
+			public MapReference<T> SourceMap;
+		}
+
+		private class MapReference<T>
+			where T : struct
+		{
+			/// <summary>
+			/// Индекс достeпа к значению карты источника по X
+			/// </summary>
+			public int XIndex;
+
+			/// <summary>
+			/// Индекс достeпа к значению карты источника по Y
+			/// </summary>
+			public int YIndex;
+
+			/// <summary>
+			/// Идентифкатор карты источника
+			/// </summary>
+			public DM.SourceMapData InfocenterMap;
+
+			/// <summary>
+			/// Значение из карты источника
+			/// </summary>
+			public T Value;
+
+			/// <summary>
+			/// Площадь покрытия картой источника 
+			/// </summary>
+			public long CoverageArea;
+		}
+
+		private static readonly object DefaultForRelief = (short) -9999;
+		private static readonly object DefaultForClutter = (byte)0;
+		private static readonly object DefaultForBuilding = (byte)0;
+
 		private readonly AppServerComponentConfig _config;
 		private readonly IDataLayer<EntityDataOrm<IC.InfocenterEntityOrmContext>> _infocenterDataLayer;
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
@@ -76,21 +140,27 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						CheckStepUnit(projectMapData.StepUnit);
 
 						// расчитываем конечные координаты относительно указаных шагов
+						projectMapData.AxisXNumber = projectMapData.OwnerAxisXNumber;
+						projectMapData.AxisXStep = projectMapData.OwnerAxisXStep;
+						projectMapData.AxisYNumber = projectMapData.OwnerAxisYNumber;
+						projectMapData.AxisYStep = projectMapData.OwnerAxisYStep;
+						projectMapData.UpperLeftX = projectMapData.OwnerUpperLeftX;
+						projectMapData.UpperLeftY = projectMapData.OwnerUpperLeftY;
+
 						projectMapData.LowerRightX =
 							projectMapData.UpperLeftX + projectMapData.AxisXNumber * projectMapData.AxisXStep;
 						projectMapData.LowerRightY =
 							projectMapData.UpperLeftY + projectMapData.AxisYNumber * projectMapData.AxisYStep;
 
 						// сохраним расчеті
-						SaveProjectMapData(calcDbScope, projectMapId, projectMapData);
+						SaveProjectMapData(calcDbScope, projectMapData);
 
 						// с этого момент можем приступить к построеннию карт
 						using (var infoDbScope = this._infocenterDataLayer.CreateScope<InfocenterDataContext>())
 						{
-							// строим рельеф
-							this.BuildMap(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Relief);
-							this.BuildMap(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Building);
-							this.BuildMap(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Clutter);
+							this.BuildMap<short>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Relief);
+							this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Building);
+							this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Clutter);
 						}
 							
 						// фиксируем состояние
@@ -113,56 +183,312 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			
 		}
 
-		private void BuildMap(IDataLayerScope calcDbScope, IDataLayerScope infoDbScope, DM.ProjectMapData data, ProjectMapType mapType)
+		private void BuildMap<T>(IDataLayerScope calcDbScope, IDataLayerScope infoDbScope, DM.ProjectMapData projectMap, ProjectMapType mapType)
+			where T : struct
 		{
-			var sourceMaps = this.FindSourceMaps(infoDbScope, data, mapType);
+			var mapContent = new DM.MapContentData<T>(projectMap, mapType);
+
+			// подбираем карты но еще их не грузим
+			var sourceMaps = this.FindSourceMaps(infoDbScope, projectMap, mapType);
 			if (sourceMaps.Length == 0)
 			{
 				throw new InvalidOperationException($"Could not find any matching maps of type '{mapType}' in the Infocenter DB");
 			}
 
-			var stepDataSize = DefineMapStepDataSize(mapType);
+			// для рельефа если есть мастер карта, то выравниваемся  к ней по ее координатной сетке
+			var masterMap = sourceMaps[0];
+			if (mapType == ProjectMapType.Relief && masterMap.Priority == 0)
+			{
+				// смещение делаем через индекс
+				// берем координаты смещаемой точки
+				// поним определяем индекс ячейки
+				// по индексу ячейки мастер карты определяем ее верхние координаты - они и есть координата смещения
+				// аналогично поступаем с нижней правой точкой
+				// по результатм пересчитаем кол-во шагов
+
+				var sourceIndexer = masterMap.CoordinateToIndexes(projectMap.UpperLeftX, projectMap.UpperLeftY);
+				var toUpperLeft = masterMap.IndexToUpperLeftCoordinate(sourceIndexer.XIndex, sourceIndexer.YIndex);
+				sourceIndexer = masterMap.CoordinateToIndexes(projectMap.LowerRightX, projectMap.LowerRightY);
+				var toLowerRight = masterMap.IndexToLowerRightCoordinate(sourceIndexer.XIndex, sourceIndexer.YIndex);
+
+				projectMap.UpperLeftX = toUpperLeft.X;
+				projectMap.UpperLeftY = toUpperLeft.Y;
+
+				projectMap.LowerRightX = toLowerRight.X;
+				projectMap.LowerRightY = toLowerRight.Y;
+
+				projectMap.AxisXNumber = (toLowerRight.X - toUpperLeft.X) / projectMap.AxisXStep;
+				projectMap.AxisYNumber = (toUpperLeft.Y - toLowerRight.Y) / projectMap.AxisYStep;
+
+				if (0 != ((toLowerRight.X - toUpperLeft.X) % projectMap.AxisXStep) 
+				 || 0 != ((toUpperLeft.Y - toLowerRight.Y) % projectMap.AxisYStep))
+				{
+					throw new InvalidOperationException("Something went wrong in the map offset calculation");
+				}
+
+				// сохраним карту
+				this.SaveProjectMapData(calcDbScope, projectMap);
+			}
 
 			// выделяем буффер
-			var mapBuffer = new byte[data.AxisXNumber * data.AxisYNumber * stepDataSize];
+			var cellDescriptors = new MapCellDescriptor<T>[projectMap.AxisXNumber * projectMap.AxisYNumber];
+
+			// Работаем в три прохода
+			// строим матрицу обхода, в начале идем по целеdой матрице, определяем на кажудю точк уоткуда с какой карты берем значение
+			// потом групируем по картам и из них определяем данные
+			// третий проход расчет всего что нужна на основании полученных данных
+
+			for (var yIndex = 0; yIndex < projectMap.AxisYNumber; yIndex++)
+			{
+				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
+				{
+					cellDescriptors[yIndex * projectMap.AxisXNumber + xIndex] = new MapCellDescriptor<T>()
+					{
+						XIndex = xIndex,
+						YIndex = yIndex,
+						Maps = this.DefineSourceMaps<T>(xIndex, yIndex, mapContent, sourceMaps)
+					};
+				}
+			}
+
+			// групируем и грузим карты
+			cellDescriptors.SelectMany( c => c.Maps.Select(m => new MapRocessingRecord<T> { SourceMap = m, XIndex = c.XIndex, YIndex = c.YIndex }))
+				.GroupBy(g => g.SourceMap.InfocenterMap)
+				.Select(g => new { InfocenterMap = g.Key, Count = g.Count(), Use = g.Select(p => p).ToArray()})
+				.ToList()
+				.ForEach(result => this.HandleSourceMap(infoDbScope, result.InfocenterMap, result.Use));
+
+			// строим типизируемую матрицу
+			mapContent.Content = new T[projectMap.AxisXNumber * projectMap.AxisYNumber];
+
+			// площадь ячейки, нужна для рельефа
+			var reliefCellArea = (double)projectMap.AxisXStep * projectMap.AxisYStep;
+
+			for (var yIndex = 0; yIndex < projectMap.AxisYNumber; yIndex++)
+			{
+				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
+				{
+					// индекс значения
+					var contentIndex = yIndex * projectMap.AxisXNumber + xIndex;
+					// делаем расчет ячейки
+
+					
+					var cell = cellDescriptors[yIndex * projectMap.AxisXNumber + xIndex];
+					if (cell.Maps == null || cell.Maps.Length == 0)
+					{
+						// нет карты, заполяняем дефолтным значением
+						if (mapType == ProjectMapType.Relief)
+						{
+							mapContent.Content[contentIndex] = (T)MapBuilder.DefaultForRelief;
+						}
+						else if (mapType == ProjectMapType.Clutter)
+						{
+							mapContent.Content[contentIndex] = (T)MapBuilder.DefaultForClutter;
+						}
+						else if (mapType == ProjectMapType.Building)
+						{
+							mapContent.Content[contentIndex] = (T)MapBuilder.DefaultForBuilding;
+						}
+						else
+						{
+							throw new InvalidOperationException($"Unsupported map type '{mapType}'");
+						}
+					}
+					// если карта одна, тут все просто
+					else if (cell.Maps.Length == 1)
+					{
+						mapContent.Content[contentIndex] = cell.Maps[0].Value;
+						cell.Maps[0].InfocenterMap.Used = true;
+					}
+					else
+					{
+						// определение значения зависит от типа карты
+						if (mapType == ProjectMapType.Relief)
+						{
+							mapContent.Content[contentIndex] = (T)(object)cell.Maps.Sum(c => ((short)(object)(c.Value)) * (c.CoverageArea / reliefCellArea));
+						}
+						else if (mapType == ProjectMapType.Building|| mapType == ProjectMapType.Clutter)
+						{
+							var max = cell.Maps.Max(c => c.CoverageArea);
+							mapContent.Content[contentIndex] = cell.Maps.Where(c => c.CoverageArea == max).Max(c => c.Value);
+						}
+						else
+						{
+							throw new InvalidOperationException($"Unsupported map type '{mapType}'");
+						}
+					}
+				}
+			}
+
+			// сохраянем буффер - контент ProjectMapContent и все его источники ProjectMapContentSource
+			var contentId = this.SaveProjectMapContent(calcDbScope, mapContent);
+
+			foreach (var sourceMap in sourceMaps)
+			{
+				// сохраним только те которые подлежали использованию
+				if (sourceMap.Used)
+				{
+					this.SaveSourceMap(calcDbScope, contentId, sourceMap);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Обработка карт источников - получение значений
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="infocenterMap"></param>
+		/// <param name="projectMap"></param>
+		/// <param name="use"></param>
+		private void HandleSourceMap<T>(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, MapRocessingRecord<T>[] use)
+			where T : struct
+		{
+			// кеш  загруженных секторов
+			var sectors = new DM.SourceMapSectorData[infocenterMap.SectorsCount];
+			var loadedSectorsCount = 0;
+			for (int i = 0; i < use.Length; i++)
+			{
+				var mapRecord = use[i];
+				// задача для указаных в записи  индексов нужно получить значение
+				// переводим индексы в координаты
+				var sourceMap = mapRecord.SourceMap;
+				var upperLeft = infocenterMap.IndexToUpperLeftCoordinate(sourceMap.XIndex, sourceMap.YIndex);
+				var lowerRight = infocenterMap.IndexToLowerRightCoordinate(sourceMap.XIndex, sourceMap.YIndex);
+
+				// ищим сектор ране загруженный
+				var sector = sectors.FirstOrDefault(
+					s => 
+						s.UpperLeftX <= upperLeft.X && upperLeft.X < s.LowerRightX
+					&&  s.UpperLeftX < lowerRight.X && lowerRight.X <= s.LowerRightX
+					&&  s.UpperLeftY >= upperLeft.Y && upperLeft.Y > s.LowerRightY
+					&&  s.UpperLeftY > lowerRight.Y && lowerRight.Y >= s.LowerRightY
+					);
+				// загружаем по координатам сектор, если еще не загружен
+				if (sector == null)
+				{
+					sector = this.LoadMapSector(infoDbScope, infocenterMap, upperLeft, lowerRight);
+					sectors[loadedSectorsCount++] = sector;
+				}
+				// из бинарника сектора определяем значение
+				sourceMap.Value = sector.GetValue<T>(sourceMap.XIndex, sourceMap.YIndex);
+			}
+			
+			// возможно тут стоит иницровать сборку муссора... надо подумать
+			// GC.Collect();
+		}
+
+		private DM.SourceMapSectorData LoadMapSector(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, Coordinate upperLeft, Coordinate lowerRight)
+		{
+			var sourceMapQuery = _infocenterDataLayer.GetBuilder<IC.IMapSector>()
+					.From()
+					.Select(
+						c => c.Id,
+						c => c.UpperLeftX,
+						c => c.UpperLeftY,
+						c => c.LowerRightX,
+						c => c.LowerRightY,
+						c => c.AxisXNumber,
+						c => c.AxisXIndex,
+						c => c.AxisYNumber,
+						c => c.AxisYIndex,
+						c => c.Content,
+						c => c.ContentEncoding,
+						c => c.ContentType)
+					.Where(c => c.MAP.Id, ConditionOperator.Equal, infocenterMap.MapId)
+					.Where(c => c.UpperLeftX, ConditionOperator.LessEqual, upperLeft.X) 
+					.Where(c => c.LowerRightX, ConditionOperator.GreaterThan, upperLeft.X)
+					.Where(c => c.UpperLeftX, ConditionOperator.LessThan, lowerRight.X)
+					.Where(c => c.LowerRightX, ConditionOperator.GreaterEqual, lowerRight.X)
+
+					.Where(c => c.UpperLeftY, ConditionOperator.GreaterEqual, upperLeft.Y)
+					.Where(c => c.LowerRightY, ConditionOperator.LessThan, upperLeft.Y)
+					.Where(c => c.UpperLeftY, ConditionOperator.GreaterThan, lowerRight.Y)
+					.Where(c => c.LowerRightY, ConditionOperator.LessEqual, lowerRight.Y)
+				;
+
+			return infoDbScope.Executor.ExecuteAndFetch(sourceMapQuery, reader =>
+			{
+				DM.SourceMapSectorData sourceMapSector = null;
+				var count = 0;
+				while (reader.Read())
+				{
+					++count;
+					if (count > 1)
+					{
+						throw new InvalidOperationException($"More than one source map sector detected by coordinates ({upperLeft}x{lowerRight}) and map ID #{infocenterMap.MapId}");
+					}
+					sourceMapSector = new DM.SourceMapSectorData()
+					{
+						AxisXNumber = reader.GetValue(c => c.AxisXNumber),
+						AxisXIndex = reader.GetValue(c => c.AxisXIndex),
+						AxisYNumber = reader.GetValue(c => c.AxisXNumber),
+						AxisYIndex = reader.GetValue(c => c.AxisXNumber),
+						UpperLeftX = reader.GetValue(c => c.UpperLeftX),
+						UpperLeftY = reader.GetValue(c => c.UpperLeftY),
+						LowerRightX = reader.GetValue(c => c.LowerRightX),
+						LowerRightY = reader.GetValue(c => c.LowerRightY),
+						SectorId = reader.GetValue(c => c.Id),
+						Content = this.DecodeSourceMapContent(
+								reader.GetValue(c => c.Content),
+								reader.GetValue(c => c.ContentEncoding),
+								reader.GetValue(c => c.ContentType)
+							),
+						Map = infocenterMap
+					};
+
+				}
+				return sourceMapSector;
+			});
+		}
+
+		private byte[] DecodeSourceMapContent(byte[] content, string encoding, string contentType)
+		{
+			if (typeof(byte[]).AssemblyQualifiedName != contentType)
+			{
+				throw new InvalidOperationException($"Unsupported content type '{contentType}'");
+			}
+			if (string.IsNullOrEmpty(encoding))
+			{
+				return content;
+			}
+
+			if (encoding.Contains("compressed"))
+			{
+				return Compressor.Decompress(content);
+			}
+			throw new InvalidOperationException($"Unsupported encoding '{encoding}'");
+		}
+		private MapReference<T>[] DefineSourceMaps<T>(int xIndex, int yIndex, DM.MapContentData<T> mapContent, DM.SourceMapData[] sourceMaps)
+			where T : struct
+		{
+			// получаем координаты по индексу
+			var upperLeft = mapContent.ProjectMap.IndexToUpperLeftCoordinate(xIndex, yIndex);
+			var lowerRight = mapContent.ProjectMap.IndexToLowerRightCoordinate(xIndex, yIndex);
+
+			var refMaps = new List<MapReference<T>>();
 
 			for (int i = 0; i < sourceMaps.Length; i++)
 			{
 				var sourceMap = sourceMaps[i];
-
-				// TODO:  тут сложная логика наложения карт с которпой необходим оопределиться
-
-				// 1. цыкл по покрытой площади
-				// 2.   подгружаем нужный сектор карты если нужно
-				// 3.   опредедляем значение  игнорируя ячейки которые были уже определны
-				// 4. помечаем покрытую площадь как занятую
-				// 5. переходим к следущей карте
 			}
-
-			// сохраянем буффер - контент ProjectMapContent и все его источники ProjectMapContentSource
-			var contentId = this.SaveProjectMapContent(calcDbScope, data.ProjectMapId, mapType, stepDataSize,
-				sourceMaps.Length, 100, mapBuffer);
-
-			foreach (var sourceMap in sourceMaps)
-			{
-				this.SaveSourceMap(calcDbScope, contentId, sourceMap);
-			}
+			return refMaps.ToArray();
 		}
 
-		private long SaveProjectMapContent(IDataLayerScope calcDbScope, long projectMapId, ProjectMapType mapType, int stepDataSize,  int sourceCount, decimal? sourceCoverage, byte[] buffer)
+		private long SaveProjectMapContent<T>(IDataLayerScope calcDbScope, DM.MapContentData<T> mapContent)
+			where T : struct
 		{
-			var compressedBuffer = Compressor.Compress(buffer);
+			var compressedBuffer = Compressor.Compress(mapContent.Content.Serialize());
 			var insertQuery = _calcServerDataLayer.GetBuilder<IProjectMapContent>()
 					.Insert()
-					.SetValue(c => c.MAP.Id, projectMapId)
-					.SetValue(c => c.TypeCode, (byte) mapType)
-					.SetValue(c => c.TypeName, mapType.ToString())
-					.SetValue(c => c.StepDataSize, stepDataSize)
-					.SetValue(c => c.StepDataType, DefineMapStepDataType(mapType).AssemblyQualifiedName)
-					.SetValue(c => c.SourceCount, sourceCount)
-					.SetValue(c => c.SourceCoverage, sourceCoverage)
-					.SetValue(c => c.ContentSize, buffer.Length)
-					.SetValue(c => c.ContentType, compressedBuffer.GetType().AssemblyQualifiedName)
+					.SetValue(c => c.MAP.Id, mapContent.ProjectMap.ProjectMapId)
+					.SetValue(c => c.TypeCode, (byte) mapContent.MapType)
+					.SetValue(c => c.TypeName, mapContent.MapType.ToString())
+					.SetValue(c => c.StepDataSize, mapContent.StepDataSize)
+					.SetValue(c => c.StepDataType, DefineMapStepDataType(mapContent.MapType).AssemblyQualifiedName)
+					.SetValue(c => c.SourceCount, mapContent.SourceCount)
+					.SetValue(c => c.SourceCoverage, mapContent.SourceCoverage)
+					.SetValue(c => c.ContentSize, mapContent.Content.Length)
+					.SetValue(c => c.ContentType, mapContent.Content.GetType().AssemblyQualifiedName)
 					.SetValue(c => c.ContentEncoding, "compressed")
 					.SetValue(c => c.Content, compressedBuffer)
 				;
@@ -202,18 +528,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			return pk.Id;
 		}
 
-		private static byte DefineMapStepDataSize(ProjectMapType mapType)
-		{
-			if (mapType == ProjectMapType.Clutter || mapType == ProjectMapType.Building)
-			{
-				return 1;
-			}
-			else if (mapType == ProjectMapType.Relief)
-			{
-				return 2;
-			}
-			throw new InvalidOperationException($"Unsupported the map type '{mapType}'");
-		}
+		
 
 		private DM.SourceMapData[] FindSourceMaps(IDataLayerScope infoDbScope, DM.ProjectMapData data, ProjectMapType mapType)
 		{
@@ -231,7 +546,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					c => c.AxisYNumber,
 					c => c.AxisYStep,
 					c => c.StepDataSize,
-					c => c.CreatedDate)
+					c => c.CreatedDate,
+					c => c.SectorsCount)
 				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)IC.MapStatusCode.Available)
 				.Where(c => c.TypeCode, ConditionOperator.Equal, (byte)mapType) // одного типа
 				.Where(c => c.Projection, ConditionOperator.Equal, data.Projection) // одной проэкции
@@ -255,7 +571,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						LowerRightY = reader.GetValue(c => c.LowerRightY),
 						MapId = reader.GetValue(c => c.Id),
 						StepDataSize = reader.GetValue(c => c.StepDataSize),
-						MapName = reader.GetValue(c => c.MapName)
+						MapName = reader.GetValue(c => c.MapName),
+						SectorsCount = reader.GetValue(c => c.SectorsCount)
 					};
 
 					if (sourceMap.IntersectWith(data))
@@ -265,7 +582,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 				return sourceMaps
 					.OrderBy(c => c.Priority)
-					.ThenByDescending(c => c.CoveragePercent)
+					//.ThenByDescending(c => c.CoveragePercent)
 					.ThenByDescending(c => c.MapId)
 					.ToArray(); 
 			});
@@ -379,14 +696,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var query = _calcServerDataLayer.GetBuilder<IProjectMap>()
 				.From()
 				.Select(
-					c => c.AxisXNumber,
-					c => c.AxisXStep,
-					c => c.AxisYNumber,
-					c => c.AxisYStep,
-					c => c.LowerRightX,
-					c => c.LowerRightY,
-					c => c.UpperLeftX,
-					c => c.UpperLeftY,
+					c => c.OwnerAxisXNumber,
+					c => c.OwnerAxisXStep,
+					c => c.OwnerAxisYNumber,
+					c => c.OwnerAxisYStep,
+					c => c.OwnerUpperLeftX,
+					c => c.OwnerUpperLeftY,
 					c => c.Projection,
 					c => c.StepUnit)
 				.Where(c => c.Id, ConditionOperator.Equal, projectMapId);
@@ -399,14 +714,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					map = new DM.ProjectMapData()
 					{
 						ProjectMapId = projectMapId,
-						AxisXNumber = reader.GetValue(c => c.AxisXNumber),
-						AxisXStep = reader.GetValue(c => c.AxisXStep),
-						AxisYNumber = reader.GetValue(c => c.AxisXNumber),
-						AxisYStep = reader.GetValue(c => c.AxisXNumber),
-						UpperLeftX = reader.GetValue(c => c.UpperLeftX),
-						UpperLeftY = reader.GetValue(c => c.UpperLeftY),
-						LowerRightX = reader.GetValue(c => c.LowerRightX),
-						LowerRightY = reader.GetValue(c => c.LowerRightY),
+						OwnerAxisXNumber = reader.GetValue(c => c.OwnerAxisXNumber),
+						OwnerAxisXStep = reader.GetValue(c => c.OwnerAxisXStep),
+						OwnerAxisYNumber = reader.GetValue(c => c.OwnerAxisXNumber),
+						OwnerAxisYStep = reader.GetValue(c => c.OwnerAxisXNumber),
+						OwnerUpperLeftX = reader.GetValue(c => c.OwnerUpperLeftX),
+						OwnerUpperLeftY = reader.GetValue(c => c.OwnerUpperLeftY),
 						Projection = reader.GetValue(c => c.Projection),
 						StepUnit = reader.GetValue(c => c.StepUnit),
 					};
@@ -416,13 +729,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			});
 		}
 
-		private bool SaveProjectMapData(IDataLayerScope dbScope, long projectMapId, DM.ProjectMapData data)
+		private bool SaveProjectMapData(IDataLayerScope dbScope, DM.ProjectMapData projectMap)
 		{
 			var query = _calcServerDataLayer.GetBuilder<IProjectMap>()
 				.Update()
-				.SetValue(c => c.LowerRightX, data.LowerRightX)
-				.SetValue(c => c.LowerRightY, data.LowerRightY)
-				.Where(c => c.Id, ConditionOperator.Equal, projectMapId)
+				.SetValue(c => c.AxisXNumber, projectMap.AxisXNumber)
+				.SetValue(c => c.AxisXStep, projectMap.AxisXStep)
+				.SetValue(c => c.AxisYNumber, projectMap.AxisYNumber)
+				.SetValue(c => c.AxisYStep, projectMap.AxisYStep)
+				.SetValue(c => c.UpperLeftX, projectMap.UpperLeftX)
+				.SetValue(c => c.UpperLeftY, projectMap.UpperLeftY)
+				.SetValue(c => c.LowerRightX, projectMap.LowerRightX)
+				.SetValue(c => c.LowerRightY, projectMap.LowerRightY)
+				.Where(c => c.Id, ConditionOperator.Equal, projectMap.ProjectMapId)
 				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)ProjectMapStatusCode.Processing);
 
 			return dbScope.Executor.Execute(query) > 0;

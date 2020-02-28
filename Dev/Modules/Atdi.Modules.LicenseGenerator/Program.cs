@@ -11,8 +11,155 @@ namespace Atdi.Modules.LicenseGenerator
 {
     class Program
     {
-        static void Main(string[] args)
+	    private static Dictionary<string, string> LicenseNumbersDb;
+	    private static Dictionary<string, string> InstanceNumbersDb;
+	    private static string LicenseNumbersDbPath = @"C:\Projects\Repos\atdi.ua\Dev\Modules\Atdi.Modules.LicenseGenerator\DB\LicenseNumbers.db";
+	    private static string InstanceNumbersDbPath = @"C:\Projects\Repos\atdi.ua\Dev\Modules\Atdi.Modules.LicenseGenerator\DB\InstancesNumbers.db";
+		static void InitDBs()
+		{
+			if (File.Exists(LicenseNumbersDbPath))
+			{
+				var buffer = File.ReadAllBytes(LicenseNumbersDbPath);
+				LicenseNumbersDb = buffer.Deserialize<Dictionary<string, string>>();
+			}
+			else
+			{
+				LicenseNumbersDb = new Dictionary<string, string>();
+				//уником девайсы
+				LicenseNumbersDb.Add("LIC-DBD13-G65-055", "LIC-DBD13-G65-055");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-269", "LIC-DBD13-G65-269");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-332", "LIC-DBD13-G65-332");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-482", "LIC-DBD13-G65-482");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-494", "LIC-DBD13-G65-494");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-691", "LIC-DBD13-G65-691");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-702", "LIC-DBD13-G65-702");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-773", "LIC-DBD13-G65-773");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-866", "LIC-DBD13-G65-866");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-925", "LIC-DBD13-G65-925");
+				//уником сервера
+				LicenseNumbersDb.Add("LIC-SBD13-G65-686", "LIC-SBD13-G65-686");
+				LicenseNumbersDb.Add("LIC-SBD13-G65-840", "LIC-SBD13-G65-840");
+				//уником мониторинг
+				LicenseNumbersDb.Add("LIC-CBD13-G65-050", "LIC-CBD13-G65-050");
+				LicenseNumbersDb.Add("LIC-CBD13-G65-206", "LIC-CBD13-G65-206");
+				LicenseNumbersDb.Add("LIC-CBD13-G65-837", "LIC-CBD13-G65-837");
+				LicenseNumbersDb.Add("LIC-CBD13-G65-962", "LIC-CBD13-G65-962");
+
+				// УДЦР устрйоства
+				LicenseNumbersDb.Add("LIC-DBD13-G65-067", "LIC-DBD13-G65-067");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-130", "LIC-DBD13-G65-130");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-131", "LIC-DBD13-G65-131");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-159", "LIC-DBD13-G65-159");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-252", "LIC-DBD13-G65-252");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-266", "LIC-DBD13-G65-266");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-321", "LIC-DBD13-G65-321");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-356", "LIC-DBD13-G65-356");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-515", "LIC-DBD13-G65-515");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-557", "LIC-DBD13-G65-557");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-599", "LIC-DBD13-G65-599");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-620", "LIC-DBD13-G65-620");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-629", "LIC-DBD13-G65-629");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-680", "LIC-DBD13-G65-680");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-786", "LIC-DBD13-G65-786");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-804", "LIC-DBD13-G65-804");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-847", "LIC-DBD13-G65-847");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-889", "LIC-DBD13-G65-889");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-898", "LIC-DBD13-G65-898");
+				LicenseNumbersDb.Add("LIC-DBD13-G65-973", "LIC-DBD13-G65-973");
+				// УДЦР СДРН сервер
+				LicenseNumbersDb.Add("LIC-SBD13-G65-607", "LIC-SBD13-G65-607");
+				// вебквери
+				LicenseNumbersDb.Add("LIC-WQWPBD13-G65-550", "LIC-WQWPBD13-G65-550");
+				LicenseNumbersDb.Add("LIC-WQASBD13-G65-605", "LIC-WQASBD13-G65-605");
+				// Босян вебквери
+				LicenseNumbersDb.Add("LIC-WQWPCA10-B00-718", "LIC-WQWPCA10-B00-718");
+				LicenseNumbersDb.Add("LIC-WQASCA10-B00-857", "LIC-WQASCA10-B00-857");
+				// Казахстан вебквери
+				LicenseNumbersDb.Add("LIC-WQWPBD71-F23-889", "LIC-WQWPBD71-F23-889");
+				LicenseNumbersDb.Add("LIC-WQASBD71-F23-733", "LIC-WQASBD71-F23-733");
+
+				var buffer1 = LicenseNumbersDb.Serialize();
+				File.WriteAllBytes(LicenseNumbersDbPath, buffer1);
+			}
+
+			if (File.Exists(InstanceNumbersDbPath))
+			{
+				var buffer = File.ReadAllBytes(InstanceNumbersDbPath);
+				InstanceNumbersDb = buffer.Deserialize<Dictionary<string, string>>();
+			}
+			else
+			{
+				InstanceNumbersDb = new Dictionary<string, string>();
+
+				//уником девайсы
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-8206", "SENSOR-DBD13-G65-8206");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-5691", "SENSOR-DBD13-G65-5691");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-9001", "SENSOR-DBD13-G65-9001");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-6334", "SENSOR-DBD13-G65-6334");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-2828", "SENSOR-DBD13-G65-2828");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-1110", "SENSOR-DBD13-G65-1110");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-8653", "SENSOR-DBD13-G65-8653");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-8416", "SENSOR-DBD13-G65-8416");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-0244", "SENSOR-DBD13-G65-0244");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-8900", "SENSOR-DBD13-G65-8900");
+
+				InstanceNumbersDb.Add("SDRNSV-SBD13-G65-9594", "SDRNSV-SBD13-G65-9594");
+				InstanceNumbersDb.Add("SDRNSV-SBD13-G65-6077", "SDRNSV-SBD13-G65-6077");
+				//уником мониторинг
+				InstanceNumbersDb.Add("CLIENT-CBD13-G65-1455", "CLIENT-CBD13-G65-1455");
+				InstanceNumbersDb.Add("CLIENT-CBD13-G65-8379", "CLIENT-CBD13-G65-8379");
+				InstanceNumbersDb.Add("CLIENT-CBD13-G65-0495", "CLIENT-CBD13-G65-0495");
+				InstanceNumbersDb.Add("CLIENT-CBD13-G65-9778", "CLIENT-CBD13-G65-9778");
+
+				// УДЦР устрйоства
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-3668", "SENSOR-DBD13-G65-3668");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-5854", "SENSOR-DBD13-G65-5854");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-7613", "SENSOR-DBD13-G65-7613");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-4850", "SENSOR-DBD13-G65-4850");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-1000", "SENSOR-DBD13-G65-1000");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-3206", "SENSOR-DBD13-G65-3206");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-8938", "SENSOR-DBD13-G65-8938");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-9832", "SENSOR-DBD13-G65-9832");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-4036", "SENSOR-DBD13-G65-4036");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-2516", "SENSOR-DBD13-G65-2516");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-6781", "SENSOR-DBD13-G65-6781");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-2314", "SENSOR-DBD13-G65-2314");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-5768", "SENSOR-DBD13-G65-5768");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-3716", "SENSOR-DBD13-G65-3716");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-2440", "SENSOR-DBD13-G65-2440");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-0561", "SENSOR-DBD13-G65-0561");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-6554", "SENSOR-DBD13-G65-6554");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-8386", "SENSOR-DBD13-G65-8386");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-6214", "SENSOR-DBD13-G65-6214");
+				InstanceNumbersDb.Add("SENSOR-DBD13-G65-7870", "SENSOR-DBD13-G65-7870");
+				// УДЦР СДРН сервер
+				InstanceNumbersDb.Add("SDRNSV-SBD13-G65-3690", "SDRNSV-SBD13-G65-3690");
+				// вебквери
+				InstanceNumbersDb.Add("WBP-WQBD13-G65-9714", "WBP-WQBD13-G65-9714");
+				InstanceNumbersDb.Add("APPSRV-WQBD13-G65-8673", "APPSRV-WQBD13-G65-8673");
+				// Босян вебквери
+				InstanceNumbersDb.Add("WBP-WQCA10-B00-1437", "WBP-WQCA10-B00-1437");
+				InstanceNumbersDb.Add("APPSRV-WQCA10-B00-1782", "APPSRV-WQCA10-B00-1782");
+				// Казахстан вебквери
+				InstanceNumbersDb.Add("WBP-WQBD71-F23-9623", "WBP-WQBD71-F23-9623");
+				InstanceNumbersDb.Add("APPSRV-WQBD71-F23-7515", "APPSRV-WQBD71-F23-7515");
+
+				var buffer2 = InstanceNumbersDb.Serialize();
+				File.WriteAllBytes(InstanceNumbersDbPath, buffer2);
+			}
+		}
+
+		static void SaveDBs()
+		{
+			var buffer1 = LicenseNumbersDb.Serialize();
+			File.WriteAllBytes(LicenseNumbersDbPath, buffer1);
+			var buffer2 = InstanceNumbersDb.Serialize();
+			File.WriteAllBytes(InstanceNumbersDbPath, buffer2);
+		}
+
+		static void Main(string[] args)
         {
+			InitDBs();
             //var path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\AppServer";
             //WebQueryAppServer_ForUDCR(path);
             //path = "C:\\Projects\\Licensing\\UDCR\\WebQuery\\WebPortal";
@@ -41,7 +188,11 @@ namespace Atdi.Modules.LicenseGenerator
 
 			//WebQuery_ForKazahstan(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Kzh\WebQuery");
 
-			ICSControl_ForTesting_Infocentr(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\InfocentrLicense", 1);
+			//ICSControl_ForTesting_Infocentr(@"C:\Projects\Repos\atdi.ua\Dev\Delivery\Licenses\Test\Sdrn\InfocentrLicense", 1);
+
+			//выпуск 90 сенсоров
+			ICSControl_ForUDCR_UNICOM_2020();
+
 
 			Console.WriteLine("Process was finished");
 
@@ -955,7 +1106,23 @@ namespace Atdi.Modules.LicenseGenerator
             return productKey;
         }
 
-        private static string MakeLicense2(string path, string licPrefix, string instancePrefix, string licenseType, string productName, string licenseIndex, string instanceIndex, string ownerName, string ownerId, string ownerKey, string company, DateTime startDate, DateTime stopDate, ushort year)
+        
+
+		private static string MakeLicense2(
+			string path, 
+			string licPrefix, 
+			string instancePrefix, 
+			string licenseType, 
+			string productName, 
+			string licenseIndex, 
+			string instanceIndex, 
+			string ownerName, 
+			string ownerId, 
+			string ownerKey, 
+			string company, 
+			DateTime startDate, 
+			DateTime stopDate, 
+			ushort year, LicenseLimitationTerms limitationTerms = LicenseLimitationTerms.Year | LicenseLimitationTerms.TimePeriod)
         {
             var productKey = string.Empty;
 
@@ -975,7 +1142,7 @@ namespace Atdi.Modules.LicenseGenerator
                 ProductKey = productKey,
                 ProductName = productName,
                 Count = 1,
-                LimitationTerms = LicenseLimitationTerms.Year | LicenseLimitationTerms.TimePeriod,
+                LimitationTerms = limitationTerms,
                 Year =  year
                 //Instance = $"SENSOR-D{ownerKey}-{deviceIndex}"
             };
@@ -1153,5 +1320,170 @@ namespace Atdi.Modules.LicenseGenerator
 
             File.WriteAllText(fileName + ".txt", verFileData.ToString(), Encoding.UTF8);
         }
-    }
+
+
+		static void ICSControl_ForUDCR_UNICOM_2020()
+		{
+			//var ownerId = "OID-BD13-G65-N00"; //  Сам УДЦР
+			var ownerId = "OID-BD13-G65-N01"; //  лицензии для УДЦР выданы УНИКОМ
+
+			var ownerName = "Державне підприємство «Український державний центр радіочастот»";
+			var company = "ТОВ 'Лабораторія інформаційних систем'";
+			var ownerKey = "BD13-G65";
+			var startDate = new DateTime(2020, 1, 1);
+			var stopDate = new DateTime(2030, 12, 31);
+			var path = @"C:\Projects\Licensing\UDCR\Sdrn\Licenses_2020\УНИКОМ\BD13-G65\DeviceLicense";
+			
+			for (int i = 0; i < 90; i++)
+			{
+				var licPrefix = "LIC-D";
+				var instancePrefix = "SENSOR-D";
+				BuilProductLicense(
+					path, 
+					licPrefix, 
+					instancePrefix, 
+					"DeviceLicense", 
+					"ICS Control Device", 
+					ownerName, 
+					ownerId, 
+					ownerKey, 
+					company, 
+					startDate, 
+					stopDate, 2020, LicenseLimitationTerms.Year);
+			}
+
+			//for (int i = 0; i < serverCount; i++)
+			//{
+			//	var srvLicenseIndex = GetUniqueIntegerKey(3);
+			//	var instanceIndex = GetUniqueIntegerKey(4);
+			//	var srvLicPrefix = "LIC-S";
+			//	var srvInstancePrefix = "SDRNSV-S";
+
+			//	MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ServerLicense", "ICS Control Server", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+			//}
+
+			//for (int i = 0; i < clientCount; i++)
+			//{
+			//	var srvLicenseIndex = GetUniqueIntegerKey(3);
+			//	var instanceIndex = GetUniqueIntegerKey(4);
+			//	var srvLicPrefix = "LIC-C";
+			//	var srvInstancePrefix = "CLIENT-C";
+
+			//	MakeLicense(path, srvLicPrefix, srvInstancePrefix, "ClientLicense", "ICS Control Monitoring Client", srvLicenseIndex, instanceIndex, ownerName, ownerId, ownerKey, company, startDate, stopDate);
+			//}
+		}
+
+
+		private static string BuildNextLicenseNumber(string licPrefix, string ownerKey, int numMaxSize = 3)
+		{
+			var number = string.Empty;
+			var count = 0;
+
+			while (++count < 100_000)
+			{
+				var licenseIndex = GetUniqueIntegerKey(numMaxSize);
+				number = $"{licPrefix}{ownerKey}-{licenseIndex}";
+
+				if (!LicenseNumbersDb.ContainsKey(number))
+				{
+					LicenseNumbersDb.Add(number, number);
+					return number;
+				}
+			}
+			throw new InvalidOperationException("Couldn't build next number of license");
+		}
+
+		private static string BuildNextInstanceNumber(string instancePrefix, string ownerKey, int numMaxSize = 4)
+		{
+			var number = string.Empty;
+			var count = 0;
+
+			while (++count < 100_000)
+			{
+				var instanceIndex = GetUniqueIntegerKey(numMaxSize);
+				number = $"{instancePrefix}{ownerKey}-{instanceIndex}";
+
+				if (!InstanceNumbersDb.ContainsKey(number))
+				{
+					InstanceNumbersDb.Add(number, number);
+					return number;
+				}
+			}
+			throw new InvalidOperationException("Couldn't build next number of instance");
+		}
+
+		private static string BuilProductLicense(
+			string path,
+			string licPrefix,
+			string instancePrefix,
+			string licenseType,
+			string productName,
+			string ownerName,
+			string ownerId,
+			string ownerKey,
+			string company,
+			DateTime startDate,
+			DateTime stopDate,
+			ushort year, LicenseLimitationTerms limitationTerms = LicenseLimitationTerms.Year | LicenseLimitationTerms.TimePeriod)
+		{
+			if (!"DeviceLicense".Equals(licenseType)
+			    && !"ServerLicense".Equals(licenseType)
+			    && !"ClientLicense".Equals(licenseType))
+			{
+				throw new InvalidOperationException($"Invalid the license type '{licenseType}'");
+			}
+
+			var c = new LicenseCreator();
+			var l = new LicenseData2()
+			{
+				LicenseType = licenseType,
+				Company = company,
+				Copyright = "",
+				OwnerId = ownerId,
+				OwnerName = ownerName,
+				Created = DateTime.Now,
+				StartDate = startDate,
+				StopDate = stopDate,
+				ProductName = productName,
+				Count = 1,
+				LimitationTerms = limitationTerms,
+				Year = year,
+				LicenseNumber = BuildNextLicenseNumber(licPrefix, ownerKey),
+				Instance = BuildNextInstanceNumber(instancePrefix, ownerKey)
+			};
+
+			var productKey = GetProductKey(l.ProductName, l.LicenseType, l.Instance, l.OwnerId, l.LicenseNumber);
+			l.ProductKey = productKey;
+
+			var result = c.Create(new LicenseData2[] { l });
+
+			if (!Directory.Exists(path))
+			{
+				Directory.CreateDirectory(path);
+			}
+
+			var fileName = $"{path}\\{l.LicenseNumber}.{l.Instance}.lic";
+
+			File.WriteAllBytes(fileName, result.Body);
+			CreateLicenseDescriptionFile(l, fileName);
+
+			var licBody = File.ReadAllBytes(fileName);
+
+			var vd = new VerificationData2
+			{
+				OwnerId = l.OwnerId,
+				ProductName = l.ProductName,
+				ProductKey = l.ProductKey,
+				LicenseType = l.LicenseType,
+				Date = startDate,
+				YearHash = LicenseVerifier.EncodeYear(year)
+			};
+
+			var cc = LicenseVerifier.Verify(vd, licBody);
+			SaveDBs();
+
+			Console.WriteLine($"Build next license: '{productKey}' >>> {fileName}");
+			return productKey;
+		}
+	}
 }

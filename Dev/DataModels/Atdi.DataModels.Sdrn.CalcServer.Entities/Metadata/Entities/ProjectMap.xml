@@ -26,14 +26,21 @@
     <Field Name="Projection" DataType="Text.50" SourceName="PROJECTION" SourceType="Column" Desc="The projection of the map" Title="Projection" Required="true"/>
 
     <Field Name="StepUnit" DataType="Text.10" SourceName="STEP_UNIT" SourceType="Column" Desc="The unit of the map step" Title="Step unit" Required="true"/>
-    
-    <Field Name="AxisXNumber" DataType="Integer.32" SourceName="AXIS_X_NUMBER" SourceType="Column" Desc="The number of map steps along the X axis" Title="X step number" Required="true"/>
-    <Field Name="AxisXStep" DataType="Integer.32" SourceName="AXIS_X_STEP" SourceType="Column" Desc="The len of map step along the X axis" Title="X step len" Required="true"/>
-    <Field Name="AxisYNumber" DataType="Integer.32" SourceName="AXIS_Y_NUMBER" SourceType="Column" Desc="The number of map steps along the Y axis" Title="Y step number" Required="true"/>
-    <Field Name="AxisYStep" DataType="Integer.32" SourceName="AXIS_Y_STEP" SourceType="Column" Desc="The len of map step along the Y axis" Title="Y step len" Required="true"/>
 
-    <Field Name="UpperLeftX" DataType="Integer.32"  SourceName="CRD_UPL_X" SourceType="Column" Desc="The Upper Left X" Title="Upper Left X" Required="true"/>
-    <Field Name="UpperLeftY" DataType="Integer.32"  SourceName="CRD_UPL_Y" SourceType="Column" Desc="The Upper Left Y" Title="Upper Left Y" Required="true"/>
+    <Field Name="OwnerAxisXNumber" DataType="Integer.32" SourceName="OWNER_AXIS_X_NUMBER" SourceType="Column" Desc="The number of map steps along the X axis" Title="X step number" Required="true"/>
+    <Field Name="OwnerAxisXStep" DataType="Integer.32" SourceName="OWNER_AXIS_X_STEP" SourceType="Column" Desc="The len of map step along the X axis" Title="X step len" Required="true"/>
+    <Field Name="OwnerAxisYNumber" DataType="Integer.32" SourceName="OWNER_AXIS_Y_NUMBER" SourceType="Column" Desc="The number of map steps along the Y axis" Title="Y step number" Required="true"/>
+    <Field Name="OwnerAxisYStep" DataType="Integer.32" SourceName="OWNER_AXIS_Y_STEP" SourceType="Column" Desc="The len of map step along the Y axis" Title="Y step len" Required="true"/>
+    <Field Name="OwnerUpperLeftX" DataType="Integer.32"  SourceName="OWNER_CRD_UPL_X" SourceType="Column" Desc="The Upper Left X" Title="Upper Left X" Required="true"/>
+    <Field Name="OwnerUpperLeftY" DataType="Integer.32"  SourceName="OWNER_CRD_UPL_Y" SourceType="Column" Desc="The Upper Left Y" Title="Upper Left Y" Required="true"/>
+
+    <Field Name="AxisXNumber" DataType="Integer.32" SourceName="AXIS_X_NUMBER" SourceType="Column" Desc="The number of map steps along the X axis" Title="X step number" Required="false"/>
+    <Field Name="AxisXStep" DataType="Integer.32" SourceName="AXIS_X_STEP" SourceType="Column" Desc="The len of map step along the X axis" Title="X step len" Required="false"/>
+    <Field Name="AxisYNumber" DataType="Integer.32" SourceName="AXIS_Y_NUMBER" SourceType="Column" Desc="The number of map steps along the Y axis" Title="Y step number" Required="false"/>
+    <Field Name="AxisYStep" DataType="Integer.32" SourceName="AXIS_Y_STEP" SourceType="Column" Desc="The len of map step along the Y axis" Title="Y step len" Required="false"/>
+
+    <Field Name="UpperLeftX" DataType="Integer.32"  SourceName="CRD_UPL_X" SourceType="Column" Desc="The Upper Left X" Title="Upper Left X" Required="false"/>
+    <Field Name="UpperLeftY" DataType="Integer.32"  SourceName="CRD_UPL_Y" SourceType="Column" Desc="The Upper Left Y" Title="Upper Left Y" Required="false"/>
 
     <Field Name="LowerRightX" DataType="Integer.32" SourceName="CRD_LWR_X" SourceType="Column" Desc="The Lower Right X" Title="Lower Right X" Required="false"/>
     <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_lWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="false"/>
