@@ -489,7 +489,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="permissionStart">IProtocols.permissionStart</param>
         /// <param name="permissionStop">IProtocols.PermissionStop</param>
         /// <returns></returns>
-        public Protocols[] GetProtocolsByParameters(long? protocolId,
+        public Protocols[] GetProtocolsByParameters(long? processId,
                                                     string createdBy,
                                                     DateTime? DateCreated,
                                                     DateTime? DateStart,
@@ -505,7 +505,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                                     DateTime? permissionStop)
         {
             var loadProtocols = new LoadProtocols(_dataLayer, _logger);
-            return loadProtocols.GetProtocolsByParameters(protocolId, createdBy,
+            return loadProtocols.GetProtocolsByParameters(processId, createdBy,
                                                     DateCreated,
                                                     DateStart,
                                                     DateStop,

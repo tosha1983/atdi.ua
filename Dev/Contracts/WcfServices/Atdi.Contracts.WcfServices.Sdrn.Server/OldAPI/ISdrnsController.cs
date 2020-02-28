@@ -434,7 +434,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         /// <returns></returns>
         [OperationContract]
-        Protocols[] GetProtocolsByParameters(       long? protocolId,
+        Protocols[] GetProtocolsByParameters(       long? processId,
                                                     string createdBy,
                                                     DateTime? DateCreated,
                                                     DateTime? DateStart,
