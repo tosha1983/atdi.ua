@@ -728,6 +728,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return lstProtocols.ToArray();
         }
 
+       
         /// <summary>
         /// Заполнение протокола сведениями о станицях StationExtended
         /// </summary>
@@ -736,7 +737,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         public void FillingProtocolStationData(ref Protocols[] protocolsOutput, Sensor[] sensors, StationExtended[] stationsExtended, long? synchroProcessId)
         {
             var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
-            Protocols[] protocolsInput = protocolsOutput;
+            var protocolsInput = protocolsOutput;
             var lstProtocols = new List<Protocols>();
             var lstStationsExtended = stationsExtended.ToList();
             var lstSensors = sensors.ToList();
@@ -758,20 +759,37 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var fndStation = lstStationsExtended.Find(z => z.TableId == protocolsInput[h].DataRefSpectrum.TableId && z.TableName == protocolsInput[h].DataRefSpectrum.TableName);
                 if (fndStation != null)
                 {
-                    protocol.StationExtended.Address = fndStation.Address;
-                    protocol.StationExtended.BandWidth = fndStation.BandWidth;
-                    protocol.StationExtended.DesigEmission = fndStation.DesigEmission;
-                    protocol.StationExtended.OwnerName = fndStation.OwnerName;
-                    protocol.StationExtended.PermissionNumber = fndStation.PermissionNumber;
-                    protocol.StationExtended.PermissionStart = fndStation.PermissionStart;
-                    protocol.StationExtended.PermissionStop = fndStation.PermissionStop;
-                    protocol.StationExtended.Province = fndStation.Province;
-                    protocol.StationExtended.Standard = fndStation.Standard;
-                    protocol.StationExtended.StandardName = fndStation.StandardName;
-                    protocol.StationExtended.TableId = fndStation.TableId;
-                    protocol.StationExtended.TableName = fndStation.TableName;
-                    protocol.StationExtended.Location = fndStation.Location;
-                    protocol.StationExtended.Id = fndStation.Id;
+                    var stationExtended = protocol.StationExtended;
+                    stationExtended.Address = fndStation.Address;
+                    stationExtended.BandWidth = fndStation.BandWidth;
+                    stationExtended.DesigEmission = fndStation.DesigEmission;
+                    stationExtended.OwnerName = fndStation.OwnerName;
+                    stationExtended.PermissionNumber = fndStation.PermissionNumber;
+                    stationExtended.PermissionStart = fndStation.PermissionStart;
+                    stationExtended.PermissionStop = fndStation.PermissionStop;
+                    stationExtended.Province = fndStation.Province;
+                    stationExtended.Standard = fndStation.Standard;
+                    stationExtended.StandardName = fndStation.StandardName;
+                    stationExtended.TableId = fndStation.TableId;
+                    stationExtended.TableName = fndStation.TableName;
+                    stationExtended.Location = fndStation.Location;
+                    stationExtended.Id = fndStation.Id;
+                    protocol.StationExtended = stationExtended;
+
+                    if (protocol.ProtocolsLinkedWithEmittings != null)
+                    {
+                        var protocolsLinkedWithEmittings = protocol.ProtocolsLinkedWithEmittings;
+                        if ((protocolsLinkedWithEmittings.SpectrumStartFreq_MHz!=null) && (protocolsLinkedWithEmittings.SpectrumSteps_kHz != null) && (protocolsLinkedWithEmittings.T1 != null) && (protocolsLinkedWithEmittings.T2 != null) && (protocolsLinkedWithEmittings.StartFrequency_MHz != null) && (protocolsLinkedWithEmittings.StopFrequency_MHz != null))
+                        {
+                            Calculation.EmittingProcessing.GetFreqAndBandWidthByEmittingParameters(fndStation.Standard, protocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value, protocolsLinkedWithEmittings.SpectrumSteps_kHz.Value, protocolsLinkedWithEmittings.T1.Value, protocolsLinkedWithEmittings.T2.Value, protocolsLinkedWithEmittings.StartFrequency_MHz.Value, protocolsLinkedWithEmittings.StopFrequency_MHz.Value, out double? radioControlMeasFreq_MHz, out double? radioControlBandWidth);
+                            if ((radioControlMeasFreq_MHz != null) && (radioControlBandWidth != null))
+                            {
+                                protocol.RadioControlParams = new RadioControlParams();
+                                protocol.RadioControlParams.RadioControlMeasFreq_MHz = radioControlMeasFreq_MHz;
+                                protocol.RadioControlParams.RadioControlBandWidth = radioControlBandWidth;
+                            }
+                        }
+                    }
                 }
                 lstProtocols.Add(protocol);
             }
@@ -834,9 +852,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                             builderProtocolsInsert.SetValue(c => c.Percent, protocol.DataRefSpectrum.Percent);
                           
                         }
+                        if (protocol.RadioControlParams != null)
                         {
-                            //builderProtocolsInsert.SetValue(c => c.RadioControlBandWidth, ????);
-                            //builderProtocolsInsert.SetValue(c => c.RadioControlMeasFreq_MHz, ????);
+                            if ((protocol.RadioControlParams.RadioControlBandWidth != null) && (protocol.RadioControlParams.RadioControlMeasFreq_MHz != null))
+                            {
+                                builderProtocolsInsert.SetValue(c => c.RadioControlBandWidth, protocol.RadioControlParams.RadioControlBandWidth);
+                                builderProtocolsInsert.SetValue(c => c.RadioControlMeasFreq_MHz, protocol.RadioControlParams.RadioControlMeasFreq_MHz);
+                            }
                         }
                         if (protocol.StationExtended != null)
                         {
