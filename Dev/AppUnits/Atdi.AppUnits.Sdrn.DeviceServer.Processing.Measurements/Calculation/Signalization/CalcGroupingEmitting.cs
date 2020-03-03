@@ -519,6 +519,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                             WorkTimes[i].ScanCount = Math.Max(WorkTimes[i].ScanCount, 1) + Math.Max(WorkTimes[i + 1].ScanCount, 1) + WorkTimes[i].TempCount + WorkTimes[i + 1].TempCount; 
                             WorkTimes[i].TempCount = 0;
                             WorkTimes[i].PersentAvailability = 100 * WorkTimes[i].HitCount / WorkTimes[i].ScanCount;
+                            if (WorkTimes[i].PersentAvailability > 100)
+                            {
+                                WorkTimes[i].PersentAvailability = 100;
+                            }
                             WorkTimes.RemoveRange(i + 1, 1);
                             i--;
                         }
@@ -820,7 +824,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         for (int i = 0; IndexDel.Length > i; i++)
                         {
-                            emittings.RemoveRange(i, 1);
+                            emittings.RemoveRange(IndexDel[i], 1);
                         }
                     }
                     // рекурсивный прогон

@@ -15,6 +15,8 @@ namespace Atdi.Modules.Sdrn.Calculation
     public class Emitting
     {
         [DataMember]
+        public long? Id { get; set; }
+        [DataMember]
         public double StartFrequency_MHz { get; set; }
         [DataMember]
         public double StopFrequency_MHz { get; set; }

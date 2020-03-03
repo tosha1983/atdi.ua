@@ -21,6 +21,22 @@ namespace Atdi.WcfServices.Sdrn.Server
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
+        public struct StationDataToSort
+        {
+            public long? RefSpectrumId;
+            public long? DataRefSpectrumId;
+            public string GlobalSID;
+            public double Freq_MHz;
+            public double Level_dBm;
+        }
+        public struct EmittingDataToSort
+        {
+            public long? Id;
+            public double StartFrequency_MHz;
+            public double StopFrequency_MHz;
+            public int worktimeHitsCount;
+        }
+
 
 
         public RunSynchroProcess(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
@@ -615,6 +631,78 @@ namespace Atdi.WcfServices.Sdrn.Server
             return listDataRefSpectrum.ToArray();
         }
 
+        //
+
+        private int CountUniqueStations(RefSpectrum[] refSpectrums)
+        {
+            //int nubmerOfStations = 0;
+            var uniqueStations = new List<string>();
+            for (int i = 0; i < refSpectrums.Length; i++)
+            {
+                for (int j = 0; j < refSpectrums[i].DataRefSpectrum.Length; j++)
+                {
+                    if (!uniqueStations.Exists(x => x.Equals(refSpectrums[i].DataRefSpectrum[j].GlobalSID)))
+                    {
+                        uniqueStations.Add(refSpectrums[i].DataRefSpectrum[j].GlobalSID);
+                    }
+                }
+            }
+
+            return uniqueStations.Count;
+        }
+
+        private List<StationDataToSort> FillStationDataToCorrespond(RefSpectrum[] refSpectrums)
+        {
+            var staionsDataToCorrespond = new List<StationDataToSort>();
+            StationDataToSort stationDataToCorrespond = new StationDataToSort();
+            for (int i = 0; i < refSpectrums.Length; i++)
+            {
+                for (int j = 0; j < refSpectrums[i].DataRefSpectrum.Length; j++)
+                {
+                    stationDataToCorrespond.RefSpectrumId = refSpectrums[i].Id;
+                    stationDataToCorrespond.DataRefSpectrumId = refSpectrums[i].DataRefSpectrum[j].Id;
+                    stationDataToCorrespond.Freq_MHz = refSpectrums[i].DataRefSpectrum[j].Freq_MHz;
+                    stationDataToCorrespond.GlobalSID = refSpectrums[i].DataRefSpectrum[j].GlobalSID;
+                    stationDataToCorrespond.Level_dBm = refSpectrums[i].DataRefSpectrum[j].Level_dBm;
+                    staionsDataToCorrespond.Add(stationDataToCorrespond);
+                }
+            }
+
+            return staionsDataToCorrespond;
+        }
+
+        private Emitting[] DeleteUnestimatedEmittings(Emitting[] emittings)
+        {
+            var estimatedEmitting = new List<Emitting>();
+
+            for (int i = 0; i < emittings.Length; i++)
+            {
+                if (emittings[i].Spectrum.CorrectnessEstimations)
+                {
+                    estimatedEmitting.Add(emittings[i]);
+                }
+            }
+            return estimatedEmitting.ToArray();
+        }
+
+        private List<EmittingDataToSort> FillEmittingDataToCorrespond(Calculation.Emitting[] emittings)
+        {
+            var emittingsDataToCorrespond = new List<EmittingDataToSort>();
+            EmittingDataToSort emittingDataToCorrespond = new EmittingDataToSort();
+            for (int i = 0; i < emittings.Length; i++)
+            {
+                emittingDataToCorrespond.Id = emittings[i].Id;
+                emittingDataToCorrespond.StartFrequency_MHz = emittings[i].StartFrequency_MHz;
+                emittingDataToCorrespond.StopFrequency_MHz = emittings[i].StopFrequency_MHz;
+                for (int j = 0; j < emittings[i].WorkTimes.Length; j++)
+                {
+                    emittingDataToCorrespond.worktimeHitsCount += emittings[i].WorkTimes[j].HitCount;
+                }
+                emittingsDataToCorrespond.Add(emittingDataToCorrespond);
+            }
+            return emittingsDataToCorrespond;
+        }
+
         /// <summary>
         /// Синхронизация излучений с записями группы сенсора
         /// </summary>
@@ -624,16 +712,53 @@ namespace Atdi.WcfServices.Sdrn.Server
         public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, ReferenceLevels[] referenceLevels)
         {
             var lstProtocols = new List<Protocols>();
-            var lstEmittingReferenceLevels = new List<EmittingReferenceLevels>();
-            for (int i = 0; i < emittings.Length; i++)
+
+
+            // count 
+            int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
+            DeleteUnestimatedEmittings(emittings);
+
+            var listOfEmitings = ConvertEmittings.ConvertArray(emittings).ToList();
+
+            int StartLevelsForLevelDistribution = -150;
+            int NumberPointForLevelDistribution = 200;
+
+            foreach (var emitting in listOfEmitings)
             {
-                var emittingReferenceLevels = new EmittingReferenceLevels()
+                var levelsDistribution = new Calculation.LevelsDistribution();
+                levelsDistribution.Count = new int[NumberPointForLevelDistribution];
+                levelsDistribution.Levels = new int[NumberPointForLevelDistribution];
+                for (var i = 0; i < NumberPointForLevelDistribution; i++)
                 {
-                    Emitting = emittings[i],
-                    ReferenceLevels = referenceLevels[i]
-                };
-                lstEmittingReferenceLevels.Add(emittingReferenceLevels);
+                    levelsDistribution.Levels[i] = StartLevelsForLevelDistribution + i;
+                    levelsDistribution.Count[i] = 0;
+                }
+
+                for (var i = 0; i < levelsDistribution.Levels.Length; i++)
+                {
+                    for (var j = 0; j < emitting.LevelsDistribution.Levels.Length; j++)
+                    {
+                        if (levelsDistribution.Levels[i] == emitting.LevelsDistribution.Levels[j])
+                        {
+                            levelsDistribution.Count[i] = emitting.LevelsDistribution.Count[j];
+                        }
+                    }
+                }
+                emitting.LevelsDistribution = levelsDistribution;
             }
+
+            Calculation.CalcGroupingEmitting.DeleteRedundantUncorrelatedEmitting(listOfEmitings, desiredNumberOfEmittings);
+
+            var emittingsDataToCorrespondUnsorted = new List<EmittingDataToSort>();
+            emittingsDataToCorrespondUnsorted = FillEmittingDataToCorrespond(listOfEmitings.ToArray());
+            var emittingsDataToCorrespondSorted = from z in emittingsDataToCorrespondUnsorted orderby z.worktimeHitsCount ascending select z;
+            var emittingsDataToCorrespond = emittingsDataToCorrespondSorted.ToArray();
+
+            var staionsDataToCorrespondUnsorted = new List<StationDataToSort>();
+            staionsDataToCorrespondUnsorted = FillStationDataToCorrespond(refSpectrums);
+            var stationssDataToCorrespondSorted = from z in staionsDataToCorrespondUnsorted orderby z.Level_dBm ascending select z;
+            var stationssDataToCorrespond = stationssDataToCorrespondSorted.ToArray();
+
 
             // Ниже приведен пример цикла, в котором идет последовательная обработка записей RefSpectrum
 
@@ -651,77 +776,85 @@ namespace Atdi.WcfServices.Sdrn.Server
                     // копируем данные с переменной dataRefSpectrum
                     protocol.DataRefSpectrum = dataRefSpectrum;
 
-                    
-                    
+
                     // объявление новой промежуточной переменной, которая должна заполняться в блоке ниже:
-                    var calculatedEmitting = new Emitting();
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////
-                    /////
-                    /////         ЗДЕСЬ НЕКОТОРЫЙ АЛГОРИТМ ОПРЕДЕЛЕНИЯ EMITTING: 
-                    /////         нужно заполнить поля переменной CalculatedEmitting, которая затем будет использована для формирования очередной записи ProtocolsWithEmittings (ниже)
-                    /////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-                    var emit = emittings.ToList();
-                    var  fndEmit = emit.Find(x => x.StartFrequency_MHz <= dataRefSpectrum.Freq_MHz && x.StopFrequency_MHz >= dataRefSpectrum.Freq_MHz);
-                    if (fndEmit != null)
+                    int stationLink = -1;
+                    for (int k = 0; k < stationssDataToCorrespond.Length; k++)
                     {
-                        calculatedEmitting = fndEmit;
+                        if (stationssDataToCorrespond[k].RefSpectrumId == refSpectrums[i].Id && stationssDataToCorrespond[k].DataRefSpectrumId == refSpectrums[i].DataRefSpectrum[j].Id)
+                        {
+                            stationLink = k;
+                            break;
+                        }
+                    }
+                    if (stationLink >= 0)
+                    {
+                        int corrEmittingId = (int)emittingsDataToCorrespond[stationLink].Id;//////////
 
-                        // если связь с Emitting обнаружена - тогда необходимо заполнить свосйтво ProtocolsLinkedWithEmittings:
-                        protocol.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
-                        protocol.ProtocolsLinkedWithEmittings.Count = calculatedEmitting.LevelsDistribution.Count;
-                        protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm = calculatedEmitting.CurentPower_dBm;
+                        var emitFnd = emittings.ToList();
+                        var findValueIndex = emitFnd.FindIndex(x => x.Id == corrEmittingId);
+                        if (findValueIndex >= 0)
+                        {
 
-                        protocol.ProtocolsLinkedWithEmittings.Levels = calculatedEmitting.LevelsDistribution.Levels;
+                            // объявление новой промежуточной переменной, которая должна заполняться в блоке ниже:
+                            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            /////
+                            /////
+                            /////         ЗДЕСЬ НЕКОТОРЫЙ АЛГОРИТМ ОПРЕДЕЛЕНИЯ EMITTING: 
+                            /////         нужно заполнить поля переменной CalculatedEmitting, которая затем будет использована для формирования очередной записи ProtocolsWithEmittings (ниже)
+                            /////
+                            /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                        if (calculatedEmitting.SignalMask != null)
-                        {
-                            protocol.ProtocolsLinkedWithEmittings.Freq_kHz = calculatedEmitting.SignalMask.Freq_kHz;
-                            protocol.ProtocolsLinkedWithEmittings.Loss_dB = calculatedEmitting.SignalMask.Loss_dB;
-                        }
-                        protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference = calculatedEmitting.MeanDeviationFromReference;
-                        //protocol.ProtocolsLinkedWithEmittings.Probability = здесь заполнить вероятность;
-                        protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm = calculatedEmitting.ReferenceLevel_dBm;
-                        if (calculatedEmitting.EmittingParameters != null)
-                        {
-                            protocol.ProtocolsLinkedWithEmittings.RollOffFactor = calculatedEmitting.EmittingParameters.RollOffFactor;
-                            protocol.ProtocolsLinkedWithEmittings.StandardBW = calculatedEmitting.EmittingParameters.StandardBW;
-                        }
-                        if (calculatedEmitting.Spectrum != null)
-                        {
-                            protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm = calculatedEmitting.Spectrum.SignalLevel_dBm;
-                            protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz = calculatedEmitting.Spectrum.SpectrumStartFreq_MHz;
-                            protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz = calculatedEmitting.Spectrum.SpectrumSteps_kHz;
-                            protocol.ProtocolsLinkedWithEmittings.T1 = calculatedEmitting.Spectrum.T1;
-                            protocol.ProtocolsLinkedWithEmittings.T2 = calculatedEmitting.Spectrum.T2;
-                            protocol.ProtocolsLinkedWithEmittings.TraceCount = calculatedEmitting.Spectrum.TraceCount;
-                            protocol.ProtocolsLinkedWithEmittings.MarkerIndex = calculatedEmitting.Spectrum.MarkerIndex;
-                            protocol.ProtocolsLinkedWithEmittings.Levels_dBm = calculatedEmitting.Spectrum.Levels_dBm;
-                            protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz = calculatedEmitting.Spectrum.Bandwidth_kHz;
-                            protocol.ProtocolsLinkedWithEmittings.Contravention = calculatedEmitting.Spectrum.Contravention;
-                            protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations = calculatedEmitting.Spectrum.CorrectnessEstimations;
-                        }
-                        protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz = calculatedEmitting.StartFrequency_MHz;
-                        protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz = calculatedEmitting.StopFrequency_MHz;
-                        protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = calculatedEmitting.TriggerDeviationFromReference;
-                        if (calculatedEmitting.WorkTimes != null)
-                        {
-                            var workTimes = calculatedEmitting.WorkTimes.ToList();
-                            var minStart = workTimes.Min(z => z.StartEmitting);
-                            var maxStop = workTimes.Min(z => z.StopEmitting);
-                            protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
-                            protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
-                        }
 
-                        var fndEmittingReferenceLevels = lstEmittingReferenceLevels.Find(x => x.Emitting.Id == fndEmit.Id);
-                        if (fndEmittingReferenceLevels != null)
-                        {
-                            protocol.ProtocolsLinkedWithEmittings.ReferenceLevels = fndEmittingReferenceLevels.ReferenceLevels;
+                            // если связь с Emitting обнаружена - тогда необходимо заполнить свосйтво ProtocolsLinkedWithEmittings:
+                            protocol.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
+                            if (emittings[findValueIndex].LevelsDistribution != null)
+                            {
+                                protocol.ProtocolsLinkedWithEmittings.Count = emittings[findValueIndex].LevelsDistribution.Count;
+                                protocol.ProtocolsLinkedWithEmittings.Levels = emittings[findValueIndex].LevelsDistribution.Levels;
+                            }
+                            protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm = emittings[findValueIndex].CurentPower_dBm;
+                            if (emittings[findValueIndex].SignalMask != null)
+                            {
+                                protocol.ProtocolsLinkedWithEmittings.Freq_kHz = emittings[findValueIndex].SignalMask.Freq_kHz;
+                                protocol.ProtocolsLinkedWithEmittings.Loss_dB = emittings[findValueIndex].SignalMask.Loss_dB;
+                            }
+                            protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference = emittings[findValueIndex].MeanDeviationFromReference;
+                            //protocol.ProtocolsLinkedWithEmittings.Probability = здесь заполнить вероятность;
+                            protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm = emittings[findValueIndex].ReferenceLevel_dBm;
+                            if (emittings[findValueIndex].EmittingParameters != null)
+                            {
+                                protocol.ProtocolsLinkedWithEmittings.RollOffFactor = emittings[findValueIndex].EmittingParameters.RollOffFactor;
+                                protocol.ProtocolsLinkedWithEmittings.StandardBW = emittings[findValueIndex].EmittingParameters.StandardBW;
+                            }
+                            protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz = emittings[findValueIndex].StartFrequency_MHz;
+                            protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz = emittings[findValueIndex].StopFrequency_MHz;
+                            if (emittings[findValueIndex].Spectrum != null)
+                            {
+                                protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm = emittings[findValueIndex].Spectrum.SignalLevel_dBm;
+                                protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz = emittings[findValueIndex].Spectrum.SpectrumStartFreq_MHz;
+                                protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz = emittings[findValueIndex].Spectrum.SpectrumSteps_kHz;
+                                protocol.ProtocolsLinkedWithEmittings.Levels_dBm = emittings[findValueIndex].Spectrum.Levels_dBm;
+                                protocol.ProtocolsLinkedWithEmittings.MarkerIndex = emittings[findValueIndex].Spectrum.MarkerIndex;
+                                protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz = emittings[findValueIndex].Spectrum.Bandwidth_kHz;
+                                protocol.ProtocolsLinkedWithEmittings.Contravention = emittings[findValueIndex].Spectrum.Contravention;
+                                protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations = emittings[findValueIndex].Spectrum.CorrectnessEstimations;
+                                protocol.ProtocolsLinkedWithEmittings.T1 = emittings[findValueIndex].Spectrum.T1;
+                                protocol.ProtocolsLinkedWithEmittings.T2 = emittings[findValueIndex].Spectrum.T2;
+                                protocol.ProtocolsLinkedWithEmittings.TraceCount = emittings[findValueIndex].Spectrum.TraceCount;
+                            }
+                            protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference = emittings[findValueIndex].TriggerDeviationFromReference;
+
+                            if ((emittings[findValueIndex].WorkTimes != null) && (emittings[findValueIndex].WorkTimes.Length > 0))
+                            {
+                                var workTimes = emittings[findValueIndex].WorkTimes.ToList();
+                                var minStart = workTimes.Min(z => z.StartEmitting);
+                                var maxStop = workTimes.Min(z => z.StopEmitting);
+                                protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
+                                protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
+                            }
+                            lstProtocols.Add(protocol);
                         }
-                        lstProtocols.Add(protocol);
                     }
                 }
             }
@@ -1388,10 +1521,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var queryLinkHeadRefSpectrumFrom = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>()
                 .From()
                 .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.HEAD_REF_SPECTRUM.Id)
-                .Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.Equal, dataSynchronization.DateStart)
-                .Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.Equal, dataSynchronization.DateEnd)
-                .Where(c => c.SYNCHRO_PROCESS.CreatedBy, ConditionOperator.Equal, dataSynchronization.CreatedBy)
-                .Where(c => c.SYNCHRO_PROCESS.CreatedDate, ConditionOperator.Equal, dataSynchronization.DateCreated);
+                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
                 queryExecuter.Fetch(queryLinkHeadRefSpectrumFrom, readerLinkHeadRefSpectrum =>
                 {
                     while (readerLinkHeadRefSpectrum.Read())
@@ -1413,10 +1543,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var queryLinkSensorsWithSynchroProcessFrom = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>()
                 .From()
                 .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.SensorId)
-                .Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.Equal, dataSynchronization.DateStart)
-                .Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.Equal, dataSynchronization.DateEnd)
-                .Where(c => c.SYNCHRO_PROCESS.CreatedBy, ConditionOperator.Equal, dataSynchronization.CreatedBy)
-                .Where(c => c.SYNCHRO_PROCESS.CreatedDate, ConditionOperator.Equal, dataSynchronization.DateCreated);
+                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
                 queryExecuter.Fetch(queryLinkSensorsWithSynchroProcessFrom, readerLinkSensorsWithSynchroProcess =>
                 {
                     while (readerLinkSensorsWithSynchroProcess.Read())
@@ -1610,10 +1737,12 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out ReferenceLevels[] referenceLevels);
 
-                        // Синхронизация излучений с записями группы сенсора
-                        var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels);
-
-                        listProtocolsOutput.AddRange(protocol);
+                        if ((emittings != null) && (emittings.Length > 0))
+                        {
+                            // Синхронизация излучений с записями группы сенсора
+                            var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels);
+                            listProtocolsOutput.AddRange(protocol);
+                        }
                     }
 
                     // 
@@ -1689,11 +1818,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
 
                                 var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out ReferenceLevels[] referenceLevels);
-
-                                // Синхронизация излучений с записями группы сенсора
-                                var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels);
-
-                                listProtocolsOutput.AddRange(protocol);
+                                if ((emittings != null) && (emittings.Length > 0))
+                                {
+                                    // Синхронизация излучений с записями группы сенсора
+                                    var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels);
+                                    listProtocolsOutput.AddRange(protocol);
+                                }
                             }
 
                             // 

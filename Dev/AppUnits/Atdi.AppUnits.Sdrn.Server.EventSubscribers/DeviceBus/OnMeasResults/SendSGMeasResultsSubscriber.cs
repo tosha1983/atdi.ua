@@ -36,6 +36,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             public IDataLayerScope scope;
             public DM.MeasResults measResult;
         }
+        private readonly AppServerComponentConfig _config;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly IStatistics _statistics;
@@ -56,6 +57,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             ISdrnServerEnvironment environment,
             IStatistics statistics,
             IDataCacheSite cacheSite,
+            AppServerComponentConfig config,
             ILogger logger)
             : base(messagesSite, logger)
         {
@@ -63,6 +65,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             this._dataLayer = dataLayer;
             this._environment = environment;
             this._statistics = statistics;
+            this._config = config;
             this._eventEmitter = eventEmitter;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
 
@@ -106,19 +109,32 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
 
 
                         bool? collectEmissionInstrumentalEstimation = null;
-                        if (long.TryParse(context.measResult.TaskId, out long taskId))
+                        var rawTaskId = context.measResult.TaskId.Replace("SDRN.SubTaskSensorId.", "");
+                        if (long.TryParse(rawTaskId, out long taskId))
                         {
-                            var builderTask = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().From();
-                            builderTask.Select(c => c.CollectEmissionInstrumentalEstimation);
-                            builderTask.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, taskId);
-                            this._queryExecutor.Fetch(builderTask, readerResMeas =>
+                            var builderSubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                            builderSubTaskSensor.Select(c => c.SUBTASK.Id, c => c.SUBTASK.MEAS_TASK.Id);
+                            builderSubTaskSensor.Where(c => c.Id, ConditionOperator.Equal, taskId);
+                            this._queryExecutor.Fetch(builderSubTaskSensor, readerSubTaskSensor =>
                             {
-                                while (readerResMeas.Read())
+                                while (readerSubTaskSensor.Read())
                                 {
-                                    collectEmissionInstrumentalEstimation = (readerResMeas.GetValue(c => c.CollectEmissionInstrumentalEstimation));
+                                    var builderTask = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().From();
+                                    builderTask.Select(c => c.CollectEmissionInstrumentalEstimation);
+                                    builderTask.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerSubTaskSensor.GetValue(c => c.SUBTASK.MEAS_TASK.Id));
+                                    this._queryExecutor.Fetch(builderTask, readerResMeas =>
+                                    {
+                                        while (readerResMeas.Read())
+                                        {
+                                            collectEmissionInstrumentalEstimation = (readerResMeas.GetValue(c => c.CollectEmissionInstrumentalEstimation));
+                                        }
+                                        return true;
+                                    });
                                 }
                                 return true;
                             });
+
+                         
                         }
 
                         if (this.SaveMeasResultSignaling(ref context, collectEmissionInstrumentalEstimation.GetValueOrDefault(false)))
@@ -209,6 +225,63 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 if (collectEmissionInstrumentalEstimation)
                 {
                     long subTaskSensorId = 0;
+                    DateTime? TimeStart = null;
+                    DateTime? TimeStop = null;
+                    int? SignalizationNCount = null;
+                    long? sensorId=null;
+                    double? CrossingBWPercentageForGoodSignals = null;
+                    double? CrossingBWPercentageForBadSignals = null;
+                    int? TypeJoinSpectrum = null;
+                    bool? AnalyzeByChannel = null;
+                    bool? CorrelationAnalize = null;
+
+                    double? CorrelationFactor = null;
+                    double? MaxFreqDeviation = null;
+
+                    var rawTaskId = measResult.TaskId.Replace("SDRN.SubTaskSensorId.", "");
+                    if (long.TryParse(rawTaskId, out subTaskSensorId))
+                    {
+                        if (subTaskSensorId > 0)
+                        {
+                            var builderSubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                            builderSubTaskSensor.Select(c => c.SENSOR.Id, c => c.SUBTASK.Id, c => c.SUBTASK.MEAS_TASK.Id, c => c.SUBTASK.MEAS_TASK.TimeStart, c => c.SUBTASK.MEAS_TASK.TimeStop);
+                            builderSubTaskSensor.Where(c => c.Id, ConditionOperator.Equal, subTaskSensorId);
+                            this._queryExecutor.Fetch(builderSubTaskSensor, readerSubTaskSensor =>
+                            {
+                                while (readerSubTaskSensor.Read())
+                                {
+                                    sensorId = readerSubTaskSensor.GetValue(c => c.SENSOR.Id);
+                                    TimeStart = readerSubTaskSensor.GetValue(c => c.SUBTASK.MEAS_TASK.TimeStart);
+                                    TimeStop = readerSubTaskSensor.GetValue(c => c.SUBTASK.MEAS_TASK.TimeStop);
+                                    var builderMeasTaskSignaling = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>().From();
+                                    builderMeasTaskSignaling.Select(c => c.SignalizationNCount, c => c.CrossingBWPercentageForGoodSignals, c => c.CrossingBWPercentageForBadSignals, c => c.TypeJoinSpectrum, c => c.AnalyzeByChannel, c => c.CorrelationAnalize, c => c.CorrelationFactor, c => c.MaxFreqDeviation);
+                                    builderMeasTaskSignaling.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerSubTaskSensor.GetValue(c => c.SUBTASK.MEAS_TASK.Id));
+                                    this._queryExecutor.Fetch(builderMeasTaskSignaling, readerMeasTaskSignaling =>
+                                    {
+                                        while (readerMeasTaskSignaling.Read())
+                                        {
+                                            SignalizationNCount = readerMeasTaskSignaling.GetValue(c => c.SignalizationNCount);
+                                            CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForGoodSignals);
+                                            CrossingBWPercentageForBadSignals = readerMeasTaskSignaling.GetValue(c => c.CrossingBWPercentageForBadSignals);
+                                            TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(c => c.TypeJoinSpectrum);
+                                            AnalyzeByChannel = readerMeasTaskSignaling.GetValue(c => c.AnalyzeByChannel);
+                                            CorrelationAnalize = readerMeasTaskSignaling.GetValue(c => c.CorrelationAnalize);
+                                            CorrelationFactor = readerMeasTaskSignaling.GetValue(c => c.CorrelationFactor);
+                                            MaxFreqDeviation = readerMeasTaskSignaling.GetValue(c => c.MaxFreqDeviation);
+
+                                        }
+                                        return true;
+                                    });
+                                }
+                                return true;
+                            });
+
+
+                            GroupEmitting(measResult, subTaskSensorId, sensorId, SignalizationNCount, TimeStart, TimeStop, CrossingBWPercentageForGoodSignals, CrossingBWPercentageForBadSignals, TypeJoinSpectrum, AnalyzeByChannel, CorrelationAnalize, CorrelationFactor, MaxFreqDeviation);
+                            DeleteOldResult(subTaskSensorId);
+                        }
+                    }
+                    /*
                     if (long.TryParse(measResult.ResultId, out long resultId))
                     {
                         var builderResult = this._dataLayer.GetBuilder<MD.IResMeas>().From();
@@ -223,11 +296,13 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             return true;
                         });
                     }
+                   
                     if (subTaskSensorId > 0)
                     {
                         GroupEmitting(measResult, subTaskSensorId);
                         DeleteOldResult(subTaskSensorId);
                     }
+                    */
                 }
 
                 if ((measResult.Status != null) && (measResult.Status.Length > 5))
@@ -669,19 +744,124 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             sensorId = id;
             return result;
         }
-        private void GroupEmitting(MeasResults result, long subTaskSensorId)
+        private void GroupEmitting(MeasResults result,
+                                   long subTaskSensorId,
+                                   long? sensorId,
+                                   int? SignalizationNCount,
+                                   DateTime? StartTime,
+                                   DateTime? StopTime,
+                                   double? CrossingBWPercentageForGoodSignals, 
+                                   double? CrossingBWPercentageForBadSignal,
+                                   int? TypeJoinSpectrum,
+                                   bool? AnalyzeByChannel,
+                                   bool? CorrelationAnalize,
+                                   double? CorrelationFactor,
+                                   double? MaxFreqDeviation
+            )
         {
-            var emittingRaw = LoadOthersEmittings(subTaskSensorId);
-            var emittingSummary = ConvertEmitting(result.Emittings);
+            var NoiseLevel_dBm = -100;
+            var TimeBetweenWorkTimes_sec = this._config.TimeBetweenWorkTimes_sec;
+            var lstEmitting = new List<CALC.Emitting>();
+            var emittingSummury = LoadOthersEmittings(subTaskSensorId);
+            var emittingRaw = ConvertEmitting(result.Emittings);
             // Группировка
             CALC.Emitting[] emittingTemp = null;
-            double? prmCorrelationFactor = 0.85;
+           var prmCorrelationFactor = CorrelationFactor;
+            if (emittingSummury.Length != 0)
+            {
+                lstEmitting.AddRange(emittingSummury.ToList());
+                lstEmitting.AddRange(emittingRaw.ToList());
 
-            CALC.CalcGroupingEmitting.CalcGrouping(600, 0, 70, 40, false, false, ref prmCorrelationFactor, 0.0001, true, 75, 0.9, true, ref emittingRaw, ref emittingTemp, ref emittingSummary, -100, 1000);
-            result.Emittings = ConvertEmitting(emittingSummary);
+                var lstEmittingTempTemp = new List<CALC.Emitting>();
+                var lstEmittingSummury = new List<CALC.Emitting>();
+                for (int i = 0; i < lstEmitting.Count; i++)
+                {
+                    if (lstEmitting[i].Spectrum != null)
+                    {
+                        if (lstEmitting[i].Spectrum.СorrectnessEstimations == true)
+                        {
+                            lstEmittingSummury.Add(lstEmitting[i]);
+                        }
+                        else
+                        {
+                            lstEmittingTempTemp.Add(lstEmitting[i]);
+                        }
+                    }
+                    else
+                    {
+                        lstEmittingTempTemp.Add(lstEmitting[i]);
+                    }
+                }
+
+                var signalizationNCount = SignalizationNCount;
+                if (signalizationNCount != 0)
+                {
+                    var startTime = StartTime.Value;
+                    var stopTime = StopTime.Value;
+                    var val = stopTime - startTime;
+                    if (val.TotalSeconds > 0)
+                    {
+                        var TimeBetweenWorkTimesTask_sec = (int)((val.TotalSeconds / signalizationNCount) * 5);
+                        if (TimeBetweenWorkTimes_sec < TimeBetweenWorkTimesTask_sec)
+                        {
+                            TimeBetweenWorkTimes_sec = TimeBetweenWorkTimesTask_sec;
+                        }
+                    }
+                }
+
+                var emitEaw = new CALC.Emitting[0];
+                emittingSummury = lstEmittingSummury.ToArray();
+                emittingTemp = lstEmittingTempTemp.ToArray();
+                
+                CALC.CalcGroupingEmitting.CalcGrouping(TimeBetweenWorkTimes_sec, TypeJoinSpectrum, CrossingBWPercentageForGoodSignals, CrossingBWPercentageForBadSignal, AnalyzeByChannel, CorrelationAnalize, ref prmCorrelationFactor, MaxFreqDeviation, this._config.CorrelationAdaptation, this._config.MaxNumberEmitingOnFreq, this._config.MinCoeffCorrelation, this._config.UkraineNationalMonitoring, ref emitEaw, ref emittingTemp, ref emittingSummury, NoiseLevel_dBm, this._config.CountMaxEmission);
+
+                //CALC.CalcGroupingEmitting.CalcGrouping(60, 0, 90, 60, false, true, ref prmCorrelationFactor, 0.0001, true, 25, 0.8, true, ref emittingRaw, ref emittingTemp, ref emittingSummury, -100, 1000);
+                lstEmitting = new List<CALC.Emitting>();
+                lstEmitting.AddRange(emittingSummury);
+                lstEmitting.AddRange(emittingTemp);
+
+                for (int i = 0; i < lstEmitting.Count; i++)
+                {
+                    lstEmitting[i].SensorId = (int)sensorId;
+                }
+                result.Emittings = ConvertEmitting(lstEmitting.ToArray());
+            }
+            else
+            {
+                result.Emittings = ConvertEmitting(emittingRaw);
+            }
         }
         private CALC.Emitting[] ConvertEmitting(Emitting[] emittings)
         {
+            int StartLevelsForLevelDistribution = -150;
+            int NumberPointForLevelDistribution = 200;
+
+            foreach (var emitting in emittings)
+            {
+                var levelsDistribution = new LevelsDistribution();
+                levelsDistribution.Count = new int[NumberPointForLevelDistribution];
+                levelsDistribution.Levels = new int[NumberPointForLevelDistribution];
+                for (var i = 0; i < NumberPointForLevelDistribution; i++)
+                {
+                    levelsDistribution.Levels[i] = StartLevelsForLevelDistribution + i;
+                    levelsDistribution.Count[i] = 0;
+                }
+                
+                for (var i = 0; i < levelsDistribution.Levels.Length; i++)
+                {
+                    for (var j = 0; j < emitting.LevelsDistribution.Levels.Length; j++)
+                    {
+                        if (levelsDistribution.Levels[i] == emitting.LevelsDistribution.Levels[j])
+                        {
+                            levelsDistribution.Count[i] = emitting.LevelsDistribution.Count[j];
+                        }
+                    }
+                }
+                emitting.LevelsDistribution = levelsDistribution;
+            }
+
+
+
             var listEmittings = new List<CALC.Emitting>();
             foreach (var emitting in emittings)
             {
@@ -701,6 +881,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         Count = emitting.LevelsDistribution.Count,
                         Levels = emitting.LevelsDistribution.Levels
                     },
+                    /*
                     EmittingParameters = new CALC.EmittingParameters()
                     {
                         FreqDeviation = emitting.EmittingParameters.FreqDeviation,
@@ -714,6 +895,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         Freq_kHz = emitting.SignalMask.Freq_kHz,
                         Loss_dB = emitting.SignalMask.Loss_dB
                     },
+                    */
                     Spectrum = new CALC.Spectrum()
                     {
                         Bandwidth_kHz = emitting.Spectrum.Bandwidth_kHz,
@@ -746,6 +928,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 }
                 emitt.WorkTimes = wtList.ToArray();
 
+                /*
                 var sysInfoList = new List<CALC.SignalingSysInfo>();
                 foreach (var sysInfo in emitting.SysInfos)
                 {
@@ -784,6 +967,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     sysInfoList.Add(si);
                 }
                 emitt.SysInfos = sysInfoList.ToArray();
+                */
                 listEmittings.Add(emitt);
             }
             return listEmittings.ToArray();
@@ -809,6 +993,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         Count = emitting.LevelsDistribution.Count,
                         Levels = emitting.LevelsDistribution.Levels
                     },
+                    /*
                     EmittingParameters = new EmittingParameters()
                     {
                         FreqDeviation = emitting.EmittingParameters.FreqDeviation,
@@ -822,6 +1007,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                         Freq_kHz = emitting.SignalMask.Freq_kHz,
                         Loss_dB = emitting.SignalMask.Loss_dB
                     },
+                    */
                     Spectrum = new Spectrum()
                     {
                         Bandwidth_kHz = emitting.Spectrum.Bandwidth_kHz,
@@ -853,7 +1039,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     wtList.Add(wt);
                 }
                 emitt.WorkTimes = wtList.ToArray();
-
+                /*
                 var sysInfoList = new List<SignalingSysInfo>();
                 foreach (var sysInfo in emitting.SysInfos)
                 {
@@ -892,6 +1078,71 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     sysInfoList.Add(si);
                 }
                 emitt.SysInfos = sysInfoList.ToArray();
+                */
+
+                var levelDistributionCorrCount = new List<int>();
+                var levelDistributionCorrLevel = new List<int>();
+                if (emitt != null)
+                {
+                    if (emitt.LevelsDistribution != null)
+                    {
+                        var newEmittingLevelsDistributionCount = emitt.LevelsDistribution.Count;
+                        var newEmittingLevelsDistributionLevel = emitt.LevelsDistribution.Levels;
+                        int startIndex = -1;
+                        int endIndex = -1;
+                        for (var j = 0; j < newEmittingLevelsDistributionCount.Length; j++)
+                        {
+                            var valCount = newEmittingLevelsDistributionCount[j];
+                            var valLevel = newEmittingLevelsDistributionLevel[j];
+                            if (valCount == 0)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                startIndex = j;
+                                break;
+                            }
+                        }
+
+                        for (var j = newEmittingLevelsDistributionCount.Length - 1; j >= 0; j--)
+                        {
+                            var valCount = newEmittingLevelsDistributionCount[j];
+                            var valLevel = newEmittingLevelsDistributionLevel[j];
+                            if (valCount == 0)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                endIndex = j;
+                                break;
+                            }
+                        }
+
+                        if ((startIndex >= 0) && (endIndex >= 0))
+                        {
+                            for (var k = startIndex; k <= endIndex; k++)
+                            {
+                                var valCount = newEmittingLevelsDistributionCount[k];
+                                var valLevel = newEmittingLevelsDistributionLevel[k];
+
+                                levelDistributionCorrCount.Add(valCount);
+                                levelDistributionCorrLevel.Add(valLevel);
+                            }
+                            emitt.LevelsDistribution.Levels = levelDistributionCorrLevel.ToArray();
+                            emitt.LevelsDistribution.Count = levelDistributionCorrCount.ToArray();
+                        }
+                        else
+                        {
+                            emitt.LevelsDistribution.Levels = newEmittingLevelsDistributionLevel.ToArray();
+                            emitt.LevelsDistribution.Count = newEmittingLevelsDistributionCount.ToArray();
+                        }
+                    }
+                }
+
+
+
                 listEmittings.Add(emitt);
             }
             return listEmittings.ToArray();
@@ -1038,6 +1289,38 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 if (sysInfos.Count > 0)
                     emittings[emittingId].SysInfos = sysInfos.Values.ToArray();
             }
+
+            int StartLevelsForLevelDistribution = -150;
+            int NumberPointForLevelDistribution = 200;
+
+            foreach (var emitting in emittings.Values)
+            {
+                var levelsDistribution = new LevelsDistribution();
+                levelsDistribution.Count = new int[NumberPointForLevelDistribution];
+                levelsDistribution.Levels = new int[NumberPointForLevelDistribution];
+                for (var i = 0; i < NumberPointForLevelDistribution; i++)
+                {
+                    levelsDistribution.Levels[i] = StartLevelsForLevelDistribution + i;
+                    levelsDistribution.Count[i] = 0;
+                }
+
+                for (var i = 0; i < levelsDistribution.Levels.Length; i++)
+                {
+                    for (var j = 0; j < emitting.LevelsDistribution.Levels.Length; j++)
+                    {
+                        if (levelsDistribution.Levels[i] == emitting.LevelsDistribution.Levels[j])
+                        {
+                            levelsDistribution.Count[i] = emitting.LevelsDistribution.Count[j];
+                        }
+                    }
+                }
+                emitting.LevelsDistribution = new CALC.LevelsDistribution()
+                {
+                     Count = levelsDistribution.Count,
+                     Levels = levelsDistribution.Levels
+                }; 
+            }
+
             return emittings.Values.ToArray();
         }
         private void DeleteOldResult(long subTaskSensorId)
