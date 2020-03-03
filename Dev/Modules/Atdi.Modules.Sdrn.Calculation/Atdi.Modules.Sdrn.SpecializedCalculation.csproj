@@ -53,8 +53,10 @@
     <Compile Include="Models\Chart\ChartPoints.cs" />
     <Compile Include="Models\Chart\ChartStyle.cs" />
     <Compile Include="CreateMaskFromSpectrum.cs" />
+    <Compile Include="Models\Signaling\EmitParams.cs" />
     <Compile Include="Reports\BuildSpectrogram.cs" />
     <Compile Include="Reports\Utitlity.cs" />
+    <Compile Include="Signaling\CalcSpecializedGroupingEmitting.cs" />
     <Compile Include="Signaling\CalcGroupingEmitting.cs" />
     <Compile Include="Signaling\CalcSignalization.cs" />
     <Compile Include="Models\Signaling\Emitting.cs" />

@@ -8,282 +8,8 @@ using Atdi.Common;
 
 namespace Atdi.Modules.Sdrn.Calculation
 {
-    public static class CalcGroupingEmitting
+    public static class CalcSpecializedGroupingEmitting
     {
-
-        //константа 
-        private static int TimeBetweenWorkTimes_sec;
-        private static int TypeJoinSpectrum; // 0 - Best Emmiting (ClearWrite), 1 - MaxHold, 2 - Avarage
-        private static double CrossingBWPercentageForGoodSignals; // определяет насколько процентов должно совпадать излучение если BW определен 
-        private static double CrossingBWPercentageForBadSignals; // определяет насколько процентов должно совпадать излучение если BW не определен 
-        private static bool AnalyzeByChannel;
-        private static bool CorrelationAnalize;
-        private static double CorrelationFactor;
-        private static double MaxFreqDeviation;
-        private static int CountMaxEmission; // нужно брать из файла конфигурации
-        private static bool CorrelationAdaptation; // true означает что можно адаптировать коэфициент корреляции. Устанавливается когда первоначально коэфициент корреляции 0.99 и выше.
-        private static int MaxNumberEmitingOnFreq; // брать из файла конфигурации.
-        private static double MinCoeffCorrelation; // брать из файла конфигурации.
-        private static bool UkraineNationalMonitoring; // признак что делается все для Украины
-
-
-        // конец констант
-
-        /// <summary>
-        /// Мы сливаем все EmittingRaw в EmittingSummary с групировкой данных если излучения подобны 
-        /// </summary>
-        /// <param name="EmittingRaw"></param>
-        /// <param name="EmittingTemp"></param>
-        /// <param name="EmittingSummary"></param>
-        /// <returns></returns>
-        public static bool CalcGrouping(
-                                        int? prmTimeBetweenWorkTimes_sec,
-                                        int? prmTypeJoinSpectrum,
-                                        double? prmCrossingBWPercentageForGoodSignals,
-                                        double? prmCrossingBWPercentageForBadSignals,
-                                        bool? prmAnalyzeByChannel,
-                                        bool? prmCorrelationAnalize,
-                                        ref double? prmCorrelationFactor,
-                                        double? prmMaxFreqDeviation,
-                                        bool? prmCorrelationAdaptation,
-                                        int? prmMaxNumberEmitingOnFreq,
-                                        double? prmMinCoeffCorrelation,
-                                        bool? prmUkraineNationalMonitoring,
-                                        ref Emitting[] EmittingsRaw,
-                                        ref Emitting[] EmittingsTemp,
-                                        ref Emitting[] EmittingsSummary,
-                                        double NoiseLevel_dBm,
-                                        int? CountMaxEmissionFromConfig)
-        {
-
-
-            if (EmittingsRaw == null)
-            {
-                return true;
-            }
-            /*
-            CountMaxEmission = CountMaxEmissionFromConfig;
-            TimeBetweenWorkTimes_sec = 600;
-            TypeJoinSpectrum = 0;
-            CrossingBWPercentageForGoodSignals = 70;
-            CrossingBWPercentageForBadSignals = 40;
-            AnalyzeByChannel = false;
-            CorrelationAnalize = true;
-            MaxFreqDeviation = 0.0001;
-            CorrelationFactor = 0.85;
-            CorrelationAdaptation = true;
-            MaxNumberEmitingOnFreq = 75;
-            MinCoeffCorrelation = 0.9;
-            UkraineNationalMonitoring = true;
-            CountMaxEmissionFromConfig = 1000;
-            NoiseLevel_dBm = -100;
-            */
-            
-            CountMaxEmission = CountMaxEmissionFromConfig.Value;
-            TimeBetweenWorkTimes_sec = prmTimeBetweenWorkTimes_sec.Value;
-            TypeJoinSpectrum = prmTypeJoinSpectrum.Value;
-            CrossingBWPercentageForGoodSignals = prmCrossingBWPercentageForGoodSignals.Value;
-            CrossingBWPercentageForBadSignals = prmCrossingBWPercentageForBadSignals.Value;
-            AnalyzeByChannel = prmAnalyzeByChannel.Value;
-            CorrelationAnalize = prmCorrelationAnalize.Value;
-            MaxFreqDeviation = prmMaxFreqDeviation.Value;
-            CorrelationFactor = prmCorrelationFactor.Value;
-            CorrelationAdaptation = prmCorrelationAdaptation.Value;
-            MaxNumberEmitingOnFreq = prmMaxNumberEmitingOnFreq.Value;
-            MinCoeffCorrelation = prmMinCoeffCorrelation.Value;
-            UkraineNationalMonitoring = prmUkraineNationalMonitoring.Value;
-
-
-            // Увеличиваем счетчики у всех излучений
-            if (EmittingsSummary != null)
-            {
-                for (var i = 0; EmittingsSummary.Length > i; i++)
-                {
-                    if (EmittingsSummary[i].WorkTimes != null)
-                    {
-                        EmittingsSummary[i].WorkTimes[EmittingsSummary[i].WorkTimes.Length - 1].TempCount++;
-                    }
-                }
-            }
-            if (EmittingsTemp != null)
-            {
-                for (var i = 0; EmittingsTemp.Length > i; i++)
-                {
-                    if (EmittingsTemp[i].WorkTimes != null)
-                    {
-                        EmittingsTemp[i].WorkTimes[EmittingsTemp[i].WorkTimes.Length - 1].TempCount++;
-                    }
-                }
-
-            }
-            List<Emitting> emittingsSummaryTemp;
-            List<Emitting> emittingsTempTemp;
-            if (EmittingsSummary == null)
-            {
-                emittingsSummaryTemp = new List<Emitting>();
-            }
-            else
-            {
-                emittingsSummaryTemp = EmittingsSummary.ToList();
-            }
-            if (EmittingsTemp == null)
-            {
-                emittingsTempTemp = new List<Emitting>();
-            }
-            else
-            {
-                emittingsTempTemp = EmittingsTemp.ToList();
-            }
-            for (var i = 0; EmittingsRaw.Length > i; i++)
-            {
-                bool isSuccess = false;
-                bool existTheSameEmitting = false;
-                for (var j = 0; emittingsSummaryTemp.Count > j; j++)
-                {
-                    existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[j], EmittingsRaw[i], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
-                    if (existTheSameEmitting)
-                    {
-                        var em = emittingsSummaryTemp[j];
-                        JoinEmmiting(ref em, EmittingsRaw[i], NoiseLevel_dBm);
-                        emittingsSummaryTemp[j] = em;
-                        isSuccess = true;
-                        break;
-                    }
-                }
-                if (isSuccess == false)
-                {
-                    for (var l = 0; emittingsTempTemp.Count > l; l++)
-                    {
-                        existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[l], EmittingsRaw[i], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
-                        if (existTheSameEmitting)
-                        {
-                            var em = emittingsTempTemp[l];
-                            JoinEmmiting(ref em, EmittingsRaw[i], NoiseLevel_dBm);
-                            emittingsTempTemp[l] = em;
-                            break;
-                        }
-                    }
-                    if (!existTheSameEmitting)
-                    {
-                        if (EmittingsRaw[i].Spectrum.СorrectnessEstimations)
-                        {
-                            EmittingsRaw[i] = CalcSignalization.FillEmittingForStorage(EmittingsRaw[i]);
-                            emittingsSummaryTemp.Add(EmittingsRaw[i]);
-                        }
-                        else
-                        {
-                            EmittingsRaw[i] = CalcSignalization.FillEmittingForStorage(EmittingsRaw[i]);
-                            emittingsTempTemp.Add(EmittingsRaw[i]);
-                        }
-                    }
-                }
-            }
-            if ((UkraineNationalMonitoring) && (CorrelationAdaptation) && (emittingsTempTemp.Count < CountMaxEmission) && (emittingsSummaryTemp.Count < CountMaxEmission))
-            {
-                DeliteRedundantUncorrelationEmission(emittingsTempTemp, NoiseLevel_dBm);
-                DeliteRedundantUncorrelationEmission(emittingsSummaryTemp, NoiseLevel_dBm);
-            }
-            else
-            {
-                // перебрасываем из temp хорошие сигналы в Summary
-                for (var i = 0; i < emittingsTempTemp.Count; i++)
-                {
-                    if (emittingsTempTemp[i].Spectrum.СorrectnessEstimations)
-                    {
-                        emittingsSummaryTemp.Add(CalcSignalization.CreatIndependEmitting(emittingsTempTemp[i]));
-                        emittingsTempTemp.RemoveRange(i, 1);
-                        i--;
-                    }
-                }
-                // Пройдемся по Summary нет ли дублирующихся сигналов 
-                for (var i = 0; emittingsSummaryTemp.Count > i; i++)
-                {
-                    for (var j = i + 1; emittingsSummaryTemp.Count > j; j++)
-                    {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittingsSummaryTemp[i], emittingsSummaryTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
-                        if (existTheSameEmitting)
-                        {
-                            var em = emittingsSummaryTemp[i];
-                            JoinEmmiting(ref em, emittingsSummaryTemp[j], NoiseLevel_dBm);
-                            emittingsSummaryTemp[i] = em;
-                            emittingsSummaryTemp.RemoveRange(j, 1);
-                            j--;
-                        }
-                    }
-                }
-                // Пройдемся по temp нет ли дублирующихся сигналов 
-                for (var i = 0; emittingsTempTemp.Count > i; i++)
-                {
-                    for (var j = i + 1; emittingsTempTemp.Count > j; j++)
-                    {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittingsTempTemp[i], emittingsTempTemp[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor);
-                        if (existTheSameEmitting)
-                        {
-                            var em = emittingsTempTemp[i];
-                            JoinEmmiting(ref em, emittingsTempTemp[j],  NoiseLevel_dBm);
-                            emittingsTempTemp[i] = em;
-                            emittingsTempTemp.RemoveRange(j, 1);
-                            j--;
-                        }
-                    }
-                }
-                DeliteRedundantEmission(emittingsTempTemp, CountMaxEmission);
-                DeliteRedundantEmission(emittingsSummaryTemp, CountMaxEmission);
-            }
-
-
-            prmCorrelationFactor = CorrelationFactor;
-            EmittingsTemp = emittingsTempTemp.ToArray();
-            EmittingsSummary = emittingsSummaryTemp.ToArray();
-            EmittingsRaw = null;
-
-            return true;
-        }
-        /// <summary>
-        /// Необходимо определить является ли это одним и тем же излучением.
-        /// </summary>
-        /// <param name="emitting1"></param>
-        /// <param name="emitting2"></param>
-        /// <returns></returns>
-        private static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2)
-        {
-            // тупа нет пересечения
-            if ((emitting1.StopFrequency_MHz < emitting2.StartFrequency_MHz) || (emitting1.StartFrequency_MHz > emitting2.StopFrequency_MHz)) { return false; }
-
-            // пересечение есть следует оценить его степень
-            if (emitting1.Spectrum.СorrectnessEstimations && emitting2.Spectrum.СorrectnessEstimations)
-            {// оба излучения являються коректными т.е. просто определим степень максимального не пересечения
-                double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                intersection = 100 * intersection / (Math.Max(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Min(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz));
-                if (intersection > CrossingBWPercentageForGoodSignals)
-                { return true; }
-                else { return false; }
-            }
-            else if (emitting1.Spectrum.СorrectnessEstimations || emitting2.Spectrum.СorrectnessEstimations)
-            { // коректно только одно излучение т.е. другой процент перекрытия считаем, что коректное может быть больше 
-                double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                if (emitting1.Spectrum.СorrectnessEstimations)
-                {// первый сигнал корректен
-                    if ((100 * intersection / (emitting1.StopFrequency_MHz - emitting1.StartFrequency_MHz) > CrossingBWPercentageForBadSignals) &&
-                        (100 * intersection / (emitting2.StopFrequency_MHz - emitting2.StartFrequency_MHz) > CrossingBWPercentageForGoodSignals)) { return true; }
-                    else { return false; }
-                }
-                else
-                { //второй сигнал корректен
-                    if ((100 * intersection / (emitting2.StopFrequency_MHz - emitting2.StartFrequency_MHz) > CrossingBWPercentageForBadSignals) &&
-                        (100 * intersection / (emitting1.StopFrequency_MHz - emitting1.StartFrequency_MHz) > CrossingBWPercentageForGoodSignals)) { return true; }
-                    else { return false; }
-                }
-            }
-            else
-            {// некоректны оба
-                double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                intersection = 100 * intersection / (Math.Max(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Min(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz));
-                if (intersection > CrossingBWPercentageForBadSignals) { return true; }
-                else { return false; }
-            }
-        }
-
         /// <summary>
         /// Необходимо определить является ли это одним и тем же излучением.
         /// </summary>
@@ -335,20 +61,10 @@ namespace Atdi.Modules.Sdrn.Calculation
         /// <param name="emitting1"></param>
         /// <param name="emitting2"></param>
         /// <returns></returns>
-        private static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, bool AnalyzeByChannel, bool CorrelationAnalize, double MaxFreqDeviation, double CorrelationFactor)
-        {
-            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2); // пересечение полос частот обязательное условие
-            if (!TraditionalCheck) { return false; } // выход если нет пересечения 
-            if (CorrelationAnalize) // если требуется корреляция между излучениями
-            { if (ChackCorelationForTwoEmitting(emitting1, emitting2, CorrelationFactor)) { return true; } else { return false; } }
-            if (!AnalyzeByChannel) { return true; } // выход если нет анализировать поканально
-            if (!ChackFreqForTwoEmitting(emitting1, emitting2, MaxFreqDeviation)) { return false; }// если необходимо сравнивать частоты
-            return true;
-        }
-        private static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, bool AnalyzeByChannel, bool CorrelationAnalize, double MaxFreqDeviation, double CorrelationFactor, out double RealCorrelation)
+        private static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, bool AnalyzeByChannel, bool CorrelationAnalize, double MaxFreqDeviation, double CorrelationFactor, out double RealCorrelation, EmitParams emitParams)
         {
             RealCorrelation = -2;
-            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2); // пересечение полос частот обязательное условие
+            bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2, emitParams); // пересечение полос частот обязательное условие
             if (!TraditionalCheck) { return false; } // выход если нет пересечения 
             if (CorrelationAnalize) // если требуется корреляция между излучениями
             { if (ChackCorelationForTwoEmitting(emitting1, emitting2, CorrelationFactor, out RealCorrelation)) { return true; } else { return false; } }
@@ -362,7 +78,7 @@ namespace Atdi.Modules.Sdrn.Calculation
         /// <param name="MasterEmitting"></param>
         /// <param name="AttachableEmitting"></param>
         /// <returns></returns>
-        private static bool JoinEmmiting(ref Emitting MasterEmitting, Emitting AttachableEmitting, double NoiseLevel_dBm)
+        private static bool JoinEmmiting(ref Emitting MasterEmitting, Emitting AttachableEmitting, double NoiseLevel_dBm, Calculation.EmitParams emittingParameter)
         {
             var res = false;
             var JoinAttachableEmittingToMasterEmitting = true;
@@ -383,7 +99,7 @@ namespace Atdi.Modules.Sdrn.Calculation
                     JoinAttachableEmittingToMasterEmitting = false;
                 }
             }
-            else if ((AnalyzeByChannel))
+            else if ((emittingParameter.AnalyzeByChannel.Value))
             {
                 int k = CompareTwoEmittingCenterWithStartEnd(MasterEmitting, AttachableEmitting);
                 if (k == 0)
@@ -404,18 +120,18 @@ namespace Atdi.Modules.Sdrn.Calculation
             // собственно само присоединение одного к другому
             if (JoinAttachableEmittingToMasterEmitting)
             {// присоединяем к мастеру
-                res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, NoiseLevel_dBm);
+                res = JoinSecondToFirst(ref MasterEmitting, AttachableEmitting, NoiseLevel_dBm, emittingParameter);
             }
             else
             {// мастер становиться присоединяемым
              //AttachableEmitting = CalcSignalization.FillEmittingForStorage(AttachableEmitting, logger);
-                res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting,  NoiseLevel_dBm);
+                res = JoinSecondToFirst(ref AttachableEmitting, MasterEmitting,  NoiseLevel_dBm, emittingParameter);
                 MasterEmitting = CalcSignalization.CreatIndependEmitting(AttachableEmitting);
             }
             // формируем результирующее излуение
             return res;
         }
-        private static bool JoinSecondToFirst(ref Emitting MasterEmitting, Emitting AttachableEmitting, double NoiseLevel_dBm)
+        private static bool JoinSecondToFirst(ref Emitting MasterEmitting, Emitting AttachableEmitting, double NoiseLevel_dBm, Calculation.EmitParams emittingParameter)
         {
 
             // обединение Распределения уровней
@@ -467,7 +183,7 @@ namespace Atdi.Modules.Sdrn.Calculation
                 for (var i = 0; WorkTimes.Count - 1 > i; i++)
                 {
                     TimeSpan timeSpan = WorkTimes[i + 1].StartEmitting - WorkTimes[i].StopEmitting;
-                    if (timeSpan.TotalSeconds < TimeBetweenWorkTimes_sec)
+                    if (timeSpan.TotalSeconds < emittingParameter.TimeBetweenWorkTimes_sec)
                     {// производим обединение и удаление лишнего
                         WorkTimes[i].HitCount = WorkTimes[i].HitCount + WorkTimes[i + 1].HitCount;
                         if (WorkTimes[i].StopEmitting < WorkTimes[i + 1].StopEmitting)
@@ -639,30 +355,9 @@ namespace Atdi.Modules.Sdrn.Calculation
                 if (FreqDeviation < MaxFreqDeviation) { return true; } else { return false; }
             }
         }
-        private static void DeliteRedundantEmission(List<Emitting> emittings, int LostCount)
-        {
-            if (emittings.Count < LostCount) { return; }
-            if (LostCount < 0) { emittings = null; return; }
-            int CurentHitNumber = 1;
-            while (emittings.Count > LostCount)
-            {
-                for (int i = 0; emittings.Count > i; i++)
-                {
-                    int hit = 0;
-                    for (int j = 0; emittings[i].WorkTimes.Length > j; j++)
-                    {
-                        hit = hit + emittings[i].WorkTimes[j].HitCount;
-                    }
-                    if (hit <= CurentHitNumber)
-                    {// удаление излучения
-                        emittings.RemoveRange(i, 1);
-                        i--;
-                    }
-                }
-                CurentHitNumber++;
-            }
-        }
-        private static void DeliteRedundantUncorrelationEmission(List<Emitting> emittings, double NoiseLevel_dBm)
+       
+
+        public static Emitting[] DeleteRedundantUncorrelatedEmitting(List<Emitting> emittings, int MaxNumberEmitingOnFreq, Calculation.EmitParams emittingParameter, ref double CorrelationFactor, double MinCoeffCorrelation)
         { // НЕ ТЕСТИЛ по идее функция должна удалить все излучения оставив там какоето количество
           // считаем количество излучений на частоте
             while (true)
@@ -677,8 +372,10 @@ namespace Atdi.Modules.Sdrn.Calculation
                     {
                         if (i != j)
                         {
-                            if (MatchCheckEmitting(emittings[i], emittings[j]))
-                            { count++; }
+                            if (MatchCheckEmitting(emittings[i], emittings[j], emittingParameter))
+                            {
+                                count++;
+                            }
                         }
                     }
                     EmittingOnFreq[i] = count;
@@ -686,7 +383,7 @@ namespace Atdi.Modules.Sdrn.Calculation
                 }
                 if (MaxNumber < MaxNumberEmitingOnFreq)
                 {
-                    return; // выход поскольку все хорошо
+                    return emittings.ToArray(); // выход поскольку все хорошо
                 }
                 // Надо ужимать пройдемся нет ли дублирующих сигналов
                 var CorrelationFactors = new double[emittings.Count];// В данном месте мы собираем максимальную кореляцию для сигнала по соотношению с другими сигналами
@@ -695,11 +392,12 @@ namespace Atdi.Modules.Sdrn.Calculation
                     double MaxCorelationFactors = 0;
                     for (int j = i + 1; emittings.Count > j; j++)
                     {
-                        bool existTheSameEmitting = MatchCheckEmitting(emittings[i], emittings[j], AnalyzeByChannel, CorrelationAnalize, MaxFreqDeviation, CorrelationFactor, out double RealCorrelation);
+
+                        bool existTheSameEmitting = MatchCheckEmitting(emittings[i], emittings[j], emittingParameter.AnalyzeByChannel.Value, emittingParameter.CorrelationAnalize.Value, emittingParameter.MaxFreqDeviation.Value, emittingParameter.CorrelationFactor.Value, out double RealCorrelation, emittingParameter);
                         if (existTheSameEmitting)
                         {
                             var em = emittings[i];
-                            JoinEmmiting(ref em, emittings[j], NoiseLevel_dBm);
+                            JoinEmmiting(ref em, emittings[j], -120, emittingParameter);
                             emittings[i] = em;
                             emittings.RemoveRange(j, 1);
                             j--;
@@ -711,6 +409,7 @@ namespace Atdi.Modules.Sdrn.Calculation
                                 MaxCorelationFactors = RealCorrelation;
                             }
                         }
+
                     }
                     CorrelationFactors[i] = MaxCorelationFactors;
                 }
@@ -724,16 +423,18 @@ namespace Atdi.Modules.Sdrn.Calculation
                     {
                         if (i != j)
                         {
-                            if (MatchCheckEmitting(emittings[i], emittings[j]))
-                            { count++; }
+                            if (MatchCheckEmitting(emittings[i], emittings[j], emittingParameter))
+                            {
+                                count++;
+                            }
                         }
                     }
                     EmittingOnFreq[i] = count;
                     if (count > MaxNumber) { MaxNumber = count; }
                 }
-                if (MaxNumber < MaxNumberEmitingOnFreq)
+                if (MaxNumber <= MaxNumberEmitingOnFreq)
                 {
-                    return; // выход поскольку все хорошо
+                    return emittings.ToArray(); // выход поскольку все хорошо
                 }
                 // тут все плохо и необходимо уменьшать коэффициент корреляции если можно
                 if (CorrelationFactor > MinCoeffCorrelation)
@@ -773,7 +474,6 @@ namespace Atdi.Modules.Sdrn.Calculation
             }
         }
 
-
         private static int CompareTwoEmittingCenterWithStartEnd(Emitting emitting1, Emitting emitting2)
         {// Не проверенно 
          // 1 первое лучше
@@ -794,6 +494,5 @@ namespace Atdi.Modules.Sdrn.Calculation
             double Stop = EmittingProcessing.CalcPartialPow(emitting.Spectrum.Levels_dBm, emitting.Spectrum.Levels_dBm.Length - 1 - CountPointForAnalize, emitting.Spectrum.Levels_dBm.Length - 1);
             return (Center - Math.Max(Start, Stop));
         }
-
     }
 }
