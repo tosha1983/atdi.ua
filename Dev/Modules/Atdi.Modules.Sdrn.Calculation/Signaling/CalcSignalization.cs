@@ -114,6 +114,7 @@ namespace Atdi.Modules.Sdrn.Calculation
             var emitting1 = new Emitting()
             {
                 Id = emitting.Id,
+                ReferenceLevels = emitting.ReferenceLevels,
                 CurentPower_dBm = emitting.CurentPower_dBm,
                 EmittingParameters = emitting.EmittingParameters,
                 LevelsDistribution = emitting.LevelsDistribution,

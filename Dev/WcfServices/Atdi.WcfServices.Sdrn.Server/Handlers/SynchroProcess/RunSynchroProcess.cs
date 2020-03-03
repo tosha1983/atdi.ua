@@ -620,9 +620,23 @@ namespace Atdi.WcfServices.Sdrn.Server
                 for (int j = 0; j < refSpectrums[i].DataRefSpectrum.Length; j++)
                 {
                     var dataRefSpectrum = refSpectrums[i].DataRefSpectrum[j];
-                    if ((dataRefSpectrum.SensorId==group.SensorId) && (dataRefSpectrum.Freq_MHz == group.Freq_MHz))
+                    if ((dataRefSpectrum.SensorId == group.SensorId) && (dataRefSpectrum.Freq_MHz == group.Freq_MHz))
                     {
-                        lstDataRefSpectrums.Add(dataRefSpectrum);
+                        lstDataRefSpectrums.Add(new DataRefSpectrum()
+                        {
+                            DateMeas = dataRefSpectrum.DateMeas,
+                            DispersionLow = dataRefSpectrum.DispersionLow,
+                            DispersionUp = dataRefSpectrum.DispersionUp,
+                            Freq_MHz = dataRefSpectrum.Freq_MHz,
+                            GlobalSID = dataRefSpectrum.GlobalSID,
+                            Id = dataRefSpectrum.Id,
+                            IdNum = dataRefSpectrum.IdNum,
+                            Level_dBm = dataRefSpectrum.Level_dBm,
+                            Percent = dataRefSpectrum.Percent,
+                            SensorId = dataRefSpectrum.SensorId,
+                            TableId = dataRefSpectrum.TableId,
+                            TableName = dataRefSpectrum.TableName
+                        });
                     }
                 }
                 RefSpectrum.DataRefSpectrum = lstDataRefSpectrums.ToArray();
@@ -712,7 +726,10 @@ namespace Atdi.WcfServices.Sdrn.Server
         public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, ReferenceLevels[] referenceLevels)
         {
             var lstProtocols = new List<Protocols>();
-
+            for (int i = 0; i < emittings.Length; i++)
+            {
+                emittings[i].ReferenceLevels = referenceLevels[i];
+            }
 
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
@@ -789,7 +806,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     }
                     if (stationLink >= 0)
                     {
-                        int corrEmittingId = (int)emittingsDataToCorrespond[stationLink].Id;//////////
+                        var corrEmittingId = emittingsDataToCorrespond[stationLink].Id;//////////
 
                         var emitFnd = emittings.ToList();
                         var findValueIndex = emitFnd.FindIndex(x => x.Id == corrEmittingId);
@@ -853,6 +870,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
                                 protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
                             }
+                            if (emittings[findValueIndex].ReferenceLevels != null)
+                            {
+                                protocol.ProtocolsLinkedWithEmittings.ReferenceLevels = emittings[findValueIndex].ReferenceLevels;
+                            }
+
                             lstProtocols.Add(protocol);
                         }
                     }
