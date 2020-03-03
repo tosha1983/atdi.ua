@@ -22,7 +22,9 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string GlobalSID { get; set; }
         double Freq_MHz { get; set; }
         double Level_dBm { get; set; }
-        DateTime DateMeas { get; set; }
+        short DateMeasDay { get; set; }
+        short DateMeasMonth { get; set; }
+        short DateMeasYear { get; set; }
         double SensorLon { get; set; }
         double SensorLat { get; set; }
         string SensorName { get; set; }

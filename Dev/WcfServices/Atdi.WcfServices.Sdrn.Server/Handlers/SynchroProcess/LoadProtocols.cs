@@ -36,7 +36,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                                  DateTime? DateCreated,
                                  DateTime? DateStart,
                                  DateTime? DateStop,
-                                 DateTime? DateMeas,
+                                 short? DateMeasDay,
+                                 short? DateMeasMonth,
+                                 short? DateMeasYear,
                                  double? freq,
                                  double? probability,
                                  string standard,
@@ -55,7 +57,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
 
                 var builderProtocols = this._dataLayer.GetBuilder<MD.IProtocols>().From();
-                builderProtocols.Select(c => c.DateMeas,
+                builderProtocols.Select(c => c.DateMeasDay,
+                                        c => c.DateMeasMonth,
+                                        c => c.DateMeasYear,
                                         c => c.DispersionLow,
                                         c => c.DispersionUp,
                                         c => c.Freq_MHz,
@@ -112,9 +116,19 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     builderProtocols.Where(c => c.PermissionStop, ConditionOperator.Equal, permissionStop);
                 }
-                if (DateMeas != null)
+                if (DateMeasDay != null)
                 {
-                    builderProtocols.Where(c => c.DateMeas, ConditionOperator.Equal, DateMeas);
+                    builderProtocols.Where(c => c.DateMeasDay, ConditionOperator.Equal, DateMeasDay);
+                }
+
+                if (DateMeasMonth != null)
+                {
+                    builderProtocols.Where(c => c.DateMeasMonth, ConditionOperator.Equal, DateMeasMonth);
+                }
+
+                if (DateMeasYear != null)
+                {
+                    builderProtocols.Where(c => c.DateMeasYear, ConditionOperator.Equal, DateMeasYear);
                 }
 
                 if (DateCreated != null)
@@ -152,9 +166,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                     builderProtocols.Where(c => c.STATION_EXTENDED.OwnerName, ConditionOperator.Equal, ownerName);
                 }
 
-                if ((processId == null) && (freq == null) && (permissionStart == null) && (permissionStop == null) && (DateMeas == null) && string.IsNullOrEmpty(permissionNumber))
+                if ((processId == null) && (freq == null) && (permissionStart == null) && (permissionStop == null) && (DateMeasMonth == null) && (DateMeasYear == null) && (DateMeasDay == null) && string.IsNullOrEmpty(permissionNumber))
                 {
-                    throw new Exception("");
+                    throw new Exception("All input parameters is null or empty!");
                 }
                 queryExecuter.Fetch(builderProtocols, readerProtocols =>
                 {
@@ -162,7 +176,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         var protocols = new Protocols();
                         protocols.DataRefSpectrum = new DataRefSpectrum();
-                        protocols.DataRefSpectrum.DateMeas = readerProtocols.GetValue(c => c.DateMeas);
+                        var dateMeas = new DateTime(readerProtocols.GetValue(c => c.DateMeasYear), readerProtocols.GetValue(c => c.DateMeasMonth), readerProtocols.GetValue(c => c.DateMeasDay));
+                        protocols.DataRefSpectrum.DateMeas = dateMeas;
                         protocols.DataRefSpectrum.DispersionLow = readerProtocols.GetValue(c => c.DispersionLow);
                         protocols.DataRefSpectrum.DispersionUp = readerProtocols.GetValue(c => c.DispersionUp);
                         protocols.DataRefSpectrum.Freq_MHz = readerProtocols.GetValue(c => c.Freq_MHz);
