@@ -56,6 +56,7 @@
     <Compile Include="Models\Signaling\EmitParams.cs" />
     <Compile Include="Reports\BuildSpectrogram.cs" />
     <Compile Include="Reports\Utitlity.cs" />
+    <Compile Include="Signaling\CalcGroupingEmittingTest.cs" />
     <Compile Include="Signaling\CalcSpecializedGroupingEmitting.cs" />
     <Compile Include="Signaling\CalcGroupingEmitting.cs" />
     <Compile Include="Signaling\CalcSignalization.cs" />

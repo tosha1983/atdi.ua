@@ -29,5 +29,14 @@ namespace Atdi.Modules.Sdrn.Calculation
         public double? CorrelationFactor { get; set; }
         [DataMember]
         public double? MaxFreqDeviation { get; set; }
+        [DataMember]
+        public bool? CorrelationAdaptation { get; set; }
+        [DataMember]
+        public int? MaxNumberEmitingOnFreq { get; set; }
+        [DataMember]
+        public double? MinCoeffCorrelation { get; set; }
+        [DataMember]
+        public bool? UkraineNationalMonitoring { get; set; }
+
     }
 }

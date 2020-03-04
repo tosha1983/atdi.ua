@@ -395,5 +395,100 @@ namespace Atdi.Modules.Sdrn.Reports
 
             return delate <= 0.0000001;
         }
+
+        /*
+        private bool LessOrEqual()
+        {
+            var emit = new Modules.Sdrn.Calculation.Emitting();
+            emit.CurentPower_dBm = protocols.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value;
+
+            emit.EmittingParameters = new Modules.Sdrn.Calculation.EmittingParameters();
+            if (protocols.ProtocolsLinkedWithEmittings.RollOffFactor != null)
+            {
+                emit.EmittingParameters.RollOffFactor = protocols.ProtocolsLinkedWithEmittings.RollOffFactor.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.StandardBW != null)
+            {
+                emit.EmittingParameters.StandardBW = protocols.ProtocolsLinkedWithEmittings.StandardBW.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference != null)
+            {
+                emit.EmittingParameters.TriggerFreqDeviation = protocols.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference.Value;
+            }
+
+            emit.LevelsDistribution = new Modules.Sdrn.Calculation.LevelsDistribution();
+            emit.LevelsDistribution.Count = protocols.ProtocolsLinkedWithEmittings.Count;
+            emit.LevelsDistribution.Levels = protocols.ProtocolsLinkedWithEmittings.Levels;
+            if (protocols.ProtocolsLinkedWithEmittings.MeanDeviationFromReference != null)
+            {
+                emit.MeanDeviationFromReference = protocols.ProtocolsLinkedWithEmittings.MeanDeviationFromReference.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm != null)
+            {
+                emit.ReferenceLevel_dBm = protocols.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm.Value;
+            }
+
+            emit.SignalMask = new Modules.Sdrn.Calculation.SignalMask();
+            emit.SignalMask.Freq_kHz = protocols.ProtocolsLinkedWithEmittings.Freq_kHz;
+            emit.SignalMask.Loss_dB = protocols.ProtocolsLinkedWithEmittings.Loss_dB;
+
+            emit.Spectrum = new Modules.Sdrn.Calculation.Spectrum();
+            if (protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz != null)
+            {
+                emit.Spectrum.Bandwidth_kHz = protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz.Value;
+            }
+            emit.Spectrum.Contravention = protocols.ProtocolsLinkedWithEmittings.Contravention;
+            emit.Spectrum.Levels_dBm = protocols.ProtocolsLinkedWithEmittings.Levels_dBm;
+            if (protocols.ProtocolsLinkedWithEmittings.MarkerIndex != null)
+            {
+                emit.Spectrum.MarkerIndex = protocols.ProtocolsLinkedWithEmittings.MarkerIndex.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.SignalLevel_dBm != null)
+            {
+                emit.Spectrum.SignalLevel_dBm = protocols.ProtocolsLinkedWithEmittings.SignalLevel_dBm.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null)
+            {
+                emit.Spectrum.SpectrumStartFreq_MHz = protocols.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null)
+            {
+                emit.Spectrum.SpectrumSteps_kHz = protocols.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.T1 != null)
+            {
+                emit.Spectrum.T1 = protocols.ProtocolsLinkedWithEmittings.T1.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.T2 != null)
+            {
+                emit.Spectrum.T2 = protocols.ProtocolsLinkedWithEmittings.T2.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.TraceCount != null)
+            {
+                emit.Spectrum.TraceCount = protocols.ProtocolsLinkedWithEmittings.TraceCount.Value;
+            }
+            emit.Spectrum.СorrectnessEstimations = protocols.ProtocolsLinkedWithEmittings.CorrectnessEstimations;
+            if (protocols.ProtocolsLinkedWithEmittings.StartFrequency_MHz != null)
+            {
+                emit.StartFrequency_MHz = protocols.ProtocolsLinkedWithEmittings.StartFrequency_MHz.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.StopFrequency_MHz != null)
+            {
+                emit.StopFrequency_MHz = protocols.ProtocolsLinkedWithEmittings.StopFrequency_MHz.Value;
+            }
+            if (protocols.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference != null)
+            {
+                emit.TriggerDeviationFromReference = protocols.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference.Value;
+            }
+
+            if ((protocols.ProtocolsLinkedWithEmittings.WorkTimeStart != null) && (protocols.ProtocolsLinkedWithEmittings.WorkTimeStop != null))
+            {
+                emit.WorkTimes = new Modules.Sdrn.Calculation.WorkTime[1];
+                emit.WorkTimes[0] = new Modules.Sdrn.Calculation.WorkTime();
+                emit.WorkTimes[0].StartEmitting = protocols.ProtocolsLinkedWithEmittings.WorkTimeStart.Value;
+                emit.WorkTimes[0].StopEmitting = protocols.ProtocolsLinkedWithEmittings.WorkTimeStop.Value;
+            }
+        }
+        */
     }
 }
