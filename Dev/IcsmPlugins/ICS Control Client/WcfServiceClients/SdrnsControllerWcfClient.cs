@@ -313,5 +313,32 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         {
             return Execute(contract => contract.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended));
         }
+        public static DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
+        {
+            return Execute(contract => contract.GetAllDataSynchronizationProcess());
+        }
+        public static Protocols[] GetProtocols()
+        {
+            return GetProtocolsByParameters(null, "", null, null, null, null, null, null, null, null, "", "", "", "", null, null);
+        }
+        public static Protocols[] GetProtocolsByParameters(long? processId,
+                                                    string createdBy,
+                                                    DateTime? DateCreated,
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop,
+                                                    short? DateMeasDay,
+                                                    short? DateMeasMonth,
+                                                    short? DateMeasYear,
+                                                    double? freq,
+                                                    double? probability,
+                                                    string standard,
+                                                    string province,
+                                                    string ownerName,
+                                                    string permissionNumber,
+                                                    DateTime? permissionStart,
+                                                    DateTime? permissionStop)
+        {
+            return Execute(contract => contract.GetProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freq, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop));
+        }
     }
 }

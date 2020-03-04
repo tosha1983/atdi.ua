@@ -251,12 +251,12 @@ namespace Atdi.Test.Platform
         private static void Test_Subscribes(IDataLayer<EntityDataOrm> dataLayer, IDataCacheSite dataCacheSite, ILogger logger)
         {
    
-            var subscriber = new SB.SendSGMeasResultsSubscriber(new EventEmitterFake(), new SdrnMessagePublisherFake(), new MessagesSiteFake(), dataLayer, new SdrnServerEnvironmentFake(), null, dataCacheSite, logger);
-            var event1 = new DevicesBusEvent
-            {
-                BusMessageId = 2
-            };
-            subscriber.Notify(event1);
+            //var subscriber = new SB.SendSGMeasResultsSubscriber(new EventEmitterFake(), new SdrnMessagePublisherFake(), new MessagesSiteFake(), dataLayer, new SdrnServerEnvironmentFake(), null, dataCacheSite, logger);
+            //var event1 = new DevicesBusEvent
+            //{
+            //    BusMessageId = 2
+            //};
+            //subscriber.Notify(event1);
 
         }
     }

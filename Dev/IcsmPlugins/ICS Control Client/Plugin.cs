@@ -5,6 +5,7 @@ using System.Text;
 using ICSM;
 using MD = XICSM.ICSControlClient.Metadata;
 
+
 namespace XICSM.ICSControlClient
 {
     /// <summary>
@@ -13,8 +14,11 @@ namespace XICSM.ICSControlClient
     public class Plugin : IPlugin
     {
         public double SchemaVersion => PluginMetadata.SchemaVersion;
+
         public string Description => PluginMetadata.Title;
+
         public string Ident => PluginMetadata.Ident;
+
         public void GetMainMenu(IMMainMenu mainMenu)
         {
             mainMenu.SetLocation();
@@ -24,10 +28,12 @@ namespace XICSM.ICSControlClient
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.GroupeSynchronizationEmissionsWithStationICSM, PluginCommands.OnGroupeSynchronizationEmissionsWithStationICSM);
             mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, PluginCommands.OnAboutCommand);
         }
+
         public bool OtherMessage(string message, object inParam, ref object outParam)
         {
             return false;
         }
+
         public void RegisterBoard(IMBoard b)
         {
             b.RegisterQueryMenuBuilder(MD.Tours.TableName, ToursContextMenuBuilder.Build);
@@ -36,17 +42,22 @@ namespace XICSM.ICSControlClient
             b.RegisterQueryMenuBuilder(MD.MobStations.TableName, OtherTerrestrialStationsContextMenuBuilder.Build);
             b.RegisterQueryMenuBuilder(MD.MobStations2.TableName, YetOtherTerrestrialStationsContextMenuBuilder.Build);
         }
+
         public void RegisterSchema(IMSchema s)
         {
-
+            UpdateSchema.RegisterSchema(s);
+            string appFolder = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+            string err;
+            if (!OrmCs.OrmSchema.ParseSchema(appFolder, "ICSControlClient", "ICSControlClient.Schema", out err)) System.Windows.Forms.MessageBox.Show("Could not load 'ICSControlClient.Schema' :" + err);
         }
+
+
         public bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
             if (dbCurVersion < this.SchemaVersion)
             {
                 s.SetDatabaseVersion(this.SchemaVersion);
             }
-
             return true;
         }
     }
