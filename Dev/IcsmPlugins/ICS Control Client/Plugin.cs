@@ -33,7 +33,6 @@ namespace XICSM.ICSControlClient
         {
             return false;
         }
-
         public void RegisterBoard(IMBoard b)
         {
             b.RegisterQueryMenuBuilder(MD.Tours.TableName, ToursContextMenuBuilder.Build);
@@ -50,8 +49,6 @@ namespace XICSM.ICSControlClient
             string err;
             if (!OrmCs.OrmSchema.ParseSchema(appFolder, "ICSControlClient", "ICSControlClient.Schema", out err)) System.Windows.Forms.MessageBox.Show("Could not load 'ICSControlClient.Schema' :" + err);
         }
-
-
         public bool UpgradeDatabase(IMSchema s, double dbCurVersion)
         {
             if (dbCurVersion < this.SchemaVersion)

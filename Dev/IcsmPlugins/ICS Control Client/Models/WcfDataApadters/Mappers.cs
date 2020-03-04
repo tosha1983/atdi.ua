@@ -525,6 +525,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
             if (source.RadioControlParams == null)
                 source.RadioControlParams = new SDR.RadioControlParams();
 
+            if (source.ProtocolsLinkedWithEmittings == null)
+                source.ProtocolsLinkedWithEmittings = new SDR.ProtocolsWithEmittings();
+
             return new VM.DataSynchronizationProcessProtocolsViewModel
             {
                 Id = source.DataSynchronizationProcess.Id,
@@ -549,6 +552,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 OpHHFr = source.Sensor.OpHHFr,
                 OpHHTo = source.Sensor.OpHHTo,
                 OpDays = source.Sensor.OpDays,
+                Locations = source.Sensor.Locations,
 
                 Standard = source.StationExtended.Standard,
                 StandardName = source.StationExtended.StandardName,
@@ -572,7 +576,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 DateMeas = source.DataRefSpectrum.DateMeas,
 
                 RadioControlBandWidth = source.RadioControlParams.RadioControlBandWidth,
-                RadioControlMeasFreq_MHz = source.RadioControlParams.RadioControlMeasFreq_MHz
+                RadioControlMeasFreq_MHz = source.RadioControlParams.RadioControlMeasFreq_MHz,
+
+                ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };
         }
     }
