@@ -37,9 +37,6 @@
     <Field Desc="Contravention" Title="Contravention" Name="Contravention" DataType="Boolean" SourceName="CONTRAVENTION" SourceType="Column" Required="false"/>
     <Field Name="WorkTimeStart" DataType="DateTime" SourceName="WORK_TIME_START"  SourceType="Column" Desc="The WorkTime of start" Title="The WorkTime of start" Required="false"/>
     <Field Name="WorkTimeStop" DataType="DateTime" SourceName="WORK_TIME_STOP" SourceType="Column" Desc="The WorkTime of stop" Title="The WorkTime of stop" Required="false"/>
-    <Field Desc="RefLevelsStartFrequency_Hz" Title="RefLevelsStartFrequency_Hz" Name="RefLevelsStartFrequency_Hz" DataType="Double.30.10" SourceName="REF_LVL_STARTFREQ_HZ" SourceType="Column" Required="false"/>
-    <Field Desc="RefLevelsStepFrequency_Hz" Title="RefLevelsStepFrequency_Hz" Name="RefLevelsStepFrequency_Hz" DataType="Double.30.10" SourceName="REF_LVL_STEPFREQ_HZ" SourceType="Column" Required="false"/>
-    <Field Desc="RefLevels" Title="RefLevels" Name="RefLevels" DataType="Array.Float" SourceName="REF_LEVELS" SourceType="Column" Required="false"/>
     <Field Name="PROTOCOLS" SourceName="Protocols" SourceType="Reference" Required="true" Desc="" Title="Relation LinkProtocolsWithEmittings to Protocols"/>
   </Fields>
   <PrimaryKey Clustered="true">

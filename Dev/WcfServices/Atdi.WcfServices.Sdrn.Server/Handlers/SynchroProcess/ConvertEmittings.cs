@@ -78,13 +78,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                     devEmitting.WorkTimes[i].StopEmitting = emitting.WorkTimes[i].StopEmitting;
                 }
             }
-            if (emitting.ReferenceLevels != null)
-            {
-                devEmitting.ReferenceLevels = new Calculation.ReferenceLevels();
-                devEmitting.ReferenceLevels.levels= emitting.ReferenceLevels.levels;
-                devEmitting.ReferenceLevels.StartFrequency_Hz = emitting.ReferenceLevels.StartFrequency_Hz;
-                devEmitting.ReferenceLevels.StepFrequency_Hz = emitting.ReferenceLevels.StepFrequency_Hz;
-            }
             return devEmitting;
         }
     }

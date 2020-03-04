@@ -21,7 +21,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             var sdrnServer = GetServicByEndpoint("SdrnServerBasicHttpEndpoint");
 
             var proc = sdrnServer.GetAllDataSynchronizationProcess();
-            var proc2 = sdrnServer.GetProtocolsByParameters(4, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            var proc2 = sdrnServer.GetProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
             //bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
 
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();

@@ -42,9 +42,6 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         float[] Levels_dBm { get; set; }
         DateTime? WorkTimeStart { get; set; }
         DateTime? WorkTimeStop { get; set; }
-        double? RefLevelsStartFrequency_Hz { get; set; }
-        double? RefLevelsStepFrequency_Hz { get; set; }
-        float[] RefLevels { get; set; }
         IProtocols PROTOCOLS { get; set; }
     }
 }

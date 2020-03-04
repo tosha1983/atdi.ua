@@ -174,11 +174,23 @@ namespace Atdi.WcfServices.Sdrn.Server
                             if ((areas[i].Name != "Вся Україна") && (areas[i].Name != "Київ") && (areas[i].Name != "Севастополь"))
                             {
                                 var builderAreaInsert = this._dataLayer.GetBuilder<MD.IArea>().Insert();
-                                builderAreaInsert.SetValue(c => c.CreatedBy, areas[i].CreatedBy);
-                                builderAreaInsert.SetValue(c => c.CreatedDate, areas[i].DateCreated);
+                                if (areas[i].CreatedBy != null)
+                                {
+                                    builderAreaInsert.SetValue(c => c.CreatedBy, areas[i].CreatedBy);
+                                }
+                                if (areas[i].DateCreated != null)
+                                {
+                                    builderAreaInsert.SetValue(c => c.CreatedDate, areas[i].DateCreated);
+                                }
+                                if (areas[i].Name != null)
+                                {
+                                    builderAreaInsert.SetValue(c => c.Name, areas[i].Name);
+                                }
+                                if (areas[i].TypeArea != null)
+                                {
+                                    builderAreaInsert.SetValue(c => c.TypeOfArea, areas[i].TypeArea);
+                                }
                                 builderAreaInsert.SetValue(c => c.IdentifierFromICSM, areas[i].IdentifierFromICSM);
-                                builderAreaInsert.SetValue(c => c.Name, areas[i].Name);
-                                builderAreaInsert.SetValue(c => c.TypeOfArea, areas[i].TypeArea);
                                 var areaId = scope.Executor.Execute<MD.IArea_PK>(builderAreaInsert);
                                 if (areaId != null)
                                 {
@@ -320,29 +332,78 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         if (isFindIdentifierFromICSM == false)
                         {
-
+                            var isChangedSuccess = false;
                             var builderStationExtendedInsert = this._dataLayer.GetBuilder<MD.IStationExtended>().Insert();
-                            builderStationExtendedInsert.SetValue(c => c.Province, stationsExtended[i].Province);
-                            builderStationExtendedInsert.SetValue(c => c.Address, stationsExtended[i].Address);
-                            builderStationExtendedInsert.SetValue(c => c.BandWidth, stationsExtended[i].BandWidth);
-                            builderStationExtendedInsert.SetValue(c => c.DesigEmission, stationsExtended[i].DesigEmission);
+                            if (stationsExtended[i].Province != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.Province, stationsExtended[i].Province);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].Address != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.Address, stationsExtended[i].Address);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].BandWidth != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.BandWidth, stationsExtended[i].BandWidth);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].DesigEmission != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.DesigEmission, stationsExtended[i].DesigEmission);
+                                isChangedSuccess = true;
+                            }
                             if (stationsExtended[i].Location != null)
                             {
                                 builderStationExtendedInsert.SetValue(c => c.Latitude, stationsExtended[i].Location.Latitude);
                                 builderStationExtendedInsert.SetValue(c => c.Longitude, stationsExtended[i].Location.Longitude);
+                                isChangedSuccess = true;
                             }
-                            builderStationExtendedInsert.SetValue(c => c.OwnerName, stationsExtended[i].OwnerName);
-                            builderStationExtendedInsert.SetValue(c => c.PermissionNumber, stationsExtended[i].PermissionNumber);
-                            builderStationExtendedInsert.SetValue(c => c.PermissionStart, stationsExtended[i].PermissionStart);
-                            builderStationExtendedInsert.SetValue(c => c.PermissionStop, stationsExtended[i].PermissionStop);
-                            builderStationExtendedInsert.SetValue(c => c.Standard, stationsExtended[i].Standard);
-                            builderStationExtendedInsert.SetValue(c => c.StandardName, stationsExtended[i].StandardName);
-                            builderStationExtendedInsert.SetValue(c => c.TableId, stationsExtended[i].TableId);
-                            builderStationExtendedInsert.SetValue(c => c.TableName, stationsExtended[i].TableName);
-                            var stationExtendedId = scope.Executor.Execute<MD.IStationExtended_PK>(builderStationExtendedInsert);
-                            if (stationExtendedId != null)
+                            if (stationsExtended[i].OwnerName != null)
                             {
-                                stationsExtended[i].Id = stationExtendedId.Id;
+                                builderStationExtendedInsert.SetValue(c => c.OwnerName, stationsExtended[i].OwnerName);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].PermissionNumber != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.PermissionNumber, stationsExtended[i].PermissionNumber);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].PermissionStart != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.PermissionStart, stationsExtended[i].PermissionStart);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].PermissionStop != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.PermissionStop, stationsExtended[i].PermissionStop);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].Standard != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.Standard, stationsExtended[i].Standard);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].StandardName != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.StandardName, stationsExtended[i].StandardName);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].TableName != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.TableName, stationsExtended[i].TableName);
+                                isChangedSuccess = true;
+                            }
+                            builderStationExtendedInsert.SetValue(c => c.TableId, stationsExtended[i].TableId);
+
+                            if (isChangedSuccess)
+                            {
+                                var stationExtendedId = scope.Executor.Execute<MD.IStationExtended_PK>(builderStationExtendedInsert);
+                                if (stationExtendedId != null)
+                                {
+                                    stationsExtended[i].Id = stationExtendedId.Id;
+                                }
                             }
                         }
                     }
@@ -721,14 +782,9 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <param name="refSpectrums">массив RefSpectrum, который соответствует группе сенсора groupSensor</param>
         /// <param name="emittings">массив Emitting, соответствующий  группе сенсора groupSensor</param>
         /// <returns></returns>
-        public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, ReferenceLevels[] referenceLevels, Calculation.EmitParams[] emittingParameters)
+        public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, Calculation.EmitParams[] emittingParameters)
         {
             var lstProtocols = new List<Protocols>();
-            for (int i = 0; i < emittings.Length; i++)
-            {
-                emittings[i].ReferenceLevels = referenceLevels[i];
-            }
-
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
             DeleteUnestimatedEmittings(emittings);
@@ -874,11 +930,6 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
                                 protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
                             }
-                            if (emittings[findValueIndex].ReferenceLevels != null)
-                            {
-                                protocol.ProtocolsLinkedWithEmittings.ReferenceLevels = emittings[findValueIndex].ReferenceLevels;
-                            }
-
                             lstProtocols.Add(protocol);
                         }
                     }
@@ -914,10 +965,10 @@ namespace Atdi.WcfServices.Sdrn.Server
                         protocol.Sensor = fndSensor;
                     }
                 }
-                protocol.StationExtended = new StationExtended();
                 var fndStation = lstStationsExtended.Find(z => z.TableId == protocolsInput[h].DataRefSpectrum.TableId && z.TableName == protocolsInput[h].DataRefSpectrum.TableName);
                 if (fndStation != null)
                 {
+                    protocol.StationExtended = new StationExtended();
                     var stationExtended = protocol.StationExtended;
                     stationExtended.Address = fndStation.Address;
                     stationExtended.BandWidth = fndStation.BandWidth;
@@ -985,100 +1036,99 @@ namespace Atdi.WcfServices.Sdrn.Server
                     for (int i = 0; i < protocolsOutput.Length; i++)
                     {
                         var protocol = protocolsOutput[i];
-
-                        var lstSensors = protocol.Sensor.Locations.ToList();
-                        var sensorData = lstSensors.Find(x => x.Status == Status.A.ToString());
-
-                        var builderProtocolsInsert = this._dataLayer.GetBuilder<MD.IProtocols>().Insert();
-                        builderProtocolsInsert.SetValue(c => c.SYNCHRO_PROCESS.Id, protocol.DataSynchronizationProcess.Id);
-                        builderProtocolsInsert.SetValue(c => c.STATION_EXTENDED.Id, protocol.StationExtended.Id);
-
-                        if (protocol.Sensor != null)
-                        {
-                            if (protocol.Sensor.Id != null)
-                            {
-                                builderProtocolsInsert.SetValue(c => c.SensorId, protocol.Sensor.Id.Value);
-                            }
-                        }
-                        if (protocol.DataRefSpectrum != null)
-                        {
-                            builderProtocolsInsert.SetValue(c => c.DateMeasDay, (short)protocol.DataRefSpectrum.DateMeas.Day);
-                            builderProtocolsInsert.SetValue(c => c.DateMeasMonth, (short)protocol.DataRefSpectrum.DateMeas.Month);
-                            builderProtocolsInsert.SetValue(c => c.DateMeasYear, (short)protocol.DataRefSpectrum.DateMeas.Year);
-                            builderProtocolsInsert.SetValue(c => c.DispersionLow, protocol.DataRefSpectrum.DispersionLow);
-                            builderProtocolsInsert.SetValue(c => c.DispersionUp, protocol.DataRefSpectrum.DispersionUp);
-                            builderProtocolsInsert.SetValue(c => c.Freq_MHz, protocol.DataRefSpectrum.Freq_MHz);
-                            builderProtocolsInsert.SetValue(c => c.GlobalSID, protocol.DataRefSpectrum.GlobalSID);
-                            builderProtocolsInsert.SetValue(c => c.Level_dBm, protocol.DataRefSpectrum.Level_dBm);
-                            builderProtocolsInsert.SetValue(c => c.Percent, protocol.DataRefSpectrum.Percent);
-                          
-                        }
-                        if (protocol.RadioControlParams != null)
-                        {
-                            if ((protocol.RadioControlParams.RadioControlBandWidth != null) && (protocol.RadioControlParams.RadioControlMeasFreq_MHz != null))
-                            {
-                                builderProtocolsInsert.SetValue(c => c.RadioControlBandWidth, protocol.RadioControlParams.RadioControlBandWidth);
-                                builderProtocolsInsert.SetValue(c => c.RadioControlMeasFreq_MHz, protocol.RadioControlParams.RadioControlMeasFreq_MHz);
-                            }
-                        }
                         if (protocol.StationExtended != null)
                         {
-                            builderProtocolsInsert.SetValue(c => c.PermissionNumber, protocol.StationExtended.PermissionNumber);
-                            builderProtocolsInsert.SetValue(c => c.PermissionStart, protocol.StationExtended.PermissionStart);
-                            builderProtocolsInsert.SetValue(c => c.PermissionStop, protocol.StationExtended.PermissionStop);
-                        }
-                        builderProtocolsInsert.SetValue(c => c.SensorName, protocol.Sensor.Name);
-                        if (sensorData != null)
-                        {
-                            builderProtocolsInsert.SetValue(c => c.SensorLat, sensorData.Lat);
-                            builderProtocolsInsert.SetValue(c => c.SensorLon, sensorData.Lon);
-                        }
-                        var synchroProcessIdValue = scope.Executor.Execute<MD.IProtocols_PK>(builderProtocolsInsert);
-                        if (synchroProcessIdValue != null)
-                        {
-                            long protocolInsertId = synchroProcessIdValue.Id;
 
-                            if (protocol.ProtocolsLinkedWithEmittings != null)
+                            var lstSensors = protocol.Sensor.Locations.ToList();
+                            var sensorData = lstSensors.Find(x => x.Status == Status.A.ToString());
+
+                            var builderProtocolsInsert = this._dataLayer.GetBuilder<MD.IProtocols>().Insert();
+                            builderProtocolsInsert.SetValue(c => c.SYNCHRO_PROCESS.Id, protocol.DataSynchronizationProcess.Id);
+                            builderProtocolsInsert.SetValue(c => c.STATION_EXTENDED.Id, protocol.StationExtended.Id);
+
+                            if (protocol.Sensor != null)
                             {
-                                var builderLinkProtocolsWithEmittingsInsert = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().Insert();
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Bandwidth_kHz, protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Contravention, protocol.ProtocolsLinkedWithEmittings.Contravention);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.CorrectnessEstimations, protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.LevelsDistributionCount, protocol.ProtocolsLinkedWithEmittings.Count);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.LevelsDistributionLvl, protocol.ProtocolsLinkedWithEmittings.Levels);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.CurentPower_dBm, protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Freq_kHz, protocol.ProtocolsLinkedWithEmittings.Freq_kHz);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Levels_dBm, protocol.ProtocolsLinkedWithEmittings.Levels_dBm);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Loss_dB, protocol.ProtocolsLinkedWithEmittings.Loss_dB);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.MarkerIndex, protocol.ProtocolsLinkedWithEmittings.MarkerIndex);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.MeanDeviationFromReference, protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Probability, protocol.ProtocolsLinkedWithEmittings.Probability);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.ReferenceLevel_dBm, protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RollOffFactor, protocol.ProtocolsLinkedWithEmittings.RollOffFactor);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.SignalLevel_dBm, protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.SpectrumStartFreq_MHz, protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.SpectrumSteps_kHz, protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.StandardBW, protocol.ProtocolsLinkedWithEmittings.StandardBW);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.StartFrequency_MHz, protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.StopFrequency_MHz, protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.T1, protocol.ProtocolsLinkedWithEmittings.T1);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.T2, protocol.ProtocolsLinkedWithEmittings.T2);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.TraceCount, protocol.ProtocolsLinkedWithEmittings.TraceCount);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.TriggerDeviationFromReference, protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.WorkTimeStart, protocol.ProtocolsLinkedWithEmittings.WorkTimeStart);
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.WorkTimeStop, protocol.ProtocolsLinkedWithEmittings.WorkTimeStop);
-                                if (protocol.ProtocolsLinkedWithEmittings.ReferenceLevels!=null)
+                                if (protocol.Sensor.Id != null)
                                 {
-                                    if (protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.levels != null)
-                                    {
-                                        builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RefLevels, protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.levels);
-                                        builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RefLevelsStartFrequency_Hz, protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.StartFrequency_Hz);
-                                        builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RefLevelsStepFrequency_Hz, protocol.ProtocolsLinkedWithEmittings.ReferenceLevels.StepFrequency_Hz);
-                                    }
+                                    builderProtocolsInsert.SetValue(c => c.SensorId, protocol.Sensor.Id.Value);
                                 }
-                                builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.PROTOCOLS.Id, protocolInsertId);
-                                var linkProtocolsWithEmittingsIdValue = scope.Executor.Execute<MD.ILinkProtocolsWithEmittings_PK>(builderLinkProtocolsWithEmittingsInsert);
                             }
+                            if (protocol.DataRefSpectrum != null)
+                            {
+                                builderProtocolsInsert.SetValue(c => c.DateMeasDay, (short)protocol.DataRefSpectrum.DateMeas.Day);
+                                builderProtocolsInsert.SetValue(c => c.DateMeasMonth, (short)protocol.DataRefSpectrum.DateMeas.Month);
+                                builderProtocolsInsert.SetValue(c => c.DateMeasYear, (short)protocol.DataRefSpectrum.DateMeas.Year);
+                                builderProtocolsInsert.SetValue(c => c.DispersionLow, protocol.DataRefSpectrum.DispersionLow);
+                                builderProtocolsInsert.SetValue(c => c.DispersionUp, protocol.DataRefSpectrum.DispersionUp);
+                                builderProtocolsInsert.SetValue(c => c.Freq_MHz, protocol.DataRefSpectrum.Freq_MHz);
+                                builderProtocolsInsert.SetValue(c => c.GlobalSID, protocol.DataRefSpectrum.GlobalSID);
+                                builderProtocolsInsert.SetValue(c => c.Level_dBm, protocol.DataRefSpectrum.Level_dBm);
+                                builderProtocolsInsert.SetValue(c => c.Percent, protocol.DataRefSpectrum.Percent);
+
+                            }
+                            if (protocol.RadioControlParams != null)
+                            {
+                                if ((protocol.RadioControlParams.RadioControlBandWidth != null) && (protocol.RadioControlParams.RadioControlMeasFreq_MHz != null))
+                                {
+                                    builderProtocolsInsert.SetValue(c => c.RadioControlBandWidth, protocol.RadioControlParams.RadioControlBandWidth);
+                                    builderProtocolsInsert.SetValue(c => c.RadioControlMeasFreq_MHz, protocol.RadioControlParams.RadioControlMeasFreq_MHz);
+                                }
+                            }
+                            if (protocol.StationExtended != null)
+                            {
+                                builderProtocolsInsert.SetValue(c => c.PermissionNumber, protocol.StationExtended.PermissionNumber);
+                                builderProtocolsInsert.SetValue(c => c.PermissionStart, protocol.StationExtended.PermissionStart);
+                                builderProtocolsInsert.SetValue(c => c.PermissionStop, protocol.StationExtended.PermissionStop);
+                            }
+                            builderProtocolsInsert.SetValue(c => c.SensorName, protocol.Sensor.Name);
+                            if (sensorData != null)
+                            {
+                                builderProtocolsInsert.SetValue(c => c.SensorLat, sensorData.Lat);
+                                builderProtocolsInsert.SetValue(c => c.SensorLon, sensorData.Lon);
+                            }
+                            var synchroProcessIdValue = scope.Executor.Execute<MD.IProtocols_PK>(builderProtocolsInsert);
+                            if (synchroProcessIdValue != null)
+                            {
+                                long protocolInsertId = synchroProcessIdValue.Id;
+
+                                if (protocol.ProtocolsLinkedWithEmittings != null)
+                                {
+                                    var builderLinkProtocolsWithEmittingsInsert = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().Insert();
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Bandwidth_kHz, protocol.ProtocolsLinkedWithEmittings.Bandwidth_kHz);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Contravention, protocol.ProtocolsLinkedWithEmittings.Contravention);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.CorrectnessEstimations, protocol.ProtocolsLinkedWithEmittings.CorrectnessEstimations);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.LevelsDistributionCount, protocol.ProtocolsLinkedWithEmittings.Count);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.LevelsDistributionLvl, protocol.ProtocolsLinkedWithEmittings.Levels);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.CurentPower_dBm, protocol.ProtocolsLinkedWithEmittings.CurentPower_dBm);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Freq_kHz, protocol.ProtocolsLinkedWithEmittings.Freq_kHz);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Levels_dBm, protocol.ProtocolsLinkedWithEmittings.Levels_dBm);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Loss_dB, protocol.ProtocolsLinkedWithEmittings.Loss_dB);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.MarkerIndex, protocol.ProtocolsLinkedWithEmittings.MarkerIndex);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.MeanDeviationFromReference, protocol.ProtocolsLinkedWithEmittings.MeanDeviationFromReference);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.Probability, protocol.ProtocolsLinkedWithEmittings.Probability);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.ReferenceLevel_dBm, protocol.ProtocolsLinkedWithEmittings.ReferenceLevel_dBm);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.RollOffFactor, protocol.ProtocolsLinkedWithEmittings.RollOffFactor);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.SignalLevel_dBm, protocol.ProtocolsLinkedWithEmittings.SignalLevel_dBm);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.SpectrumStartFreq_MHz, protocol.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.SpectrumSteps_kHz, protocol.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.StandardBW, protocol.ProtocolsLinkedWithEmittings.StandardBW);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.StartFrequency_MHz, protocol.ProtocolsLinkedWithEmittings.StartFrequency_MHz);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.StopFrequency_MHz, protocol.ProtocolsLinkedWithEmittings.StopFrequency_MHz);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.T1, protocol.ProtocolsLinkedWithEmittings.T1);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.T2, protocol.ProtocolsLinkedWithEmittings.T2);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.TraceCount, protocol.ProtocolsLinkedWithEmittings.TraceCount);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.TriggerDeviationFromReference, protocol.ProtocolsLinkedWithEmittings.TriggerDeviationFromReference);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.WorkTimeStart, protocol.ProtocolsLinkedWithEmittings.WorkTimeStart);
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.WorkTimeStop, protocol.ProtocolsLinkedWithEmittings.WorkTimeStop);
+
+                                    builderLinkProtocolsWithEmittingsInsert.SetValue(c => c.PROTOCOLS.Id, protocolInsertId);
+                                    var linkProtocolsWithEmittingsIdValue = scope.Executor.Execute<MD.ILinkProtocolsWithEmittings_PK>(builderLinkProtocolsWithEmittingsInsert);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            this._logger.Warning(Contexts.ThisComponent, Categories.Processing, (EventText)$"For DataSynchronizationProcess.Id='{protocol.DataSynchronizationProcess.Id}' StationExtended property is null!" );
                         }
                     }
                     scope.Commit();
@@ -1206,10 +1256,9 @@ namespace Atdi.WcfServices.Sdrn.Server
             return referenceLevels;
         }
 
-        public Emitting[] GetEmittings(DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out ReferenceLevels[] referenceLevels, out Calculation.EmitParams[] emittingParameters )
+        public Emitting[] GetEmittings(DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out Calculation.EmitParams[] emittingParameters )
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            referenceLevels = null;
             emittingParameters = null;
             var lstEmittingParameters = new List<Calculation.EmitParams>();
             var listIdsEmittings = new List<long>();
@@ -1218,7 +1267,6 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listSpectrum = new List<KeyValuePair<long, Spectrum>>();
             var listSensors = new List<Sensor>();
             var listEmitting = new List<Emitting>();
-            var listReferenceLevels = new List<ReferenceLevels>();
 
             var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
             .From()
@@ -1525,30 +1573,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                     }
                     listSpectrum.RemoveAll(c => c.Key == id);
                     listEmitting.Add(emitting);
-
-
-
-                    var level = new ReferenceLevels();
-                    var queryLevels = this._dataLayer.GetBuilder<MD.IEmitting>()
-                   .From()
-                   .Select(c => c.Id, c => c.RES_MEAS.Id)
-                   .Where(c => c.Id, ConditionOperator.Equal, fndEmitings.Key);
-                    queryExecuter.Fetch(queryLevels, readerLevels =>
-                    {
-                        while (readerLevels.Read())
-                        {
-                            var val = GetReferenceLevelsByResId(readerLevels.GetValue(c => c.RES_MEAS.Id));
-                            listReferenceLevels.Add(val);
-                            break;
-                        }
-                        return true;
-                    });
                 }
                 listEmitings.RemoveAll(c => c.Key == id);
-            }
-            if (listReferenceLevels != null)
-            {
-                referenceLevels = listReferenceLevels.ToArray();
             }
             if (lstEmittingParameters != null)
             {
@@ -1782,12 +1808,12 @@ namespace Atdi.WcfServices.Sdrn.Server
                         // -сенсор где был получен результат совпадает с ID Sensor
                         //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
 
-                        var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out ReferenceLevels[] referenceLevels, out Calculation.EmitParams[] emittingParameters);
+                        var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
 
                         if ((emittings != null) && (emittings.Length > 0))
                         {
                             // Синхронизация излучений с записями группы сенсора
-                            var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels, emittingParameters);
+                            var protocol = SynchroEmittings(refSpectrum, emittings, emittingParameters);
                             listProtocolsOutput.AddRange(protocol);
                         }
                     }
@@ -1805,8 +1831,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                     {
                         // здесь вызов процецедуры сохранения массива значений protocol
                         var isSuccessOperation = SaveOutputProtocolsToDB(arrayProtocols);
-                        // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                        var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, dataSynchronization.Id.Value);
+                        if (isSuccessOperation)
+                        {
+                            // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
+                            var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, dataSynchronization.Id.Value);
+                            if (isSuccesFinalOperationSynchro)
+                            {
+                                this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DataSynchronizationProcessCompleted.Text);
+                            }
+                        }
                     }
                 }
             }
@@ -1814,6 +1847,18 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
+            if ((stationsExtended!=null) && (stationsExtended.Length>0))
+            {
+                for (int i=0; i< stationsExtended.Length; i++)
+                {
+                    if ((string.IsNullOrEmpty(stationsExtended[i].TableName)) && (stationsExtended[i].TableId==0))
+                    {
+                        //this._logger.Error(Contexts.ThisComponent, Categories.Processing, Events.OneElementsStationsIsEmpty);
+                        //throw new Exception(Events.OneElementsStationsIsEmpty.ToString());
+                    }
+                }
+            }
+
             var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
             var currentDataSynchronizationProcess = loadSynchroProcessData.CurrentDataSynchronizationProcess();
             
@@ -1824,9 +1869,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var synchroProcessId = CreateDataSynchronizationProcess(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas);
                 if (synchroProcessId != null)
                 {
-
                     var loadSensor = new LoadSensor(this._dataLayer, this._logger);
-
                     var sensors = new Sensor[sensorIdsBySDRN.Length];
                     for (int j = 0; j < sensorIdsBySDRN.Length; j++)
                     {
@@ -1835,7 +1878,18 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                     // обновление перечня станций
                     var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
-
+                    var listStationsExtended = new List<StationExtended>();
+                    if ((stationsExtended != null) && (stationsExtended.Length > 0))
+                    {
+                        for (int i = 0; i < stationsExtended.Length; i++)
+                        {
+                            if ((!string.IsNullOrEmpty(stationsExtended[i].TableName)) && (stationsExtended[i].TableId > 0))
+                            {
+                                listStationsExtended.Add(stationsExtended[i]);
+                            }
+                        }
+                    }
+                    stationsExtended = listStationsExtended.ToArray();
                     // обновление областей и контуров
                     var isSuccessUpdateAreas = SynchroAreas(areas);
 
@@ -1864,11 +1918,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 // -сенсор где был получен результат совпадает с ID Sensor
                                 //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
 
-                                var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out ReferenceLevels[] referenceLevels, out Calculation.EmitParams[] emittingParameters);
+                                var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
                                 if ((emittings != null) && (emittings.Length > 0))
                                 {
                                     // Синхронизация излучений с записями группы сенсора
-                                    var protocol = SynchroEmittings(refSpectrum, emittings, referenceLevels, emittingParameters);
+                                    var protocol = SynchroEmittings(refSpectrum, emittings, emittingParameters);
                                     listProtocolsOutput.AddRange(protocol);
                                 }
                             }
@@ -1886,8 +1940,15 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 // здесь вызов процецедуры сохранения массива значений protocol
                                 var isSuccessOperation = SaveOutputProtocolsToDB(arrayProtocols);
-                                // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                                var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, synchroProcessId.Value);
+                                if (isSuccessOperation)
+                                {
+                                    // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
+                                    var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, synchroProcessId.Value);
+                                    if (isSuccesFinalOperationSynchro)
+                                    {
+                                        this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DataSynchronizationProcessCompleted.Text);
+                                    }
+                                }
                             }
                         }
                     }
