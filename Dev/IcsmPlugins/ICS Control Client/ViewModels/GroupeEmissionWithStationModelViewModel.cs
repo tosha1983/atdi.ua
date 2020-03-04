@@ -9,29 +9,20 @@ using XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Models.WcfDataApadters;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
-using CS = XICSM.ICSControlClient.WpfControls.Charts;
 using MP = XICSM.ICSControlClient.WpfControls.Maps;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
 using ICSM;
-using INP = System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections;
 using XICSM.ICSControlClient.Models;
-using System.Timers;
-using XICSM.ICSControlClient.Forms;
 using System.Windows.Input;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Configuration;
 using System.Globalization;
 using TR = System.Threading;
 using Microsoft.VisualBasic;
-using XICSM.ICSControlClient.WpfControls;
 using Microsoft.VisualBasic.FileIO;
 using Atdi.Common;
 using Atdi.Contracts.WcfServices.Sdrn.Server;
@@ -53,12 +44,14 @@ namespace XICSM.ICSControlClient.ViewModels
         private RefSpectrumDataAdapter _refSpectrums;
 
         public WpfCommand StartCommand { get; set; }
+        public WpfCommand ProtocolCommand { get; set; }
         public WpfCommand ImportRefSpectrumFromCSVCommand { get; set; }
         public WpfCommand DeleteRefSpectrumCommand { get; set; }
 
         public GroupeEmissionWithStationModelViewModel()
         {
             this.StartCommand = new WpfCommand(this.OnStartCommand);
+            this.ProtocolCommand = new WpfCommand(this.OnProtocolCommand);
             this.ImportRefSpectrumFromCSVCommand = new WpfCommand(this.OnImportRefSpectrumFromCSVCommand);
             this.DeleteRefSpectrumCommand = new WpfCommand(this.OnDeleteRefSpectrumCommand);
             this._sensors = new ShortSensorDataAdatper();
@@ -306,6 +299,12 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             return hit;
+        }
+        private void OnProtocolCommand(object parameter)
+        {
+            var dlgForm = new FM.GroupeEmissionWithStationProtocolForm();
+            dlgForm.ShowDialog();
+            dlgForm.Dispose();
         }
         private void OnStartCommand(object parameter)
         {

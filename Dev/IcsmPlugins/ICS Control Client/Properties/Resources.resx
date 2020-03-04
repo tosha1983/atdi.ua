@@ -809,4 +809,124 @@
   <data name="MinFreqMHz" xml:space="preserve">
     <value>Min freq MHz</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Administration</value>
+  </data>
+  <data name="AGL" xml:space="preserve">
+    <value>AGL</value>
+  </data>
+  <data name="Azimuth" xml:space="preserve">
+    <value>Azimuth</value>
+  </data>
+  <data name="BandWidth" xml:space="preserve">
+    <value>BandWidth</value>
+  </data>
+  <data name="BiuseDate" xml:space="preserve">
+    <value>Biuse Date</value>
+  </data>
+  <data name="DateEnd" xml:space="preserve">
+    <value>Date End</value>
+  </data>
+  <data name="DateMeas" xml:space="preserve">
+    <value>Date Meas</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="DispersionLow" xml:space="preserve">
+    <value>Dispersion Low</value>
+  </data>
+  <data name="DispersionUp" xml:space="preserve">
+    <value>Dispersion Up</value>
+  </data>
+  <data name="Elevation" xml:space="preserve">
+    <value>Elevation</value>
+  </data>
+  <data name="EouseDate" xml:space="preserve">
+    <value>Eouse Date</value>
+  </data>
+  <data name="Freq_MHz" xml:space="preserve">
+    <value>Freq, MHz</value>
+  </data>
+  <data name="Level_dBm" xml:space="preserve">
+    <value>Level dBm</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="NetworkId" xml:space="preserve">
+    <value>Network ID</value>
+  </data>
+  <data name="OpDays" xml:space="preserve">
+    <value>OpDays</value>
+  </data>
+  <data name="OpHHFr" xml:space="preserve">
+    <value>OpHHFr</value>
+  </data>
+  <data name="OpHHTo" xml:space="preserve">
+    <value>OpHHTo</value>
+  </data>
+  <data name="OwnerName" xml:space="preserve">
+    <value>Owner Name</value>
+  </data>
+  <data name="Percent" xml:space="preserve">
+    <value>Percent</value>
+  </data>
+  <data name="PermissionNumber" xml:space="preserve">
+    <value>Permission Number</value>
+  </data>
+  <data name="PermissionStart" xml:space="preserve">
+    <value>Permission Start</value>
+  </data>
+  <data name="PermissionStop" xml:space="preserve">
+    <value>Permission Stop</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="PrintAll" xml:space="preserve">
+    <value>Print All</value>
+  </data>
+  <data name="PrintSelected" xml:space="preserve">
+    <value>Print Selected</value>
+  </data>
+  <data name="Probability" xml:space="preserve">
+    <value>Probability</value>
+  </data>
+  <data name="ProtocolCommand" xml:space="preserve">
+    <value>Protocol</value>
+  </data>
+  <data name="Province" xml:space="preserve">
+    <value>Province</value>
+  </data>
+  <data name="RadioControlBandWidth" xml:space="preserve">
+    <value>Radio Control BandWidth</value>
+  </data>
+  <data name="RadioControlMeasFreq_MHz" xml:space="preserve">
+    <value>Radio Control Meas Freq, MHz</value>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Remark</value>
+  </data>
+  <data name="RxLoss" xml:space="preserve">
+    <value>RxLoss</value>
+  </data>
+  <data name="SensorId" xml:space="preserve">
+    <value>Sensor ID</value>
+  </data>
+  <data name="StandardName" xml:space="preserve">
+    <value>Standard Name</value>
+  </data>
+  <data name="StepMeasTime" xml:space="preserve">
+    <value>Step Meas Time</value>
+  </data>
+  <data name="TypeSensor" xml:space="preserve">
+    <value>Type Sensor</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
 </root>
