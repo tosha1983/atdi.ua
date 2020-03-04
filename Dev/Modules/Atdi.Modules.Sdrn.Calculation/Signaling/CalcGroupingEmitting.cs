@@ -290,51 +290,6 @@ namespace Atdi.Modules.Sdrn.Calculation
         /// <param name="emitting1"></param>
         /// <param name="emitting2"></param>
         /// <returns></returns>
-        private static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, EmitParams emitParams)
-        {
-            // тупа нет пересечения
-            if ((emitting1.StopFrequency_MHz < emitting2.StartFrequency_MHz) || (emitting1.StartFrequency_MHz > emitting2.StopFrequency_MHz)) { return false; }
-
-            // пересечение есть следует оценить его степень
-            if (emitting1.Spectrum.СorrectnessEstimations && emitting2.Spectrum.СorrectnessEstimations)
-            {// оба излучения являються коректными т.е. просто определим степень максимального не пересечения
-                double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                intersection = 100 * intersection / (Math.Max(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Min(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz));
-                if (intersection > emitParams.CrossingBWPercentageForGoodSignals)
-                { return true; }
-                else { return false; }
-            }
-            else if (emitting1.Spectrum.СorrectnessEstimations || emitting2.Spectrum.СorrectnessEstimations)
-            { // коректно только одно излучение т.е. другой процент перекрытия считаем, что коректное может быть больше 
-                double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                if (emitting1.Spectrum.СorrectnessEstimations)
-                {// первый сигнал корректен
-                    if ((100 * intersection / (emitting1.StopFrequency_MHz - emitting1.StartFrequency_MHz) > emitParams.CrossingBWPercentageForBadSignals) &&
-                        (100 * intersection / (emitting2.StopFrequency_MHz - emitting2.StartFrequency_MHz) > emitParams.CrossingBWPercentageForGoodSignals)) { return true; }
-                    else { return false; }
-                }
-                else
-                { //второй сигнал корректен
-                    if ((100 * intersection / (emitting2.StopFrequency_MHz - emitting2.StartFrequency_MHz) > emitParams.CrossingBWPercentageForBadSignals) &&
-                        (100 * intersection / (emitting1.StopFrequency_MHz - emitting1.StartFrequency_MHz) > emitParams.CrossingBWPercentageForGoodSignals)) { return true; }
-                    else { return false; }
-                }
-            }
-            else
-            {// некоректны оба
-                double intersection = Math.Min(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Max(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz);
-                intersection = 100 * intersection / (Math.Max(emitting1.StopFrequency_MHz, emitting2.StopFrequency_MHz) - Math.Min(emitting1.StartFrequency_MHz, emitting2.StartFrequency_MHz));
-                if (intersection > emitParams.CrossingBWPercentageForBadSignals) { return true; }
-                else { return false; }
-            }
-        }
-
-        /// <summary>
-        /// Необходимо определить является ли это одним и тем же излучением.
-        /// </summary>
-        /// <param name="emitting1"></param>
-        /// <param name="emitting2"></param>
-        /// <returns></returns>
         private static bool MatchCheckEmitting(Emitting emitting1, Emitting emitting2, bool AnalyzeByChannel, bool CorrelationAnalize, double MaxFreqDeviation, double CorrelationFactor)
         {
             bool TraditionalCheck = MatchCheckEmitting(emitting1, emitting2); // пересечение полос частот обязательное условие
