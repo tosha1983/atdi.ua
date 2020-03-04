@@ -70,8 +70,11 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static readonly EventText HandlerSaveDataSynchronizationProcessToDBMethod = "Call 'SaveDataSynchronizationProcessToDB' method";
         public static readonly EventText HandlerGetRefSpectrumByIdsMethod = "Call 'GetRefSpectrumByIds' method";
         public static readonly EventText HandlerGetProtocolsByParametersMethod = "Call 'GetProtocolsByParameters' method";
+        public static readonly EventText OneElementsStationsIsEmpty = "One of the elements of the array of stations transmitted from the client side is empty!";
+        public static readonly EventText DataSynchronizationProcessCompleted = "Synchronization process is completed!";
 
-        
+
+
     }
     static class TraceScopeNames
     {
