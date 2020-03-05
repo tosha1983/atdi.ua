@@ -22,7 +22,7 @@ namespace Atdi.CoreServices.EntityOrm
     internal sealed class EntityOrmConfig : IEntityOrmConfig
     {
 
-        private readonly IComponentConfig _config;
+        //private readonly IComponentConfig _config;
 
         public string Name { get; set; }
         public string Version { get; set; }

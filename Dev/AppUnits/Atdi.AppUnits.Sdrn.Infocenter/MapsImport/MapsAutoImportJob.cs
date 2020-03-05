@@ -9,6 +9,7 @@ using Atdi.AppUnits.Sdrn.Infocenter.DataModels;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.Infocenter;
+using Atdi.DataModels.DataConstraint;
 using ES = Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using Atdi.Platform.Workflows;
@@ -157,6 +158,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 					section.Content.Size = buffer.Length;
 
 					this.SaveSectorToDb(dbScope, section);
+					this.SaveMapStatisticsAndMakeAvailable(dbScope, mapPk.Id, 1, 1);
 				}
 				else
 				{
@@ -309,6 +311,8 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 						// смещаемся в буфере
 						yFileOffset += ySegmentIndex * mapFile.AxisX.Number * mapFile.StepDataSize;
 					}
+
+					this.SaveMapStatisticsAndMakeAvailable(dbScope, mapPk.Id, xSectorCount, ySectorCount);
 				}
 				return mapPk.Id;
 			}
@@ -431,6 +435,11 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			map.AxisY.Step = DecodeInt(body, 290, 10);
 
 			map.StepUnit = DecodeString(body, 300, 1);
+			// без указания единици измерения карты считаем ее "в метрах"
+			if (string.IsNullOrEmpty(map.StepUnit))
+			{
+				map.StepUnit = "M";
+			}
 
 			map.AxisX.Number = DecodeInt(body, 320, 10);
 			map.AxisY.Number = DecodeInt(body, 330, 10);
@@ -534,6 +543,21 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 				return AtdiMapType.Building;
 			}
 			throw new InvalidOperationException($"Unsupported file extension '{ext}'");
+		}
+
+		private bool SaveMapStatisticsAndMakeAvailable(IDataLayerScope dbScope, long mapId, int sectorsXCount, int sectorsYCount)
+		{
+			var mapQuery = _dataLayer.GetBuilder<ES.IMap>()
+					.Update()
+					.SetValue(c => c.SectorsCount, sectorsXCount * sectorsYCount)
+					.SetValue(c => c.SectorsXCount, sectorsXCount)
+					.SetValue(c => c.SectorsYCount, sectorsYCount)
+					.SetValue(c => c.StatusCode, (byte)ES.MapStatusCode.Available)
+					.SetValue(c => c.StatusName, "Available")
+					.Where(c => c.Id, ConditionOperator.Equal, mapId)
+				;
+
+			return dbScope.Executor.Execute(mapQuery) > 0;
 		}
 	}
 }

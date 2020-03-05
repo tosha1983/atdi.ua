@@ -30,6 +30,10 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		int LowerRightX { get; set; }
 
 		int LowerRightY { get; set; }
+
+		byte PriorityCode { get; set; }
+
+		string PriorityName { get; set; }
 	}
 
 	

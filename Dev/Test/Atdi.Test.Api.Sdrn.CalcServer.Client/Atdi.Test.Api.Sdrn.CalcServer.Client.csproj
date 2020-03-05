@@ -49,7 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModels\MapType.cs" />
+    <Compile Include="DataModels\MapFile.cs" />
+    <Compile Include="DataModels\MapAxis.cs" />
+    <Compile Include="DataModels\MapCoordinate.cs" />
+    <Compile Include="DataModels\MapCoordinates.cs" />
     <Compile Include="DTO\Reqests.cs" />
+    <Compile Include="Helpers\Compressor.cs" />
+    <Compile Include="Helpers\SerializationExtension.cs" />
+    <Compile Include="MapMaker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

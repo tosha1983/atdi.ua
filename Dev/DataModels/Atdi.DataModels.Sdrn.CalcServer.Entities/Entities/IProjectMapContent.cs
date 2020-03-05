@@ -39,6 +39,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		string ContentEncoding { get; set; }
 
 		byte[] Content { get; set; }
+
 	}
 
 	

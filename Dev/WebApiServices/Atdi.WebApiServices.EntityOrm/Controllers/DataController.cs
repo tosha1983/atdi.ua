@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Atdi.WebApiServices.EntityOrm.Controllers
 {
@@ -156,39 +157,64 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
                 return BadRequest(messaage);
             }
 
-            var ormQuery = _dataLayer.Builder
-                .From(query.QName)
-                .Select(fields.Select(f => f.Path).ToArray())
-                .Where(pkCondition)
-                .OnTop(1);
-
-            if (query.Filter != null && query.Filter.Length > 0)
+            try
             {
-                var condition = Helpers.FilterParser.Parse(query.Filter);
-                ormQuery.Where(condition);
-            }
+	            var ormQuery = _dataLayer.Builder
+		            .From(query.QName)
+		            .Select(fields.Select(f => f.Path).ToArray())
+		            .Where(pkCondition)
+		            .OnTop(1);
 
-            using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
+	            if (query.Filter != null && query.Filter.Length > 0)
+	            {
+		            var condition = Helpers.FilterParser.Parse(query.Filter);
+		            ormQuery.Where(condition);
+	            }
+
+	            using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
+	            {
+		            return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
+		            {
+			            if (reader.Read())
+			            {
+				            var result = new DTO.RecordResult
+				            {
+					            Record = new object[fields.Length],
+					            Fields = fields
+				            };
+				            for (int i = 0; i < fields.Length; i++)
+				            {
+					            var field = fields[i];
+					            result.Record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
+				            }
+				            return (IHttpActionResult)Ok(result);
+			            }
+			            return NotFound();
+		            });
+	            }
+			}
+            catch (Exception e)
             {
-                return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
-                {
-                    if (reader.Read())
-                    {
-                        var result = new DTO.RecordResult
-                        {
-                            Record = new object[fields.Length],
-                            Fields = fields
-                        };
-                        for (int i = 0; i < fields.Length; i++)
-                        {
-                            var field = fields[i];
-                            result.Record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
-                        }
-                        return (IHttpActionResult)Ok(result);
-                    }
-                    return NotFound();
-                });
+	            System.Diagnostics.Debug.WriteLine(e.ToString());
+	            throw;
             }
+            
+        }
+
+        private static object ParseValue(IDataTypeMetadata metadata, object value)
+        {
+	        if (metadata.CodeVarType == DataType.ClrType)
+	        {
+		        if (metadata.CodeVarClrType.IsArray)
+		        {
+			        if (value is JArray jArrayValue)
+			        {
+						return  jArrayValue.ToObject(metadata.CodeVarClrType);
+			        }
+		        }
+	        }
+
+	        return value;
         }
 
 		[HttpPost]
@@ -217,11 +243,9 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			{
 				var field = fields[i];
 				var value = ValueOperand.Create(field.DataType.CodeVarType,
-					request.Values[i]);
+					ParseValue(field.DataType, request.Values[i]));
 				ormQuery.SetValue(request.Fields[i], value);
 			}
-
-
 
 			using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
 			{
@@ -248,7 +272,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 					return (IHttpActionResult)Ok(result);
 				}
 
-				
+
 			}
 		}
 
@@ -282,7 +306,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			{
 				var field = fields[i];
 				var value = ValueOperand.Create(field.DataType.CodeVarType,
-					request.Values[i]);
+					ParseValue(field.DataType, request.Values[i]));
 				ormQuery.SetValue(request.Fields[i], value);
 			}
 

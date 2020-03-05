@@ -10,7 +10,7 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
     {
         public static bool UsesInheritance(EntityDef entityMetadata)
         {
-            return entityMetadata.Type == EntityType.Extention
+            return entityMetadata.Type == EntityType.Extension
                 || entityMetadata.Type == EntityType.Prototype
                 || entityMetadata.Type == EntityType.Role
                 || entityMetadata.Type == EntityType.Simple;
@@ -18,15 +18,15 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
 
         public static bool UsesBaseEntityPrimaryKey(EntityDef entityMetadata)
         {
-            return entityMetadata.Type == EntityType.Extention
-                || entityMetadata.Type == EntityType.Prototype
+            return entityMetadata.Type == EntityType.Extension
+				|| entityMetadata.Type == EntityType.Prototype
                 || entityMetadata.Type == EntityType.Role
                 || entityMetadata.Type == EntityType.Simple;
         }
         public static bool UsesBaseEntity(EntityDef entityMetadata)
         {
-            return entityMetadata.Type == EntityType.Extention
-                || entityMetadata.Type == EntityType.Prototype
+            return entityMetadata.Type == EntityType.Extension
+				|| entityMetadata.Type == EntityType.Prototype
                 || entityMetadata.Type == EntityType.Role
                 || entityMetadata.Type == EntityType.Simple;
         }

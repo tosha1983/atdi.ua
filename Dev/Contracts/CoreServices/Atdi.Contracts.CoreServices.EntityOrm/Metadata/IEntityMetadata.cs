@@ -69,7 +69,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
     {
         public static bool UsesInheritance(this IEntityMetadata entityMetadata)
         {
-            return entityMetadata.Type == EntityType.Extention
+            return entityMetadata.Type == EntityType.Extension
                 || entityMetadata.Type == EntityType.Prototype
                 || entityMetadata.Type == EntityType.Role
                 || entityMetadata.Type == EntityType.Simple;
@@ -77,19 +77,19 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
 
         public static bool UsesBaseEntityPrimaryKey(this IEntityMetadata entityMetadata)
         {
-            return entityMetadata.Type == EntityType.Extention
+            return entityMetadata.Type == EntityType.Extension
                 || entityMetadata.Type == EntityType.Prototype
-                || entityMetadata.Type == EntityType.Abstruct
+                || entityMetadata.Type == EntityType.Abstract
                 || entityMetadata.Type == EntityType.Role;
             // при простом наследовании просто копируется вся структура и объект выглядит как Normal
             //   || entityMetadata.Type == EntityType.Simple;
         }
         public static bool UsesBaseEntity(this IEntityMetadata entityMetadata)
         {
-            return entityMetadata.Type == EntityType.Extention
+            return entityMetadata.Type == EntityType.Extension
                 || entityMetadata.Type == EntityType.Prototype
                 || entityMetadata.Type == EntityType.Role
-                || entityMetadata.Type == EntityType.Abstruct
+                || entityMetadata.Type == EntityType.Abstract
                 || entityMetadata.Type == EntityType.Simple;
         }
 
@@ -234,7 +234,7 @@ namespace Atdi.Contracts.CoreServices.EntityOrm.Metadata
                 return new IEntityMetadata[] { };
             }
             var nextBase = entityMetadata.BaseEntity;
-            while (nextBase != null && nextBase.Type != EntityType.Abstruct)
+            while (nextBase != null && nextBase.Type != EntityType.Abstract)
             {
                 if (nextBase.QualifiedName == entityMetadata.QualifiedName)
                 {

@@ -59,6 +59,9 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     Thread.CurrentThread.Name = $"ATDI.TestSensor.#{op[0]}";
                     TestSensor(source.Token, (int)op[0], (string)op[1], (string)op[2], (string)op[3]);
                 }, source.Token);
+
+				break;
+				;
             }
 
             Console.ReadLine();
@@ -299,82 +302,91 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
         static void TestSensor(CancellationToken token, int index, string contentType, string encrypted, string compress)
         {
+	        try
+	        {
+				var sensor = Program.GetSensor(index);
+
+				var gateFactory = BusGateFactory.Create();
+				var gate = CreateGate(gateFactory, sensor, index, contentType, encrypted, compress);
+
+				var dispatcher1 = gate.CreateDispatcher($"SDRN.SensorDispatcher.#{index}");
+				//dispatcher1.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+				//dispatcher1.RegistryHandler(new Handlers.SendCommandHandler(gate));
+				dispatcher1.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate, index));
+				dispatcher1.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate, index));
+				dispatcher1.Activate();
+
+				//var dispatcher2 = gate.CreateDispatcher("SensorMessageDispatcher2");
+				////dispatcher2.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+				////dispatcher2.RegistryHandler(new Handlers.SendCommandHandler(gate));
+				////dispatcher2.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
+				//dispatcher2.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
+				//dispatcher2.Activate();
+
+				//var dispatcher3 = gate.CreateDispatcher("SensorMessageDispatcher3");
+				//dispatcher3.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+				//dispatcher3.RegistryHandler(new Handlers.SendCommandHandler(gate));
+				////dispatcher2.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
+				////dispatcher3.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
+				//dispatcher3.Activate();
+
+				//Console.ReadLine();
+
+				var publisher = gate.CreatePublisher($"SDRN.SensorPublisher.#{index}");
+				//var source = new CancellationTokenSource();
+				//Task.Run(() =>
+				//{
+				//    var r = new Random();
+				//    while (!source.Token.IsCancellationRequested)
+				//    {
+				//        var time = r.Next(200, 500) * 100;
+				//        Thread.Sleep(time);
+
+				//        DisableNetworkInterface("Ethernet0");
+
+				//        time = r.Next(20, 100) * 100;
+				//        Thread.Sleep(time);
+
+				//        EnableNetworkInterface("Ethernet0");
+
+				//    }
+				//});
+
+				//for (var j = 0; j < 10; j++)
+				//{
+				//    Task.Run(() =>
+				//    {
+				//        for (var i = 0; i < 100; i++)
+				//        {
+				//            publisher.Send("RegisterSensor", sensor, $"{j}.testing {i}");
+				//            //Console.ReadLine();
+				//            //Thread.Sleep(5);
+				//        }
+				//    });
+				//}
+
+				var measResult = BuildTestMeasResults();
+
+				for (var i = 0; i < 1000; i++)
+				{
+					publisher.Send("RegisterSensor", sensor, $"{index}.testing {i}");
+					publisher.Send("SendMeasResults", measResult, $"{index}.testing {i}");
+				}
+
+				while (!token.IsCancellationRequested)
+				{
+					Thread.Sleep(1000);
+				}
+
+				return;
+			}
+	        catch (Exception e)
+	        {
+		        Console.WriteLine(e);
+		        throw;
+	        }
+
             
-
-            var sensor = Program.GetSensor(index);
-
-            var gateFactory = BusGateFactory.Create();
-            var gate = CreateGate(gateFactory, sensor, index, contentType, encrypted, compress);
-
-            var dispatcher1 = gate.CreateDispatcher($"SDRN.SensorDispatcher.#{index}");
-            //dispatcher1.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            //dispatcher1.RegistryHandler(new Handlers.SendCommandHandler(gate));
-            dispatcher1.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate, index));
-            dispatcher1.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate, index));
-            dispatcher1.Activate();
-
-            //var dispatcher2 = gate.CreateDispatcher("SensorMessageDispatcher2");
-            ////dispatcher2.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            ////dispatcher2.RegistryHandler(new Handlers.SendCommandHandler(gate));
-            ////dispatcher2.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
-            //dispatcher2.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
-            //dispatcher2.Activate();
-
-            //var dispatcher3 = gate.CreateDispatcher("SensorMessageDispatcher3");
-            //dispatcher3.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-            //dispatcher3.RegistryHandler(new Handlers.SendCommandHandler(gate));
-            ////dispatcher2.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate));
-            ////dispatcher3.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate));
-            //dispatcher3.Activate();
-
-            //Console.ReadLine();
-
-            var publisher = gate.CreatePublisher($"SDRN.SensorPublisher.#{index}");
-            //var source = new CancellationTokenSource();
-            //Task.Run(() =>
-            //{
-            //    var r = new Random();
-            //    while (!source.Token.IsCancellationRequested)
-            //    {
-            //        var time = r.Next(200, 500) * 100;
-            //        Thread.Sleep(time);
-
-            //        DisableNetworkInterface("Ethernet0");
-
-            //        time = r.Next(20, 100) * 100;
-            //        Thread.Sleep(time);
-
-            //        EnableNetworkInterface("Ethernet0");
-
-            //    }
-            //});
-
-            //for (var j = 0; j < 10; j++)
-            //{
-            //    Task.Run(() =>
-            //    {
-            //        for (var i = 0; i < 100; i++)
-            //        {
-            //            publisher.Send("RegisterSensor", sensor, $"{j}.testing {i}");
-            //            //Console.ReadLine();
-            //            //Thread.Sleep(5);
-            //        }
-            //    });
-            //}
-
-
-               
-            for (var i = 0; i < 1000; i++)
-            {
-                publisher.Send("RegisterSensor", sensor, $"{index}.testing {i}");
-            }
-
-            while (!token.IsCancellationRequested)
-            {
-                Thread.Sleep(1000);
-            }
-
-            return;
 
 
             //Console.ReadLine();
@@ -512,7 +524,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             config["SDRN.ApiVersion"] = "2.0";
 
-            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-8591";
+            config["SDRN.Server.Instance"] = "SDRNSV-SBD12-A00-6088"; //"SDRNSV-SBD12-A00-8591";
             config["SDRN.Server.QueueNamePart"] = "Q.SDRN.Server";
 
             config["SDRN.Device.SensorTechId"] = sensorTechId;
@@ -524,7 +536,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
             config["DeviceBus.Outbox.ContentType"] = contentType;
             config["DeviceBus.Outbox.UseBuffer"] = "FileSystem";
-            config["DeviceBus.Outbox.Buffer.OutboxFolder"] = "C:\\Temp\\DeviceBus\\" + index;
+            config["DeviceBus.Outbox.Buffer.Folder"] = "C:\\Temp\\DeviceBus\\" + index;
             config["DeviceBus.Outbox.Buffer.ContentType"] = "Binary";
 
             config["DeviceBus.SharedSecretKey"] = "SHDLLKDJKWXXKSDLCJKIWHJKH";
@@ -688,7 +700,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     Lon = double.MaxValue
                 },
                 Measured = DateTime.Now,
-                Measurement = Atdi.DataModels.Sdrns.MeasurementType.Level,
+                Measurement = Atdi.DataModels.Sdrns.MeasurementType.SpectrumOccupation,
                 RefLevels = new ReferenceLevels
                 {
                     levels = BuildTestReferenceLevels_Levels(referenceLevels_LevelsCount),
