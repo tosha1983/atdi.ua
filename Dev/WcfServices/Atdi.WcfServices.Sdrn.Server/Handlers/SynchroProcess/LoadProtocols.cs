@@ -94,7 +94,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         c => c.SYNCHRO_PROCESS.Id
 
                                         );
-                
+
                 if (processId != null)
                 {
                     builderProtocols.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
@@ -106,7 +106,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 }
                 if (!string.IsNullOrEmpty(permissionNumber))
                 {
-                    builderProtocols.Where(c => c.PermissionNumber, ConditionOperator.Equal, permissionNumber);
+                    builderProtocols.Where(c => c.PermissionNumber, ConditionOperator.Like, "%" + permissionNumber + "%");
                 }
                 if (permissionStart != null)
                 {
@@ -148,25 +148,40 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                 if (!string.IsNullOrEmpty(createdBy))
                 {
-                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.CreatedBy, ConditionOperator.Equal, createdBy);
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.CreatedBy, ConditionOperator.Like, "%" + createdBy + "%");
                 }
 
                 if (!string.IsNullOrEmpty(standard))
                 {
-                    builderProtocols.Where(c => c.STATION_EXTENDED.Standard, ConditionOperator.Equal, standard);
+                    builderProtocols.Where(c => c.STATION_EXTENDED.Standard, ConditionOperator.Like, "%"+standard+ "%");
                 }
 
                 if (!string.IsNullOrEmpty(province))
                 {
-                    builderProtocols.Where(c => c.STATION_EXTENDED.Province, ConditionOperator.Equal, province);
+                    builderProtocols.Where(c => c.STATION_EXTENDED.Province, ConditionOperator.Like, "%" + province + "%");
                 }
 
                 if (!string.IsNullOrEmpty(ownerName))
                 {
-                    builderProtocols.Where(c => c.STATION_EXTENDED.OwnerName, ConditionOperator.Equal, ownerName);
+                    builderProtocols.Where(c => c.STATION_EXTENDED.OwnerName, ConditionOperator.Like, "%" + ownerName + "%");
                 }
 
-                if ((processId == null) && (freq == null) && (permissionStart == null) && (permissionStop == null) && (DateMeasMonth == null) && (DateMeasYear == null) && (DateMeasDay == null) && string.IsNullOrEmpty(permissionNumber))
+                if ((processId == null)
+                    && (freq == null)
+                    && (permissionStart == null)
+                    && (permissionStop == null)
+                    && (DateMeasMonth == null)
+                    && (DateMeasYear == null)
+                    && (DateMeasDay == null)
+                    && string.IsNullOrEmpty(permissionNumber)
+                    && (DateCreated == null)
+                    && (DateStart == null)
+                    && (DateStop == null)
+                    && string.IsNullOrEmpty(createdBy)
+                    && string.IsNullOrEmpty(standard)
+                    && string.IsNullOrEmpty(province)
+                    && string.IsNullOrEmpty(ownerName)
+                    )
                 {
                     builderProtocols.Where(c => c.Id, ConditionOperator.GreaterThan, 0);
                     builderProtocols.Where(c => c.DateMeasYear, ConditionOperator.IsNotNull);
@@ -204,6 +219,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             var radioControlParams = new RadioControlParams();
                             radioControlParams.RadioControlBandWidth = readerProtocols.GetValue(c => c.RadioControlBandWidth);
                             radioControlParams.RadioControlMeasFreq_MHz = readerProtocols.GetValue(c => c.RadioControlMeasFreq_MHz);
+                            protocols.RadioControlParams = radioControlParams;
                         }
 
                         protocols.StationExtended = new StationExtended();

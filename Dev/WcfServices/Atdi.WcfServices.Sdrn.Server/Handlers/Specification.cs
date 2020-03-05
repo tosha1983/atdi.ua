@@ -72,9 +72,24 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static readonly EventText HandlerGetProtocolsByParametersMethod = "Call 'GetProtocolsByParameters' method";
         public static readonly EventText OneElementsStationsIsEmpty = "One of the elements of the array of stations transmitted from the client side is empty!";
         public static readonly EventText DataSynchronizationProcessCompleted = "Synchronization process is completed!";
-
-
-
+        public static readonly EventText DeleteDuplicateRefSpectrumRecords = "Call 'DeleteDuplicateRefSpectrumRecords' method";
+        public static readonly EventText GetGroupSensors = "Call 'GetGroupSensors' method";
+        public static readonly EventText SelectGroupSensor = "Call 'SelectGroupSensor' method";
+        public static readonly EventText CountUniqueStations = "Call 'CountUniqueStations' method";
+        public static readonly EventText FillStationDataToCorrespond = "Call 'FillStationDataToCorrespond' method";
+        public static readonly EventText DeleteUnestimatedEmittings = "Call 'DeleteUnestimatedEmittings' method";
+        public static readonly EventText FillEmittingDataToCorrespond = "Call 'FillEmittingDataToCorrespond' method";
+        public static readonly EventText SynchroEmittings = "Call 'SynchroEmittings' method";
+        public static readonly EventText FillingProtocolStationData = "Call 'FillingProtocolStationData' method";
+        public static readonly EventText OrderProtocols = "Call 'OrderProtocols' method";
+        public static readonly EventText GetEmittings = "Call 'GetEmittings' method";
+        public static readonly EventText GetHeadRefSpectrumIdsBySDRN = "Call 'GetHeadRefSpectrumIdsBySDRN' method";
+        public static readonly EventText GetSensorIdsBySDRN = "Call 'GetSensorIdsBySDRN' method";
+        public static readonly EventText GetAreas = "Call 'GetAreas' method";
+        public static readonly EventText GetStationExtended = "Call 'GetStationExtended' method";
+        public static readonly EventText RecoveryDataSynchronizationProcess = "Call 'RecoveryDataSynchronizationProcess' method";
+        public static readonly EventText RunDataSynchronizationProcess = "Call 'RunDataSynchronizationProcess' method";
+        
     }
     static class TraceScopeNames
     {

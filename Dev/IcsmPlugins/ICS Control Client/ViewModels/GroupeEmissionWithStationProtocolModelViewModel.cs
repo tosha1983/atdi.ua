@@ -184,13 +184,25 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             rs.Put("SENSOR_NAME", row.SensorName);
             rs.Put("DATE_MEAS", row.DateMeas);
-            rs.Put("S_FREQ_MHZ", row.Freq_MHz);
-            rs.Put("S_BW", row.BandWidth);
-            rs.Put("FREQ_MHZ", row.RadioControlMeasFreq_MHz);
-            rs.Put("BW", row.RadioControlBandWidth);
+            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz,6));
+            if (row.BandWidth != null)
+            {
+                rs.Put("S_BW", Math.Round(row.BandWidth.Value, 6));
+            }
+            if (row.RadioControlMeasFreq_MHz != null)
+            {
+                rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 6));
+            }
+            if (row.RadioControlBandWidth != null)
+            {
+                rs.Put("BW", Math.Round(row.RadioControlBandWidth.Value, 6));
+            }
             if (row.ProtocolsLinkedWithEmittings != null)
             {
-                rs.Put("LEVEL_DBM", row.ProtocolsLinkedWithEmittings.CurentPower_dBm);
+                if (row.ProtocolsLinkedWithEmittings.CurentPower_dBm != null)
+                {
+                    rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 6));
+                }
             }
             rs.Put("DESIG_EMISSION", row.DesigEmission);
             rs.Put("GLOBAL_SID", row.GlobalSID);
