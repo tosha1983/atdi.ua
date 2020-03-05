@@ -672,9 +672,9 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         
         /// <remarks/>
         Normal,
-        
-        /// <remarks/>
-        Extention,
+
+		/// <remarks/>
+		Extension,
         
         /// <remarks/>
         Predefined,
@@ -689,7 +689,7 @@ namespace Atdi.CoreServices.EntityOrm.Metadata
         Simple,
 
         /// <remarks/>
-        Abstruct
+        Abstract
     }
     
     /// <remarks/>

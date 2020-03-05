@@ -50,6 +50,10 @@
     <Field Name="FileSize" DataType="Integer.32" SourceName="FILE_SIZE" SourceType="Column" Desc="The file size in bytes of the map" Title="File size" Required="false"/>
     <Field Name="MapName" DataType="Text.450" SourceName="MAP_NAME" SourceType="Column" Desc="The name of the map" Title="Map name" Required="true"/>
     <Field Name="MapNote" DataType="Text.MAX" SourceName="MAP_NOTE" SourceType="Column" Desc="The note of the map" Title="Map note" Required="false"/>
+
+    <Field Name="SectorsCount" DataType="Integer.32"  SourceName="SECTORS_COUNT" SourceType="Column" Desc="The count of sectors" Title="Sectors count" Required="false"/>
+    <Field Name="SectorsXCount" DataType="Integer.32"  SourceName="SECTORS_X_COUNT" SourceType="Column" Desc="The count of sectors by X axis" Title="Sectors by X axis" Required="false"/>
+    <Field Name="SectorsYCount" DataType="Integer.32"  SourceName="SECTORS_Y_COUNT" SourceType="Column" Desc="The count of sectors by Y axis" Title="Sectors by Y axis" Required="false"/>
     
   </Fields>
   <PrimaryKey Clustered="true">

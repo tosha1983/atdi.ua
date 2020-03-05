@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Atdi.Modules.Sdrn.Calculation
 {
     public class EmittingProcessing
@@ -57,12 +58,6 @@ namespace Atdi.Modules.Sdrn.Calculation
             resArr.Reverse();
             var resArr1 = resArr.ToArray();
             return resArr1;
-        }
-
-        public static void GetFreqAndBandWidthByEmittingParameters(string standard, double spectrumStartFreq_MHz, double spectrumSteps_kHz, double T1, double T2, double startFrequency_MHz, double stopFrequency_MHz, out double? freq_MHz, out double? bandWidth)
-        {
-            freq_MHz = null;
-            bandWidth = null;
         }
     }
 }

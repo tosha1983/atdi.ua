@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Drawing;
 
-namespace Atdi.Modules.Sdrn.Chart
+namespace XICSM.ICSControlClient.ViewModels.Chart
 {
     public class ChartLine
     {

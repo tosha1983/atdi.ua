@@ -88,7 +88,10 @@
     <PostBuildEvent>copy "$(TargetDir)Atdi.*.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
 
 copy "$(TargetDir)XICSM_ICSControlClient.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\*.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\IcsmSchema\ICSControlClient.Schema" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\ICSControlClient.Schema"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\IcsmReport\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\IcsmReport\*.*"
 
-copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\*.xaml" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\XICSM_ICSControlClient\Xaml"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Drawing;
 
-namespace Atdi.Modules.Sdrn.Chart
+namespace XICSM.ICSControlClient.ViewModels.Chart
 {
     public enum ChartType
     {
@@ -17,7 +17,6 @@ namespace Atdi.Modules.Sdrn.Chart
         private double ymax = 10;
         private ChartType _chartType = ChartType.Line;
 
-        private Bitmap chartCanvas;
 
         public ChartStyle()
         {
@@ -27,12 +26,6 @@ namespace Atdi.Modules.Sdrn.Chart
         {
             get => this._chartType;
             set => this._chartType = value;
-        }
-
-        public Bitmap ChartCanvas
-        {
-            get { return chartCanvas; }
-            set { chartCanvas = value; }
         }
 
         public double Xmin
@@ -59,12 +52,5 @@ namespace Atdi.Modules.Sdrn.Chart
             set { ymax = value; }
         }
 
-        public PointF NormalizePoint(PointF pt)
-        {
-            PointF result = new PointF();
-            result.X = (float)((pt.X - Xmin) * ChartCanvas.Width / (Xmax - Xmin));
-            result.Y = (float)(ChartCanvas.Height - (pt.Y - Ymin) * ChartCanvas.Height / (Ymax - Ymin));
-            return result;
-        }
     }
 }

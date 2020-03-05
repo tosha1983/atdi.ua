@@ -52,6 +52,13 @@
   <ItemGroup>
     <Compile Include="Entities\ICalcResult.cs" />
     <Compile Include="Entities\ICalcTask.cs" />
+    <Compile Include="Entities\IContextStationPattern.cs" />
+    <Compile Include="Entities\IContextStationTransmitter.cs" />
+    <Compile Include="Entities\IContextStationReceiver.cs" />
+    <Compile Include="Entities\IContextStationAntenna.cs" />
+    <Compile Include="Entities\IContextStationSite.cs" />
+    <Compile Include="Entities\IContextStation.cs" />
+    <Compile Include="Entities\IClientContext.cs" />
     <Compile Include="Entities\IProjectMapContentSource.cs" />
     <Compile Include="Entities\IProjectMapContent.cs" />
     <Compile Include="Entities\IProjectMap.cs" />
@@ -72,6 +79,13 @@
   <ItemGroup>
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATION_PATTERNS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_ANTENNA.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_RECEIVER.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_TRANSMITTER.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_SITE.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CLIENT_CONTEXTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAPS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.PROJECT_MAP_CONTENTS.sql" />
@@ -111,6 +125,7 @@
     <Content Include="Metadata\DataTypes\Database\Integer.16.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.32.xml" />
     <Content Include="Metadata\DataTypes\Database\Integer.64.xml" />
+    <Content Include="Metadata\DataTypes\Database\Text.1.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.10.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.100.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.1000.xml" />
@@ -128,6 +143,13 @@
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
     <Content Include="Metadata\Entities\CalcTask.xml" />
+    <Content Include="Metadata\Entities\ContextStationPattern.xml" />
+    <Content Include="Metadata\Entities\ContextStationAntenna.xml" />
+    <Content Include="Metadata\Entities\ContextStationReceiver.xml" />
+    <Content Include="Metadata\Entities\ContextStationTransmitter.xml" />
+    <Content Include="Metadata\Entities\ContextStationSite.xml" />
+    <Content Include="Metadata\Entities\ContextStation.xml" />
+    <Content Include="Metadata\Entities\ClientContext.xml" />
     <Content Include="Metadata\Entities\ProjectMapContentSource.xml" />
     <Content Include="Metadata\Entities\ProjectMapContent.xml" />
     <Content Include="Metadata\Entities\ProjectMap.xml" />

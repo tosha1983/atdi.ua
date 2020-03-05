@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Drawing;
 
-namespace Atdi.Modules.Sdrn.Chart
+
+namespace XICSM.ICSControlClient.ViewModels.Chart
 {
-    public class ChartMenuItem
+    public class ChartPoints
     {
-        public string Name { get; set; }
-        public string Header { get; set; }
+        public PointF[] Points { get; set; }
+        public Brush LineColor { get; set; }
     }
 }

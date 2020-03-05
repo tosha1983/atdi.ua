@@ -107,7 +107,19 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                             throw new InvalidOperationException($"Unsupported MeasurementType '{deliveryObject.Measurement}'");
                         }
 
-                        var builderUpdateAmqpMessage = this._dataLayer.GetBuilder<MD.IAmqpMessage>().Update();
+                        var logQueryInsert = this._dataLayer.GetBuilder<MD.IAmqpMessageLog>()
+							.Insert()
+	                        .SetValue(c => c.MESSAGE.Id, messageId)
+	                        .SetValue(c => c.StatusCode, (byte)2)
+	                        .SetValue(c => c.StatusName, "Processing")
+	                        .SetValue(c => c.StatusNote, $"Decode meas result. Will be sent event '{busEvent.Name}'")
+	                        .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+	                        .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+	                        .SetValue(c => c.Source,
+		                        $"SDRN.SendMeasResultsSubscriber:[{deliveryObject?.Measurement}][Handle]");
+                        scope.Executor.Execute(logQueryInsert);
+
+						var builderUpdateAmqpMessage = this._dataLayer.GetBuilder<MD.IAmqpMessage>().Update();
                         builderUpdateAmqpMessage.SetValue(c => c.StatusCode, (byte)3);
                         builderUpdateAmqpMessage.Where(c => c.Id, ConditionOperator.Equal, messageId);
                         scope.Executor.Execute(builderUpdateAmqpMessage);

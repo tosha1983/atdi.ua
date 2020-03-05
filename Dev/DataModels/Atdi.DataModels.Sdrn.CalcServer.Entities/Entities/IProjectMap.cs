@@ -37,21 +37,33 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string StepUnit { get; set; }
 
-		int AxisXNumber { get; set; }
+		int OwnerAxisXNumber { get; set; }
 
-		int AxisXStep { get; set; }
+		int OwnerAxisXStep { get; set; }
 
-		int AxisYNumber { get; set; }
+		int OwnerAxisYNumber { get; set; }
 
-		int AxisYStep { get; set; }
+		int OwnerAxisYStep { get; set; }
 
-		int UpperLeftX { get; set; }
+		int OwnerUpperLeftX { get; set; }
 
-		int UpperLeftY { get; set; }
+		int OwnerUpperLeftY { get; set; }
 
-		int LowerRightX { get; set; }
+		int? AxisXNumber { get; set; }
 
-		int LowerRightY { get; set; }
+		int? AxisXStep { get; set; }
+
+		int? AxisYNumber { get; set; }
+
+		int? AxisYStep { get; set; }
+
+		int? UpperLeftX { get; set; }
+
+		int? UpperLeftY { get; set; }
+
+		int? LowerRightX { get; set; }
+
+		int? LowerRightY { get; set; }
 
 	}
 

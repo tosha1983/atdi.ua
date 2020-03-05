@@ -19,7 +19,8 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
         private readonly ILogger _logger;
         private readonly IQueryExecutor _queryExecutor;
         private readonly IQueryBuilder<IAmqpMessage> _amqpMessageQueryBuilder;
-        private readonly IQueryBuilder<IAmqpEvent> _amqpEventQueryBuilder;
+        private readonly IQueryBuilder<IAmqpMessageLog> _amqpMessageLogQueryBuilder;
+		private readonly IQueryBuilder<IAmqpEvent> _amqpEventQueryBuilder;
 
 
         public MessagesSite(IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger)
@@ -29,7 +30,8 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
             this._logger = logger;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
             this._amqpMessageQueryBuilder = this._dataLayer.GetBuilder<IAmqpMessage>();
-            this._amqpEventQueryBuilder = this._dataLayer.GetBuilder<IAmqpEvent>();
+            this._amqpMessageLogQueryBuilder = this._dataLayer.GetBuilder<IAmqpMessageLog>();
+			this._amqpEventQueryBuilder = this._dataLayer.GetBuilder<IAmqpEvent>();
         }
 
         public IMessageProcessingScope<TDeliveryObject> StartProcessing<TDeliveryObject>(long messageId)
@@ -41,27 +43,44 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
         {
             try
             {
-                var updateQuery = this._amqpMessageQueryBuilder
-                .Update()
-                .SetValue(c => c.StatusCode, newCode)
-                .SetValue(c => c.StatusName, ((MessageProcessingStatus)newCode).ToString())
-                .SetValue(c => c.StatusNote, statusNote)
-                .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId)
-                // важно: следующее услови это блокиратор от ситуации когда 
-                // евент дошел и начал обрабатывать на прикладном уровне сообщение
-                .Where(c => c.StatusCode, DataModels.DataConstraint.ConditionOperator.Equal, oldCode);
+	            var statusName = ((MessageProcessingStatus) newCode).ToString();
 
-                this._queryExecutor.Execute(updateQuery);
+	            using (var dbScope = _dataLayer.CreateScope<SdrnServerDataContext>())
+	            {
+		            var updateQuery = this._amqpMessageQueryBuilder
+			            .Update()
+			            .SetValue(c => c.StatusCode, newCode)
+			            .SetValue(c => c.StatusName, statusName)
+			            .SetValue(c => c.StatusNote, statusNote)
+			            .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId)
+			            // важно: следующее услови это блокиратор от ситуации когда 
+			            // евент дошел и начал обрабатывать на прикладном уровне сообщение
+			            .Where(c => c.StatusCode, DataModels.DataConstraint.ConditionOperator.Equal, oldCode);
 
-                // для статуса 0 нужно подчистить собітия
-                if (oldCode == (byte)MessageProcessingStatus.Created)
-                {
-                    var deleteQuery = this._amqpEventQueryBuilder
-                        .Delete()
-                        .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId);
+		            dbScope.Executor.Execute(updateQuery);
 
-                    this._queryExecutor.Execute(deleteQuery);
-                }
+		            // для статуса 0 нужно подчистить собітия
+		            if (oldCode == (byte) MessageProcessingStatus.Created)
+		            {
+			            var deleteQuery = this._amqpEventQueryBuilder
+				            .Delete()
+				            .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, messageId);
+
+			            dbScope.Executor.Execute(deleteQuery);
+		            }
+
+		            var logQueryInsert = this._amqpMessageLogQueryBuilder
+			            .Insert()
+			            .SetValue(c => c.MESSAGE.Id, messageId)
+			            .SetValue(c => c.StatusCode, newCode)
+			            .SetValue(c => c.StatusName, statusName)
+			            .SetValue(c => c.StatusNote, $"Status was changed. Note: {statusNote}")
+			            .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+			            .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+			            .SetValue(c => c.Source,
+				            $"SDRN.ChangeStatus:[OldCode=#{oldCode}][MessagesSite][ChangeStatus]");
+		            dbScope.Executor.Execute(logQueryInsert);
+	            }
             }
             catch (Exception e)
             {

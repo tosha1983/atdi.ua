@@ -18,6 +18,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 {
     public class RunSynchroProcess
     {
+        private static bool IsAlreadyRunProcess;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
@@ -34,6 +35,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             public long? Id;
             public double StartFrequency_MHz;
             public double StopFrequency_MHz;
+            public double CurrentPower_dBm;
             public int worktimeHitsCount;
         }
 
@@ -537,6 +539,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             bool isSuccess = false;
             try
             {
+                this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DeleteDuplicateRefSpectrumRecords.Text);
                 var listDataRefSpectrum = new List<DataRefSpectrum>();
                 var listDataRefSpectrumForDelete = new List<DataRefSpectrum>();
                 var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
@@ -644,6 +647,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public GroupSensors[] GetGroupSensors(RefSpectrum[] refSpectrums)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetGroupSensors.Text);
             var dataGroupSensors = new List<GroupSensors>();
             for (int i=0; i< refSpectrums.Length; i++)
             {
@@ -667,6 +671,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public RefSpectrum[] SelectGroupSensor(GroupSensors group, RefSpectrum[] refSpectrums)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.SelectGroupSensor.Text);
             var listDataRefSpectrum = new List<RefSpectrum>();
             for (int i = 0; i < refSpectrums.Length; i++)
             {
@@ -708,7 +713,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         private int CountUniqueStations(RefSpectrum[] refSpectrums)
         {
-            //int nubmerOfStations = 0;
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.CountUniqueStations.Text);
             var uniqueStations = new List<string>();
             for (int i = 0; i < refSpectrums.Length; i++)
             {
@@ -726,6 +731,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         private List<StationDataToSort> FillStationDataToCorrespond(RefSpectrum[] refSpectrums)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.FillStationDataToCorrespond.Text);
             var staionsDataToCorrespond = new List<StationDataToSort>();
             StationDataToSort stationDataToCorrespond = new StationDataToSort();
             for (int i = 0; i < refSpectrums.Length; i++)
@@ -746,8 +752,8 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         private Emitting[] DeleteUnestimatedEmittings(Emitting[] emittings)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DeleteUnestimatedEmittings.Text);
             var estimatedEmitting = new List<Emitting>();
-
             for (int i = 0; i < emittings.Length; i++)
             {
                 if (emittings[i].Spectrum.CorrectnessEstimations)
@@ -760,6 +766,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         private List<EmittingDataToSort> FillEmittingDataToCorrespond(Calculation.Emitting[] emittings)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.FillEmittingDataToCorrespond.Text);
             var emittingsDataToCorrespond = new List<EmittingDataToSort>();
             EmittingDataToSort emittingDataToCorrespond = new EmittingDataToSort();
             for (int i = 0; i < emittings.Length; i++)
@@ -767,6 +774,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 emittingDataToCorrespond.Id = emittings[i].Id;
                 emittingDataToCorrespond.StartFrequency_MHz = emittings[i].StartFrequency_MHz;
                 emittingDataToCorrespond.StopFrequency_MHz = emittings[i].StopFrequency_MHz;
+                emittingDataToCorrespond.CurrentPower_dBm = emittings[i].CurentPower_dBm;
                 for (int j = 0; j < emittings[i].WorkTimes.Length; j++)
                 {
                     emittingDataToCorrespond.worktimeHitsCount += emittings[i].WorkTimes[j].HitCount;
@@ -776,6 +784,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return emittingsDataToCorrespond;
         }
 
+
         /// <summary>
         /// Синхронизация излучений с записями группы сенсора
         /// </summary>
@@ -784,6 +793,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <returns></returns>
         public Protocols[] SynchroEmittings(RefSpectrum[] refSpectrums, Emitting[] emittings, Calculation.EmitParams[] emittingParameters)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.SynchroEmittings.Text);
             var lstProtocols = new List<Protocols>();
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
@@ -823,19 +833,54 @@ namespace Atdi.WcfServices.Sdrn.Server
             if ((emittingParameters != null) && (emittingParameters.Length > 0))
             {
                 double corelFactor = emittingParameters[0].CorrelationFactor.Value;
-                Calculation.CalcSpecializedGroupingEmitting.DeleteRedundantUncorrelatedEmitting(listOfEmitings, desiredNumberOfEmittings, emittingParameters[0], ref corelFactor, 0.95);
+                Calculation.CalcGroupingEmitting.DeleteRedundantUncorrelatedEmitting(listOfEmitings, desiredNumberOfEmittings, emittingParameters[0], ref corelFactor, 0.95);
             }
 
 
             var emittingsDataToCorrespondUnsorted = new List<EmittingDataToSort>();
             emittingsDataToCorrespondUnsorted = FillEmittingDataToCorrespond(listOfEmitings.ToArray());
             var emittingsDataToCorrespondSorted = from z in emittingsDataToCorrespondUnsorted orderby z.worktimeHitsCount descending select z;
-            var emittingsDataToCorrespond = emittingsDataToCorrespondSorted.ToArray();
 
             var staionsDataToCorrespondUnsorted = new List<StationDataToSort>();
             staionsDataToCorrespondUnsorted = FillStationDataToCorrespond(refSpectrums);
-            var stationssDataToCorrespondSorted = from z in staionsDataToCorrespondUnsorted orderby z.Level_dBm descending select z;
-            var stationssDataToCorrespond = stationssDataToCorrespondSorted.ToArray();
+            var stationsDataToCorrespondSorted = from z in staionsDataToCorrespondUnsorted orderby z.Level_dBm descending select z;
+
+            var stationsDataToCorrespondList = stationsDataToCorrespondSorted.ToList();
+            var emittingsDataToCorrespondList = emittingsDataToCorrespondSorted.ToList();
+
+            // Emitting should be correspondent to the level only if difference between emitting pover and station level dont exceeds 30 dB
+            int numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
+            for (int i = 0; i < numOfIterations; i++)
+            {
+                var corrEmittingBuffer = new EmittingDataToSort();
+                double levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[i].CurrentPower_dBm;
+                //возожно следует внести в конфиг, DifferenceBetweenStationAndEmittingLevel_dB = -30
+                if (levelDifference_dB < -30)
+                {
+                    for (int j = i; j < numOfIterations; j++)
+                    {
+                        levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[j].CurrentPower_dBm;
+                        if (levelDifference_dB > -30)
+                        {
+                            corrEmittingBuffer = emittingsDataToCorrespondList[i];
+                            emittingsDataToCorrespondList[i] = emittingsDataToCorrespondList[j];
+                            emittingsDataToCorrespondList[j] = corrEmittingBuffer;
+                            break;
+                        }
+                        else if ((levelDifference_dB < -30) && (j == numOfIterations - 1))
+                        {
+                            stationsDataToCorrespondList.RemoveRange(i, 1);
+                            numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
+                            i--;
+                        }
+                    }
+                }
+            }
+
+            //Convert data to correspond into array
+            var stationsDataToCorrespond = stationsDataToCorrespondList.ToArray();
+            var emittingsDataToCorrespond = emittingsDataToCorrespondList.ToArray();
+
 
             var cntAllEmitters = 0;
             if ((listOfEmitings!=null) && (listOfEmitings.Count>0))
@@ -862,9 +907,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                     // объявление новой промежуточной переменной, которая должна заполняться в блоке ниже:
                     int stationLink = -1;
-                    for (int k = 0; k < stationssDataToCorrespond.Length; k++)
+                    for (int k = 0; k < stationsDataToCorrespond.Length; k++)
                     {
-                        if (stationssDataToCorrespond[k].RefSpectrumId == refSpectrums[i].Id && stationssDataToCorrespond[k].DataRefSpectrumId == refSpectrums[i].DataRefSpectrum[j].Id)
+                        if (stationsDataToCorrespond[k].RefSpectrumId == refSpectrums[i].Id && stationsDataToCorrespond[k].DataRefSpectrumId == refSpectrums[i].DataRefSpectrum[j].Id)
                         {
                             stationLink = k;
                             break;
@@ -946,6 +991,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <returns></returns>
         public void FillingProtocolStationData(ref Protocols[] protocolsOutput, Sensor[] sensors, StationExtended[] stationsExtended, long? synchroProcessId)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.FillingProtocolStationData.Text);
             var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
             var protocolsInput = protocolsOutput;
             var lstProtocols = new List<Protocols>();
@@ -991,19 +1037,36 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var protocolsLinkedWithEmittings = protocol.ProtocolsLinkedWithEmittings;
                         if ((protocolsLinkedWithEmittings.SpectrumStartFreq_MHz!=null) && (protocolsLinkedWithEmittings.SpectrumSteps_kHz != null) && (protocolsLinkedWithEmittings.T1 != null) && (protocolsLinkedWithEmittings.T2 != null) && (protocolsLinkedWithEmittings.StartFrequency_MHz != null) && (protocolsLinkedWithEmittings.StopFrequency_MHz != null))
                         {
-                            Calculation.EmittingProcessing.GetFreqAndBandWidthByEmittingParameters(fndStation.Standard, protocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value, protocolsLinkedWithEmittings.SpectrumSteps_kHz.Value, protocolsLinkedWithEmittings.T1.Value, protocolsLinkedWithEmittings.T2.Value, protocolsLinkedWithEmittings.StartFrequency_MHz.Value, protocolsLinkedWithEmittings.StopFrequency_MHz.Value, out double? radioControlMeasFreq_MHz, out double? radioControlBandWidth);
-                            if ((radioControlMeasFreq_MHz != null) && (radioControlBandWidth != null))
-                            {
-                                protocol.RadioControlParams = new RadioControlParams();
-                                protocol.RadioControlParams.RadioControlMeasFreq_MHz = radioControlMeasFreq_MHz;
-                                protocol.RadioControlParams.RadioControlBandWidth = radioControlBandWidth;
-                            }
+                            GetFreqAndBandWidthByEmittingParameters(protocol);
                         }
                     }
                 }
                 lstProtocols.Add(protocol);
             }
             protocolsOutput = lstProtocols.ToArray();
+        }
+
+
+        public static void GetFreqAndBandWidthByEmittingParameters(Protocols protocols)
+        {
+            if (protocols.ProtocolsLinkedWithEmittings != null)
+            {
+                if (protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz != null)
+                {
+                    var freqMiddle_MHz = (double)(protocols.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value + protocols.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * ((protocols.ProtocolsLinkedWithEmittings.T1.Value + protocols.ProtocolsLinkedWithEmittings.T2.Value) / 2000));
+                    protocols.RadioControlParams = new RadioControlParams();
+                    protocols.RadioControlParams.RadioControlMeasFreq_MHz = freqMiddle_MHz;
+                    protocols.RadioControlParams.RadioControlBandWidth = protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz;
+                }
+                else
+                {
+                    var freqMiddle_MHz = (double)((protocols.ProtocolsLinkedWithEmittings.StopFrequency_MHz.Value + protocols.ProtocolsLinkedWithEmittings.StartFrequency_MHz.Value) / 2);
+                    protocols.RadioControlParams = new RadioControlParams();
+                    protocols.RadioControlParams.RadioControlMeasFreq_MHz = freqMiddle_MHz;
+                    var bandWidth = (protocols.ProtocolsLinkedWithEmittings.StopFrequency_MHz.Value - protocols.ProtocolsLinkedWithEmittings.StartFrequency_MHz) * 1000;
+                    protocols.RadioControlParams.RadioControlBandWidth = bandWidth;
+                }
+            }
         }
 
         /// <summary>
@@ -1013,6 +1076,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <returns></returns>
         public void OrderProtocols(ref Protocols[] protocolsOutput)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OrderProtocols.Text);
             Protocols[] listProtocols = null;
             var orderByProtocolsOutput = from z in protocolsOutput orderby z.StationExtended.PermissionNumber, z.StationExtended.OwnerName ascending select z;
             listProtocols = orderByProtocolsOutput.ToArray();
@@ -1258,6 +1322,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public Emitting[] GetEmittings(DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out Calculation.EmitParams[] emittingParameters )
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetEmittings.Text);
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             emittingParameters = null;
             var lstEmittingParameters = new List<Calculation.EmitParams>();
@@ -1587,6 +1652,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public long[] GetHeadRefSpectrumIdsBySDRN(DataSynchronizationBase dataSynchronization)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetHeadRefSpectrumIdsBySDRN.Text);
             var headRefSpectrumIds = new List<long>();
             if (dataSynchronization != null)
             {
@@ -1609,6 +1675,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public long[] GetSensorIdsBySDRN(DataSynchronizationBase dataSynchronization)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetSensorIdsBySDRN.Text);
             var sensorIdsBySDRN = new List<long>();
             if (dataSynchronization != null)
             {
@@ -1631,6 +1698,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public Area[] GetAreas(DataSynchronizationBase dataSynchronization)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetAreas.Text);
             var areas = new List<Area>();
             try
             {
@@ -1701,6 +1769,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public StationExtended[] GetStationExtended(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetStationExtended.Text);
             var stationsExtended = new List<StationExtended>();
             try
             {
@@ -1758,6 +1827,11 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public  void RecoveryDataSynchronizationProcess()
         {
+            if (RunSynchroProcess.IsAlreadyRunProcess)
+            {
+                return;
+            }
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.RecoveryDataSynchronizationProcess.Text);
             var loadSensor = new LoadSensor(this._dataLayer, this._logger);
             var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
             var currentDataSynchronizationProcess = loadSynchroProcessData.CurrentDataSynchronizationProcess();
@@ -1847,6 +1921,8 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.RunDataSynchronizationProcess.Text);
+            RunSynchroProcess.IsAlreadyRunProcess = true;
             if ((stationsExtended!=null) && (stationsExtended.Length>0))
             {
                 for (int i=0; i< stationsExtended.Length; i++)

@@ -6,19 +6,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Drawing;
 
-namespace Atdi.Modules.Sdrn.Chart
+namespace XICSM.ICSControlClient.ViewModels.Chart
 {
     public struct ChartOption
     {
         public string Title { get; set; }
-
-        public string LeftTitle { get; set; }
-
-        public string RightTitle { get; set; }
-
-        public ChartMenuItem[] MenuItems { get; set; }
-
-        public PointF[] Points { get; set; }
 
         public ChartPoints[] PointsArray { get; set; }
 

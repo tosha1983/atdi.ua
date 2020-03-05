@@ -34,7 +34,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,19 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Chart\ChartColumnsStyle.cs" />
-    <Compile Include="Models\Chart\ChartGridStyle.cs" />
-    <Compile Include="Models\Chart\ChartLine.cs" />
-    <Compile Include="Models\Chart\ChartLineStyle.cs" />
-    <Compile Include="Models\Chart\ChartMenuItem.cs" />
-    <Compile Include="Models\Chart\ChartOption.cs" />
-    <Compile Include="Models\Chart\ChartPoints.cs" />
-    <Compile Include="Models\Chart\ChartStyle.cs" />
     <Compile Include="CreateMaskFromSpectrum.cs" />
     <Compile Include="Models\Signaling\EmitParams.cs" />
-    <Compile Include="Reports\BuildSpectrogram.cs" />
-    <Compile Include="Reports\Utitlity.cs" />
-    <Compile Include="Signaling\CalcSpecializedGroupingEmitting.cs" />
     <Compile Include="Signaling\CalcGroupingEmitting.cs" />
     <Compile Include="Signaling\CalcSignalization.cs" />
     <Compile Include="Models\Signaling\Emitting.cs" />

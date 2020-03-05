@@ -72,6 +72,14 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities
 		string MapName { get; set; }
 
 		string MapNote { get; set; }
+
+
+		int SectorsCount { get; set; }
+
+		int SectorsXCount { get; set; }
+		int SectorsYCount { get; set; }
+
+		
 	}
 
     public enum MapStatusCode
