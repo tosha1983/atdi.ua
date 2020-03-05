@@ -10,7 +10,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter.DataModels
 	{
 		public string Type;
 
-		public string Encoding;
+		//public string Encoding;
 
 		public byte[] Data;
 

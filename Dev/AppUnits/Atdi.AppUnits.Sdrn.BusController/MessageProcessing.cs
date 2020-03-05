@@ -12,7 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Atdi.Modules.Sdrn.MessageBus;
+using MD = Atdi.DataModels.Sdrns.Server.Entities;
 
 namespace Atdi.AppUnits.Sdrn.BusController
 {
@@ -27,8 +28,9 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private CancellationToken _cancellationToken;
         private CancellationTokenSource _tokenSource;
         private int _waitTimeout = 1000 * 5;
+		private readonly IQueryBuilder<MD.IAmqpMessageLog> _amqpMessageLogQueryBuilder;
 
-        public MessageProcessing(
+		public MessageProcessing(
             IMessagesSite messagesSite,
             IDataLayer<EntityDataOrm> dataLayer,
             IEventEmitter eventEmitter,
@@ -41,7 +43,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this._waitHandle = new AutoResetEvent(false);
             this._tokenSource = new CancellationTokenSource();
             this._cancellationToken = this._tokenSource.Token;
-        }
+            this._amqpMessageLogQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpMessageLog>();
+		}
 
         public void OnCreatedMessage()
         {
@@ -89,24 +92,30 @@ namespace Atdi.AppUnits.Sdrn.BusController
         {
             try
             {
-                var messages = _messagesSite.GetMessagesForNotification();
-                if (messages == null || messages.Length == 0)
-                {
-                    return false;
-                }
+	            using (var dbScope = _dataLayer.CreateScope<SdrnServerDataContext>())
+	            {
 
-                for (int i = 0; i < messages.Length; i++)
-                {
-                    var m = messages[i];
 
-                    this.HandleMessage(m.Item1, m.Item2);
+		            var messages = _messagesSite.GetMessagesForNotification();
+		            if (messages == null || messages.Length == 0)
+		            {
+			            return false;
+		            }
 
-                    if (this._cancellationToken.IsCancellationRequested)
-                    {
-                        return true;
-                    }
-                }
-                return true;
+		            for (int i = 0; i < messages.Length; i++)
+		            {
+			            var m = messages[i];
+
+			            this.HandleMessage(m.Item1, m.Item2, dbScope);
+
+			            if (this._cancellationToken.IsCancellationRequested)
+			            {
+				            return true;
+			            }
+		            }
+	            }
+
+	            return true;
             }
             catch (Exception e)
             {
@@ -115,31 +124,49 @@ namespace Atdi.AppUnits.Sdrn.BusController
             }
         }
 
-        private void HandleMessage(long id, string type)
+        private void HandleMessage(long id, string type, IDataLayerScope dbScope)
         {
             var statusCode = (byte)MessageProcessingStatus.SentEvent;
-            var statusNote = string.Empty;
+            var statusName = "SentEvent";
+            var eventName = $"On{type}DeviceBusEvent";
+            var statusNote = $"The event '{eventName}' was sent";
             try
             {
-                var busEvent = new DevicesBusEvent($"On{type}DeviceBusEvent", "SdrnDeviceBusController")
+				this.AddToLog(id, statusCode, statusName, "Before sending event and changing status", type, dbScope);
+
+                var busEvent = new DevicesBusEvent(eventName, "SdrnDeviceBusController")
                 {
                     BusMessageId = id
                 };
-
                 _eventEmitter.Emit(busEvent);
             }
             catch (Exception e)
             {
                 statusCode = (byte)MessageProcessingStatus.Failure;
-                statusNote = $"An error occurred while sending a notification 'On{type}DeviceBusEvent': {e.Message}";
+                statusName = "Failure";
+				statusNote = $"An error occurred while sending a notification '{eventName}': {e.Message}";
                 _logger.Exception(Contexts.ThisComponent, Categories.Processing, statusNote, e, (object)this);
             }
             finally
             {
-                _messagesSite.ChangeStatus(id, (byte)MessageProcessingStatus.Created,statusCode, statusNote);
+                _messagesSite.ChangeStatus(id, (byte)MessageProcessingStatus.Created, statusCode, statusNote);
             }
             
         }
+
+        private void AddToLog(long messageId, byte statusCode, string statusName,  string statusNote, string messageType, IDataLayerScope dbScope)
+        {
+	        var logQueryInsert = this._amqpMessageLogQueryBuilder
+		        .Insert()
+		        .SetValue(c => c.MESSAGE.Id, messageId)
+		        .SetValue(c => c.StatusCode, (byte)statusCode)
+		        .SetValue(c => c.StatusName, statusName)
+		        .SetValue(c => c.StatusNote, statusNote)
+		        .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+		        .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+		        .SetValue(c => c.Source, $"SDRN.MessageProcessing:[Type='{messageType}'][HandleMessage]");
+	        dbScope.Executor.Execute(logQueryInsert);
+		}
 
         public void Dispose()
         {

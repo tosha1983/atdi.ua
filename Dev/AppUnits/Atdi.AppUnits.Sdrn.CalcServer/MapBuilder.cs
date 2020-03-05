@@ -86,9 +86,29 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			public int YIndex;
 
 			/// <summary>
+			/// Площадь ячейки
+			/// </summary>
+			public AreaCoordinates Area;
+
+			/// <summary>
+			/// Сумма покрытия
+			/// </summary>
+			public long CoverageAmount;
+
+			/// <summary>
+			/// Процент покрытия
+			/// </summary>
+			public decimal CoveragePercent;
+
+			/// <summary>
 			/// Карты покрывающие заданную индексами площадь
 			/// </summary>
 			public MapReference<T>[] Maps;
+
+			public override string ToString()
+			{
+				return $"{YIndex}:{XIndex} - {Area}; Coverage {CoverageAmount}({CoveragePercent}%); Source {Maps?.Length}";
+			}
 		}
 
 		private struct MapRocessingRecord<T>
@@ -134,7 +154,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			/// <summary>
 			/// Площадь покрытия картой источника 
 			/// </summary>
-			public long CoverageArea;
+			public long CoverageAmount;
 		}
 
 		private static readonly object DefaultForRelief = (short) -9999;
@@ -188,7 +208,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						CheckAxis(projectMapData);
 
 						// расчитываем область карты и проверяем ее с трешхолодом (не более 15 000 х 15 000 шагов), при нарушении падаем
-						CheckThresholdMaxSteps(projectMapData.StepsNumber);
+						CheckThresholdMaxSteps(projectMapData.OwnerStepsNumber);
 
 						// проверка проекции
 						CheckProjection(projectMapData.Projection);
@@ -207,7 +227,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						projectMapData.LowerRightX =
 							projectMapData.UpperLeftX + projectMapData.AxisXNumber * projectMapData.AxisXStep;
 						projectMapData.LowerRightY =
-							projectMapData.UpperLeftY + projectMapData.AxisYNumber * projectMapData.AxisYStep;
+							projectMapData.UpperLeftY - projectMapData.AxisYNumber * projectMapData.AxisYStep;
 
 						// сохраним расчеті
 						SaveProjectMapData(calcDbScope, projectMapData);
@@ -263,24 +283,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				// аналогично поступаем с нижней правой точкой
 				// по результатм пересчитаем кол-во шагов
 
-				var sourceIndexer = masterMap.CoordinateToIndexes(projectMap.UpperLeftX, projectMap.UpperLeftY);
+				// точки должны входить в карту, поэтом украйние координаты смещаем на 1 метр, это важно
+				var sourceIndexer = masterMap.CoordinateToIndexes(projectMap.UpperLeftX, projectMap.UpperLeftY - 1);
 				var toUpperLeft = masterMap.IndexToUpperLeftCoordinate(sourceIndexer.XIndex, sourceIndexer.YIndex);
-				sourceIndexer = masterMap.CoordinateToIndexes(projectMap.LowerRightX, projectMap.LowerRightY);
+				sourceIndexer = masterMap.CoordinateToIndexes(projectMap.LowerRightX - 1, projectMap.LowerRightY);
 				var toLowerRight = masterMap.IndexToLowerRightCoordinate(sourceIndexer.XIndex, sourceIndexer.YIndex);
 
 				projectMap.UpperLeftX = toUpperLeft.X;
 				projectMap.UpperLeftY = toUpperLeft.Y;
 
-				projectMap.LowerRightX = toLowerRight.X;
-				projectMap.LowerRightY = toLowerRight.Y;
+				//projectMap.LowerRightX = toLowerRight.X;
+				//projectMap.LowerRightY = toLowerRight.Y;
 
-				projectMap.AxisXNumber = (toLowerRight.X - toUpperLeft.X) / projectMap.AxisXStep;
-				projectMap.AxisYNumber = (toUpperLeft.Y - toLowerRight.Y) / projectMap.AxisYStep;
+				projectMap.AxisXNumber = (int) Math.Ceiling((toLowerRight.X - toUpperLeft.X) / (double)projectMap.AxisXStep);
+				projectMap.AxisYNumber = (int)Math.Ceiling((toUpperLeft.Y - toLowerRight.Y) / (double)projectMap.AxisYStep);
 
-				if (0 != ((toLowerRight.X - toUpperLeft.X) % projectMap.AxisXStep) 
-				 || 0 != ((toUpperLeft.Y - toLowerRight.Y) % projectMap.AxisYStep))
+				projectMap.LowerRightX = projectMap.UpperLeftX + projectMap.AxisXNumber * projectMap.AxisXStep;
+				projectMap.LowerRightY = projectMap.UpperLeftY - projectMap.AxisYNumber * projectMap.AxisYStep;
+
+				//if (0 != ((toLowerRight.X - toUpperLeft.X) % projectMap.AxisXStep) 
+				// || 0 != ((toUpperLeft.Y - toLowerRight.Y) % projectMap.AxisYStep))
+				//{
+				//	throw new InvalidOperationException("Something went wrong in the map offset calculation");
+				//}
+
+				// так как был сдвиг, нужно пересчитать покрыти е во всех картах
+				foreach (var sourceMapData in sourceMaps)
 				{
-					throw new InvalidOperationException("Something went wrong in the map offset calculation");
+					sourceMapData.RecalculateCoverage(projectMap);
 				}
 
 				// сохраним карту
@@ -294,19 +324,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			// строим матрицу обхода, в начале идем по целеdой матрице, определяем на кажудю точк уоткуда с какой карты берем значение
 			// потом групируем по картам и из них определяем данные
 			// третий проход расчет всего что нужна на основании полученных данных
-
+			var projectMapCellArea = projectMap.AxisYStep * projectMap.AxisXStep;
 			for (var yIndex = 0; yIndex < projectMap.AxisYNumber; yIndex++)
 			{
+				var yyIndex = yIndex * projectMap.AxisXNumber;
 				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
 				{
 					var area = projectMap.IndexToArea(xIndex, yIndex);
-					cellDescriptors[yIndex * projectMap.AxisXNumber + xIndex] = new MapCellDescriptor<T>()
+					var descriptor = new MapCellDescriptor<T>()
 					{
 						XIndex = xIndex,
 						YIndex = yIndex,
-						Maps = this.DefineSourceMaps<T>(xIndex, yIndex, area, mapContent, sourceMaps)
+						Area = area,
+						Maps = this.DefineSourceMaps<T>(area, sourceMaps)
 					};
+					descriptor.CoverageAmount = descriptor.Maps.Sum(m => m.CoverageAmount);
+					descriptor.CoveragePercent = 100 * (descriptor.CoverageAmount / projectMapCellArea);
+					cellDescriptors[yyIndex + xIndex] = descriptor;
+
+					System.Diagnostics.Debug.WriteLine($"[MapBuilder]: Map building - {descriptor}");
 				}
+			}
+			// валидация, которую нужно будет удалить
+			var checkedData = cellDescriptors
+				.Where(d => d.CoverageAmount > projectMapCellArea)
+				.ToArray();
+			if (checkedData.Length > 0)
+			{
+				throw new InvalidOperationException($"Something went wrong while map coverage calculation: [Source Cells Coverage Amount] > [Project Map Cell Area]. Count {checkedData.Length}");
 			}
 
 			// групируем и грузим карты
@@ -314,14 +359,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				.GroupBy(g => g.SourceMap.InfocenterMap)
 				.Select(g => new { InfocenterMap = g.Key, Count = g.Count(), Use = g.Select(p => p).ToArray()})
 				.ToList()
-				.ForEach(result => this.HandleSourceMap(infoDbScope, result.InfocenterMap, result.Use));
+				.ForEach(result => this.HandleSourceMap(infoDbScope, result.InfocenterMap, result.Use, mapType));
 
 			// строим типизируемую матрицу
 			mapContent.Content = new T[projectMap.AxisXNumber * projectMap.AxisYNumber];
 
 			// площадь ячейки, нужна для рельефа
 			var reliefCellArea = (double)projectMap.AxisXStep * projectMap.AxisYStep;
-
+			var coverageAmount = (long) 0;
 			for (var yIndex = 0; yIndex < projectMap.AxisYNumber; yIndex++)
 			{
 				for (var xIndex = 0; xIndex < projectMap.AxisXNumber; xIndex++)
@@ -355,20 +400,31 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					// если карта одна, тут все просто
 					else if (cell.Maps.Length == 1)
 					{
-						mapContent.Content[contentIndex] = cell.Maps[0].Value;
-						cell.Maps[0].InfocenterMap.Used = true;
+						var cellMap = cell.Maps[0];
+						mapContent.Content[contentIndex] = cellMap.Value;
+						cellMap.InfocenterMap.Used = true;
+						coverageAmount += cellMap.CoverageAmount;
 					}
 					else
 					{
 						// определение значения зависит от типа карты
 						if (mapType == ProjectMapType.Relief)
 						{
-							mapContent.Content[contentIndex] = (T)(object)cell.Maps.Sum(c => ((short)(object)(c.Value)) * (c.CoverageArea / reliefCellArea));
+							 var contentValue = cell.Maps.Sum(
+								c =>
+								{
+									var value = (short) (object) (c.Value);
+									var result = value * (c.CoverageAmount / reliefCellArea);
+									return result;
+								});
+							mapContent.Content[contentIndex] = (T) (object) Convert.ToInt16(contentValue);
+							coverageAmount += cell.Maps.Sum(m => m.CoverageAmount);
 						}
 						else if (mapType == ProjectMapType.Building|| mapType == ProjectMapType.Clutter)
 						{
-							var max = cell.Maps.Max(c => c.CoverageArea);
-							mapContent.Content[contentIndex] = cell.Maps.Where(c => c.CoverageArea == max).Max(c => c.Value);
+							var max = cell.Maps.Max(c => c.CoverageAmount);
+							mapContent.Content[contentIndex] = cell.Maps.Where(c => c.CoverageAmount == max).Max(c => c.Value);
+							coverageAmount += cell.Maps.Sum(m => m.CoverageAmount);
 						}
 						else
 						{
@@ -378,9 +434,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 			}
 
+			mapContent.SourceCoverage = (coverageAmount / projectMap.RectArea) * 100;
+			mapContent.SourceCount = sourceMaps.Where(m => m.Used).Count();
 			// сохраянем буффер - контент ProjectMapContent и все его источники ProjectMapContentSource
 			var contentId = this.SaveProjectMapContent(calcDbScope, mapContent);
-
+			
 			foreach (var sourceMap in sourceMaps)
 			{
 				// сохраним только те которые подлежали использованию
@@ -398,7 +456,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 		/// <param name="infocenterMap"></param>
 		/// <param name="projectMap"></param>
 		/// <param name="use"></param>
-		private void HandleSourceMap<T>(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, MapRocessingRecord<T>[] use)
+		/// <param name="mapType"></param>
+		private void HandleSourceMap<T>(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, MapRocessingRecord<T>[] use, ProjectMapType mapType)
 			where T : struct
 		{
 			// кеш  загруженных секторов
@@ -410,16 +469,39 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				// задача для указаных в записи  индексов нужно получить значение
 				// переводим индексы в координаты
 				var sourceMap = mapRecord.SourceMap;
+
+				// из-за сдвига заказаные индексы моугт не попадать в допустимый диапазан индексации ячеек карты иссточника 
+				if (!infocenterMap.HitIndexes(sourceMap.XIndex, sourceMap.YIndex))
+				{
+					if (mapType == ProjectMapType.Relief)
+					{
+						sourceMap.Value = (T)MapBuilder.DefaultForRelief;
+					}
+					else if (mapType == ProjectMapType.Clutter)
+					{
+						sourceMap.Value = (T)MapBuilder.DefaultForClutter;
+					}
+					else if (mapType == ProjectMapType.Building)
+					{
+						sourceMap.Value = (T)MapBuilder.DefaultForBuilding;
+					}
+					else
+					{
+						throw new InvalidOperationException($"Unsupported map type '{mapType}'");
+					}
+					continue;
+				}
+
 				var upperLeft = infocenterMap.IndexToUpperLeftCoordinate(sourceMap.XIndex, sourceMap.YIndex);
 				var lowerRight = infocenterMap.IndexToLowerRightCoordinate(sourceMap.XIndex, sourceMap.YIndex);
 
 				// ищим сектор ране загруженный
 				var sector = sectors.FirstOrDefault(
-					s => 
-						s.UpperLeftX <= upperLeft.X && upperLeft.X < s.LowerRightX
-					&&  s.UpperLeftX < lowerRight.X && lowerRight.X <= s.LowerRightX
-					&&  s.UpperLeftY >= upperLeft.Y && upperLeft.Y > s.LowerRightY
-					&&  s.UpperLeftY > lowerRight.Y && lowerRight.Y >= s.LowerRightY
+					s =>    s != null 
+						&&  s.UpperLeftX <= upperLeft.X && upperLeft.X < s.LowerRightX
+						&&  s.UpperLeftX < lowerRight.X && lowerRight.X <= s.LowerRightX
+						&&  s.UpperLeftY >= upperLeft.Y && upperLeft.Y > s.LowerRightY
+						&&  s.UpperLeftY > lowerRight.Y && lowerRight.Y >= s.LowerRightY
 					);
 				// загружаем по координатам сектор, если еще не загружен
 				if (sector == null)
@@ -516,7 +598,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			}
 			throw new InvalidOperationException($"Unsupported encoding '{encoding}'");
 		}
-		private MapReference<T>[] DefineSourceMaps<T>(int xIndex, int yIndex, AreaCoordinates area, DM.MapContentData<T> mapContent, DM.SourceMapData[] sourceMaps)
+		private MapReference<T>[] DefineSourceMaps<T>(AreaCoordinates projectMapCellArea, DM.SourceMapData[] sourceMaps)
 			where T : struct
 		{
 
@@ -539,13 +621,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			for (int i = 0; i < sourceMaps.Length; i++)
 			{
 				var sourceMap = sourceMaps[i];
-				if (!sourceMap.IntersectWith(area, out var coverageArea))
+				if (!sourceMap.IntersectWith(projectMapCellArea, out var coverageArea))
 				{
 					// карта которая не покрывает ячейку [yIndex,xIndex] нам не интересна, отбрасываем ее
 					continue;
 				}
-				// есть покрытие. фикисруем карту - возможно это последня карта по ряду причин (их две)
 
+				// точка валидациия работы алгоритма: покрытие должно быть в рамках  заданной площади 
+				if (coverageArea.Area > projectMapCellArea.Area)
+				{
+					throw new InvalidOperationException($"Something went wrong while map coverage calculation: [Source Coverage Area] > [Project Map Cell Area]");
+				}
+
+				// есть покрытие. фикисруем карту - возможно это последня карта по ряду причин (их две)
+				// раскладаем площать на молекулы - ячейки карты источника
 				coveredSourceMaps[coveredSourceMapsCount++] = new CoverageSourceMapArea
 				{
 					SourceMap = sourceMap,
@@ -553,7 +642,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					Cells = this.DecomposeIntoCells(sourceMap, coverageArea)
 				};
 				
-				if (area.Area == coverageArea.Area)
+				if (projectMapCellArea.Area == coverageArea.Area)
 				{
 					// это полное покрытие целевой ячейки [yIndex,xIndex] 
 					// больше сканировать не нужно
@@ -579,7 +668,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 			}
 
-			return coveredSourceMaps
+			var result = coveredSourceMaps
+				.Where(m => m.Cells != null &&  m.CoverageArea.Area > 0)
 				.SelectMany(
 					m => m.Cells
 						.Select( 
@@ -588,9 +678,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 								InfocenterMap = m.SourceMap,
 								XIndex = c.XIndex,
 								YIndex = c.YIndex,
-								CoverageArea = c.Amount
+								CoverageAmount = c.Amount
 							})
 					).ToArray();
+
+			// помечаем карту как используемую
+			foreach (var item in result)
+			{
+				item.InfocenterMap.Used = true;
+			}
+			return result;
 		}
 
 		private CoverageSourceMapCell[] DecomposeIntoCells(DM.SourceMapData sourceMap, AreaCoordinates coverageArea)
@@ -598,8 +695,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			// верхний индекс - при определни смещаемся на один метр
 			var upperLeftIndexer = sourceMap.CoordinateToIndexes(coverageArea.UpperLeft.X, coverageArea.UpperLeft.Y - 1);
 			var lowerRightIndexer = sourceMap.CoordinateToIndexes(coverageArea.LowerRight.X - 1, coverageArea.LowerRight.Y);
-			var yCount = lowerRightIndexer.YIndex - upperLeftIndexer.YIndex;
-			var xCount = lowerRightIndexer.XIndex - upperLeftIndexer.XIndex;
+			var yCount = lowerRightIndexer.YIndex - upperLeftIndexer.YIndex + 1;
+			var xCount = lowerRightIndexer.XIndex - upperLeftIndexer.XIndex + 1;
 
 			var cells = new CoverageSourceMapCell[yCount * xCount];
 			var position = 0;
@@ -646,7 +743,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					.SetValue(c => c.TypeCode, (byte) mapContent.MapType)
 					.SetValue(c => c.TypeName, mapContent.MapType.ToString())
 					.SetValue(c => c.StepDataSize, mapContent.StepDataSize)
-					.SetValue(c => c.StepDataType, DefineMapStepDataType(mapContent.MapType).AssemblyQualifiedName)
+					.SetValue(c => c.StepDataType, DefineMapStepDataType(mapContent.MapType).Name)
 					.SetValue(c => c.SourceCount, mapContent.SourceCount)
 					.SetValue(c => c.SourceCoverage, mapContent.SourceCoverage)
 					.SetValue(c => c.ContentSize, mapContent.Content.Length)
@@ -684,6 +781,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					.SetValue(c => c.UpperLeftY, source.CoverageUpperLeftY)
 					.SetValue(c => c.LowerRightX, source.CoverageLowerRightX)
 					.SetValue(c => c.LowerRightY, source.CoverageLowerRightY)
+					.SetValue(c => c.PriorityCode, source.Priority)
+					.SetValue(c => c.PriorityName, source.PriorityName)
 				;
 
 			var pk = calcDbScope.Executor.Execute<IProjectMapContentSource_PK>(insertQuery);
@@ -725,8 +824,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					{
 						AxisXNumber = reader.GetValue(c => c.AxisXNumber),
 						AxisXStep = reader.GetValue(c => c.AxisXStep),
-						AxisYNumber = reader.GetValue(c => c.AxisXNumber),
-						AxisYStep = reader.GetValue(c => c.AxisXNumber),
+						AxisYNumber = reader.GetValue(c => c.AxisYNumber),
+						AxisYStep = reader.GetValue(c => c.AxisYStep),
 						UpperLeftX = reader.GetValue(c => c.UpperLeftX),
 						UpperLeftY = reader.GetValue(c => c.UpperLeftY),
 						LowerRightX = reader.GetValue(c => c.LowerRightX),
@@ -753,19 +852,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 		private void CheckAxis(DM.ProjectMapData data)
 		{
-			if (data.AxisXNumber <= 0)
+			if (data.OwnerAxisXNumber <= 0)
 			{
 				throw new InvalidOperationException("Incorrect value of AxisXNumber");
 			}
-			if (data.AxisYNumber <= 0)
+			if (data.OwnerAxisYNumber <= 0)
 			{
 				throw new InvalidOperationException("Incorrect value of AxisYNumber");
 			}
-			if (data.AxisXStep <= 0)
+			if (data.OwnerAxisXStep <= 0)
 			{
 				throw new InvalidOperationException("Incorrect value of AxisXStep");
 			}
-			if (data.AxisYStep <= 0)
+			if (data.OwnerAxisYStep <= 0)
 			{
 				throw new InvalidOperationException("Incorrect value of AxisYStep");
 			}
@@ -878,8 +977,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						ProjectMapId = projectMapId,
 						OwnerAxisXNumber = reader.GetValue(c => c.OwnerAxisXNumber),
 						OwnerAxisXStep = reader.GetValue(c => c.OwnerAxisXStep),
-						OwnerAxisYNumber = reader.GetValue(c => c.OwnerAxisXNumber),
-						OwnerAxisYStep = reader.GetValue(c => c.OwnerAxisXNumber),
+						OwnerAxisYNumber = reader.GetValue(c => c.OwnerAxisYNumber),
+						OwnerAxisYStep = reader.GetValue(c => c.OwnerAxisYNumber),
 						OwnerUpperLeftX = reader.GetValue(c => c.OwnerUpperLeftX),
 						OwnerUpperLeftY = reader.GetValue(c => c.OwnerUpperLeftY),
 						Projection = reader.GetValue(c => c.Projection),

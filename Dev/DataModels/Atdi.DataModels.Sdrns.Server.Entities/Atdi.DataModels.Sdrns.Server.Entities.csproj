@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IAmqpMessageLog.cs" />
     <Compile Include="Entities\ILinkSensorsWithSynchroProcess.cs" />
     <Compile Include="Entities\ILinkHeadRefSpectrum.cs" />
     <Compile Include="Entities\ILinkArea.cs" />
@@ -242,6 +243,7 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.STATION_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.STATION_SITE_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.WORK_TIME_ID_SEQ.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_MESSAGES_LOG.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.ANTENNA_PATTERN.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.BEARING.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.EMITTING.sql" />
@@ -343,6 +345,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\AmqpMessageLog.xml" />
     <Content Include="Metadata\Entities\HeadRefSpectrum.xml" />
     <Content Include="Metadata\Entities\LinkHeadRefSpectrum.xml" />
     <Content Include="Metadata\Entities\LinkProtocolsWithEmittings.xml" />

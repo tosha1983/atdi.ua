@@ -37,7 +37,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 
 		public override string ToString()
 		{
-			return $"[{UpperLeft}-{LowerRight}]({AxisY}x{AxisX})";
+			return $"[{UpperLeft}-{LowerRight}]; {AxisY}x{AxisX}; Area='{Area}'";
 		}
 
 		/// <summary>
@@ -48,7 +48,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 		/// <returns></returns>
 		public bool Has(int x, int y)
 		{
-			return !(x >= LowerLeft.X || x < UpperLeft.X || y >= UpperLeft.Y || y < LowerRight.Y);
+			return !(x >= LowerRight.X || x < UpperLeft.X || y >= UpperLeft.Y || y < LowerRight.Y);
 		}
 	}
 }

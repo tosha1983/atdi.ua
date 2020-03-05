@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ContextStationPattern"
+  Title       = "Station Pattern"
+  Desc        = "The pattern of the station of the client context"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CONTEXT_STATION_PATTERNS</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="StationId" SourceType="Column" SourceName="STATION_ID" DataType="Integer.64"  Required="true" Title="Station" Desc="The station in which the record of the pattern is created" />
+    <Field Name="AntennaPlane" SourceType="Column" SourceName="ANTENNA_PLANE" DataType="Text.1" Title="Antenna Plane" Desc="The name of the Antenna Plane" Required="true" />
+    <Field Name="WavePlane" SourceType="Column" SourceName="WAVE_PLANE" DataType="Text.1" Title="Wave Plane" Desc="The name of the Wave Plane" Required="true" />
+
+    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Array.Float" Title="Loss, dB" Desc="The Loss in dB"/>
+    <Field Name="Angle_deg" SourceType="Column" Required="true" SourceName="ANGLE_DEG" DataType="Array.Float" Title="Angle, deg" Desc="The Angle in degree"/>
+
+
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="StationId"/>
+    <FieldRef Name="AntennaPlane"/>
+    <FieldRef Name="WavePlane"/>
+  </PrimaryKey>
+</Entity>

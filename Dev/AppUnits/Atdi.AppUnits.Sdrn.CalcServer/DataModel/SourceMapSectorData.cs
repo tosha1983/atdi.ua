@@ -39,9 +39,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 			// переводим в координаты - левый нижний угол
 			var lowerLeft = this.Map.IndexToLowerLeftCoordinate(xIndex, yIndex);
 
-			var sectorXIndex = (int)Math.Ceiling((lowerLeft.X - this.UpperLeftX) / (double) this.Map.AxisXStep) - 1;
+			var sectorXIndex = (int)Math.Ceiling((lowerLeft.X - this.UpperLeftX + 1) / (double) this.Map.AxisXStep) - 1;
 			var lowerLeftY = this.UpperLeftY - (this.AxisYNumber * this.Map.AxisYStep);
-			var sectorYIndex = this.AxisXNumber - ((int)Math.Ceiling((lowerLeft.Y - lowerLeftY) / (double)this.Map.AxisXStep));
+			var sectorYIndex = this.AxisXNumber - ((int)Math.Ceiling((lowerLeft.Y - lowerLeftY + 1) / (double)this.Map.AxisXStep));
+
+			//var xIndex = (int)Math.Ceiling((x - upperLeftX + 1) / (double)xStep) - 1;
+			//var yIndex = yNumber - ((int)Math.Ceiling((y - (upperLeftY - (yNumber * yStep)) + 1) / (double)yStep));
 
 			if (type == typeof(byte))
 			{
@@ -49,7 +52,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 			}
 			if (type == typeof(short))
 			{
-				return (T)(object)BitConverter.ToInt16(this.Content, sectorYIndex * AxisXNumber * 2 + sectorXIndex);
+				return (T)(object)BitConverter.ToInt16(this.Content, sectorYIndex * AxisXNumber * 2 + sectorXIndex * 2);
 			}
 
 			throw new InvalidOperationException($"Unsupported value type '{type}'");

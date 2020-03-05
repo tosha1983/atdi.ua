@@ -43,9 +43,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 
 		public int LowerRightY;
 
-		public int StepsNumber => this.AxisXNumber * this.AxisYNumber;
+		public int OwnerStepsNumber => this.OwnerAxisXNumber * this.OwnerAxisYNumber;
 
-		public int RectArea => (this.LowerRightX - this.UpperLeftX) * (this.UpperLeftY - this.LowerRightY);
+		public long RectArea => (this.LowerRightX - this.UpperLeftX) * (this.UpperLeftY - this.LowerRightY);
 
 		public bool Has(int x, int y)
 		{

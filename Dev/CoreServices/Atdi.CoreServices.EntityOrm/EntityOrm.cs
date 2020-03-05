@@ -1080,7 +1080,7 @@ namespace Atdi.CoreServices.EntityOrm
                 return null;
             }
 
-            if (entityMetadata.Type != EntityType.Abstruct && entityMetadata.UsesBaseEntityPrimaryKey())
+            if (entityMetadata.Type != EntityType.Abstract && entityMetadata.UsesBaseEntityPrimaryKey())
             {
                 throw new InvalidOperationException($"Defined primary key for the entity '{entityMetadata.Name}' with uses inheritance");
             }

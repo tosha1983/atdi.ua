@@ -53,12 +53,15 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
         }
         private readonly long _messageId;
+        private string _messageType;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ISdrnServerEnvironment _environment;
         private readonly ILogger _logger;
         private bool _isDisposed = false;
         private readonly string _sharedSecretKey;
-        public MessageProcessingScope(long messageId, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger)
+        private IDataLayerScope _dbScope;
+
+		public MessageProcessingScope(long messageId, IDataLayer<EntityDataOrm> dataLayer, ISdrnServerEnvironment environment, ILogger logger)
         {
             this._messageId = messageId;
             this._dataLayer = dataLayer;
@@ -70,86 +73,108 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
         private void LoadMessageFromStorage()
         {
-            var query = this._dataLayer.GetBuilder<IAmqpMessage>()
-                .From()
-                .Select(
-                    c => c.BodyContent,
-                    c => c.BodyContentEncoding,
-                    c => c.BodyContentType,
-                    c => c.StatusCode,
-                    c => c.HeaderSdrnServer,
-                    c => c.HeaderSensorName,
-                    c => c.HeaderSensorTechId,
-                    c => c.PropContentType,
-                    c => c.PropContentEncoding,
-                    c => c.HeaderBodyAQName,
-                    c => c.HeaderProtocol
-                    )
-                .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
+	        _dbScope = _dataLayer.CreateScope<SdrnServerDataContext>();
+	        
+	        var queryExecutor = _dbScope.Executor;
 
-            var queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
+			var query = this._dataLayer.GetBuilder<IAmqpMessage>()
+		        .From()
+		        .Select(
+			        c => c.BodyContent,
+			        c => c.BodyContentEncoding,
+			        c => c.BodyContentType,
+			        c => c.StatusCode,
+			        c => c.HeaderSdrnServer,
+			        c => c.HeaderSensorName,
+			        c => c.HeaderSensorTechId,
+			        c => c.PropContentType,
+			        c => c.PropContentEncoding,
+			        c => c.HeaderBodyAQName,
+			        c => c.HeaderProtocol,
+					c => c.PropType
+		        )
+		        .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
-            var amqpMessage = new AmqpMessage();
+			var amqpMessage = new AmqpMessage();
+	
+	        queryExecutor.Fetch(query, reader =>
+	        {
+		        if (!reader.Read())
+		        {
+			        throw new InvalidOperationException($"Not found message with ID #{_messageId}");
+		        }
 
-            queryExecutor.Fetch(query, reader =>
-            {
-                if (!reader.Read())
-                {
-                    throw new InvalidOperationException($"Not found message with ID #{_messageId}");
-                }
+		        amqpMessage.BodyContent = reader.GetValue(c => c.BodyContent);
+		        amqpMessage.BodyContentEncoding = reader.GetValue(c => c.BodyContentEncoding);
+		        amqpMessage.BodyContentType = reader.GetValue(c => c.BodyContentType);
+		        amqpMessage.StatusCode = reader.GetValue(c => c.StatusCode);
+		        amqpMessage.HeaderSdrnServer = reader.GetValue(c => c.HeaderSdrnServer);
+		        amqpMessage.HeaderSensorName = reader.GetValue(c => c.HeaderSensorName);
+		        amqpMessage.HeaderSensorTechId = reader.GetValue(c => c.HeaderSensorTechId);
+		        amqpMessage.PropContentType = reader.GetValue(c => c.PropContentType);
+		        amqpMessage.PropContentEncoding = reader.GetValue(c => c.PropContentEncoding);
+		        amqpMessage.HeaderBodyAqName = reader.GetValue(c => c.HeaderBodyAQName);
+		        amqpMessage.HeaderProtocol = reader.GetValue(c => c.HeaderProtocol);
+		        _messageType = reader.GetValue(c => c.PropType);
 
-                amqpMessage.BodyContent = reader.GetValue(c => c.BodyContent);
-                amqpMessage.BodyContentEncoding = reader.GetValue(c => c.BodyContentEncoding);
-                amqpMessage.BodyContentType = reader.GetValue(c => c.BodyContentType);
-                amqpMessage.StatusCode = reader.GetValue(c => c.StatusCode);
-                amqpMessage.HeaderSdrnServer = reader.GetValue(c => c.HeaderSdrnServer);
-                amqpMessage.HeaderSensorName = reader.GetValue(c => c.HeaderSensorName);
-                amqpMessage.HeaderSensorTechId = reader.GetValue(c => c.HeaderSensorTechId);
-                amqpMessage.PropContentType = reader.GetValue(c => c.PropContentType);
-                amqpMessage.PropContentEncoding = reader.GetValue(c => c.PropContentEncoding);
-                amqpMessage.HeaderBodyAqName = reader.GetValue(c => c.HeaderBodyAQName);
-                amqpMessage.HeaderProtocol = reader.GetValue(c => c.HeaderProtocol);
+				return true;
+	        });
 
-                return true;
-            });
-
-            if (amqpMessage.StatusCode == (byte)MessageProcessingStatus.Processing)
-            {
-                throw new InvalidOperationException($"The message with ID #{_messageId} has invalid status code #{amqpMessage.StatusCode}");
-            }
+	        if (amqpMessage.StatusCode == (byte) MessageProcessingStatus.Processing)
+	        {
+		        throw new InvalidOperationException(
+			        $"The message with ID #{_messageId} has invalid status code #{amqpMessage.StatusCode}");
+	        }
 
 
-            this.SensorName = amqpMessage.HeaderSensorName;
-            this.SensorTechId = amqpMessage.HeaderSensorTechId;
-            this.Status = MessageProcessingStatus.Processing;
+	        this.SensorName = amqpMessage.HeaderSensorName;
+	        this.SensorTechId = amqpMessage.HeaderSensorTechId;
+	        this.Status = MessageProcessingStatus.Processing;
 
-            var content = amqpMessage.BodyContent;
-            var encoding = Protocol.ContentEncoding.Decode(amqpMessage.BodyContentEncoding);
-            if (encoding.UseCompression)
-            {
-                content = Compressor.Decompress(content);
-            }
+	        var content = amqpMessage.BodyContent;
+	        var encoding = Protocol.ContentEncoding.Decode(amqpMessage.BodyContentEncoding);
+	        if (encoding.UseCompression)
+	        {
+		        content = Compressor.Decompress(content);
+	        }
 
-            // пока тело сообщение в первичном виде (тип Json временный, будет исключен через версию.)
-            if (Protocol.ContentType.QualifiedOriginal.Equals(amqpMessage.BodyContentType, StringComparison.OrdinalIgnoreCase)
-                || Protocol.ContentType.Json.Equals(amqpMessage.BodyContentType, StringComparison.OrdinalIgnoreCase))
-            {
-                this.Delivery = (TDeliveryObject)BusMessagePacker.Unpack(amqpMessage.PropContentType, amqpMessage.PropContentEncoding,
-                    amqpMessage.HeaderProtocol, content, amqpMessage.HeaderBodyAqName, _sharedSecretKey);
-                //this.Deserialize<TDeliveryObject>(content, amqpMessage.PropContentType, amqpMessage.PropContentEncoding);
-            }
-            else
-            {
-                throw new InvalidOperationException($"Unsupported  body content type '{amqpMessage.BodyContentType}'");
-            }
+	        // пока тело сообщение в первичном виде (тип Json временный, будет исключен через версию.)
+	        if (Protocol.ContentType.QualifiedOriginal.Equals(amqpMessage.BodyContentType,
+		            StringComparison.OrdinalIgnoreCase)
+	            || Protocol.ContentType.Json.Equals(amqpMessage.BodyContentType,
+		            StringComparison.OrdinalIgnoreCase))
+	        {
+		        this.Delivery = (TDeliveryObject) BusMessagePacker.Unpack(amqpMessage.PropContentType,
+			        amqpMessage.PropContentEncoding,
+			        amqpMessage.HeaderProtocol, content, amqpMessage.HeaderBodyAqName, _sharedSecretKey);
+		        //this.Deserialize<TDeliveryObject>(content, amqpMessage.PropContentType, amqpMessage.PropContentEncoding);
+	        }
+	        else
+	        {
+		        throw new InvalidOperationException(
+			        $"Unsupported  body content type '{amqpMessage.BodyContentType}'");
+	        }
 
-            var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
-                .Update()
-                .SetValue(c => c.StatusCode, (byte)MessageProcessingStatus.Processing)
-                .SetValue(c => c.ProcessedStartDate, DateTimeOffset.Now)
-                .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
+	        var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
+		        .Update()
+		        .SetValue(c => c.StatusCode, (byte) MessageProcessingStatus.Processing)
+		        .SetValue(c => c.ProcessedStartDate, DateTimeOffset.Now)
+		        .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
-            queryExecutor.Execute(updateQuery);
+	        queryExecutor.Execute(updateQuery);
+
+	        var logQueryInsert = this._dataLayer.GetBuilder<IAmqpMessageLog>()
+				.Insert()
+		        .SetValue(c => c.MESSAGE.Id, _messageId)
+		        .SetValue(c => c.StatusCode, (byte)MessageProcessingStatus.Processing)
+		        .SetValue(c => c.StatusName, "Processing")
+		        .SetValue(c => c.StatusNote, $"Status was changed.")
+		        .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+		        .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+		        .SetValue(c => c.Source,
+			        $"SDRN.ChangeStatus:[{_messageType}][MessageProcessingScope][LoadMessageFromStorage]");
+	        queryExecutor.Execute(logQueryInsert);
+	        
         }
 
         public string SensorName { get; set; }
@@ -162,44 +187,7 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
         public string ResultNote { get; set; }
 
-        //private T Deserialize<T>(byte[] content, string contentType, string contentEncoding)
-        //{
-
-        //    var json = Encoding.UTF8.GetString(content);
-        //    var type = typeof(T);
-            
-        //    if ("application/sdrn".Equals(contentType, StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        if (!string.IsNullOrEmpty(contentEncoding))
-        //        {
-        //            if (contentEncoding.Contains("encrypted"))
-        //            {
-        //                json = Encryptor.Decrypt(json);
-        //            }
-        //            if (contentEncoding.Contains("compressed"))
-        //            {
-        //                // пока не подключен компрессор 
-        //                // json = json;
-        //            }
-        //        }
-
-        //        var messageBody = JsonConvert.DeserializeObject<MessageBody>(json);
-        //        var msgObjectType = Type.GetType(messageBody.Type);
-        //        if (type != msgObjectType)
-        //        {
-        //            throw new InvalidOperationException($"Unexpected type '{msgObjectType.AssemblyQualifiedName}'. Expected type '{type.AssemblyQualifiedName}'");
-        //        }
-        //        json = messageBody.JsonBody;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidOperationException($"Unsupported content type '{contentType}'");
-        //    }
-
-        //    var result = JsonConvert.DeserializeObject(json, type);
-
-        //    return (T)result;
-        //}
+     
 
         public void Dispose()
         {
@@ -211,28 +199,46 @@ namespace Atdi.AppUnits.Sdrn.Server.DevicesBus
 
             try
             {
-                if (this.Status == MessageProcessingStatus.Processing)
-                {
-                    this.Status = MessageProcessingStatus.Failure;
-                    this.ResultNote = "The message processing status not acknowledged";
-                }
+	            if (this.Status == MessageProcessingStatus.Processing)
+	            {
+		            this.Status = MessageProcessingStatus.Failure;
+		            this.ResultNote = "The message processing status not acknowledged";
+	            }
 
-                var queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
+	            var queryExecutor = _dbScope.Executor;
 
-                var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
-                .Update()
-                .SetValue(c => c.StatusCode, (byte)this.Status)
-                .SetValue(c => c.StatusName, this.Status.ToString())
-                .SetValue(c => c.StatusNote, this.ResultNote)
-                .SetValue(c => c.ProcessedFinishDate, DateTimeOffset.Now)
-                .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
+	            var updateQuery = this._dataLayer.GetBuilder<IAmqpMessage>()
+		            .Update()
+		            .SetValue(c => c.StatusCode, (byte) this.Status)
+		            .SetValue(c => c.StatusName, this.Status.ToString())
+		            .SetValue(c => c.StatusNote, this.ResultNote)
+		            .SetValue(c => c.ProcessedFinishDate, DateTimeOffset.Now)
+		            .Where(c => c.Id, DataModels.DataConstraint.ConditionOperator.Equal, _messageId);
 
-                queryExecutor.Execute(updateQuery);
+	            queryExecutor.Execute(updateQuery);
+
+	            var logQueryInsert = this._dataLayer.GetBuilder<IAmqpMessageLog>()
+		            .Insert()
+		            .SetValue(c => c.MESSAGE.Id, _messageId)
+		            .SetValue(c => c.StatusCode, (byte) this.Status)
+		            .SetValue(c => c.StatusName, this.Status.ToString())
+		            .SetValue(c => c.StatusNote, $"Status was changed. Note: {this.ResultNote}")
+		            .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+		            .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+		            .SetValue(c => c.Source,
+			            $"SDRN.ChangeStatus:[{_messageType}][MessageProcessingScope][Dispose]");
+	            queryExecutor.Execute(logQueryInsert);
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Disposing, e, (object)this);
-                throw;
+	            _logger.Exception(Contexts.ThisComponent, Categories.Disposing, e, (object) this);
+	            throw;
+            }
+            finally
+            {
+	            _dbScope?.Dispose();
+	            _dbScope = null;
+
             }
         }
     }

@@ -272,7 +272,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                         {
                             Expression = new PS.ConstantValueExpression(byKey.DataType)
                             {
-                                Value = (pk as IValuePrimaryKeyFieldMappedMetadata).Value
+                                Value = (pk as IValuePrimaryKeyFieldMappedMetadata).Value.GetValue()
                             }
                         };
                     default:
