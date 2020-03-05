@@ -167,7 +167,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Put("LONGITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Longitude, Coordinates.EnumCoordLine.Lon));
                 rs.Put("LATITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Latitude, Coordinates.EnumCoordLine.Lat));
             }
-            if (row.Locations != null)
+            if ((row.Locations != null) && (row.Locations.Length>0))
             {
                 var lstSensorLocation = row.Locations.ToList();
                 var orderSensorLocation = lstSensorLocation.OrderByDescending(c => c.DataCreated);
