@@ -564,7 +564,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     var findData = listDataRefSpectrum.FindAll(x => x.TableId == listDataRefSpectrum[h].TableId && x.TableName == listDataRefSpectrum[h].TableName && x.SensorId == listDataRefSpectrum[h].SensorId && x.GlobalSID == listDataRefSpectrum[h].GlobalSID && x.Freq_MHz == listDataRefSpectrum[h].Freq_MHz);
                     if (findData != null)
                     {
-                        var orderByDateMeas = from z in findData orderby z.DateMeas descending select z;
+                        var orderByDateMeas = from z in findData orderby z.DateMeas  descending select z;
                         if ((orderByDateMeas != null) && (orderByDateMeas.Count() > 1))
                         {
                             var orderByDateMeasArray = orderByDateMeas.ToArray();
@@ -1053,7 +1053,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 if (protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz != null)
                 {
-                    var freqMiddle_MHz = (double)(protocols.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value + protocols.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * ((protocols.ProtocolsLinkedWithEmittings.T1.Value + protocols.ProtocolsLinkedWithEmittings.T2.Value) / 2000));
+                    var freqMiddle_MHz = (double)(protocols.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz.Value + protocols.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz * ((protocols.ProtocolsLinkedWithEmittings.T1.Value + protocols.ProtocolsLinkedWithEmittings.T2.Value) / 2000.0));
                     protocols.RadioControlParams = new RadioControlParams();
                     protocols.RadioControlParams.RadioControlMeasFreq_MHz = freqMiddle_MHz;
                     protocols.RadioControlParams.RadioControlBandWidth = protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz;

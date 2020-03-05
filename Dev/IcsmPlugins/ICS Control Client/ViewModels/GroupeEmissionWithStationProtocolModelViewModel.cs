@@ -184,29 +184,29 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             rs.Put("SENSOR_NAME", row.SensorName);
             rs.Put("DATE_MEAS", row.DateMeas);
-            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz,6));
+            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz,3));
             if (row.BandWidth != null)
             {
-                rs.Put("S_BW", Math.Round(row.BandWidth.Value, 6));
+                rs.Put("S_BW", Math.Round(row.BandWidth.Value, 3));
             }
             if (row.RadioControlMeasFreq_MHz != null)
             {
-                rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 6));
+                rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 3));
             }
             if (row.RadioControlBandWidth != null)
             {
-                rs.Put("BW", Math.Round(row.RadioControlBandWidth.Value, 6));
+                rs.Put("BW", Math.Round(row.RadioControlBandWidth.Value, 3));
             }
             if (row.ProtocolsLinkedWithEmittings != null)
             {
                 if (row.ProtocolsLinkedWithEmittings.CurentPower_dBm != null)
                 {
-                    rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 6));
+                    rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 1));
                 }
             }
             rs.Put("DESIG_EMISSION", row.DesigEmission);
             rs.Put("GLOBAL_SID", row.GlobalSID);
-            rs.Put("CREATED_BY", IM.ConnectedUser());
+            rs.Put("CREATED_BY", GetUserFio(IM.ConnectedUser()));
             rs.Update();
 
             if (rs.IsOpen())
@@ -240,6 +240,26 @@ namespace XICSM.ICSControlClient.ViewModels
 
          
 
+        }
+
+        public static string GetUserFio(string login)
+        {
+            string retVal = "";
+            IMRecordset rs = new IMRecordset("EMPLOYEE", IMRecordset.Mode.ReadWrite);
+            {
+                rs.Select("ID,LASTNAME,FIRSTNAME");
+                rs.SetWhere("APP_USER", IMRecordset.Operation.Eq, login);
+                rs.Open();
+                if (!rs.IsEOF())
+                {
+                    retVal = string.Format("{0} {1}", rs.GetS("LASTNAME"), rs.GetS("FIRSTNAME"));
+                }
+
+                if (rs.IsOpen())
+                    rs.Close();
+                rs.Destroy();
+            }
+            return retVal;
         }
     }
 }

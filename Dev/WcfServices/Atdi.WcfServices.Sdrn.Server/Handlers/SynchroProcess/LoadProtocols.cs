@@ -110,11 +110,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                 }
                 if (permissionStart != null)
                 {
-                    builderProtocols.Where(c => c.PermissionStart, ConditionOperator.GreaterEqual, permissionStart);
+                    builderProtocols.Where(c => c.PermissionStart, ConditionOperator.GreaterEqual, new DateTime(permissionStart.Value.Year, permissionStart.Value.Month, permissionStart.Value.Day, 0, 0, 0, 1));
+                    builderProtocols.Where(c => c.PermissionStart, ConditionOperator.LessEqual, new DateTime(permissionStart.Value.Year, permissionStart.Value.Month, permissionStart.Value.Day, 23, 59, 59, 999));
                 }
                 if (permissionStop != null)
                 {
-                    builderProtocols.Where(c => c.PermissionStop, ConditionOperator.LessEqual, permissionStop);
+                    builderProtocols.Where(c => c.PermissionStop, ConditionOperator.GreaterEqual, new DateTime(permissionStop.Value.Year, permissionStop.Value.Month, permissionStop.Value.Day, 0, 0, 0, 1));
+                    builderProtocols.Where(c => c.PermissionStop, ConditionOperator.LessEqual, new DateTime(permissionStop.Value.Year, permissionStop.Value.Month, permissionStop.Value.Day, 23, 59, 59, 999));
                 }
                 if (DateMeasDay != null)
                 {
@@ -133,17 +135,20 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                 if (DateCreated != null)
                 {
-                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.CreatedDate, ConditionOperator.Equal, DateCreated);
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.CreatedDate, ConditionOperator.GreaterEqual, new DateTime(DateCreated.Value.Year, DateCreated.Value.Month, DateCreated.Value.Day, 0, 0, 0, 1));
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.CreatedDate, ConditionOperator.LessEqual, new DateTime(DateCreated.Value.Year, DateCreated.Value.Month, DateCreated.Value.Day, 23, 59, 59, 999));
                 }
 
                 if (DateStart != null)
                 {
-                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.GreaterEqual, DateStart);
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.GreaterEqual, new DateTime(DateStart.Value.Year, DateStart.Value.Month, DateStart.Value.Day, 0, 0, 0, 1));
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.LessEqual, new DateTime(DateStart.Value.Year, DateStart.Value.Month, DateStart.Value.Day, 23, 59, 59, 999));
                 }
 
                 if (DateStop != null)
                 {
-                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.LessEqual, DateStop);
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.GreaterEqual, new DateTime(DateStop.Value.Year, DateStop.Value.Month, DateStop.Value.Day, 0, 0, 0, 1));
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.LessEqual, new DateTime(DateStop.Value.Year, DateStop.Value.Month, DateStop.Value.Day, 23, 59, 59, 999));
                 }
 
                 if (!string.IsNullOrEmpty(createdBy))
