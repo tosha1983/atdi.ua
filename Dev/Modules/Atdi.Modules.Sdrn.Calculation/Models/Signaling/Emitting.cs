@@ -15,6 +15,8 @@ namespace Atdi.Modules.Sdrn.Calculation
     public class Emitting
     {
         [DataMember]
+        public long? Id { get; set; }
+        [DataMember]
         public double StartFrequency_MHz { get; set; }
         [DataMember]
         public double StopFrequency_MHz { get; set; }
@@ -44,5 +46,7 @@ namespace Atdi.Modules.Sdrn.Calculation
         public bool SpectrumIsDetailed; // Флаг было ли произведено детальное измерение Если было произведено детальное измерение следовательно оно в приоретете.
         [DataMember]
         public SignalingSysInfo[] SysInfos { get; set; }
+        [DataMember]
+        public ReferenceLevels ReferenceLevels  { get; set; }
     }
 }

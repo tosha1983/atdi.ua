@@ -12,7 +12,7 @@ namespace XICSM.ICSControlClient
     {
         public static readonly string Title = "ICS Control Client";
         public static readonly string Ident = "ICSControlClient";
-        public static readonly double SchemaVersion = 20200131.0954;
+        public static readonly double SchemaVersion = 20200225.1630;
 
         public class Processes
         {
@@ -38,6 +38,7 @@ namespace XICSM.ICSControlClient
                 public static readonly string About = "About";
                 public static readonly string MeasResults = "Meas. results";
                 public static readonly string AnalyzeEmissions = "Analysis of emissions";
+                public static readonly string GroupeSynchronizationEmissionsWithStationICSM = "Groupe synchronization emissions with Station ICSM";
             }
         }
 

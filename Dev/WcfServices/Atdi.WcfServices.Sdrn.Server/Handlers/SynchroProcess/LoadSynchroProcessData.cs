@@ -27,6 +27,47 @@ namespace Atdi.WcfServices.Sdrn.Server
             this._logger = logger;
         }
 
+        public DataSynchronizationProcess CurrentSynchronizationProcesByIds(long? processId)
+        {
+            DataSynchronizationProcess dataSynchronizationProcess = null;
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCurrentDataSynchronizationProcessMethod.Text);
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var builderSynchroProcess = this._dataLayer.GetBuilder<MD.ISynchroProcess>().From();
+                builderSynchroProcess.Select(c => c.CreatedBy, c => c.CreatedDate, c => c.DateEnd, c => c.DateStart, c => c.Status, c => c.Id);
+                builderSynchroProcess.Where(c => c.Id, ConditionOperator.Equal, processId);
+                builderSynchroProcess.OrderByDesc(c => c.CreatedDate);
+                queryExecuter.Fetch(builderSynchroProcess, readerSynchroProcess =>
+                {
+                    while (readerSynchroProcess.Read())
+                    {
+                        dataSynchronizationProcess = new DataSynchronizationProcess();
+                        dataSynchronizationProcess.CreatedBy = readerSynchroProcess.GetValue(c => c.CreatedBy);
+                        dataSynchronizationProcess.DateCreated = readerSynchroProcess.GetValue(c => c.CreatedDate);
+                        dataSynchronizationProcess.DateStart = readerSynchroProcess.GetValue(c => c.DateStart);
+                        dataSynchronizationProcess.DateEnd = readerSynchroProcess.GetValue(c => c.DateEnd);
+                        dataSynchronizationProcess.Id = readerSynchroProcess.GetValue(c => c.Id);
+
+                        Status status;
+                        if (Enum.TryParse<Status>(readerSynchroProcess.GetValue(c => c.Status), out status))
+                        {
+                            dataSynchronizationProcess.Status = status;
+                        }
+                        else
+                        {
+                            dataSynchronizationProcess.Status = Status.E;
+                        }
+                    }
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return dataSynchronizationProcess;
+        }
 
         public DataSynchronizationProcess CurrentDataSynchronizationProcess()
         {
@@ -68,6 +109,49 @@ namespace Atdi.WcfServices.Sdrn.Server
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
             return dataSynchronizationProcess;
+        }
+
+        public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
+        {
+            var lstDataSynchronizationProcess = new List<DataSynchronizationProcess>();
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerCurrentDataSynchronizationProcessMethod.Text);
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var builderSynchroProcess = this._dataLayer.GetBuilder<MD.ISynchroProcess>().From();
+                builderSynchroProcess.Select(c => c.CreatedBy, c => c.CreatedDate, c => c.DateEnd, c => c.DateStart, c => c.Status, c => c.Id);
+                builderSynchroProcess.Where(c => c.Id, ConditionOperator.GreaterThan,0);
+                builderSynchroProcess.OrderByDesc(c => c.CreatedDate);
+                queryExecuter.Fetch(builderSynchroProcess, readerSynchroProcess =>
+                {
+                    while (readerSynchroProcess.Read())
+                    {
+                        var dataSynchronizationProcess = new DataSynchronizationProcess();
+                        dataSynchronizationProcess.CreatedBy = readerSynchroProcess.GetValue(c => c.CreatedBy);
+                        dataSynchronizationProcess.DateCreated = readerSynchroProcess.GetValue(c => c.CreatedDate);
+                        dataSynchronizationProcess.DateStart = readerSynchroProcess.GetValue(c => c.DateStart);
+                        dataSynchronizationProcess.DateEnd = readerSynchroProcess.GetValue(c => c.DateEnd);
+                        dataSynchronizationProcess.Id = readerSynchroProcess.GetValue(c => c.Id);
+
+                        Status status;
+                        if (Enum.TryParse<Status>(readerSynchroProcess.GetValue(c => c.Status), out status))
+                        {
+                            dataSynchronizationProcess.Status = status;
+                        }
+                        else
+                        {
+                            dataSynchronizationProcess.Status = Status.E;
+                        }
+                        lstDataSynchronizationProcess.Add(dataSynchronizationProcess);
+                    }
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return lstDataSynchronizationProcess.ToArray();
         }
 
         public RefSpectrum[] GetAllRefSpectrum()

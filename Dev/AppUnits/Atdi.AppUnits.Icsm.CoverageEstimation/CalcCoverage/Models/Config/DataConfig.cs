@@ -12,6 +12,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Models
         public ColorConfig[] ColorsConfig { get; set; }
         public ProvinceCodeConfig[] ProvinceCodeConfig { get; set; }
         public DirectoryConfig DirectoryConfig { get; set; }
-    }
+        public AnotherParameters AnotherParameters { get; set; }
+}
 
 }

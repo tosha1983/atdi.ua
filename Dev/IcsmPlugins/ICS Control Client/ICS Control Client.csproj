@@ -114,6 +114,18 @@
     <Compile Include="Forms\Base\filterNumeric.Designer.cs">
       <DependentUpon>filterNumeric.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\GroupeEmissionWithStationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GroupeEmissionWithStationForm.Designer.cs">
+      <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GroupeEmissionWithStationProtocolForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GroupeEmissionWithStationProtocolForm.Designer.cs">
+      <DependentUpon>GroupeEmissionWithStationProtocolForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MeasResultSignalizationViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -267,6 +279,7 @@
     <Compile Include="Metadata\Employee.cs" />
     <Compile Include="Metadata\MobStationFrequencies.cs" />
     <Compile Include="Metadata\MobStations.cs" />
+    <Compile Include="Models\GroupeEmissionProtocolDataFilter.cs" />
     <Compile Include="Models\OnlineMeasurementParameters.cs" />
     <Compile Include="Models\Processes\BuildInspections\Inspection.cs" />
     <Compile Include="Models\Processes\BuildInspections\AllStation.cs" />
@@ -289,6 +302,9 @@
     <Compile Include="Models\Processes\SynchroInspections\Inspection.cs" />
     <Compile Include="Models\Processes\SynchroInspections\Tour.cs" />
     <Compile Include="Models\ResultsMeasurementsStationFilters.cs" />
+    <Compile Include="Models\Views\AreasViewModel.cs" />
+    <Compile Include="Models\Views\DataSynchronizationProcessProtocolsViewModel.cs" />
+    <Compile Include="Models\Views\DataSynchronizationProcessViewModel.cs" />
     <Compile Include="Models\Views\EmittingViewModel.cs" />
     <Compile Include="Models\Views\EmittingWorkTimeViewModel.cs" />
     <Compile Include="Models\Views\GeneralResultViewModel.cs" />
@@ -299,6 +315,7 @@
     <Compile Include="Models\Views\MeasTaskViewModel.cs" />
     <Compile Include="Models\Views\MeasurementResultsViewModel.cs" />
     <Compile Include="Models\Views\OnlienrMeasParametersViewModel.cs" />
+    <Compile Include="Models\Views\RefSpectrumViewModel.cs" />
     <Compile Include="Models\Views\ResultsMeasurementsStationViewModel.cs" />
     <Compile Include="Models\Views\SensorViewModel.cs" />
     <Compile Include="Models\Views\ShortMeasTaskViewModel.cs" />
@@ -307,6 +324,9 @@
     <Compile Include="Models\Views\ShortSensorViewModel.cs" />
     <Compile Include="Models\Views\SignSysInfoViewModel.cs" />
     <Compile Include="Models\Views\StationsEquipmentViewModel.cs" />
+    <Compile Include="Models\WcfDataApadters\AreasDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\DataSynchronizationProcessDataAdapter.cs" />
+    <Compile Include="Models\WcfDataApadters\DataSynchronizationProcessProtocolDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\EmittingWorkTimeDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\GeneralResultDataAdapter.cs" />
@@ -316,6 +336,7 @@
     <Compile Include="Models\WcfDataApadters\MeasTaskShortDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasTaskDetailStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\MeasurementResultsDataAdatper.cs" />
+    <Compile Include="Models\WcfDataApadters\RefSpectrumDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ResultsMeasurementsStationDataAdapter.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasTaskDataAdatper.cs" />
     <Compile Include="Models\WcfDataApadters\ShortMeasurementResultsDataAdatper.cs" />
@@ -341,10 +362,22 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="RequestResult.cs" />
+    <Compile Include="UpdateSchema.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\BuildSpectrogram.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\ConvertCoordinates.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartColumnsStyle.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartLine.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartOption.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartPoints.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartStyle.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\InsertSpectrogram.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Coordinates\EnumCoordLine.cs" />
     <Compile Include="ViewModels\ChartAdapters\OnlineMeasLineChartAdapter.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\GrapficViewModel.cs" />
+    <Compile Include="ViewModels\GroupeEmissionWithStationModelViewModel.cs" />
+    <Compile Include="ViewModels\GroupeEmissionWithStationProtocolModelViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewModel.cs" />
     <Compile Include="ViewModels\MeasStationsSignalizationFormViewModel.cs" />
@@ -370,6 +403,7 @@
     <Compile Include="WpfControls\Charts\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WpfControls\CustomDataGrid.cs" />
     <Compile Include="WpfControls\MainFormWpfControl.xaml.cs">
       <DependentUpon>MainFormWpfControl.xaml</DependentUpon>
     </Compile>
@@ -393,6 +427,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Base\filterNumeric.resx">
       <DependentUpon>filterNumeric.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GroupeEmissionWithStationForm.resx">
+      <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GroupeEmissionWithStationProtocolForm.resx">
+      <DependentUpon>GroupeEmissionWithStationProtocolForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MeasResultSignalizationForm.resx">
       <DependentUpon>MeasResultSignalizationForm.cs</DependentUpon>
@@ -474,6 +514,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="ICSM 6.2.70\ICSM3.exe.config" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING.IRP" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_RUS.rtf" />
+    <None Include="ICSM 6.2.70\IcsmSchema\ICSControlClient.Schema" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

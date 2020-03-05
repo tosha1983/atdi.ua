@@ -1,0 +1,65 @@
+﻿CREATE TABLE ICSC.HEAD_REF_SPECTRUM
+(
+  ID                    NUMBER(15)              NOT NULL,
+  FILE_NAME             NVARCHAR2(250),
+  CREATED_DATE          DATE,
+  CREATED_BY            NVARCHAR2(50),
+  COUNT_IMPORT_RECORDS  NUMBER(9),
+  MIN_FREQ_MHZ          NUMBER(30,10),
+  MAX_FREQ_MHZ          NUMBER(30,10),
+  COUNT_SENSORS         NUMBER(9)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.HEAD_REF_SPECTRUM_PK ON ICSC.HEAD_REF_SPECTRUM
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.HEAD_REF_SPECTRUM ADD (
+  CONSTRAINT HEAD_REF_SPECTRUM_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

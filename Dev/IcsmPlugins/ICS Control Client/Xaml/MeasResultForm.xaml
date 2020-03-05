@@ -37,9 +37,9 @@
             <GroupBox  Header="" Margin="5, 0, 0, 5"  Grid.Column="0" Grid.Row="0">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" MinWidth="100"/>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" MinWidth="100"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
@@ -50,9 +50,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*" MinHeight="100"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*" MinHeight="100"></RowDefinition>
                         </Grid.RowDefinitions>
                     
                         <Grid Grid.Column="0" Grid.Row="0">
@@ -168,9 +168,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*" MinHeight="100"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*" MinHeight="100"></RowDefinition>
                         </Grid.RowDefinitions>
                     
                         <GroupBox Header="{x:Static res:Resources.ResultsOfGeneral}"  Grid.Column="0" Grid.Row="0">

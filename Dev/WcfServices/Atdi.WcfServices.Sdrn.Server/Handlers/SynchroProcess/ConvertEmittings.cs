@@ -22,6 +22,7 @@ namespace Atdi.WcfServices.Sdrn.Server
         public static Calculation.Emitting Convert(Wcf.Emitting emitting)
         {
             Calculation.Emitting devEmitting = new Calculation.Emitting();
+            devEmitting.Id = emitting.Id;
             devEmitting.CurentPower_dBm = emitting.CurentPower_dBm;
             devEmitting.MeanDeviationFromReference = emitting.MeanDeviationFromReference;
             devEmitting.ReferenceLevel_dBm = emitting.ReferenceLevel_dBm;

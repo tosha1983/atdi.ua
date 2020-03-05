@@ -21,7 +21,6 @@ using TR = System.Threading;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-
     public class MeasResultsViewModel : WpfViewModelBase
     {
         public enum ModelType

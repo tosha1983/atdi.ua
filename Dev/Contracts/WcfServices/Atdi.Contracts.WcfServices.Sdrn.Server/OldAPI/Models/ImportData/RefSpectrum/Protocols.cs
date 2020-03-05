@@ -15,40 +15,42 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
     public class Protocols 
     {
         /// <summary>
-        /// Идентификатор записи в таблице StationExtended
-        /// </summary>
-        [DataMember]
-        public long? StationExtendedId { get; set; }
-
-        /// <summary>
-        /// Идентификатор записи в таблице SynchroProcess
-        /// </summary>
-        [DataMember]
-        public long? SynchroProcessId { get; set; }
-
-        /// <summary>
-        /// сведения о сенсоре
+        /// Info by Sensor
         /// </summary>
         [DataMember]
         public Sensor Sensor { get; set; }
 
-
         /// <summary>
-        /// 
+        /// Data RefSpectrum
         /// </summary>
         [DataMember]
         public DataRefSpectrum  DataRefSpectrum { get; set; }
 
         /// <summary>
-        /// 
+        /// StationExtended
         /// </summary>
         [DataMember]
         public StationExtended StationExtended  { get; set; }
 
         /// <summary>
-        /// 
+        /// Protocols with emittings
         /// </summary>
         [DataMember]
         public ProtocolsWithEmittings ProtocolsLinkedWithEmittings { get; set; }
+
+        /// <summary>
+        /// Synchronization process
+        /// </summary>
+        [DataMember]
+        public DataSynchronizationProcess DataSynchronizationProcess { get; set; }
+
+        /// <summary>
+        /// Radio Control Params
+        /// </summary>
+        [DataMember]
+        public RadioControlParams RadioControlParams { get; set; }
+
+
+        
     }
 }

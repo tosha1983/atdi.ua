@@ -22,13 +22,18 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string GlobalSID { get; set; }
         double Freq_MHz { get; set; }
         double Level_dBm { get; set; }
-        DateTime DateMeas { get; set; }
+        short DateMeasDay { get; set; }
+        short DateMeasMonth { get; set; }
+        short DateMeasYear { get; set; }
         double SensorLon { get; set; }
         double SensorLat { get; set; }
         string SensorName { get; set; }
         double? DispersionLow { get; set; }
         double? DispersionUp { get; set; }
         double? Percent { get; set; }
+        long? SensorId { get; set; }
+        double? RadioControlMeasFreq_MHz { get; set; }
+        double? RadioControlBandWidth { get; set; }
         IStationExtended STATION_EXTENDED { get; set; }
         ISynchroProcess SYNCHRO_PROCESS { get; set; }
     }

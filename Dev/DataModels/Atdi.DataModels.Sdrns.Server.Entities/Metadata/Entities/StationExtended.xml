@@ -13,8 +13,8 @@
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="TableName" Title="TableName" Name="TableName" DataType="Text.50" SourceName="TABLE_NAME" SourceType="Column" Required="true"/>
     <Field Desc="TableId" Title="TableId" Name="TableId" DataType="Integer.32" SourceName="TABLE_ID" SourceType="Column" Required="true"/>
-    <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.50" SourceName="STANDARD" SourceType="Column" Required="false"/>
-    <Field Desc="StandardName" Title="StandardName" Name="StandardName" DataType="Text.50" SourceName="STANDARD_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.150" SourceName="STANDARD" SourceType="Column" Required="false"/>
+    <Field Desc="StandardName" Title="StandardName" Name="StandardName" DataType="Text.150" SourceName="STANDARD_NAME" SourceType="Column" Required="false"/>
     <Field Desc="OwnerName" Title="OwnerName" Name="OwnerName" DataType="Text.100" SourceName="OWNER_NAME" SourceType="Column" Required="false"/>
     <Field Desc="PermissionNumber" Title="PermissionNumber" Name="PermissionNumber" DataType="Text.100" SourceName="PERMISSION_NUMBER" SourceType="Column" Required="false"/>
     <Field Name="PermissionStart" DataType="DateTime" SourceName="PERMISSION_START" SourceType="Column" Desc="The permission of start" Title="The permission of start" Required="false"/>

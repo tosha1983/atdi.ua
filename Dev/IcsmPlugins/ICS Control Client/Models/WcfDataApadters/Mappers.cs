@@ -508,5 +508,78 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SensorIds = source.SensorIds
             };
         }
+        public static VM.DataSynchronizationProcessProtocolsViewModel Map(SDR.Protocols source)
+        {
+            if (source == null)
+                return null;
+
+            if (source.Sensor == null)
+                source.Sensor = new SDR.Sensor();
+
+            if (source.StationExtended == null)
+                source.StationExtended = new SDR.StationExtended();
+
+            if (source.DataRefSpectrum == null)
+                source.DataRefSpectrum = new SDR.DataRefSpectrum();
+
+            if (source.RadioControlParams == null)
+                source.RadioControlParams = new SDR.RadioControlParams();
+
+            if (source.ProtocolsLinkedWithEmittings == null)
+                source.ProtocolsLinkedWithEmittings = new SDR.ProtocolsWithEmittings();
+
+            return new VM.DataSynchronizationProcessProtocolsViewModel
+            {
+                Id = source.DataSynchronizationProcess.Id,
+                Status = source.DataSynchronizationProcess.Status,
+                DateCreated = source.DataSynchronizationProcess.DateCreated,
+                DateStart = source.DataSynchronizationProcess.DateStart,
+                DateEnd = source.DataSynchronizationProcess.DateEnd,
+                CreatedBy = source.DataSynchronizationProcess.CreatedBy,
+
+                SensorName = source.Sensor.Name,
+                Administration = source.Sensor.Administration,
+                NetworkId = source.Sensor.NetworkId,
+                Remark = source.Sensor.Remark,
+                BiuseDate = source.Sensor.BiuseDate,
+                EouseDate = source.Sensor.EouseDate,
+                Azimuth = source.Sensor.Azimuth,
+                Elevation = source.Sensor.Elevation,
+                AGL = source.Sensor.AGL,
+                TypeSensor = source.Sensor.TypeSensor,
+                StepMeasTime = source.Sensor.StepMeasTime,
+                RxLoss = source.Sensor.RxLoss,
+                OpHHFr = source.Sensor.OpHHFr,
+                OpHHTo = source.Sensor.OpHHTo,
+                OpDays = source.Sensor.OpDays,
+                Locations = source.Sensor.Locations,
+
+                Standard = source.StationExtended.Standard,
+                StandardName = source.StationExtended.StandardName,
+                OwnerName = source.StationExtended.OwnerName,
+                PermissionNumber = source.StationExtended.PermissionNumber,
+                PermissionStart = source.StationExtended.PermissionStart,
+                PermissionStop = source.StationExtended.PermissionStop,
+                Address = source.StationExtended.Address,
+                Location = source.StationExtended.Location,
+                BandWidth = source.StationExtended.BandWidth,
+                DesigEmission = source.StationExtended.DesigEmission,
+                Province = source.StationExtended.Province,
+
+                SensorId = source.DataRefSpectrum.SensorId,
+                GlobalSID = source.DataRefSpectrum.GlobalSID,
+                Freq_MHz = source.DataRefSpectrum.Freq_MHz,
+                Level_dBm = source.DataRefSpectrum.Level_dBm,
+                DispersionLow = source.DataRefSpectrum.DispersionLow,
+                DispersionUp = source.DataRefSpectrum.DispersionUp,
+                Percent = source.DataRefSpectrum.Percent,
+                DateMeas = source.DataRefSpectrum.DateMeas,
+
+                RadioControlBandWidth = source.RadioControlParams.RadioControlBandWidth,
+                RadioControlMeasFreq_MHz = source.RadioControlParams.RadioControlMeasFreq_MHz,
+
+                ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
+            };
+        }
     }
 }

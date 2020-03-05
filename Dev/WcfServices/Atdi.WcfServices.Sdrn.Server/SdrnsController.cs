@@ -352,7 +352,6 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public SensorAvailabilityDescriptor GetSensorAvailabilityForOnlineMesurement(byte[] serverToken)
         {
-
             try
             {
                 if (serverToken == null)
@@ -457,8 +456,78 @@ namespace Atdi.WcfServices.Sdrn.Server
         /// <returns></returns>
         public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
-            var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
-            return runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
+            try
+            {
+                var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
+                System.Threading.Tasks.Task.Run(() =>   
+                {
+                    runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
+                });
+                return true;
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get Protocols by parameters
+        /// </summary>
+        /// <param name="createdBy"> DataSynchronizationBase.CreatedBy</param>
+        /// <param name="DateCreated">DataSynchronizationBase.CreatedBy</param>
+        /// <param name="DateMeas">Protocols.DateMeas</param>
+        /// <param name="DateStart">Protocols.DateMeas</param>
+        /// <param name="DateStop">Protocols.DateMeas</param>
+        /// <param name="freq">Protocols.Freq_Mhz</param>
+        /// <param name="probability">ProtocolsWithEmittings.probability</param>
+        /// <param name="standard">StationExtended.standard</param>
+        /// <param name="province">StationExtended.Province</param>
+        /// <param name="ownerName">StationExtended.OwnerName</param>
+        /// <param name="permissionNumber">IProtocols.permissionNumber</param>
+        /// <param name="permissionStart">IProtocols.permissionStart</param>
+        /// <param name="permissionStop">IProtocols.PermissionStop</param>
+        /// <returns></returns>
+        public Protocols[] GetProtocolsByParameters(long? processId,
+                                                    string createdBy,
+                                                    DateTime? DateCreated,
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop,
+                                                    short? DateMeasDay,
+                                                    short? DateMeasMonth,
+                                                    short? DateMeasYear,
+                                                    double? freq,
+                                                    double? probability,
+                                                    string standard,
+                                                    string province,
+                                                    string ownerName,
+                                                    string permissionNumber,
+                                                    DateTime? permissionStart,
+                                                    DateTime? permissionStop)
+        {
+            var loadProtocols = new LoadProtocols(_dataLayer, _logger);
+            return loadProtocols.GetProtocolsByParameters(processId, createdBy,
+                                                    DateCreated,
+                                                    DateStart,
+                                                    DateStop,
+                                                    DateMeasDay,
+                                                    DateMeasMonth,
+                                                    DateMeasYear,
+                                                    freq,
+                                                    probability,
+                                                    standard,
+                                                    province,
+                                                    ownerName,
+                                                    permissionNumber,
+                                                    permissionStart,
+                                                    permissionStop);
+        }
+
+        public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
+        {
+            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
+            return loadSynchroProcessData.GetAllDataSynchronizationProcess();
         }
     }
 }

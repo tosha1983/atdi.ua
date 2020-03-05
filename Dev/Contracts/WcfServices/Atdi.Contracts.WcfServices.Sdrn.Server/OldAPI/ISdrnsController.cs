@@ -400,6 +400,13 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN);
 
         /// <summary>
+        /// Get all DataSynchronizationProcess
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        DataSynchronizationProcess[] GetAllDataSynchronizationProcess();
+
+        /// <summary>
         /// Get all RefSpectrum
         /// </summary>
         /// <returns></returns>
@@ -420,5 +427,29 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// <returns></returns>
         [OperationContract]
         bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended);
+
+
+        /// <summary>
+        /// Get Protocols by parameters
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        Protocols[] GetProtocolsByParameters(       long? processId,
+                                                    string createdBy,
+                                                    DateTime? DateCreated,
+                                                    DateTime? DateStart,
+                                                    DateTime? DateStop,
+                                                    short? DateMeasDay,
+                                                    short? DateMeasMonth,
+                                                    short? DateMeasYear,
+                                                    double? freq,
+                                                    double? probability,
+                                                    string standard,
+                                                    string province,
+                                                    string ownerName,
+                                                    string permissionNumber,
+                                                    DateTime? permissionStart,
+                                                    DateTime? permissionStop);
+
     }
 }
