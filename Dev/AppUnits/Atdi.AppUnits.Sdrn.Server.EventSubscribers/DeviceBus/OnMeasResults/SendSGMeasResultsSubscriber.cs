@@ -766,7 +766,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
             var emittingRaw = ConvertEmitting(result.Emittings);
             // Группировка
             CALC.Emitting[] emittingTemp = null;
-           var prmCorrelationFactor = CorrelationFactor;
+            var prmCorrelationFactor = CorrelationFactor.Value;
             if (emittingSummury.Length != 0)
             {
                 lstEmitting.AddRange(emittingSummury.ToList());
@@ -812,9 +812,26 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                 var emitEaw = new CALC.Emitting[0];
                 emittingSummury = lstEmittingSummury.ToArray();
                 emittingTemp = lstEmittingTempTemp.ToArray();
-                
-                CALC.CalcGroupingEmitting.CalcGrouping(TimeBetweenWorkTimes_sec, TypeJoinSpectrum, CrossingBWPercentageForGoodSignals, CrossingBWPercentageForBadSignal, AnalyzeByChannel, CorrelationAnalize, ref prmCorrelationFactor, MaxFreqDeviation, this._config.CorrelationAdaptation, this._config.MaxNumberEmitingOnFreq, this._config.MinCoeffCorrelation, this._config.UkraineNationalMonitoring, ref emitEaw, ref emittingTemp, ref emittingSummury, NoiseLevel_dBm, this._config.CountMaxEmission);
 
+                CALC.EmitParams emitParams = new CALC.EmitParams()
+                {
+                    TimeBetweenWorkTimes_sec = TimeBetweenWorkTimes_sec,
+                    TypeJoinSpectrum = TypeJoinSpectrum,
+                    CrossingBWPercentageForGoodSignals = CrossingBWPercentageForGoodSignals,
+                    CrossingBWPercentageForBadSignals = CrossingBWPercentageForBadSignal,
+                    AnalyzeByChannel = AnalyzeByChannel,
+                    CorrelationAnalize = CorrelationAnalize,
+                    CorrelationFactor = prmCorrelationFactor,
+                    MaxFreqDeviation = MaxFreqDeviation,
+                    CorrelationAdaptation = this._config.CorrelationAdaptation,
+                    MaxNumberEmitingOnFreq = this._config.MaxNumberEmitingOnFreq,
+                    MinCoeffCorrelation = this._config.MinCoeffCorrelation,
+                    UkraineNationalMonitoring = this._config.UkraineNationalMonitoring
+                };
+
+
+                CALC.CalcGroupingEmitting.CalcGrouping(ref prmCorrelationFactor, emitParams, ref emitEaw, ref emittingTemp, ref emittingSummury, NoiseLevel_dBm, this._config.CountMaxEmission);
+                //CALC.CalcGroupingEmitting.CalcGrouping(TimeBetweenWorkTimes_sec, TypeJoinSpectrum, CrossingBWPercentageForGoodSignals, CrossingBWPercentageForBadSignal, AnalyzeByChannel, CorrelationAnalize, ref prmCorrelationFactor, MaxFreqDeviation, this._config.CorrelationAdaptation, this._config.MaxNumberEmitingOnFreq, this._config.MinCoeffCorrelation, this._config.UkraineNationalMonitoring, ref emitEaw, ref emittingTemp, ref emittingSummury, NoiseLevel_dBm, this._config.CountMaxEmission);
                 //CALC.CalcGroupingEmitting.CalcGrouping(60, 0, 90, 60, false, true, ref prmCorrelationFactor, 0.0001, true, 25, 0.8, true, ref emittingRaw, ref emittingTemp, ref emittingSummury, -100, 1000);
                 lstEmitting = new List<CALC.Emitting>();
                 lstEmitting.AddRange(emittingSummury);

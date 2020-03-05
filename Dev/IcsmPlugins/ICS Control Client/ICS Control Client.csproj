@@ -363,6 +363,15 @@
     </Compile>
     <Compile Include="RequestResult.cs" />
     <Compile Include="UpdateSchema.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\BuildSpectrogram.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\ConvertCoordinates.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartColumnsStyle.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartLine.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartOption.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartPoints.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Chart\ChartStyle.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\InsertSpectrogram.cs" />
+    <Compile Include="ViewModels\BuildReports\Reports\Models\Coordinates\EnumCoordLine.cs" />
     <Compile Include="ViewModels\ChartAdapters\OnlineMeasLineChartAdapter.cs" />
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />

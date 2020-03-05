@@ -110,11 +110,11 @@ namespace Atdi.WcfServices.Sdrn.Server
                 }
                 if (permissionStart != null)
                 {
-                    builderProtocols.Where(c => c.PermissionStart, ConditionOperator.Equal, permissionStart);
+                    builderProtocols.Where(c => c.PermissionStart, ConditionOperator.GreaterEqual, permissionStart);
                 }
                 if (permissionStop != null)
                 {
-                    builderProtocols.Where(c => c.PermissionStop, ConditionOperator.Equal, permissionStop);
+                    builderProtocols.Where(c => c.PermissionStop, ConditionOperator.LessEqual, permissionStop);
                 }
                 if (DateMeasDay != null)
                 {
@@ -138,12 +138,12 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                 if (DateStart != null)
                 {
-                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.LessEqual, DateStart);
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateStart, ConditionOperator.GreaterEqual, DateStart);
                 }
 
                 if (DateStop != null)
                 {
-                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.GreaterEqual, DateStop);
+                    builderProtocols.Where(c => c.SYNCHRO_PROCESS.DateEnd, ConditionOperator.LessEqual, DateStop);
                 }
 
                 if (!string.IsNullOrEmpty(createdBy))

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Drawing;
 
-namespace Atdi.Modules.Sdrn.Chart
+namespace XICSM.ICSControlClient.ViewModels.Chart
 {
     public enum LinePatternEnum
     {
@@ -21,16 +21,5 @@ namespace Atdi.Modules.Sdrn.Chart
         Dash = 2,
         Dot = 3,
         DashDot = 4
-    }
-
-    public class ChartColumnsStyle
-    {
-        public Brush FillColor { get; set; }
-
-        public Brush StrokeColor { get; set; }
-
-        public double Thickness { get; set; }
-
-        public LinePatternEnum Pattern { get; set; }
     }
 }

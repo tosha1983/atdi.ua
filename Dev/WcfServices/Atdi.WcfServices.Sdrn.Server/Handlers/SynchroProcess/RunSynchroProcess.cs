@@ -34,6 +34,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             public long? Id;
             public double StartFrequency_MHz;
             public double StopFrequency_MHz;
+            public double CurrentPower_dBm;
             public int worktimeHitsCount;
         }
 
@@ -767,6 +768,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 emittingDataToCorrespond.Id = emittings[i].Id;
                 emittingDataToCorrespond.StartFrequency_MHz = emittings[i].StartFrequency_MHz;
                 emittingDataToCorrespond.StopFrequency_MHz = emittings[i].StopFrequency_MHz;
+                emittingDataToCorrespond.CurrentPower_dBm = emittings[i].CurentPower_dBm;
                 for (int j = 0; j < emittings[i].WorkTimes.Length; j++)
                 {
                     emittingDataToCorrespond.worktimeHitsCount += emittings[i].WorkTimes[j].HitCount;
@@ -775,6 +777,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return emittingsDataToCorrespond;
         }
+
 
         /// <summary>
         /// Синхронизация излучений с записями группы сенсора
@@ -823,19 +826,54 @@ namespace Atdi.WcfServices.Sdrn.Server
             if ((emittingParameters != null) && (emittingParameters.Length > 0))
             {
                 double corelFactor = emittingParameters[0].CorrelationFactor.Value;
-                Calculation.CalcSpecializedGroupingEmitting.DeleteRedundantUncorrelatedEmitting(listOfEmitings, desiredNumberOfEmittings, emittingParameters[0], ref corelFactor, 0.95);
+                Calculation.CalcGroupingEmitting.DeleteRedundantUncorrelatedEmitting(listOfEmitings, desiredNumberOfEmittings, emittingParameters[0], ref corelFactor, 0.95);
             }
 
 
             var emittingsDataToCorrespondUnsorted = new List<EmittingDataToSort>();
             emittingsDataToCorrespondUnsorted = FillEmittingDataToCorrespond(listOfEmitings.ToArray());
             var emittingsDataToCorrespondSorted = from z in emittingsDataToCorrespondUnsorted orderby z.worktimeHitsCount descending select z;
-            var emittingsDataToCorrespond = emittingsDataToCorrespondSorted.ToArray();
 
             var staionsDataToCorrespondUnsorted = new List<StationDataToSort>();
             staionsDataToCorrespondUnsorted = FillStationDataToCorrespond(refSpectrums);
-            var stationssDataToCorrespondSorted = from z in staionsDataToCorrespondUnsorted orderby z.Level_dBm descending select z;
-            var stationssDataToCorrespond = stationssDataToCorrespondSorted.ToArray();
+            var stationsDataToCorrespondSorted = from z in staionsDataToCorrespondUnsorted orderby z.Level_dBm descending select z;
+
+            var stationsDataToCorrespondList = stationsDataToCorrespondSorted.ToList();
+            var emittingsDataToCorrespondList = emittingsDataToCorrespondSorted.ToList();
+
+            // Emitting should be correspondent to the level only if difference between emitting pover and station level dont exceeds 30 dB
+            int numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
+            for (int i = 0; i < numOfIterations; i++)
+            {
+                var corrEmittingBuffer = new EmittingDataToSort();
+                double levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[i].CurrentPower_dBm;
+                //возожно следует внести в конфиг, DifferenceBetweenStationAndEmittingLevel_dB = -30
+                if (levelDifference_dB < -30)
+                {
+                    for (int j = i; j < numOfIterations; j++)
+                    {
+                        levelDifference_dB = stationsDataToCorrespondList[i].Level_dBm - emittingsDataToCorrespondList[j].CurrentPower_dBm;
+                        if (levelDifference_dB > -30)
+                        {
+                            corrEmittingBuffer = emittingsDataToCorrespondList[i];
+                            emittingsDataToCorrespondList[i] = emittingsDataToCorrespondList[j];
+                            emittingsDataToCorrespondList[j] = corrEmittingBuffer;
+                            break;
+                        }
+                        else if ((levelDifference_dB < -30) && (j == numOfIterations - 1))
+                        {
+                            stationsDataToCorrespondList.RemoveRange(i, 1);
+                            numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
+                            i--;
+                        }
+                    }
+                }
+            }
+
+            //Convert data to correspond into array
+            var stationsDataToCorrespond = stationsDataToCorrespondList.ToArray();
+            var emittingsDataToCorrespond = emittingsDataToCorrespondList.ToArray();
+
 
             var cntAllEmitters = 0;
             if ((listOfEmitings!=null) && (listOfEmitings.Count>0))
@@ -862,9 +900,9 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                     // объявление новой промежуточной переменной, которая должна заполняться в блоке ниже:
                     int stationLink = -1;
-                    for (int k = 0; k < stationssDataToCorrespond.Length; k++)
+                    for (int k = 0; k < stationsDataToCorrespond.Length; k++)
                     {
-                        if (stationssDataToCorrespond[k].RefSpectrumId == refSpectrums[i].Id && stationssDataToCorrespond[k].DataRefSpectrumId == refSpectrums[i].DataRefSpectrum[j].Id)
+                        if (stationsDataToCorrespond[k].RefSpectrumId == refSpectrums[i].Id && stationsDataToCorrespond[k].DataRefSpectrumId == refSpectrums[i].DataRefSpectrum[j].Id)
                         {
                             stationLink = k;
                             break;
