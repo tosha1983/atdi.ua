@@ -99,7 +99,8 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
-        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}">
+        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}" SelectedItemsIndexes="{Binding CurrentSensorsIndexes}">
+          <!--SetSelectedItemsList="{Binding SetCurrentSensors}">-->
           <DataGrid.Columns>
             <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>

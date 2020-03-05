@@ -32,6 +32,7 @@ namespace XICSM.ICSControlClient.ViewModels
     public class GroupeEmissionWithStationModelViewModel : WpfViewModelBase
     {
         private IList _currentSensors;
+        private long[] _currentSensorsIndexes;
         private IList _currentAreas;
         private IList _currentRefSpectrums;
         private MP.MapDrawingData _currentMapData;
@@ -78,6 +79,12 @@ namespace XICSM.ICSControlClient.ViewModels
                 CheckEnabledStart();
             }
         }
+        public long[] CurrentSensorsIndexes
+        {
+            get => this._currentSensorsIndexes;
+            set => this.Set(ref this._currentSensorsIndexes, value);
+        }
+        
         public IList CurrentAreas
         {
             get => this._currentAreas;
@@ -220,8 +227,11 @@ namespace XICSM.ICSControlClient.ViewModels
         private void SelectSensors()
         {
             var listSensors = new List<ShortSensorViewModel>();
+            var listSensorsIndexes = new List<long>();
+            long index = 0;
 
             var sensorsIds = new Dictionary<SensorIdentifier, ShortSensor>();
+
             if (this._currentAreas != null && this._sensors.Source != null && this._sensors.Source.Length > 0)
             {
                 foreach (var sensor in this._sensors.Source)
@@ -243,12 +253,17 @@ namespace XICSM.ICSControlClient.ViewModels
                                     if (CheckHitting(area.Location, loc))
                                     {
                                         if (!sensorsIds.ContainsKey(sensor.Id))
+                                        {
                                             sensorsIds.Add(sensor.Id, sensor);
+                                            listSensorsIndexes.Add(index);
+                                        }
+                                            
                                     }
                                 }
                             }
                         }
                     }
+                    index++;
                 }
             }
 
@@ -256,7 +271,9 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 listSensors.Add(Mappers.Map(sensor));
             }
-            this.CurrentSensors = listSensors;
+
+            this._currentSensors = listSensors;
+            this.CurrentSensorsIndexes = listSensorsIndexes.ToArray();
         }
         public bool CheckHitting(DataLocation[] poligon, SensorLocation sensor)
         {
@@ -386,7 +403,8 @@ namespace XICSM.ICSControlClient.ViewModels
                             rs2.Close();
                         rs2.Destroy();
 
-                        stationsExtended.Add(dataSpectrum.TableName + "/" + dataSpectrum.TableId, stationExtended);
+                        if (stationExtended.TableId > 0)
+                            stationsExtended.Add(dataSpectrum.TableName + "/" + dataSpectrum.TableId, stationExtended);
                     }
                 }
 
