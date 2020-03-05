@@ -247,7 +247,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         protocols.DataSynchronizationProcess = loadSynchroProcessData.CurrentSynchronizationProcesByIds(readerProtocols.GetValue(c => c.SYNCHRO_PROCESS.Id));
 
-                        protocols.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
+                        
 
 
                         var builderLinkProtocolsWithEmittings = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().From();
@@ -262,6 +262,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             while (readerLinkProtocolsWithEmittings.Read())
                             {
+                                protocols.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
                                 protocols.ProtocolsLinkedWithEmittings.Bandwidth_kHz = readerLinkProtocolsWithEmittings.GetValue(c => c.Bandwidth_kHz);
                                 protocols.ProtocolsLinkedWithEmittings.Contravention = readerLinkProtocolsWithEmittings.GetValue(c => c.Contravention);
                                 protocols.ProtocolsLinkedWithEmittings.CorrectnessEstimations = readerLinkProtocolsWithEmittings.GetValue(c => c.CorrectnessEstimations);

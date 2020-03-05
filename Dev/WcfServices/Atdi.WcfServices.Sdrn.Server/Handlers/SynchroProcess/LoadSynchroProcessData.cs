@@ -200,6 +200,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 dataSpectrum.TableId = readerDataRefSpectrum.GetValue(c => c.TableId);
                                 dataSpectrum.TableName = readerDataRefSpectrum.GetValue(c => c.TableName);
                                 dataSpectrum.Id = readerDataRefSpectrum.GetValue(c => c.Id);
+                                dataSpectrum.HeadId = readerRefSpectrum.GetValue(c => c.Id);
                                 listDataSpectrum.Add(dataSpectrum);
                             }
                             return true;
@@ -216,6 +217,185 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return listRefSpectrum.ToArray();
         }
+
+
+        public bool DeleteHeadRefSpectrum(long headRefSpectrumId)
+        {
+            var isSuccess = false;
+            try
+            {
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+
+                    var builderDeleteHeadRefSpectrum = this._dataLayer.GetBuilder<MD.IHeadRefSpectrum>().Delete();
+                    builderDeleteHeadRefSpectrum.Where(c => c.Id, ConditionOperator.Equal, headRefSpectrumId);
+                    scope.Executor.Execute(builderDeleteHeadRefSpectrum);
+
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
+        public bool ClearAllLinksByProcessId(long processId)
+        {
+            var isSuccess = false;
+            try
+            {
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+
+                    var builderDeleteLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().Delete();
+                    builderDeleteLinkHeadRefSpectrum.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
+                    scope.Executor.Execute(builderDeleteLinkHeadRefSpectrum);
+
+                    var builderDeleteLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().Delete();
+                    builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
+                    scope.Executor.Execute(builderDeleteLinkSensorsWithSynchroProcess);
+
+                    var builderDeleteLinkArea = this._dataLayer.GetBuilder<MD.ILinkArea>().Delete();
+                    builderDeleteLinkArea.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
+                    scope.Executor.Execute(builderDeleteLinkArea);
+
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
+
+        public bool DeleteLinkHeadRefSpectrumByHeadId(long headRefSpectrumId)
+        {
+            var isSuccess = false;
+            try
+            {
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+
+                    var builderDeleteLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().Delete();
+                    builderDeleteLinkHeadRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, headRefSpectrumId);
+                    scope.Executor.Execute(builderDeleteLinkHeadRefSpectrum);
+
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+        public bool DeleteLinkSensors(long[] sensorId)
+        {
+            var isSuccess = false;
+            try
+            {
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+
+                    var builderDeleteLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().Delete();
+                    builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SensorId, ConditionOperator.NotIn, sensorId);
+                    scope.Executor.Execute(builderDeleteLinkSensorsWithSynchroProcess);
+
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+        public bool DeleteRefSpectrumBySensorId(long[] sensorId)
+        {
+            var isSuccess = false;
+            try
+            {
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+
+                    var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
+                    builderDeleteRefSpectrum.Where(c => c.SensorId, ConditionOperator.NotIn, sensorId);
+                    scope.Executor.Execute(builderDeleteRefSpectrum);
+
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
+        public bool RemoveEmptyHeadRefSpectrum(long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN)
+        {
+            var isSuccess = false;
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetRefSpectrumByIdsMethod.Text);
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var builderRefSpectrum = this._dataLayer.GetBuilder<MD.IHeadRefSpectrum>().From();
+                builderRefSpectrum.Select(c =>c.Id);
+                builderRefSpectrum.Where(c => c.Id, ConditionOperator.In, headRefSpectrumIdsBySDRN);
+                queryExecuter.Fetch(builderRefSpectrum, readerRefSpectrum =>
+                {
+                    while (readerRefSpectrum.Read())
+                    {
+                        bool isEmptyData = true;
+                        var builderDataRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().From();
+                        builderDataRefSpectrum.Select(c =>c.Id);
+                        builderDataRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, readerRefSpectrum.GetValue(c => c.Id));
+                        builderDataRefSpectrum.Where(c => c.SensorId, ConditionOperator.In, sensorIdsBySDRN);
+                        queryExecuter.Fetch(builderDataRefSpectrum, readerDataRefSpectrum =>
+                        {
+                            while (readerDataRefSpectrum.Read())
+                            {
+                                isEmptyData = false;
+                                break;
+                            }
+                            return true;
+                        });
+
+                        if (isEmptyData==true)
+                        {
+                            DeleteLinkHeadRefSpectrumByHeadId(readerRefSpectrum.GetValue(c => c.Id));
+                            DeleteHeadRefSpectrum(readerRefSpectrum.GetValue(c => c.Id));
+                        }
+                    }
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
 
         public RefSpectrum[] GetRefSpectrumByIds(long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN)
         {
@@ -264,6 +444,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 dataSpectrum.TableId = readerDataRefSpectrum.GetValue(c => c.TableId);
                                 dataSpectrum.TableName = readerDataRefSpectrum.GetValue(c => c.TableName);
                                 dataSpectrum.Id = readerDataRefSpectrum.GetValue(c => c.Id);
+                                dataSpectrum.HeadId = readerRefSpectrum.GetValue(c => c.Id);
                                 listDataSpectrum.Add(dataSpectrum);
                             }
                             return true;

@@ -167,7 +167,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Put("LONGITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Longitude, Coordinates.EnumCoordLine.Lon));
                 rs.Put("LATITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Latitude, Coordinates.EnumCoordLine.Lat));
             }
-            if ((row.Locations != null) && (row.Locations.Length>0))
+            if ((row.Locations != null) && (row.Locations.Length > 0))
             {
                 var lstSensorLocation = row.Locations.ToList();
                 var orderSensorLocation = lstSensorLocation.OrderByDescending(c => c.DataCreated);
@@ -184,7 +184,7 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             rs.Put("SENSOR_NAME", row.SensorName);
             rs.Put("DATE_MEAS", row.DateMeas);
-            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz,3));
+            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz, 3));
             if (row.BandWidth != null)
             {
                 rs.Put("S_BW", Math.Round(row.BandWidth.Value, 3));
@@ -214,16 +214,24 @@ namespace XICSM.ICSControlClient.ViewModels
             rs.Destroy();
 
             //генерация отчета
-            var nameFile = selectedPath + $@"\{row.GlobalSID}_{row.StandardName}_{row.Freq_MHz.ToString().Replace(".","_").Replace(",","_")}_{row.OwnerName}_{row.Level_dBm.ToString().Replace(".", "_").Replace(",", "_")}_{row.Id.ToString()}.rtf";
+            var nameFile = selectedPath + $@"\{row.GlobalSID}_{row.StandardName}_{row.Freq_MHz.ToString().Replace(".", "_").Replace(",", "_")}_{row.OwnerName}_{row.Level_dBm.ToString().Replace(".", "_").Replace(",", "_")}_{row.Id.ToString()}.rtf";
             RecordPtr recPtr;
             recPtr.Table = "XPROTOCOL_REPORT";
             recPtr.Id = id;
-            recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
-            var bm = new System.Drawing.Bitmap(1200, 600);
-            buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1200, 600);
-            InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
-            bm.Dispose();
-            GC.Collect();
+            if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
+            {
+                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
+                var bm = new System.Drawing.Bitmap(1200, 600);
+                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1200, 600);
+                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
+                bm.Dispose();
+                GC.Collect();
+            }
+            else
+            {
+                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
+            }
+
 
             //очистка
             var rsDel = new IMRecordset("XPROTOCOL_REPORT", IMRecordset.Mode.ReadWrite);
@@ -238,7 +246,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rsDel.Close();
             rsDel.Destroy();
 
-         
+
 
         }
 

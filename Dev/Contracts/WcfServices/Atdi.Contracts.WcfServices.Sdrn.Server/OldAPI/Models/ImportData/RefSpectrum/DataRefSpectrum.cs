@@ -85,5 +85,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public DateTime DateMeas;
+
+        /// <summary>
+        /// Идентификатор записи в таблице заголовка
+        /// </summary>
+        [DataMember]
+        public long? HeadId;
     }
 }
