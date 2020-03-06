@@ -430,6 +430,12 @@ into n
 from dual;
 end if;
 
+if inttable_name ='AMQP_MESSAGES_LOG' then
+select ICSC.AMQP_MESSAGES_LOG_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 return(n);
 end;
 /

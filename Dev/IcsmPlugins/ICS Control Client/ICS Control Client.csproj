@@ -516,6 +516,8 @@
     <None Include="ICSM 6.2.70\ICSM3.exe.config" />
     <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING.IRP" />
     <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_RUS.rtf" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_SPECTR.IRP" />
+    <None Include="ICSM 6.2.70\IcsmReport\REPORT_SIGNALING_SPECTR_RUS.rtf" />
     <None Include="ICSM 6.2.70\IcsmSchema\ICSControlClient.Schema" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
