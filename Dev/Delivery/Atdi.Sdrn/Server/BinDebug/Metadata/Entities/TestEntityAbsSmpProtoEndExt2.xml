@@ -3,7 +3,7 @@
   Name        = "TestEntityAbsSmpProtoEndExt2"
   Title       = "Test Simple Entity"
   Desc        = ""
-  Type        = "Extention"
+  Type        = "Extension"
   BaseEntity  = "TestEntityAbsSmpProtoEnd"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
