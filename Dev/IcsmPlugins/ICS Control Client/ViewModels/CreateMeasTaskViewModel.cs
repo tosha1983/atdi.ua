@@ -255,6 +255,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.Standard = "GSM";
             this._currentMeasTask.StandardInstEstim = "GSM";
 
+            this.CurrentMeasTask.CollectEmissionInstrumentalEstimation = false;
             this._currentMeasTask.AnalyzeSysInfoEmission = false;
             this._currentMeasTask.nDbLevel_dB = 15;
             this._currentMeasTask.NumberIgnoredPoints = 1;
