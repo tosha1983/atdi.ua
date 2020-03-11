@@ -38,7 +38,24 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
         public object[] Record { get; set; }
     }
 
-    public class DataSetResult : RequestResult, API.IDataSetResult
+    public class RecordCreateResult : RequestResult, API.IRecordCreateResult
+    {
+	    public int Count { get; set; }
+
+	    public object PrimaryKey { get; set; }
+	}
+
+    public class RecordUpdateResult : RequestResult, API.IRecordUpdateResult
+    {
+	    public int Count { get; set; }
+    }
+
+    public class RecordDeleteResult : RequestResult, API.IRecordDeleteResult
+    {
+	    public int Count { get; set; }
+    }
+
+	public class DataSetResult : RequestResult, API.IDataSetResult
     {
         public API.IFieldDescriptor[] Fields { get; set; }
 

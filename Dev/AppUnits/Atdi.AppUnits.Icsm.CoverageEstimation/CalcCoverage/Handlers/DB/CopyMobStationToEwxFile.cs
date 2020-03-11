@@ -29,7 +29,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
 
 
 
-        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer, ILogger logger)
+        public CopyMobStationToEwxFile(Condition condition, string tableName, IDataLayer<IcsmDataOrm> dataLayer,  ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._queryExecutor = this._dataLayer.Executor<IcsmDataContext>();
@@ -39,7 +39,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
         }
 
 
-        public static List<Station[]> BreakDown(Station[] elements)
+        public static List<Station[]> BreakDown(Station[] elements, int? countStationsInEwxFile)
         {
             var arrIntEmitting = new List<Station[]>();
             var listIntEmitting = new List<Station>();
@@ -47,7 +47,7 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
             for (int i = 0; i < elements.Length; i++)
             {
                 listIntEmitting.Add(elements[i]);
-                if (cnt >= CountInParams)
+                if (cnt >= countStationsInEwxFile.Value)
                 {
                     arrIntEmitting.Add(listIntEmitting.ToArray());
                     listIntEmitting.Clear();
@@ -222,7 +222,21 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                      var tilt = reader.GetNullableValueAsDouble(typeof(double), reader.GetOrdinal("ELEVATION"));
                      if (tilt != null)
                      {
-                         station.Tilt = tilt.Value;
+                         if (dataConfig.AnotherParameters == null)
+                         {
+                             station.Tilt = tilt.Value;
+                         }
+                         else
+                         {
+                             if (dataConfig.AnotherParameters.Elevation != null)
+                             {
+                                 station.Tilt = dataConfig.AnotherParameters.Elevation.Value;
+                             }
+                             else
+                             {
+                                 station.Tilt = tilt.Value;
+                             }
+                         }
                      }
 
                      var NetId = reader.GetNullableValueAsInt32(typeof(int), reader.GetOrdinal("Licence.ID"));
@@ -292,7 +306,23 @@ namespace Atdi.AppUnits.Icsm.CoverageEstimation.Handlers
                  return res;
              });
 
-                var elments = BreakDown(lstStations.ToArray());
+                int? countStationsInBlock = null;
+                if (dataConfig.AnotherParameters == null)
+                {
+                    countStationsInBlock = CountInParams;
+                }
+                else
+                {
+                    if (dataConfig.AnotherParameters.CountStationsInEwxFile == null)
+                    {
+                        countStationsInBlock = CountInParams;
+                    }
+                    else
+                    {
+                        countStationsInBlock = dataConfig.AnotherParameters.CountStationsInEwxFile;
+                    }
+                }
+                var elments = BreakDown(lstStations.ToArray(), countStationsInBlock);
                 for (int l = 0; l < elments.Count; l++)
                 {
                     var ewxFile = new EwxData();

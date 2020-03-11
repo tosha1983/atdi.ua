@@ -113,7 +113,11 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
 
             if (this.Markers.Count > 0)
             {
-                this.ZoomAndCenterMarkers(null);
+                var rect = this.GetRectOfAllMarkers(null);
+                if (rect.HasValue)
+                    this.SetZoomToFitRect(rect.Value);
+                else
+                    this.ZoomAndCenterMarkers(null);
             }
         }
 

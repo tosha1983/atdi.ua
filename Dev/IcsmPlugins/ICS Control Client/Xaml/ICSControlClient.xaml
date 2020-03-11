@@ -6,7 +6,7 @@
              xmlns:res="clr-namespace:XICSM.ICSControlClient.Properties;assembly=XICSM_ICSControlClient"
              xmlns:cs="clr-namespace:XICSM.ICSControlClient.WpfControls.Charts;assembly=XICSM_ICSControlClient"
              xmlns:maps="clr-namespace:XICSM.ICSControlClient.WpfControls.Maps;assembly=XICSM_ICSControlClient"
-             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.ViewModels;assembly=XICSM_ICSControlClient"
+             xmlns:cdg="clr-namespace:XICSM.ICSControlClient.WpfControls;assembly=XICSM_ICSControlClient"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -115,8 +115,8 @@
                             </DataTrigger>
                           </Style.Triggers>
                         </Style>
-                      </Grid.Style>                      
-                      <cdg:CustomDataGridMeasTasks Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}">
+                      </Grid.Style>
+                      <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}">
                         <DataGrid.Style>
                           <Style TargetType="DataGrid">
                             <Style.Triggers>
@@ -149,7 +149,7 @@
                             <MenuItem Header="{x:Static res:Resources.HideDetail}" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding HideMeasTaskDetailEnabled}"/>-->
                           </ContextMenu>
                         </DataGrid.ContextMenu>
-                      </cdg:CustomDataGridMeasTasks>
+                      </DataGrid>
                       <Button Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Run}" IsEnabled="False" Width="50" Height="20" Command="{Binding RunMeasTaskCommand}"/>
                       <Button Grid.Column="0" Grid.Row="0" Margin="65,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Stop}" Width="50" Height="20" Command="{Binding StopMeasTaskCommand}"/>
                       <Button Grid.Column="0" Grid.Row="0" Margin="125,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Delete}" Width="50" Height="20" Command="{Binding DeleteMeasTaskCommand}"/>
@@ -607,33 +607,36 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
-                      <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, Mode=OneWay}" SelectedItem="{Binding CurrentMeasurementResult}" SelectedItemsList="{Binding CurrentMeasurementResults, Mode=TwoWay}" >
-                            <DataGrid.Style>
-                                <Style TargetType="DataGrid">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ResultStationsVisibility}" Value="Hidden">
-                                            <Setter Property="Grid.RowSpan" Value="3"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ResultStationsVisibility}" Value="Visible">
-                                            <Setter Property="Grid.Row" Value="0"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Style>
-                            <DataGrid.Columns>
-                              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowFreq}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpFreq}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.CountStationMeasurements}" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
-                              <DataGridTextColumn Header="{x:Static res:Resources.CountUnknownStationMeasurements}" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
-                            </DataGrid.Columns>                        
-                        </cdg:CustomDataGridMeasResult>
+                        <cdg:CustomDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}" SelectedItem="{Binding CurrentMeasurementResult}" SelectedItemsList="{Binding CurrentMeasurementResults, Mode=TwoWay}" >
+                          <DataGrid.Style>
+                              <Style TargetType="DataGrid">
+                                  <Style.Triggers>
+                                      <DataTrigger Binding="{Binding ResultStationsVisibility}" Value="Hidden">
+                                          <Setter Property="Grid.RowSpan" Value="3"/>
+                                      </DataTrigger>
+                                      <DataTrigger Binding="{Binding ResultStationsVisibility}" Value="Visible">
+                                          <Setter Property="Grid.Row" Value="0"/>
+                                      </DataTrigger>
+                                  </Style.Triggers>
+                              </Style>
+                          </DataGrid.Style>
+                          <DataGrid.Columns>
+                            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowFreq}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpFreq}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.CountStationMeasurements}" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.CountUnknownStationMeasurements}" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
+                          </DataGrid.Columns>
+                          <DataGrid.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickResultCommand}" CommandParameter="{Binding MeasResults/}"/>
+                          </DataGrid.InputBindings>
+                        </cdg:CustomDataGrid>
 
                         <GridSplitter Visibility="{Binding ResultStationsVisibility}" Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         </GridSplitter>
@@ -1053,46 +1056,46 @@
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>
         
             <GroupBox  Header="{x:Static res:Resources.Sensors}"  Margin="0, 5, 5, 5" Grid.Column="2" Grid.RowSpan="3" >
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" MinHeight="100"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="*" MinHeight="100"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <DataGrid x:Name="GridSensor" Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItem="{Binding CurrentShortSensor}">
-                      <DataGrid.Columns>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate}"></DataGridTextColumn>
-                      </DataGrid.Columns>
-                      <DataGrid.ContextMenu>
-                        <ContextMenu>
-                          <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding RefreshShortSensorsCommand}"/>
-                          <MenuItem Header="{x:Static res:Resources.OnLineCommand}" Command="{Binding DoubleClickSensorCommand}"/>
-                          <MenuItem Header="{x:Static res:Resources.EditSensorTitle}" Command="{Binding EditSensorTitleCommand}"/>
-                        </ContextMenu>
-                      </DataGrid.ContextMenu>
-                    </DataGrid>
-                    <Button Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Refresh}" Width="50" Height="20" Command="{Binding RefreshShortSensorsCommand}"/>
-                    <Button Grid.Column="0" Grid.Row="0" Margin="65,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.OnLine}" Width="50" Height="20" Command="{Binding DoubleClickSensorCommand}"/>
-                    <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
-                    <maps:Map Grid.Column="0" Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
-                </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" MinHeight="100"></RowDefinition>
+                  <RowDefinition Height="Auto"></RowDefinition>
+                  <RowDefinition Height="*" MinHeight="100"></RowDefinition>
+                </Grid.RowDefinitions>
+                <DataGrid x:Name="GridSensor" Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortSensors}" SelectedItem="{Binding CurrentShortSensor}">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                  </DataGrid.Columns>
+                  <DataGrid.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding RefreshShortSensorsCommand}"/>
+                      <MenuItem Header="{x:Static res:Resources.OnLineCommand}" Command="{Binding DoubleClickSensorCommand}" CommandParameter="{Binding ShortSensors/}"/>
+                      <MenuItem Header="{x:Static res:Resources.EditSensorTitle}" Command="{Binding EditSensorTitleCommand}"/>
+                    </ContextMenu>
+                  </DataGrid.ContextMenu>
+                </DataGrid>
+                <Button Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Refresh}" Width="50" Height="20" Command="{Binding RefreshShortSensorsCommand}"/>
+                <Button Grid.Column="0" Grid.Row="0" Margin="65,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.OnLine}" Width="50" Height="20" Command="{Binding DoubleClickSensorCommand}"/>
+                <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
+                <maps:Map Grid.Column="0" Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
+              </Grid>
             </GroupBox>
         </Grid>
     </DockPanel>

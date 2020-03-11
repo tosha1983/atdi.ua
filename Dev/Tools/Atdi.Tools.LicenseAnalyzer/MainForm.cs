@@ -96,7 +96,10 @@ namespace Atdi.Tools.LicenseAnalyzer
             {
 	            sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
             }
-
+            else if (cmbConfigType.SelectedIndex == 6) //infocentr
+            {
+	            sharedSecret = "Atdi.AppServer.AppService.SdrnsController";
+            }
 			txtEncryptedOwnerId.Text = Encryptor.EncryptStringAES(txtLicenseOwnerId.Text, sharedSecret);
             txtEncryptedProductKey.Text = Encryptor.EncryptStringAES(txtLicenseProductKey.Text, sharedSecret);
             txtEncryptedPassword.Text = Encryptor.EncryptStringAES(txtPassword.Text, sharedSecret);

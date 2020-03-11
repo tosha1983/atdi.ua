@@ -420,12 +420,12 @@
   <xs:simpleType name="EntityType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Normal" />
-      <xs:enumeration value="Extention" />
+      <xs:enumeration value="Extension" />
       <xs:enumeration value="Predefined" />
       <xs:enumeration value="Prototype" />
       <xs:enumeration value="Role" />
       <xs:enumeration value="Simple" />
-      <xs:enumeration value="Abstruct" />
+      <xs:enumeration value="Abstract" />
     </xs:restriction>
   </xs:simpleType>
 

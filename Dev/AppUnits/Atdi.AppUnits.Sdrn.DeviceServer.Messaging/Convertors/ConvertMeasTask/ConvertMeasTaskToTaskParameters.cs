@@ -185,6 +185,25 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         TimeBetweenWorkTimes_sec = configMessaging.TimeBetweenWorkTimes_sec;
                     }
 
+                    if (taskSDR.SignalingMeasTaskParameters.SignalizationNCount != null)
+                    {
+                        var signalizationNCount = taskSDR.SignalingMeasTaskParameters.SignalizationNCount;
+                        if (signalizationNCount != 0)
+                        {
+                            var startTime = taskSDR.StartTime;
+                            var stopTime = taskSDR.StopTime;
+                            var val = stopTime - startTime;
+                            if (val.TotalSeconds > 0)
+                            {
+                                var TimeBetweenWorkTimesTask_sec = (int)((val.TotalSeconds / signalizationNCount) * 5);
+                                if (TimeBetweenWorkTimes_sec < TimeBetweenWorkTimesTask_sec)
+                                {
+                                    TimeBetweenWorkTimes_sec = TimeBetweenWorkTimesTask_sec;
+                                }
+                            }
+                        }
+                    }
+
                     ///////////// TypeJoinSpectrum /////////////
                     if (taskSDR.SignalingMeasTaskParameters.GroupingParameters.TypeJoinSpectrum != null)
                     {

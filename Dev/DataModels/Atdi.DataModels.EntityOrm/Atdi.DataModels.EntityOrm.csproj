@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\IDataRecordCreateRequest.cs" />
     <Compile Include="Api\IDataRecordRequest.cs" />
     <Compile Include="Api\IDataSetRequest.cs" />
     <Compile Include="Api\IDataTypeMetadata.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Api\IRequestResult.cs" />
     <Compile Include="Api\IUnitMetadata.cs" />
     <Compile Include="EntityAttribute.cs" />
+    <Compile Include="EntityOrmContext.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

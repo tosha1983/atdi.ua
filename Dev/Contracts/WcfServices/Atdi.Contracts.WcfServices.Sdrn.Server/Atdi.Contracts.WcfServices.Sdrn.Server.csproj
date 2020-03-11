@@ -67,6 +67,16 @@
     <Compile Include="OldAPI\Models\Analitics\LevelsByTaskParams.cs" />
     <Compile Include="OldAPI\Models\Analitics\SOFrequency.cs" />
     <Compile Include="OldAPI\Models\Analitics\StationLevelsByTask.cs" />
+    <Compile Include="OldAPI\Models\ImportData\Area\Area.cs" />
+    <Compile Include="OldAPI\Models\ImportData\Area\DataLocation.cs" />
+    <Compile Include="OldAPI\Models\ImportData\Emittings\EmittingReferenceLevels.cs" />
+    <Compile Include="OldAPI\Models\ImportData\RefSpectrum\RadioControlParams.cs" />
+    <Compile Include="OldAPI\Models\ImportData\RefSpectrum\ProtocolsWithEmittings.cs" />
+    <Compile Include="OldAPI\Models\ImportData\RefSpectrum\Protocols.cs" />
+    <Compile Include="OldAPI\Models\ImportData\RefSpectrum\GroupSensors.cs" />
+    <Compile Include="OldAPI\Models\ImportData\Stations\StationExtended.cs" />
+    <Compile Include="OldAPI\Models\ImportData\SynchroProcess\DataSynchronizationBase.cs" />
+    <Compile Include="OldAPI\Models\ImportData\SynchroProcess\DataSynchronizationProcess.cs" />
     <Compile Include="OldAPI\Models\Measurements\FrequencyMeasurement.cs" />
     <Compile Include="OldAPI\Models\Measurements\GeoLocation.cs" />
     <Compile Include="OldAPI\Models\Measurements\LocationSensorMeasurement.cs" />
@@ -101,6 +111,8 @@
     <Compile Include="OldAPI\Models\OnlineMeasurement\SensorAvailabilityDescriptor.cs" />
     <Compile Include="OldAPI\Models\OnlineMeasurement\OnlineMeasurementOptions.cs" />
     <Compile Include="OldAPI\Models\ResultsMeasurementsStation\ResultsMeasurementsStationFilters.cs" />
+    <Compile Include="OldAPI\Models\ImportData\RefSpectrum\DataRefSpectrum.cs" />
+    <Compile Include="OldAPI\Models\ImportData\RefSpectrum\RefSpectrum.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingGroupingParameters.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingInterruptionParameters.cs" />
     <Compile Include="OldAPI\Models\Tasks\Signaling\SignalingMeasTask.cs" />

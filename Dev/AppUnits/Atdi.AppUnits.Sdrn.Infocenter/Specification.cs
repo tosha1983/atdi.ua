@@ -13,7 +13,9 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
         public static readonly EventCategory Registration = "Registration";
         public static readonly EventCategory Processing = "Processing";
         public static readonly EventCategory Subscribing = "Subscribing";
-    }
+
+        public static readonly EventCategory MapsImport = "MapsImport";
+	}
 
     internal static class Events
     {

@@ -61,7 +61,7 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             context.Cache = descriptor.Cache;
             var pattren = new PS.DeletePattern();
             if (descriptor.Entity.Type == EntityType.Normal
-                || descriptor.Entity.Type == EntityType.Extention)
+                || descriptor.Entity.Type == EntityType.Extension)
             {
                 // это однотабличные вариант - простой случай
                 pattren.Expressions = this.BuildSimpleWay(statement, context);

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Area"
+  Title       = "Areas and Contours "
+  Desc        = "Areas and Contours"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>AREA</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the area record" Title="Id record"/>
+    <Field Name="Name" DataType="Text.250" SourceName="NAME" SourceType="Column" Required="true" Desc="Name area" Title="Name area"/>
+    <Field Name="TypeOfArea" DataType="Text.25" SourceName="TYPE_OF_AREA" SourceType="Column" Required="false" Desc="Type of area" Title="Type of area"/>
+    <Field Name="CreatedBy" DataType="Text.50" SourceName="CREATED_BY" SourceType="Column" Required="false" Desc="CreatedBy" Title="CreatedBy"/>
+    <Field Name="CreatedDate" DataType="DateTime" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="false"/>
+    <Field Name="IdentifierFromICSM" DataType="Integer.32" SourceName="AREA_ID_ICSM" SourceType="Column" Desc="The id of the area record from ICSM database" Title="Identifier from table Area ICSM DB"  Required="true"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

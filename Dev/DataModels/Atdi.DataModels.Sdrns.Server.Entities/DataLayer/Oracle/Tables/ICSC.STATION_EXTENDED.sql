@@ -1,0 +1,72 @@
+﻿CREATE TABLE ICSC.STATION_EXTENDED
+(
+  ID                 NUMBER(15)                 NOT NULL,
+  TABLE_NAME         NVARCHAR2(50),
+  TABLE_ID           NUMBER(9),
+  STANDARD           NVARCHAR2(150),
+  STANDARD_NAME      NVARCHAR2(150),
+  OWNER_NAME         NVARCHAR2(100),
+  PERMISSION_NUMBER  NVARCHAR2(100),
+  PERMISSION_START   DATE,
+  PERMISSION_STOP    DATE,
+  ADDRESS            NVARCHAR2(1000),
+  LONGITUDE          NUMBER(30,10),
+  LATITUDE           NUMBER(30,10),
+  BW                 NUMBER(30,10),
+  DESIG_EMISSION     NVARCHAR2(25),
+  PROVINCE           NVARCHAR2(100)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.STATION_EXTENDED_PK ON ICSC.STATION_EXTENDED
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.STATION_EXTENDED ADD (
+  CONSTRAINT STATION_EXTENDED_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

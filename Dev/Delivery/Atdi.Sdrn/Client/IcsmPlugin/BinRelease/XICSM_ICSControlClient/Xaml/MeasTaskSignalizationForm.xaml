@@ -91,7 +91,7 @@
                           <Label Grid.Column="2" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.StopFreqMHz}"/>
                           <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding Path=MeasFreqParamRgU}"  IsReadOnly="True" />
 
-                          <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepWhithkHz}"/>
+                          <Label Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.StepkHz}"/>
                           <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Path=MeasFreqParamStep}"  IsReadOnly="True" />
 
                           <Label Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.Mode}"/>
@@ -134,7 +134,7 @@
                     </Grid>
                   </ScrollViewer>
                   <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
-                  <cdg:CustomDataGridMeasResult Grid.Column="0" Grid.Row="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}">
+                  <DataGrid Grid.Column="0" Grid.Row="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasResults}">
                     <DataGrid.Columns>
                       <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
                       <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
@@ -147,7 +147,7 @@
                       <DataGridTextColumn Header="{x:Static res:Resources.CountUnknownStationMeasurements}" Binding="{Binding Path=CountUnknownStationMeasurements}"></DataGridTextColumn>
                       <DataGridTextColumn Header="{x:Static res:Resources.ScansNumber}" Binding="{Binding Path=ScansNumber}"></DataGridTextColumn>
                     </DataGrid.Columns>
-                  </cdg:CustomDataGridMeasResult>
+                  </DataGrid>
                 </Grid>
             </GroupBox>
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>

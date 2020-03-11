@@ -387,8 +387,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 var collectEmissionInstrumentalEstimation = context.Task.taskParameters.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
                                 if ((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == true))
                                 {
-                                    context.Task.EmittingsSummary = null;
-                                    context.Task.EmittingsTemp = null;
+                                    if (collectEmissionInstrumentalEstimation == true)
+                                    {
+                                        context.Task.EmittingsSummary = null;
+                                        context.Task.EmittingsTemp = null;
+                                    }
                                 }
                             }
                         });

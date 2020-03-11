@@ -10,5 +10,7 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 	public interface ITaskDispatcher
 	{
 		void RunTask(TaskLaunchHandle launchHandle, ITaskObserver observer);
+
+		void RunTask(long resultId, ITaskObserver observer);
 	} 
 }

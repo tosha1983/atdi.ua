@@ -11,6 +11,7 @@ using Atdi.Platform.AppComponent;
 using Atdi.Platform.AppServer;
 using Atdi.Platform.DependencyInjection;
 using Atdi.Platform.Logging;
+using Atdi.Platform.Workflows;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer
 {
@@ -61,11 +62,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.Container.Register<IEventDispatcher, EventDispatcher>(ServiceLifetime.Singleton);
 
 			// шина данных 
+			this.Container.Register<MapBuilder>(ServiceLifetime.Singleton);
+			this.Container.Register<ProcessJob>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()
 		{
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
+			var mapBuilder = this.Resolver.Resolve<MapBuilder>();
 
 			// подключаем обработчики задач
 			var taskFactory = this.Resolver.Resolve<ITasksFactory>();
@@ -195,6 +199,33 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
 					}
 				}
+			});
+
+			var appConfig = this.Resolver.Resolve<AppServerComponentConfig>();
+
+			var jobBroker = this.Resolver.Resolve<IJobBroker>();
+			hostLoader.RegisterTrigger("Running process jobs ...", () =>
+			{
+				var startDelaySeconds = appConfig.ProcessJobStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				var repeatDelaySeconds = appConfig.ProcessJobRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 5000;
+				}
+				var jobDef = new JobDefinition<ProcessJob>()
+				{
+					Name = "Process Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerMillisecond * repeatDelaySeconds.Value)
+				};
+
+				jobBroker.Run(jobDef);
 			});
 
 		}

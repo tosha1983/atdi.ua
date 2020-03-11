@@ -29,29 +29,6 @@ using Newtonsoft.Json;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGridEmitting : DataGrid
-    {
-        public CustomDataGridEmitting()
-        {
-            this.SelectionChanged += CustomDataGrid_SelectionChanged;
-        }
-
-        void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-        }
-        #region SelectedItemsList
-
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridEmitting), new PropertyMetadata(null));
-
-        #endregion
-    }
     public class MeasResultSignalizationViewModel : WpfViewModelBase, IDisposable
     {
         private long _resultId;

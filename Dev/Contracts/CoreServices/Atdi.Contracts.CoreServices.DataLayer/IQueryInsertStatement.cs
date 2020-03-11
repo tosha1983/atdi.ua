@@ -50,7 +50,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                         Value = ((IntegerValueOperand)value).Value
                     };
                     break;
-                case DataType.DateTime:
+                case DataType.Long:
+	                result = new LongColumnValue
+	                {
+		                Value = ((LongValueOperand)value).Value
+	                };
+	                break;
+                case DataType.UnsignedLong:
+	                result = new UnsignedLongColumnValue()
+	                {
+		                Value = ((UnsignedLongValueOperand)value).Value
+	                };
+	                break;
+				case DataType.DateTime:
                     result = new DateTimeColumnValue
                     {
                         Value = ((DateTimeValueOperand)value).Value
@@ -92,7 +104,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                         Value = ((GuidValueOperand)value).Value
                     };
                     break;
-                default:
+				case DataType.ClrType:
+					result = new ClrTypeColumnValue
+					{
+						Value = ((ClrTypeValueOperand)value).Value
+					};
+					break;
+                case DataType.ClrEnum:
+	                result = new ClrEnumColumnValue
+	                {
+		                Value = ((ClrEnumValueOperand)value).Value
+	                };
+	                break;
+				default:
                     throw new InvalidOperationException($"Unsupported data type with name '{value.DataType}'");
             }
             result.Name = column;

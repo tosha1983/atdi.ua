@@ -363,6 +363,79 @@ from dual;
 end if;
 
 
+if inttable_name ='AREA' then
+select ICSC.AREA_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='AREA_LOCATION' then
+select ICSC.AREA_LOCATION_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='HEAD_REF_SPECTRUM' then
+select ICSC.HEAD_REF_SPECTRUM_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='LINK_AREA' then
+select ICSC.LINK_AREA_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='LINK_HEAD_REF_SPECTRUM' then
+select ICSC.LINK_HEAD_REF_SPECTRUM_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='LINK_PROTOCOLS_WITH_EMITTINGS' then
+select ICSC.LINK_PROTOCOLS_WITH_EMITTINGS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='LINK_SENSORS_WITH_SYNCHRO_PROC' then
+select ICSC.LINK_SENSORS_WITH_SYNCHRO_PROC_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='PROTOCOLS' then
+select ICSC.PROTOCOLS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='REF_SPECTRUM' then
+select ICSC.REF_SPECTRUM_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='STATION_EXTENDED' then
+select ICSC.STATION_EXTENDED_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='SYNCHRO_PROCESS' then
+select ICSC.SYNCHRO_PROCESS_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='AMQP_MESSAGES_LOG' then
+select ICSC.AMQP_MESSAGES_LOG_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 return(n);
 end;
 /

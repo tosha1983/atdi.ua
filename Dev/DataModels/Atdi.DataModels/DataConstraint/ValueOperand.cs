@@ -101,7 +101,7 @@ namespace Atdi.DataModels.DataConstraint
                 case DataType.Bytes:
                     return new BytesValueOperand
                     {
-                        Value = (value == null) ? (byte[])null : (byte[])(value)
+                        Value = (byte[]) value
                     };
                 case DataType.Guid:
                     if (value == null)
@@ -127,7 +127,7 @@ namespace Atdi.DataModels.DataConstraint
                     }
                     return new GuidValueOperand
                     {
-                        Value = (value == null) ? (Guid?)null : new Guid(value.ToString()) //(Guid)(value)
+                        Value = new Guid(value.ToString()) //(Guid)(value)
                     };
                 case DataType.Char:
                     return new CharValueOperand
@@ -137,7 +137,7 @@ namespace Atdi.DataModels.DataConstraint
                 case DataType.Chars:
                     return new CharsValueOperand
                     {
-                        Value = (value == null) ? (char[])null : (char[])(value)
+                        Value = (char[]) value
                     };
                 case DataType.Short:
                     return new ShortValueOperand
@@ -172,7 +172,7 @@ namespace Atdi.DataModels.DataConstraint
                 case DataType.Time:
                     return new TimeValueOperand
                     {
-                        Value = (value == null) ? (TimeSpan?)null : (TimeSpan)(value)
+                        Value = (TimeSpan?) value
                     };
                 case DataType.Date:
                     return new DateValueOperand
@@ -203,9 +203,19 @@ namespace Atdi.DataModels.DataConstraint
                     }
                     return new DateTimeOffsetValueOperand
                     {
-                        Value = (value == null) ? (DateTimeOffset?)null : (DateTimeOffset)(value)
+                        Value = (DateTimeOffset)(value)
                     };
-                default:
+				case DataType.ClrType:
+					return new ClrTypeValueOperand
+					{
+						Value = value
+					};
+                case DataType.ClrEnum:
+	                return new ClrEnumValueOperand
+					{
+		                Value = (Enum)value
+					};
+				default:
                     throw new InvalidOperationException($"Unsupported the data type with name '{dataType}'");
             }
         }
@@ -578,6 +588,8 @@ namespace Atdi.DataModels.DataConstraint
         }
     }
 
+
+
     [DataContract(Namespace = CommonSpecification.Namespace)]
     public class StringValueOperand : ValueOperand
     {
@@ -876,7 +888,7 @@ namespace Atdi.DataModels.DataConstraint
         }
 
         [DataMember]
-        public Object Value { get; set; }
+        public object Value { get; set; }
     }
 
 

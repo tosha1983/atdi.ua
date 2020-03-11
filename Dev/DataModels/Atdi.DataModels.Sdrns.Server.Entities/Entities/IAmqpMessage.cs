@@ -76,4 +76,32 @@ namespace Atdi.DataModels.Sdrns.Server.Entities
         string HeaderBodyAQName { get; set; }
 
     }
+
+    public enum AmqpMessageStatusCode
+	{
+	    /// <summary>
+	    /// Message was created in DB
+	    /// </summary>
+	    Created = 0,
+
+	    /// <summary>
+	    /// Sent event to  EventSystems
+	    /// </summary>
+	    SentEvent = 1,
+
+	    /// <summary>
+	    /// Message is processing
+	    /// </summary>
+	    Processing = 2,
+
+	    /// <summary>
+	    /// Message was processed
+	    /// </summary>
+	    Processed = 3,
+
+		/// <summary>
+		/// Abort by some exception
+		/// </summary>
+		Failure = 4
+    }
 }

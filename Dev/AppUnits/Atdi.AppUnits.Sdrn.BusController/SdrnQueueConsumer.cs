@@ -33,6 +33,7 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly ILogger _logger;
         private readonly IQueryExecutor _queryExecutor;
         private readonly IQueryBuilder<MD.IAmqpMessage> _amqpMessageQueryBuilder;
+		private readonly IQueryBuilder<MD.IAmqpMessageLog> _amqpMessageLogQueryBuilder;
         private readonly IQueryBuilder<MD.IAmqpEvent> _amqpEventQueryBuilder;
 
         public SdrnQueueConsumer(
@@ -61,7 +62,8 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this._logger = logger;
             this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
             this._amqpMessageQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpMessage>();
-            this._amqpEventQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpEvent>();
+			this._amqpMessageLogQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpMessageLog>();
+			this._amqpEventQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpEvent>();
         }
 
         public MessageHandlingResult Handle(Message message, IDeliveryContext deliveryContext)
@@ -117,13 +119,15 @@ namespace Atdi.AppUnits.Sdrn.BusController
                     var headerBodyAqName = GetHeaderValue(message.Headers, Protocol.Header.BodyAqName);
                     var headerCreated = GetHeaderValue(message.Headers, Protocol.Header.Created);
 
-                    var queryInsert = this._amqpMessageQueryBuilder
+                    var currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+
+					var queryInsert = this._amqpMessageQueryBuilder
                         .Insert()
                         .SetValue(c => c.StatusCode,
-                            (byte) 0) // 0 - Created, 1 - Event Send, 2 - start processing, 3 - finish processed
-                        .SetValue(c => c.StatusName, "Created") //MessageProcessingStatus.Created.ToString())
+                            (byte) 0) // 0 - Created, 1 - Send Event , 2 - start processing, 3 - finish processed
+						.SetValue(c => c.StatusName, "Created") //MessageProcessingStatus.Created.ToString())
                         .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-                        .SetValue(c => c.ThreadId, System.Threading.Thread.CurrentThread.ManagedThreadId)
+                        .SetValue(c => c.ThreadId, currentThreadId)
                         .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
                         .SetValue(c => c.PropExchange, deliveryContext.Exchange)
                         .SetValue(c => c.PropDeliveryTag, deliveryContext.DeliveryTag)
@@ -151,13 +155,22 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
                     var messagePk = _queryExecutor.Execute<MD.IAmqpMessage_PK>(queryInsert);
 
+                    var logQueryInsert = this._amqpMessageLogQueryBuilder
+	                    .Insert()
+	                    .SetValue(c => c.MESSAGE.Id, messagePk.Id)
+						.SetValue(c => c.StatusCode, (byte)MD.AmqpMessageStatusCode.Created)
+	                    .SetValue(c => c.StatusName, "Created")
+	                    .SetValue(c => c.StatusNote, "Message was created in DB")
+						.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+	                    .SetValue(c => c.ThreadId, currentThreadId)
+						.SetValue(c => c.Source, $"SDRN.QueueConsumer:[Tag={deliveryContext.ConsumerTag}][Handle]");
+                    _queryExecutor.Execute(logQueryInsert);
 
-                    var eventQueryInsert = this._amqpEventQueryBuilder
+					var eventQueryInsert = this._amqpEventQueryBuilder
                         .Insert()
                         .SetValue(c => c.Id, messagePk.Id)
                         .SetValue(c => c.PropType, message.Type);
-
-                    _queryExecutor.Execute(eventQueryInsert);
+					_queryExecutor.Execute(eventQueryInsert);
 
                     _messageProcessing.OnCreatedMessage();
 

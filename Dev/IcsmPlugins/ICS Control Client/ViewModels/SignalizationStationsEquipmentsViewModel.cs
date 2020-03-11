@@ -23,29 +23,6 @@ using System.Collections;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
-    public class CustomDataGridEquipments : DataGrid
-    {
-        public CustomDataGridEquipments()
-        {
-            this.SelectionChanged += CustomDataGrid_SelectionChanged;
-        }
-
-        void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.SelectedItemsList = this.SelectedItems;
-        }
-        #region SelectedItemsList
-
-        public IList SelectedItemsList
-        {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set { SetValue(SelectedItemsListProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGridEquipments), new PropertyMetadata(null));
-
-        #endregion
-    }
     public class SignalizationStationsEquipmentsViewModel : WpfViewModelBase, IDisposable
     {
         private EmittingViewModel _currentEmitting;

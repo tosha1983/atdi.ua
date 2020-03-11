@@ -71,6 +71,7 @@
     <Compile Include="CalcCoverage\Models\Config\ArgumentsConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CodeOperatorAndStatusConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CodeOperatorConfig.cs" />
+    <Compile Include="CalcCoverage\Models\Config\AnotherParameters.cs" />
     <Compile Include="CalcCoverage\Models\Config\ProvinceCodeConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\ColorConfig.cs" />
     <Compile Include="CalcCoverage\Models\Config\CommandConfig.cs" />

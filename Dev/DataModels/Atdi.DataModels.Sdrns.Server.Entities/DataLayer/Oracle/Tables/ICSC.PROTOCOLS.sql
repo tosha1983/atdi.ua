@@ -1,0 +1,78 @@
+﻿CREATE TABLE ICSC.PROTOCOLS
+(
+  ID                      NUMBER(15)            NOT NULL,
+  PERMISSION_NUMBER       NVARCHAR2(200),
+  PERMISSION_START        DATE,
+  PERMISSION_STOP         DATE,
+  GLOBAL_SID              NVARCHAR2(50),
+  FREQ_MHZ                NUMBER(30,10),
+  LEVEL_DBM               NUMBER(30,10),
+  DISPERSION_LOW          NUMBER(30,10),
+  DISPERSION_UP           NUMBER(30,10),
+  PERCENT                 NUMBER(30,10),
+  SENSOR_LON              NUMBER(30,10),
+  SENSOR_LAT              NUMBER(30,10),
+  SENSOR_NAME             NVARCHAR2(100),
+  STATION_EXTENDED_ID     NUMBER(15),
+  SYNCHRO_PROCESS_ID      NUMBER(15),
+  SENSOR_ID               NUMBER(15),
+  RADIO_CONTROL_FREQ_MHZ  NUMBER(30,10),
+  RADIO_CONTROL_BW        NUMBER(30,10),
+  DATE_MEAS_DAY           NUMBER(2),
+  DATE_MEAS_MONTH         NUMBER(2),
+  DATE_MEAS_YEAR          NUMBER(4)
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX ICSC.PROTOCOLS_PK ON ICSC.PROTOCOLS
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE ICSC.PROTOCOLS ADD (
+  CONSTRAINT PROTOCOLS_PK
+ PRIMARY KEY
+ (ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));
