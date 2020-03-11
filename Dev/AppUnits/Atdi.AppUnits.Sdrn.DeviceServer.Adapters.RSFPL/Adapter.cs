@@ -90,7 +90,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
 
                 }
-
+                else
+                {
+                    throw new Exception("Invalid initialize/connect adapter In connect");
+                }
             }
             #region Exception
             catch (Exception exp)
