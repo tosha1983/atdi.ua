@@ -6,15 +6,17 @@ using Atdi.Contracts.Sdrn.Server;
 using Atdi.DataModels.DataConstraint;
 using Atdi.Platform.Logging;
 using System;
-using MD = Atdi.DataModels.Sdrns.Server.Entities;
-using Atdi.Contracts.WcfServices.Sdrn.Server;
+using MD = Atdi.DataModels.Sdrns.Server.Entities.IeStation;
+using MDBase = Atdi.DataModels.Sdrns.Server.Entities;
+using Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using System.Xml;
 using System.Linq;
 using Atdi.Common;
 using Calculation = Atdi.Modules.Sdrn.Calculation;
 
 
-namespace Atdi.WcfServices.Sdrn.Server
+
+namespace Atdi.WcfServices.Sdrn.Server.IeStation
 {
     public class RunSynchroProcess
     {
@@ -44,6 +46,66 @@ namespace Atdi.WcfServices.Sdrn.Server
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
+
+        public bool UpdateStatusRefSpectrum(DataRefSpectrum dataRefSpectrum)
+        {
+            bool isSuccess = false;
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.ImportData, Events.UpdateStatusStationExtended.Text);
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+                    var builderUpdateRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Update();
+                    builderUpdateRefSpectrum.Where(c => c.TableId, ConditionOperator.Equal, dataRefSpectrum.TableId);
+                    builderUpdateRefSpectrum.Where(c => c.TableName, ConditionOperator.Equal, dataRefSpectrum.TableName);
+                    builderUpdateRefSpectrum.Where(c => c.SensorId, ConditionOperator.Equal, dataRefSpectrum.SensorId);
+                    if (!string.IsNullOrEmpty(dataRefSpectrum.StatusMeas))
+                    {
+                        builderUpdateRefSpectrum.SetValue(c => c.StatusMeas, dataRefSpectrum.StatusMeas);
+                        scope.Executor.Execute(builderUpdateRefSpectrum);
+                    }
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
+        public bool UpdateStatusStationExtended(StationExtended stationExtended)
+        {
+            bool isSuccess = false;
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.ImportData, Events.UpdateStatusStationExtended.Text);
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+                    var builderUpdateStationExtended = this._dataLayer.GetBuilder<MD.IStationExtended>().Update();
+                    builderUpdateStationExtended.Where(c => c.TableId, ConditionOperator.Equal, stationExtended.TableId);
+                    builderUpdateStationExtended.Where(c => c.TableName, ConditionOperator.Equal, stationExtended.TableName);
+                    if (!string.IsNullOrEmpty(stationExtended.StatusMeas))
+                    {
+                        builderUpdateStationExtended.SetValue(c => c.StatusMeas, stationExtended.StatusMeas);
+                        scope.Executor.Execute(builderUpdateStationExtended);
+                    }
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
 
         public bool SynchroAreas(Area[] areas)
         {
@@ -241,7 +303,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         bool isFindIdentifierFromICSM = false;
                         var queryStationExtendedFrom = this._dataLayer.GetBuilder<MD.IStationExtended>()
                         .From()
-                        .Select(c => c.Id, c => c.Address, c => c.BandWidth, c => c.DesigEmission, c => c.Latitude, c => c.Longitude, c => c.OwnerName, c => c.PermissionNumber, c => c.PermissionStart, c => c.PermissionStop, c => c.Province, c => c.Standard, c => c.StandardName, c => c.TableId, c => c.TableName)
+                        .Select(c => c.Id, c => c.Address, c => c.BandWidth, c => c.DesigEmission, c => c.Latitude, c => c.Longitude, c => c.OwnerName, c => c.PermissionNumber, c => c.PermissionStart, c => c.PermissionStop, c => c.Province, c => c.Standard, c => c.StandardName, c => c.TableId, c => c.TableName,
+                                c => c.DocNum, c => c.StationName, c => c.StationChannel, c => c.StationTxFreq, c => c.StationRxFreq, c => c.PermissionCancelDate, c => c.TestStartDate, c => c.TestStopDate, c => c.PermissionGlobalSID, c => c.OKPO, c => c.StatusMeas, c => c.CurentStatusStation)
                         .Where(c => c.Id, ConditionOperator.GreaterThan, 0);
                         scope.Executor.Fetch(queryStationExtendedFrom, readerStationExtendedFrom =>
                         {
@@ -320,6 +383,83 @@ namespace Atdi.WcfServices.Sdrn.Server
                                         builderUpdateStationExtended.SetValue(c => c.Province, stationsExtended[i].Province);
                                     }
 
+                                    if (readerStationExtendedFrom.GetValue(c => c.DocNum) != stationsExtended[i].DocNum)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.DocNum, stationsExtended[i].DocNum);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.StatusMeas) != stationsExtended[i].StatusMeas)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.StatusMeas, stationsExtended[i].StatusMeas);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.CurentStatusStation) != stationsExtended[i].CurentStatusStation)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.CurentStatusStation, stationsExtended[i].CurentStatusStation);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.PermissionGlobalSID) != stationsExtended[i].PermissionGlobalSID)
+                                    {
+                                        var permissionGlobalSID = GetGlobalSID(stationsExtended[i].OKPO, stationsExtended[i].StationName);
+                                        if (!string.IsNullOrEmpty(permissionGlobalSID))
+                                        {
+                                            isChanged = true;
+                                            builderUpdateStationExtended.SetValue(c => c.PermissionGlobalSID, permissionGlobalSID);
+                                        }
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.TestStartDate) != stationsExtended[i].TestStartDate)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.TestStartDate, stationsExtended[i].TestStartDate);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.TestStopDate) != stationsExtended[i].TestStopDate)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.TestStopDate, stationsExtended[i].TestStopDate);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.StationTxFreq) != stationsExtended[i].StationTxFreq)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.StationTxFreq, stationsExtended[i].StationTxFreq);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.StationRxFreq) != stationsExtended[i].StationRxFreq)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.StationRxFreq, stationsExtended[i].StationRxFreq);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.StationChannel) != stationsExtended[i].StationChannel)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.StationChannel, stationsExtended[i].StationChannel);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.OKPO) != stationsExtended[i].OKPO)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.OKPO, stationsExtended[i].OKPO);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.StationName) != stationsExtended[i].StationName)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.StationName, stationsExtended[i].StationName);
+                                    }
+
+                                    if (readerStationExtendedFrom.GetValue(c => c.PermissionCancelDate) != stationsExtended[i].PermissionCancelDate)
+                                    {
+                                        isChanged = true;
+                                        builderUpdateStationExtended.SetValue(c => c.PermissionCancelDate, stationsExtended[i].PermissionCancelDate);
+                                    }
+
+
                                     if (isChanged)
                                     {
                                         scope.Executor.Execute(builderUpdateStationExtended);
@@ -397,6 +537,79 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 builderStationExtendedInsert.SetValue(c => c.TableName, stationsExtended[i].TableName);
                                 isChangedSuccess = true;
                             }
+                            if (stationsExtended[i].DocNum != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.DocNum, stationsExtended[i].DocNum);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].TestStartDate != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.TestStartDate, stationsExtended[i].TestStartDate);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].TestStopDate != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.TestStopDate, stationsExtended[i].TestStopDate);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].PermissionCancelDate != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.PermissionCancelDate, stationsExtended[i].PermissionCancelDate);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].PermissionGlobalSID != null)
+                            {
+                                var permissionGlobalSID = GetGlobalSID(stationsExtended[i].OKPO, stationsExtended[i].StationName);
+                                if (!string.IsNullOrEmpty(permissionGlobalSID))
+                                {
+                                    builderStationExtendedInsert.SetValue(c => c.PermissionGlobalSID, permissionGlobalSID);
+                                    isChangedSuccess = true;
+                                }
+                            }
+                            if (stationsExtended[i].StationTxFreq != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.StationTxFreq, stationsExtended[i].StationTxFreq);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].StationRxFreq != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.StationRxFreq, stationsExtended[i].StationRxFreq);
+                                isChangedSuccess = true;
+                            }
+                            if (stationsExtended[i].StationChannel != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.StationChannel, stationsExtended[i].StationChannel);
+                                isChangedSuccess = true;
+                            }
+                            //if (stationsExtended[i].StatusMeas != null)
+                            //{
+                            //builderStationExtendedInsert.SetValue(c => c.StatusMeas, stationsExtended[i].StatusMeas);
+                            //isChangedSuccess = true;
+                            //}
+                            builderStationExtendedInsert.SetValue(c => c.StatusMeas, "N");
+                            isChangedSuccess = true;
+
+                            if (stationsExtended[i].CurentStatusStation != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.CurentStatusStation, stationsExtended[i].CurentStatusStation);
+                                isChangedSuccess = true;
+                            }
+
+                            if (stationsExtended[i].OKPO != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.OKPO, stationsExtended[i].OKPO);
+                                isChangedSuccess = true;
+                            }
+
+                            if (stationsExtended[i].StationName != null)
+                            {
+                                builderStationExtendedInsert.SetValue(c => c.StationName, stationsExtended[i].StationName);
+                                isChangedSuccess = true;
+                            }
+
+
+
+
                             builderStationExtendedInsert.SetValue(c => c.TableId, stationsExtended[i].TableId);
 
                             if (isChangedSuccess)
@@ -420,6 +633,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return isSuccess;
         }
+
 
         public long? CreateDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas)
         {
@@ -558,6 +772,168 @@ namespace Atdi.WcfServices.Sdrn.Server
             return polygonAll;
         }
 
+        private string CalcStatusMeasForRefSpectrum(DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string DocNum, DateTime? testStartDate, DateTime? testStopDate, DateTime dateMeasFromRefSpectrum)
+        {
+            var StatusMeas = "";
+            DateTime? Start = null;
+            DateTime? Stop = null;
+            if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
+            {
+                Start = permissionStart;
+                Stop = permissionStop;
+            }
+            else if ((permissionCancelDate != null) && (permissionStart != null))
+            {
+                Start = permissionStart;
+                Stop = permissionCancelDate;
+            }
+            else if (!string.IsNullOrEmpty(DocNum) && (testStartDate != null) && (testStopDate != null))
+            {
+                Start = testStartDate;
+                Stop = testStopDate;
+            }
+
+            if ((Start != null) && (Stop != null))
+            {
+                if ((Start.Value <= dateMeasFromRefSpectrum && Stop.Value >= dateMeasFromRefSpectrum) == true)
+                {
+                    StatusMeas = "U";
+                }
+                else
+                {
+                    StatusMeas = "I";
+                }
+            }
+            else
+            {
+                StatusMeas = "I";
+            }
+            return StatusMeas;
+        }
+
+        private string CalcStatusMeasForStationExtended(DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string docNum, DateTime? testStartDate, DateTime? testStopDate, DateTime dateMeasFromRefSpectrum)
+        {
+            var StatusMeas = "";
+
+            if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
+            {
+                if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionStop >= dateMeasFromRefSpectrum) == true)
+                {
+                    StatusMeas = "A";
+                }
+                else
+                {
+                    StatusMeas = "I";
+                }
+            }
+            else if ((permissionCancelDate != null) && (permissionStart != null))
+            {
+                if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionCancelDate >= dateMeasFromRefSpectrum) == true)
+                {
+                    StatusMeas = "A";
+                }
+                else
+                {
+                    StatusMeas = "I";
+                }
+            }
+            else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
+            {
+                if ((testStartDate <= dateMeasFromRefSpectrum) && (testStopDate >= dateMeasFromRefSpectrum) == true)
+                {
+                    StatusMeas = "T";
+                }
+                else
+                {
+                    StatusMeas = "I";
+                }
+            }
+            else
+            {
+                StatusMeas = "I";
+            }
+            return StatusMeas;
+        }
+
+        private DateTime? CalcDateStartAndDateStop(string statusMeas, DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string docNum, DateTime? testStartDate, DateTime? testStopDate, DateTime startDate)
+        {
+            DateTime? startDateVal = null;
+            if (statusMeas == "U")
+            {
+                if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
+                {
+                    if (permissionStart.Value > startDate)
+                    {
+                        startDateVal = permissionStart.Value;
+                    }
+                    else
+                    {
+                        startDateVal = startDate;
+                    }
+                }
+                else if ((permissionCancelDate != null) && (permissionStart != null))
+                {
+                    if (permissionStart.Value > startDate)
+                    {
+                        startDateVal = permissionStart.Value;
+                    }
+                    else
+                    {
+                        startDateVal = startDate;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
+                {
+                    if (testStartDate.Value > startDate)
+                    {
+                        startDateVal = testStartDate.Value;
+                    }
+                    else
+                    {
+                        startDateVal = startDate;
+                    }
+                }
+            }
+            if (statusMeas == "I")
+            {
+                if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
+                {
+                    if (permissionStop.Value > startDate)
+                    {
+                        startDateVal = permissionStop.Value;
+                    }
+                    else
+                    {
+                        startDateVal = startDate;
+                    }
+                }
+                else if ((permissionCancelDate != null) && (permissionStart != null))
+                {
+                    if (permissionCancelDate.Value > startDate)
+                    {
+                        startDateVal = permissionCancelDate.Value;
+                    }
+                    else
+                    {
+                        startDateVal = startDate;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
+                {
+                    if (testStopDate.Value > startDate)
+                    {
+                        startDateVal = testStopDate.Value;
+                    }
+                    else
+                    {
+                        startDateVal = startDate;
+                    }
+                }
+            }
+            return startDateVal;
+        }
+
+
         public bool DeleteDuplicateRefSpectrumRecords(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
             bool isSuccess = false;
@@ -571,7 +947,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 loadSynchroProcessData.DeleteRefSpectrumBySensorId(sensorIdsBySDRN);
 
                 var listRefSpectrum = loadSynchroProcessData.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
-            
+
                 // Заполняем список listDataRefSpectrum перечнем всех DataRefSpectrum
                 for (int i = 0; i < listRefSpectrum.Length; i++)
                 {
@@ -585,10 +961,21 @@ namespace Atdi.WcfServices.Sdrn.Server
                     }
                 }
 
+                var lstStations = stationsExtended.ToList();
+                for (int h = 0; h < listDataRefSpectrum.Count; h++)
+                {
+                    var fndStation = lstStations.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
+                    if (fndStation != null)
+                    {
+                        listDataRefSpectrum[h].StatusMeas = CalcStatusMeasForRefSpectrum(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, listDataRefSpectrum[h].DateMeas);
+                        UpdateStatusRefSpectrum(listDataRefSpectrum[h]);
+                    }
+                }
+
                 // удаляются записи, которые повторяться (т.е. одинаковые параметры Table ICSM Name, ID ICSM, ID Sensor, Global SID, Freq MHz) при этом остаётся только последняя по времени запись.
                 for (int h = 0; h < listDataRefSpectrum.Count; h++)
                 {
-                    var findData = listDataRefSpectrum.FindAll(x => x.TableId == listDataRefSpectrum[h].TableId && x.TableName == listDataRefSpectrum[h].TableName && x.SensorId == listDataRefSpectrum[h].SensorId && x.GlobalSID == listDataRefSpectrum[h].GlobalSID && x.Freq_MHz == listDataRefSpectrum[h].Freq_MHz);
+                    var findData = listDataRefSpectrum.FindAll(x => x.TableId == listDataRefSpectrum[h].TableId && x.TableName == listDataRefSpectrum[h].TableName && x.SensorId == listDataRefSpectrum[h].SensorId && x.GlobalSID == listDataRefSpectrum[h].GlobalSID && x.Freq_MHz == listDataRefSpectrum[h].Freq_MHz && (x.StatusMeas == "U" || x.StatusMeas == "N"));
                     if (findData != null)
                     {
                         var orderByDateMeas = from z in findData orderby z.HeadId descending select z;
@@ -611,7 +998,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 var findDataRep = listDataRefSpectrum.FindAll(x => (x.DateMeas >= dataSynchronization.DateStart && x.DateMeas <= dataSynchronization.DateEnd) == false);
                 if (findDataRep != null)
                 {
-                    if ((findDataRep != null) && (findDataRep.Count>0))
+                    if ((findDataRep != null) && (findDataRep.Count > 0))
                     {
                         listDataRefSpectrumForDelete.AddRange(findDataRep);
                     }
@@ -629,7 +1016,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         bool isCheckedLocation = false;
                         for (int f = 0; f < lstPolygons.Count; f++)
                         {
-                            if ((lstPolygons[f] != null) && (lstPolygons[f].Length>0))
+                            if ((lstPolygons[f] != null) && (lstPolygons[f].Length > 0))
                             {
                                 var listPolyg = lstPolygons[f].ToList();
                                 if (checkLocation.CheckHitting(listPolyg))
@@ -639,7 +1026,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 }
                             }
                         }
-                        if ((isCheckedLocation == false) && (lstPolygons.Count>0))
+                        if ((isCheckedLocation == false) && (lstPolygons.Count > 0))
                         {
                             var fnd = listDataRefSpectrumForDelete.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
                             if (fnd == null)
@@ -650,7 +1037,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                     }
                 }
 
-                 // непосредственное удаление записей из БД
+                // непосредственное удаление записей из БД
                 var arr = listDataRefSpectrumForDelete.ToArray();
                 if ((arr != null) && (arr.Length > 0))
                 {
@@ -678,6 +1065,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return isSuccess;
         }
+
 
         public GroupSensors[] GetGroupSensors(RefSpectrum[] refSpectrums)
         {
@@ -733,17 +1121,36 @@ namespace Atdi.WcfServices.Sdrn.Server
                             Percent = dataRefSpectrum.Percent,
                             SensorId = dataRefSpectrum.SensorId,
                             TableId = dataRefSpectrum.TableId,
-                            TableName = dataRefSpectrum.TableName
+                            TableName = dataRefSpectrum.TableName,
+                            StatusMeas = dataRefSpectrum.StatusMeas,
+                            HeadId = dataRefSpectrum.HeadId
                         });
                     }
                 }
                 RefSpectrum.DataRefSpectrum = lstDataRefSpectrums.ToArray();
-                listDataRefSpectrum.Add(RefSpectrum);
+                if (lstDataRefSpectrums.Count > 0)
+                {
+                    listDataRefSpectrum.Add(RefSpectrum);
+                }
             }
             return listDataRefSpectrum.ToArray();
         }
-
         //
+
+        public static string GetGlobalSID(string okpo, string stationName)
+        {
+            if (!string.IsNullOrEmpty(stationName))
+            {
+                string CodeOwener = "0";
+                if (okpo == "14333937") { CodeOwener = "1"; };
+                if (okpo == "22859846") { CodeOwener = "6"; };
+                if (okpo == "21673832") { CodeOwener = "3"; };
+                if (okpo == "37815221") { CodeOwener = "7"; };
+                return "255 " + CodeOwener + " 00000 " + string.Format("{0:00000}", stationName);
+            }
+            else return "";
+        }
+
 
         private int CountUniqueStations(RefSpectrum[] refSpectrums)
         {
@@ -1175,13 +1582,13 @@ namespace Atdi.WcfServices.Sdrn.Server
             for (int h = 0; h < protocolsOutput.Length; h++)
             {
                 var protocol = protocolsOutput[h];
-                
+
                 protocol.DataSynchronizationProcess = new DataSynchronizationProcess();
                 protocol.DataSynchronizationProcess = loadSynchroProcessData.CurrentSynchronizationProcesByIds(synchroProcessId);
-                if (protocol.DataRefSpectrum!=null)
+                if (protocol.DataRefSpectrum != null)
                 {
                     var fndSensor = lstSensors.Find(z => z.Id.Value == protocol.DataRefSpectrum.SensorId);
-                    if (fndSensor!=null)
+                    if (fndSensor != null)
                     {
                         protocol.Sensor = fndSensor;
                     }
@@ -1210,16 +1617,24 @@ namespace Atdi.WcfServices.Sdrn.Server
                     if (protocol.ProtocolsLinkedWithEmittings != null)
                     {
                         var protocolsLinkedWithEmittings = protocol.ProtocolsLinkedWithEmittings;
-                        if ((protocolsLinkedWithEmittings.SpectrumStartFreq_MHz!=null) && (protocolsLinkedWithEmittings.SpectrumSteps_kHz != null) && (protocolsLinkedWithEmittings.T1 != null) && (protocolsLinkedWithEmittings.T2 != null) && (protocolsLinkedWithEmittings.StartFrequency_MHz != null) && (protocolsLinkedWithEmittings.StopFrequency_MHz != null))
+                        if ((protocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (protocolsLinkedWithEmittings.SpectrumSteps_kHz != null) && (protocolsLinkedWithEmittings.T1 != null) && (protocolsLinkedWithEmittings.T2 != null) && (protocolsLinkedWithEmittings.StartFrequency_MHz != null) && (protocolsLinkedWithEmittings.StopFrequency_MHz != null))
                         {
                             GetFreqAndBandWidthByEmittingParameters(protocol);
                         }
+                        fndStation.StatusMeas = CalcStatusMeasForStationExtended(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, protocol.DataRefSpectrum.DateMeas);
                     }
+                    else
+                    {
+                        fndStation.StatusMeas = CalcStatusMeasForStationExtended(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, protocol.DataRefSpectrum.DateMeas);
+                    }
+                    UpdateStatusStationExtended(fndStation);
+                    protocol.StationExtended.StatusMeas = fndStation.StatusMeas;
                 }
                 lstProtocols.Add(protocol);
             }
             protocolsOutput = lstProtocols.ToArray();
         }
+
 
 
         public static void GetFreqAndBandWidthByEmittingParameters(Protocols protocols)
@@ -1406,14 +1821,13 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     scope.BeginTran();
 
-                    var builderProtocolsClear = this._dataLayer.GetBuilder<MD.IProtocols>().Delete();
-                    builderProtocolsClear.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
-                    scope.Executor.Execute(builderProtocolsClear);
-
                     var builderLinkProtocolsWithEmittingsClear = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().Delete();
                     builderLinkProtocolsWithEmittingsClear.Where(c => c.PROTOCOLS.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
                     scope.Executor.Execute(builderLinkProtocolsWithEmittingsClear);
-                 
+
+                    var builderProtocolsClear = this._dataLayer.GetBuilder<MD.IProtocols>().Delete();
+                    builderProtocolsClear.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
+                    scope.Executor.Execute(builderProtocolsClear);
 
                     scope.Commit();
                 }
@@ -1426,6 +1840,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             }
             return isSuccess;
         }
+
 
         public bool SaveDataSynchronizationProcessToDB(Protocols[] protocolsOutput, RefSpectrum[] refSpectrums, long synchroProcessId)
         {
@@ -1478,8 +1893,8 @@ namespace Atdi.WcfServices.Sdrn.Server
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
             var referenceLevels = new ReferenceLevels();
             var level = new ReferenceLevels();
-            var queryLevels = this._dataLayer.GetBuilder<MD.IReferenceLevels>()
-           .From()
+            var queryLevels = this._dataLayer.GetBuilder<MDBase.IReferenceLevels>()
+            .From()
            .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
            .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, resId);
             queryExecuter.Fetch(queryLevels, readerLevels =>
@@ -1507,7 +1922,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             return referenceLevels;
         }
 
-        public Emitting[] GetEmittings(DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out Calculation.EmitParams[] emittingParameters )
+        public Emitting[] GetEmittings(RefSpectrum[] refSpectrums, StationExtended[] stationsExtended, DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out Calculation.EmitParams[] emittingParameters)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetEmittings.Text);
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
@@ -1520,158 +1935,190 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listSensors = new List<Sensor>();
             var listEmitting = new List<Emitting>();
 
-            var queryEmitting = this._dataLayer.GetBuilder<MD.IEmitting>()
-            .From()
-            .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistributionLvl, c => c.LevelsDistributionCount, c => c.SensorId, c => c.StationID, c => c.StationTableName, c => c.Loss_dB, c => c.Freq_kHz, c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id)
-            .OrderByAsc(c => c.StartFrequency_MHz)
-            .Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.GreaterEqual, startDate)
-            .Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.LessEqual, stopDate)
-            .Where(c => c.StartFrequency_MHz, ConditionOperator.LessEqual, groupSensor.Freq_MHz)
-            .Where(c => c.StopFrequency_MHz, ConditionOperator.GreaterEqual, groupSensor.Freq_MHz)
-            .Where(c => c.SensorId, ConditionOperator.Equal, groupSensor.SensorId);
-            queryExecuter.Fetch(queryEmitting, reader =>
+
+            DateTime? startDateVal = null;
+            DateTime? stopDateVal = null;
+            var lstStations = stationsExtended.ToList();
+            var listRefSpectrum = refSpectrums.ToList();
+            for (int i = 0; i < refSpectrums.Length; i++)
             {
-                while (reader.Read())
+                var RefSpectrum = new RefSpectrum();
+                for (int j = 0; j < refSpectrums[i].DataRefSpectrum.Length; j++)
                 {
-                    bool? collectEmissionInstrumentalEstimation = false;
-                    var queryMeasTaskSignaling = this._dataLayer.GetBuilder<MD.IMeasTaskSignaling>()
-                    .From()
-                    .Select(c => c.Id, c => c.CollectEmissionInstrumentalEstimation, c => c.MEAS_TASK.Id, c => c.CrossingBWPercentageForGoodSignals, c => c.CrossingBWPercentageForBadSignals, c => c.AnalyzeByChannel, c => c.CorrelationAnalize, c => c.CorrelationFactor, c => c.MaxFreqDeviation, c => c.TimeBetweenWorkTimes_sec, c => c.TypeJoinSpectrum)
-                    .Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, reader.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id));
-                    queryExecuter.Fetch(queryMeasTaskSignaling, readerMeasTaskSignaling =>
+                    // получение очередного значения dataRefSpectrum
+                    var dataRefSpectrum = refSpectrums[i].DataRefSpectrum[j];
+                    if ((groupSensor.Freq_MHz == dataRefSpectrum.Freq_MHz) && (groupSensor.SensorId == dataRefSpectrum.SensorId))
                     {
-                        while (readerMeasTaskSignaling.Read())
+                        var statusMeas = dataRefSpectrum.StatusMeas;
+                        stopDateVal = dataRefSpectrum.DateMeas;
+                        var fndStation = lstStations.Find(z => z.TableId == dataRefSpectrum.TableId && z.TableName == dataRefSpectrum.TableName);
+                        if (fndStation != null)
                         {
-                            var measTaskId = readerMeasTaskSignaling.GetValue(x => x.MEAS_TASK.Id);
-                            collectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(x => x.CollectEmissionInstrumentalEstimation);
-                            lstEmittingParameters.Add(new Calculation.EmitParams()
-                            {
-                                EmittingId = reader.GetValue(c=>c.Id),
-                                CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(x => x.CrossingBWPercentageForGoodSignals),
-                                CrossingBWPercentageForBadSignals = readerMeasTaskSignaling.GetValue(x => x.CrossingBWPercentageForBadSignals),
-                                AnalyzeByChannel = readerMeasTaskSignaling.GetValue(x => x.AnalyzeByChannel),
-                                CorrelationAnalize = readerMeasTaskSignaling.GetValue(x => x.CorrelationAnalize),
-                                CorrelationFactor = readerMeasTaskSignaling.GetValue(x => x.CorrelationFactor),
-                                MaxFreqDeviation = readerMeasTaskSignaling.GetValue(x => x.MaxFreqDeviation),
-                                TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(x => x.TimeBetweenWorkTimes_sec),
-                                TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(x => x.TypeJoinSpectrum)
-                            });
+                            startDateVal = CalcDateStartAndDateStop(statusMeas, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, startDate);
+                            break;
                         }
-                        return true;
-                    });
-
-                    if (((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == false)) || (collectEmissionInstrumentalEstimation==null))
-                    {
-                        lstEmittingParameters.RemoveAt(lstEmittingParameters.Count - 1);
-                        continue;
                     }
+                }
+            }
 
-                    var emitting = new Emitting();
-                    emitting.Id = reader.GetValue(c => c.Id);
-                    if (reader.GetValue(c => c.StationID).HasValue)
+
+
+            if ((startDateVal != null) && (stopDateVal != null))
+            {
+
+                var queryEmitting = this._dataLayer.GetBuilder<MDBase.IEmitting>()
+               .From()
+               .Select(c => c.Id, c => c.CurentPower_dBm, c => c.MeanDeviationFromReference, c => c.ReferenceLevel_dBm, c => c.RollOffFactor, c => c.StandardBW, c => c.StartFrequency_MHz, c => c.StopFrequency_MHz, c => c.TriggerDeviationFromReference, c => c.LevelsDistributionLvl, c => c.LevelsDistributionCount, c => c.SensorId, c => c.StationID, c => c.StationTableName, c => c.Loss_dB, c => c.Freq_kHz, c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id)
+               .OrderByAsc(c => c.StartFrequency_MHz)
+               .Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.GreaterEqual, startDateVal)
+               .Where(c => c.RES_MEAS.TimeMeas, ConditionOperator.LessEqual, stopDateVal)
+               .Where(c => c.StartFrequency_MHz, ConditionOperator.LessEqual, groupSensor.Freq_MHz)
+               .Where(c => c.StopFrequency_MHz, ConditionOperator.GreaterEqual, groupSensor.Freq_MHz)
+               .Where(c => c.SensorId, ConditionOperator.Equal, groupSensor.SensorId);
+                queryExecuter.Fetch(queryEmitting, reader =>
+                {
+                    while (reader.Read())
                     {
-                        emitting.AssociatedStationID = reader.GetValue(c => c.StationID).Value;
-                    }
-                    emitting.AssociatedStationTableName = reader.GetValue(c => c.StationTableName);
-
-                    if (reader.GetValue(c => c.StartFrequency_MHz).HasValue)
-                        emitting.StartFrequency_MHz = reader.GetValue(c => c.StartFrequency_MHz).Value;
-                    if (reader.GetValue(c => c.StopFrequency_MHz).HasValue)
-                        emitting.StopFrequency_MHz = reader.GetValue(c => c.StopFrequency_MHz).Value;
-                    if (reader.GetValue(c => c.CurentPower_dBm).HasValue)
-                        emitting.CurentPower_dBm = reader.GetValue(c => c.CurentPower_dBm).Value;
-                    if (reader.GetValue(c => c.ReferenceLevel_dBm).HasValue)
-                        emitting.ReferenceLevel_dBm = reader.GetValue(c => c.ReferenceLevel_dBm).Value;
-                    if (reader.GetValue(c => c.MeanDeviationFromReference).HasValue)
-                        emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
-                    if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue)
-                        emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
-
-                    if (reader.GetValue(c => c.SensorId).HasValue)
-                    {
-                        if (listSensors.Find(x => x.Id.Value == reader.GetValue(c => c.SensorId).Value) == null)
+                        bool? collectEmissionInstrumentalEstimation = false;
+                        var queryMeasTaskSignaling = this._dataLayer.GetBuilder<MDBase.IMeasTaskSignaling>()
+                        .From()
+                        .Select(c => c.Id, c => c.CollectEmissionInstrumentalEstimation, c => c.MEAS_TASK.Id, c => c.CrossingBWPercentageForGoodSignals, c => c.CrossingBWPercentageForBadSignals, c => c.AnalyzeByChannel, c => c.CorrelationAnalize, c => c.CorrelationFactor, c => c.MaxFreqDeviation, c => c.TimeBetweenWorkTimes_sec, c => c.TypeJoinSpectrum)
+                        .Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, reader.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id));
+                        queryExecuter.Fetch(queryMeasTaskSignaling, readerMeasTaskSignaling =>
                         {
-                            var querySensor = this._dataLayer.GetBuilder<MD.ISensor>()
-                            .From()
-                            .Select(c => c.Id, c => c.Name, c => c.TechId)
-                            .Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SensorId).Value);
-                            queryExecuter.Fetch(querySensor, readerSensor =>
+                            while (readerMeasTaskSignaling.Read())
                             {
-                                while (readerSensor.Read())
+                                var measTaskId = readerMeasTaskSignaling.GetValue(x => x.MEAS_TASK.Id);
+                                collectEmissionInstrumentalEstimation = readerMeasTaskSignaling.GetValue(x => x.CollectEmissionInstrumentalEstimation);
+                                lstEmittingParameters.Add(new Calculation.EmitParams()
                                 {
-                                    emitting.SensorName = readerSensor.GetValue(c => c.Name);
-                                    emitting.SensorTechId = readerSensor.GetValue(c => c.TechId);
-                                    listSensors.Add(new Sensor()
-                                    {
-                                        Id = new SensorIdentifier()
-                                        {
-                                            Value = reader.GetValue(c => c.SensorId).Value
-                                        },
-                                        Name = readerSensor.GetValue(c => c.Name),
-                                        Equipment = new SensorEquip()
-                                        {
-                                            TechId = readerSensor.GetValue(c => c.TechId)
-                                        }
-                                    });
-                                    break;
-                                }
-                                return true;
-                            });
-                        }
-                        else
+                                    EmittingId = reader.GetValue(c => c.Id),
+                                    CrossingBWPercentageForGoodSignals = readerMeasTaskSignaling.GetValue(x => x.CrossingBWPercentageForGoodSignals),
+                                    CrossingBWPercentageForBadSignals = readerMeasTaskSignaling.GetValue(x => x.CrossingBWPercentageForBadSignals),
+                                    AnalyzeByChannel = readerMeasTaskSignaling.GetValue(x => x.AnalyzeByChannel),
+                                    CorrelationAnalize = readerMeasTaskSignaling.GetValue(x => x.CorrelationAnalize),
+                                    CorrelationFactor = readerMeasTaskSignaling.GetValue(x => x.CorrelationFactor),
+                                    MaxFreqDeviation = readerMeasTaskSignaling.GetValue(x => x.MaxFreqDeviation),
+                                    TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(x => x.TimeBetweenWorkTimes_sec),
+                                    TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(x => x.TypeJoinSpectrum)
+                                });
+                            }
+                            return true;
+                        });
+
+                        if (((collectEmissionInstrumentalEstimation != null) && (collectEmissionInstrumentalEstimation == false)))
                         {
-                            var fndSensor = listSensors.Find(x => x.Id.Value == reader.GetValue(c => c.SensorId).Value);
-                            if (fndSensor != null)
+                            lstEmittingParameters.RemoveAt(lstEmittingParameters.Count - 1);
+                            continue;
+                        }
+
+                        var emitting = new Emitting();
+                        emitting.Id = reader.GetValue(c => c.Id);
+                        if (reader.GetValue(c => c.StationID).HasValue)
+                        {
+                            emitting.AssociatedStationID = reader.GetValue(c => c.StationID).Value;
+                        }
+                        emitting.AssociatedStationTableName = reader.GetValue(c => c.StationTableName);
+
+                        if (reader.GetValue(c => c.StartFrequency_MHz).HasValue)
+                            emitting.StartFrequency_MHz = reader.GetValue(c => c.StartFrequency_MHz).Value;
+                        if (reader.GetValue(c => c.StopFrequency_MHz).HasValue)
+                            emitting.StopFrequency_MHz = reader.GetValue(c => c.StopFrequency_MHz).Value;
+                        if (reader.GetValue(c => c.CurentPower_dBm).HasValue)
+                            emitting.CurentPower_dBm = reader.GetValue(c => c.CurentPower_dBm).Value;
+                        if (reader.GetValue(c => c.ReferenceLevel_dBm).HasValue)
+                            emitting.ReferenceLevel_dBm = reader.GetValue(c => c.ReferenceLevel_dBm).Value;
+                        if (reader.GetValue(c => c.MeanDeviationFromReference).HasValue)
+                            emitting.MeanDeviationFromReference = reader.GetValue(c => c.MeanDeviationFromReference).Value;
+                        if (reader.GetValue(c => c.TriggerDeviationFromReference).HasValue)
+                            emitting.TriggerDeviationFromReference = reader.GetValue(c => c.TriggerDeviationFromReference).Value;
+
+                        if (reader.GetValue(c => c.SensorId).HasValue)
+                        {
+                            if (listSensors.Find(x => x.Id.Value == reader.GetValue(c => c.SensorId).Value) == null)
                             {
-                                emitting.SensorName = fndSensor.Name;
-                                emitting.SensorTechId = fndSensor.Equipment.TechId;
+                                var querySensor = this._dataLayer.GetBuilder<MDBase.ISensor>()
+                                .From()
+                                .Select(c => c.Id, c => c.Name, c => c.TechId)
+                                .Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SensorId).Value);
+                                queryExecuter.Fetch(querySensor, readerSensor =>
+                                {
+                                    while (readerSensor.Read())
+                                    {
+                                        emitting.SensorName = readerSensor.GetValue(c => c.Name);
+                                        emitting.SensorTechId = readerSensor.GetValue(c => c.TechId);
+                                        listSensors.Add(new Sensor()
+                                        {
+                                            Id = new SensorIdentifier()
+                                            {
+                                                Value = reader.GetValue(c => c.SensorId).Value
+                                            },
+                                            Name = readerSensor.GetValue(c => c.Name),
+                                            Equipment = new SensorEquip()
+                                            {
+                                                TechId = readerSensor.GetValue(c => c.TechId)
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    return true;
+                                });
+                            }
+                            else
+                            {
+                                var fndSensor = listSensors.Find(x => x.Id.Value == reader.GetValue(c => c.SensorId).Value);
+                                if (fndSensor != null)
+                                {
+                                    emitting.SensorName = fndSensor.Name;
+                                    emitting.SensorTechId = fndSensor.Equipment.TechId;
+                                }
                             }
                         }
-                    }
 
-                    var emittingParam = new EmittingParameters();
+                        var emittingParam = new EmittingParameters();
 
-                    if (reader.GetValue(c => c.RollOffFactor).HasValue)
-                        emittingParam.RollOffFactor = reader.GetValue(c => c.RollOffFactor).Value;
-                    if (reader.GetValue(c => c.StandardBW).HasValue)
-                    {
-                        emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
-                    }
+                        if (reader.GetValue(c => c.RollOffFactor).HasValue)
+                            emittingParam.RollOffFactor = reader.GetValue(c => c.RollOffFactor).Value;
+                        if (reader.GetValue(c => c.StandardBW).HasValue)
+                        {
+                            emittingParam.StandardBW = reader.GetValue(c => c.StandardBW).Value;
+                        }
 
 
-                    var levelDist = new LevelsDistribution();
-                    if (reader.GetValue(c => c.LevelsDistributionLvl) != null)
-                    {
-                        levelDist.Levels = reader.GetValue(c => c.LevelsDistributionLvl);
-                    }
-                    if (reader.GetValue(c => c.LevelsDistributionCount) != null)
-                    {
-                        levelDist.Count = reader.GetValue(c => c.LevelsDistributionCount);
-                    }
+                        var levelDist = new LevelsDistribution();
+                        if (reader.GetValue(c => c.LevelsDistributionLvl) != null)
+                        {
+                            levelDist.Levels = reader.GetValue(c => c.LevelsDistributionLvl);
+                        }
+                        if (reader.GetValue(c => c.LevelsDistributionCount) != null)
+                        {
+                            levelDist.Count = reader.GetValue(c => c.LevelsDistributionCount);
+                        }
 
-                    emitting.LevelsDistribution = levelDist;
-                    emitting.EmittingParameters = emittingParam;
+                        emitting.LevelsDistribution = levelDist;
+                        emitting.EmittingParameters = emittingParam;
 
-                    var signalMask = new SignalMask();
-                    if (reader.GetValue(c => c.Loss_dB) != null)
-                    {
-                        signalMask.Loss_dB = reader.GetValue(c => c.Loss_dB);
+                        var signalMask = new SignalMask();
+                        if (reader.GetValue(c => c.Loss_dB) != null)
+                        {
+                            signalMask.Loss_dB = reader.GetValue(c => c.Loss_dB);
+                        }
+                        if (reader.GetValue(c => c.Freq_kHz) != null)
+                        {
+                            signalMask.Freq_kHz = reader.GetValue(c => c.Freq_kHz);
+                        }
+                        emitting.SignalMask = signalMask;
+                        listIdsEmittings.Add(reader.GetValue(c => c.Id));
+                        listEmitings.Add(new KeyValuePair<long, Emitting>(reader.GetValue(c => c.Id), emitting));
                     }
-                    if (reader.GetValue(c => c.Freq_kHz) != null)
-                    {
-                        signalMask.Freq_kHz = reader.GetValue(c => c.Freq_kHz);
-                    }
-                    emitting.SignalMask = signalMask;
-                    listIdsEmittings.Add(reader.GetValue(c => c.Id));
-                    listEmitings.Add(new KeyValuePair<long, Emitting>(reader.GetValue(c => c.Id), emitting));
-                }
-                return true;
-            });
+                    return true;
+                });
+            }
 
             var listIntEmittingWorkTime = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
             for (int i = 0; i < listIntEmittingWorkTime.Count; i++)
             {
-                var queryTime = this._dataLayer.GetBuilder<MD.IWorkTime>()
+                var queryTime = this._dataLayer.GetBuilder<MDBase.IWorkTime>()
                       .From()
                       .Select(c => c.Id, c => c.StartEmitting, c => c.StopEmitting, c => c.HitCount, c => c.PersentAvailability, c => c.EMITTING.Id)
                       .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingWorkTime[i]);
@@ -1696,7 +2143,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             var listIntEmittingSpectrum = BreakDownElemBlocks.BreakDown(listIdsEmittings.ToArray());
             for (int i = 0; i < listIntEmittingSpectrum.Count; i++)
             {
-                var querySpectrum = this._dataLayer.GetBuilder<MD.ISpectrum>()
+                var querySpectrum = this._dataLayer.GetBuilder<MDBase.ISpectrum>()
                        .From()
                        .Select(c => c.Id, c => c.Levels_dBm, c => c.SpectrumStartFreq_MHz, c => c.SpectrumSteps_kHz, c => c.Bandwidth_kHz, c => c.TraceCount, c => c.SignalLevel_dBm, c => c.MarkerIndex, c => c.CorrectnessEstimations, c => c.T1, c => c.T2, c => c.EMITTING.Id, c => c.Contravention)
                        .Where(c => c.EMITTING.Id, ConditionOperator.In, listIntEmittingSpectrum[i]);
@@ -1837,6 +2284,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
 
 
+
         public long[] GetHeadRefSpectrumIdsBySDRN(DataSynchronizationBase dataSynchronization)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetHeadRefSpectrumIdsBySDRN.Text);
@@ -1969,18 +2417,19 @@ namespace Atdi.WcfServices.Sdrn.Server
                 {
                     while (readerRefSpectrumFrom.Read())
                     {
-                      
+
                         var queryStationExtendedFrom = this._dataLayer.GetBuilder<MD.IStationExtended>()
                         .From()
-                        .Select(c => c.Id, c => c.Address, c => c.BandWidth, c => c.DesigEmission, c => c.Latitude, c => c.Longitude, c => c.OwnerName, c => c.PermissionNumber, c => c.PermissionStart, c => c.PermissionStop, c => c.Province, c => c.Standard, c => c.StandardName, c => c.TableId, c => c.TableName)
-                        .Where(c => c.TableId, ConditionOperator.Equal, readerRefSpectrumFrom.GetValue(c=>c.TableId))
+                        .Select(c => c.Id, c => c.Address, c => c.BandWidth, c => c.DesigEmission, c => c.Latitude, c => c.Longitude, c => c.OwnerName, c => c.PermissionNumber, c => c.PermissionStart, c => c.PermissionStop, c => c.Province, c => c.Standard, c => c.StandardName, c => c.TableId, c => c.TableName,
+                         c => c.DocNum, c => c.StationName, c => c.StationChannel, c => c.StationTxFreq, c => c.StationRxFreq, c => c.PermissionCancelDate, c => c.TestStartDate, c => c.TestStopDate, c => c.PermissionGlobalSID, c => c.OKPO, c => c.StatusMeas, c => c.CurentStatusStation)
+                        .Where(c => c.TableId, ConditionOperator.Equal, readerRefSpectrumFrom.GetValue(c => c.TableId))
                         .Where(c => c.TableName, ConditionOperator.Equal, readerRefSpectrumFrom.GetValue(c => c.TableName));
                         queryExecuter.Fetch(queryStationExtendedFrom, readerStationExtendedFrom =>
                         {
                             while (readerStationExtendedFrom.Read())
                             {
                                 var stationExtended = new StationExtended();
-                                stationExtended.Address = readerStationExtendedFrom.GetValue(c=>c.Address);
+                                stationExtended.Address = readerStationExtendedFrom.GetValue(c => c.Address);
                                 stationExtended.BandWidth = readerStationExtendedFrom.GetValue(c => c.BandWidth);
                                 stationExtended.DesigEmission = readerStationExtendedFrom.GetValue(c => c.DesigEmission);
                                 stationExtended.Location = new DataLocation();
@@ -1996,6 +2445,19 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 stationExtended.TableId = readerStationExtendedFrom.GetValue(c => c.TableId);
                                 stationExtended.TableName = readerStationExtendedFrom.GetValue(c => c.TableName);
                                 stationExtended.Id = readerStationExtendedFrom.GetValue(c => c.Id);
+                                stationExtended.DocNum = readerStationExtendedFrom.GetValue(c => c.DocNum);
+                                stationExtended.StationName = readerStationExtendedFrom.GetValue(c => c.StationName);
+                                stationExtended.StationChannel = readerStationExtendedFrom.GetValue(c => c.StationChannel);
+                                stationExtended.StationTxFreq = readerStationExtendedFrom.GetValue(c => c.StationTxFreq);
+                                stationExtended.StationRxFreq = readerStationExtendedFrom.GetValue(c => c.StationRxFreq);
+                                stationExtended.PermissionCancelDate = readerStationExtendedFrom.GetValue(c => c.PermissionCancelDate);
+                                stationExtended.TestStartDate = readerStationExtendedFrom.GetValue(c => c.TestStartDate);
+                                stationExtended.TestStopDate = readerStationExtendedFrom.GetValue(c => c.TestStopDate);
+                                stationExtended.PermissionGlobalSID = readerStationExtendedFrom.GetValue(c => c.PermissionGlobalSID);
+                                stationExtended.OKPO = readerStationExtendedFrom.GetValue(c => c.OKPO);
+                                stationExtended.StatusMeas = readerStationExtendedFrom.GetValue(c => c.StatusMeas);
+                                stationExtended.CurentStatusStation = readerStationExtendedFrom.GetValue(c => c.CurentStatusStation);
+
                                 stationsExtended.Add(stationExtended);
                             }
                             return true;
@@ -2012,7 +2474,9 @@ namespace Atdi.WcfServices.Sdrn.Server
         }
 
 
-        public  void RecoveryDataSynchronizationProcess()
+
+
+        public void RecoveryDataSynchronizationProcess()
         {
             if (RunSynchroProcess.IsAlreadyRunProcess)
             {
@@ -2068,9 +2532,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         // -результат пришел в рамках даты начала отчета, даты конца отчета;
                         // -сенсор где был получен результат совпадает с ID Sensor
                         //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
-
-                        var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
-
+                        var emittings = GetEmittings(refSpectrum, stationsExtended, dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
                         if ((emittings != null) && (emittings.Length > 0))
                         {
                             // Синхронизация излучений с записями группы сенсора
@@ -2131,17 +2593,6 @@ namespace Atdi.WcfServices.Sdrn.Server
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.RunDataSynchronizationProcess.Text);
             RunSynchroProcess.IsAlreadyRunProcess = true;
-            if ((stationsExtended!=null) && (stationsExtended.Length>0))
-            {
-                for (int i=0; i< stationsExtended.Length; i++)
-                {
-                    if ((string.IsNullOrEmpty(stationsExtended[i].TableName)) && (stationsExtended[i].TableId==0))
-                    {
-                        //this._logger.Error(Contexts.ThisComponent, Categories.Processing, Events.OneElementsStationsIsEmpty);
-                        //throw new Exception(Events.OneElementsStationsIsEmpty.ToString());
-                    }
-                }
-            }
 
             var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
             var currentDataSynchronizationProcess = loadSynchroProcessData.CurrentDataSynchronizationProcess();
@@ -2202,7 +2653,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 // -сенсор где был получен результат совпадает с ID Sensor
                                 //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
 
-                                var emittings = GetEmittings(dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
+                                var emittings = GetEmittings(refSpectrum, stationsExtended, dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
                                 if ((emittings != null) && (emittings.Length > 0))
                                 {
                                     // Синхронизация излучений с записями группы сенсора
