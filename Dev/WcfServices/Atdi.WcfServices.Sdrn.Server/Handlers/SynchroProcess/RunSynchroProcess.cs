@@ -1062,18 +1062,32 @@ namespace Atdi.WcfServices.Sdrn.Server
                 long emittingId = emittingsDataToCorrespondList[i].Id.Value;
                 long refSpectId = stationsDataToCorrespondList[i].RefSpectrumId.Value;
                 long dRefSpectId = stationsDataToCorrespondList[i].DataRefSpectrumId.Value;
-                for (int j = 0; j < emittings[emittingId].WorkTimes.Length; j++)
+
+                var foundEmitting = emittings.ToList().Find(x => x.Id == emittingId);
+                if (foundEmitting != null)
                 {
-                    if ((refSpectrums[refSpectId].DataRefSpectrum[dRefSpectId].DateMeas < emittings[emittingId].WorkTimes[j].StartEmitting) 
-                        || (refSpectrums[refSpectId].DataRefSpectrum[dRefSpectId].DateMeas > emittings[emittingId].WorkTimes[j].StopEmitting))
+                    var foundRefSpectrum = refSpectrums.ToList().Find(x => x.Id == refSpectId);
+                    if (foundRefSpectrum != null)
                     {
-                        stationsDataToCorrespondList.RemoveRange(i, 1);
-                        emittingsDataToCorrespondList.RemoveRange(i, 1);
-                        numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
-                        i--;
-                        break;
+                        var foundDRefSpectrum = foundRefSpectrum.DataRefSpectrum.ToList().Find(x => x.Id == dRefSpectId);
+                        if (foundDRefSpectrum != null)
+                        {
+                            for (int j = 0; j < foundEmitting.WorkTimes.Length; j++)
+                            {
+                                if ((foundDRefSpectrum.DateMeas < foundEmitting.WorkTimes[j].StartEmitting.Date)
+                                    || (foundDRefSpectrum.DateMeas > foundEmitting.WorkTimes[j].StopEmitting.Date))
+                                {
+                                    stationsDataToCorrespondList.RemoveRange(i, 1);
+                                    emittingsDataToCorrespondList.RemoveRange(i, 1);
+                                    numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
+                                    i--;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
+                
             }
 
             //Convert data to correspond into array
@@ -1092,30 +1106,45 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 FillProtocolsDataWithEmittings(refSpectrums, stationsDataToCorrespond, emittingsDataToCorrespond, emittings, ref lstProtocols);
 
+                // ---- Удаление использованных станций
+                for (int i = 0; i < initialRefSpectrums.Count; i++)
+                {
+                    var listDataSpectrum = initialRefSpectrums[i].DataRefSpectrum.ToList();
+                    for (int j = 0; j < numOfIterations; j++)
+                    {
+                        listDataSpectrum.RemoveAll(x => x.Id == stationsDataToCorrespondList[i].DataRefSpectrumId);
+                    }
+                    initialRefSpectrums[i].DataRefSpectrum = listDataSpectrum.ToArray();
+                }
+                    
+
+                // ---- Удаление использованных излучений (Поиск соответствия по спектру)
                 for (int i = 0; i < numOfIterations; i++)
                 {
-                    // ---- Удаление использованных станций
-                    initialRefSpectrums.Remove(initialRefSpectrums.Single(x => x.Id == stationsDataToCorrespondList[i].RefSpectrumId));
-                    // ---- Удаление использованных излучений (Поиск соответствия по спектру)
+                    
                     long emittingId = emittingsDataToCorrespondList[i].Id.Value;
                     for (int j = 0; j < initialEmittings.Count; j++)
                     {
-                        
-                        if (initialEmittings[j].Spectrum.Levels_dBm.Length == emittings[emittingId].Spectrum.Levels_dBm.Length)
+                        var foundEmitting = emittings.ToList().Find(x => x.Id == emittingId);
+                        if (foundEmitting != null)
                         {
-                            float levelsDifference = 0;
-                            for (int k = 0; k < initialEmittings[j].Spectrum.Levels_dBm.Length; k++)
+                            if (initialEmittings[j].Spectrum.Levels_dBm.Length == foundEmitting.Spectrum.Levels_dBm.Length)
                             {
-                                levelsDifference += initialEmittings[j].Spectrum.Levels_dBm[k] - emittings[emittingId].Spectrum.Levels_dBm[k];
-                                if (levelsDifference != 0) break;
-                            }
-                            if (levelsDifference < 0.000001)
-                            {
-                                initialEmittings.RemoveRange(j, 1);
-                                j--;
-                                break;
+                                float levelsDifference = 0;
+                                for (int k = 0; k < initialEmittings[j].Spectrum.Levels_dBm.Length; k++)
+                                {
+                                    levelsDifference += initialEmittings[j].Spectrum.Levels_dBm[k] - foundEmitting.Spectrum.Levels_dBm[k];
+                                    if (levelsDifference != 0) break;
+                                }
+                                if (levelsDifference < 0.000001)
+                                {
+                                    initialEmittings.RemoveRange(j, 1);
+                                    j--;
+                                    break;
+                                }
                             }
                         }
+                        
                     }
                 }
                 // ---- рекурсивный вызов функции длл невалидных соответствий (валидные измерения и излучения убраны)
