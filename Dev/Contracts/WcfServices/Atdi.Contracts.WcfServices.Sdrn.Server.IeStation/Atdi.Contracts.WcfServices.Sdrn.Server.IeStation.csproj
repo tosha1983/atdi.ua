@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CD78D548-DA04-4CB0-9931-2164D9637392}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.Contracts.WcfServices.Sdrn.Server.IeStation</RootNamespace>
+    <AssemblyName>Atdi.Contracts.WcfServices.Sdrn.Server.IeStation</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ISdrnsControllerIeStation.cs" />
+    <Compile Include="Models\ImportData\Area\Area.cs" />
+    <Compile Include="Models\ImportData\Area\DataLocation.cs" />
+    <Compile Include="Models\ImportData\Enums\Status.cs" />
+    <Compile Include="Models\ImportData\OptimizeProtocol\DetailProtocols.cs" />
+    <Compile Include="Models\ImportData\OptimizeProtocol\HeadProtocols.cs" />
+    <Compile Include="Models\ImportData\RefSpectrum\DataRefSpectrum.cs" />
+    <Compile Include="Models\ImportData\RefSpectrum\GroupSensors.cs" />
+    <Compile Include="Models\ImportData\RefSpectrum\Protocols.cs" />
+    <Compile Include="Models\ImportData\RefSpectrum\ProtocolsWithEmittings.cs" />
+    <Compile Include="Models\ImportData\RefSpectrum\RadioControlParams.cs" />
+    <Compile Include="Models\ImportData\RefSpectrum\RefSpectrum.cs" />
+    <Compile Include="Models\ImportData\Sensors\AntennaPattern.cs" />
+    <Compile Include="Models\ImportData\Sensors\Sensor.cs" />
+    <Compile Include="Models\ImportData\Sensors\SensorAntenna.cs" />
+    <Compile Include="Models\ImportData\Sensors\SensorEquip.cs" />
+    <Compile Include="Models\ImportData\Sensors\SensorEquipSensitivity.cs" />
+    <Compile Include="Models\ImportData\Sensors\SensorIdentifier.cs" />
+    <Compile Include="Models\ImportData\Sensors\SensorLocation.cs" />
+    <Compile Include="Models\ImportData\Sensors\SensorPoligonPoint.cs" />
+    <Compile Include="Models\ImportData\Signaling\Emitting.cs" />
+    <Compile Include="Models\ImportData\Signaling\EmittingParameters.cs" />
+    <Compile Include="Models\ImportData\Signaling\LevelsDistribution.cs" />
+    <Compile Include="Models\ImportData\Signaling\ReferenceLevels.cs" />
+    <Compile Include="Models\ImportData\Signaling\SignalMask.cs" />
+    <Compile Include="Models\ImportData\Signaling\Spectrum.cs" />
+    <Compile Include="Models\ImportData\Signaling\WorkTime.cs" />
+    <Compile Include="Models\ImportData\Stations\StationExtended.cs" />
+    <Compile Include="Models\ImportData\SynchroProcess\DataSynchronizationBase.cs" />
+    <Compile Include="Models\ImportData\SynchroProcess\DataSynchronizationProcess.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
+      <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
+      <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -155,6 +155,32 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 // Create vertical gridlines:
 
                 var stepX = (float)(_option.XTick / _option.XInnerTickCount);
+
+                List<float> XVal = new List<float>();
+
+                foreach (var points in _option.PointsArray)
+                {
+                    var line = new List<PointF>();
+                    for (int i = 0; i < points.Points.Length; i++)
+                    {
+                        var point = NormalizePoint(points.Points[i], Width, Height, _option);
+                        XVal.Add(points.Points[i].X);
+                    }
+
+                }
+
+                var minX = XVal.Min();
+                var maxX = XVal.Max();
+
+                var deltaXMin = minX - _option.XMin;
+                var deltaXMax = _option.XMax- maxX;
+                var minVal = Math.Min(deltaXMin, deltaXMax);
+                if (stepX > minVal)
+                {
+                    _option.XMax = _option.XMax + 3 *stepX;
+                }
+                
+                
                 for (dx = _option.XMin + stepX; dx < _option.XMax; dx += stepX)
                 {
                     var X1 = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option).X;
@@ -224,15 +250,15 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
                     if (dx == _option.XMin)
                     {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 5, pt.Y));
+                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y+5));
                     }
                     else if (LessOrEqual((dx + _option.XTick), _option.XMax))
                     {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt, pt.Y));
+                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5));
                     }
                     else
                     {
-                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt + 5, pt.Y));
+                        gr.DrawString(dx.ToString(), stringFont, Brushes.Black, new PointF(pt.X + cnt - 15, pt.Y + 5));
                     }
 
                 }
@@ -325,7 +351,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
                 drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
                 gr.DrawString(_option.XLabel, stringFont, Brushes.Black, new PointF((float)Width / 2, Height + 15));
-                gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(2, (float)Height / 2), drawFormat);
+                gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(2, ((float)Height / 2)-10), drawFormat);
             }
         }
 

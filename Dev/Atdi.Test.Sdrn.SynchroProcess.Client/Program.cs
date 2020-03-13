@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Contracts.WcfServices.Sdrn.Server;
+using Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using Newtonsoft.Json;
 using System.ServiceModel;
 using System.Threading;
@@ -21,7 +21,8 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             var sdrnServer = GetServicByEndpoint("SdrnServerBasicHttpEndpoint");
 
             var proc = sdrnServer.GetAllDataSynchronizationProcess();
-            var proc2 = sdrnServer.GetProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+            var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
             //bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
 
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();
@@ -44,7 +45,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             refSpectrum.DataRefSpectrum[0].IdNum = 1;
             refSpectrum.DataRefSpectrum[0].Level_dBm = 5;
             refSpectrum.DataRefSpectrum[0].Percent = 10;
-            refSpectrum.DataRefSpectrum[0].SensorId = 1;
+            refSpectrum.DataRefSpectrum[0].SensorId = 13;
             refSpectrum.DataRefSpectrum[0].TableId = 22345;
             refSpectrum.DataRefSpectrum[0].TableName = "MOB_STATION";
 
@@ -57,7 +58,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             refSpectrum.DataRefSpectrum[1].IdNum = 2;
             refSpectrum.DataRefSpectrum[1].Level_dBm = 3.5;
             refSpectrum.DataRefSpectrum[1].Percent = 10.34;
-            refSpectrum.DataRefSpectrum[1].SensorId = 1;
+            refSpectrum.DataRefSpectrum[1].SensorId = 13;
             refSpectrum.DataRefSpectrum[1].TableId = 22346;
             refSpectrum.DataRefSpectrum[1].TableName = "MOB_STATION";
 
@@ -120,16 +121,16 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             stationExtended2.TableId = 22345;
             stationExtended2.TableName = "MOB_STATION";
 
-            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { id.Value }, new long[] { 1 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
+            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { id.Value }, new long[] { 13 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
 
 
             Console.WriteLine($"Test was finished. Press any key to exit.");
             Console.ReadLine();
         }
 
-        static ISdrnsController GetServicByEndpoint(string endpointName)
+        static ISdrnsControllerIeStation GetServicByEndpoint(string endpointName)
         {
-            var f = new ChannelFactory<ISdrnsController>(endpointName);
+            var f = new ChannelFactory<ISdrnsControllerIeStation>(endpointName);
             return f.CreateChannel();
         }
     }

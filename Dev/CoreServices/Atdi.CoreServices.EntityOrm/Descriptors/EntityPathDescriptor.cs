@@ -75,12 +75,14 @@ namespace Atdi.CoreServices.EntityOrm
                 folders = ((string.IsNullOrEmpty(folders)) ? "." : "") + path.Substring(0, path.Length - 1 - entityName.Length);
             }
 
-            return new EntityPathDescriptor
+            var result = new EntityPathDescriptor
             {
                 QualifiedName = ormConfig.Namespace + ((!string.IsNullOrEmpty(folders)) ? $".{folders}" : "") + "." + entityName,
                 Name = entityName,
                 FolderPath = folders
             };
+            result.QualifiedName = result.QualifiedName.Replace("..",".");
+            return result;
         }
     }
 }

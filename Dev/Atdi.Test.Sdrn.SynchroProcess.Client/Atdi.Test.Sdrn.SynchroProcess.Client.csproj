@@ -59,6 +59,10 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation.csproj">
+      <Project>{cd78d548-da04-4cb0-9931-2164d9637392}</Project>
+      <Name>Atdi.Contracts.WcfServices.Sdrn.Server.IeStation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server\Atdi.Contracts.WcfServices.Sdrn.Server.csproj">
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
