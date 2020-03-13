@@ -35,14 +35,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             this.adapterConfig = adapterConfig;
             this.timeService = timeService;
             lpc = new LocalParametersConverter();
-
-            LevelArr = new float[SweepPoints];
-            //levelArrTemp = new float[SweepPoints];
-            for (int i = 0; i < SweepPoints; i++)
-            {
-                LevelArr[i] = -1000;
-                //levelArrTemp[i] = -1000;
-            }
         }
 
 
@@ -79,15 +71,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                         }
                         mainConfig = tac.Main;
                     }
+
                     //SetTransducer(mainConfig);
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
 
                     IResultPoolDescriptor<COMR.MesureTraceResult>[] rpd = ValidateAdapterTracePoolMainConfig(mainConfig.AdapterTraceResultPools, fileName);
 
+                    LevelArr = new float[tracePointsMaxPool];
+                    levelArrTemp = new float[tracePointsMaxPool];
+                    LevelArrLength = tracePointsMaxPool;
+                    for (int i = 0; i < LevelArr.Length; i++)
+                    {
+                        LevelArr[i] = -1000;
+                        levelArrTemp[i] = -1000;
+                    }
+
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
+                    host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
 
                 }
-
+                else
+                {
+                    throw new Exception("Invalid initialize/connect adapter In connect");
+                }
             }
             #region Exception
             catch (Exception exp)
@@ -134,353 +140,170 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 decimal needRBW = 0, needVBW = 0;
                 int needSweepPoints = 0;
                 //защищаемся как можем
-                if (command.Parameter.TracePoint == 0 || command.Parameter.RBW_Hz == 0 || command.Parameter.VBW_Hz == 0)
+                if (command.Parameter.TracePoint == 0)
                 {
-                    //алахадбар
+                    throw new Exception("TracePoint must be set greater than zero.");
                 }
                 else
                 {
-                    //кол-во точек есть, посчитать по RBW
-                    if (command.Parameter.TracePoint == -1 && command.Parameter.RBW_Hz > 0)
+                    if (command.Parameter.RBW_Hz == 0)
                     {
-                        needRBW = (decimal)command.Parameter.RBW_Hz;
-                        if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
-                        {
-                            needVBW = needRBW;
-                        }
-                        else
-                        {
-                            needVBW = (decimal)command.Parameter.VBW_Hz;
-                        }
-                        needSweepPoints = (int)((command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / needRBW);
-                    }
-                    //сколько точек понятно почему и посчитать RBW
-                    else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz == -1)
-                    {
-                        needSweepPoints = command.Parameter.TracePoint;
-                        needRBW = (command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / (needSweepPoints - 1);
-                        if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
-                        {
-                            needVBW = needRBW;
-                        }
-                        else
-                        {
-                            needVBW = (decimal)command.Parameter.VBW_Hz;
-                        }
-                    }
-                    //сколько точек понятно почему и посчитать RBW
-                    else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz > 0)
-                    {
-                        needSweepPoints = command.Parameter.TracePoint;
-                        needRBW = (decimal)command.Parameter.RBW_Hz;
-                        if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
-                        {
-                            needVBW = needRBW;
-                        }
-                        else
-                        {
-                            needVBW = (decimal)command.Parameter.VBW_Hz;
-                        }
-                    }
-                }
-                int stepsSweepPoints = 0, needActualSweepPoints = 0;
-                if (needSweepPoints <= sweepPointsMax)//все норм 
-                {
-                    iWantMoreSweepPoints = false;//спихнем все на прибор
-                    ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, ref frequencyChanged);
-                    ValidateAndSetSweepPoints(needSweepPoints);
-                    ValidateAndSetVBW(needVBW);
-                    ValidateAndSetRBW(needRBW);
-                }
-                else//странно но так надо
-                {
-                    iWantMoreSweepPoints = true;//мучаемся сами
-                    //разобьем на столько шагов:
-                    stepsSweepPoints = (int)Math.Ceiling((double)needSweepPoints / (double)sweepPointsMax);
-                    //найдем ближайшее большее количевство точек на которые можно разбить
-
-                    int delta = int.MaxValue;
-                    int index = 0;
-                    for (int i = 0; i < sweepPointArr.Length; i++)
-                    {
-                        if (Math.Abs(needSweepPoints - sweepPointArr[i] * stepsSweepPoints) < delta)
-                        {
-                            delta = Math.Abs(needSweepPoints - sweepPointArr[i] * stepsSweepPoints);
-                            index = i;
-                        }
-                    }
-
-                    if (index < sweepPointArr.Length - 2 && sweepPointArr[index] * stepsSweepPoints < needSweepPoints)
-                    {
-                        needActualSweepPoints = sweepPointArr[index + 1];
+                        throw new Exception("RBW must be set greater than zero.");
                     }
                     else
-                    {
-                        needActualSweepPoints = sweepPointArr[index];
-                    }
-                    //знаем все, как распределить и т.д., осталось запустить и собрать
-                }
-
-                #region old 
-                //ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, ref frequencyChanged);
-                ////кол-во точек посчитать по RBW
-                //if (command.Parameter.TracePoint == -1 && command.Parameter.RBW_Hz > 0)
-                //{
-                //    //RBW ближайшее меньшее
-                //    ValidateAndSetRBW((decimal)command.Parameter.RBW_Hz);
-
-                //    if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
-                //    {
-                //        ValidateAndSetVBW(RBW);
-                //    }
-                //    else
-                //    {
-                //        ValidateAndSetVBW((decimal)command.Parameter.VBW_Hz);
-                //    }
-
-                //    int needsweeppints = (int)(FreqSpan / RBW);
-                //    ValidateAndSetSweepPoints(needsweeppints);
-                //}
-                ////сколько точек понятно по нему и посчитать RBW
-                //else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz == -1)
-                //{
-                //    ValidateAndSetSweepPoints(command.Parameter.TracePoint);
-
-                //    ValidateAndSetRBW(FreqSpan / (SweepPoints - 1));
-
-                //    if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
-                //    {
-                //        ValidateAndSetVBW(RBW);
-                //    }
-                //    else
-                //    {
-                //        ValidateAndSetVBW((decimal)command.Parameter.VBW_Hz);
-                //    }
-                //}
-                ////сколько точек понятно по нему и посчитать RBW
-                //else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz > 0)
-                //{
-                //    ValidateAndSetSweepPoints(command.Parameter.TracePoint);
-
-                //    ValidateAndSetRBW((decimal)command.Parameter.RBW_Hz);
-
-                //    if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
-                //    {
-                //        ValidateAndSetVBW(RBW);
-                //    }
-                //    else
-                //    {
-                //        ValidateAndSetVBW((decimal)command.Parameter.VBW_Hz);
-                //    }
-                //}
-                #endregion Old
-                ValidateAndSetRefLevel(command.Parameter.RefLevel_dBm);
-
-                ValidateAndSetPreAmp(command.Parameter.PreAmp_dB);
-
-                ValidateAndSetATT(command.Parameter.Att_dB);
-
-                ValidateAndSetDetectorType(command.Parameter.DetectorType);
-
-
-
-
-                ValidateAndSetSweepTime((decimal)command.Parameter.SweepTime_s);
-
-                if (iWantMoreSweepPoints)
-                {
-                    ValidateAndSetTraceTypeWithAggregation(command.Parameter.TraceType);
-                    ValidateAndSetLevelUnitWithAggregation(command.Parameter.LevelUnit, traceTypeResult);
-                    ValidateAndSetVBW(needVBW);
-                    ValidateAndSetRBW(needRBW);
-                    (decimal freq1, decimal freq2) = ValidateFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz);
-                    GetAndPushTraceResultsWithAggregation(command, context, freq1, freq2, stepsSweepPoints, needActualSweepPoints);
-
-
-
-                }
-                else
-                {
-
-                    //все спехнем на прибор
-                    ValidateAndSetLevelUnit(command.Parameter.LevelUnit);
-                    ValidateAndSetTraceType(command.Parameter.TraceType, frequencyChanged);
-                    GetFreqArr();//узнаем что там с сеткой частот
-
-                    //Устанавливаем сколько трейсов хотим
-                    if (command.Parameter.TraceCount > 0)
-                    {
-                        traceCountToMeas = (ulong)command.Parameter.TraceCount;
-                        traceCount = 0;
-                        if (command.Parameter.TraceType == COMP.TraceType.ClearWhrite)
+                    { 
+                        if (command.Parameter.VBW_Hz == 0)
                         {
-                            WriteString(":SENSe:AVERage:COUNt 1");
+                            throw new Exception("VBW must be set greater than zero.");
                         }
                         else
                         {
-                            WriteString(":SENSe:AVERage:COUNt " + traceCountToMeas.ToString());
+                            #region
+                            //кол-во точек есть, посчитать по RBW
+                            if (command.Parameter.TracePoint < 0 && command.Parameter.RBW_Hz > 0)
+                            {
+                                needRBW = (decimal)command.Parameter.RBW_Hz;
+                                if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
+                                {
+                                    needVBW = needRBW;
+                                }
+                                else
+                                {
+                                    needVBW = (decimal)command.Parameter.VBW_Hz;
+                                }
+                                needSweepPoints = (int)((command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / needRBW);
+                            }
+                            //сколько точек понятно почему и посчитать RBW
+                            else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz == -1)
+                            {
+                                needSweepPoints = command.Parameter.TracePoint;
+                                needRBW = (command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / (needSweepPoints - 1);
+                                if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
+                                {
+                                    needVBW = needRBW;
+                                }
+                                else
+                                {
+                                    needVBW = (decimal)command.Parameter.VBW_Hz;
+                                }
+                            }
+                            //сколько точек понятно почему и чему равно RBW
+                            else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz > 0)
+                            {
+                                needSweepPoints = command.Parameter.TracePoint;
+                                needRBW = (decimal)command.Parameter.RBW_Hz;
+                                if (command.Parameter.VBW_Hz < 0) //Если авто то VBW = RBW
+                                {
+                                    needVBW = needRBW;
+                                }
+                                else
+                                {
+                                    needVBW = (decimal)command.Parameter.VBW_Hz;
+                                }
+                            }
+
+                            #region не повлияет на дальнейшие маневры
+                            ValidateAndSetRefLevel(command.Parameter.RefLevel_dBm);
+                            ValidateAndSetPreAmp(command.Parameter.PreAmp_dB);
+                            ValidateAndSetATT(command.Parameter.Att_dB);
+                            ValidateAndSetDetectorType(command.Parameter.DetectorType);
+
+                            #endregion
+                            int stepsSweepPoints = 0, needActualSweepPoints = 0;
+                            if (needSweepPoints <= sweepPointsMax)//все норм 
+                            {
+                                ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, ref frequencyChanged);
+                                ValidateAndSetSweepPoints(needSweepPoints);
+                                ValidateAndSetVBW(needVBW);
+                                ValidateAndSetRBW(needRBW);
+
+                                //все спехнем на прибор
+                                ValidateAndSetLevelUnit(command.Parameter.LevelUnit);
+                                ValidateAndSetTraceType(command.Parameter.TraceType, frequencyChanged);
+                                ValidateAndSetSweepTime((decimal)command.Parameter.SweepTime_s);
+                                GetFreqArr();//узнаем что там с сеткой частот
+
+                                //Устанавливаем сколько трейсов хотим
+                                if (command.Parameter.TraceCount > 0)
+                                {
+                                    traceCountToMeas = (ulong)command.Parameter.TraceCount;
+                                    traceCount = 0;
+                                    if (command.Parameter.TraceType == COMP.TraceType.ClearWhrite)
+                                    {
+                                        WriteString(":SENSe:AVERage:COUNt 1");
+                                    }
+                                    else
+                                    {
+                                        WriteString(":SENSe:AVERage:COUNt " + traceCountToMeas.ToString());
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("TraceCount must be set greater than zero.");
+                                }
+
+                                GetAndPushTraceResults(command, context);
+                            }
+                            else//странно но так надо
+                            {
+                                //разобьем на столько шагов:
+                                stepsSweepPoints = (int)Math.Ceiling((double)needSweepPoints / (double)sweepPointsMax);
+                                //найдем ближайшее большее количевство точек на которые можно разбить
+
+                                int delta = int.MaxValue;
+                                int index = 0;
+                                for (int i = 0; i < sweepPointArr.Length; i++)
+                                {
+                                    if (Math.Abs(needSweepPoints - sweepPointArr[i] * stepsSweepPoints) < delta)
+                                    {
+                                        delta = Math.Abs(needSweepPoints - sweepPointArr[i] * stepsSweepPoints);
+                                        index = i;
+                                    }
+                                }
+
+                                if (index < sweepPointArr.Length - 2 && sweepPointArr[index] * stepsSweepPoints < needSweepPoints)
+                                {
+                                    needActualSweepPoints = sweepPointArr[index + 1];
+                                }
+                                else
+                                {
+                                    needActualSweepPoints = sweepPointArr[index];
+                                }
+                                SweepPointsWithAggregation = needActualSweepPoints * stepsSweepPoints;
+                                //знаем все, как распределить и т.д., осталось запустить и собрать
+
+
+                                ValidateAndSetTraceTypeWithAggregation(command.Parameter.TraceType, command.Parameter.TraceCount);
+                                ValidateAndSetLevelUnitWithAggregation(command.Parameter.LevelUnit, traceTypeResult);
+                                ValidateAndSetVBW(needVBW);
+                                ValidateAndSetRBW(needRBW);
+                                ValidateAndSetSweepPoints(needActualSweepPoints);
+                                ValidateAndSetSweepTime((decimal)command.Parameter.SweepTime_s);
+                                if (command.Parameter.TraceCount > 0)
+                                {
+                                    traceCountToMeas = (ulong)command.Parameter.TraceCount;
+                                    traceCount = 0;
+                                    WriteString(":SENSe:AVERage:COUNt 1");
+                                }
+                                else
+                                {
+                                    throw new Exception("TraceCount must be set greater than zero.");
+                                }
+                                (decimal freq1, decimal freq2) = ValidateFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz);
+                                GetFreqArrWithAggregation(freq1, freq2, SweepPointsWithAggregation);
+                                traceReset = true;///сбросим предыдущие результаты
+                                GetAndPushTraceResultsWithAggregation(command, context, freq1, freq2, stepsSweepPoints, needActualSweepPoints);
+                            }
+                            context.Unlock();
+                            // что то делаем еще 
+                            // подтверждаем окончание выполнения комманды 
+                            // важно: всн ранее устапнволеные в контексте обработки текущей команыд блокировки снимаются автоматически
+                            context.Finish();
+                            // дальше кода быть не должно, освобождаем поток
+                            #endregion
                         }
                     }
-                    else
-                    {
-                        throw new Exception("TraceCount must be set greater than zero.");
-                    }
-
-                    GetAndPushTraceResults(command, context);
                 }
-
-
-
-
-
-
-
-
-                #region 
-                //Меряем
-                ////Если TraceType ClearWrite то пушаем каждый результат                    
-                //bool newres = false;
-
-                //if (trace1Type.Id == (int)EN.TraceType.ClearWrite)
-                //{
-                //    for (ulong i = 0; i < traceCountToMeas; i++)
-                //    {
-                //        newres = GetTrace();
-                //        if (newres)
-                //        {
-                //            if (i > 0)// +1 маленький костыль для предотвращения кривого трейса
-                //            {
-                //                // пушаем результат
-                //                var result = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Next);
-                //                traceCount++;
-                //                if (traceCountToMeas == traceCount)
-                //                {
-                //                    result = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Final);
-                //                }
-                //                result.LevelMaxIndex = LevelArr.Length;
-                //                result.FrequencyStart_Hz = resFreqStart;
-                //                result.FrequencyStep_Hz = resFreqStep;
-
-                //                result.Att_dB = (int)AttLevelSpec;
-                //                result.RefLevel_dBm = (int)RefLevelSpec;
-                //                result.PreAmp_dB = preAmpSpec ? 1 : 0;
-                //                result.RBW_Hz = (double)RBW;
-                //                result.VBW_Hz = (double)VBW;
-                //                result.Level = new float[FreqArr.Length];
-                //                for (int j = 0; j < FreqArr.Length; j++)
-                //                {
-                //                    result.Level[j] = LevelArr[j];
-                //                }
-                //                result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                //                                                                                  //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                //                if (PowerRegister != EN.PowerRegister.Normal)
-                //                {
-                //                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                //                }
-                //                context.PushResult(result);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            i--;
-                //        }
-                //        // иногда нужно проверять токен окончания работы комманды
-                //        if (context.Token.IsCancellationRequested)
-                //        {
-                //            // все нужно остановиться
-
-                //            // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-                //            var result2 = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Ragged);
-
-                //            context.PushResult(result2);
-
-
-                //            // подтверждаем факт обработки отмены
-                //            context.Cancel();
-                //            // освобождаем поток 
-                //            return;
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    bool _RFOverload = false;
-                //    for (ulong i = 0; i < traceCountToMeas; i++)
-                //    {
-                //        if (GetNumberOfSweeps())
-                //        {
-                //            newres = GetTrace();
-                //            if (newres)
-                //            {
-                //                // пушаем результат
-                //                var result = new COMR.MesureTraceResult(0, CommandResultStatus.Final);
-
-                //                result.LevelMaxIndex = LevelArr.Length;
-                //                result.FrequencyStart_Hz = resFreqStart;
-                //                result.FrequencyStep_Hz = resFreqStep;
-
-                //                result.Att_dB = (int)AttLevelSpec;
-                //                result.RefLevel_dBm = (int)RefLevelSpec;
-                //                result.PreAmp_dB = preAmpSpec ? 1 : 0;
-                //                result.RBW_Hz = (double)RBW;
-                //                result.VBW_Hz = (double)VBW;
-                //                result.Level = new float[FreqArr.Length];
-                //                for (int j = 0; j < FreqArr.Length; j++)
-                //                {
-                //                    result.Level[j] = LevelArr[j];
-                //                }
-                //                result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                //                                                                                  //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                //                if (_RFOverload)
-                //                {
-                //                    result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                //                }
-                //                else
-                //                {
-                //                    result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                //                }
-                //                context.PushResult(result);
-                //                break;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            i--;
-                //        }
-                //        if (PowerRegister != EN.PowerRegister.Normal)
-                //        {
-                //            _RFOverload = true;
-                //        }
-                //        // иногда нужно проверять токен окончания работы комманды
-                //        if (context.Token.IsCancellationRequested)
-                //        {
-                //            // все нужно остановиться
-
-                //            // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
-                //            var result2 = new COMR.MesureTraceResult(traceCount, CommandResultStatus.Ragged);
-
-                //            context.PushResult(result2);
-
-
-                //            // подтверждаем факт обработки отмены
-                //            context.Cancel();
-                //            // освобождаем поток 
-                //            return;
-                //        }
-                //    }
-                //}
-                //Если TraceType Average/MinHold/MaxHold то делаем измерений сколько сказали и пушаем только готовый результат
-                #endregion
-
-                context.Unlock();
-
-                // что то делаем еще 
-
-
-                // подтверждаем окончание выполнения комманды 
-                // важно: всн ранее устапнволеные в контексте обработки текущей команыд блокировки снимаются автоматически
-                context.Finish();
-                // дальше кода быть не должно, освобождаем поток
             }
             catch (Ivi.Visa.VisaException v_exp)
             {
@@ -502,7 +325,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             }
 
         }
-        long t3;
         public void MesureIQStreamCommandHandler(COM.MesureIQStreamCommand command, IExecutionContext context)
         {
             try
@@ -560,6 +382,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
         #region Param
         private ResourceManager rm = null;
+        private int timeOutRMinTicks = 20000000;
         private readonly long uTCOffset = 621355968000000000;
         private readonly string decimalSeparator = System.Globalization.NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator;
         private TcpipSession session = null;
@@ -684,17 +507,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         #endregion RBW / VBW
 
         #region Sweep
-        private bool iWantMoreSweepPoints = false;
+        private bool getSweeptime = false;
 
         private const decimal SWTMin = 0.000075m;
         private const decimal SWTMax = 8000;
 
         public decimal SweepTime;
+        public int SweepDuration;
 
         public bool AutoSweepTime;
 
-
-
+        public int SweepPointsWithAggregation = 1001;
         public int SweepPoints = 1001;
         private const int sweepPointsMax = 100001;
         private int sweepPointsIndex
@@ -817,7 +640,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
         #region Trace Data
         private int tracePointsMaxPool = 0;
-        private const int tracePointsMax = 100_001;
+        private const int tracePointsMax = 500_005;
 
         private double resFreqStart = 10000;
         private double resFreqStep = 10000;
@@ -826,9 +649,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         private ulong traceCount = 1;
         private ulong numberOfSweeps = 0;
 
-        //public double[] FreqArr;
+        private byte[] byteArray = new byte[400004];
         public float[] LevelArr;
-        private float[] levelArrTemp;//нужед ля сравнения пришедших трейсов
+        public int LevelArrLength = 0;
+
+        private float[] levelArrTemp;
 
         private ParamWithId trace1Type { get; set; } = new ParamWithId { Id = 0, Parameter = "BLAN" };
         private EN.TraceType traceTypeResult = EN.TraceType.ClearWrite;
@@ -998,7 +823,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 rpd = new IResultPoolDescriptor<COMR.MesureTraceResult>[adapterTraceResultPools.Length];
                 for (int i = 0; i < adapterTraceResultPools.Length; i++)
                 {
-
                     int count = adapterTraceResultPools[i].Size;
                     rpd[i] = new ResultPoolDescriptor<COMR.MesureTraceResult>()
                     {
@@ -1424,7 +1248,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 WriteString(":DISP:TRAC1:MODE " + trace1Type.Parameter);
             }
         }
-        private void ValidateAndSetTraceTypeWithAggregation(COMP.TraceType traceType)
+        private void ValidateAndSetTraceTypeWithAggregation(COMP.TraceType traceType, int taceCount)
         {
             ParamWithId res = new ParamWithId { Id = 0, Parameter = "BLAN" };
             traceTypeResult = EN.TraceType.ClearWrite;
@@ -1458,6 +1282,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     traceTypeResult = EN.TraceType.ClearWrite;
                 }
             }
+            if (traceTypeResult == EN.TraceType.Average)
+            {
+                traceAveraged.AveragingCount = taceCount;
+            }
             if (res.Parameter == "BLAN")
             {
                 throw new Exception("The TraceDetector must be set to the available instrument range.");
@@ -1466,7 +1294,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             {
                 trace1Type = res;
                 WriteString(":DISP:TRAC1:MODE " + trace1Type.Parameter);
-            }            
+            }
         }
 
         private void ValidateAndSetLevelUnit(COMP.LevelUnit levelUnit)
@@ -1622,67 +1450,83 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         }
         #endregion ValidateAndSet
 
-        long t = 0;
-        bool getSweeptime = false;
+
+
         private void GetAndPushTraceResults(COM.MesureTraceCommand command, IExecutionContext context)
         {
             getSweeptime = true;
             string poolKeyName = "";
             bool poolKeyFind = false;
-            t = timeService.TimeStamp.Ticks;
+            SweepDuration = (int)(QueryDecimal("SWE:DUR?") * 10000000);
+            long time = timeService.TimeStamp.Ticks;
+            bool setInit = false;
+            long count = (long)traceCountToMeas;
             //Если TraceType ClearWrite то пушаем каждый результат
             if (trace1Type.Id == (int)EN.TraceType.ClearWrite)
             {
-                for (ulong i = 0; i < traceCountToMeas; i++)
+                for (long i = 0; i < count; i++)
                 {
-                    MeasurementInitialization();
-                    if (GetTrace())
+                    if (!setInit)
                     {
-                        // пушаем результат
-                        traceCount++;
+                        WriteString(":INIT;*WAI");
+                        time = timeService.TimeStamp.Ticks;
+                        setInit = true;
+                    }
+                    if (time + SweepDuration - 1000000 < timeService.TimeStamp.Ticks + timeOutRMinTicks)
+                    {
+                        if (GetTrace())
+                        {
+                            // пушаем результат
+                            traceCount++;
 
-                        if (!poolKeyFind)
-                        {
-                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
-                        }
-                        COMR.MesureTraceResult result;
-                        if (traceCountToMeas == traceCount)
-                        {
-                            result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Final);
+                            if (!poolKeyFind)
+                            {
+                                FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                            }
+                            COMR.MesureTraceResult result;
+                            if (traceCountToMeas == traceCount)
+                            {
+                                result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Final);
+                            }
+                            else
+                            {
+                                result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Next);
+                            }
+
+                            for (int j = 0; j < SweepPoints; j++)
+                            {
+                                result.Level[j] = LevelArr[j];
+                            }
+                            result.LevelMaxIndex = SweepPoints;
+                            result.FrequencyStart_Hz = resFreqStart;
+                            result.FrequencyStep_Hz = resFreqStep;
+
+                            result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
+                                                                                              //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
+                            result.Att_dB = (int)AttLevelSpec;
+                            result.PreAmp_dB = preAmpSpec ? 1 : 0;
+                            result.RefLevel_dBm = (int)RefLevelSpec;
+                            result.RBW_Hz = (double)RBW;
+                            result.VBW_Hz = (double)VBW;
+                            result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                            if (PowerRegister != EN.PowerRegister.Normal)
+                            {
+                                result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                            }
+                            setInit = false;
+                            context.PushResult(result);
+
                         }
                         else
                         {
-                            result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Next);
+                            i--;
                         }
-
-                        for (int j = 0; j < SweepPoints; j++)
-                        {
-                            result.Level[j] = LevelArr[j];
-                        }
-                        result.LevelMaxIndex = SweepPoints;
-                        result.FrequencyStart_Hz = resFreqStart;
-                        result.FrequencyStep_Hz = resFreqStep;
-
-                        result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;//неюзабельно
-                                                                                          //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-                        result.Att_dB = (int)AttLevelSpec;
-                        result.PreAmp_dB = preAmpSpec ? 1 : 0;
-                        result.RefLevel_dBm = (int)RefLevelSpec;
-                        result.RBW_Hz = (double)RBW;
-                        result.VBW_Hz = (double)VBW;
-                        result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
-                        if (PowerRegister != EN.PowerRegister.Normal)
-                        {
-                            result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
-                        }
-
-                        context.PushResult(result);
                     }
                     else
                     {
                         i--;
+                        System.Threading.Thread.Sleep(10);
                     }
-
                     // иногда нужно проверять токен окончания работы комманды
                     if (context.Token.IsCancellationRequested)
                     {
@@ -1705,8 +1549,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             else
             {
                 bool _RFOverload = false;
-                MeasurementInitialization();
-                for (ulong i = 0; i < traceCountToMeas; i++)
+                SweepDuration = (int)(QueryDecimal("SWE:DUR?") * 10000000);
+                WriteString(":INIT");
+                for (long i = 0; i < count; i++)
                 {
                     if (GetNumberOfSweeps())
                     {
@@ -1765,7 +1610,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     }
                     result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                                                                                       //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                    if (_RFOverload)
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                    }
+                    else
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                    }
                     context.PushResult(result);
                 }
             }
@@ -1776,20 +1628,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             getSweeptime = true;
             string poolKeyName = "";
             bool poolKeyFind = false;
-            t = timeService.TimeStamp.Ticks;
+            decimal step = (freqStop - freqStart) / steps;
+            FreqStart = freqStart;
+            FreqStop = freqStart + step;
+            WriteString(":SENSe:FREQ:STAR " + (FreqStart).ToString().Replace(decimalSeparator, ".") + ";:" +
+                "SENSe:FREQ:STOP " + (FreqStop).ToString().Replace(decimalSeparator, "."));
+            SweepDuration = (int)(QueryDecimal("SWE:DUR?") * 10000000);
+
             //Если TraceType ClearWrite то пушаем каждый результат
-            if (trace1Type.Id == (int)EN.TraceType.ClearWrite)
+            if (traceTypeResult == EN.TraceType.ClearWrite)
             {
                 for (ulong i = 0; i < traceCountToMeas; i++)
                 {
-                    if (GetTraceWithAggregation(freqStart, freqStop, steps, actualSweepPoints))
+                    if (GetTraceWithAggregation(freqStart, freqStop, step, steps, actualSweepPoints))
                     {
                         // пушаем результат
                         traceCount++;
 
                         if (!poolKeyFind)
                         {
-                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                            FindTracePoolName(SweepPointsWithAggregation, ref poolKeyFind, ref poolKeyName);
                         }
                         COMR.MesureTraceResult result;
                         if (traceCountToMeas == traceCount)
@@ -1801,11 +1659,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                             result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Next);
                         }
 
-                        for (int j = 0; j < SweepPoints; j++)
+                        for (int j = 0; j < SweepPointsWithAggregation; j++)
                         {
                             result.Level[j] = LevelArr[j];
                         }
-                        result.LevelMaxIndex = SweepPoints;
+                        result.LevelMaxIndex = SweepPointsWithAggregation;
                         result.FrequencyStart_Hz = resFreqStart;
                         result.FrequencyStep_Hz = resFreqStep;
 
@@ -1833,7 +1691,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     if (context.Token.IsCancellationRequested)
                     {
                         // все нужно остановиться
-
                         // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
                         var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount - 1, CommandResultStatus.Ragged);
                         result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
@@ -1853,14 +1710,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 bool _RFOverload = false;
                 for (ulong i = 0; i < traceCountToMeas; i++)
                 {
-                    if (GetTraceWithAggregation(freqStart, freqStop, steps, actualSweepPoints))
-                    {
-                        //break;//таки новые данные можно публиковать
-                    }
-                    else
-                    {
-                        i--;
-                    }
+                    GetTraceWithAggregation(freqStart, freqStop, step, steps, actualSweepPoints);
+
                     if (!_RFOverload && PowerRegister != EN.PowerRegister.Normal)
                     {
                         _RFOverload = true;
@@ -1873,7 +1724,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                         // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
                         if (!poolKeyFind)
                         {
-                            FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                            FindTracePoolName(SweepPointsWithAggregation, ref poolKeyFind, ref poolKeyName);
                         }
                         var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Ragged);
                         result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
@@ -1889,10 +1740,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 {
                     if (!poolKeyFind)
                     {
-                        FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                        FindTracePoolName(SweepPointsWithAggregation, ref poolKeyFind, ref poolKeyName);
                     }
                     COMR.MesureTraceResult result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCountToMeas - 1, CommandResultStatus.Final);
-                    result.LevelMaxIndex = SweepPoints;
+                    result.LevelMaxIndex = SweepPointsWithAggregation;
                     result.FrequencyStart_Hz = resFreqStart;
                     result.FrequencyStep_Hz = resFreqStep;
 
@@ -1901,13 +1752,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     result.PreAmp_dB = preAmpSpec ? 1 : 0;
                     result.RBW_Hz = (double)RBW;
                     result.VBW_Hz = (double)VBW;
-                    for (int j = 0; j < SweepPoints; j++)
+                    for (int j = 0; j < SweepPointsWithAggregation; j++)
                     {
                         result.Level[j] = LevelArr[j];
                     }
+
                     result.TimeStamp = timeService.GetGnssUtcTime().Ticks - uTCOffset;// new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
                                                                                       //result.TimeStamp = DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).Ticks;
-
+                    if (_RFOverload)
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.RFOverload;
+                    }
+                    else
+                    {
+                        result.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
+                    }
                     context.PushResult(result);
                 }
             }
@@ -1939,6 +1798,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             rm = new ResourceManager();
 
             session = (TcpipSession)rm.Open(String.Concat("TCPIP::", adapterConfig.IPAddress, "::hislip"));//, AccessModes.None, 20000);
+            timeOutRMinTicks = session.TimeoutMilliseconds * 10000;
             formattedIO = session.FormattedIO;
             string[] temp = QueryString("*IDN?").Trim('"').Split(',');
             if (temp[0].Contains("Rohde&Schwarz"))
@@ -1982,7 +1842,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
                     SetPreset();
 
-                    WriteString("FORMat:DEXPort:DSEParator COMM");// POIN");//разделитель дробной части
+                    WriteString(":FORMat:DEXPort:DSEParator COMM");// POIN");//разделитель дробной части
                     WriteString(":FORM:DATA REAL,32");
 
                     if (adapterConfig.DisplayUpdate)
@@ -1998,7 +1858,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
                     FreqMin = QueryDecimal(":SENSe:FREQuency:STAR? MIN");
                     FreqMax = QueryDecimal(":SENSe:FREQuency:STOP? MAX");
-                    WriteString("INIT:CONT OFF");/////////////////////////////////////////////////////////////////////////////////////////
+                    WriteString(":INIT:CONT OFF");/////////////////////////////////////////////////////////////////////////////////////////
                     preAmpAvailable = false;
                     if (loadedInstrOption.Count > 0)
                     {
@@ -2065,117 +1925,43 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 
 
         #region Get Data
-        private void MeasurementInitialization()
-        {
-            WriteString(":INIT;*WAI");
-        }
+
         private bool GetNumberOfSweeps()
         {
-            numberOfSweeps = QueryULong(":SWE:COUN:CURR?");
-
             string pow = QueryString(":STAT:QUES:POW?");
+            numberOfSweeps = QueryULong(":SWE:COUN:CURR?");
             int pr = int.Parse(pow);
             if (pr == 0 || pr == 2) { PowerRegister = EN.PowerRegister.Normal; }
-            else if (pr == 4) { PowerRegister = EN.PowerRegister.IFOverload; }
+            else if (pr == 4) { PowerRegister = EN.PowerRegister.IFOverload; }//правильно
             else if (pr == 1) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
+
             return numberOfSweeps >= traceCountToMeas;
         }
-        byte[] byteArray = new byte[400004];
-        float[] leveltemp = new float[500005];
+
         private bool GetTrace()
         {
             bool res = true;
             try
             {
-                bool newdata = true;
-                //float[] temp = new float[0] { };
 
-
-
-                WriteString(":TRAC:DATA? TRACE1");//;:STAT:QUES:POW?");
-                //formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4);
-                formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4 + 10);
-                System.Diagnostics.Debug.WriteLine("GetTrace  " + new TimeSpan(timeService.TimeStamp.Ticks - t).ToString());
-                //byte[] byteArray = formattedIO.ReadBinaryBlockOfByte(); //ReadByte();
-                SweepTime = QueryDecimal(":SWE:TIME?");
-                string pow = "";// QueryString(":STAT:QUES:POW?"); //formattedIO.ReadString(); //ReadString();
-                System.Diagnostics.Debug.WriteLine("GetTrace1 " + new TimeSpan(timeService.TimeStamp.Ticks - t).ToString());
-                //int pr = int.Parse(pow);
+                string pow = QueryString(":STAT:QUES:POW?"); //formattedIO.ReadString(); //ReadString();
+                int pr = int.Parse(pow);
                 if (pow.Contains("0") || pow.Contains("2")) { PowerRegister = EN.PowerRegister.Normal; }
                 else if (pow.Contains("4")) { PowerRegister = EN.PowerRegister.IFOverload; }
                 else if (pow.Contains("1")) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
-
-                //temp = new float[SweepPoints];
+                WriteString("TRAC:DATA? TRACE1");
+                formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4);
                 for (int j = 0; j < SweepPoints; j++)
                 {
-                    leveltemp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
+                    LevelArr[j] = System.BitConverter.ToSingle(byteArray, j * 4);
                 }
 
-
-                if (leveltemp.Length > 0)
+                LevelArrLength = SweepPoints;
+                //таки новый трейс полностью
+                if (getSweeptime)
                 {
-                    int k = 0;
-
-                    //т.к. используем только ClearWhrite то проверяем полученный трейс с предыдущим временным на предмет полного отличия и полноценен он или нет
-                    if (!float.IsNaN(leveltemp[0]) && leveltemp[0] % 1 != 0 &&
-                        !float.IsNaN(leveltemp[SweepPoints - 1]) && leveltemp[SweepPoints - 1] % 1 != 0)
-                    {
-                        int len = (SweepPoints - 5) / 5 - 20;
-                        for (int i = 0; i < len; i += 3)
-                        {
-                            if (LevelArr[i * 5] == leveltemp[i * 5] &&
-                                LevelArr[i * 5 + 1] == leveltemp[i * 5 + 1] &&
-                                LevelArr[i * 5 + 2] == leveltemp[i * 5 + 2] &&
-                                LevelArr[i * 5 + 3] == leveltemp[i * 5 + 3] &&
-                                LevelArr[i * 5 + 4] == leveltemp[i * 5 + 4] &&
-                                LevelArr[i * 5 + 5] == leveltemp[i * 5 + 5])
-                            {
-                                k++;
-                                if (k > SweepPoints / 20)
-                                {
-                                    newdata = false;
-                                    //k = i;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //System.Diagnostics.Debug.Write(" => bad data in First point " + leveltemp[0].ToString());
-                        //System.Diagnostics.Debug.Write(" => bad data in Last point " + leveltemp[SweepPoints - 1].ToString());
-                        //System.Diagnostics.Debug.WriteLine("bad data " + k);
-                        newdata = false;
-                    }
-
-                    //таки новый трейс полностью
-                    if (newdata)
-                    {
-                        if (getSweeptime)
-                        {
-                            //SweepTime = QueryDecimal(":SWE:TIME?");
-                            getSweeptime = false;
-
-                        }
-                        for (int l = 0; l < SweepPoints; l++)
-                        {
-                            LevelArr[l] = leveltemp[l];
-                            //levelArrTemp = temp;
-                        }
-
-                    }
-                    else
-                    {
-                        //System.Diagnostics.Debug.Write(" => trace data is not 5% unique");
-                        res = false;
-                    }
-                    //System.Diagnostics.Debug.Write("\r\n");
-                    //System.Diagnostics.Debug.WriteLine("kkkkkk " + k);
-
-                }
-                else
-                {
-                    res = false;
+                    SweepTime = QueryDecimal(":SWE:TIME?");
+                    getSweeptime = false;
                 }
             }
             #region Exception
@@ -2192,145 +1978,55 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             #endregion
             return res;
         }
-        private bool GetTraceWithAggregation(decimal freqStart, decimal freqStop, int steps, int actualSweepPoints)
+        private bool GetTraceWithAggregation(decimal freqStart, decimal freqStop, decimal step, int steps, int actualSweepPoints)
         {
             bool res = true;
+            long t1 = 0, t2 = 0;
             try
             {
-                decimal step = (freqStop - freqStart) / steps;
-
+                string pow = "";
+                EN.PowerRegister pr = EN.PowerRegister.Normal;
+                long time = timeService.TimeStamp.Ticks;
+                bool setInit = false;
                 for (int i = 0; i < steps; i++)
                 {
-                    bool newdata = true;
-                    WriteString(":SENSe:FREQ:STAR " + (FreqStart + step * i).ToString().Replace(decimalSeparator, ".") + ";:" +
-                        "SENSe:FREQ:STOP " + (FreqStart + step * (i + 1)).ToString().Replace(decimalSeparator, ".") + ";:" +
-                        "INIT;*WAI;:TRAC:DATA? TRACE1");//;:STAT:QUES:POW?");
-                    formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4 + 10);
-                    //SweepTime = QueryDecimal(":SWE:TIME?");
-                    string pow = QueryString(":STAT:QUES:POW?"); //formattedIO.ReadString(); //ReadString();
-                                                                 //int pr = int.Parse(pow);
-                    if (pow.Contains("0") || pow.Contains("2")) { PowerRegister = EN.PowerRegister.Normal; }
-                    else if (pow.Contains("4")) { PowerRegister = EN.PowerRegister.IFOverload; }
-                    else if (pow.Contains("1")) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
-
-
-                    for (int j = 0; j < SweepPoints; j++)
+                    if (!setInit)
                     {
-                        leveltemp[j + actualSweepPoints * i] = System.BitConverter.ToSingle(byteArray, j * 4);
+                        FreqStart = freqStart + step * i;
+                        FreqStop = freqStart + step * (i + 1);
+                        WriteString(":SENSe:FREQ:STAR " + (FreqStart).ToString().Replace(decimalSeparator, ".") + ";:" +
+                            "SENSe:FREQ:STOP " + (FreqStop).ToString().Replace(decimalSeparator, ".") + ";:" +
+                            "INIT;*WAI");
+                        time = timeService.TimeStamp.Ticks;
+                        setInit = true;
                     }
-
-                }
-                SetTraceDataWithAggregation(leveltemp, steps * actualSweepPoints);
-            }
-            #region Exception
-            catch (Ivi.Visa.VisaException v_exp)
-            {
-                res = false;
-                logger.Exception(Contexts.ThisComponent, v_exp);
-            }
-            catch (Exception exp)
-            {
-                res = false;
-                logger.Exception(Contexts.ThisComponent, exp);
-            }
-            #endregion
-            return res;
-        }
-        private bool GetTraceOLD()
-        {
-            bool res = true;
-            try
-            {
-                bool newdata = true;
-                //float[] temp = new float[0] { };
-
-
-
-                WriteString(":TRAC:DATA? TRACE1");//;:STAT:QUES:POW?");
-                //formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4);
-                formattedIO.ReadBinaryBlockOfByte(byteArray, 0, SweepPoints * 4 + 10);
-                System.Diagnostics.Debug.WriteLine("GetTrace  " + new TimeSpan(timeService.TimeStamp.Ticks - t).ToString());
-                //byte[] byteArray = formattedIO.ReadBinaryBlockOfByte(); //ReadByte();
-                SweepTime = QueryDecimal(":SWE:TIME?");
-                string pow = "";// QueryString(":STAT:QUES:POW?"); //formattedIO.ReadString(); //ReadString();
-                System.Diagnostics.Debug.WriteLine("GetTrace1 " + new TimeSpan(timeService.TimeStamp.Ticks - t).ToString());
-                //int pr = int.Parse(pow);
-                if (pow.Contains("0") || pow.Contains("2")) { PowerRegister = EN.PowerRegister.Normal; }
-                else if (pow.Contains("4")) { PowerRegister = EN.PowerRegister.IFOverload; }
-                else if (pow.Contains("1")) { PowerRegister = EN.PowerRegister.RFOverload; }//правильно
-
-                //temp = new float[SweepPoints];
-                for (int j = 0; j < SweepPoints; j++)
-                {
-                    leveltemp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
-                }
-
-
-                if (leveltemp.Length > 0)
-                {
-                    int k = 0;
-
-                    //т.к. используем только ClearWhrite то проверяем полученный трейс с предыдущим временным на предмет полного отличия и полноценен он или нет
-                    if (!float.IsNaN(leveltemp[0]) && leveltemp[0] % 1 != 0 &&
-                        !float.IsNaN(leveltemp[SweepPoints - 1]) && leveltemp[SweepPoints - 1] % 1 != 0)
+                    t1 = time + SweepDuration - 1000000;
+                    t2 = timeService.TimeStamp.Ticks + timeOutRMinTicks;
+                    if (t1 < t2)
                     {
-                        int len = (SweepPoints - 5) / 5 - 20;
-                        for (int i = 0; i < len; i += 3)
+                        WriteString(":TRAC:DATA? TRACE1");
+                        formattedIO.ReadBinaryBlockOfByte(byteArray, 0, actualSweepPoints * 4);
+                        pow = QueryString(":STAT:QUES:POW?");
+                        if (pr == EN.PowerRegister.Normal)
                         {
-                            if (LevelArr[i * 5] == leveltemp[i * 5] &&
-                                LevelArr[i * 5 + 1] == leveltemp[i * 5 + 1] &&
-                                LevelArr[i * 5 + 2] == leveltemp[i * 5 + 2] &&
-                                LevelArr[i * 5 + 3] == leveltemp[i * 5 + 3] &&
-                                LevelArr[i * 5 + 4] == leveltemp[i * 5 + 4] &&
-                                LevelArr[i * 5 + 5] == leveltemp[i * 5 + 5])
-                            {
-                                k++;
-                                if (k > SweepPoints / 20)
-                                {
-                                    newdata = false;
-                                    //k = i;
-                                    break;
-                                }
-                            }
+                            if (pow.Contains("0") || pow.Contains("2")) { pr = EN.PowerRegister.Normal; }
+                            else if (pow.Contains("4")) { pr = EN.PowerRegister.IFOverload; }
+                            else if (pow.Contains("1")) { pr = EN.PowerRegister.RFOverload; }
                         }
+                        for (int j = 0; j < actualSweepPoints; j++)
+                        {
+                            levelArrTemp[j + actualSweepPoints * i] = System.BitConverter.ToSingle(byteArray, j * 4);
+                        }
+                        setInit = false;
                     }
                     else
                     {
-                        //System.Diagnostics.Debug.Write(" => bad data in First point " + leveltemp[0].ToString());
-                        //System.Diagnostics.Debug.Write(" => bad data in Last point " + leveltemp[SweepPoints - 1].ToString());
-                        //System.Diagnostics.Debug.WriteLine("bad data " + k);
-                        newdata = false;
+                        i--;
+                        System.Threading.Thread.Sleep(10);
                     }
-
-                    //таки новый трейс полностью
-                    if (newdata)
-                    {
-                        if (getSweeptime)
-                        {
-                            //SweepTime = QueryDecimal(":SWE:TIME?");
-                            getSweeptime = false;
-
-                        }
-                        for (int l = 0; l < SweepPoints; l++)
-                        {
-                            LevelArr[l] = leveltemp[l];
-                            //levelArrTemp = temp;
-                        }
-
-                    }
-                    else
-                    {
-                        //System.Diagnostics.Debug.Write(" => trace data is not 5% unique");
-                        res = false;
-                    }
-                    //System.Diagnostics.Debug.Write("\r\n");
-                    //System.Diagnostics.Debug.WriteLine("kkkkkk " + k);
-
                 }
-                else
-                {
-                    res = false;
-                }
+                PowerRegister = pr;
+                SetTraceDataWithAggregation(levelArrTemp, steps * actualSweepPoints);
             }
             #region Exception
             catch (Ivi.Visa.VisaException v_exp)
@@ -2351,34 +2047,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         {
             if (trace != null && trace.Length > 0)
             {
-                if (LevelArr.Length != trace.Length)
+                if (traceTypeResult == EN.TraceType.ClearWrite)
                 {
-                    LevelArr = new float[trace.Length];
-                    for (int i = 0; i < trace.Length; i++)
+                    LevelArrLength = points;
+                    for (int i = 0; i < points; i++)
                     {
                         LevelArr[i] = trace[i];
                     }
                 }
-                if (traceTypeResult == EN.TraceType.ClearWrite)
-                {
-                    LevelArr = trace;
-                }
                 else if (traceTypeResult == EN.TraceType.Average)//Average
                 {
-                    if (traceReset) { traceAveraged.Reset(); traceReset = false; }
-                    traceAveraged.AddTraceToAverade(resFreqStart, resFreqStep, trace, (MEN.LevelUnit)LevelUnit.Id, levelUnitResult);
-                    LevelArr = traceAveraged.AveragedLevels;
+                    if (traceReset || LevelArrLength != points) { traceAveraged.Reset(); LevelArrLength = points; traceReset = false; }
+                    traceAveraged.AddTraceToAverade(resFreqStart, resFreqStep, trace, points, (MEN.LevelUnit)LevelUnit.Id, levelUnitResult);
+                    if (traceAveraged.NumberOfSweeps == traceAveraged.AveragingCount)
+                    {
+                        for (int i = 0; i < traceAveraged.TracePoints; i++)
+                        {
+                            LevelArr[i] = traceAveraged.AveragedLevels[i];
+                        }
+                    }
+                    //LevelArr = traceAveraged.AveragedLevels;
                 }
                 else if (traceTypeResult == EN.TraceType.MaxHold)
                 {
-                    if (traceReset)
+                    if (traceReset || LevelArrLength != points)
                     {
-                        LevelArr = trace;
+                        LevelArrLength = points;
+                        for (int i = 0; i < points; i++)
+                        {
+                            LevelArr[i] = trace[i];
+                        }
                         traceReset = false;
                     }
                     else
                     {
-                        for (int i = 0; i < trace.Length; i++)
+                        for (int i = 0; i < points; i++)
                         {
                             if (trace[i] > LevelArr[i]) LevelArr[i] = trace[i];
                         }
@@ -2386,20 +2089,23 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 }
                 else if (traceTypeResult == EN.TraceType.MinHold)
                 {
-                    if (traceReset)
+                    if (traceReset || LevelArrLength != points)
                     {
-                        LevelArr = trace;
+                        LevelArrLength = points;
+                        for (int i = 0; i < points; i++)
+                        {
+                            LevelArr[i] = trace[i];
+                        }
                         traceReset = false;
                     }
                     else
                     {
-                        for (int i = 0; i < trace.Length; i++)
+                        for (int i = 0; i < points; i++)
                         {
                             if (trace[i] < LevelArr[i]) LevelArr[i] = trace[i];
                         }
                     }
                 }
-                //LevelArrTemp = trace;
             }
         }
 
@@ -2574,60 +2280,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         {
             resFreqStep = Math.Round((double)FreqSpan / SweepPoints, 2);
             resFreqStart = Math.Round((double)FreqStart + resFreqStep / 2, 5);
-            LevelArr = new float[SweepPoints];
-            levelArrTemp = new float[SweepPoints];
-            for (int i = 0; i < SweepPoints; i++)
-            {
-                LevelArr[i] = -1000;
-                levelArrTemp[i] = -1000;
-            }
-
-            //byteArray = QueryByte("TRAC1:X? TRACE1");
-            //double stepsum = 0;
-            //double[] temp = new double[byteArray.Length / 4];
-
-            //float d1 = 0, d2 = 0;
-            //d1 = System.BitConverter.ToSingle(byteArray, 0);
-            //for (int j = 1; j < byteArray.Length / 4; j++)
-            //{
-            //    d2 = System.BitConverter.ToSingle(byteArray, j * 4);
-            //    stepsum += d2 - d1 ;
-            //    d1 = d2;
-            //}
-            //resFreqStep = stepsum / (byteArray.Length / 4 - 1);
-            //resFreqStart = System.BitConverter.ToSingle(byteArray, 0);
-
-
-            //temp[0] = System.BitConverter.ToSingle(byteArray, 0);
-
-            //for (int j = 1; j < byteArray.Length / 4; j++)
-            //{
-            //    temp[j] = System.BitConverter.ToSingle(byteArray, j * 4);
-            //    stepsum += temp[j] - temp[j - 1];
-            //}
-            ////resFreqStep = stepsum / (temp.Length - 1);
-            ////resFreqStart = temp[0];
-            //LevelArr = new float[byteArray.Length / 4];
-            //levelArrTemp = new float[byteArray.Length / 4];
-            //for (int i = 0; i < byteArray.Length / 4; i++)
-            //{
-            //    LevelArr[i] = -1000;
-            //    levelArrTemp[i] = -1000;
-            //}
-
-
-            //decimal step = 0;
-            //decimal[] FreqTemp = new decimal[SweepPoints + 2];
-            //decimal[] Freq = new decimal[SweepPoints + 2];
-            //step = (decimal)Math.Round((FreqSpan / SweepPoints), 2);
-            //FreqTemp[0] = (decimal)(FreqCentr - FreqSpan / 2);
-            //FreqTemp[1] = Math.Round(FreqTemp[0] + step / 2, 5);
-            //FreqTemp[FreqTemp.Length - 1] = (decimal)(FreqCentr + FreqSpan / 2);
-            //for (int i = 0; i < FreqTemp.Length; i++)
-            //{
-            //    if (i > 1) { FreqTemp[i] = Math.Round(FreqTemp[i - 1] + step, 5); }
-            //    Freq[i] = Math.Round(FreqTemp[i] / 10, 0) * 10;
-            //}
+        }
+        private void GetFreqArrWithAggregation(decimal start, decimal stop, int points)
+        {
+            resFreqStep = (double)((stop - start) / points);
+            resFreqStart = Math.Round((double)start + resFreqStep / 2, 5);
         }
         private void SetFreqCentrIQ(decimal freqCentrIQ)
         {
@@ -2862,12 +2519,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         private void SetOptimization(EN.Optimization optimization)
         {
             Optimization = optimization;
-            WriteString("SENSe:SWEep:OPTimize " + OptimizationSelected.Parameter);
+            WriteString(":SENSe:SWEep:OPTimize " + OptimizationSelected.Parameter);
         }
         private void GetOptimization()
         {
             string temp1 = string.Empty;
-            temp1 = QueryString("SENSe:SWEep:OPTimize?");
+            temp1 = QueryString(":SENSe:SWEep:OPTimize?");
             foreach (ParamWithId TT in optimization)
             {
                 if (temp1.Contains(TT.Parameter))
@@ -2937,15 +2594,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             if (Math.Abs(TriggerOffset) < triggerOffsetMax)
             {
                 int length = sampleLength * 4 * 2 + sampleLength.ToString().Length + 100;
-                //if (session.DefaultBufferSize != length)
-                //{
-                //    session.DefaultBufferSize = length;
-                //}
                 WriteString("TRIG:HOLD " + TriggerOffset.ToString().Replace(decimalSeparator, ".") + ";:TRAC:IQ:RLEN " + sampleLength.ToString() + ";:INIT;*WAI;");
-
-                //session.Write("INIT;*WAI;");
             }
-
         }
         public void SetIQWindow()
         {
@@ -3079,6 +2729,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                     MinSize = 25,
                     MaxSize = 50,
                     Size = 100001
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 200002
+                },
+                new CFG.AdapterResultPool()
+                {
+                    MinSize = 10,
+                    MaxSize = 20,
+                    Size = 500005
                 },
             };
         }

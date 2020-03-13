@@ -63,7 +63,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 /// иницируем его параметрами сконфигурации
                 /// проверяем к чем оно готово
                 if (Connect(adapterConfig.SerialNumber))
-                {                    
+                {
                     string fileName = new Atdi.DataModels.Sdrn.DeviceServer.Adapters.InstrManufacrures().SignalHound.UI + "_" + deviceSerialNumber + ".xml";
                     tac = new CFG.ThisAdapterConfig() { };
                     if (!tac.GetThisAdapterConfig(fileName))
@@ -637,69 +637,90 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         private void ValidateAndSetRBWVBWTracePointSweepTime(double rbw, double vbw, int tracePoint, double sweepTime, IExecutionContext context)
         {
             sweepTime = lpc.SweepTime(this, sweepTime);
-            if (tracePoint > tracePointsMaxPool)
+            if (rbw == 0)
             {
-                throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
-            }
-
-            if (rbw < 0)
-            {
-                //decimal[] natrbw = new decimal[] { 0.301m, 0.602m, 1.204m, 2.4m, 4.81m, 9.63m, 19.26m, 38.52m, 77.05m, 154.11m, 308.22m, 616.45m, 1232, 2465, 4931, 9863, 19720, 39450, 78900, 157100, 315600, 631200, 1262000, 2525000, 5050000, 10100000};
-                double[] ar = new double[] { 0.0078125, 0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
-                double magic = 38.146966101334357; //9.536741525333588m;
-                double m1 = (double)FreqSpan / tracePoint;//хотим
-                double m2 = m1 / magic;
-                double delta = double.MaxValue;
-                int index = 0;
-                for (int i = 0; i < ar.Length; i++)
+                if (vbw == 0)
                 {
-                    double temp = Math.Abs(ar[i] - m2);
-                    if (temp < delta)
+                    if (tracePoint == 0)
                     {
-                        delta = temp;
-                        index = i;
+                        if (tracePoint > tracePointsMaxPool)
+                        {
+                            throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
+                        }
+
+                        if (rbw < 0)
+                        {
+                            //decimal[] natrbw = new decimal[] { 0.301m, 0.602m, 1.204m, 2.4m, 4.81m, 9.63m, 19.26m, 38.52m, 77.05m, 154.11m, 308.22m, 616.45m, 1232, 2465, 4931, 9863, 19720, 39450, 78900, 157100, 315600, 631200, 1262000, 2525000, 5050000, 10100000};
+                            double[] ar = new double[] { 0.0078125, 0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432 };
+                            double magic = 38.146966101334357; //9.536741525333588m;
+                            double m1 = (double)FreqSpan / tracePoint;//хотим
+                            double m2 = m1 / magic;
+                            double delta = double.MaxValue;
+                            int index = 0;
+                            for (int i = 0; i < ar.Length; i++)
+                            {
+                                double temp = Math.Abs(ar[i] - m2);
+                                if (temp < delta)
+                                {
+                                    delta = temp;
+                                    index = i;
+                                }
+                            }
+                            m2 = ar[index];
+                            double d = (double)FreqSpan / magic / m2;
+                            if (((int)d) < tracePoint && index > 0)
+                            {
+                                m2 = ar[index - 1];
+                            }
+                            double rbw2 = magic * m2 * 4;// (FreqSpan / command.Parameter.TracePoint) * 4.0m;
+                            if (rbw2 > RBWMax)
+                            {
+                                rbw2 = RBWMax;
+                            }
+                            double vbw2 = 0;
+                            if (vbw < 0)
+                            {
+                                vbw2 = rbw2;
+                            }
+                            else
+                            {
+                                vbw2 = lpc.VBW(this, vbw);
+                            }
+                            RBW = rbw2;
+                            VBW = vbw2;
+                            if (sweepTime != SweepTime)
+                            {
+                                SweepTime = sweepTime;
+                            }
+                            StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection));
+
+                        }
+                        else
+                        {
+                            double rbw2 = lpc.RBW(this, rbw);
+                            double vbw2 = lpc.VBW(this, vbw);
+                            if (RBW != rbw2 || VBW != vbw2 || SweepTime != sweepTime)
+                            {
+                                RBW = rbw2;
+                                VBW = vbw2;
+                                SweepTime = sweepTime;
+                                StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection), context);
+                            }
+                        }
                     }
-                }
-                m2 = ar[index];
-                double d = (double)FreqSpan / magic / m2;
-                if (((int)d) < tracePoint && index > 0)
-                {
-                    m2 = ar[index - 1];
-                }
-                double rbw2 = magic * m2 * 4;// (FreqSpan / command.Parameter.TracePoint) * 4.0m;
-                if (rbw2 > RBWMax)
-                {
-                    rbw2 = RBWMax;
-                }
-                double vbw2 = 0;
-                if (vbw < 0)
-                {
-                    vbw2 = rbw2;
+                    else
+                    {
+                        throw new Exception("TracePoint must be set greater than zero.");
+                    }
                 }
                 else
                 {
-                    vbw2 = lpc.VBW(this, vbw);
+                    throw new Exception("VBW must be set greater than zero.");
                 }
-                RBW = rbw2;
-                VBW = vbw2;
-                if (sweepTime != SweepTime)
-                {
-                    SweepTime = sweepTime;
-                }
-                StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection));
-
             }
             else
             {
-                double rbw2 = lpc.RBW(this, rbw);
-                double vbw2 = lpc.VBW(this, vbw);
-                if (RBW != rbw2 || VBW != vbw2 || SweepTime != sweepTime)
-                {
-                    RBW = rbw2;
-                    VBW = vbw2;
-                    SweepTime = sweepTime;
-                    StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection), context);
-                }
+                throw new Exception("RBW must be set greater than zero.");
             }
         }
 
@@ -1058,7 +1079,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         private void GetAndPushTraceResults(COM.MesureTraceCommand command, IExecutionContext context)
         {
-            
+
             string poolKeyName = "";
             bool poolKeyFind = false;
             //Если TraceType ClearWrite то пушаем каждый результат
