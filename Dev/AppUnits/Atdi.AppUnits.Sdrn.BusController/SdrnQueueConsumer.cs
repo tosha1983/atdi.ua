@@ -23,171 +23,167 @@ namespace Atdi.AppUnits.Sdrn.BusController
         private readonly string _tag;
         private readonly string _routingKey;
         private readonly string _queue;
-        private readonly MessageConverter _messageConverter;
-        private readonly SdrnHandlerLibrary _handlerLibrary;
         private readonly BusConnection _busConnection;
         private readonly SdrnBusControllerConfig _busControllerConfig;
-        private readonly MessageProcessing _messageProcessing;
-        private readonly IServicesResolver _servicesResolver;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
-        private readonly IQueryExecutor _queryExecutor;
         private readonly IQueryBuilder<MD.IAmqpMessage> _amqpMessageQueryBuilder;
 		private readonly IQueryBuilder<MD.IAmqpMessageLog> _amqpMessageLogQueryBuilder;
         private readonly IQueryBuilder<MD.IAmqpEvent> _amqpEventQueryBuilder;
+        private readonly string _title;
 
         public SdrnQueueConsumer(
             string tag, 
             string routingKey, 
-            string queue, 
-            MessageConverter messageConverter, 
-            SdrnHandlerLibrary handlerLibrary, 
+            string queue,
             BusConnection busConnection, 
             SdrnBusControllerConfig busControllerConfig,
-            MessageProcessing messageProcessing,
-            IServicesResolver servicesResolver, 
             IDataLayer<EntityDataOrm> dataLayer,
             ILogger logger)
         {
             this._tag = tag;
             this._routingKey = routingKey;
             this._queue = queue;
-            this._messageConverter = messageConverter;
-            this._handlerLibrary = handlerLibrary;
             this._busConnection = busConnection;
             this._busControllerConfig = busControllerConfig;
-            this._messageProcessing = messageProcessing;
-            this._servicesResolver = servicesResolver;
             this._dataLayer = dataLayer;
             this._logger = logger;
-            this._queryExecutor = this._dataLayer.Executor<SdrnServerDataContext>();
             this._amqpMessageQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpMessage>();
 			this._amqpMessageLogQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpMessageLog>();
 			this._amqpEventQueryBuilder = this._dataLayer.GetBuilder<MD.IAmqpEvent>();
+			this._title = $"{tag}: '{routingKey}' => '{queue}'";
         }
 
         public MessageHandlingResult Handle(Message message, IDeliveryContext deliveryContext)
         {
-            using (this._logger.StartTrace(Contexts.ThisComponent, Categories.Processing, this))
+	        _logger.Verbouse(Contexts.ThisComponent, Categories.Processing, Events.ReceivedMessage.With(deliveryContext.ConsumerTag, deliveryContext.RoutingKey, deliveryContext.Exchange, deliveryContext.DeliveryTag, message.Type, message.Id));
+	        try
             {
-
-                _logger.Verbouse(Contexts.ThisComponent, Categories.Processing, Events.ReceivedMessage.With(deliveryContext.ConsumerTag, deliveryContext.RoutingKey, deliveryContext.Exchange, deliveryContext.DeliveryTag, message.Type, message.Id));
-
-                try
+                if (string.IsNullOrEmpty(message.Id)
+                    || string.IsNullOrEmpty(message.Type)
+                    || string.IsNullOrEmpty(message.AppId)
+                    || string.IsNullOrEmpty(message.ContentType)
+                    || message.Headers == null)
                 {
-                    if (string.IsNullOrEmpty(message.Id)
-                        || string.IsNullOrEmpty(message.Type)
-                        || string.IsNullOrEmpty(message.AppId)
-                        || string.IsNullOrEmpty(message.ContentType)
-                        || message.Headers == null)
-                    {
-                        var handlingResult = new SdrnMessageHandlingResult
-                        {
-                            Status = SdrnMessageHandlingStatus.Trash,
-                            ReasonFailure = "The message contains an incorrect header"
-                        };
-                        this.RedirectMessage(message, deliveryContext, handlingResult);
-                        return MessageHandlingResult.Confirm;
-                    }
-
-                    if (!Protocol.ContentType.Check(message.ContentType))
-                    {
-                        throw new InvalidOperationException("The message contains an incorrect Content Type");
-                    }
-
-                    var sdrnServer = GetHeaderValue(message.Headers, Protocol.Header.SdrnServer);
-                    if (!_busControllerConfig.Environment.ServerInstance.Equals(sdrnServer,
-                        StringComparison.OrdinalIgnoreCase))
-                    {
-                        throw new InvalidOperationException("The message contains an incorrect SDRN Server Name");
-                    }
-
-                    var sensorName = GetHeaderValue(message.Headers, Protocol.Header.SensorName);
-                    if (string.IsNullOrWhiteSpace(sensorName))
-                    {
-                        throw new InvalidOperationException("The message contains an incorrect Sensor Name");
-                    }
-
-                    var sensorTechId = GetHeaderValue(message.Headers, Protocol.Header.SensorTechId);
-                    if (string.IsNullOrWhiteSpace(sensorName))
-                    {
-                        throw new InvalidOperationException("The message contains an incorrect Sensor Tech Id");
-                    }
-
-                    var headerApiVersion = GetHeaderValue(message.Headers, Protocol.Header.ApiVersion);
-                    var headerProtocol = GetHeaderValue(message.Headers, Protocol.Header.Protocol);
-                    var headerBodyAqName = GetHeaderValue(message.Headers, Protocol.Header.BodyAqName);
-                    var headerCreated = GetHeaderValue(message.Headers, Protocol.Header.Created);
-
-                    var currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
-
-					var queryInsert = this._amqpMessageQueryBuilder
-                        .Insert()
-                        .SetValue(c => c.StatusCode,
-                            (byte) 0) // 0 - Created, 1 - Send Event , 2 - start processing, 3 - finish processed
-						.SetValue(c => c.StatusName, "Created") //MessageProcessingStatus.Created.ToString())
-                        .SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-                        .SetValue(c => c.ThreadId, currentThreadId)
-                        .SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
-                        .SetValue(c => c.PropExchange, deliveryContext.Exchange)
-                        .SetValue(c => c.PropDeliveryTag, deliveryContext.DeliveryTag)
-                        .SetValue(c => c.PropConsumerTag, deliveryContext.ConsumerTag)
-
-                        .SetValue(c => c.PropAppId, message.AppId)
-                        .SetValue(c => c.PropMessageId, message.Id)
-                        .SetValue(c => c.PropType, message.Type)
-                        .SetValue(c => c.PropContentEncoding, message.ContentEncoding)
-                        .SetValue(c => c.PropContentType, message.ContentType)
-                        .SetValue(c => c.PropCorrelationId, message.CorrelationId)
-                        .SetValue(c => c.PropTimestamp, message.Timestamp)
-
-                        .SetValue(c => c.HeaderCreated, headerCreated)
-                        .SetValue(c => c.HeaderSdrnServer, sdrnServer)
-                        .SetValue(c => c.HeaderSensorName, sensorName)
-                        .SetValue(c => c.HeaderSensorTechId, sensorTechId)
-                        .SetValue(c => c.HeaderApiVersion, headerApiVersion)
-                        .SetValue(c => c.HeaderProtocol, headerProtocol)
-                        .SetValue(c => c.HeaderBodyAQName, headerBodyAqName)
-
-                        .SetValue(c => c.BodyContentType, Protocol.ContentType.QualifiedOriginal)
-                        .SetValue(c => c.BodyContentEncoding, Protocol.ContentEncoding.Compressed)
-                        .SetValue(c => c.BodyContent, Compressor.Compress(message.Body));
-
-                    var messagePk = _queryExecutor.Execute<MD.IAmqpMessage_PK>(queryInsert);
-
-                    var logQueryInsert = this._amqpMessageLogQueryBuilder
-	                    .Insert()
-	                    .SetValue(c => c.MESSAGE.Id, messagePk.Id)
-						.SetValue(c => c.StatusCode, (byte)MD.AmqpMessageStatusCode.Created)
-	                    .SetValue(c => c.StatusName, "Created")
-	                    .SetValue(c => c.StatusNote, "Message was created in DB")
-						.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-	                    .SetValue(c => c.ThreadId, currentThreadId)
-						.SetValue(c => c.Source, $"SDRN.QueueConsumer:[Tag={deliveryContext.ConsumerTag}][Handle]");
-                    _queryExecutor.Execute(logQueryInsert);
-
-					var eventQueryInsert = this._amqpEventQueryBuilder
-                        .Insert()
-                        .SetValue(c => c.Id, messagePk.Id)
-                        .SetValue(c => c.PropType, message.Type);
-					_queryExecutor.Execute(eventQueryInsert);
-
-                    _messageProcessing.OnCreatedMessage();
-
-                }
-                catch (Exception e)
-                {
-                    _logger.Exception(Contexts.ThisComponent, Categories.Processing, e);
                     var handlingResult = new SdrnMessageHandlingResult
                     {
-                        Status = SdrnMessageHandlingStatus.Error,
-                        ReasonFailure = e.Message
+                        Status = SdrnMessageHandlingStatus.Trash,
+                        ReasonFailure = "The message contains an incorrect header"
                     };
                     this.RedirectMessage(message, deliveryContext, handlingResult);
+                    return MessageHandlingResult.Confirm;
                 }
 
-                return MessageHandlingResult.Confirm;
+                if (!Protocol.ContentType.Check(message.ContentType))
+                {
+                    throw new InvalidOperationException("The message contains an incorrect Content Type");
+                }
+
+                var sdrnServer = GetHeaderValue(message.Headers, Protocol.Header.SdrnServer);
+                if (!_busControllerConfig.Environment.ServerInstance.Equals(sdrnServer,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException("The message contains an incorrect SDRN Server Name");
+                }
+
+                var sensorName = GetHeaderValue(message.Headers, Protocol.Header.SensorName);
+                if (string.IsNullOrWhiteSpace(sensorName))
+                {
+                    throw new InvalidOperationException("The message contains an incorrect Sensor Name");
+                }
+
+                var sensorTechId = GetHeaderValue(message.Headers, Protocol.Header.SensorTechId);
+                if (string.IsNullOrWhiteSpace(sensorName))
+                {
+                    throw new InvalidOperationException("The message contains an incorrect Sensor Tech Id");
+                }
+
+                var headerApiVersion = GetHeaderValue(message.Headers, Protocol.Header.ApiVersion);
+                var headerProtocol = GetHeaderValue(message.Headers, Protocol.Header.Protocol);
+                var headerBodyAqName = GetHeaderValue(message.Headers, Protocol.Header.BodyAqName);
+                var headerCreated = GetHeaderValue(message.Headers, Protocol.Header.Created);
+
+                var currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+                var compressedBody = Compressor.Compress(message.Body);
+
+				using (var dbScope = _dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+					//dbScope.BeginTran();
+                    try
+                    {
+						var queryExecutor = dbScope.Executor;
+
+						var queryInsert = this._amqpMessageQueryBuilder
+							.Insert()
+							.SetValue(c => c.StatusCode,
+								(byte)0) // 0 - Created, 1 - Send Event , 2 - start processing, 3 - finish processed
+							.SetValue(c => c.StatusName, "Created") //MessageProcessingStatus.Created.ToString())
+							.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+							.SetValue(c => c.ThreadId, currentThreadId)
+							.SetValue(c => c.PropRoutingKey, deliveryContext.RoutingKey)
+							.SetValue(c => c.PropExchange, deliveryContext.Exchange)
+							.SetValue(c => c.PropDeliveryTag, deliveryContext.DeliveryTag)
+							.SetValue(c => c.PropConsumerTag, deliveryContext.ConsumerTag)
+
+							.SetValue(c => c.PropAppId, message.AppId)
+							.SetValue(c => c.PropMessageId, message.Id)
+							.SetValue(c => c.PropType, message.Type)
+							.SetValue(c => c.PropContentEncoding, message.ContentEncoding)
+							.SetValue(c => c.PropContentType, message.ContentType)
+							.SetValue(c => c.PropCorrelationId, message.CorrelationId)
+							.SetValue(c => c.PropTimestamp, message.Timestamp)
+
+							.SetValue(c => c.HeaderCreated, headerCreated)
+							.SetValue(c => c.HeaderSdrnServer, sdrnServer)
+							.SetValue(c => c.HeaderSensorName, sensorName)
+							.SetValue(c => c.HeaderSensorTechId, sensorTechId)
+							.SetValue(c => c.HeaderApiVersion, headerApiVersion)
+							.SetValue(c => c.HeaderProtocol, headerProtocol)
+							.SetValue(c => c.HeaderBodyAQName, headerBodyAqName)
+
+							.SetValue(c => c.BodyContentType, Protocol.ContentType.QualifiedOriginal)
+							.SetValue(c => c.BodyContentEncoding, Protocol.ContentEncoding.Compressed)
+							.SetValue(c => c.BodyContent, compressedBody);
+
+						var messagePk = queryExecutor.Execute<MD.IAmqpMessage_PK>(queryInsert);
+
+						var logQueryInsert = this._amqpMessageLogQueryBuilder
+							.Insert()
+							.SetValue(c => c.MESSAGE.Id, messagePk.Id)
+							.SetValue(c => c.StatusCode, (byte)MD.AmqpMessageStatusCode.Created)
+							.SetValue(c => c.StatusName, "Created")
+							.SetValue(c => c.StatusNote, "Message was created in DB")
+							.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+							.SetValue(c => c.ThreadId, currentThreadId)
+							.SetValue(c => c.Source, $"SDRN.QueueConsumer:[Tag={deliveryContext.ConsumerTag}][{this._title}][Handle]");
+						queryExecutor.Execute(logQueryInsert);
+
+						var eventQueryInsert = this._amqpEventQueryBuilder
+							.Insert()
+							.SetValue(c => c.Id, messagePk.Id)
+							.SetValue(c => c.PropType, message.Type);
+						queryExecutor.Execute(eventQueryInsert);
+
+						//dbScope.Commit();
+					}
+                    catch (Exception)
+                    {
+						//dbScope.Rollback();
+	                    throw;
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                _logger.Exception(Contexts.ThisComponent, Categories.Processing, e);
+                var handlingResult = new SdrnMessageHandlingResult
+                {
+                    Status = SdrnMessageHandlingStatus.Error,
+                    ReasonFailure = e.Message
+                };
+                this.RedirectMessage(message, deliveryContext, handlingResult);
+            }
+	        return MessageHandlingResult.Confirm;
         }
 
         private static string GetHeaderValue(IDictionary<string, object> headers, string key)

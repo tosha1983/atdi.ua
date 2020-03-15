@@ -17,6 +17,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	{
 		ICalcTask TASK { get; set; }
 
+		IClientContext CONTEXT { get; set; }
+
 		byte StatusCode { get; set; }
 
 		string StatusName { get; set; }
@@ -48,28 +50,33 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		Pending = 1,
 
 		/// <summary>
+		/// Фаза ожидания запуска процесса расчета
+		/// </summary>
+		Accepted = 2,
+
+		/// <summary>
 		/// Расчет выполняется
 		/// </summary>
-		Processing = 2,
+		Processing = 3,
 
 		/// <summary>
 		/// Расчет завершен
 		/// </summary>
-		Completed = 3,
+		Completed = 4,
 
 		/// <summary>
 		/// Расчет был отменен по внешней причине
 		/// </summary>
-		Canceled = 4,
+		Canceled = 5,
 
 		/// <summary>
 		/// Расчет был прерван по внутреней причине
 		/// </summary>
-		Aborted = 5,
+		Aborted = 6,
 
 		/// <summary>
 		/// Попытка запуска завершилась не удачей
 		/// </summary>
-		Failed = 6
+		Failed = 7
 	}
 }

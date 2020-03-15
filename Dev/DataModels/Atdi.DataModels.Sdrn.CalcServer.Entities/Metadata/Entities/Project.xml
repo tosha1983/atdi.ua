@@ -19,6 +19,9 @@
     <Field Name="StatusCode" SourceType="Column" SourceName="STATUS_CODE" DataType="Code.u08" Required="true" Title="Status Code" Desc="The code of the status of the project"  />
     <Field Name="StatusName" SourceType="Column" SourceName="STATUS_NAME" DataType="Text.50" Title="Status Name" Desc="The name of the status of the project" />
     <Field Name="StatusNote" SourceType="Column" SourceName="STATUS_NOTE" DataType="Text.MAX" Title="Status Note" Desc="The note of the status of the project"/>
+
+    <Field Name="Projection" DataType="Text.50" SourceName="PROJECTION" SourceType="Column" Desc="The projection of the map" Title="Projection" Required="true"/>
+
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

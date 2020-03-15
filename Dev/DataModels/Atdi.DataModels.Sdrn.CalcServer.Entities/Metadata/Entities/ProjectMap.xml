@@ -12,7 +12,7 @@
   <Fields>
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Project Map ID" Desc="The identifier of the project map"/>
     <Field Name="PROJECT" SourceType="Reference" SourceName="Project"  Required="true" Title="Map Project" Desc="The project in which the map is created" />
-    <Field Name="MapName" SourceType="Column" SourceName="MAP_NAME" DataType="Text.250" Required="true" Title="Project Name" Desc="The name of the project." />
+    <Field Name="MapName" SourceType="Column" SourceName="MAP_NAME" DataType="Text.250" Required="true" Title="Map Name" Desc="The name of the map project." />
     <Field Name="MapNote" DataType="Text.MAX" SourceName="MAP_NOTE" SourceType="Column" Desc="The note of the map" Title="Map note" Required="false"/>
 
     <Field Name="OwnerInstance" SourceType="Column" SourceName="OWNER_INSTANCE" DataType="Text.250" Required="true" Title="Owner Instance" Desc="The instance of the project map owner." />
@@ -23,7 +23,7 @@
     <Field Name="StatusName" SourceType="Column" SourceName="STATUS_NAME" DataType="Text.50" Title="Status Name" Desc="The name of the status of the project map" />
     <Field Name="StatusNote" SourceType="Column" SourceName="STATUS_NOTE" DataType="Text.MAX" Title="Status Note" Desc="The note of the status of the project map"/>
 
-    <Field Name="Projection" DataType="Text.50" SourceName="PROJECTION" SourceType="Column" Desc="The projection of the map" Title="Projection" Required="true"/>
+    
 
     <Field Name="StepUnit" DataType="Text.10" SourceName="STEP_UNIT" SourceType="Column" Desc="The unit of the map step" Title="Step unit" Required="true"/>
 

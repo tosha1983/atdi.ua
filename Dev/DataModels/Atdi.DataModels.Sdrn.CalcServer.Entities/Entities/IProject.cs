@@ -31,6 +31,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string StatusNote { get; set; }
 
+		string Projection { get; set; }
+
 	}
 
 	public enum ProjectStatusCode

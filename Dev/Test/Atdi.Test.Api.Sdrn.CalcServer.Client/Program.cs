@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
+﻿using Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels;
+using Atdi.Test.Api.Sdrn.CalcServer.Client.DTO;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels;
-using Atdi.Test.Api.Sdrn.CalcServer.Client.DTO;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -27,40 +22,58 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 				new MediaTypeWithQualityHeaderValue("application/json"));
 			
 
-			LoadContextStation(10);
+			//LoadContextStation(10);
 
-			var projectId = CreateProject();
+			var projectId = 1; // CreateProject();
 
+			
+
+			//var stationId = CreateContextStation(clientContextId, "Station #0001", "CS: 000001128236263565");
+			//Console.ReadLine();
+
+			//var mapId = CreateProjectMap(
+			//		projectId,
+			//		"Main",
+			//		"Львов: тестирования расчета профелей",
+			//		new MapCoordinate
+			//		{
+			//			X = 276330,
+			//			Y = 5532474
+			//		},
+			//		new MapAxis
+			//		{
+			//			Number = 4122, 
+			//			Step = 5
+			//		},
+			//		new MapAxis
+			//		{
+			//			Number = 3340,
+			//			Step = 5
+			//		}
+			//	);
+
+			//ChangeProjectMapStatus(mapId, 1, "Pending", "The status of waiting for map processing");
 			var clientContextId = CreateClientContext(projectId);
-			var stationId = CreateContextStation(clientContextId, "Station #0001", "CS: 000001128236263565");
-			Console.ReadLine();
-			var mapId = CreateProjectMap(
-					projectId,
-					"MainMap Test3",
-					"Sectors: 2x2",
-					new MapCoordinate
-					{
-						X = 271200 + 300,
-						Y = 5672690 - 500
-					},
-					new MapAxis
-					{
-						Number = 50, 
-						Step = 100
-					},
-					new MapAxis
-					{
-						Number = 100,
-						Step = 100
-					}
-				);
 
-			Console.WriteLine($"Project ID #{projectId}, Map Id #{mapId}. Press any key to change status");
+			//Console.WriteLine($"Created Project ID #{projectId}, Map Id #{mapId}. Press any key to change status");
+			//Console.WriteLine($"Created Client Context ID #{clientContextId}. Press any key to change status");
+			//Console.WriteLine($"Wait maps preparing ... Press any key to continue");
+			//Console.ReadLine();
+
+			var taskId = CreateCoverageProfilesCalcTask(1);
+			ChangeCalcTaskStatus(taskId, 2, "Available", "The status of available task for calculation");
+
+			Console.WriteLine($"Created calc task with ID #{taskId}. Press any key to change status");
+
+			var resultId = CreateCalcResult(clientContextId, taskId);
+
+			Console.WriteLine($"Created result task with ID #{taskId}. Press any key to change status");
+			
 			Console.ReadLine();
 
-			ChangeProjectMapStatus(mapId, 1, "Pending", "The status of waiting for map processing");
+			ChangeCalcResultStatus(resultId, 1, "Pending", "The status of waiting calculation result");
 
-			Console.WriteLine($"Wait preparing ... Press any key to make map file");
+			Console.WriteLine($"Wait calculation ... Press any key to show result");
 			Console.ReadLine();
 
 			var mapFile = LoadProjectMapContent(4);
@@ -84,7 +97,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 					"OwnerProjectId",
 					"StatusCode",
 					"StatusName",
-					"StatusNote"
+					"StatusNote",
+					"Projection"
 				},
 				Values = new object []
 				{
@@ -94,7 +108,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 					Guid.NewGuid().ToString(),
 					0,
 					"Created",
-					null
+					null,
+					"4UTN35",
 				}
 			};
 
@@ -125,7 +140,6 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 					"StatusCode",
 					"StatusName",
 					"StatusNote",
-					"Projection",
 					"StepUnit",
 					"OwnerAxisXNumber",
 					"OwnerAxisXStep",
@@ -144,7 +158,6 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 					0,
 					"Created",
 					null,
-					"4UTN36",
 					"M",
 					xAxis.Number,
 					xAxis.Step,
@@ -567,6 +580,173 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 
 			// return project ID.
 			return ;
+		}
+
+
+		static long CreateCoverageProfilesCalcTask(long projectId)
+		{
+			try
+			{
+				var request = new DTO.RecordCreateRequest
+				{
+					Context = "SDRN_CalcServer_DB",
+					Namespace = "Atdi.DataModels.Sdrn.CalcServer.Entities",
+					Entity = "CoverageProfilesCalcTask",
+					Fields = new string[]
+					{
+						"TypeCode",
+						"TypeName",
+						"StatusCode",
+						"StatusName",
+						"StatusNote",
+						"OwnerInstance",
+						"OwnerTaskId",
+						"PROJECT.Id",
+						"MapName",
+						"ModeCode",
+						"ModeName",
+						"PointsX",
+						"PointsY",
+						"ResultPath"
+					},
+					Values = new object[]
+					{
+						1,
+						"CoverageProfilesCalc",
+						0,
+						"Created",
+						null,
+						Program.ClientInstance,
+						Guid.NewGuid().ToString(),
+						projectId,
+						"Main",
+						0,
+						"InPairs",
+						new int[] { 289460,  287135,  284115,  290540,  288580,  287555},
+						new int[] { 5529044, 5525564, 5526779, 5525594, 5524024, 5524844},
+						@"C:\Temp\Maps\Profiles"
+					}
+				};
+
+				var response = client.PostAsJsonAsync(
+					"/appserver/v1/api/orm/data/$Record/create", request).GetAwaiter().GetResult();
+
+				response.EnsureSuccessStatusCode();
+
+				var result = response.Content.ReadAsAsync<SimplePkRecordCreateResult>().GetAwaiter().GetResult();
+				// return task ID.
+				return result.PrimaryKey.Id;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+			
+		}
+
+		static long ChangeCalcTaskStatus(long taskId, int statusCode, string statusName, string statusNote)
+		{
+			var request = new DTO.RecordUpdateRequest
+			{
+				Context = "SDRN_CalcServer_DB",
+				Namespace = "Atdi.DataModels.Sdrn.CalcServer.Entities",
+				Entity = "CalcTask",
+				PrimaryKey = taskId.ToString(),
+				Fields = new string[]
+				{
+					"StatusCode",
+					"StatusName",
+					"StatusNote"
+				},
+				Values = new object[]
+				{
+					statusCode,
+					statusName,
+					statusNote
+				}
+			};
+
+			var response = client.PostAsJsonAsync(
+				"/appserver/v1/api/orm/data/$Record/update", request).GetAwaiter().GetResult();
+
+			response.EnsureSuccessStatusCode();
+
+			var result = response.Content.ReadAsAsync<SimplePkRecordCreateResult>().GetAwaiter().GetResult();
+			// return project ID.
+			return result.Count;
+		}
+
+
+		static long CreateCalcResult(long contextId, long taskId)
+		{
+			var request = new DTO.RecordCreateRequest
+			{
+				Context = "SDRN_CalcServer_DB",
+				Namespace = "Atdi.DataModels.Sdrn.CalcServer.Entities",
+				Entity = "CalcResult",
+				Fields = new string[]
+				{
+					"StatusCode",
+					"StatusName",
+					"StatusNote",
+					"CallerInstance",
+					"CallerResultId",
+					"CONTEXT.Id",
+					"TASK.Id"
+				},
+				Values = new object[]
+				{
+					0,
+					"Created",
+					null,
+					Program.ClientInstance,
+					Guid.NewGuid().ToString(),
+					contextId,
+					taskId
+				}
+			};
+
+			var response = client.PostAsJsonAsync(
+				"/appserver/v1/api/orm/data/$Record/create", request).GetAwaiter().GetResult();
+
+			response.EnsureSuccessStatusCode();
+
+			var result = response.Content.ReadAsAsync<SimplePkRecordCreateResult>().GetAwaiter().GetResult();
+			// return task ID.
+			return result.PrimaryKey.Id;
+		}
+
+		static long ChangeCalcResultStatus(long resultId, int statusCode, string statusName, string statusNote)
+		{
+			var request = new DTO.RecordUpdateRequest
+			{
+				Context = "SDRN_CalcServer_DB",
+				Namespace = "Atdi.DataModels.Sdrn.CalcServer.Entities",
+				Entity = "CalcResult",
+				PrimaryKey = resultId.ToString(),
+				Fields = new string[]
+				{
+					"StatusCode",
+					"StatusName",
+					"StatusNote"
+				},
+				Values = new object[]
+				{
+					statusCode,
+					statusName,
+					statusNote
+				}
+			};
+
+			var response = client.PostAsJsonAsync(
+				"/appserver/v1/api/orm/data/$Record/update", request).GetAwaiter().GetResult();
+
+			response.EnsureSuccessStatusCode();
+
+			var result = response.Content.ReadAsAsync<SimplePkRecordCreateResult>().GetAwaiter().GetResult();
+			// return project ID.
+			return result.Count;
 		}
 	}
 }

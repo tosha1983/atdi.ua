@@ -15,7 +15,7 @@ CREATE TABLE [CALC].[PROJECT_MAPS](
 	[STATUS_CODE] [tinyint] NOT NULL,
 	[STATUS_NAME] [nvarchar](50) NOT NULL,
 	[STATUS_NOTE] [nvarchar](max) NULL,
-	[PROJECTION] [nvarchar](50) NOT NULL,
+	
 	[STEP_UNIT] [nvarchar](10) NOT NULL,
 	[OWNER_AXIS_X_NUMBER] [int] NOT NULL,
 	[OWNER_AXIS_X_STEP] [int] NOT NULL,

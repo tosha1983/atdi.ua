@@ -46,7 +46,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Iterations
 
 			// можно вызват другую итерацию
 			var secondData = new SecondIterationData();
-			var secondResult = taskContext.RunIteration<SecondIterationData, SecondIterationResult>(secondData);
+			//var secondResult = taskContext.RunIteration<SecondIterationData, SecondIterationResult>(secondData);
 			
 			// выполняем низковроневый расчет
 			var ar1 = new float[100];

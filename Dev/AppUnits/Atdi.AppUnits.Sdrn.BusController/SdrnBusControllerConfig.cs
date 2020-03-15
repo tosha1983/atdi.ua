@@ -31,8 +31,10 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.DeviceExchange = config.GetParameterAsString("Device.Exchange");
             this.ServerQueueNamePart = config.GetParameterAsString("Server.QueueNamePart");
             this.DeviceQueueNamePart = config.GetParameterAsString("Device.QueueNamePart");
+            this.MessagesProcessingJobRepeatDelay = config.GetParameterAsInteger("MessageProcessingJob.RepeatDelay");
+            this.MessagesProcessingJobStartDelay = config.GetParameterAsInteger("MessageProcessingJob.StartDelay");
 
-            var serverQueuesParam = config.GetParameterAsString("Server.Queues");
+			var serverQueuesParam = config.GetParameterAsString("Server.Queues");
             var serverQueues = new Dictionary<string, ServerQueueDecriptor>();
 
             if (!string.IsNullOrEmpty(serverQueuesParam))
@@ -149,5 +151,9 @@ namespace Atdi.AppUnits.Sdrn.BusController
 
         public IDictionary<string, ServerQueueDecriptor> ServerQueueus { get; set; }
 
-    }
+		public int? MessagesProcessingJobRepeatDelay { get; set; }
+
+		public int? MessagesProcessingJobStartDelay { get; set; }
+
+	}
 }

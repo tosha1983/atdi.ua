@@ -16,6 +16,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
 	internal class FirstTask : ITaskHandler
 	{
 		private readonly IDataLayer<EntityDataOrm> _dataLayer;
+		private readonly IIterationsPool _iterationsPool;
 		private readonly ILogger _logger;
 		private readonly IQueryExecutor _queryExecutor;
 		private ITaskContext _taskContext;
@@ -25,12 +26,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
 		/// В примере показан минимальный набор сервисов которые нужны
 		/// </summary>
 		/// <param name="dataLayer"></param>
+		/// <param name="iterationsPool"></param>
 		/// <param name="logger"></param>
-		public FirstTask(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+		public FirstTask(IDataLayer<EntityDataOrm> dataLayer, IIterationsPool iterationsPool, ILogger logger)
 		{
 			// Важно: объект обработчика создается каждый раз на факт запуска
 
 			this._dataLayer = dataLayer;
+			this._iterationsPool = iterationsPool;
 			this._logger = logger;
 			this._queryExecutor = this._dataLayer.Executor<CalcServerDataContext>();
 		}
@@ -59,7 +62,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks
 				//тут код организации процесса расчета
 
 				var firstData = new FirstIterationData();
-				var firstResult = _taskContext.RunIteration<FirstIterationData, FirstIterationResult>(firstData);
+				var firstResult = _iterationsPool.GetIteration<FirstIterationData, FirstIterationResult>().Run(_taskContext, firstData);
 				
 				// в процессе можно генерировать евенты
 				_taskContext.SendEvent(new CalcEvent{ Message = "Some step", Percent = 10});

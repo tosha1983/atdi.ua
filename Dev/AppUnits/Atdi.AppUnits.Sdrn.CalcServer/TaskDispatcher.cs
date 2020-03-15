@@ -18,13 +18,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 {
 	internal sealed class TaskDispatcher : ITaskDispatcher, IDisposable
 	{
+		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly IJobBroker _jobBroker;
 		private readonly ILogger _logger;
 
 		public TaskDispatcher(
+			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			IJobBroker jobBroker,
 			ILogger logger)
 		{
+			_calcServerDataLayer = calcServerDataLayer;
 			_jobBroker = jobBroker;
 			_logger = logger;
 		}
@@ -41,20 +44,41 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			{
 				_logger.Verbouse(Contexts.ThisComponent, Categories.MapPreparation, $"Running calc task for the result with id #{resultId}");
 
-				var taskWorkerContext = new TaskWorkerContext
+				using (var calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
 				{
-					ResultId = resultId,
-					TaskObserver = observer
-				};
+					calcDbScope.BeginTran();
+					try
+					{
+						if (!this.TryAcceptTaskResult(calcDbScope, resultId))
+						{
+							throw new InvalidOperationException("Failed to accept the task result record for processing. Invalid identifier value or record status.");
+						}
 
-				var taskWorkerJobDef = new JobDefinition<TaskWorkerJob, TaskWorkerContext>()
-				{
-					Name = $"Task Worker - result Id #{resultId}",
-					Recoverable = false,
-					Repeatable = false
-				};
+						var taskWorkerContext = new TaskWorkerContext
+						{
+							ResultId = resultId,
+							TaskObserver = observer
+						};
 
-				_jobBroker.Run(taskWorkerJobDef, taskWorkerContext);
+						var taskWorkerJobDef = new JobDefinition<TaskWorkerJob, TaskWorkerContext>()
+						{
+							Name = $"Task Worker - result Id #{resultId}",
+							Recoverable = false,
+							Repeatable = false
+						};
+
+						_jobBroker.Run(taskWorkerJobDef, taskWorkerContext);
+
+						calcDbScope.Commit();
+					}
+					catch (Exception)
+					{
+						calcDbScope.Rollback();
+						throw;
+					}
+					
+				}
+				
 			}
 			catch (Exception e)
 			{
@@ -62,7 +86,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			}
 		}
 
-		
+		private bool TryAcceptTaskResult(IDataLayerScope calcDbScope, long resultId)
+		{
+			var query = _calcServerDataLayer.GetBuilder<ICalcResult>()
+				.Update()
+				.SetValue(c => c.StatusCode, (byte)CalcResultStatusCode.Accepted)
+				.SetValue(c => c.StatusName, "Accepted")
+				.SetValue(c => c.StatusNote, "The calc result record was accepted")
+				.Where(c => c.Id, ConditionOperator.Equal, resultId)
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Pending);
+
+			return calcDbScope.Executor.Execute(query) > 0;
+		}
+
 		public void Dispose()
 		{
 			//throw new NotImplementedException();

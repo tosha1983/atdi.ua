@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform.AppServer;
+using Atdi.Platform.Workflows;
 
 namespace Atdi.AppUnits.Sdrn.BusController
 {
@@ -44,13 +45,13 @@ namespace Atdi.AppUnits.Sdrn.BusController
             this.Container.Register<ISdrnMessagePublisher, SdrnMessagePublisher>(ServiceLifetime.PerThread);
             this.Container.Register<ISdrnMessageDispatcher, SdrnMessageDispatcher>(ServiceLifetime.Singleton);
 
-            this.Container.Register<MessageProcessing, MessageProcessing>(ServiceLifetime.Singleton);
-
-            //this.Container.Register<ConsumersRabbitMQConnection>(ServiceLifetime.PerThread);
-            //this.Container.Register<PublisherRabbitMQConnection>(ServiceLifetime.PerThread);
-            //this.Container.Register<ConsumersBusConnector>(ServiceLifetime.Transient);
-            //this.Container.Register<PublisherBusConnector>(ServiceLifetime.PerThread);
-        }
+            //this.Container.Register<MessageProcessing, MessageProcessing>(ServiceLifetime.Singleton);
+            this.Container.Register<MessageProcessingJob>(ServiceLifetime.Singleton);
+			//this.Container.Register<ConsumersRabbitMQConnection>(ServiceLifetime.PerThread);
+			//this.Container.Register<PublisherRabbitMQConnection>(ServiceLifetime.PerThread);
+			//this.Container.Register<ConsumersBusConnector>(ServiceLifetime.Transient);
+			//this.Container.Register<PublisherBusConnector>(ServiceLifetime.PerThread);
+		}
 
         protected override void OnActivateUnit()
         {
@@ -99,12 +100,32 @@ namespace Atdi.AppUnits.Sdrn.BusController
                 dispatcher.Activate();
             });
 
-            hostLoader.RegisterTrigger("Running AMQP Messages Processing", () =>
-            {
-                var messagesProcessing = this.Resolver.Resolve<MessageProcessing>();
-                messagesProcessing.Run();
-            });
-        }
+
+			var jobBroker = this.Resolver.Resolve<IJobBroker>();
+			hostLoader.RegisterTrigger("Running AMQP Messages Processing ...", () =>
+			{
+				var startDelaySeconds = _busControllerConfig.MessagesProcessingJobStartDelay;
+				if (!startDelaySeconds.HasValue)
+				{
+					startDelaySeconds = 0;
+				}
+				var repeatDelaySeconds = _busControllerConfig.MessagesProcessingJobRepeatDelay;
+				if (!repeatDelaySeconds.HasValue)
+				{
+					repeatDelaySeconds = 60;
+				}
+				var jobDef = new JobDefinition<MessageProcessingJob>()
+				{
+					Name = "AMQP Messages Processing Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds.Value),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerSecond * repeatDelaySeconds.Value)
+				};
+
+				jobBroker.Run(jobDef);
+			});
+		}
 
         protected override void OnDeactivateUnit()
         {

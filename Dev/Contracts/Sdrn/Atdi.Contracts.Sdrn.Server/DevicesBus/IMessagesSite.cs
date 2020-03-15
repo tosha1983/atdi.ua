@@ -10,8 +10,11 @@ namespace Atdi.Contracts.Sdrn.Server.DevicesBus
     {
         IMessageProcessingScope<TDeliveryObject> StartProcessing<TDeliveryObject>(long messageId);
 
-        void ChangeStatus(long messageId, byte oldCode, byte newCode, string statusNote);
+        //void ChangeStatus(long messageId, byte oldCode, byte newCode, string statusNote);
 
-        ValueTuple<long, string>[] GetMessagesForNotification();
+        //ValueTuple<long, string>[] GetMessagesForNotification();
+
+		// Метод должен перенаправить все новые сообщения в систему событий
+        void RedirectMessages();
     }
 }
