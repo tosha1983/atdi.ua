@@ -138,7 +138,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                     {
                                         while (readerAreaLocation.Read())
                                         {
-                                            var findLocation = listLocations.Find(x => Math.Abs(x.Latitude - readerAreaLocation.GetValue(c => c.Latitude))<0.000001 && (x.Longitude - readerAreaLocation.GetValue(c => c.Longitude))< 0.000001);
+                                            var findLocation = listLocations.Find(x => Math.Abs(x.Latitude - readerAreaLocation.GetValue(c => c.Latitude)) < 0.000001 && (x.Longitude - readerAreaLocation.GetValue(c => c.Longitude)) < 0.000001);
                                             if (findLocation == null)
                                             {
                                                 forDeleteIdsLocation.Add(readerAreaLocation.GetValue(c => c.Id));
@@ -876,18 +876,18 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetGroupSensors.Text);
             var dataGroupSensors = new List<GroupSensors>();
-            for (int i=0; i< refSpectrums.Length; i++)
+            for (int i = 0; i < refSpectrums.Length; i++)
             {
                 for (int j = 0; j < refSpectrums[i].DataRefSpectrum.Length; j++)
                 {
                     var dataRefSpectrum = refSpectrums[i].DataRefSpectrum[j];
                     var fndValue = dataGroupSensors.Find(v => v.SensorId == dataRefSpectrum.SensorId && v.Freq_MHz == dataRefSpectrum.Freq_MHz);
-                    if (fndValue==null)
+                    if (fndValue == null)
                     {
                         dataGroupSensors.Add(new GroupSensors()
                         {
-                             SensorId = dataRefSpectrum.SensorId,
-                             Freq_MHz = dataRefSpectrum.Freq_MHz
+                            SensorId = dataRefSpectrum.SensorId,
+                            Freq_MHz = dataRefSpectrum.Freq_MHz
                         });
                     }
                 }
@@ -1045,6 +1045,25 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return emittingsDataToCorrespond;
         }
 
+        private bool CompareEmittingSpectrums(Spectrum spectrumA, Spectrum spectrumB)
+        {
+            if ((spectrumA.SpectrumStartFreq_MHz == spectrumB.SpectrumStartFreq_MHz) && (spectrumA.Levels_dBm.Length == spectrumB.Levels_dBm.Length))
+            {
+                float levelsDifference = 0;
+                for (int k = 0; k < spectrumA.Levels_dBm.Length; k++)
+                {
+                    levelsDifference += spectrumA.Levels_dBm[k] - spectrumB.Levels_dBm[k];
+                    if (levelsDifference < 0.000001) break;
+                }
+                if (levelsDifference < 0.000001)
+                {
+                    return true;
+                    //break;
+                }
+            }
+            return false;
+        }
+
         private void FillProtocolsDataWithOutEmittings(RefSpectrum[] refSpectrums, ref List<Protocols> lstProtocols)
         {
             for (int i = 0; i < refSpectrums.Length; i++)
@@ -1190,6 +1209,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 initialEmittings.Add(emittings[i]);
             }
+            List<Spectrum> uncorrespondEmittingsSpectrum = new List<Spectrum>();
 
             //
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.SynchroEmittings.Text);
@@ -1267,6 +1287,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         }
                         else if ((levelDifference_dB < -30) && (j == numOfIterations - 1))
                         {
+                                                           
                             stationsDataToCorrespondList.RemoveRange(i, 1);
                             numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
                             i--;
@@ -1296,6 +1317,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 if ((foundDRefSpectrum.DateMeas < foundEmitting.WorkTimes[j].StartEmitting.Date)
                                     || (foundDRefSpectrum.DateMeas > foundEmitting.WorkTimes[j].StopEmitting.Date))
                                 {
+                                    uncorrespondEmittingsSpectrum.Add(foundEmitting.Spectrum);
                                     stationsDataToCorrespondList.RemoveRange(i, 1);
                                     emittingsDataToCorrespondList.RemoveRange(i, 1);
                                     numOfIterations = Math.Min(stationsDataToCorrespondList.Count(), emittingsDataToCorrespondList.Count());
@@ -1344,26 +1366,53 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var foundEmitting = emittings.ToList().Find(x => x.Id == emittingId);
                         if (foundEmitting != null)
                         {
-                            if (initialEmittings[j].Spectrum.Levels_dBm.Length == foundEmitting.Spectrum.Levels_dBm.Length)
+                            // если спект соответствует - излучения удляются
+                            if(CompareEmittingSpectrums(initialEmittings[j].Spectrum, foundEmitting.Spectrum))
                             {
-                                float levelsDifference = 0;
-                                for (int k = 0; k < initialEmittings[j].Spectrum.Levels_dBm.Length; k++)
-                                {
-                                    levelsDifference += initialEmittings[j].Spectrum.Levels_dBm[k] - foundEmitting.Spectrum.Levels_dBm[k];
-                                    if (levelsDifference != 0) break;
-                                }
-                                if (levelsDifference < 0.000001)
-                                {
-                                    initialEmittings.RemoveRange(j, 1);
-                                    j--;
-                                    break;
-                                }
+                                initialEmittings.RemoveRange(j, 1);
+                                j--;
+                                break;
                             }
+                                
+                            ////
+                            //if (initialEmittings[j].Spectrum.Levels_dBm.Length == foundEmitting.Spectrum.Levels_dBm.Length)
+                            //{
+                            //    float levelsDifference = 0;
+                            //    for (int k = 0; k < initialEmittings[j].Spectrum.Levels_dBm.Length; k++)
+                            //    {
+                            //        levelsDifference += initialEmittings[j].Spectrum.Levels_dBm[k] - foundEmitting.Spectrum.Levels_dBm[k];
+                            //        if (levelsDifference != 0) break;
+                            //    }
+                            //    if (levelsDifference < 0.000001)
+                            //    {
+                            //        initialEmittings.RemoveRange(j, 1);
+                            //        j--;
+                            //        break;
+                            //    }
+                            //}////
                         }
                         
                     }
                 }
                 // ---- рекурсивный вызов функции длл невалидных соответствий (валидные измерения и излучения убраны)
+                SynchroEmittings(initialRefSpectrums.ToArray(), initialEmittings.ToArray(), emittingParameters, ref lstProtocols);
+            }
+            else if (numOfIterations == 0 && uncorrespondEmittingsSpectrum.Count > 0)
+            {
+                // ---- Удаление невалидных излучений (Поиск соответствия по спектру)
+                for (int i = 0; i < uncorrespondEmittingsSpectrum.Count; i++)
+                {
+                    for (int j = 0; j < initialEmittings.Count; j++)
+                    {
+                        // если спект соответствует - излучения удляются
+                        if (CompareEmittingSpectrums(initialEmittings[j].Spectrum, uncorrespondEmittingsSpectrum[i]))
+                        {
+                            initialEmittings.RemoveRange(j, 1);
+                            j--;
+                            break;
+                        }
+                    }
+                }
                 SynchroEmittings(initialRefSpectrums.ToArray(), initialEmittings.ToArray(), emittingParameters, ref lstProtocols);
             }
             else
