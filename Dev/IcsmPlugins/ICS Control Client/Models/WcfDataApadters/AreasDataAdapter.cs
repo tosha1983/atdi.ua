@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using VM = XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
 

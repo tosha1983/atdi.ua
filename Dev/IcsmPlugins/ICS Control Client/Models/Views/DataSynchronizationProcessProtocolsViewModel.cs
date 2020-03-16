@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XICSM.ICSControlClient.Environment.Wpf;
-using Atdi.Contracts.WcfServices.Sdrn.Server;
-using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 
 namespace XICSM.ICSControlClient.Models.Views
 {
@@ -33,7 +32,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public Double? OpHHFr { get; set; }
         public Double? OpHHTo { get; set; }
         public string OpDays { get; set; }
-        public SDR.SensorLocation[] Locations { get; set; }
+        public SensorLocation[] Locations { get; set; }
 
 
         public string Standard { get; set; }
@@ -60,6 +59,6 @@ namespace XICSM.ICSControlClient.Models.Views
         public double? RadioControlMeasFreq_MHz { get; set; }
         public double? RadioControlBandWidth { get; set; }
 
-        public SDR.ProtocolsWithEmittings ProtocolsLinkedWithEmittings { get; set; }
+        public ProtocolsWithEmittings ProtocolsLinkedWithEmittings { get; set; }
     }
 }

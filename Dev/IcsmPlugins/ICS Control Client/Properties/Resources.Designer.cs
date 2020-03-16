@@ -97,15 +97,6 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adress.
-        /// </summary>
-        public static string Adress {
-            get {
-                return ResourceManager.GetString("Adress", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to AGL.
         /// </summary>
         public static string AGL {
@@ -817,15 +808,6 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Freq, MHz.
-        /// </summary>
-        public static string Freq_MHz {
-            get {
-                return ResourceManager.GetString("Freq_MHz", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Freq Hz.
         /// </summary>
         public static string FreqHz {
@@ -1078,15 +1060,6 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Level dBm.
-        /// </summary>
-        public static string Level_dBm {
-            get {
-                return ResourceManager.GetString("Level_dBm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Level, dBm.
         /// </summary>
         public static string LeveldBm {
@@ -1240,7 +1213,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max freq MHz.
+        ///   Looks up a localized string similar to Max freq, MHz.
         /// </summary>
         public static string MaxFreqMHz {
             get {
@@ -1843,15 +1816,6 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensor ID.
-        /// </summary>
-        public static string SensorIds {
-            get {
-                return ResourceManager.GetString("SensorIds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sensor Name.
         /// </summary>
         public static string SensorName {
@@ -2334,15 +2298,6 @@ namespace XICSM.ICSControlClient.Properties {
         public static string TriggerDeviationFromReference {
             get {
                 return ResourceManager.GetString("TriggerDeviationFromReference", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type Measurements.
-        /// </summary>
-        public static string Type_Measurements {
-            get {
-                return ResourceManager.GetString("Type_Measurements", resourceCulture);
             }
         }
         
