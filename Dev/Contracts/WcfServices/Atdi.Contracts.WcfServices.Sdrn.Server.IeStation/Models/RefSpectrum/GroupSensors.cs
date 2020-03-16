@@ -18,14 +18,14 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// Идентификатор сенсора 
         /// </summary>
         [DataMember]
-        public long SensorId;
+        public long SensorId { get; set; }
 
 
         /// <summary>
         /// Частота
         /// </summary>
         [DataMember]
-        public double Freq_MHz;
+        public double Freq_MHz { get; set; }
 
     }
 }

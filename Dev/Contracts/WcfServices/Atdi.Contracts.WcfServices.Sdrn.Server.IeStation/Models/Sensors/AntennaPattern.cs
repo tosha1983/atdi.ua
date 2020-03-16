@@ -9,45 +9,35 @@ using Atdi.DataModels.Sdrns.Server;
 namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
 {
     /// <summary>
-    /// Represents location of sensor
+    /// Represents parameters of patterns of antenna of sensor for measurement depend from frequency.
     /// </summary>
     [DataContract(Namespace = Specification.Namespace)]
-    public class SensorLocation
+    public class AntennaPattern
     {
         /// <summary>
-        /// DataFrom
+        /// Frequency of pattren, MHz
         /// </summary>
         [DataMember]
-        public DateTime? DataFrom;
+        public Double Freq { get; set; }
         /// <summary>
-        /// DataTo
+        /// Gain of Antenna, dB
         /// </summary>
         [DataMember]
-        public DateTime? DataTo;
+        public Double Gain { get; set; }
         /// <summary>
-        /// DataCreated
+        /// DiagA - 9X - Antenna pattern
         /// </summary>
         [DataMember]
-        public DateTime? DataCreated;
+        public string DiagA { get; set; }
         /// <summary>
-        /// Status
+        /// DiagH - 9XH - Horizontal diagram
         /// </summary>
         [DataMember]
-        public string Status;
+        public string DiagH { get; set; }
         /// <summary>
-        /// Longitude, DEC
+        /// DiagV - 9XV - Vertical diagram
         /// </summary>
         [DataMember]
-        public Double? Lon; 
-        /// <summary>
-        /// Latitude,  DEC
-        /// </summary>
-        [DataMember]
-        public Double? Lat;
-        /// <summary>
-        /// Altitude above sea level, m
-        /// </summary>
-        [DataMember]
-        public Double? ASL;
+        public string DiagV { get; set; }
     }
 }

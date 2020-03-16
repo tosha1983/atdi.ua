@@ -18,26 +18,26 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// Freq, MHz
         /// </summary>
         [DataMember]
-        public Double Freq; 
+        public Double Freq { get; set; }
         /// <summary>
         /// own noise level, dBm
         /// </summary>
         [DataMember]
-        public Double? KTBF;
+        public Double? KTBF { get; set; }
         /// <summary>
         /// noise figure, dB
         /// </summary>
         [DataMember]
-        public Double? NoiseF;
+        public Double? NoiseF { get; set; }
         /// <summary>
         /// FreqStability, %
         /// </summary>
         [DataMember]
-        public Double? FreqStability;//%
+        public Double? FreqStability { get; set; }//%
         /// <summary>
         /// Additional Loss, dB
         /// </summary>
         [DataMember]
-        public Double? AddLoss; 
+        public Double? AddLoss { get; set; }
     }
 }

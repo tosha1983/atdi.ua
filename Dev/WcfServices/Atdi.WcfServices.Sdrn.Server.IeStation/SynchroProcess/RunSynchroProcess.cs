@@ -24,89 +24,18 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
-        public struct StationDataToSort
-        {
-            public long? RefSpectrumId;
-            public long? DataRefSpectrumId;
-            public string GlobalSID;
-            public double Freq_MHz;
-            public double Level_dBm;
-        }
-        public struct EmittingDataToSort
-        {
-            public long? Id;
-            public double StartFrequency_MHz;
-            public double StopFrequency_MHz;
-            public double CurrentPower_dBm;
-            public int worktimeHitsCount;
-        }
-
         public RunSynchroProcess(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
 
-        public bool UpdateStatusRefSpectrum(DataRefSpectrum dataRefSpectrum)
-        {
-            bool isSuccess = false;
-            try
-            {
-                this._logger.Info(Contexts.ThisComponent, Categories.ImportData, Events.UpdateStatusStationExtended.Text);
-                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
-                {
-                    scope.BeginTran();
-                    var builderUpdateRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Update();
-                    builderUpdateRefSpectrum.Where(c => c.TableId, ConditionOperator.Equal, dataRefSpectrum.TableId);
-                    builderUpdateRefSpectrum.Where(c => c.TableName, ConditionOperator.Equal, dataRefSpectrum.TableName);
-                    builderUpdateRefSpectrum.Where(c => c.SensorId, ConditionOperator.Equal, dataRefSpectrum.SensorId);
-                    if (!string.IsNullOrEmpty(dataRefSpectrum.StatusMeas))
-                    {
-                        builderUpdateRefSpectrum.SetValue(c => c.StatusMeas, dataRefSpectrum.StatusMeas);
-                        scope.Executor.Execute(builderUpdateRefSpectrum);
-                    }
-                    scope.Commit();
-                }
-                isSuccess = true;
-            }
-            catch (Exception e)
-            {
-                isSuccess = false;
-                this._logger.Exception(Contexts.ThisComponent, e);
-            }
-            return isSuccess;
-        }
 
-        public bool UpdateStatusStationExtended(StationExtended stationExtended)
-        {
-            bool isSuccess = false;
-            try
-            {
-                this._logger.Info(Contexts.ThisComponent, Categories.ImportData, Events.UpdateStatusStationExtended.Text);
-                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
-                {
-                    scope.BeginTran();
-                    var builderUpdateStationExtended = this._dataLayer.GetBuilder<MD.IStationExtended>().Update();
-                    builderUpdateStationExtended.Where(c => c.TableId, ConditionOperator.Equal, stationExtended.TableId);
-                    builderUpdateStationExtended.Where(c => c.TableName, ConditionOperator.Equal, stationExtended.TableName);
-                    if (!string.IsNullOrEmpty(stationExtended.StatusMeas))
-                    {
-                        builderUpdateStationExtended.SetValue(c => c.StatusMeas, stationExtended.StatusMeas);
-                        scope.Executor.Execute(builderUpdateStationExtended);
-                    }
-                    scope.Commit();
-                }
-                isSuccess = true;
-            }
-            catch (Exception e)
-            {
-                isSuccess = false;
-                this._logger.Exception(Contexts.ThisComponent, e);
-            }
-            return isSuccess;
-        }
-
-
+        /// <summary>
+        /// Синхронизация массива Area[]
+        /// </summary>
+        /// <param name="areas"></param>
+        /// <returns></returns>
         public bool SynchroAreas(Area[] areas)
         {
             bool isSuccess = false;
@@ -289,6 +218,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
+        /// <summary>
+        /// Синхронизация станций
+        /// </summary>
+        /// <param name="stationsExtended"></param>
+        /// <returns></returns>
         public bool SynchroStationsExtended(StationExtended[] stationsExtended)
         {
             bool isSuccess = false;
@@ -634,7 +568,14 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-
+        /// <summary>
+        /// Создание нового процесса синхронизации эмиттингов
+        /// </summary>
+        /// <param name="dataSynchronization"></param>
+        /// <param name="headRefSpectrumIdsBySDRN"></param>
+        /// <param name="sensorIdsBySDRN"></param>
+        /// <param name="areas"></param>
+        /// <returns></returns>
         public long? CreateDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas)
         {
             long? synchroProcessInsertId = null;
@@ -717,6 +658,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return synchroProcessInsertId;
         }
 
+        /// <summary>
+        /// Извлечение идентфикатора таблицы Area по значению поля IdentifierFromICSM
+        /// </summary>
+        /// <param name="IdentifierFromICSM"></param>
+        /// <returns></returns>
         public long? GetAreaIdByICSMId(int IdentifierFromICSM)
         {
             long? areaId = null;
@@ -743,6 +689,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             }
             return areaId;
         }
+
+        /// <summary>
+        /// Извлечение перечня координат по заданным areas
+        /// </summary>
+        /// <param name="areas"></param>
+        /// <returns></returns>
         public List<DataLocation[]> GetPolygonFromArea(Area[] areas)
         {
             var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
@@ -772,168 +724,17 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return polygonAll;
         }
 
-        private string CalcStatusMeasForRefSpectrum(DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string DocNum, DateTime? testStartDate, DateTime? testStopDate, DateTime dateMeasFromRefSpectrum)
-        {
-            var StatusMeas = "";
-            DateTime? Start = null;
-            DateTime? Stop = null;
-            if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
-            {
-                Start = permissionStart;
-                Stop = permissionStop;
-            }
-            else if ((permissionCancelDate != null) && (permissionStart != null))
-            {
-                Start = permissionStart;
-                Stop = permissionCancelDate;
-            }
-            else if (!string.IsNullOrEmpty(DocNum) && (testStartDate != null) && (testStopDate != null))
-            {
-                Start = testStartDate;
-                Stop = testStopDate;
-            }
+      
 
-            if ((Start != null) && (Stop != null))
-            {
-                if ((Start.Value <= dateMeasFromRefSpectrum && Stop.Value >= dateMeasFromRefSpectrum) == true)
-                {
-                    StatusMeas = "U";
-                }
-                else
-                {
-                    StatusMeas = "I";
-                }
-            }
-            else
-            {
-                StatusMeas = "I";
-            }
-            return StatusMeas;
-        }
-
-        private string CalcStatusMeasForStationExtended(DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string docNum, DateTime? testStartDate, DateTime? testStopDate, DateTime dateMeasFromRefSpectrum)
-        {
-            var StatusMeas = "";
-
-            if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
-            {
-                if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionStop >= dateMeasFromRefSpectrum) == true)
-                {
-                    StatusMeas = "A";
-                }
-                else
-                {
-                    StatusMeas = "I";
-                }
-            }
-            else if ((permissionCancelDate != null) && (permissionStart != null))
-            {
-                if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionCancelDate >= dateMeasFromRefSpectrum) == true)
-                {
-                    StatusMeas = "A";
-                }
-                else
-                {
-                    StatusMeas = "I";
-                }
-            }
-            else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
-            {
-                if ((testStartDate <= dateMeasFromRefSpectrum) && (testStopDate >= dateMeasFromRefSpectrum) == true)
-                {
-                    StatusMeas = "T";
-                }
-                else
-                {
-                    StatusMeas = "I";
-                }
-            }
-            else
-            {
-                StatusMeas = "I";
-            }
-            return StatusMeas;
-        }
-
-        private DateTime? CalcDateStartAndDateStop(string statusMeas, DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string docNum, DateTime? testStartDate, DateTime? testStopDate, DateTime startDate)
-        {
-            DateTime? startDateVal = null;
-            if (statusMeas == "U")
-            {
-                if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
-                {
-                    if (permissionStart.Value > startDate)
-                    {
-                        startDateVal = permissionStart.Value;
-                    }
-                    else
-                    {
-                        startDateVal = startDate;
-                    }
-                }
-                else if ((permissionCancelDate != null) && (permissionStart != null))
-                {
-                    if (permissionStart.Value > startDate)
-                    {
-                        startDateVal = permissionStart.Value;
-                    }
-                    else
-                    {
-                        startDateVal = startDate;
-                    }
-                }
-                else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
-                {
-                    if (testStartDate.Value > startDate)
-                    {
-                        startDateVal = testStartDate.Value;
-                    }
-                    else
-                    {
-                        startDateVal = startDate;
-                    }
-                }
-            }
-            if (statusMeas == "I")
-            {
-                if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
-                {
-                    if (permissionStop.Value > startDate)
-                    {
-                        startDateVal = permissionStop.Value;
-                    }
-                    else
-                    {
-                        startDateVal = startDate;
-                    }
-                }
-                else if ((permissionCancelDate != null) && (permissionStart != null))
-                {
-                    if (permissionCancelDate.Value > startDate)
-                    {
-                        startDateVal = permissionCancelDate.Value;
-                    }
-                    else
-                    {
-                        startDateVal = startDate;
-                    }
-                }
-                else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
-                {
-                    if (testStopDate.Value > startDate)
-                    {
-                        startDateVal = testStopDate.Value;
-                    }
-                    else
-                    {
-                        startDateVal = startDate;
-                    }
-                }
-            }
-            return startDateVal;
-        }
-
-
+        /// <summary>
+        /// Метод, выполняющий "прорежение" RefSpectrum в БД
+        /// </summary>
+        /// <param name="dataSynchronization"></param>
+        /// <param name="headRefSpectrumIdsBySDRN"></param>
+        /// <param name="sensorIdsBySDRN"></param>
+        /// <param name="areas"></param>
+        /// <param name="stationsExtended"></param>
+        /// <returns></returns>
         public bool DeleteDuplicateRefSpectrumRecords(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
             bool isSuccess = false;
@@ -942,11 +743,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DeleteDuplicateRefSpectrumRecords.Text);
                 var listDataRefSpectrum = new List<DataRefSpectrum>();
                 var listDataRefSpectrumForDelete = new List<DataRefSpectrum>();
-                var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
-                loadSynchroProcessData.DeleteLinkSensors(sensorIdsBySDRN);
-                loadSynchroProcessData.DeleteRefSpectrumBySensorId(sensorIdsBySDRN);
+                var utils = new Utils(this._dataLayer, this._logger);
+                utils.DeleteLinkSensors(sensorIdsBySDRN);
+                utils.DeleteRefSpectrumBySensorId(sensorIdsBySDRN);
 
-                var listRefSpectrum = loadSynchroProcessData.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+                var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
                 // Заполняем список listDataRefSpectrum перечнем всех DataRefSpectrum
                 for (int i = 0; i < listRefSpectrum.Length; i++)
@@ -967,8 +768,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     var fndStation = lstStations.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
                     if (fndStation != null)
                     {
-                        listDataRefSpectrum[h].StatusMeas = CalcStatusMeasForRefSpectrum(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, listDataRefSpectrum[h].DateMeas);
-                        UpdateStatusRefSpectrum(listDataRefSpectrum[h]);
+                        listDataRefSpectrum[h].StatusMeas = CalcStatus.CalcStatusMeasForRefSpectrum(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, listDataRefSpectrum[h].DateMeas);
+                        utils.UpdateStatusRefSpectrum(listDataRefSpectrum[h]);
                     }
                 }
 
@@ -1054,7 +855,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
                 }
 
-                loadSynchroProcessData.RemoveEmptyHeadRefSpectrum(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+                utils.RemoveEmptyHeadRefSpectrum(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
                 isSuccess = true;
             }
@@ -1066,7 +867,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-
+        /// <summary>
+        /// Извлечение групп сенсоров по переданному массиву RefSpectrum
+        /// </summary>
+        /// <param name="refSpectrums"></param>
+        /// <returns></returns>
         public GroupSensors[] GetGroupSensors(RefSpectrum[] refSpectrums)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetGroupSensors.Text);
@@ -1090,7 +895,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return dataGroupSensors.ToArray();
         }
 
-
+        /// <summary>
+        /// Извлечение только RefSpectrum,  которые соответсвуют группе GroupSensors
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="refSpectrums"></param>
+        /// <returns></returns>
         public RefSpectrum[] SelectGroupSensor(GroupSensors group, RefSpectrum[] refSpectrums)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.SelectGroupSensor.Text);
@@ -1137,6 +947,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         }
         //
 
+        /// <summary>
+        /// Генерация PermissionGlobalSID по заданному значению okpo и stationName
+        /// </summary>
+        /// <param name="okpo"></param>
+        /// <param name="stationName"></param>
+        /// <returns></returns>
         public static string GetGlobalSID(string okpo, string stationName)
         {
             if (!string.IsNullOrEmpty(stationName))
@@ -1151,7 +967,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             else return "";
         }
 
-
+        /// <summary>
+        /// Вычисление числа уникальных RefSpetrum по полю "GlobalSID"
+        /// </summary>
+        /// <param name="refSpectrums"></param>
+        /// <returns></returns>
         private int CountUniqueStations(RefSpectrum[] refSpectrums)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.CountUniqueStations.Text);
@@ -1271,11 +1091,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         }
         
 
-       
-
         private void FillProtocolsDataWithEmittings(RefSpectrum[] refSpectrums, StationDataToSort[] stationsDataToCorrespond, EmittingDataToSort[] emittingsDataToCorrespond, Emitting[] emittings, ref List<Protocols> lstProtocols)
         {
-            //lstProtocols = new List<Protocols>();
             var cntAllEmitters = 0;
             if ((emittings != null) && (emittings.Length > 0))
             {
@@ -1368,13 +1185,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             }
                         }
                     }
-                    
-                    
                 }
             }
-            //return lstProtocols;
         }
-
 
 
         /// <summary>
@@ -1400,7 +1213,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
             //
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.SynchroEmittings.Text);
-            //var lstProtocols = new List<Protocols>();
+            
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
             DeleteUnestimatedEmittings(emittings);
@@ -1434,11 +1247,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 emitting.LevelsDistribution = levelsDistribution;
             }
 
-            //var emitFind = emittingParameters.ToList();
-            //emitFind.Find(c=>c.EmittingId==)
+
             if ((emittingParameters != null) && (emittingParameters.Length > 0))
             {
-                double corelFactor = emittingParameters[0].CorrelationFactor.Value;
+                var corelFactor = emittingParameters[0].CorrelationFactor.Value;
                 Calculation.CalcGroupingEmitting.DeleteRedundantUncorrelatedEmitting(listOfEmitings, desiredNumberOfEmittings, emittingParameters[0], ref corelFactor, 0.95);
             }
 
@@ -1528,9 +1340,6 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
             // ---- ПУСКАТЬ ТОЛЬКО ВАЛИДНЫЕ ИЗУЧЕНИЯ !!!
             // Ниже приведен пример цикла, в котором идет последовательная обработка записей RefSpectrum
-            
-
-
             if (numOfIterations > 0)
             {
                 FillProtocolsDataWithEmittings(refSpectrums, stationsDataToCorrespond, emittingsDataToCorrespond, emittings, ref lstProtocols);
@@ -1610,8 +1419,6 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 FillProtocolsDataWithOutEmittings(refSpectrums, ref lstProtocols);
             }
-
-            //return lstProtocols.ToArray();
         }
 
 
@@ -1620,10 +1427,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="protocolsOutput">итоговый массив ProtocolsOutput, на основе которого будет выполняться генерация отчета</param>
         /// <returns></returns>
-        public void FillingProtocolStationData(ref Protocols[] protocolsOutput, Sensor[] sensors, StationExtended[] stationsExtended, long? synchroProcessId)
+        public void FillingProtocolStationData(Protocols[] protocolsOutput, Sensor[] sensors, StationExtended[] stationsExtended, long? synchroProcessId)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.FillingProtocolStationData.Text);
-            var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
+            var utils = new Utils(this._dataLayer, this._logger);
             var protocolsInput = protocolsOutput;
             var lstProtocols = new List<Protocols>();
             var lstStationsExtended = stationsExtended.ToList();
@@ -1633,7 +1440,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 var protocol = protocolsOutput[h];
 
                 protocol.DataSynchronizationProcess = new DataSynchronizationProcess();
-                protocol.DataSynchronizationProcess = loadSynchroProcessData.CurrentSynchronizationProcesByIds(synchroProcessId);
+                protocol.DataSynchronizationProcess = utils.CurrentSynchronizationProcesByIds(synchroProcessId);
                 if (protocol.DataRefSpectrum != null)
                 {
                     var fndSensor = lstSensors.Find(z => z.Id.Value == protocol.DataRefSpectrum.SensorId);
@@ -1670,13 +1477,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         {
                             GetFreqAndBandWidthByEmittingParameters(protocol);
                         }
-                        fndStation.StatusMeas = CalcStatusMeasForStationExtended(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, protocol.DataRefSpectrum.DateMeas);
+                        fndStation.StatusMeas = CalcStatus.CalcStatusMeasForStationExtended(true, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, protocol.DataRefSpectrum.DateMeas);
                     }
                     else
                     {
-                        fndStation.StatusMeas = CalcStatusMeasForStationExtended(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, protocol.DataRefSpectrum.DateMeas);
+                        fndStation.StatusMeas = CalcStatus.CalcStatusMeasForStationExtended(false, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, protocol.DataRefSpectrum.DateMeas);
                     }
-                    UpdateStatusStationExtended(fndStation);
+                    utils.UpdateStatusStationExtended(fndStation);
                     protocol.StationExtended.StatusMeas = fndStation.StatusMeas;
                 }
                 lstProtocols.Add(protocol);
@@ -1713,7 +1520,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="protocolsOutput">итоговый массив ProtocolsOutput, на основе которого будет выполняться генерация отчета</param>
         /// <returns></returns>
-        public void OrderProtocols(ref Protocols[] protocolsOutput)
+        public void OrderProtocols(Protocols[] protocolsOutput)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.OrderProtocols.Text);
             Protocols[] listProtocols = null;
@@ -1858,7 +1665,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-
+        /// <summary>
+        /// Очистка протокола
+        /// </summary>
+        /// <param name="synchroProcessId"></param>
+        /// <returns></returns>
         public bool ClearProtocol(long synchroProcessId)
         {
             bool isSuccess = false;
@@ -1890,7 +1701,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-
+        /// <summary>
+        ///  Сохранение общих сведений о сохраненных протоколах в БД
+        /// </summary>
+        /// <param name="protocolsOutput"></param>
+        /// <param name="refSpectrums"></param>
+        /// <param name="synchroProcessId"></param>
+        /// <returns></returns>
         public bool SaveDataSynchronizationProcessToDB(Protocols[] protocolsOutput, RefSpectrum[] refSpectrums, long synchroProcessId)
         {
             bool isSuccess = false;
@@ -1937,40 +1754,17 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-        public ReferenceLevels GetReferenceLevelsByResId(long resId)
-        {
-            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-            var referenceLevels = new ReferenceLevels();
-            var level = new ReferenceLevels();
-            var queryLevels = this._dataLayer.GetBuilder<MDBase.IReferenceLevels>()
-            .From()
-           .Select(c => c.Id, c => c.StartFrequency_Hz, c => c.StepFrequency_Hz, c => c.RefLevels)
-           .Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, resId);
-            queryExecuter.Fetch(queryLevels, readerLevels =>
-            {
-                while (readerLevels.Read())
-                {
-                    if (readerLevels.GetValue(c => c.StartFrequency_Hz).HasValue)
-                    {
-                        level.StartFrequency_Hz = readerLevels.GetValue(c => c.StartFrequency_Hz).Value;
-                    }
-
-                    if (readerLevels.GetValue(c => c.StepFrequency_Hz).HasValue)
-                    {
-                        level.StepFrequency_Hz = readerLevels.GetValue(c => c.StepFrequency_Hz).Value;
-                    }
-
-                    if (readerLevels.GetValue(c => c.RefLevels) != null)
-                    {
-                        level.levels = readerLevels.GetValue(c => c.RefLevels);
-                    }
-                }
-                return true;
-            });
-            referenceLevels = level;
-            return referenceLevels;
-        }
-
+      
+        /// <summary>
+        /// Извлечение данных об эмитингах с БД
+        /// </summary>
+        /// <param name="refSpectrums"></param>
+        /// <param name="stationsExtended"></param>
+        /// <param name="startDate"></param>
+        /// <param name="stopDate"></param>
+        /// <param name="groupSensor"></param>
+        /// <param name="emittingParameters"></param>
+        /// <returns></returns>
         public Emitting[] GetEmittings(RefSpectrum[] refSpectrums, StationExtended[] stationsExtended, DateTime startDate, DateTime stopDate, GroupSensors groupSensor, out Calculation.EmitParams[] emittingParameters)
         {
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetEmittings.Text);
@@ -2003,17 +1797,17 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var fndStation = lstStations.Find(z => z.TableId == dataRefSpectrum.TableId && z.TableName == dataRefSpectrum.TableName);
                         if (fndStation != null)
                         {
-                            startDateVal = CalcDateStartAndDateStop(statusMeas, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, startDate);
+                            startDateVal = CalcStatus.CalcDateStartAndDateStop(statusMeas, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, startDate);
                             break;
                         }
                     }
                 }
             }
 
-
-
             if ((startDateVal != null) && (stopDateVal != null))
             {
+                startDateVal = new DateTime(startDateVal.Value.Year, startDateVal.Value.Month, startDateVal.Value.Day, 0, 0, 0, 0);
+                stopDateVal = new DateTime(stopDateVal.Value.Year, stopDateVal.Value.Month, stopDateVal.Value.Day, 23, 59, 59, 999);
 
                 var queryEmitting = this._dataLayer.GetBuilder<MDBase.IEmitting>()
                .From()
@@ -2533,8 +2327,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             }
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.RecoveryDataSynchronizationProcess.Text);
             var loadSensor = new LoadSensor(this._dataLayer, this._logger);
-            var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
-            var currentDataSynchronizationProcess = loadSynchroProcessData.CurrentDataSynchronizationProcess();
+            var utils = new Utils(this._dataLayer, this._logger);
+            var currentDataSynchronizationProcess = utils.CurrentDataSynchronizationProcess();
             
             //если процесс синхронизации не запущен, тогда создаем новый
             if (currentDataSynchronizationProcess != null)
@@ -2565,7 +2359,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
 
                     // заново вычитываем из БД все RefSpectrum (после удаления дубликатов) 
-                    var listRefSpectrum = loadSynchroProcessData.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+                    var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
                     // Весь массив разбивается на группы (далее группа сенсора) по следующему признаку: Одинаковые ID Sensor, Freq MHz
                     var groupsSensors = GetGroupSensors(listRefSpectrum);
@@ -2614,10 +2408,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     var arrayProtocols = listProtocolsOutput.ToArray();
 
                     // заполнение полным перечнем данных (расширенными сведениями о станциях и сенсорах)
-                    FillingProtocolStationData(ref arrayProtocols, sensors, stationsExtended, dataSynchronization.Id);
+                    FillingProtocolStationData(arrayProtocols, sensors, stationsExtended, dataSynchronization.Id);
 
                     // Группировка данных
-                    OrderProtocols(ref arrayProtocols);
+                    OrderProtocols(arrayProtocols);
                     // предварительная очистка таблиц Protocols и LinkProtocolsWithEmittings для текущего synchroProcessId
                     if (ClearProtocol(dataSynchronization.Id.Value))
                     {
@@ -2629,7 +2423,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, dataSynchronization.Id.Value);
                             if (isSuccesFinalOperationSynchro)
                             {
-                                loadSynchroProcessData.ClearAllLinksByProcessId(currentDataSynchronizationProcess.Id.Value);
+                                utils.ClearAllLinksByProcessId(currentDataSynchronizationProcess.Id.Value);
                                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DataSynchronizationProcessCompleted.Text);
                             }
                         }
@@ -2643,12 +2437,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.RunDataSynchronizationProcess.Text);
             RunSynchroProcess.IsAlreadyRunProcess = true;
 
-            var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
-            var currentDataSynchronizationProcess = loadSynchroProcessData.CurrentDataSynchronizationProcess();
+            var utils = new Utils(this._dataLayer, this._logger);
+            var currentDataSynchronizationProcess = utils.CurrentDataSynchronizationProcess();
             
             //если процесс синхронизации не запущен, тогда создаем новый
             if (currentDataSynchronizationProcess == null)
             {
+                //areas = GetAreas(dataSynchronization);
                 // создаем запись в таблице SynchroProcess
                 var synchroProcessId = CreateDataSynchronizationProcess(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas);
                 if (synchroProcessId != null)
@@ -2661,6 +2456,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
 
                     // обновление перечня станций
+                    //stationsExtended = GetStationExtended(dataSynchronization, headRefSpectrumIdsBySDRN);
                     var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
                     var listStationsExtended = new List<StationExtended>();
                     if ((stationsExtended != null) && (stationsExtended.Length > 0))
@@ -2675,17 +2471,15 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
                     stationsExtended = listStationsExtended.ToArray();
                     // обновление областей и контуров
+                    
                     var isSuccessUpdateAreas = SynchroAreas(areas);
-
-
                     if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
                     {
-
                         var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
                         if (isSuccessDeleteRefSpectrum == true)
                         {
                             // заново вычитываем из БД все RefSpectrum (после удаления дубликатов) 
-                            var listRefSpectrum = loadSynchroProcessData.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+                            var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
                             // Весь массив разбивается на группы (далее группа сенсора) по следующему признаку: Одинаковые ID Sensor, Freq MHz
                             var groupsSensors = GetGroupSensors(listRefSpectrum);
@@ -2737,10 +2531,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             var arrayProtocols = listProtocolsOutput.ToArray();
 
                             // заполнение полным перечнем данных (расширенными сведениями о станциях и сенсорах)
-                            FillingProtocolStationData(ref arrayProtocols, sensors, stationsExtended, synchroProcessId);
+                            FillingProtocolStationData(arrayProtocols, sensors, stationsExtended, synchroProcessId);
 
                             // Группировка данных
-                            OrderProtocols(ref arrayProtocols);
+                            OrderProtocols(arrayProtocols);
                             // предварительная очистка таблиц Protocols и LinkProtocolsWithEmittings для текущего synchroProcessId
                             if (ClearProtocol(synchroProcessId.Value))
                             {
@@ -2752,7 +2546,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                     var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, synchroProcessId.Value);
                                     if (isSuccesFinalOperationSynchro)
                                     {
-                                        loadSynchroProcessData.ClearAllLinksByProcessId(synchroProcessId.Value);
+                                        utils.ClearAllLinksByProcessId(synchroProcessId.Value);
                                         this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DataSynchronizationProcessCompleted.Text);
                                     }
                                 }

@@ -50,8 +50,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <returns></returns>
         public RefSpectrum[] GetAllRefSpectrum()
         {
-            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
-            return loadSynchroProcessData.GetAllRefSpectrum();
+            var utils = new Utils(_dataLayer, _logger);
+            return utils.GetAllRefSpectrum();
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <returns></returns>
         public DataSynchronizationProcess CurrentDataSynchronizationProcess()
         {
-            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
-            return loadSynchroProcessData.CurrentDataSynchronizationProcess();
+            var utils = new Utils(_dataLayer, _logger);
+            return utils.CurrentDataSynchronizationProcess();
         }
 
         public bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN)
@@ -199,8 +199,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
         public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
         {
-            var loadSynchroProcessData = new LoadSynchroProcessData(_dataLayer, _logger);
-            return loadSynchroProcessData.GetAllDataSynchronizationProcess();
+            var utils = new Utils(_dataLayer, _logger);
+            return utils.GetAllDataSynchronizationProcess();
         }
     }
 }

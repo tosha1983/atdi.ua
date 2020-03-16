@@ -9,9 +9,18 @@ using Atdi.DataModels.Sdrns.Server;
 namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
 {
     [DataContract(Namespace = Specification.Namespace)]
-    public class SensorIdentifier
+    public class WorkTime
     {
         [DataMember]
-        public long Value;
+        public DateTime StartEmitting { get; set; }
+
+        [DataMember]
+        public DateTime StopEmitting { get; set; }
+
+        [DataMember]
+        public int HitCount { get; set; }
+
+        [DataMember]
+        public float PersentAvailability { get; set; }
     }
 }

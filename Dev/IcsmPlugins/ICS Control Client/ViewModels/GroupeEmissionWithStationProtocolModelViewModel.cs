@@ -75,7 +75,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadData()
         {
-            var sdrProtocols = SVC.SdrnsControllerWcfClient.GetProtocols();
+            var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocols();
             this._protocols.Source = sdrProtocols;
         }
         private void CheckEnablePrintCommand()
@@ -87,7 +87,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnFilterApplyCommand(object parameter)
         {
-            var sdrProtocols = SVC.SdrnsControllerWcfClient.GetProtocolsByParameters(null,
+            var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocolsByParameters(null,
                 this._dataFilter.CreatedBy,
                 this._dataFilter.DateCreated,
                 null,
