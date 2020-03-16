@@ -12,6 +12,6 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
     public class SensorIdentifier
     {
         [DataMember]
-        public long Value;
+        public long Value { get; set; }
     }
 }

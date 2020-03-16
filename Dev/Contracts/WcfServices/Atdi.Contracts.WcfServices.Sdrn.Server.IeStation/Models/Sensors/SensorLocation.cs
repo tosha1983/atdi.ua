@@ -18,36 +18,36 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// DataFrom
         /// </summary>
         [DataMember]
-        public DateTime? DataFrom;
+        public DateTime? DataFrom { get; set; }
         /// <summary>
         /// DataTo
         /// </summary>
         [DataMember]
-        public DateTime? DataTo;
+        public DateTime? DataTo { get; set; }
         /// <summary>
         /// DataCreated
         /// </summary>
         [DataMember]
-        public DateTime? DataCreated;
+        public DateTime? DataCreated { get; set; }
         /// <summary>
         /// Status
         /// </summary>
         [DataMember]
-        public string Status;
+        public string Status { get; set; }
         /// <summary>
         /// Longitude, DEC
         /// </summary>
         [DataMember]
-        public Double? Lon; 
+        public Double? Lon { get; set; }
         /// <summary>
         /// Latitude,  DEC
         /// </summary>
         [DataMember]
-        public Double? Lat;
+        public Double? Lat { get; set; }
         /// <summary>
         /// Altitude above sea level, m
         /// </summary>
         [DataMember]
-        public Double? ASL;
+        public Double? ASL { get; set; }
     }
 }

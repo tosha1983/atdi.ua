@@ -19,24 +19,24 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// Идентификатор записи в SDRN базе 
         /// </summary>
         [DataMember]
-        public long? Id;
+        public long? Id { get; set; }
         /// <summary>
         /// Наименование csv - файла
         /// </summary>
         [DataMember]
-        public string FileName; 
-        
+        public string FileName { get; set; }
+
         /// <summary>
         /// Дата загрузки файла
         /// </summary>
         [DataMember]
-        public DateTime DateCreated; 
-        
+        public DateTime DateCreated { get; set; }
+
         /// <summary>
         /// Имя пользователя, который выполнил загрузку
         /// </summary>
         [DataMember]
-        public string CreatedBy;
+        public string CreatedBy { get; set; }
 
         [DataMember]
         public int? CountImportRecords { get; set; }
@@ -63,7 +63,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// Массив данных DataRefSpectrum (собственно наполнение csv - файла)
         /// </summary>
         [DataMember]
-        public DataRefSpectrum[] DataRefSpectrum;
-        
+        public DataRefSpectrum[] DataRefSpectrum { get; set; }
+
     }
 }

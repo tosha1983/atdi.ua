@@ -18,26 +18,26 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// Frequency of pattren, MHz
         /// </summary>
         [DataMember]
-        public Double Freq; 
+        public Double Freq { get; set; }
         /// <summary>
         /// Gain of Antenna, dB
         /// </summary>
         [DataMember]
-        public Double Gain; 
+        public Double Gain { get; set; }
         /// <summary>
         /// DiagA - 9X - Antenna pattern
         /// </summary>
         [DataMember]
-        public string DiagA; 
+        public string DiagA { get; set; }
         /// <summary>
         /// DiagH - 9XH - Horizontal diagram
         /// </summary>
         [DataMember]
-        public string DiagH; 
+        public string DiagH { get; set; }
         /// <summary>
         /// DiagV - 9XV - Vertical diagram
         /// </summary>
         [DataMember]
-        public string DiagV; 
+        public string DiagV { get; set; }
     }
 }
