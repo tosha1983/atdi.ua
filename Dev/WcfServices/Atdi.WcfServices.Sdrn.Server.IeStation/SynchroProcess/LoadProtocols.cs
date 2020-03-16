@@ -542,9 +542,60 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         protocols.Address = readerProtocols.GetValue(c => c.STATION_EXTENDED.Address);
                         protocols.Latitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Latitude);
                         protocols.Longitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Longitude);
-                        protocols.PermissionNumber = readerProtocols.GetValue(c => c.PermissionNumber) == null ? readerProtocols.GetValue(c => c.STATION_EXTENDED.DocNum) : readerProtocols.GetValue(c => c.PermissionNumber);
-                        protocols.PermissionStart = readerProtocols.GetValue(c => c.PermissionStart) == null ? readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStartDate) : readerProtocols.GetValue(c => c.PermissionStart);
-                        protocols.PermissionStop = readerProtocols.GetValue(c => c.PermissionStop) == null ? readerProtocols.GetValue(c => c.STATION_EXTENDED.PermissionCancelDate) : (readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStopDate) != null ? readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStopDate) : null);
+
+                        var permissionNumberTemp = string.Empty;
+                        if (readerProtocols.GetValue(c => c.PermissionNumber)==null)
+                        {
+                            if (readerProtocols.GetValue(c => c.STATION_EXTENDED.DocNum)!=null)
+                            {
+                                permissionNumberTemp = readerProtocols.GetValue(c => c.STATION_EXTENDED.DocNum);
+                            }
+                        }
+                        else
+                        {
+                            permissionNumberTemp = readerProtocols.GetValue(c => c.PermissionNumber);
+                        }
+
+                        DateTime? permissionStartTemp = null;
+                        if (readerProtocols.GetValue(c => c.PermissionStart) == null)
+                        {
+                            if (readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStartDate) != null)
+                            {
+                                permissionStartTemp = readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStartDate);
+                            }
+                        }
+                        else
+                        {
+                            permissionStartTemp = readerProtocols.GetValue(c => c.PermissionStart);
+                        }
+
+                        DateTime? permissionStopTemp = null;
+                        if (readerProtocols.GetValue(c => c.PermissionStop) == null)
+                        {
+                            if (readerProtocols.GetValue(c => c.STATION_EXTENDED.PermissionCancelDate) != null)
+                            {
+                                permissionStopTemp = readerProtocols.GetValue(c => c.STATION_EXTENDED.PermissionCancelDate);
+                            }
+                            else if (readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStopDate) != null)
+                            {
+                                permissionStopTemp = readerProtocols.GetValue(c => c.STATION_EXTENDED.TestStopDate);
+                            }
+                        }
+                        else
+                        {
+                            permissionStopTemp = readerProtocols.GetValue(c => c.PermissionStop);
+                        }
+
+                        if (string.IsNullOrEmpty(permissionNumberTemp))
+                        {
+                            var protocolId = readerProtocols.GetValue(c => c.Id);
+                            var stationId = readerProtocols.GetValue(c => c.STATION_EXTENDED.Id);
+                            this._logger.Warning(Contexts.ThisComponent, Categories.Processing, (EventText)$"For protocol.Id='{protocolId}' and associated station.Id='{stationId}' not found 'PermissionNumber'");
+                        }
+
+                        protocols.PermissionNumber = permissionNumberTemp;
+                        protocols.PermissionStart = permissionStartTemp;
+                        protocols.PermissionStop = permissionStopTemp;
                         var sensorData = loadSensor.LoadBaseDateSensor(readerProtocols.GetValue(c => c.SensorId).Value);
                         protocols.TitleSensor = sensorData.Title;
                         protocols.StandardName = readerProtocols.GetValue(c => c.STATION_EXTENDED.StandardName);
