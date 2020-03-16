@@ -24,7 +24,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             this._logger = logger;
         }
 
-
+        /// <summary>
+        /// Извлечение сведений по сенсору
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Sensor LoadBaseDateSensor(long id)
         {
             var val = new Sensor();

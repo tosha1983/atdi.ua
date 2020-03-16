@@ -22,13 +22,13 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
 
             var proc = sdrnServer.GetAllDataSynchronizationProcess();
 
-            var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            //var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
             //bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
 
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();
             dataSynchronizationBase.CreatedBy = "ICSM";
             dataSynchronizationBase.DateCreated = DateTime.Now;
-            dataSynchronizationBase.DateStart = new DateTime(2019, 07, 01);
+            dataSynchronizationBase.DateStart = new DateTime(2020, 02, 01);
             dataSynchronizationBase.DateEnd = DateTime.Now.AddDays(100);
 
             RefSpectrum refSpectrum = new RefSpectrum();
@@ -64,7 +64,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
 
 
 
-            long? id = sdrnServer.ImportRefSpectrum(refSpectrum);
+            //long? id = sdrnServer.ImportRefSpectrum(refSpectrum);
             //var refSpectrums = sdrnServer.GetAllRefSpectrum();
 
             //var refSpectrums = sdrnServer.CurrentDataSynchronizationProcess();
@@ -73,8 +73,8 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             Area area = new Area();
             area.CreatedBy = "ICSM";
             area.DateCreated = DateTime.Now;
-            area.IdentifierFromICSM = 11;
-            area.Name = "Київська";
+            area.IdentifierFromICSM = 71;
+            area.Name = "Київська_";
             area.TypeArea = "область";
             area.Location = new DataLocation[3];
             area.Location[0] = new DataLocation();
@@ -103,6 +103,16 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             stationExtended1.StandardName= "GSM-1800";
             stationExtended1.TableId = 22346;
             stationExtended1.TableName = "MOB_STATION";
+            //stationExtended1.DocNum <-> XNRFA_PAC_TO_APPL .DOC_NUM_TV
+            //stationExtended1.TestStartDate <-> XNRFA_PAC_TO_APPL.DOC_DATE 
+            //stationExtended1.TestStopDate <-> XNRFA_PAC_TO_APPL.DOC_END_DATE 
+            //stationExtended1.PermissionCancelDate  <->  PERM_DATE_STOP
+            //stationExtended1.CurentStatusStation  <->  MOB_STATION.STATUS
+            //stationExtended1.StationTxFreq  <->  MOBSTA_FREQS.TX_FREQ  
+            //stationExtended1.StationRxFreq  <->  MOBSTA_FREQS.RX_FREQ 
+            //stationExtended1.StationChannel  <->  MOBSTA_FREQS.ChannelTx.CHANNEL
+            //stationExtended1.OKPO <->   MOB_STATION.Owner.Code
+            //stationExtended1.StationName  <->  MOB_STATION.Name
 
             StationExtended stationExtended2 = new StationExtended();
             stationExtended2.Address = "Address 2";
@@ -121,7 +131,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
             stationExtended2.TableId = 22345;
             stationExtended2.TableName = "MOB_STATION";
 
-            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { id.Value }, new long[] { 13 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
+            var status = sdrnServer.RunDataSynchronizationProcess(dataSynchronizationBase, new long[] { 160 }, new long[] { 13 }, new Area[] { area }, new StationExtended[] { stationExtended1, stationExtended2 }  );
 
 
             Console.WriteLine($"Test was finished. Press any key to exit.");
