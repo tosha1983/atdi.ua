@@ -142,7 +142,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         }
 
         /// <summary>
-        /// Вычисление даты начала для периода, который будет использоваться при поиске "подходящих" эмитингов в БД
+        /// Вычисление даты начала для периода, который будет использоваться при поиске  эмитингов в БД
         /// </summary>
         /// <param name="statusMeas"></param>
         /// <param name="permissionCancelDate"></param>
@@ -153,7 +153,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <param name="testStopDate"></param>
         /// <param name="startDate"></param>
         /// <returns></returns>
-        public static  DateTime? CalcDateStartAndDateStop(string statusMeas, DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string docNum, DateTime? testStartDate, DateTime? testStopDate, DateTime startDate)
+        public static  DateTime? CalcDateStart(string statusMeas, DateTime? permissionCancelDate, DateTime? permissionStop, DateTime? permissionStart, string docNum, DateTime? testStartDate, DateTime? testStopDate, DateTime startDate)
         {
             DateTime? startDateVal = null;
             if (statusMeas == "U")

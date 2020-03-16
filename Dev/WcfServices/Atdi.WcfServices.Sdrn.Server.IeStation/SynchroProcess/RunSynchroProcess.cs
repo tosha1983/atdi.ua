@@ -1748,7 +1748,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var fndStation = lstStations.Find(z => z.TableId == dataRefSpectrum.TableId && z.TableName == dataRefSpectrum.TableName);
                         if (fndStation != null)
                         {
-                            startDateVal = CalcStatus.CalcDateStartAndDateStop(statusMeas, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, startDate);
+                            startDateVal = CalcStatus.CalcDateStart(statusMeas, fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, startDate);
                             break;
                         }
                     }
