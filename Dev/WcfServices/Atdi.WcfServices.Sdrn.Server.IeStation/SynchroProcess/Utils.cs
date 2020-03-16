@@ -14,19 +14,24 @@ using Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 
 namespace Atdi.WcfServices.Sdrn.Server.IeStation
 {
-    public class LoadSynchroProcessData
+    public class Utils
     {
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
 
 
 
-        public LoadSynchroProcessData(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public Utils(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
         }
 
+        /// <summary>
+        ///Получение сведений о процессе синхронизации по заданному идентификатору
+        /// </summary>
+        /// <param name="processId"></param>
+        /// <returns></returns>
         public DataSynchronizationProcess CurrentSynchronizationProcesByIds(long? processId)
         {
             DataSynchronizationProcess dataSynchronizationProcess = null;
@@ -69,6 +74,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return dataSynchronizationProcess;
         }
 
+        /// <summary>
+        /// Получение сведений о текущем "активном" процессе синхронизации 
+        /// </summary>
+        /// <returns></returns>
         public DataSynchronizationProcess CurrentDataSynchronizationProcess()
         {
             DataSynchronizationProcess dataSynchronizationProcess = null;
@@ -111,6 +120,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return dataSynchronizationProcess;
         }
 
+        /// <summary>
+        /// Получение сведений о всех процессах синхронизации 
+        /// </summary>
+        /// <returns></returns>
         public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
         {
             var lstDataSynchronizationProcess = new List<DataSynchronizationProcess>();
@@ -154,6 +167,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return lstDataSynchronizationProcess.ToArray();
         }
 
+        /// <summary>
+        /// Извлечение данных о всех RefSpectrum
+        /// </summary>
+        /// <returns></returns>
         public RefSpectrum[] GetAllRefSpectrum()
         {
             var listRefSpectrum = new List<RefSpectrum>();
@@ -219,7 +236,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return listRefSpectrum.ToArray();
         }
 
-
+        /// <summary>
+        /// Удаление заданного RefSpectrum по идентификатору
+        /// </summary>
+        /// <param name="headRefSpectrumId"></param>
+        /// <returns></returns>
         public bool DeleteHeadRefSpectrum(long headRefSpectrumId)
         {
             var isSuccess = false;
@@ -245,6 +266,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
+        /// <summary>
+        /// Очистка всех линков связанных с текущим идентификатором процесса синхронизации
+        /// </summary>
+        /// <param name="processId"></param>
+        /// <returns></returns>
         public bool ClearAllLinksByProcessId(long processId)
         {
             var isSuccess = false;
@@ -278,7 +304,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-
+        /// <summary>
+        /// Удаление записи с таблицы LinkHeadRefSpectrum по заданному идентфикатору headRefSpectrumId
+        /// </summary>
+        /// <param name="headRefSpectrumId"></param>
+        /// <returns></returns>
         public bool DeleteLinkHeadRefSpectrumByHeadId(long headRefSpectrumId)
         {
             var isSuccess = false;
@@ -303,6 +333,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             }
             return isSuccess;
         }
+
+        /// <summary>
+        /// Удаление тех записей с таблицы LinkSensorsWithSynchroProcess, у которых значение поля SensorId не содержит значений передаваемых в массиве sensorId
+        /// </summary>
+        /// <param name="sensorId"></param>
+        /// <returns></returns>
         public bool DeleteLinkSensors(long[] sensorId)
         {
             var isSuccess = false;
@@ -327,6 +363,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             }
             return isSuccess;
         }
+
+        /// <summary>
+        /// Удаление тех записей с таблицы IRefSpectrum, у которых значение поля SensorId не содержит значений передаваемых в массиве sensorId
+        /// </summary>
+        /// <param name="sensorId"></param>
+        /// <returns></returns>
         public bool DeleteRefSpectrumBySensorId(long[] sensorId)
         {
             var isSuccess = false;
@@ -352,9 +394,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return isSuccess;
         }
 
-        public bool RemoveEmptyHeadRefSpectrum(long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN)
+        /// <summary>
+        /// Удаление записей из таблицы HeadRefSpectrum, для случая когда нет ни одной связанной записи в таблице RefSpectrum
+        /// </summary>
+        /// <param name="headRefSpectrumIdsBySDRN"></param>
+        /// <param name="sensorIdsBySDRN"></param>
+        public void RemoveEmptyHeadRefSpectrum(long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN)
         {
-            var isSuccess = false;
             try
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.HandlerGetRefSpectrumByIdsMethod.Text);
@@ -394,10 +440,14 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 this._logger.Exception(Contexts.ThisComponent, e);
             }
-            return isSuccess;
         }
 
-
+        /// <summary>
+        /// Получение массива значений RefSpectrum[], по перечню идентификаторов headRefSpectrumIdsBySDRN и sensorIdsBySDRN
+        /// </summary>
+        /// <param name="headRefSpectrumIdsBySDRN"></param>
+        /// <param name="sensorIdsBySDRN"></param>
+        /// <returns></returns>
         public RefSpectrum[] GetRefSpectrumByIds(long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN)
         {
             var listRefSpectrum = new List<RefSpectrum>();
@@ -463,6 +513,76 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             }
             return listRefSpectrum.ToArray();
         }
+
+        /// <summary>
+        /// Обновление статуса записи таблицы RefSpectrum
+        /// </summary>
+        /// <param name="dataRefSpectrum"></param>
+        /// <returns></returns>
+        public bool UpdateStatusRefSpectrum(DataRefSpectrum dataRefSpectrum)
+        {
+            bool isSuccess = false;
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.ImportData, Events.UpdateStatusStationExtended.Text);
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+                    var builderUpdateRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Update();
+                    builderUpdateRefSpectrum.Where(c => c.TableId, ConditionOperator.Equal, dataRefSpectrum.TableId);
+                    builderUpdateRefSpectrum.Where(c => c.TableName, ConditionOperator.Equal, dataRefSpectrum.TableName);
+                    builderUpdateRefSpectrum.Where(c => c.SensorId, ConditionOperator.Equal, dataRefSpectrum.SensorId);
+                    if (!string.IsNullOrEmpty(dataRefSpectrum.StatusMeas))
+                    {
+                        builderUpdateRefSpectrum.SetValue(c => c.StatusMeas, dataRefSpectrum.StatusMeas);
+                        scope.Executor.Execute(builderUpdateRefSpectrum);
+                    }
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
+        /// <summary>
+        /// Обновление статуса записи таблицы StationExtended
+        /// </summary>
+        /// <param name="stationExtended"></param>
+        /// <returns></returns>
+        public bool UpdateStatusStationExtended(StationExtended stationExtended)
+        {
+            bool isSuccess = false;
+            try
+            {
+                this._logger.Info(Contexts.ThisComponent, Categories.ImportData, Events.UpdateStatusStationExtended.Text);
+                using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                {
+                    scope.BeginTran();
+                    var builderUpdateStationExtended = this._dataLayer.GetBuilder<MD.IStationExtended>().Update();
+                    builderUpdateStationExtended.Where(c => c.TableId, ConditionOperator.Equal, stationExtended.TableId);
+                    builderUpdateStationExtended.Where(c => c.TableName, ConditionOperator.Equal, stationExtended.TableName);
+                    if (!string.IsNullOrEmpty(stationExtended.StatusMeas))
+                    {
+                        builderUpdateStationExtended.SetValue(c => c.StatusMeas, stationExtended.StatusMeas);
+                        scope.Executor.Execute(builderUpdateStationExtended);
+                    }
+                    scope.Commit();
+                }
+                isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
     }
 }
 

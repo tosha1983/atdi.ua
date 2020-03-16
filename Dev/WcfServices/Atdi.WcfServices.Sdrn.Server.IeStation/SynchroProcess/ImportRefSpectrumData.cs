@@ -27,7 +27,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             _loadSensor = new LoadSensor(this._dataLayer, this._logger);
         }
 
-
+        /// <summary>
+        ///Валидация отдельно взятой записи из RefSpectrum
+        /// </summary>
+        /// <param name="dataRefSpectrum"></param>
+        /// <returns></returns>
         private bool ValidateDataRefSpectrum(DataRefSpectrum  dataRefSpectrum)
         {
             if (dataRefSpectrum == null)
@@ -93,7 +97,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return result;
         }
 
-
+        /// <summary>
+        /// Импорт данных из csv - файла (RefSpectrum)
+        /// </summary>
+        /// <param name="refSpectrum"></param>
+        /// <returns></returns>
         public long? ImportSpectrum(RefSpectrum refSpectrum)
         {
             long? headRefSpectrumId = null;
@@ -170,6 +178,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return headRefSpectrumId;
         }
 
+        /// <summary>
+        /// Удаление выбранных RefSpectrum
+        /// </summary>
+        /// <param name="RefSpectrumIdsBySDRN"></param>
+        /// <returns></returns>
         public bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN)
         {
             var isSuccess = false;

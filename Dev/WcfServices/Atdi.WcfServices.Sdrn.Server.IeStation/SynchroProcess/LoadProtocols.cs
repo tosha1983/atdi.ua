@@ -49,7 +49,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                  DateTime? permissionStart,
                                  DateTime? permissionStop)
         {
-            var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
+            var loadSynchroProcessData = new Utils(this._dataLayer, this._logger);
             var loadSensor = new LoadSensor(this._dataLayer, this._logger);
             var listProtocols = new List<Protocols>();
             try
@@ -328,6 +328,26 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             return listProtocols.ToArray();
         }
 
+        /// <summary>
+        /// Основной метод, возвращающий массив объектов HeadProtocols
+        /// </summary>
+        /// <param name="processId"></param>
+        /// <param name="createdBy"></param>
+        /// <param name="DateCreated"></param>
+        /// <param name="DateStart"></param>
+        /// <param name="DateStop"></param>
+        /// <param name="DateMeasDay"></param>
+        /// <param name="DateMeasMonth"></param>
+        /// <param name="DateMeasYear"></param>
+        /// <param name="freq"></param>
+        /// <param name="probability"></param>
+        /// <param name="standard"></param>
+        /// <param name="province"></param>
+        /// <param name="ownerName"></param>
+        /// <param name="permissionNumber"></param>
+        /// <param name="permissionStart"></param>
+        /// <param name="permissionStop"></param>
+        /// <returns></returns>
         public HeadProtocols[] GetDetailProtocolsByParameters(
                                 long? processId,
                                 string createdBy,
@@ -346,7 +366,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 DateTime? permissionStart,
                                 DateTime? permissionStop)
         {
-            var loadSynchroProcessData = new LoadSynchroProcessData(this._dataLayer, this._logger);
+            var loadSynchroProcessData = new Utils(this._dataLayer, this._logger);
             var loadSensor = new LoadSensor(this._dataLayer, this._logger);
             var listHeadProtocols = new List<HeadProtocols>();
             var listDetailProtocols = new List<DetailProtocols>();

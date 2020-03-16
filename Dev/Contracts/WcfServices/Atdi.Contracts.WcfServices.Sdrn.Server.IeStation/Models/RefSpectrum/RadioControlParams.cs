@@ -18,13 +18,13 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// RadioControlMeasFreq_MHz
         /// </summary>
         [DataMember]
-        public double? RadioControlMeasFreq_MHz;
+        public double? RadioControlMeasFreq_MHz { get; set; }
 
         /// <summary>
         /// RadioControlBandWidth
         /// </summary>
         [DataMember]
-        public double? RadioControlBandWidth;
-     
+        public double? RadioControlBandWidth { get; set; }
+
     }
 }

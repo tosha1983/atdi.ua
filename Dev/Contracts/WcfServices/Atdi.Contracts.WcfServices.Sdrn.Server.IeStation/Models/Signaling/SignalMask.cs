@@ -12,8 +12,9 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
     public class SignalMask
     {
         [DataMember]
-        public float[] Loss_dB;
+        public float[] Loss_dB { get; set; }
+
         [DataMember]
-        public double[] Freq_kHz;
+        public double[] Freq_kHz { get; set; }
     }
 }

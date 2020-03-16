@@ -18,12 +18,12 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
         /// Longitude, DEC
         /// </summary>
         [DataMember]
-        public Double? Lon;
+        public Double? Lon { get; set; }
         /// <summary>
         /// Latitude,  DEC
         /// </summary>
         [DataMember]
-        public Double? Lat;
-     }
+        public Double? Lat { get; set; }
+    }
 }
 

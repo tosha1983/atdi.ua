@@ -50,7 +50,10 @@
     <Compile Include="SynchroProcess\ConvertEmittings.cs" />
     <Compile Include="SynchroProcess\ImportRefSpectrumData.cs" />
     <Compile Include="SynchroProcess\LoadProtocols.cs" />
-    <Compile Include="SynchroProcess\LoadSynchroProcessData.cs" />
+    <Compile Include="SynchroProcess\CalcStatus.cs" />
+    <Compile Include="SynchroProcess\Utils.cs" />
+    <Compile Include="SynchroProcess\Models\EmittingDataToSort.cs" />
+    <Compile Include="SynchroProcess\Models\StationDataToSort.cs" />
     <Compile Include="SynchroProcess\RunSynchroProcess.cs" />
     <Compile Include="SynchroProcess\LoadSensor.cs" />
   </ItemGroup>
