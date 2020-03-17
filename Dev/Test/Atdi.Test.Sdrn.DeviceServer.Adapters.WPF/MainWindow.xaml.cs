@@ -711,16 +711,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 // send command
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
-                command.Parameter.Att_dB = 3;
-                command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
-                command.Parameter.FreqStop_Hz = 1900 * 1000000;// 421.5425m * 1000000;//110000000;
-                command.Parameter.PreAmp_dB = 1;
+                command.Parameter.Att_dB = -1;
+                command.Parameter.FreqStart_Hz = 413 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 430 * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.PreAmp_dB = -1;
                 command.Parameter.RBW_Hz = -1;
                 command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 10;
-                command.Parameter.TracePoint = 5100;
+                command.Parameter.TracePoint = 136000;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;

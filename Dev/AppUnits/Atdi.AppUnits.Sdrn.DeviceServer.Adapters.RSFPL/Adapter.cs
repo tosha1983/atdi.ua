@@ -19,7 +19,7 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
 {
-    public class Adapter
+    public class Adapter : IAdapter
     {
         private readonly ITimeService timeService;
         private readonly ILogger logger;
@@ -174,7 +174,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                                 needSweepPoints = (int)((command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / needRBW);
                             }
                             //сколько точек понятно почему и посчитать RBW
-                            else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz == -1)
+                            else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz < 0)
                             {
                                 needSweepPoints = command.Parameter.TracePoint;
                                 needRBW = (command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / (needSweepPoints - 1);
@@ -513,7 +513,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         private const decimal SWTMax = 8000;
 
         public decimal SweepTime;
-        public int SweepDuration;
+        public long SweepDuration;
 
         public bool AutoSweepTime;
 
@@ -1457,7 +1457,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             getSweeptime = true;
             string poolKeyName = "";
             bool poolKeyFind = false;
-            SweepDuration = (int)(QueryDecimal("SWE:DUR?") * 10000000);
+            SweepDuration = (long)(QueryDecimal("SWE:DUR?") * 10000000);
             long time = timeService.TimeStamp.Ticks;
             bool setInit = false;
             long count = (long)traceCountToMeas;
@@ -1549,7 +1549,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             else
             {
                 bool _RFOverload = false;
-                SweepDuration = (int)(QueryDecimal("SWE:DUR?") * 10000000);
+                SweepDuration = (long)(QueryDecimal("SWE:DUR?") * 10000000);
                 WriteString(":INIT");
                 for (long i = 0; i < count; i++)
                 {
@@ -1633,7 +1633,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
             FreqStop = freqStart + step;
             WriteString(":SENSe:FREQ:STAR " + (FreqStart).ToString().Replace(decimalSeparator, ".") + ";:" +
                 "SENSe:FREQ:STOP " + (FreqStop).ToString().Replace(decimalSeparator, "."));
-            SweepDuration = (int)(QueryDecimal("SWE:DUR?") * 10000000);
+            SweepDuration = (long)(QueryDecimal("SWE:DUR?") * 10000000);
 
             //Если TraceType ClearWrite то пушаем каждый результат
             if (traceTypeResult == EN.TraceType.ClearWrite)

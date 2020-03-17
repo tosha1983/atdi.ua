@@ -11,9 +11,8 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
     {
         static void Main(string[] args)
         {
-            Console.BufferWidth = 150;
             Console.WriteLine($"Press any key to start SDRN Device App Server ...");
-            Console.ReadLine();
+
 
             using (var host = PlatformConfigurator.BuildHost())
             {
@@ -26,9 +25,10 @@ namespace Atdi.AppServer.Sdrn.DeviceServer
                 {
                     Console.WriteLine("Exception: " + e.Message);
                 }
-                Console.WriteLine("Started");
+
                 Console.ReadLine();
                 host.Stop();
+
             }
             Console.ReadLine();
         }
