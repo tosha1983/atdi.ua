@@ -558,7 +558,7 @@
                                 <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standart}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.GlobalSID}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Owner}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="{x:Static res:Resources.Adress}" Binding="{Binding Path=SiteAdress}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=SiteAdress}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Lon}" Binding="{Binding Path=SiteLon}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Lat}" Binding="{Binding Path=SiteLat}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Region}" Binding="{Binding Path=SiteRegion}"></DataGridTextColumn>

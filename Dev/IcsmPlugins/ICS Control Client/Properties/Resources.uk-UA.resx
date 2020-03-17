@@ -126,8 +126,14 @@
   <data name="Adm" xml:space="preserve">
     <value>Адм</value>
   </data>
-  <data name="AGLM" xml:space="preserve">
+  <data name="Administration" xml:space="preserve">
+    <value>Адміністрація</value>
+  </data>
+  <data name="AGL" xml:space="preserve">
     <value>Висота над рівнем моря</value>
+  </data>
+  <data name="AGLM" xml:space="preserve">
+    <value>Висота над рівнем моря, м</value>
   </data>
   <data name="Alt" xml:space="preserve">
     <value>Висота</value>
@@ -144,6 +150,9 @@
   <data name="Antenna" xml:space="preserve">
     <value>Антена</value>
   </data>
+  <data name="ApplyCommand" xml:space="preserve">
+    <value>Застосувати</value>
+  </data>
   <data name="AssociatedCommand" xml:space="preserve">
     <value>Асоціювати</value>
   </data>
@@ -156,11 +165,20 @@
   <data name="AutomaticDivisionOfEmissions" xml:space="preserve">
     <value>Автоматично розбивати випромінювання</value>
   </data>
+  <data name="Azimuth" xml:space="preserve">
+    <value>Азимут</value>
+  </data>
+  <data name="BandWidth" xml:space="preserve">
+    <value>Смуга</value>
+  </data>
   <data name="BandwidthHz" xml:space="preserve">
     <value>Смуга, Гц</value>
   </data>
   <data name="BandwidthKHz" xml:space="preserve">
     <value>Смуга, кГц</value>
+  </data>
+  <data name="BiuseDate" xml:space="preserve">
+    <value>Дійсний з</value>
   </data>
   <data name="BringIntoUse" xml:space="preserve">
     <value>Початок експлуатації</value>
@@ -207,6 +225,9 @@
   <data name="Code" xml:space="preserve">
     <value>Код</value>
   </data>
+  <data name="CollectEmissionForInstrumentalEstimation" xml:space="preserve">
+    <value>Інструментальна оцінка випромінювань</value>
+  </data>
   <data name="CompareWithEmissionOnOtherSensors" xml:space="preserve">
     <value>Порівняти з випромнюванням з інших сенсорів</value>
   </data>
@@ -219,11 +240,26 @@
   <data name="Contravention" xml:space="preserve">
     <value>Порушення</value>
   </data>
+  <data name="Coordinates" xml:space="preserve">
+    <value>Координати</value>
+  </data>
+  <data name="CoordinatesDeclared" xml:space="preserve">
+    <value>Координати заявлені</value>
+  </data>
+  <data name="CoordinatesOfMeasured" xml:space="preserve">
+    <value>Координати вимірювання</value>
+  </data>
   <data name="CorrectnessEstimations" xml:space="preserve">
     <value>Коректність оцінки</value>
   </data>
   <data name="CorrelationCoefficient" xml:space="preserve">
     <value>Коефіцієнт кореляції</value>
+  </data>
+  <data name="CountImportRecords" xml:space="preserve">
+    <value>Кількість імпортованих записів</value>
+  </data>
+  <data name="CountSensors" xml:space="preserve">
+    <value>Кількість сенсорів</value>
   </data>
   <data name="CountStationMeasurements" xml:space="preserve">
     <value>К-сть станцій</value>
@@ -246,11 +282,20 @@
   <data name="DateCreated" xml:space="preserve">
     <value>Дата створення</value>
   </data>
+  <data name="DateEnd" xml:space="preserve">
+    <value>Дата закінчення</value>
+  </data>
+  <data name="DateMeas" xml:space="preserve">
+    <value>Дата вимірювання</value>
+  </data>
   <data name="DateStart" xml:space="preserve">
     <value>Дата початку</value>
   </data>
   <data name="DateStop" xml:space="preserve">
     <value>Дата закінчення</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>День</value>
   </data>
   <data name="dBm" xml:space="preserve">
     <value> дБм</value>
@@ -282,14 +327,26 @@
   <data name="DiffTimestamp10x9" xml:space="preserve">
     <value>Diff. Timestamp, 10^-9</value>
   </data>
+  <data name="DispersionLow" xml:space="preserve">
+    <value>Дисперcія нижня</value>
+  </data>
+  <data name="DispersionUp" xml:space="preserve">
+    <value>Дисперcія верхня</value>
+  </data>
   <data name="DistanceKm" xml:space="preserve">
     <value>Відстань, км</value>
   </data>
   <data name="DurationS" xml:space="preserve">
     <value>Тривалість, с</value>
   </data>
+  <data name="EditSensorTitle" xml:space="preserve">
+    <value>Редагувати назву сенсора</value>
+  </data>
   <data name="EIRPdBW" xml:space="preserve">
     <value>ЕІВП</value>
+  </data>
+  <data name="Elevation" xml:space="preserve">
+    <value>Кут місця</value>
   </data>
   <data name="EmissionFreqMHz" xml:space="preserve">
     <value>Частота випромінювання</value>
@@ -297,11 +354,20 @@
   <data name="EndOfUse" xml:space="preserve">
     <value>Експлуатація до</value>
   </data>
+  <data name="EouseDate" xml:space="preserve">
+    <value>Дійсний до</value>
+  </data>
   <data name="Equipment" xml:space="preserve">
     <value>Обладнання</value>
   </data>
   <data name="ExecutionMode" xml:space="preserve">
     <value>Режим виконання</value>
+  </data>
+  <data name="FieldStrength_dBV_m" xml:space="preserve">
+    <value>Напруженість поля дБМкВ/м</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>Назва файлу</value>
   </data>
   <data name="Filters" xml:space="preserve">
     <value>Фільтра</value>
@@ -324,8 +390,17 @@
   <data name="Frequency" xml:space="preserve">
     <value>Частота</value>
   </data>
+  <data name="FrequencyBandwidthMeasured_kHz" xml:space="preserve">
+    <value>Ширина смуги частоти виміряна, кГц</value>
+  </data>
+  <data name="FrequencyDeviation" xml:space="preserve">
+    <value>Відхилення частоти</value>
+  </data>
   <data name="FrequencyFromMHz" xml:space="preserve">
     <value>Частота від, МГц</value>
+  </data>
+  <data name="FrequencyMeasured" xml:space="preserve">
+    <value>Частота виміряна</value>
   </data>
   <data name="FrequencyToMHz" xml:space="preserve">
     <value>Частота до, МГц</value>
@@ -350,6 +425,15 @@
   </data>
   <data name="Graphic" xml:space="preserve">
     <value>Графік</value>
+  </data>
+  <data name="GSID" xml:space="preserve">
+    <value>Означення станції</value>
+  </data>
+  <data name="GSIDICSM" xml:space="preserve">
+    <value>Означення станції (заявлено)</value>
+  </data>
+  <data name="GSIDReal" xml:space="preserve">
+    <value>Означення станції, фактично</value>
   </data>
   <data name="HideDetail" xml:space="preserve">
     <value>Показати деталі</value>
@@ -377,6 +461,9 @@
   </data>
   <data name="IdStation" xml:space="preserve">
     <value>Station ID</value>
+  </data>
+  <data name="ImportFromCSV" xml:space="preserve">
+    <value>Імпортувати з CSV</value>
   </data>
   <data name="kHz" xml:space="preserve">
     <value>кГц</value>
@@ -444,6 +531,9 @@
   <data name="Marker" xml:space="preserve">
     <value>Маркер</value>
   </data>
+  <data name="MaxFreqMHz" xml:space="preserve">
+    <value>Макс частота, МГц</value>
+  </data>
   <data name="MaximumFrequencyDeviation" xml:space="preserve">
     <value>Максимальна девіація частоти</value>
   </data>
@@ -468,8 +558,14 @@
   <data name="MeasTasks" xml:space="preserve">
     <value>Задачі на вимірювання</value>
   </data>
+  <data name="MeasurementDuration" xml:space="preserve">
+    <value>Тривалість вимірювання</value>
+  </data>
   <data name="MHz" xml:space="preserve">
     <value>МГц</value>
+  </data>
+  <data name="MinFreqMHz" xml:space="preserve">
+    <value>Мин частота, МГц</value>
   </data>
   <data name="MNC" xml:space="preserve">
     <value>MNC</value>
@@ -480,17 +576,26 @@
   <data name="MonitoringEmissionParameters" xml:space="preserve">
     <value>Параметри моніторингу випромінювання</value>
   </data>
+  <data name="Month" xml:space="preserve">
+    <value>Місяць</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Назва</value>
   </data>
   <data name="Network" xml:space="preserve">
     <value>Мережа</value>
   </data>
+  <data name="NetworkId" xml:space="preserve">
+    <value>ID мережі</value>
+  </data>
   <data name="NoiseLevel" xml:space="preserve">
     <value>Рівень шуму</value>
   </data>
   <data name="NumberOfStepsForMeasurementsInChannel" xml:space="preserve">
     <value>Точок у каналі</value>
+  </data>
+  <data name="NumberPermission" xml:space="preserve">
+    <value>№ дозволу на експлуатацію</value>
   </data>
   <data name="NumberPointsOfSpectrum" xml:space="preserve">
     <value>К-сть точок на спектрі</value>
@@ -501,11 +606,29 @@
   <data name="OffsetFrequency10x6" xml:space="preserve">
     <value>Розстройка частоти, 10^-6</value>
   </data>
+  <data name="OnLine" xml:space="preserve">
+    <value>On line</value>
+  </data>
+  <data name="OnLineCommand" xml:space="preserve">
+    <value>Вимірювання on line</value>
+  </data>
   <data name="Owner" xml:space="preserve">
     <value>Власник</value>
   </data>
+  <data name="Owner1" xml:space="preserve">
+    <value>Власник</value>
+  </data>
+  <data name="OwnerName" xml:space="preserve">
+    <value>Власник</value>
+  </data>
+  <data name="OwnerOfStation" xml:space="preserve">
+    <value>Власник РЕЗ</value>
+  </data>
   <data name="Parameters" xml:space="preserve">
     <value>Параметри</value>
+  </data>
+  <data name="Percent" xml:space="preserve">
+    <value>Відсоток</value>
   </data>
   <data name="PercOfIntersectionOfSpectrumsToCombineEmissions" xml:space="preserve">
     <value>% перетину спектру</value>
@@ -516,14 +639,59 @@
   <data name="Permission" xml:space="preserve">
     <value>Дозвіл</value>
   </data>
+  <data name="PermissionChannel" xml:space="preserve">
+    <value>Канал заявлений</value>
+  </data>
+  <data name="PermissionFrequency_MHz" xml:space="preserve">
+    <value>Частота заявлена МГц</value>
+  </data>
+  <data name="PermissionNumber" xml:space="preserve">
+    <value>Дозвіл номер</value>
+  </data>
+  <data name="PermissionPeriod" xml:space="preserve">
+    <value>Термін дії дозволу</value>
+  </data>
+  <data name="PermissionStart" xml:space="preserve">
+    <value>Дозвіл дійсний з</value>
+  </data>
+  <data name="PermissionStart1" xml:space="preserve">
+    <value>Дата використання плану</value>
+  </data>
+  <data name="PermissionStop" xml:space="preserve">
+    <value>Дозвіл дійсний до</value>
+  </data>
   <data name="PersentAvailability" xml:space="preserve">
     <value>Відсоток доступності</value>
+  </data>
+  <data name="Plan" xml:space="preserve">
+    <value>ПЛАН</value>
   </data>
   <data name="PointsNumber" xml:space="preserve">
     <value>К-сть точок</value>
   </data>
   <data name="Power" xml:space="preserve">
     <value>Потужність</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Друкувати</value>
+  </data>
+  <data name="PrintAll" xml:space="preserve">
+    <value>Друкувати все</value>
+  </data>
+  <data name="PrintSelected" xml:space="preserve">
+    <value>Друкувати обране</value>
+  </data>
+  <data name="Probability" xml:space="preserve">
+    <value>Ймовірність</value>
+  </data>
+  <data name="ProtocolCommand" xml:space="preserve">
+    <value>Протокол</value>
+  </data>
+  <data name="Province" xml:space="preserve">
+    <value>Область</value>
+  </data>
+  <data name="RadioMonitoringResult" xml:space="preserve">
+    <value>Результат радіоконтролю</value>
   </data>
   <data name="RBWkHz" xml:space="preserve">
     <value>RBW, кГц</value>
@@ -542,6 +710,9 @@
   </data>
   <data name="RelivedLeveldBm" xml:space="preserve">
     <value>Рівень прийому, дБм</value>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Примітки</value>
   </data>
   <data name="Results" xml:space="preserve">
     <value>Результати</value>
@@ -563,6 +734,9 @@
   </data>
   <data name="RunMeasTask" xml:space="preserve">
     <value>Запуск задачі на вимірювання</value>
+  </data>
+  <data name="RxLoss" xml:space="preserve">
+    <value>Втрати ПРМ</value>
   </data>
   <data name="ScansNumber" xml:space="preserve">
     <value>К-сть сканувань</value>
@@ -594,6 +768,9 @@
   <data name="SignalLevelDBm" xml:space="preserve">
     <value>Сигнал/Рівень, дБм</value>
   </data>
+  <data name="SignalLevel_dB" xml:space="preserve">
+    <value>Рівень сигналу (дБ)</value>
+  </data>
   <data name="SN" xml:space="preserve">
     <value>SN</value>
   </data>
@@ -621,6 +798,9 @@
   <data name="StartFreqMHz" xml:space="preserve">
     <value>Частота від, МГц</value>
   </data>
+  <data name="StationAddress" xml:space="preserve">
+    <value>Адрес РЕЗ</value>
+  </data>
   <data name="StationName" xml:space="preserve">
     <value>Назва станції</value>
   </data>
@@ -636,11 +816,17 @@
   <data name="Status" xml:space="preserve">
     <value>Статус</value>
   </data>
+  <data name="StatusStation" xml:space="preserve">
+    <value>Статус обліку РЕЗ</value>
+  </data>
+  <data name="StepkHz" xml:space="preserve">
+    <value>Крок, кГц</value>
+  </data>
   <data name="StepOfSpectrumkHz" xml:space="preserve">
     <value>Крок спектру, кГц</value>
   </data>
-  <data name="StepWhithkHz" xml:space="preserve">
-    <value>Крок, кГц</value>
+  <data name="StepOfSpectrumkHz1" xml:space="preserve">
+    <value>Крок спектра, кГц</value>
   </data>
   <data name="Stop" xml:space="preserve">
     <value>Стоп</value>
@@ -717,14 +903,23 @@
   <data name="TimeTo" xml:space="preserve">
     <value>Час до</value>
   </data>
+  <data name="Title" xml:space="preserve">
+    <value>Заголовок</value>
+  </data>
   <data name="To" xml:space="preserve">
     <value>До</value>
   </data>
   <data name="TraceCount" xml:space="preserve">
     <value>К-сть трейсів</value>
   </data>
+  <data name="TRBS" xml:space="preserve">
+    <value>ТР-бс</value>
+  </data>
   <data name="TriggerDeviationFromReference" xml:space="preserve">
     <value>Порогове відхилення від еталону</value>
+  </data>
+  <data name="TypeArea" xml:space="preserve">
+    <value>Тип області</value>
   </data>
   <data name="TypeMeasurements" xml:space="preserve">
     <value>Тип вимірювань</value>
@@ -732,11 +927,11 @@
   <data name="TypeOfDetecting" xml:space="preserve">
     <value>Тип детекції</value>
   </data>
+  <data name="TypeSensor" xml:space="preserve">
+    <value>Тип сенсору</value>
+  </data>
   <data name="TypeSpectrumOccupation" xml:space="preserve">
     <value>Тип зайнятості спектра</value>
-  </data>
-  <data name="Type_Measurements" xml:space="preserve">
-    <value>Тип вимірювань</value>
   </data>
   <data name="UpFreq" xml:space="preserve">
     <value>Верхня частота</value>
@@ -756,7 +951,13 @@
   <data name="VBWkHz" xml:space="preserve">
     <value>VBW, кГц</value>
   </data>
+  <data name="Year" xml:space="preserve">
+    <value>Рік</value>
+  </data>
   <data name="ZoomUndo" xml:space="preserve">
     <value>Undo</value>
+  </data>
+  <data name="ZTR" xml:space="preserve">
+    <value>ЗТР</value>
   </data>
 </root>

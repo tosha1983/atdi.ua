@@ -9,7 +9,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
 {
     public class SdrnsControllerWcfClientIeStation : WcfServiceClientBase<ISdrnsControllerIeStation, SdrnsControllerWcfClientIeStation>
     {
-        public SdrnsControllerWcfClientIeStation() : base("SdrnsController") { }
+        public SdrnsControllerWcfClientIeStation() : base("SdrnsControllerIeStation") { }
 
         public static long? ImportRefSpectrum(RefSpectrum refSpectrum)
         {
@@ -35,11 +35,11 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         {
             return Execute(contract => contract.GetAllDataSynchronizationProcess());
         }
-        public static Protocols[] GetProtocols()
+        public static HeadProtocols[] GetProtocols()
         {
             return GetProtocolsByParameters(null, "", null, null, null, null, null, null, null, null, "", "", "", "", null, null);
         }
-        public static Protocols[] GetProtocolsByParameters(long? processId,
+        public static HeadProtocols[] GetProtocolsByParameters(long? processId,
                                                     string createdBy,
                                                     DateTime? DateCreated,
                                                     DateTime? DateStart,
@@ -56,7 +56,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                                                     DateTime? permissionStart,
                                                     DateTime? permissionStop)
         {
-            return Execute(contract => contract.GetProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freq, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop));
+            return Execute(contract => contract.GetDetailProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freq, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop));
         }
         public static HeadProtocols[] GetDetailProtocolsByParameters(long? processId,
                                                     string createdBy,

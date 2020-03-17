@@ -9,9 +9,9 @@ using XICSM.ICSControlClient.Environment.Wpf;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
-    public class DataSynchronizationProcessProtocolDataAdapter : WpfDataAdapter<SDR.Protocols, VM.DataSynchronizationProcessProtocolsViewModel, DataSynchronizationProcessProtocolDataAdapter>
+    public class DataSynchronizationProcessProtocolDataAdapter : WpfDataAdapter<SDR.DetailProtocols, VM.DataSynchronizationProcessProtocolsViewModel, DataSynchronizationProcessProtocolDataAdapter>
     {
-        protected override Func<SDR.Protocols, VM.DataSynchronizationProcessProtocolsViewModel> GetMapper()
+        protected override Func<SDR.DetailProtocols, VM.DataSynchronizationProcessProtocolsViewModel> GetMapper()
         {
             return Mappers.Map;
         }

@@ -10,22 +10,33 @@ namespace XICSM.ICSControlClient.Models.Views
 {
     public class DataSynchronizationProcessViewModel
     {
-        [WpfColumn("Id", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public long? Id { get; set; }
+        [WpfColumn("GSID", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string GSID { get; set; }
 
-        [WpfColumn("CreatedBy", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public string CreatedBy { get; set; }
+        [WpfColumn("DateMeas", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public DateTime? DateMeas { get; set; }
 
-        [WpfColumn("DateCreated", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public DateTime DateCreated { get; set; }
+        [WpfColumn("Owner", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string Owner { get; set; }
 
-        [WpfColumn("DateStart", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public DateTime DateStart { get; set; }
+        [WpfColumn("StationAddress", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StationAddress { get; set; }
 
-        [WpfColumn("DateEnd", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public DateTime DateEnd { get; set; }
+        [WpfColumn("Coordinates", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string Coordinates { get; set; }
 
-        [WpfColumn("Status", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
-        public Status Status { get; set; }
+        [WpfColumn("NumberPermission", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string NumberPermission { get; set; }
+
+        [WpfColumn("PermissionPeriod", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public DateTime? PermissionPeriod { get; set; }
+
+        [WpfColumn("PermissionStart", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public DateTime? PermissionStart { get; set; }
+
+        [WpfColumn("SensorName", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string SensorName { get; set; }
+
+        public DetailProtocols[] DetailProtocols { get; set; }
     }
 }

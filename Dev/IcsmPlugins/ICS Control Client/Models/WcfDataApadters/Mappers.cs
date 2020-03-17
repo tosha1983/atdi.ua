@@ -509,76 +509,47 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SensorIds = source.SensorIds
             };
         }
-        public static VM.DataSynchronizationProcessProtocolsViewModel Map(SDRI.Protocols source)
+        public static VM.DataSynchronizationProcessProtocolsViewModel Map(SDRI.DetailProtocols source)
         {
             if (source == null)
                 return null;
 
-            if (source.Sensor == null)
-                source.Sensor = new SDRI.Sensor();
-
-            if (source.StationExtended == null)
-                source.StationExtended = new SDRI.StationExtended();
-
-            if (source.DataRefSpectrum == null)
-                source.DataRefSpectrum = new SDRI.DataRefSpectrum();
-
-            if (source.RadioControlParams == null)
-                source.RadioControlParams = new SDRI.RadioControlParams();
-
-            if (source.ProtocolsLinkedWithEmittings == null)
-                source.ProtocolsLinkedWithEmittings = new SDRI.ProtocolsWithEmittings();
-
             return new VM.DataSynchronizationProcessProtocolsViewModel
             {
-                Id = source.DataSynchronizationProcess.Id,
-                Status = source.DataSynchronizationProcess.Status,
-                DateCreated = source.DataSynchronizationProcess.DateCreated,
-                DateStart = source.DataSynchronizationProcess.DateStart,
-                DateEnd = source.DataSynchronizationProcess.DateEnd,
-                CreatedBy = source.DataSynchronizationProcess.CreatedBy,
-
-                SensorName = source.Sensor.Name,
-                Administration = source.Sensor.Administration,
-                NetworkId = source.Sensor.NetworkId,
-                Remark = source.Sensor.Remark,
-                BiuseDate = source.Sensor.BiuseDate,
-                EouseDate = source.Sensor.EouseDate,
-                Azimuth = source.Sensor.Azimuth,
-                Elevation = source.Sensor.Elevation,
-                AGL = source.Sensor.AGL,
-                TypeSensor = source.Sensor.TypeSensor,
-                StepMeasTime = source.Sensor.StepMeasTime,
-                RxLoss = source.Sensor.RxLoss,
-                OpHHFr = source.Sensor.OpHHFr,
-                OpHHTo = source.Sensor.OpHHTo,
-                OpDays = source.Sensor.OpDays,
-                Locations = source.Sensor.Locations,
-
-                Standard = source.StationExtended.Standard,
-                StandardName = source.StationExtended.StandardName,
-                OwnerName = source.StationExtended.OwnerName,
-                PermissionNumber = source.StationExtended.PermissionNumber,
-                PermissionStart = source.StationExtended.PermissionStart,
-                PermissionStop = source.StationExtended.PermissionStop,
-                Address = source.StationExtended.Address,
-                Location = source.StationExtended.Location,
-                BandWidth = source.StationExtended.BandWidth,
-                DesigEmission = source.StationExtended.DesigEmission,
-                Province = source.StationExtended.Province,
-
-                SensorId = source.DataRefSpectrum.SensorId,
-                GlobalSID = source.DataRefSpectrum.GlobalSID,
-                Freq_MHz = source.DataRefSpectrum.Freq_MHz,
-                Level_dBm = source.DataRefSpectrum.Level_dBm,
-                DispersionLow = source.DataRefSpectrum.DispersionLow,
-                DispersionUp = source.DataRefSpectrum.DispersionUp,
-                Percent = source.DataRefSpectrum.Percent,
-                DateMeas = source.DataRefSpectrum.DateMeas,
-
-                RadioControlBandWidth = source.RadioControlParams.RadioControlBandWidth,
-                RadioControlMeasFreq_MHz = source.RadioControlParams.RadioControlMeasFreq_MHz,
-
+                
+                Id = source.Id,
+                Address = source.Address,
+                BandWidth = source.BandWidth,
+                CreatedBy = source.CreatedBy,
+                CurentStatusStation = source.CurentStatusStation,
+                DateCreated = source.DateCreated,
+                DateMeas = source.DateMeas,
+                DateMeas_OnlyDate = source.DateMeas_OnlyDate,
+                DateMeas_OnlyTime = source.DateMeas_OnlyTime,
+                DurationMeasurement = source.DurationMeasurement,
+                FieldStrength = source.FieldStrength,
+                Freq_MHz = source.Freq_MHz,
+                GlobalSID = source.GlobalSID,
+                Latitude = source.Latitude,
+                Longitude = source.Longitude,
+                Level_dBm = source.Level_dBm,
+                OwnerName = source.OwnerName,
+                PermissionGlobalSID = source.PermissionGlobalSID,
+                PermissionNumber = source.PermissionNumber,
+                PermissionStart = source.PermissionStart,
+                PermissionStop = source.PermissionStop,
+                RadioControlBandWidth_KHz = source.RadioControlBandWidth_KHz,
+                RadioControlDeviationFreq_MHz = source.RadioControlDeviationFreq_MHz,
+                RadioControlMeasFreq_MHz = source.RadioControlMeasFreq_MHz,
+                SensorLatitude = source.SensorLatitude,
+                SensorLongitude = source.SensorLongitude,
+                SensorName = source.SensorName,
+                Standard = source.Standard,
+                StandardName = source.StandardName,
+                StationChannel = source.StationChannel,
+                StationTxFreq = source.StationTxFreq,
+                StatusMeas = source.StatusMeas,
+                TitleSensor = source.TitleSensor,
                 ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };
         }

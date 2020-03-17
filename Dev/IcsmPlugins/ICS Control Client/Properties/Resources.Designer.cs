@@ -430,6 +430,33 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Coordinates.
+        /// </summary>
+        public static string Coordinates {
+            get {
+                return ResourceManager.GetString("Coordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coordinates declared.
+        /// </summary>
+        public static string CoordinatesDeclared {
+            get {
+                return ResourceManager.GetString("CoordinatesDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coordinates of measured.
+        /// </summary>
+        public static string CoordinatesOfMeasured {
+            get {
+                return ResourceManager.GetString("CoordinatesOfMeasured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Correctness Estimations.
         /// </summary>
         public static string CorrectnessEstimations {
@@ -772,6 +799,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Field strength dBμV/m.
+        /// </summary>
+        public static string FieldStrength_dBV_m {
+            get {
+                return ResourceManager.GetString("FieldStrength_dBV_m", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Name.
         /// </summary>
         public static string FileName {
@@ -844,11 +880,38 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Frequency bandwidth measured, kHz.
+        /// </summary>
+        public static string FrequencyBandwidthMeasured_kHz {
+            get {
+                return ResourceManager.GetString("FrequencyBandwidthMeasured_kHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frequency deviation.
+        /// </summary>
+        public static string FrequencyDeviation {
+            get {
+                return ResourceManager.GetString("FrequencyDeviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Frequency from, MHz.
         /// </summary>
         public static string FrequencyFromMHz {
             get {
                 return ResourceManager.GetString("FrequencyFromMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frequency measured.
+        /// </summary>
+        public static string FrequencyMeasured {
+            get {
+                return ResourceManager.GetString("FrequencyMeasured", resourceCulture);
             }
         }
         
@@ -921,6 +984,33 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Graphic {
             get {
                 return ResourceManager.GetString("Graphic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GSID.
+        /// </summary>
+        public static string GSID {
+            get {
+                return ResourceManager.GetString("GSID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GSID ICSM.
+        /// </summary>
+        public static string GSIDICSM {
+            get {
+                return ResourceManager.GetString("GSIDICSM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GSID real.
+        /// </summary>
+        public static string GSIDReal {
+            get {
+                return ResourceManager.GetString("GSIDReal", resourceCulture);
             }
         }
         
@@ -1294,6 +1384,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Measurement duration.
+        /// </summary>
+        public static string MeasurementDuration {
+            get {
+                return ResourceManager.GetString("MeasurementDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MHz.
         /// </summary>
         public static string MHz {
@@ -1393,6 +1492,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number permission.
+        /// </summary>
+        public static string NumberPermission {
+            get {
+                return ResourceManager.GetString("NumberPermission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number points of spectrum.
         /// </summary>
         public static string NumberPointsOfSpectrum {
@@ -1474,11 +1582,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Owner.
+        /// </summary>
+        public static string Owner1 {
+            get {
+                return ResourceManager.GetString("Owner1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owner Name.
         /// </summary>
         public static string OwnerName {
             get {
                 return ResourceManager.GetString("OwnerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owner of station.
+        /// </summary>
+        public static string OwnerOfStation {
+            get {
+                return ResourceManager.GetString("OwnerOfStation", resourceCulture);
             }
         }
         
@@ -1528,6 +1654,24 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Permission channel.
+        /// </summary>
+        public static string PermissionChannel {
+            get {
+                return ResourceManager.GetString("PermissionChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission frequency, MHz.
+        /// </summary>
+        public static string PermissionFrequency_MHz {
+            get {
+                return ResourceManager.GetString("PermissionFrequency_MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permission Number.
         /// </summary>
         public static string PermissionNumber {
@@ -1537,11 +1681,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Permission period.
+        /// </summary>
+        public static string PermissionPeriod {
+            get {
+                return ResourceManager.GetString("PermissionPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permission Start.
         /// </summary>
         public static string PermissionStart {
             get {
                 return ResourceManager.GetString("PermissionStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission start.
+        /// </summary>
+        public static string PermissionStart1 {
+            get {
+                return ResourceManager.GetString("PermissionStart1", resourceCulture);
             }
         }
         
@@ -1560,6 +1722,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string PersentAvailability {
             get {
                 return ResourceManager.GetString("PersentAvailability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plan.
+        /// </summary>
+        public static string Plan {
+            get {
+                return ResourceManager.GetString("Plan", resourceCulture);
             }
         }
         
@@ -1650,6 +1821,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string RadioControlMeasFreq_MHz {
             get {
                 return ResourceManager.GetString("RadioControlMeasFreq_MHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radio monitoring result.
+        /// </summary>
+        public static string RadioMonitoringResult {
+            get {
+                return ResourceManager.GetString("RadioMonitoringResult", resourceCulture);
             }
         }
         
@@ -1870,6 +2050,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Signal Level (dB).
+        /// </summary>
+        public static string SignalLevel_dB {
+            get {
+                return ResourceManager.GetString("SignalLevel_dB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Signal/Level, dBm.
         /// </summary>
         public static string SignalLevelDBm {
@@ -1969,6 +2158,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Station Address.
+        /// </summary>
+        public static string StationAddress {
+            get {
+                return ResourceManager.GetString("StationAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Station Name.
         /// </summary>
         public static string StationName {
@@ -2010,6 +2208,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Status {
             get {
                 return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status station.
+        /// </summary>
+        public static string StatusStation {
+            get {
+                return ResourceManager.GetString("StatusStation", resourceCulture);
             }
         }
         
@@ -2293,6 +2500,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TRBS.
+        /// </summary>
+        public static string TRBS {
+            get {
+                return ResourceManager.GetString("TRBS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trigger Deviation From Reference.
         /// </summary>
         public static string TriggerDeviationFromReference {
@@ -2415,6 +2631,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string ZoomUndo {
             get {
                 return ResourceManager.GetString("ZoomUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ZTR.
+        /// </summary>
+        public static string ZTR {
+            get {
+                return ResourceManager.GetString("ZTR", resourceCulture);
             }
         }
     }
