@@ -11,8 +11,8 @@
   </DataSource>
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
-    <Field Name="HEAD_REF_SPECTRUM" SourceName="HeadRefSpectrum" SourceType="Reference" Required="true" Desc="" Title="Relation LinkHeadRefSpectrum to HeadRefSpectrum"/>
-    <Field Name="SYNCHRO_PROCESS" SourceName="SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation LinkHeadRefSpectrum to SynchroProcess"/>
+    <Field Name="HEAD_REF_SPECTRUM" SourceName="IeStation.HeadRefSpectrum" SourceType="Reference" Required="true" Desc="" Title="Relation LinkHeadRefSpectrum to HeadRefSpectrum"/>
+    <Field Name="SYNCHRO_PROCESS" SourceName="IeStation.SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation LinkHeadRefSpectrum to SynchroProcess"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

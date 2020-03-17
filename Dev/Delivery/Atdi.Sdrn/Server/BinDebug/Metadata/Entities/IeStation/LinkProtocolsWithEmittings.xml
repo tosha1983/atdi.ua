@@ -37,7 +37,7 @@
     <Field Desc="Contravention" Title="Contravention" Name="Contravention" DataType="Boolean" SourceName="CONTRAVENTION" SourceType="Column" Required="false"/>
     <Field Name="WorkTimeStart" DataType="DateTime" SourceName="WORK_TIME_START"  SourceType="Column" Desc="The WorkTime of start" Title="The WorkTime of start" Required="false"/>
     <Field Name="WorkTimeStop" DataType="DateTime" SourceName="WORK_TIME_STOP" SourceType="Column" Desc="The WorkTime of stop" Title="The WorkTime of stop" Required="false"/>
-    <Field Name="PROTOCOLS" SourceName="Protocols" SourceType="Reference" Required="true" Desc="" Title="Relation LinkProtocolsWithEmittings to Protocols"/>
+    <Field Name="PROTOCOLS" SourceName="IeStation.Protocols" SourceType="Reference" Required="true" Desc="" Title="Relation LinkProtocolsWithEmittings to Protocols"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

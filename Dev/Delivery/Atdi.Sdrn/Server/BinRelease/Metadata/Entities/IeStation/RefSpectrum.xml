@@ -4,6 +4,7 @@
   Title       = "RefSpectrum"
   Desc        = "The RefSpectrum"
   Type        = "Normal"
+  BaseEntity  = "EStation.HeadRefSpectrum"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>REF_SPECTRUM</Name>
@@ -22,7 +23,8 @@
     <Field Desc="DispersionUp" Title="DispersionUp" Name="DispersionUp" DataType="Double.30.10" SourceName="DISPERSION_UP" SourceType="Column" Required="false"/>
     <Field Desc="Percent" Title="Percent" Name="Percent" DataType="Double.30.10" SourceName="PERCENT" SourceType="Column" Required="false"/>
     <Field Name="DateMeas" DataType="DateTime" SourceName="DATE_MEAS" SourceType="Column" Desc="The date of meas" Title="The date of meas" Required="true"/>
-    <Field Name="HEAD_REF_SPECTRUM" SourceName="HeadRefSpectrum" SourceType="Reference" Required="true" Desc="" Title="Relation RefSpectrum to HeadRefSpectrum"/>
+    <Field Desc="StatusMeas" Title="StatusMeas" Name="StatusMeas" DataType="Text.4" SourceName="STATUS_MEAS" SourceType="Column" Required="false"/>
+    <Field Name="HEAD_REF_SPECTRUM" SourceName="IeStation.HeadRefSpectrum" SourceType="Reference" Required="true" Desc="" Title="Relation RefSpectrum to HeadRefSpectrum"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

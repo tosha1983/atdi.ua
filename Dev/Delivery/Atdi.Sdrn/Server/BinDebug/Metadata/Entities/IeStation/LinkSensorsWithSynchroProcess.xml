@@ -12,7 +12,7 @@
   <Fields>
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID"  Required="true" SourceType="Column"/>
-    <Field Name="SYNCHRO_PROCESS" SourceName="SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation LinkSensorsWithSynchroProcess to SynchroProcess"/>
+    <Field Name="SYNCHRO_PROCESS" SourceName="IeStation.SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation LinkSensorsWithSynchroProcess to SynchroProcess"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

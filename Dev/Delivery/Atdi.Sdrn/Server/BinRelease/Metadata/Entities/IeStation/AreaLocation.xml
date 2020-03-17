@@ -13,7 +13,7 @@
     <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
     <Field Desc="Longitude, DEC" Title="Longitude, DEC" Name="Longitude" DataType="Double.30.10" SourceName="LONGITUDE" SourceType="Column" Required="false" Unit="Longitude.DEC"/>
     <Field Desc="Latitude, DEC" Title="Latitude, DEC" Name="Latitude" DataType="Double.30.10" SourceName="LATITUDE" SourceType="Column" Required="false" Unit="Latitude.DEC"/>
-    <Field Name="AREA" SourceName="Area" SourceType="Reference" Required="true" Desc="" Title="Relation AreaLocation to Area"/>
+    <Field Name="AREA" SourceName="IeStation.Area" SourceType="Reference" Required="true" Desc="" Title="Relation AreaLocation to Area"/>
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>
