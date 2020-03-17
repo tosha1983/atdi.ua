@@ -90,9 +90,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         public static readonly EventText RecoveryDataSynchronizationProcess = "Call 'RecoveryDataSynchronizationProcess' method";
         public static readonly EventText RunDataSynchronizationProcess = "Call 'RunDataSynchronizationProcess' method";
         public static readonly EventText UpdateStatusStationExtended = "Call 'UpdateStatusStationExtended' method";
+        public static readonly EventText OccurredUnexpectedErrorsStationsOrAreas = "Occurred unexpected errors while saved data in DB across stations or areas!";
 
         
-
     }
     static class TraceScopeNames
     {
