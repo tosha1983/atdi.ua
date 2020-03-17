@@ -13,16 +13,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 	{
 		private readonly DM.CalcTaskResultData _taskResult;
 		private readonly ITaskObserver _observer;
-		private readonly IIterationsPool _iterationsPool;
 
-		public TaskContext(DM.CalcTaskResultData taskResult, ITaskObserver observer, IIterationsPool iterationsPool)
+		public TaskContext(DM.CalcTaskResultData taskResult, ITaskObserver observer)
 		{
 			_taskResult = taskResult;
 			_observer = observer;
-			_iterationsPool = iterationsPool;
 
 			this.ResultId = taskResult.ResultId;
 			this.TaskId = taskResult.TaskId;
+			this.ProjectId = taskResult.ProjectId;
 			this.LaunchHandle = new TaskLaunchHandle
 			{
 				TaskId = taskResult.TaskId,
@@ -40,15 +39,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 		public long TaskId { get; }
 
+		public long ProjectId { get; }
+
 		public void SendEvent(ICalcEvent @event)
 		{
 			_observer.OnEvent(this, @event);
 		}
 
-		public TResult RunIteration<TData, TResult>(TData data)
-		{
-			var iteration = _iterationsPool.GetIteration<TData, TResult>();
-			return iteration.Run(this, data);
-		}
+		//public TResult RunIteration<TData, TResult>(TData data)
+		//{
+		//	var iteration = _iterationsPool.GetIteration<TData, TResult>();
+		//	return iteration.Run(this, data);
+		//}
+
+		//public IIterationHandler<TData, TResult> GetIteration<TData, TResult>()
+		//{
+		//	return _iterationsPool.GetIteration<TData, TResult>();
+		//}
 	}
 }

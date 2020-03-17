@@ -436,6 +436,25 @@ into n
 from dual;
 end if;
 
+
+if inttable_name ='HEALTH_LOG' then
+select ICSC.HEALTH_LOG_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='HEALTH_LOG_DATA' then
+select ICSC.HEALTH_LOG_DATA_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='HEALTH_LOG_DETAIL' then
+select ICSC.HEALTH_LOG_DETAIL_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 return(n);
 end;
 /

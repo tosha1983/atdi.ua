@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform.AppServer;
+using Atdi.Platform.Workflows;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
 {
@@ -30,7 +31,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
             this.Container.Register<Handlers.SendMeasTaskHandler>(ServiceLifetime.Singleton);
             this.Container.Register<Handlers.SendRegistrationResultHandler>(ServiceLifetime.Singleton);
             this.Container.Register<Handlers.SendSensorUpdatingResultHandler>(ServiceLifetime.Singleton);
-        }
+
+            this.Container.Register<HealthJob>(ServiceLifetime.Singleton);
+		}
 
         protected override void OnActivateUnit()
         {
@@ -56,8 +59,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
             {
                 dispatcher.Activate();
             });
-            
-        }
+
+            var appConfig = this.Resolver.Resolve<ConfigMessaging>();
+
+			var jobBroker = this.Resolver.Resolve<IJobBroker>();
+			hostLoader.RegisterTrigger("Running Jobs ...", () =>
+			{
+				var startDelaySeconds = appConfig.HealthJobStartDelay ?? 10;
+				var repeatDelayMinutes = appConfig.HealthJobRepeatDelay ?? 60;
+				var jobDef = new JobDefinition<HealthJob>()
+				{
+					Name = "Health Job",
+					Recoverable = true,
+					Repeatable = true,
+					StartDelay = new TimeSpan(TimeSpan.TicksPerSecond * startDelaySeconds),
+					RepeatDelay = new TimeSpan(TimeSpan.TicksPerMinute * repeatDelayMinutes)
+				};
+
+				jobBroker.Run(jobDef);
+			});
+		}
 
         protected override void OnDeactivateUnit()
         {

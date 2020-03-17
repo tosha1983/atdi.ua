@@ -309,12 +309,12 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 				var gateFactory = BusGateFactory.Create();
 				var gate = CreateGate(gateFactory, sensor, index, contentType, encrypted, compress);
 
-				var dispatcher1 = gate.CreateDispatcher($"SDRN.SensorDispatcher.#{index}");
-				//dispatcher1.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
-				//dispatcher1.RegistryHandler(new Handlers.SendCommandHandler(gate));
-				dispatcher1.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate, index));
-				dispatcher1.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate, index));
-				dispatcher1.Activate();
+				//var dispatcher1 = gate.CreateDispatcher($"SDRN.SensorDispatcher.#{index}");
+				////dispatcher1.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
+				////dispatcher1.RegistryHandler(new Handlers.SendCommandHandler(gate));
+				//dispatcher1.RegistryHandler(new Handlers.SendRegistrationResultHandler(gate, index));
+				//dispatcher1.RegistryHandler(new Handlers.SendSensorUpdatingResultHandler(gate, index));
+				//dispatcher1.Activate();
 
 				//var dispatcher2 = gate.CreateDispatcher("SensorMessageDispatcher2");
 				////dispatcher2.RegistryHandler(new Handlers.SendMeasTaskHandler(gate));
@@ -369,7 +369,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
 
 				for (var i = 0; i < 1000; i++)
 				{
-					publisher.Send("RegisterSensor", sensor, $"{index}.testing {i}");
+					//publisher.Send("RegisterSensor", sensor, $"{index}.testing {i}");
 					publisher.Send("SendMeasResults", measResult, $"{index}.testing {i}");
 				}
 

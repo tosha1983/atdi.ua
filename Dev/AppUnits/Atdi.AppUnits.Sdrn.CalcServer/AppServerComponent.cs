@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Api.EventSystem;
+using Atdi.AppUnits.Sdrn.CalcServer.Services;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.Contracts.Sdrn.CalcServer;
+using Atdi.Contracts.Sdrn.CalcServer.Internal;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
 using Atdi.Platform.AppServer;
@@ -64,6 +66,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			// шина данных 
 			this.Container.Register<MapBuilder>(ServiceLifetime.Singleton);
 			this.Container.Register<ProcessJob>(ServiceLifetime.Singleton);
+			this.Container.Register<TaskWorkerJob>(ServiceLifetime.Singleton);
+			this.Container.Register<IMapService, MapService>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()
@@ -77,6 +81,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var taskHandlerTypes = typeResolver.ForeachInAllAssemblies(
 				(type) =>
 				{
+					//if (type.Name == "CoverageProfilesCalcTask")
+					//{
+					//	System.Diagnostics.Debug.WriteLine(type.Name);
+					//}
+					//else
+					//{
+					//	System.Diagnostics.Debug.WriteLine(type.Name);
+					//}
 					if (!type.IsClass
 					    || type.IsAbstract
 					    || type.IsInterface
@@ -137,7 +149,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				try
 				{
 					iterationsPool.Register(iterationHandlerType);
-					this.Container.Register(iterationHandlerType, iterationHandlerType, ServiceLifetime.Transient);
+					this.Container.Register(iterationHandlerType, iterationHandlerType, ServiceLifetime.Singleton);
 					Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.IterationHandlerTypeWasRegistered.With(iterationHandlerType.AssemblyQualifiedName));
 					
 				}

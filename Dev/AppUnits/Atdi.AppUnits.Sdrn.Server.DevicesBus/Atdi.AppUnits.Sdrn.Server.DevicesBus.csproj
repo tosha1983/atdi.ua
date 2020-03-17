@@ -62,6 +62,10 @@
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EventSystem\Atdi.Contracts.Api.EventSystem.csproj">
+      <Project>{608FAC29-91CB-43AF-A45B-1A0F31870041}</Project>
+      <Name>Atdi.Contracts.Api.EventSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\CoreServices\Atdi.Contracts.CoreServices.DataLayer\Atdi.Contracts.CoreServices.DataLayer.csproj">
       <Project>{e5011dd5-16c5-4cd0-ada3-d783f11c7c61}</Project>
       <Name>Atdi.Contracts.CoreServices.DataLayer</Name>
@@ -81,6 +85,10 @@
     <ProjectReference Include="..\..\CoreServices\Atdi.CoreServices.EntityOrm\Atdi.CoreServices.EntityOrm.csproj">
       <Project>{0284cba5-d336-4a39-8519-3f2c48d433d7}</Project>
       <Name>Atdi.CoreServices.EntityOrm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EventSystem\Atdi.DataModels.Api.EventSystem.csproj">
+      <Project>{61E920B8-8945-420C-A8C8-BC9A7CBF6F70}</Project>
+      <Name>Atdi.DataModels.Api.EventSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>

@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\ICalcResult.cs" />
+    <Compile Include="Entities\ICoverageProfilesCalcTask.cs" />
     <Compile Include="Entities\ICalcTask.cs" />
     <Compile Include="Entities\IContextStationPattern.cs" />
     <Compile Include="Entities\IContextStationTransmitter.cs" />
@@ -78,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_COVERAGEPROFILES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATION_PATTERNS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CONTEXT_STATIONS_ANTENNA.sql" />
@@ -142,6 +144,7 @@
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
     <Content Include="Metadata\DataTypes\Database\Time.xml" />
     <Content Include="Metadata\Entities\CalcResult.xml" />
+    <Content Include="Metadata\Entities\CoverageProfilesCalcTask.xml" />
     <Content Include="Metadata\Entities\CalcTask.xml" />
     <Content Include="Metadata\Entities\ContextStationPattern.xml" />
     <Content Include="Metadata\Entities\ContextStationAntenna.xml" />

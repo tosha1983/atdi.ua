@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Health\HealthData.cs" />
+    <Compile Include="Health\HealthDataDetail.cs" />
+    <Compile Include="Health\HealthDataMessage.cs" />
     <Compile Include="MeasResults\MeasResultContainer.cs" />
     <Compile Include="Messages\DeviceCommandResultEvent.cs" />
     <Compile Include="Messages\MeasResult\SendMeasResultMSToMasterServer.cs" />

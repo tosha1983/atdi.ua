@@ -221,59 +221,68 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 		[Route("$Record/create")]
 		public IHttpActionResult CreateDataRecord([FromBody] DTO.DataRecordCreateRequest request)
 		{
-			if (!this.CheckQuery(request, out var message))
+			try
 			{
-				return BadRequest(message);
-			}
+				if (!this.CheckQuery(request, out var message))
+				{
+					return BadRequest(message);
+				}
 
-			if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
-			{
-				return BadRequest(message);
+				if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+				{
+					return BadRequest(message);
+				}
+				if (!this.TryParseFields(entity, request.Fields, out IFieldMetadata[] fields, out message))
+				{
+					return BadRequest(message);
+				}
+
+
+				var ormQuery = _dataLayer.Builder
+					.Insert(request.QName);
+
+				for (var i = 0; i < request.Fields.Length; i++)
+				{
+					var field = fields[i];
+					var value = ValueOperand.Create(field.DataType.CodeVarType,
+						ParseValue(field.DataType, request.Values[i]));
+					ormQuery.SetValue(request.Fields[i], value);
+				}
+
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+				{
+					var pkType = _entityOrm.GetPrimaryKeyInstanceType(entity);
+					if (pkType != null)
+					{
+						var pkObject = scope.Executor.Execute(ormQuery, pkType);
+
+						var result = new DTO.RecordCreateResult
+						{
+							Count = 1,
+							PrimaryKey = pkObject
+						};
+						return (IHttpActionResult)Ok(result);
+					}
+					else
+					{
+						var count = scope.Executor.Execute(ormQuery);
+
+						var result = new DTO.RecordCreateResult
+						{
+							Count = count
+						};
+						return (IHttpActionResult)Ok(result);
+					}
+
+
+				}
 			}
-			if (!this.TryParseFields(entity, request.Fields, out IFieldMetadata[] fields, out message))
+			catch (Exception e)
 			{
-				return BadRequest(message);
+				Console.WriteLine(e);
+				throw;
 			}
 			
-
-			var ormQuery = _dataLayer.Builder
-				.Insert(request.QName);
-
-			for (var i = 0; i < request.Fields.Length; i++)
-			{
-				var field = fields[i];
-				var value = ValueOperand.Create(field.DataType.CodeVarType,
-					ParseValue(field.DataType, request.Values[i]));
-				ormQuery.SetValue(request.Fields[i], value);
-			}
-
-			using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
-			{
-				var pkType = _entityOrm.GetPrimaryKeyInstanceType(entity);
-				if (pkType != null)
-				{
-					var pkObject = scope.Executor.Execute(ormQuery, pkType);
-
-					var result = new DTO.RecordCreateResult
-					{
-						Count = 1,
-						PrimaryKey = pkObject
-					};
-					return (IHttpActionResult)Ok(result);
-				}
-				else
-				{
-					var count = scope.Executor.Execute(ormQuery);
-
-					var result = new DTO.RecordCreateResult
-					{
-						Count = count
-					};
-					return (IHttpActionResult)Ok(result);
-				}
-
-
-			}
 		}
 
 		[HttpPost]

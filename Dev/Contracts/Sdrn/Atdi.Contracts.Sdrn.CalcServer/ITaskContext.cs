@@ -14,8 +14,12 @@ namespace Atdi.Contracts.Sdrn.CalcServer
 
 		long TaskId { get; }
 
+		long ProjectId { get; }
+
 		void SendEvent(ICalcEvent @event);
 
-		TResult RunIteration<TData, TResult>(TData data);
+		//TResult RunIteration<TData, TResult>(TData data);
+
+		//IIterationHandler<TData, TResult> GetIteration<TData, TResult>();
 	}
 }

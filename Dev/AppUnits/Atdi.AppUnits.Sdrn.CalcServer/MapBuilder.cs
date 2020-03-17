@@ -342,8 +342,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					descriptor.CoveragePercent = 100 * (descriptor.CoverageAmount / projectMapCellArea);
 					cellDescriptors[yyIndex + xIndex] = descriptor;
 
-					System.Diagnostics.Debug.WriteLine($"[MapBuilder]: Map building - {descriptor}");
 				}
+				System.Diagnostics.Debug.WriteLine($"[MapBuilder]: Map building - {yIndex}");
 			}
 			// валидация, которую нужно будет удалить
 			var checkedData = cellDescriptors
@@ -700,6 +700,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 			var cells = new CoverageSourceMapCell[yCount * xCount];
 			var position = 0;
+			var cellAreaSize = sourceMap.AxisYStep * sourceMap.AxisXStep;
 			for (var yIndex = upperLeftIndexer.YIndex; yIndex <= lowerRightIndexer.YIndex; yIndex++)
 			{
 				for (var xIndex = upperLeftIndexer.XIndex; xIndex <= lowerRightIndexer.XIndex; xIndex++)
@@ -709,17 +710,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						XIndex = xIndex,
 						YIndex = yIndex,
 						UpperLeft = sourceMap.IndexToUpperLeftCoordinate(xIndex, yIndex),
-						CellArea = new byte[sourceMap.AxisYStep * sourceMap.AxisXStep]
+						CellArea = new byte[cellAreaSize]
 					};
 					
 					// определдяем реальнео персечение
-					for (int y = 0; y < sourceMap.AxisYStep; y++)
+					for (var y = 0; y < sourceMap.AxisYStep; y++)
 					{
 						var yy = y * sourceMap.AxisXStep;
-						var upperLeftYY = (cell.UpperLeft.Y - 1) - y;
-						for (int x = 0; x < sourceMap.AxisXStep; x++)
+						var upperLeftYy = (cell.UpperLeft.Y - 1) - y;
+						for (var x = 0; x < sourceMap.AxisXStep; x++)
 						{
-							if (coverageArea.Has(cell.UpperLeft.X + x, upperLeftYY))
+							if (coverageArea.Has(cell.UpperLeft.X + x, upperLeftYy))
 							{
 								++cell.Amount;
 								cell.CellArea[yy + x] = (byte) 1;
@@ -963,7 +964,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					c => c.OwnerAxisYStep,
 					c => c.OwnerUpperLeftX,
 					c => c.OwnerUpperLeftY,
-					c => c.Projection,
+					c => c.PROJECT.Projection,
 					c => c.StepUnit)
 				.Where(c => c.Id, ConditionOperator.Equal, projectMapId);
 
@@ -978,10 +979,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						OwnerAxisXNumber = reader.GetValue(c => c.OwnerAxisXNumber),
 						OwnerAxisXStep = reader.GetValue(c => c.OwnerAxisXStep),
 						OwnerAxisYNumber = reader.GetValue(c => c.OwnerAxisYNumber),
-						OwnerAxisYStep = reader.GetValue(c => c.OwnerAxisYNumber),
+						OwnerAxisYStep = reader.GetValue(c => c.OwnerAxisYStep),
 						OwnerUpperLeftX = reader.GetValue(c => c.OwnerUpperLeftX),
 						OwnerUpperLeftY = reader.GetValue(c => c.OwnerUpperLeftY),
-						Projection = reader.GetValue(c => c.Projection),
+						Projection = reader.GetValue(c => c.PROJECT.Projection),
 						StepUnit = reader.GetValue(c => c.StepUnit),
 					};
 

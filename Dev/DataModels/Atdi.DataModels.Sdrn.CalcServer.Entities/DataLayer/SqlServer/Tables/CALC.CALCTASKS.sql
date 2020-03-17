@@ -8,12 +8,14 @@ CREATE TABLE [CALC].[CALCTASKS](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
 	[PROJECT_ID] [bigint] NOT NULL,
 	[TYPE_CODE] [int] NOT NULL,
+	[TYPE_NAME] [nvarchar](250) NOT NULL,
 	[STATUS_CODE] [tinyint] NOT NULL,
 	[STATUS_NAME] [nvarchar](50) NOT NULL,
 	[STATUS_NOTE] [nvarchar](max) NULL,
 	[OWNER_INSTANCE] [nvarchar](250) NOT NULL,
 	[OWNER_TASK_ID] [uniqueidentifier] NOT NULL,
 	[CREATED_DATE] [datetimeoffset](7) NOT NULL,
+	[MAP_NAME] [nvarchar](250) NULL,
  CONSTRAINT [PK_CALCTASKS] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

@@ -156,5 +156,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         /// 
         /// </summary>
         public bool? UkraineNationalMonitoring { get; set; } // признак что делается все для Украины
-    }
+
+        [ComponentConfigProperty("HealthJob.StartDelay")]
+        public int? HealthJobStartDelay { get; set; }
+
+        [ComponentConfigProperty("HealthJob.RepeatDelay")]
+        public int? HealthJobRepeatDelay { get; set; }
+	}
 }

@@ -25,19 +25,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly ITasksFactory _tasksFactory;
-		private readonly IIterationsPool _iterationsPool;
 		private readonly ILogger _logger;
 
 
 		public TaskWorkerJob(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			ITasksFactory tasksFactory, 
-			IIterationsPool iterationsPool, 
 			ILogger logger)
 		{
 			_calcServerDataLayer = calcServerDataLayer;
 			_tasksFactory = tasksFactory;
-			_iterationsPool = iterationsPool;
 			_logger = logger;
 		}
 
@@ -62,7 +59,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					// загружаем задачу
 					try
 					{
-						var taskContext = new TaskContext(taskResultData, state.TaskObserver, _iterationsPool);
+						var taskContext = new TaskContext(taskResultData, state.TaskObserver);
 						handler.Load(taskContext);
 					}
 					catch (Exception e)
@@ -100,9 +97,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			{
 				throw new InvalidOperationException($"Invalid the current task status '{taskResultData.ResultStatus}'. Expected is Available.");
 			}
-			if (taskResultData.ResultStatus != CalcResultStatusCode.Pending)
+			if (taskResultData.ResultStatus != CalcResultStatusCode.Accepted)
 			{
-				throw new InvalidOperationException($"Invalid the current task result status '{taskResultData.ResultStatus}'. Expected is Pending.");
+				throw new InvalidOperationException($"Invalid the current task result status '{taskResultData.ResultStatus}'. Expected is Accepted.");
 			}
 		}
 
@@ -140,7 +137,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				.SetValue(c => c.StartTime, DateTimeOffset.Now)
 				.SetValue(c => c.StatusNote, null)
 				.Where(c => c.Id, ConditionOperator.Equal, resultId)
-				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Pending);
+				.Where(c => c.StatusCode, ConditionOperator.Equal, (byte)CalcResultStatusCode.Accepted);
 
 			return calcDbScope.Executor.Execute(query) > 0;
 		}

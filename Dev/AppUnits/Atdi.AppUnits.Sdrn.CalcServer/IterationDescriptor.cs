@@ -34,7 +34,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.DataType = handlerInterface.GenericTypeArguments[0];
 			this.ResultType = handlerInterface.GenericTypeArguments[1];
 
-			this.Invoker = CreateInvoker(handlerType.GetMethod("Run"));
+			//this.Invoker = CreateInvoker(handlerType.GetMethod("Run"));
 		}
 
 		public string Key => MakeKey(this.DataType, this.ResultType);
@@ -48,42 +48,43 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			return MakeKey(typeof(TData), typeof(TResult));
 		}
 
-		private HandlerInvoker CreateInvoker(MethodInfo method)
-		{
-			var targetArg = Expression.Parameter(typeof(object));
+		//private HandlerInvoker CreateInvoker(MethodInfo method)
+		//{
+		//	var targetArg = Expression.Parameter(typeof(object));
 
-			var contextParam = Expression.Parameter(typeof(ITaskContext));
-			var dataParam = Expression.Parameter(this.DataType);
-			//var resultParam = Expression.Parameter(this.ResultType);
+		//	var contextParam = Expression.Parameter(typeof(ITaskContext));
+		//	//var dataParam = Expression.Parameter(this.DataType);
+		//	var dataParam = Expression.Parameter(typeof(object));
+		//	//var resultParam = Expression.Parameter(this.ResultType);
 
-			var instance = Expression.Convert(targetArg, method.DeclaringType);
+		//	var instance = Expression.Convert(targetArg, method.DeclaringType);
 
-			var methodParams = method.GetParameters();
-			if (methodParams.Length != 2)
-			{
-				throw new InvalidOperationException("Invalid result handler definition");
-			}
-			if (methodParams[0].ParameterType != typeof(ITaskContext))
-			{
-				throw new InvalidOperationException("Invalid result handler definition");
-			}
+		//	var methodParams = method.GetParameters();
+		//	if (methodParams.Length != 2)
+		//	{
+		//		throw new InvalidOperationException("Invalid result handler definition");
+		//	}
+		//	if (methodParams[0].ParameterType != typeof(ITaskContext))
+		//	{
+		//		throw new InvalidOperationException("Invalid result handler definition");
+		//	}
 
-			var contextArg = Expression.Convert(contextParam, methodParams[0].ParameterType);
-			var dataArg = Expression.Convert(dataParam, methodParams[1].ParameterType);
+		//	var contextArg = Expression.Convert(contextParam, methodParams[0].ParameterType);
+		//	var dataArg = Expression.Convert(dataParam, methodParams[1].ParameterType);
 
-			Expression body = Expression.Call(instance, method, contextArg, dataArg);
+		//	Expression body = Expression.Call(instance, method, contextArg, dataArg);
 
-			if (body.Type == typeof(void))
-			{
-				throw new InvalidOperationException("Invalid result handler definition");
-			}
+		//	if (body.Type == typeof(void))
+		//	{
+		//		throw new InvalidOperationException("Invalid result handler definition");
+		//	}
 
-			//var block = Expression.Block(body, Expression.Constant(null));
-			var block = Expression.Convert(body, this.ResultType);
-			var lambda = Expression.Lambda<HandlerInvoker>(block, targetArg, contextParam, dataParam);
+		//	//var block = Expression.Block(body, Expression.Constant(null));
+		//	var block = Expression.Convert(body, this.ResultType);
+		//	var lambda = Expression.Lambda<HandlerInvoker>(block, targetArg, contextParam, dataParam);
 
-			return lambda.Compile();
-		}
+		//	return lambda.Compile();
+		//}
 
 		public Type HandlerType { get; }
 
@@ -91,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 		public Type ResultType { get; }
 
-		public HandlerInvoker Invoker { get; }
+		//public HandlerInvoker Invoker { get; }
 
 	}
 }

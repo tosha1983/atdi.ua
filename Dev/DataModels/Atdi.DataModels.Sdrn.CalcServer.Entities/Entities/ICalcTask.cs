@@ -19,6 +19,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		int TypeCode { get; set; }
 
+		string TypeName { get; set; }
+
 		byte StatusCode { get; set; }
 
 		string StatusName { get; set; }
@@ -31,6 +33,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		DateTimeOffset CreatedDate { get; set; }
 
+		string MapName { get; set; }
 	}
 
 	public enum CalcTaskStatusCode

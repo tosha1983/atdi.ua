@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IHealthLogData.cs" />
+    <Compile Include="Entities\IHealthLogDetail.cs" />
+    <Compile Include="Entities\IHealthLog.cs" />
     <Compile Include="Entities\IAmqpMessageLog.cs" />
     <Compile Include="Entities\IeStation\ILinkSensorsWithSynchroProcess.cs" />
     <Compile Include="Entities\IeStation\ILinkHeadRefSpectrum.cs" />
@@ -132,6 +135,9 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AMQP_MESSAGES_LOG_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AREA_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AREA_LOCATION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.HEALTH_LOG_DETAIL_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.HEALTH_LOG_DATA_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.HEALTH_LOG_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.HEAD_REF_SPECTRUM_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_AREA_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_HEAD_REF_SPECTRUM_ID_SEQ.sql" />
@@ -153,6 +159,9 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.AREA.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.AREA_LOCATION.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.HEAD_REF_SPECTRUM.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.HEALTH_LOG.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.HEALTH_LOG_DATA.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.HEALTH_LOG_DETAIL.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_AREA.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_HEAD_REF_SPECTRUM.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_ONLINE_MEAS.sql" />
@@ -267,6 +276,9 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.STATION_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.STATION_SITE_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.WORK_TIME_ID_SEQ.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.HEALTH_LOG_DATA.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.HEALTH_LOG_DETAIL.sql" />
+    <Content Include="DataLayer\SqlServer\Tables\ICSC.HEALTH_LOG.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.AMQP_MESSAGES_LOG.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.ANTENNA_PATTERN.sql" />
     <Content Include="DataLayer\SqlServer\Tables\ICSC.BEARING.sql" />
@@ -371,6 +383,9 @@
     <Content Include="Metadata\DataTypes\Database\Text.50.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.Bytes.xml" />
     <Content Include="Metadata\DataTypes\Database\Text.MAX.xml" />
+    <Content Include="Metadata\Entities\HealthLogData.xml" />
+    <Content Include="Metadata\Entities\HealthLogDetail.xml" />
+    <Content Include="Metadata\Entities\HealthLog.xml" />
     <Content Include="Metadata\Entities\AmqpMessageLog.xml" />
     <Content Include="Metadata\Entities\IeStation\HeadRefSpectrum.xml" />
     <Content Include="Metadata\Entities\IeStation\LinkHeadRefSpectrum.xml" />

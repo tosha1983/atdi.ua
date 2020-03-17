@@ -53,7 +53,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers
 
             public static readonly IStatisticCounterKey OnlineMeasurementStatusHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.OnlineMeasurementStatus.Hits");
             public static readonly IStatisticCounterKey OnlineMeasurementStatusErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.OnlineMeasurementStatus.Errors");
-        }
+
+            public static readonly IStatisticCounterKey SendHealthDataHits = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendHealthData.Hits");
+            public static readonly IStatisticCounterKey SendHealthDataErrors = STS.DefineCounterKey("SDRN.Server.DeviceBus.MessageProcessing.SendHealthData.Errors");
+		}
         
 
     }

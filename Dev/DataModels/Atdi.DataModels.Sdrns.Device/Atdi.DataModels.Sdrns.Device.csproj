@@ -65,6 +65,7 @@
     <Compile Include="DeviceBusMessages.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityPart.cs" />
+    <Compile Include="Health\SendHealthData.cs" />
     <Compile Include="OnlineMeasurement\ClientData.cs" />
     <Compile Include="OnlineMeasurement\ClientMeasTaskData.cs" />
     <Compile Include="OnlineMeasurement\ClientTaskCancellationData.cs" />

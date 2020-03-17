@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Compressor.cs" />
     <Compile Include="MessageProcessing.cs" />
+    <Compile Include="MessageProcessingJob.cs" />
     <Compile Include="SdrnBrokerObserver.cs" />
     <Compile Include="Old\ConsumersBusConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -127,6 +128,9 @@
       <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
       <Name>Atdi.AppUnits</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

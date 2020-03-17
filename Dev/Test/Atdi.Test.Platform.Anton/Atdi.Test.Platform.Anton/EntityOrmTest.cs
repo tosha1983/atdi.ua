@@ -115,15 +115,20 @@ namespace Atdi.Test.Platform
     }
     class MessagesSiteFake : IMessagesSite
     {
-        void IMessagesSite.ChangeStatus(long messageId, byte oldCode, byte newCode, string statusNote)
+        //void IMessagesSite.ChangeStatus(long messageId, byte oldCode, byte newCode, string statusNote)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public void RedirectMessages()
         {
-            throw new NotImplementedException();
+	        
         }
 
-        (long, string)[] IMessagesSite.GetMessagesForNotification()
-        {
-            throw new NotImplementedException();
-        }
+        //(long, string)[] IMessagesSite.GetMessagesForNotification()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         IMessageProcessingScope<TDeliveryObject> IMessagesSite.StartProcessing<TDeliveryObject>(long messageId)
         {

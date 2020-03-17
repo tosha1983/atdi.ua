@@ -48,6 +48,7 @@
     <Compile Include="DeviceBus\OnMeasResults\SendSGMeasResultsSubscriber.cs" />
     <Compile Include="DeviceBus\OnMeasResults\SendSOMeasResultsSubscriber.cs" />
     <Compile Include="DeviceBus\OnMeasResults\SendTdoaMeasResultsSubscriber.cs" />
+    <Compile Include="DeviceBus\SendHealthDataSubscriber.cs" />
     <Compile Include="DeviceBus\SubscriberBase.cs" />
     <Compile Include="DeviceBus\SendCommandResultSubscriber.cs" />
     <Compile Include="DeviceBus\RegisterSensorSubscriber.cs" />
