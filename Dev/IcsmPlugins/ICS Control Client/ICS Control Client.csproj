@@ -503,6 +503,10 @@
     <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ICSControlClient.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
     <Page Include="WpfControls\Charts\LineChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

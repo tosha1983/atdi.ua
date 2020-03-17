@@ -370,7 +370,7 @@ namespace XICSM.ICSControlClient.ViewModels
                         var stationExtended = new SDRI.StationExtended();
 
                         IMRecordset rs = new IMRecordset(dataSpectrum.TableName, IMRecordset.Mode.ReadOnly);
-                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION");
+                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION,Name,Owner.Code,STATUS");
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                         {
@@ -382,6 +382,40 @@ namespace XICSM.ICSControlClient.ViewModels
                             stationExtended.Standard = rs.GetS("STANDARD");
                             stationExtended.StandardName = rs.GetS("RadioSystem.DESCRIPTION");
                             stationExtended.Province = rs.GetS("Position.PROVINCE");
+                            stationExtended.CurentStatusStation = rs.GetS("STATUS");
+                            stationExtended.OKPO = rs.GetS("Owner.Code");
+                            stationExtended.StationName = rs.GetS("Name");
+
+                            string mobstafreq_table = "MOBSTA_FREQS";
+                            if (dataSpectrum.TableName.Substring(dataSpectrum.TableName.Length - 1) == "2")
+                                mobstafreq_table = "MOBSTA_FREQS2";
+
+                            var rssta = new IMRecordset(mobstafreq_table, IMRecordset.Mode.ReadOnly);
+                            rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL");
+                            rssta.SetWhere("STA_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
+
+                            var txFreq = new List<float>();
+                            var rxFreq = new List<float>();
+                            var chanels = new List<string>();
+
+                            for (rssta.Open(); !rssta.IsEOF(); rssta.MoveNext())
+                            {
+                                var txfrq = rssta.GetD("TX_FREQ");
+                                if (txfrq != IM.NullD)
+                                    txFreq.Add((float)txfrq);
+                                var rxfrq = rssta.GetD("RX_FREQ");
+                                if (rxfrq != IM.NullD)
+                                    rxFreq.Add((float)rxfrq);
+                                var chanel = rssta.GetS("ChannelTx.CHANNEL");
+                                chanels.Add(chanel);
+                            }
+                            if (rssta.IsOpen())
+                                rssta.Close();
+                            rssta.Destroy();
+
+                            stationExtended.StationTxFreq = txFreq.ToArray();
+                            stationExtended.StationRxFreq = rxFreq.ToArray();
+                            stationExtended.StationChannel = chanels.ToArray();
                             stationExtended.TableId = dataSpectrum.TableId;
                             stationExtended.TableName = dataSpectrum.TableName;
                         }
@@ -402,6 +436,23 @@ namespace XICSM.ICSControlClient.ViewModels
                         if (rs2.IsOpen())
                             rs2.Close();
                         rs2.Destroy();
+
+                        IMRecordset rs3 = new IMRecordset("XNRFA_APPL", IMRecordset.Mode.ReadOnly);
+                        rs3.Select("DOC_NUM_TV,DOC_DATE,DOC_END_DATE");
+                        rs3.SetWhere("APPL_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
+
+                        for (rs3.Open(); !rs3.IsEOF(); rs3.MoveNext())
+                        {
+                            stationExtended.DocNum = rs3.GetS("DOC_NUM_TV");
+                            stationExtended.TestStartDate = rs3.GetT("DOC_DATE");
+                            stationExtended.TestStopDate = rs3.GetT("DOC_END_DATE");
+                        }
+                        if (rs3.IsOpen())
+                            rs3.Close();
+                        rs3.Destroy();
+
+                        //stationExtended.PermissionCancelDate = ;
+                        //PermissionCancelDate <->PERM_DATE_STOP
 
                         if (stationExtended.TableId > 0)
                             stationsExtended.Add(dataSpectrum.TableName + "/" + dataSpectrum.TableId, stationExtended);

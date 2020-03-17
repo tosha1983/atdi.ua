@@ -100,14 +100,14 @@
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionNumber}" Binding="{Binding Path=PermissionNumber}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionStop}" Binding="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=Address}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.Adress}" Binding="{Binding Path=Address}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.BandWidth}" Binding="{Binding Path=BandWidth}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DesigEmission}" Binding="{Binding Path=DesigEmission}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.Province}" Binding="{Binding Path=Province}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.SensorId}" Binding="{Binding Path=SensorId}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.GlobalSID}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Freq_MHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Level_dBm}" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.FreqMHz}" Binding="{Binding Path=Freq_MHz}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LeveldBm}" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DispersionLow}" Binding="{Binding Path=DispersionLow}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DispersionUp}" Binding="{Binding Path=DispersionUp}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.Percent}" Binding="{Binding Path=Percent}"></DataGridTextColumn>

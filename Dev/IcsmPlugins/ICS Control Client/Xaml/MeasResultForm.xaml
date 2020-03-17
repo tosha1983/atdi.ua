@@ -77,7 +77,7 @@
                               <RowDefinition Height="*"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.Type_Measurements}"  />
+                            <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.TypeMeasurements}"  />
                             <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}"/>
 
                             <DataGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasResultsSpecial}" SelectedItem="{Binding CurrentMeasurementResults}" >
