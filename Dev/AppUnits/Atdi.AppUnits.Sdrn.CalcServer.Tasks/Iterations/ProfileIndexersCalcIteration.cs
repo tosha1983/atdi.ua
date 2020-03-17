@@ -48,11 +48,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 			int axisYNumber)
 		{
 			var count = 0;
-			var xTargetIndex = (int)Math.Ceiling((target.X - location.X ) / axisXStep) - 1;
-			var yTargetIndex = (int)Math.Ceiling((target.Y - location.Y) / axisYStep) - 1;
+			var xTargetIndex = (int)Math.Floor((target.X - location.X ) / axisXStep);
+			var yTargetIndex = (int)Math.Floor((target.Y - location.Y) / axisYStep);
 
-			var xPointIndex = (int)Math.Ceiling((point.X - location.X) / axisXStep) - 1;
-			var yPointIndex = (int)Math.Ceiling((point.Y - location.Y) / axisYStep) - 1;
+			var xPointIndex = (int)Math.Floor((point.X - location.X) / axisXStep);
+			var yPointIndex = (int)Math.Floor((point.Y - location.Y) / axisYStep);
 
 			//var __XIndex = (int)Math.Ceiling((x - this.UpperLeftX + 1) / (double)this.AxisXStep) - 1,
 			//YIndex = this.AxisYNumber - ((int)Math.Ceiling((y - (this.UpperLeftY - (this.AxisYNumber * this.AxisYStep)) + 1) / (double)this.AxisYStep))
@@ -252,7 +252,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 			else
 			{
 				// будет математика
-				var k = Math.Abs((double)yDelta / (double)xDelta);
+				var k = ((double)yDelta / (double)xDelta);
 				// берем первое значение для опорной точки
 
 				indexers[count++] = new Indexer()
@@ -341,10 +341,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				}
 				else if (target.Y > point.Y && target.X < point.X)
 				{
+					var yd = (target.Y - location.Y) % axisYStep + yTargetIndex;
 					var xd = (target.X - location.X) % axisXStep + xTargetIndex;
 					while (xCurrentIndex != xTargetIndex || yCurrentIndex != yTargetIndex)
 					{
-						var a = (yCurrentIndex + 1) > ((xCurrentIndex - 1 - xd) * k);
+						var a = (yCurrentIndex + 1 - yd) > ((xCurrentIndex - 1 - xd) * k);
 						if (a)
 						{
 							--xCurrentIndex;
@@ -378,9 +379,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				else if (target.Y < point.Y && target.X > point.X)
 				{
 					var yd = (target.Y - location.Y) % axisYStep + yTargetIndex;
+					var xd = (target.X - location.X) % axisXStep + xTargetIndex;
 					while (xCurrentIndex != xTargetIndex || yCurrentIndex != yTargetIndex)
 					{
-						var a = (yCurrentIndex - 1 - yd) < ((xCurrentIndex + 1) * k);
+						var a = (yCurrentIndex - 1 - yd) < ((xCurrentIndex + 1 - xd) * k);
 						if (a)
 						{
 							++xCurrentIndex;

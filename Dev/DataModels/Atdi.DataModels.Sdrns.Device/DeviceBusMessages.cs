@@ -72,5 +72,13 @@ namespace Atdi.DataModels.Sdrns.BusMessages
             {
             }
         }
-    }
+
+        public class SendHealthDataMessage : SdrnBusMessageType<SendHealthData>
+        {
+	        public SendHealthDataMessage()
+		        : base("SendHealthData")
+	        {
+	        }
+        }
+	}
 }

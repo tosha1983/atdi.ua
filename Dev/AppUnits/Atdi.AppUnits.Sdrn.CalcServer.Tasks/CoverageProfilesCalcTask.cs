@@ -128,6 +128,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				
 				for (var i = 0; i < _parameters.PointsX.Length; i++)
 				{
+					var fullFileName = fileName + $"_I{i:D5}.mpf";
+
 					var point = new Coordinate()
 					{
 						// ReSharper disable once PossibleInvalidOperationException
@@ -141,7 +143,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 						Y = _parameters.PointsY[i]
 					};
 
-					CalcProfile(indexesBuffer, point, target, iteration, fileName);
+					CalcProfile(indexesBuffer, point, target, iteration, fullFileName);
 				}
 			}
 			else if (_parameters.Mode == CoverageProfilesCalcModeCode.FirstWithAll)
@@ -185,7 +187,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 						};
 
 						var fullFileName = fileName + $"_I{i:D5}X{j:D5}.mpf";
-						CalcProfile(indexesBuffer, point, target, iteration, fileName);
+						CalcProfile(indexesBuffer, point, target, iteration, fullFileName);
 					}
 				}
 			}

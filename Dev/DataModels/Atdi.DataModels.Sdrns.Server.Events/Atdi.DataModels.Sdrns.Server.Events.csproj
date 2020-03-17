@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="DeviceCommand\OnDeviceCommandResultAggregationServer.cs" />
     <Compile Include="DevicesBusEvent.cs" />
+    <Compile Include="Health\HealthDataEvent.cs" />
     <Compile Include="MeasResultAggregated\MSMeasResultAggregated.cs" />
     <Compile Include="MeasResultAppeared\MSMeasResultAppeared.cs" />
     <Compile Include="MeasTask\OnMeasTaskEvent.cs" />
@@ -68,5 +69,6 @@
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
