@@ -3,7 +3,7 @@
   Name        = "TestRefSubBookExt2"
   Title       = "Test Reference Sub Book Extension 2"
   Desc        = "The entity of the different data types testing"
-  Type        = "Extention"
+  Type        = "Extension"
   BaseEntity  = "TestRefSubBook"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">

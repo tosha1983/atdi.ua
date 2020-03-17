@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "RefSpectrum"
+  Title       = "RefSpectrum"
+  Desc        = "The RefSpectrum"
+  Type        = "Normal"
+  BaseEntity  = "EStation.HeadRefSpectrum"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>REF_SPECTRUM</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="IdNum" Title="IdNum" Name="IdNum" DataType="Integer.32" SourceName="ID_NUM" SourceType="Column"/>
+    <Field Desc="TableName" Title="TableName" Name="TableName" DataType="Text.50" SourceName="TABLE_NAME" SourceType="Column" Required="true"/>
+    <Field Desc="TableId" Title="TableId" Name="TableId" DataType="Integer.32" SourceName="TABLE_ID" SourceType="Column" Required="true"/>
+    <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID" SourceType="Column" Required="true"/>
+    <Field Desc="GlobalSID" Title="GlobalSID" Name="GlobalSID" DataType="Text.50" SourceName="GLOBAL_SID" SourceType="Column" Required="true"/>
+    <Field Desc="Freq_MHz" Title="Freq_MHz" Name="Freq_MHz" DataType="Double.30.10" SourceName="FREQ_MHZ" SourceType="Column" Required="true"/>
+    <Field Desc="Level_dBm" Title="Level_dBm" Name="Level_dBm" DataType="Double.30.10" SourceName="LEVEL_DBM" SourceType="Column" Required="true"/>
+    <Field Desc="DispersionLow" Title="DispersionLow" Name="DispersionLow" DataType="Double.30.10" SourceName="DISPERSION_LOW" SourceType="Column" Required="false"/>
+    <Field Desc="DispersionUp" Title="DispersionUp" Name="DispersionUp" DataType="Double.30.10" SourceName="DISPERSION_UP" SourceType="Column" Required="false"/>
+    <Field Desc="Percent" Title="Percent" Name="Percent" DataType="Double.30.10" SourceName="PERCENT" SourceType="Column" Required="false"/>
+    <Field Name="DateMeas" DataType="DateTime" SourceName="DATE_MEAS" SourceType="Column" Desc="The date of meas" Title="The date of meas" Required="true"/>
+    <Field Desc="StatusMeas" Title="StatusMeas" Name="StatusMeas" DataType="Text.4" SourceName="STATUS_MEAS" SourceType="Column" Required="false"/>
+    <Field Name="HEAD_REF_SPECTRUM" SourceName="IeStation.HeadRefSpectrum" SourceType="Reference" Required="true" Desc="" Title="Relation RefSpectrum to HeadRefSpectrum"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

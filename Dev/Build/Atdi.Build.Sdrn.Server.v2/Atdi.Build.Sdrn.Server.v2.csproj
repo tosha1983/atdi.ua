@@ -204,6 +204,10 @@
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.Sdrn.Server.IeStation\Atdi.WcfServices.Sdrn.Server.IeStation.csproj">
+      <Project>{9b734624-d57d-423e-9df3-359907d8691f}</Project>
+      <Name>Atdi.WcfServices.Sdrn.Server.IeStation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WcfServices\Atdi.WcfServices.Sdrn.Server\Atdi.WcfServices.Sdrn.Server.csproj">
       <Project>{44e87394-dd26-4d41-bdc2-e0cd6ec5fbce}</Project>
       <Name>Atdi.WcfServices.Sdrn.Server</Name>

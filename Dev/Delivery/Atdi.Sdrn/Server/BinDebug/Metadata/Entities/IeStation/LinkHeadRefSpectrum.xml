@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "LinkHeadRefSpectrum"
+  Title       = "LinkHeadRefSpectrum"
+  Desc        = "The link to HeadRefSpectrum table"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>LINK_HEAD_REF_SPECTRUM</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Name="HEAD_REF_SPECTRUM" SourceName="IeStation.HeadRefSpectrum" SourceType="Reference" Required="true" Desc="" Title="Relation LinkHeadRefSpectrum to HeadRefSpectrum"/>
+    <Field Name="SYNCHRO_PROCESS" SourceName="IeStation.SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation LinkHeadRefSpectrum to SynchroProcess"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

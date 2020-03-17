@@ -359,12 +359,86 @@ namespace XICSM.ICSControlClient.ViewModels
             try
             {
                 var emittings = new List<SDR.Emitting>();
+                //using (var wc = new HttpClient())
+                //{
+                //    long emittingId = 0;
+                //    string filter = $"(EMITTING.StartFrequency_MHz le {_freqTo.ToString().Replace(",",".")})and(EMITTING.StopFrequency_MHz ge {_freqFrom.ToString().Replace(",", ".")})and(StartEmitting le {_dateStop.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")})and(StopEmitting ge {_dateStart.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")})and(EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id in ({string.Join(",", _sensorIds)}))";
+                //    string fields = "StartEmitting,StopEmitting,HitCount,PersentAvailability,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.CurentPower_dBm,EMITTING.ReferenceLevel_dBm,EMITTING.MeanDeviationFromReference,EMITTING.TriggerDeviationFromReference,EMITTING.RollOffFactor,EMITTING.StandardBW,EMITTING.StationID,EMITTING.StationTableName,EMITTING.LevelsDistributionCount,EMITTING.LevelsDistributionLvl,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name";
+                //    string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/WorkTime?select={fields}&filter={filter}&orderBy=EMITTING.Id";
+                //    var response = wc.GetAsync(request).Result;
+                //    if (response.StatusCode == HttpStatusCode.OK)
+                //    {
+                //        var dicFields = new Dictionary<string, int>();
+                //        var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+                //        foreach (var field in data.Fields)
+                //            dicFields[field.Path] = field.Index;
+
+                //        var emitting = new SDR.Emitting();
+                //        var workTimes = new List<SDR.WorkTime>();
+
+                //        foreach (object[] record in data.Records)
+                //        {
+                //            var newEmmittingId = Convert.ToInt64(record[dicFields["EMITTING.Id"]]);
+                //            if (emittingId != newEmmittingId)
+                //            {
+                //                emittingId = newEmmittingId;
+                //                emitting = new SDR.Emitting()
+                //                {
+                //                    Id = newEmmittingId,
+                //                    StartFrequency_MHz = (double)record[dicFields["EMITTING.StartFrequency_MHz"]],
+                //                    StopFrequency_MHz = (double)record[dicFields["EMITTING.StopFrequency_MHz"]],
+                //                    CurentPower_dBm = (double)record[dicFields["EMITTING.CurentPower_dBm"]],
+                //                    ReferenceLevel_dBm = (double)record[dicFields["EMITTING.ReferenceLevel_dBm"]],
+                //                    MeanDeviationFromReference = (double)record[dicFields["EMITTING.MeanDeviationFromReference"]],
+                //                    TriggerDeviationFromReference = (double)record[dicFields["EMITTING.TriggerDeviationFromReference"]],
+                //                    EmittingParameters = new SDR.EmittingParameters()
+                //                    {
+                //                        RollOffFactor = (double)record[dicFields["EMITTING.RollOffFactor"]],
+                //                        StandardBW = (double)record[dicFields["EMITTING.StandardBW"]]
+                //                    },
+                //                    AssociatedStationID = Convert.ToInt64(record[dicFields["EMITTING.StationID"]]),
+                //                    AssociatedStationTableName = (string)record[dicFields["EMITTING.StationTableName"]],
+                //                    SensorName = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
+                //                    SensorTechId = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]]
+                //                };
+
+                //                workTimes = new List<SDR.WorkTime>();
+
+                //                var levelDistr = new SDR.LevelsDistribution();
+                //                if (record[dicFields["EMITTING.LevelsDistributionCount"]] != null)
+                //                {
+                //                    var items = (record[dicFields["EMITTING.LevelsDistributionCount"]] as JArray).Select(jv => (int)jv).ToArray();
+                //                    levelDistr.Count = items;
+                //                }
+                //                if (record[dicFields["EMITTING.LevelsDistributionLvl"]] != null)
+                //                {
+                //                    var items = (record[dicFields["EMITTING.LevelsDistributionLvl"]] as JArray).Select(jv => (int)jv).ToArray();
+                //                    levelDistr.Levels = items;
+                //                }
+                //                emitting.LevelsDistribution = levelDistr;
+                //                emitting.Spectrum = GetSpectrumByEmittingId(emittingId);
+                //                emittings.Add(emitting);
+                //            }
+
+                //            workTimes.Add(new SDR.WorkTime()
+                //            {
+                //                StartEmitting = (DateTime)record[dicFields["StartEmitting"]],
+                //                StopEmitting = (DateTime)record[dicFields["StopEmitting"]],
+                //                HitCount = Convert.ToInt32(record[dicFields["HitCount"]]),
+                //                PersentAvailability = (float)Convert.ChangeType(record[dicFields["HitCount"]], typeof(float)) // (float)record[dicFields["PersentAvailability"]]
+                //            });
+                //            emitting.WorkTimes = workTimes.ToArray();
+                //        }
+                //    }
+                //}
+
+                var emittingsIds = new Dictionary<long, List<SDR.WorkTime>>();
                 using (var wc = new HttpClient())
                 {
-                    long emittingId = 0;
                     string filter = $"(EMITTING.StartFrequency_MHz le {_freqTo.ToString().Replace(",",".")})and(EMITTING.StopFrequency_MHz ge {_freqFrom.ToString().Replace(",", ".")})and(StartEmitting le {_dateStop.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")})and(StopEmitting ge {_dateStart.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff")})and(EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id in ({string.Join(",", _sensorIds)}))";
-                    string fields = "StartEmitting,StopEmitting,HitCount,PersentAvailability,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.CurentPower_dBm,EMITTING.ReferenceLevel_dBm,EMITTING.MeanDeviationFromReference,EMITTING.TriggerDeviationFromReference,EMITTING.RollOffFactor,EMITTING.StandardBW,EMITTING.StationID,EMITTING.StationTableName,EMITTING.LevelsDistributionCount,EMITTING.LevelsDistributionLvl,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name";
-                    string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/WorkTime?select={fields}&filter={filter}&orderBy=EMITTING.Id";
+                    string fields = "EMITTING.Id,StartEmitting,StopEmitting,HitCount,PersentAvailability";
+                    string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/WorkTime?select={fields}&filter={filter}";
                     var response = wc.GetAsync(request).Result;
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -379,56 +453,73 @@ namespace XICSM.ICSControlClient.ViewModels
 
                         foreach (object[] record in data.Records)
                         {
-                            var newEmmittingId = Convert.ToInt64(record[dicFields["EMITTING.Id"]]);
-                            if (emittingId != newEmmittingId)
-                            {
-                                emittingId = newEmmittingId;
-                                emitting = new SDR.Emitting()
-                                {
-                                    Id = newEmmittingId,
-                                    StartFrequency_MHz = (double)record[dicFields["EMITTING.StartFrequency_MHz"]],
-                                    StopFrequency_MHz = (double)record[dicFields["EMITTING.StopFrequency_MHz"]],
-                                    CurentPower_dBm = (double)record[dicFields["EMITTING.CurentPower_dBm"]],
-                                    ReferenceLevel_dBm = (double)record[dicFields["EMITTING.ReferenceLevel_dBm"]],
-                                    MeanDeviationFromReference = (double)record[dicFields["EMITTING.MeanDeviationFromReference"]],
-                                    TriggerDeviationFromReference = (double)record[dicFields["EMITTING.TriggerDeviationFromReference"]],
-                                    EmittingParameters = new SDR.EmittingParameters()
-                                    {
-                                        RollOffFactor = (double)record[dicFields["PersentAvailability"]],
-                                        StandardBW = (double)record[dicFields["PersentAvailability"]]
-                                    },
-                                    AssociatedStationID = Convert.ToInt64(record[dicFields["EMITTING.StationID"]]),
-                                    AssociatedStationTableName = (string)record[dicFields["EMITTING.StationTableName"]],
-                                    SensorName = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
-                                    SensorTechId = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]]
-                                };
+                            var emmittingId = Convert.ToInt64(record[dicFields["EMITTING.Id"]]);
 
-                                workTimes = new List<SDR.WorkTime>();
+                            if (!emittingsIds.ContainsKey(emmittingId))
+                                emittingsIds.Add(emmittingId, new List<SDR.WorkTime>());
 
-                                var levelDistr = new SDR.LevelsDistribution();
-                                if (record[dicFields["EMITTING.LevelsDistributionCount"]] != null)
-                                {
-                                    var items = (record[dicFields["EMITTING.LevelsDistributionCount"]] as JArray).Select(jv => (int)jv).ToArray();
-                                    levelDistr.Count = items;
-                                }
-                                if (record[dicFields["EMITTING.LevelsDistributionLvl"]] != null)
-                                {
-                                    var items = (record[dicFields["EMITTING.LevelsDistributionLvl"]] as JArray).Select(jv => (int)jv).ToArray();
-                                    levelDistr.Levels = items;
-                                }
-                                emitting.LevelsDistribution = levelDistr;
-                                emitting.Spectrum = GetSpectrumByEmittingId(emittingId);
-                                emittings.Add(emitting);
-                            }
-
-                            workTimes.Add(new SDR.WorkTime()
+                            emittingsIds[emmittingId].Add(new SDR.WorkTime()
                             {
                                 StartEmitting = (DateTime)record[dicFields["StartEmitting"]],
                                 StopEmitting = (DateTime)record[dicFields["StopEmitting"]],
                                 HitCount = Convert.ToInt32(record[dicFields["HitCount"]]),
-                                PersentAvailability = (float)Convert.ChangeType(record[dicFields["HitCount"]], typeof(float)) // (float)record[dicFields["PersentAvailability"]]
+                                PersentAvailability = (float)Convert.ChangeType(record[dicFields["PersentAvailability"]], typeof(float))
                             });
-                            emitting.WorkTimes = workTimes.ToArray();
+                        }
+                    }
+                }
+
+                using (var wc = new HttpClient())
+                {
+                    string filter = $"(Id in ({string.Join(",", emittingsIds.Keys.ToArray())}))";
+                    string fields = "Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm,ReferenceLevel_dBm,MeanDeviationFromReference,TriggerDeviationFromReference,RollOffFactor,StandardBW,StationID,StationTableName,LevelsDistributionCount,LevelsDistributionLvl,RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,RES_MEAS.SUBTASK_SENSOR.SENSOR.Name";
+                    string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select={fields}&filter={filter}";
+                    var response = wc.GetAsync(request).Result;
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        var dicFields = new Dictionary<string, int>();
+                        var data = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+                        foreach (var field in data.Fields)
+                            dicFields[field.Path] = field.Index;
+
+                        foreach (object[] record in data.Records)
+                        {
+                            var emitting = new SDR.Emitting()
+                            {
+                                Id = Convert.ToInt64(record[dicFields["Id"]]),
+                                StartFrequency_MHz = (double)record[dicFields["StartFrequency_MHz"]],
+                                StopFrequency_MHz = (double)record[dicFields["StopFrequency_MHz"]],
+                                CurentPower_dBm = (double)record[dicFields["CurentPower_dBm"]],
+                                ReferenceLevel_dBm = (double)record[dicFields["ReferenceLevel_dBm"]],
+                                MeanDeviationFromReference = (double)record[dicFields["MeanDeviationFromReference"]],
+                                TriggerDeviationFromReference = (double)record[dicFields["TriggerDeviationFromReference"]],
+                                EmittingParameters = new SDR.EmittingParameters()
+                                {
+                                    RollOffFactor = (double)record[dicFields["RollOffFactor"]],
+                                    StandardBW = (double)record[dicFields["StandardBW"]]
+                                },
+                                AssociatedStationID = Convert.ToInt64(record[dicFields["StationID"]]),
+                                AssociatedStationTableName = (string)record[dicFields["StationTableName"]],
+                                SensorName = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
+                                SensorTechId = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]]
+                            };
+
+                            var levelDistr = new SDR.LevelsDistribution();
+                            if (record[dicFields["LevelsDistributionCount"]] != null)
+                            {
+                                var items = (record[dicFields["LevelsDistributionCount"]] as JArray).Select(jv => (int)jv).ToArray();
+                                levelDistr.Count = items;
+                            }
+                            if (record[dicFields["LevelsDistributionLvl"]] != null)
+                            {
+                                var items = (record[dicFields["LevelsDistributionLvl"]] as JArray).Select(jv => (int)jv).ToArray();
+                                levelDistr.Levels = items;
+                            }
+                            emitting.LevelsDistribution = levelDistr;
+                            emitting.Spectrum = GetSpectrumByEmittingId(emitting.Id.Value);
+                            emitting.WorkTimes = emittingsIds[emitting.Id.Value].ToArray();
+                            emittings.Add(emitting);
                         }
                     }
                 }

@@ -293,52 +293,5 @@ namespace XICSM.ICSControlClient.WcfServiceClients
             return result;
         }
         #endregion
-        public static long? ImportRefSpectrum(RefSpectrum refSpectrum)
-        {
-            return Execute(contract => contract.ImportRefSpectrum(refSpectrum));
-        }
-        public static bool DeleteRefSpectrum(long[] RefSpectrumIdsBySDRN)
-        {
-            return Execute(contract => contract.DeleteRefSpectrum(RefSpectrumIdsBySDRN));
-        }
-        public static RefSpectrum[] GetAllRefSpectrum()
-        {
-            return Execute(contract => contract.GetAllRefSpectrum());
-        }
-        public static DataSynchronizationProcess CurrentDataSynchronizationProcess()
-        {
-            return Execute(contract => contract.CurrentDataSynchronizationProcess());
-        }
-        public static bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
-        {
-            return Execute(contract => contract.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended));
-        }
-        public static DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
-        {
-            return Execute(contract => contract.GetAllDataSynchronizationProcess());
-        }
-        public static Protocols[] GetProtocols()
-        {
-            return GetProtocolsByParameters(null, "", null, null, null, null, null, null, null, null, "", "", "", "", null, null);
-        }
-        public static Protocols[] GetProtocolsByParameters(long? processId,
-                                                    string createdBy,
-                                                    DateTime? DateCreated,
-                                                    DateTime? DateStart,
-                                                    DateTime? DateStop,
-                                                    short? DateMeasDay,
-                                                    short? DateMeasMonth,
-                                                    short? DateMeasYear,
-                                                    double? freq,
-                                                    double? probability,
-                                                    string standard,
-                                                    string province,
-                                                    string ownerName,
-                                                    string permissionNumber,
-                                                    DateTime? permissionStart,
-                                                    DateTime? permissionStop)
-        {
-            return Execute(contract => contract.GetProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freq, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop));
-        }
     }
 }

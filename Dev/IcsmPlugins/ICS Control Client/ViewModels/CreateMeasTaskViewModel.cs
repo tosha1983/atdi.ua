@@ -255,6 +255,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.Standard = "GSM";
             this._currentMeasTask.StandardInstEstim = "GSM";
 
+            this.CurrentMeasTask.CollectEmissionInstrumentalEstimation = false;
             this._currentMeasTask.AnalyzeSysInfoEmission = false;
             this._currentMeasTask.nDbLevel_dB = 15;
             this._currentMeasTask.NumberIgnoredPoints = 1;
@@ -507,7 +508,54 @@ namespace XICSM.ICSControlClient.ViewModels
                                 result = false;
                         }
                     }
-
+                    if (this._currentMeasTask.CollectEmissionInstrumentalEstimation.HasValue && this._currentMeasTask.CollectEmissionInstrumentalEstimation.Value)
+                    {
+                        switch ((this.CurrentMeasTask.CollectEmissionInstrumentalEstimation.Value && !this.CurrentMeasTask.AnalyzeByChannel.Value) ? this._currentMeasTask.StandardInstEstim : this._currentMeasTask.Standard)
+                        {
+                            case "GSM":
+                                this._currentMeasTask.windowBW = 1.4;
+                                this._currentMeasTask.CrossingBWPercentageForGoodSignals = 80;
+                                this._currentMeasTask.CrossingBWPercentageForBadSignals = 60;
+                                this._currentMeasTask.CorrelationAnalize = true;
+                                this._currentMeasTask.CorrelationFactor = 0.99;
+                                this._currentMeasTask.AnalyzeByChannel = true;
+                                this._currentMeasTask.CompareTraceJustWithRefLevels = false;
+                                this._currentMeasTask.DetailedMeasurementsBWEmission = false;
+                                break;
+                            case "CDMA":
+                                this._currentMeasTask.windowBW = 1.1;
+                                this._currentMeasTask.CrossingBWPercentageForGoodSignals = 80;
+                                this._currentMeasTask.CrossingBWPercentageForBadSignals = 60;
+                                this._currentMeasTask.CorrelationAnalize = true;
+                                this._currentMeasTask.CorrelationFactor = 0.99;
+                                this._currentMeasTask.AnalyzeByChannel = true;
+                                this._currentMeasTask.CompareTraceJustWithRefLevels = false;
+                                this._currentMeasTask.DetailedMeasurementsBWEmission = false;
+                                break;
+                            case "LTE":
+                                this._currentMeasTask.windowBW = 1.1;
+                                this._currentMeasTask.CrossingBWPercentageForGoodSignals = 80;
+                                this._currentMeasTask.CrossingBWPercentageForBadSignals = 60;
+                                this._currentMeasTask.CorrelationAnalize = true;
+                                this._currentMeasTask.CorrelationFactor = 0.99;
+                                this._currentMeasTask.AnalyzeByChannel = false;
+                                this._currentMeasTask.CompareTraceJustWithRefLevels = false;
+                                this._currentMeasTask.DetailedMeasurementsBWEmission = false;
+                                break;
+                            case "UMTS":
+                                this._currentMeasTask.windowBW = 1.1;
+                                this._currentMeasTask.CrossingBWPercentageForGoodSignals = 80;
+                                this._currentMeasTask.CrossingBWPercentageForBadSignals = 60;
+                                this._currentMeasTask.CorrelationAnalize = true;
+                                this._currentMeasTask.CorrelationFactor = 0.99;
+                                this._currentMeasTask.AnalyzeByChannel = false;
+                                this._currentMeasTask.CompareTraceJustWithRefLevels = false;
+                                this._currentMeasTask.DetailedMeasurementsBWEmission = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
                 if (!result)
                     return;

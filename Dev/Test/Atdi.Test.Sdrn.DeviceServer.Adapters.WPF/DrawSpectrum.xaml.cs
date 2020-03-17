@@ -36,6 +36,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         float[] Trace3RGB = new float[3] { 0.7843f, 0.2352f, 0.2352f };
 
         float[] Level = new float[] { };
+        int LevelLength = 0;
         double[] Freq = new double[] { };
         #endregion
         #region Property
@@ -179,19 +180,20 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                     if (ANAdapter != null)
                     {
                         Level = ANAdapter.LevelArr;// new Equipment.TracePoint[rcv.TracePoints];
-                       
+                        LevelLength = ANAdapter.LevelArrLength;
                         FreqCentr = (double)ANAdapter.FreqCentr;
                         FreqSpan = (double)ANAdapter.FreqSpan;
                         FreqStop = (double)ANAdapter.FreqStop;
                         FreqStart = (double)ANAdapter.FreqStart;
 
 
-                        Freq = new double[Level.Length];
-                        double step = FreqSpan / (Level.Length - 1);
-                        for (int i = 0; i < Level.Length; i++)
+                        Freq = new double[LevelLength];
+                        double step = FreqSpan / (LevelLength - 1);
+                        for (int i = 0; i < LevelLength; i++)
                         {
                             Freq[i] = FreqStart + i * step;
                         }
+                        
                         LevelUnit = ((MEN.LevelUnit)ANAdapter.LevelUnit.Id).ToString();
 
                         RefLevel = (double)ANAdapter.RefLevelSpec;
@@ -309,7 +311,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 {
                     gl.Begin(BeginMode.LineStrip);
                     gl.Color(Trace1RGB[0], Trace1RGB[1], Trace1RGB[2]);
-                    for (int i = 0; i < Freq.Length; i++)
+                    for (int i = 0; i < LevelLength; i++)
                     {
                         gl.Vertex(Freq[i], Level[i]);
 

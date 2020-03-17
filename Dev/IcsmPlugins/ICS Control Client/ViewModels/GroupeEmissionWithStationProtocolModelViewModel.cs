@@ -75,7 +75,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadData()
         {
-            var sdrProtocols = SVC.SdrnsControllerWcfClient.GetProtocols();
+            var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocols();
             this._protocols.Source = sdrProtocols;
         }
         private void CheckEnablePrintCommand()
@@ -87,7 +87,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnFilterApplyCommand(object parameter)
         {
-            var sdrProtocols = SVC.SdrnsControllerWcfClient.GetProtocolsByParameters(null,
+            var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocolsByParameters(null,
                 this._dataFilter.CreatedBy,
                 this._dataFilter.DateCreated,
                 null,
@@ -167,7 +167,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Put("LONGITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Longitude, Coordinates.EnumCoordLine.Lon));
                 rs.Put("LATITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Latitude, Coordinates.EnumCoordLine.Lat));
             }
-            if ((row.Locations != null) && (row.Locations.Length>0))
+            if ((row.Locations != null) && (row.Locations.Length > 0))
             {
                 var lstSensorLocation = row.Locations.ToList();
                 var orderSensorLocation = lstSensorLocation.OrderByDescending(c => c.DataCreated);
@@ -184,29 +184,29 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             rs.Put("SENSOR_NAME", row.SensorName);
             rs.Put("DATE_MEAS", row.DateMeas);
-            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz,6));
+            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz, 3));
             if (row.BandWidth != null)
             {
-                rs.Put("S_BW", Math.Round(row.BandWidth.Value, 6));
+                rs.Put("S_BW", Math.Round(row.BandWidth.Value, 3));
             }
             if (row.RadioControlMeasFreq_MHz != null)
             {
-                rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 6));
+                rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 3));
             }
             if (row.RadioControlBandWidth != null)
             {
-                rs.Put("BW", Math.Round(row.RadioControlBandWidth.Value, 6));
+                rs.Put("BW", Math.Round(row.RadioControlBandWidth.Value, 3));
             }
             if (row.ProtocolsLinkedWithEmittings != null)
             {
                 if (row.ProtocolsLinkedWithEmittings.CurentPower_dBm != null)
                 {
-                    rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 6));
+                    rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 1));
                 }
             }
             rs.Put("DESIG_EMISSION", row.DesigEmission);
             rs.Put("GLOBAL_SID", row.GlobalSID);
-            rs.Put("CREATED_BY", IM.ConnectedUser());
+            rs.Put("CREATED_BY", GetUserFio(IM.ConnectedUser()));
             rs.Update();
 
             if (rs.IsOpen())
@@ -214,16 +214,24 @@ namespace XICSM.ICSControlClient.ViewModels
             rs.Destroy();
 
             //генерация отчета
-            var nameFile = selectedPath + $@"\{row.GlobalSID}_{row.StandardName}_{row.Freq_MHz.ToString().Replace(".","_").Replace(",","_")}_{row.OwnerName}_{row.Level_dBm.ToString().Replace(".", "_").Replace(",", "_")}_{row.Id.ToString()}.rtf";
+            var nameFile = selectedPath + $@"\{row.GlobalSID}_{row.StandardName}_{row.Freq_MHz.ToString().Replace(".", "_").Replace(",", "_")}_{row.OwnerName}_{row.Level_dBm.ToString().Replace(".", "_").Replace(",", "_")}_{row.Id.ToString()}.rtf";
             RecordPtr recPtr;
             recPtr.Table = "XPROTOCOL_REPORT";
             recPtr.Id = id;
-            recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
-            var bm = new System.Drawing.Bitmap(1200, 600);
-            buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1200, 600);
-            InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
-            bm.Dispose();
-            GC.Collect();
+            if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
+            {
+                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
+                var bm = new System.Drawing.Bitmap(1300, 600);
+                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 600);
+                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
+                bm.Dispose();
+                GC.Collect();
+            }
+            else
+            {
+                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING.IRP", "RUS", nameFile, "", true, false);
+            }
+
 
             //очистка
             var rsDel = new IMRecordset("XPROTOCOL_REPORT", IMRecordset.Mode.ReadWrite);
@@ -238,8 +246,28 @@ namespace XICSM.ICSControlClient.ViewModels
                 rsDel.Close();
             rsDel.Destroy();
 
-         
 
+
+        }
+
+        public static string GetUserFio(string login)
+        {
+            string retVal = "";
+            IMRecordset rs = new IMRecordset("EMPLOYEE", IMRecordset.Mode.ReadWrite);
+            {
+                rs.Select("ID,LASTNAME,FIRSTNAME");
+                rs.SetWhere("APP_USER", IMRecordset.Operation.Eq, login);
+                rs.Open();
+                if (!rs.IsEOF())
+                {
+                    retVal = string.Format("{0} {1}", rs.GetS("LASTNAME"), rs.GetS("FIRSTNAME"));
+                }
+
+                if (rs.IsOpen())
+                    rs.Close();
+                rs.Destroy();
+            }
+            return retVal;
         }
     }
 }

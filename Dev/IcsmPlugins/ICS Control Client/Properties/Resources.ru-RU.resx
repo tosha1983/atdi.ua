@@ -117,16 +117,646 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddAssociationStation" xml:space="preserve">
+    <value>Ассоциировать со станцией</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Адрес</value>
+  </data>
+  <data name="Adm" xml:space="preserve">
+    <value>Адм</value>
+  </data>
+  <data name="AGLM" xml:space="preserve">
+    <value>Высота над уровнем земли</value>
+  </data>
+  <data name="Alt" xml:space="preserve">
+    <value>Высота</value>
+  </data>
+  <data name="AltM" xml:space="preserve">
+    <value>Высота, м</value>
+  </data>
+  <data name="AnalysisOnlyWithContraventionOfReferenceLevel" xml:space="preserve">
+    <value>Анализировать только нарушения реферативного спектра</value>
+  </data>
+  <data name="AnalyzeSysInfoEmission" xml:space="preserve">
+    <value>Анализировать служебный канал</value>
+  </data>
+  <data name="Antenna" xml:space="preserve">
+    <value>Антенна</value>
+  </data>
+  <data name="AssociatedCommand" xml:space="preserve">
+    <value>Ассоциировать</value>
+  </data>
+  <data name="AttenuationDB" xml:space="preserve">
+    <value>Ослабление, дБ</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="AutomaticDivisionOfEmissions" xml:space="preserve">
+    <value>Автоматически разбивать излучения</value>
+  </data>
+  <data name="BandwidthHz" xml:space="preserve">
+    <value>Полоса, Гц</value>
+  </data>
+  <data name="BandwidthKHz" xml:space="preserve">
+    <value>Полоса, кГц</value>
+  </data>
+  <data name="BringIntoUse" xml:space="preserve">
+    <value>Начало эксплуатации</value>
+  </data>
+  <data name="BSIC" xml:space="preserve">
+    <value>BSIC</value>
+  </data>
+  <data name="BWkHz" xml:space="preserve">
+    <value>Полоса, кГц</value>
+  </data>
+  <data name="CancelCommand" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="CentralFrequencyMeasMHz" xml:space="preserve">
+    <value>Центральная частота, МГц</value>
+  </data>
+  <data name="CentralFrequencyMHz" xml:space="preserve">
+    <value>Центральная частота, МГц</value>
+  </data>
+  <data name="CentrFreqMHz" xml:space="preserve">
+    <value>Центр. частота, МГц</value>
+  </data>
+  <data name="CentrFreq_From" xml:space="preserve">
+    <value>Центр. частота, МГц от</value>
+  </data>
+  <data name="ChangeTimeCommand" xml:space="preserve">
+    <value>Изменить время</value>
+  </data>
+  <data name="ChannelNumber" xml:space="preserve">
+    <value>Номер канала</value>
+  </data>
+  <data name="CheckingEmissionInChannels" xml:space="preserve">
+    <value>Анализировать излучения поканально</value>
+  </data>
+  <data name="CheckingLevelInTheChannel" xml:space="preserve">
+    <value>Проверять уровень в канале</value>
+  </data>
+  <data name="CheckingTheFrequencyChannel" xml:space="preserve">
+    <value>Проверять частоту излучения в канале</value>
+  </data>
+  <data name="CID" xml:space="preserve">
+    <value>CID</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Код</value>
+  </data>
+  <data name="CompareWithEmissionOnOtherSensors" xml:space="preserve">
+    <value>Сравнить с излучениями с других сенсоров</value>
+  </data>
+  <data name="CompareWithTransmitterMask" xml:space="preserve">
+    <value>Сравнить с маской ПРД</value>
+  </data>
+  <data name="ContinueCommand" xml:space="preserve">
+    <value>Продолжение</value>
+  </data>
+  <data name="Contravention" xml:space="preserve">
+    <value>Нарушение</value>
+  </data>
+  <data name="CorrectnessEstimations" xml:space="preserve">
+    <value>Коректность оценки</value>
+  </data>
+  <data name="CorrelationCoefficient" xml:space="preserve">
+    <value>Коэфициент корреляции</value>
+  </data>
+  <data name="CountStationMeasurements" xml:space="preserve">
+    <value>К-во станций</value>
+  </data>
+  <data name="CountUnknownStationMeasurements" xml:space="preserve">
+    <value>К-во неизвестных станций</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Создано</value>
+  </data>
+  <data name="CreateNew" xml:space="preserve">
+    <value>Создать новый</value>
+  </data>
+  <data name="CtoI" xml:space="preserve">
+    <value>CtoI</value>
+  </data>
+  <data name="CurentPowerDBm" xml:space="preserve">
+    <value>Текущая мощность, дБм</value>
+  </data>
+  <data name="DateCreated" xml:space="preserve">
+    <value>Дата создания</value>
+  </data>
+  <data name="DateStart" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="DateStop" xml:space="preserve">
+    <value>Дата окончания</value>
+  </data>
+  <data name="dBm" xml:space="preserve">
+    <value> дБм</value>
+  </data>
+  <data name="dBmkVm" xml:space="preserve">
+    <value>dBmkVm</value>
+  </data>
+  <data name="DEC" xml:space="preserve">
+    <value>DEC</value>
+  </data>
+  <data name="DefaultZoom" xml:space="preserve">
+    <value>Начальные настройки</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="DeleteEmission" xml:space="preserve">
+    <value>Удалить излучение</value>
+  </data>
+  <data name="DesigEmission" xml:space="preserve">
+    <value>Класс излучения</value>
+  </data>
+  <data name="DetailedMeasurementsOfTheEmissionBandwith" xml:space="preserve">
+    <value>Детальное измерение излучений</value>
+  </data>
+  <data name="DetectorParameters" xml:space="preserve">
+    <value>Параметры детектора</value>
+  </data>
+  <data name="DiffTimestamp10x9" xml:space="preserve">
+    <value>Diff. Timestamp, 10^-9</value>
+  </data>
+  <data name="DistanceKm" xml:space="preserve">
+    <value>Расстояние, км</value>
+  </data>
+  <data name="DurationS" xml:space="preserve">
+    <value>Длительность, с</value>
+  </data>
+  <data name="EIRPdBW" xml:space="preserve">
+    <value>ЭИИМ</value>
+  </data>
+  <data name="EmissionFreqMHz" xml:space="preserve">
+    <value>Частота излучения</value>
+  </data>
+  <data name="EndOfUse" xml:space="preserve">
+    <value>Эксплуатация до</value>
+  </data>
+  <data name="Equipment" xml:space="preserve">
+    <value>Оборудование</value>
+  </data>
+  <data name="ExecutionMode" xml:space="preserve">
+    <value>Режим выполнения</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Фильтра</value>
+  </data>
+  <data name="FqMax" xml:space="preserve">
+    <value>Частота макс</value>
+  </data>
+  <data name="FqMin" xml:space="preserve">
+    <value>Частота мин</value>
+  </data>
+  <data name="FreqHz" xml:space="preserve">
+    <value>Частота, Гц</value>
+  </data>
+  <data name="FreqListMHz" xml:space="preserve">
+    <value>Список частот, МГц</value>
+  </data>
+  <data name="FreqMHz" xml:space="preserve">
+    <value>Частота, МГц</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Частота</value>
+  </data>
+  <data name="FrequencyFromMHz" xml:space="preserve">
+    <value>Частота от, МГц</value>
+  </data>
+  <data name="FrequencyToMHz" xml:space="preserve">
+    <value>Частота до, МГц</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>от</value>
+  </data>
+  <data name="Gain" xml:space="preserve">
+    <value>Усиление</value>
+  </data>
+  <data name="GainOfPreamplifierDB" xml:space="preserve">
+    <value>Усиление предусилителя</value>
+  </data>
+  <data name="GetCSV" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="GetGraphic" xml:space="preserve">
+    <value>График</value>
+  </data>
+  <data name="GlobalSID" xml:space="preserve">
+    <value>Global CID</value>
+  </data>
+  <data name="Graphic" xml:space="preserve">
+    <value>График</value>
+  </data>
+  <data name="HideDetail" xml:space="preserve">
+    <value>Показать детали</value>
+  </data>
+  <data name="HitCount" xml:space="preserve">
+    <value>Количество наблюдений</value>
+  </data>
+  <data name="IcsmID" xml:space="preserve">
+    <value>ICSM ID</value>
+  </data>
+  <data name="IcsmTable" xml:space="preserve">
+    <value>ICSM Table</value>
+  </data>
+  <data name="Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="IdentificationStation" xml:space="preserve">
+    <value>Station ID</value>
+  </data>
+  <data name="IdMeasDevice" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
+  <data name="IdSector" xml:space="preserve">
+    <value>Sector ID</value>
+  </data>
+  <data name="IdStation" xml:space="preserve">
+    <value>Station ID</value>
+  </data>
+  <data name="kHz" xml:space="preserve">
+    <value>кГц</value>
+  </data>
+  <data name="LAC" xml:space="preserve">
+    <value>LAC</value>
+  </data>
+  <data name="Lat" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="LatDEC" xml:space="preserve">
+    <value>Широта, DEC</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Уровень</value>
+  </data>
+  <data name="LeveldBm" xml:space="preserve">
+    <value>Уровень,  дБм</value>
+  </data>
+  <data name="LeveldBmkVm" xml:space="preserve">
+    <value>Уровень, dBmkVm</value>
+  </data>
+  <data name="LevelForBandwithEstimation" xml:space="preserve">
+    <value>Уровень для определения полосы</value>
+  </data>
+  <data name="LevelMeasurements" xml:space="preserve">
+    <value>Уровень измерения</value>
+  </data>
+  <data name="LevelOfMinOccupationDBm" xml:space="preserve">
+    <value>Уровень минимальной занятости, дБм</value>
+  </data>
+  <data name="LevelsDifferenceForEmissionDivisionDB" xml:space="preserve">
+    <value>Разница уровней для разбития излучений, дБ</value>
+  </data>
+  <data name="Lon" xml:space="preserve">
+    <value>Долгота</value>
+  </data>
+  <data name="LonDEC" xml:space="preserve">
+    <value>Долгота, DEC</value>
+  </data>
+  <data name="LowerFreq" xml:space="preserve">
+    <value>Нижняя частота</value>
+  </data>
+  <data name="LowFreq" xml:space="preserve">
+    <value>Нижняя частота</value>
+  </data>
+  <data name="LowFreqMHz" xml:space="preserve">
+    <value>Нижняя частота, МГц</value>
+  </data>
+  <data name="m" xml:space="preserve">
+    <value>м</value>
+  </data>
+  <data name="MandatoryFrequencyIntersection" xml:space="preserve">
+    <value>Обязательное пересечение частот</value>
+  </data>
+  <data name="MandatoryTimeIntersection" xml:space="preserve">
+    <value>Обязательное пересечение времени</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Производитель</value>
+  </data>
+  <data name="MarginForReferenceLevelCalculationDB" xml:space="preserve">
+    <value>Запас, дБ</value>
+  </data>
+  <data name="Marker" xml:space="preserve">
+    <value>Маркер</value>
+  </data>
+  <data name="MaximumFrequencyDeviation" xml:space="preserve">
+    <value>Максимальная девиация частоты</value>
+  </data>
+  <data name="MaxPower" xml:space="preserve">
+    <value>Мощность макс</value>
+  </data>
+  <data name="MCC" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="MeanDeviationFromReference" xml:space="preserve">
+    <value>Среднее отклонение от эталона</value>
+  </data>
+  <data name="MeasGlobalSID" xml:space="preserve">
+    <value>Global SID</value>
+  </data>
+  <data name="MeasTask" xml:space="preserve">
+    <value>Задание</value>
+  </data>
+  <data name="MeasTaskId" xml:space="preserve">
+    <value>Task ID</value>
+  </data>
+  <data name="MeasTasks" xml:space="preserve">
+    <value>Задания на измерения</value>
+  </data>
+  <data name="MHz" xml:space="preserve">
+    <value>МГц</value>
+  </data>
+  <data name="MNC" xml:space="preserve">
+    <value>MNC</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="MonitoringEmissionParameters" xml:space="preserve">
+    <value>Параметры мониторинга измерений</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
+  <data name="NoiseLevel" xml:space="preserve">
+    <value>Уровень шума</value>
+  </data>
+  <data name="NumberOfStepsForMeasurementsInChannel" xml:space="preserve">
+    <value>Точек в канале</value>
+  </data>
+  <data name="NumberPointsOfSpectrum" xml:space="preserve">
+    <value>Количество точек на спектре</value>
+  </data>
+  <data name="NumberTotalScan" xml:space="preserve">
+    <value>Количество сканирований</value>
+  </data>
+  <data name="OffsetFrequency10x6" xml:space="preserve">
+    <value>Растройка частоты, 10^-6</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Владелец</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="PercOfIntersectionOfSpectrumsToCombineEmissions" xml:space="preserve">
+    <value>% пересечения спектра</value>
+  </data>
+  <data name="PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals" xml:space="preserve">
+    <value>% для сигналов низкого уровня</value>
+  </data>
+  <data name="Permission" xml:space="preserve">
+    <value>Разрешение</value>
+  </data>
+  <data name="PersentAvailability" xml:space="preserve">
+    <value>Процент доступности</value>
+  </data>
+  <data name="PointsNumber" xml:space="preserve">
+    <value>К-то точек</value>
+  </data>
+  <data name="Power" xml:space="preserve">
+    <value>Мощность</value>
+  </data>
+  <data name="RBWkHz" xml:space="preserve">
+    <value>RBW, kHz</value>
+  </data>
+  <data name="ReferenceLevelDBm" xml:space="preserve">
+    <value>Реферативный уровень, дБм</value>
+  </data>
+  <data name="RefershMeasTasks" xml:space="preserve">
+    <value>Обновить задания</value>
+  </data>
   <data name="Refresh" xml:space="preserve">
-    <value>Обновить</value>
+    <value>Оновить</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Регион</value>
+  </data>
+  <data name="RelivedLeveldBm" xml:space="preserve">
+    <value>Уровень приема, дБм</value>
   </data>
   <data name="Results" xml:space="preserve">
     <value>Результаты</value>
   </data>
+  <data name="ResultsOfGeneral" xml:space="preserve">
+    <value>Результаты общее</value>
+  </data>
+  <data name="ResultsOfStations" xml:space="preserve">
+    <value>Результаты станций</value>
+  </data>
+  <data name="RNC" xml:space="preserve">
+    <value>RNC</value>
+  </data>
+  <data name="RollOffFactor" xml:space="preserve">
+    <value>Roll Off Factor</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Запуск</value>
+  </data>
+  <data name="RunMeasTask" xml:space="preserve">
+    <value>Запуск задания на измерение</value>
+  </data>
+  <data name="ScansNumber" xml:space="preserve">
+    <value>Количество сканирований</value>
+  </data>
+  <data name="SearchStationInICSM" xml:space="preserve">
+    <value>Поиск станций в ICSM</value>
+  </data>
+  <data name="SensorId" xml:space="preserve">
+    <value>Sensor ID</value>
+  </data>
+  <data name="SensorName" xml:space="preserve">
+    <value>Название сенсора</value>
+  </data>
   <data name="Sensors" xml:space="preserve">
-    <value>Сенсоры</value>
+    <value>Сенсора</value>
+  </data>
+  <data name="SensorTechId" xml:space="preserve">
+    <value>Sensor Tech ID</value>
+  </data>
+  <data name="ShowDetail" xml:space="preserve">
+    <value>Показать детали</value>
+  </data>
+  <data name="ShowOnlyThisSensor" xml:space="preserve">
+    <value>Показать только этот сенсор</value>
+  </data>
+  <data name="ShowOnlyThisTask" xml:space="preserve">
+    <value>Показать только это задание</value>
+  </data>
+  <data name="SignalLevelDBm" xml:space="preserve">
+    <value>Сигнал/Уровень, дБм</value>
+  </data>
+  <data name="SN" xml:space="preserve">
+    <value>SN</value>
+  </data>
+  <data name="Spectrum" xml:space="preserve">
+    <value>Спектр</value>
+  </data>
+  <data name="SpectrumCoefficientFromEmission" xml:space="preserve">
+    <value>Коэфициент спектра </value>
+  </data>
+  <data name="SpectrumOccupationParameters" xml:space="preserve">
+    <value>Параметры занятости спектра</value>
+  </data>
+  <data name="Standard" xml:space="preserve">
+    <value>Стандарт</value>
+  </data>
+  <data name="StandardBW" xml:space="preserve">
+    <value>Стандарт BW</value>
+  </data>
+  <data name="StartCommand" xml:space="preserve">
+    <value>Старт</value>
+  </data>
+  <data name="StartEmitting" xml:space="preserve">
+    <value>Начало излучения</value>
+  </data>
+  <data name="StartFreqMHz" xml:space="preserve">
+    <value>Частота от, МГц</value>
+  </data>
+  <data name="StationName" xml:space="preserve">
+    <value>Название станции</value>
+  </data>
+  <data name="Stations" xml:space="preserve">
+    <value>Станции</value>
+  </data>
+  <data name="StationsNumber" xml:space="preserve">
+    <value>К-сво станций</value>
+  </data>
+  <data name="StationSysInfo" xml:space="preserve">
+    <value>Station Sys Info</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="StepOfSpectrumkHz" xml:space="preserve">
+    <value>Шаг спектра, кГц</value>
+  </data>
+  <data name="StepWhithkHz" xml:space="preserve">
+    <value>Шаг, кГц</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
+  <data name="StopEmitting" xml:space="preserve">
+    <value>Конец излучения</value>
+  </data>
+  <data name="StopFreqMHz" xml:space="preserve">
+    <value>Частота до, МГц</value>
+  </data>
+  <data name="StopMeasTask" xml:space="preserve">
+    <value>Остановить задание</value>
+  </data>
+  <data name="SubTaskId" xml:space="preserve">
+    <value>SubTask ID</value>
+  </data>
+  <data name="SumHitCount" xml:space="preserve">
+    <value>Сумарное количество сканирований</value>
+  </data>
+  <data name="SweepNumber" xml:space="preserve">
+    <value>Количество свипирований</value>
+  </data>
+  <data name="SweepTimeS" xml:space="preserve">
+    <value>Время одного свипирования, с</value>
+  </data>
+  <data name="T1MHz" xml:space="preserve">
+    <value>T1, MHz</value>
+  </data>
+  <data name="T2MHz" xml:space="preserve">
+    <value>T2, MHz</value>
+  </data>
+  <data name="TaskId" xml:space="preserve">
+    <value>Task ID</value>
+  </data>
+  <data name="TaskName" xml:space="preserve">
+    <value>Название задания</value>
   </data>
   <data name="Tasks" xml:space="preserve">
-    <value>Задачи</value>
+    <value>Задания</value>
+  </data>
+  <data name="TaskType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="TheMaximumNumberOfScanPerDay" xml:space="preserve">
+    <value>Сканирование/день</value>
+  </data>
+  <data name="TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith" xml:space="preserve">
+    <value>Минимальное количество точек для измерения полосы частот</value>
+  </data>
+  <data name="TheMinimumNumberOfPointsForFindingEmissions" xml:space="preserve">
+    <value>Минимальное количество точек для поиска излучений</value>
+  </data>
+  <data name="TheNumberOfPointsInTheChannelDuringScanning" xml:space="preserve">
+    <value>Точек в канале</value>
+  </data>
+  <data name="TimeFinishMeas" xml:space="preserve">
+    <value>Время до</value>
+  </data>
+  <data name="TimeFrom" xml:space="preserve">
+    <value>Время от</value>
+  </data>
+  <data name="TimeMeas" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="TimeStart" xml:space="preserve">
+    <value>Время начала</value>
+  </data>
+  <data name="TimeStartMeas" xml:space="preserve">
+    <value>Время начала</value>
+  </data>
+  <data name="TimeStop" xml:space="preserve">
+    <value>Время окончания</value>
+  </data>
+  <data name="TimeTo" xml:space="preserve">
+    <value>Время до</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>До</value>
+  </data>
+  <data name="TraceCount" xml:space="preserve">
+    <value>Количество трейсов</value>
+  </data>
+  <data name="TriggerDeviationFromReference" xml:space="preserve">
+    <value>Пороговое отклонение от эталона</value>
+  </data>
+  <data name="TypeMeasurements" xml:space="preserve">
+    <value>Тип измерений</value>
+  </data>
+  <data name="TypeOfDetecting" xml:space="preserve">
+    <value>Тип детекции</value>
+  </data>
+  <data name="TypeSpectrumOccupation" xml:space="preserve">
+    <value>Тип занятости спектра</value>
+  </data>
+  <data name="Type_Measurements" xml:space="preserve">
+    <value>Тип измерений</value>
+  </data>
+  <data name="UpFreq" xml:space="preserve">
+    <value>Врехняя частота</value>
+  </data>
+  <data name="UpFreqMHz" xml:space="preserve">
+    <value>Врехняя частота, МГц</value>
+  </data>
+  <data name="UpperFreq" xml:space="preserve">
+    <value>Врехняя частота</value>
+  </data>
+  <data name="UsingCorrelationAnalysis" xml:space="preserve">
+    <value>Кореляционный анализ</value>
+  </data>
+  <data name="UsingSmoothingTraceForAnalysis" xml:space="preserve">
+    <value>Сглаживание трейса</value>
+  </data>
+  <data name="VBWkHz" xml:space="preserve">
+    <value>VBW, kHz</value>
+  </data>
+  <data name="ZoomUndo" xml:space="preserve">
+    <value>Undo</value>
   </data>
 </root>

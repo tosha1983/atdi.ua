@@ -39,7 +39,7 @@
             <DataGridTextColumn Header="{x:Static res:Resources.DateStop}" Binding="{Binding Path=DateStop}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.SensorIds}" Binding="{Binding Path=SensorIds}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.SensorId}" Binding="{Binding Path=SensorIds}"></DataGridTextColumn>
           </DataGrid.Columns>
         </DataGrid>
         <Button Visibility="{Binding ButtonAssociatedVisibility}" Grid.Row="1" Margin="150,0,0,0" Content="{x:Static res:Resources.ContinueCommand}" Command="{Binding ContinueCommand}" Width="120" Height="40"/>

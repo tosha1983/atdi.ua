@@ -3,7 +3,7 @@
   Name        = "TestEntityAbs"
   Title       = "Test Abstruct Entity"
   Desc        = ""
-  Type        = "Abstruct"
+  Type        = "Abstract"
   xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
   <DataSource Type="Database" Object="Table">
     <Name>TEST_ENTITY_ABS</Name>

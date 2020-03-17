@@ -44,12 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\Sensor\SaveSensor.cs" />
-    <Compile Include="Handlers\SynchroProcess\CheckLocation.cs" />
-    <Compile Include="Handlers\SynchroProcess\ConvertEmittings.cs" />
-    <Compile Include="Handlers\SynchroProcess\LoadProtocols.cs" />
-    <Compile Include="Handlers\SynchroProcess\RunSynchroProcess.cs" />
-    <Compile Include="Handlers\SynchroProcess\ImportRefSpectrumData.cs" />
-    <Compile Include="Handlers\SynchroProcess\LoadSynchroProcessData.cs" />
     <Compile Include="Mappers\MapperForMeasTask.cs" />
     <Compile Include="Handlers\Analitics\SOFrequencyTemp.cs" />
     <Compile Include="Handlers\Analitics\Hit.cs" />
@@ -114,10 +108,6 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Modules\Atdi.Modules.Sdrn.Calculation\Atdi.Modules.Sdrn.SpecializedCalculation.csproj">
-      <Project>{9d457947-b938-4aae-9b14-293d349fd621}</Project>
-      <Name>Atdi.Modules.Sdrn.SpecializedCalculation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>

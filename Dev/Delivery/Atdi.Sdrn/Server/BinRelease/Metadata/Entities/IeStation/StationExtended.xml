@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "StationExtended"
+  Title       = "StationExtended"
+  Desc        = "The StationExtended"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>STATION_EXTENDED</Name>
+    <Schema>ICSC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Desc="Id" Title="Id" Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column"/>
+    <Field Desc="TableName" Title="TableName" Name="TableName" DataType="Text.50" SourceName="TABLE_NAME" SourceType="Column" Required="true"/>
+    <Field Desc="TableId" Title="TableId" Name="TableId" DataType="Integer.32" SourceName="TABLE_ID" SourceType="Column" Required="true"/>
+    <Field Desc="Standard" Title="Standard" Name="Standard" DataType="Text.150" SourceName="STANDARD" SourceType="Column" Required="false"/>
+    <Field Desc="StandardName" Title="StandardName" Name="StandardName" DataType="Text.150" SourceName="STANDARD_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="OwnerName" Title="OwnerName" Name="OwnerName" DataType="Text.100" SourceName="OWNER_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="PermissionNumber" Title="PermissionNumber" Name="PermissionNumber" DataType="Text.100" SourceName="PERMISSION_NUMBER" SourceType="Column" Required="false"/>
+    <Field Name="PermissionStart" DataType="DateTime" SourceName="PERMISSION_START" SourceType="Column" Desc="The permission of start" Title="The permission of start" Required="false"/>
+    <Field Name="PermissionStop" DataType="DateTime" SourceName="PERMISSION_STOP" SourceType="Column" Desc="The permission of stop" Title="The permission of stop" Required="false"/>
+    <Field Desc="Address" Title="Address" Name="Address" DataType="Text.1000" SourceName="ADDRESS" SourceType="Column" Required="false"/>
+    <Field Desc="Longitude" Title="Longitude" Name="Longitude" DataType="Double.30.10" SourceName="LONGITUDE" SourceType="Column" Required="false"/>
+    <Field Desc="Latitude" Title="Latitude" Name="Latitude" DataType="Double.30.10" SourceName="LATITUDE" SourceType="Column" Required="false"/>
+    <Field Desc="BandWidth" Title="BandWidth" Name="BandWidth" DataType="Double.30.10" SourceName="BW" SourceType="Column" Required="false"/>
+    <Field Desc="DesigEmission" Title="DesigEmission" Name="DesigEmission" DataType="Text.25" SourceName="DESIG_EMISSION" SourceType="Column" Required="false"/>
+    <Field Desc="Province" Title="Province" Name="Province" DataType="Text.100" SourceName="PROVINCE" SourceType="Column" Required="false"/>
+    <Field Desc="DocNum" Title="DocNum" Name="DocNum" DataType="Text.100" SourceName="DOC_NUM" SourceType="Column" Required="false"/>
+    <Field Desc="CurentStatusStation" Title="CurentStatusStation" Name="CurentStatusStation" DataType="Text.4" SourceName="CURR_STATUS_STATION" SourceType="Column" Required="false"/>
+    <Field Desc="StatusMeas" Title="StatusMeas" Name="StatusMeas" DataType="Text.4" SourceName="STATUS_MEAS" SourceType="Column" Required="false"/>
+    <Field Name="TestStartDate" DataType="DateTime" SourceName="TEST_START_DATE" SourceType="Column" Desc="The test period of start" Title="The test period of start" Required="false"/>
+    <Field Name="TestStopDate" DataType="DateTime" SourceName="TEST_STOP_DATE" SourceType="Column" Desc="The test period of stop" Title="The test period of stop" Required="false"/>
+    <Field Name="PermissionCancelDate" DataType="DateTime" SourceName="PERMISSION_DATE_CANCEL" SourceType="Column" Desc="The permission of cancel date" Title="The permission of cancel date" Required="false"/>
+    <Field Desc="PermissionGlobalSID" Title="PermissionGlobalSID" Name="PermissionGlobalSID" DataType="Text.50" SourceName="PERMISS_GLOBAL_SID" SourceType="Column" Required="false"/>
+    <Field Desc="StationTxFreq" Title="StationTxFreq" Name="StationTxFreq" DataType="Array.Float" SourceName="STATION_TX_FREQ" SourceType="Column" Required="false"/>
+    <Field Desc="StationRxFreq" Title="StationRxFreq" Name="StationRxFreq" DataType="Array.Float" SourceName="STATION_RX_FREQ" SourceType="Column" Required="false"/>
+    <Field Desc="StationChannel" Title="StationChannel" Name="StationChannel" DataType="Array.String" SourceName="STATION_CHANNEL" SourceType="Column" Required="false"/>
+    <Field Desc="StationName" Title="StationName" Name="StationName" DataType="Text.100" SourceName="STATION_NAME" SourceType="Column" Required="false"/>
+    <Field Desc="OKPO" Title="OKPO" Name="OKPO" DataType="Text.20" SourceName="OKPO" SourceType="Column" Required="false"/>
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>

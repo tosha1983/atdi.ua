@@ -99,23 +99,24 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
-        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}">
+        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}" SelectedItemsIndexes="{Binding CurrentSensorsIndexes}">
+          <!--SetSelectedItemsList="{Binding SetCurrentSensors}">-->
           <DataGrid.Columns>
-            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
+            <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
           </DataGrid.Columns>
         </cdg:CustomDataGrid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>

@@ -11,6 +11,7 @@ using XICSM.ICSControlClient.Models.WcfDataApadters;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using MP = XICSM.ICSControlClient.WpfControls.Maps;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using SDRI = Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
@@ -25,13 +26,13 @@ using TR = System.Threading;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.FileIO;
 using Atdi.Common;
-using Atdi.Contracts.WcfServices.Sdrn.Server;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
     public class GroupeEmissionWithStationModelViewModel : WpfViewModelBase
     {
         private IList _currentSensors;
+        private long[] _currentSensorsIndexes;
         private IList _currentAreas;
         private IList _currentRefSpectrums;
         private MP.MapDrawingData _currentMapData;
@@ -78,6 +79,12 @@ namespace XICSM.ICSControlClient.ViewModels
                 CheckEnabledStart();
             }
         }
+        public long[] CurrentSensorsIndexes
+        {
+            get => this._currentSensorsIndexes;
+            set => this.Set(ref this._currentSensorsIndexes, value);
+        }
+        
         public IList CurrentAreas
         {
             get => this._currentAreas;
@@ -141,13 +148,13 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadAreas()
         {
-            var areas = new List<SDR.Area>();
+            var areas = new List<SDRI.Area>();
 
             IMRecordset rs = new IMRecordset("AREA", IMRecordset.Mode.ReadOnly);
             rs.Select("ID,NAME,DENSITY,CREATED_BY,DATE_CREATED,POINTS,CSYS");
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
-                var area = new SDR.Area()
+                var area = new SDRI.Area()
                 {
                     IdentifierFromICSM = rs.GetI("ID"),
                     Name = rs.GetS("NAME"),
@@ -165,7 +172,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
                 var pointsString = rs.GetS("POINTS");
-                var points = new List<SDR.DataLocation>();
+                var points = new List<SDRI.DataLocation>();
 
                 if (!string.IsNullOrEmpty(pointsString))
                 {
@@ -182,7 +189,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 {
                                     if ("4DMS".Equals(csys, StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var point = new SDR.DataLocation()
+                                        var point = new SDRI.DataLocation()
                                         {
                                             Longitude = IMPosition.Dms2Dec(k1),
                                             Latitude = IMPosition.Dms2Dec(k2)
@@ -191,7 +198,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                     }
                                     else
                                     {
-                                        var point = new SDR.DataLocation()
+                                        var point = new SDRI.DataLocation()
                                         {
                                             Longitude = k1,
                                             Latitude = k2
@@ -214,14 +221,17 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadRefSpectrums()
         {
-            var spectrums = SVC.SdrnsControllerWcfClient.GetAllRefSpectrum();
+            var spectrums = SVC.SdrnsControllerWcfClientIeStation.GetAllRefSpectrum();
             this._refSpectrums.Source = spectrums;
         }
         private void SelectSensors()
         {
             var listSensors = new List<ShortSensorViewModel>();
+            var listSensorsIndexes = new List<long>();
+            long index = 0;
 
-            var sensorsIds = new Dictionary<SensorIdentifier, ShortSensor>();
+            var sensorsIds = new Dictionary<SDR.SensorIdentifier, SDR.ShortSensor>();
+
             if (this._currentAreas != null && this._sensors.Source != null && this._sensors.Source.Length > 0)
             {
                 foreach (var sensor in this._sensors.Source)
@@ -243,12 +253,17 @@ namespace XICSM.ICSControlClient.ViewModels
                                     if (CheckHitting(area.Location, loc))
                                     {
                                         if (!sensorsIds.ContainsKey(sensor.Id))
+                                        {
                                             sensorsIds.Add(sensor.Id, sensor);
+                                            listSensorsIndexes.Add(index);
+                                        }
+                                            
                                     }
                                 }
                             }
                         }
                     }
+                    index++;
                 }
             }
 
@@ -256,9 +271,11 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 listSensors.Add(Mappers.Map(sensor));
             }
-            this.CurrentSensors = listSensors;
+
+            this._currentSensors = listSensors;
+            this.CurrentSensorsIndexes = listSensorsIndexes.ToArray();
         }
-        public bool CheckHitting(DataLocation[] poligon, SensorLocation sensor)
+        public bool CheckHitting(SDRI.DataLocation[] poligon, SDR.SensorLocation sensor)
         {
             if (poligon == null || poligon.Length == 0)
                 return false;
@@ -325,13 +342,13 @@ namespace XICSM.ICSControlClient.ViewModels
                     MessageBox.Show("Date Stop should be great of the Date Start!");
                     return;
                 }
-                if (SVC.SdrnsControllerWcfClient.CurrentDataSynchronizationProcess() != null)
+                if (SVC.SdrnsControllerWcfClientIeStation.CurrentDataSynchronizationProcess() != null)
                 {
                     MessageBox.Show("Synchronization process already running!");
                     return;
                 }
 
-                var dataSynchronization = new DataSynchronizationBase()
+                var dataSynchronization = new SDRI.DataSynchronizationBase()
                 {
                     DateStart = DateStart.Value,
                     DateEnd = DateStop.Value,
@@ -340,7 +357,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 };
 
                 var RefSpectrumIdsBySDRN = new List<long>();
-                var stationsExtended = new Dictionary<string, StationExtended>();
+                var stationsExtended = new Dictionary<string, SDRI.StationExtended>();
                 foreach (RefSpectrumViewModel spectrum in this._currentRefSpectrums)
                 {
                     RefSpectrumIdsBySDRN.Add(spectrum.Id.Value);
@@ -350,21 +367,55 @@ namespace XICSM.ICSControlClient.ViewModels
                         if (stationsExtended.ContainsKey(dataSpectrum.TableName + "/" + dataSpectrum.TableId))
                             continue;
 
-                        var stationExtended = new StationExtended();
+                        var stationExtended = new SDRI.StationExtended();
 
                         IMRecordset rs = new IMRecordset(dataSpectrum.TableName, IMRecordset.Mode.ReadOnly);
-                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION");
+                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION,Name,Owner.Code,STATUS");
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                         {
                             stationExtended.Address = rs.GetS("Position.NAME");
-                            stationExtended.Location = new DataLocation() { Latitude = rs.GetD("Position.LATITUDE"), Longitude = rs.GetD("Position.LONGITUDE") };
+                            stationExtended.Location = new SDRI.DataLocation() { Latitude = rs.GetD("Position.LATITUDE"), Longitude = rs.GetD("Position.LONGITUDE") };
                             stationExtended.BandWidth = rs.GetD("BW");
                             stationExtended.OwnerName = rs.GetS("Owner.NAME");
                             stationExtended.DesigEmission = rs.GetS("DESIG_EMISSION");
                             stationExtended.Standard = rs.GetS("STANDARD");
                             stationExtended.StandardName = rs.GetS("RadioSystem.DESCRIPTION");
                             stationExtended.Province = rs.GetS("Position.PROVINCE");
+                            stationExtended.CurentStatusStation = rs.GetS("STATUS");
+                            stationExtended.OKPO = rs.GetS("Owner.Code");
+                            stationExtended.StationName = rs.GetS("Name");
+
+                            string mobstafreq_table = "MOBSTA_FREQS";
+                            if (dataSpectrum.TableName.Substring(dataSpectrum.TableName.Length - 1) == "2")
+                                mobstafreq_table = "MOBSTA_FREQS2";
+
+                            var rssta = new IMRecordset(mobstafreq_table, IMRecordset.Mode.ReadOnly);
+                            rssta.Select("ID,TX_FREQ,RX_FREQ,ChannelTx.CHANNEL");
+                            rssta.SetWhere("STA_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
+
+                            var txFreq = new List<float>();
+                            var rxFreq = new List<float>();
+                            var chanels = new List<string>();
+
+                            for (rssta.Open(); !rssta.IsEOF(); rssta.MoveNext())
+                            {
+                                var txfrq = rssta.GetD("TX_FREQ");
+                                if (txfrq != IM.NullD)
+                                    txFreq.Add((float)txfrq);
+                                var rxfrq = rssta.GetD("RX_FREQ");
+                                if (rxfrq != IM.NullD)
+                                    rxFreq.Add((float)rxfrq);
+                                var chanel = rssta.GetS("ChannelTx.CHANNEL");
+                                chanels.Add(chanel);
+                            }
+                            if (rssta.IsOpen())
+                                rssta.Close();
+                            rssta.Destroy();
+
+                            stationExtended.StationTxFreq = txFreq.ToArray();
+                            stationExtended.StationRxFreq = rxFreq.ToArray();
+                            stationExtended.StationChannel = chanels.ToArray();
                             stationExtended.TableId = dataSpectrum.TableId;
                             stationExtended.TableName = dataSpectrum.TableName;
                         }
@@ -386,7 +437,25 @@ namespace XICSM.ICSControlClient.ViewModels
                             rs2.Close();
                         rs2.Destroy();
 
-                        stationsExtended.Add(dataSpectrum.TableName + "/" + dataSpectrum.TableId, stationExtended);
+                        IMRecordset rs3 = new IMRecordset("XNRFA_APPL", IMRecordset.Mode.ReadOnly);
+                        rs3.Select("DOC_NUM_TV,DOC_DATE,DOC_END_DATE");
+                        rs3.SetWhere("APPL_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
+
+                        for (rs3.Open(); !rs3.IsEOF(); rs3.MoveNext())
+                        {
+                            stationExtended.DocNum = rs3.GetS("DOC_NUM_TV");
+                            stationExtended.TestStartDate = rs3.GetT("DOC_DATE");
+                            stationExtended.TestStopDate = rs3.GetT("DOC_END_DATE");
+                        }
+                        if (rs3.IsOpen())
+                            rs3.Close();
+                        rs3.Destroy();
+
+                        //stationExtended.PermissionCancelDate = ;
+                        //PermissionCancelDate <->PERM_DATE_STOP
+
+                        if (stationExtended.TableId > 0)
+                            stationsExtended.Add(dataSpectrum.TableName + "/" + dataSpectrum.TableId, stationExtended);
                     }
                 }
 
@@ -394,10 +463,10 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (ShortSensorViewModel sensor in this._currentSensors)
                     sensorIdsBySDRN.Add(sensor.Id);
 
-                var areas = new List<Area>();
+                var areas = new List<SDRI.Area>();
                 foreach (AreasViewModel areaModel in this._currentAreas)
                 {
-                    var area = new Area()
+                    var area = new SDRI.Area()
                     {
                         Name = areaModel.Name,
                         TypeArea = areaModel.TypeArea,
@@ -409,7 +478,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     areas.Add(area);
                 }
 
-                SVC.SdrnsControllerWcfClient.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN.ToArray(), sensorIdsBySDRN.ToArray(), areas.ToArray(), stationsExtended.Values.ToArray());
+                SVC.SdrnsControllerWcfClientIeStation.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN.ToArray(), sensorIdsBySDRN.ToArray(), areas.ToArray(), stationsExtended.Values.ToArray());
             }
             catch (Exception e)
             {
@@ -424,7 +493,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (RefSpectrumViewModel spectrum in this._currentRefSpectrums)
                     RefSpectrumIdsBySDRN.Add(spectrum.Id.Value);
 
-                SVC.SdrnsControllerWcfClient.DeleteRefSpectrum(RefSpectrumIdsBySDRN.ToArray());
+                SVC.SdrnsControllerWcfClientIeStation.DeleteRefSpectrum(RefSpectrumIdsBySDRN.ToArray());
                 this.ReloadRefSpectrums();
             }
             catch (Exception e)
@@ -447,13 +516,13 @@ namespace XICSM.ICSControlClient.ViewModels
                     _waitForm.Show();
                     _waitForm.Refresh();
 
-                    var refSpec = new SDR.RefSpectrum()
+                    var refSpec = new SDRI.RefSpectrum()
                     {
                         FileName = openFile.FileName,
                         DateCreated = DateTime.Now,
                         CreatedBy = IM.ConnectedUser()
                     };
-                    var refSpecData = new List<SDR.DataRefSpectrum>();
+                    var refSpecData = new List<SDRI.DataRefSpectrum>();
 
                     using (TextFieldParser parser = new TextFieldParser(openFile.FileName))
                     {
@@ -470,7 +539,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 {
                                     DateTime dateMeas = DateTime.ParseExact(record[10], "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                                    var refSpecDataLine = new SDR.DataRefSpectrum()
+                                    var refSpecDataLine = new SDRI.DataRefSpectrum()
                                     {
                                         IdNum = record[0].TryToInt(),
                                         TableName = record[1].ToString(),
@@ -500,7 +569,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     refSpec.DataRefSpectrum = refSpecData.ToArray();
                     _waitForm.Close();
 
-                    var id = SVC.SdrnsControllerWcfClient.ImportRefSpectrum(refSpec);
+                    var id = SVC.SdrnsControllerWcfClientIeStation.ImportRefSpectrum(refSpec);
                     this.ReloadRefSpectrums();
                 }
             }
