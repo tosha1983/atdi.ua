@@ -542,6 +542,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         protocols.Address = readerProtocols.GetValue(c => c.STATION_EXTENDED.Address);
                         protocols.Latitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Latitude);
                         protocols.Longitude = readerProtocols.GetValue(c => c.STATION_EXTENDED.Longitude);
+                        protocols.Id = readerProtocols.GetValue(c => c.Id);
 
                         var permissionNumberTemp = string.Empty;
                         if (readerProtocols.GetValue(c => c.PermissionNumber)==null)
@@ -683,55 +684,67 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             }
                             return true;
                         });
-
                         listDetailProtocols.Add(protocols);
                     }
                     return true;
                 });
 
-                var lstPermissions = new List<string>();
                 for (int i = 0; i < listDetailProtocols.Count; i++)
                 {
                     var detailProtocol = listDetailProtocols[i];
-                    if (detailProtocol.PermissionNumber != null)
+                    var protocolDataToGroup = new HeadProtocols();
+                    protocolDataToGroup.Id = detailProtocol.Id;
+                    protocolDataToGroup.PermissionGlobalSID = detailProtocol.PermissionGlobalSID;
+                    protocolDataToGroup.OwnerName = detailProtocol.OwnerName;
+                    protocolDataToGroup.Address = detailProtocol.Address;
+                    protocolDataToGroup.PermissionNumber = detailProtocol.PermissionNumber;
+                    protocolDataToGroup.PermissionStart = detailProtocol.PermissionStart;
+                    protocolDataToGroup.PermissionStop = detailProtocol.PermissionStop;
+                    protocolDataToGroup.Longitude = detailProtocol.Longitude;
+                    protocolDataToGroup.Latitude = detailProtocol.Latitude;
+
+
+                    if ((protocolDataToGroup.Longitude != null) && (protocolDataToGroup.Latitude != null) && (!string.IsNullOrEmpty(protocolDataToGroup.PermissionNumber)))
                     {
-                        if (!lstPermissions.Contains(detailProtocol.PermissionNumber))
+                        var findDataGroup = listHeadProtocols.Find(x =>  x.Id!= protocolDataToGroup.Id && x.Address == protocolDataToGroup.Address && x.OwnerName == protocolDataToGroup.OwnerName && x.PermissionGlobalSID == protocolDataToGroup.PermissionGlobalSID && x.PermissionNumber == protocolDataToGroup.PermissionNumber && x.PermissionStart == protocolDataToGroup.PermissionStart && x.PermissionStop == protocolDataToGroup.PermissionStop && (Math.Abs(x.Latitude.Value - protocolDataToGroup.Latitude.Value) < 0.0000001) && (Math.Abs(x.Longitude.Value - protocolDataToGroup.Longitude.Value) < 0.0000001));
+                        if (findDataGroup == null)
                         {
-                            lstPermissions.Add(detailProtocol.PermissionNumber);
+                            listHeadProtocols.Add(protocolDataToGroup);
                         }
+                    }
+                    else if ((protocolDataToGroup.Longitude != null) && (protocolDataToGroup.Latitude != null) && (string.IsNullOrEmpty(protocolDataToGroup.PermissionNumber)))
+                    {
+                        var findDataGroup = listHeadProtocols.Find(x => x.Id != protocolDataToGroup.Id && (Math.Abs(x.Latitude.Value - protocolDataToGroup.Latitude.Value) < 0.0000001) && (Math.Abs(x.Longitude.Value - protocolDataToGroup.Longitude.Value) < 0.0000001));
+                        if (findDataGroup == null)
+                        {
+                            listHeadProtocols.Add(protocolDataToGroup);
+                        }
+                    }
+                    else
+                    {
+                        this._logger.Warning(Contexts.ThisComponent, Categories.Processing, (EventText)$"In the process of generate the list of protocols, a situation was discovered when the coordinates of the station were not determined!");
                     }
                 }
 
-                for (int i = 0; i < lstPermissions.Count; i++)
-                {
-                    var allDetailProtocolsForPerm = listDetailProtocols.FindAll(x => x.PermissionNumber == lstPermissions[i]);
-                    if ((allDetailProtocolsForPerm != null) && (allDetailProtocolsForPerm.Count > 0))
-                    {
-                        var lstDateMeas = new List<DateTime>();
-                        for (int j = 0; j < allDetailProtocolsForPerm.Count; j++)
-                        {
-                            var dateMeas = allDetailProtocolsForPerm[j].DateMeas;
-                            if (dateMeas != null)
-                            {
-                                if (!lstDateMeas.Contains(dateMeas.Value))
-                                {
-                                    lstDateMeas.Add(dateMeas.Value);
-                                    var headProtocols = new HeadProtocols();
-                                    headProtocols.PermissionNumber = lstPermissions[i];
-                                    headProtocols.DateMeas = dateMeas;
-                                    listHeadProtocols.Add(headProtocols);
-                                }
-                            }
-                        }
-                    }
-                }
-
+                var orderByProtocolsOutput = from z in listHeadProtocols orderby z.PermissionGlobalSID, z.OwnerName, z.Address, z.PermissionNumber, z.PermissionStart, z.PermissionStop, z.Longitude, z.Latitude ascending select z;
+                listHeadProtocols = orderByProtocolsOutput.ToList();
+                var allDetailProtocolsForPermTemp = new List<DetailProtocols>();
                 for (int i = 0; i < listHeadProtocols.Count; i++)
                 {
                     var headProtocol = listHeadProtocols[i];
                     if (headProtocol!=null)
                     {
-                        var allDetailProtocolsForPerm = listDetailProtocols.FindAll(x => (x.PermissionNumber == headProtocol.PermissionNumber) && (x.DateMeas == headProtocol.DateMeas));
+                        var allDetailProtocolsForPerm = new List<DetailProtocols>();
+
+                        if ((headProtocol.Longitude != null) && (headProtocol.Latitude != null) && (!string.IsNullOrEmpty(headProtocol.PermissionNumber)))
+                        {
+                            allDetailProtocolsForPerm = listDetailProtocols.FindAll(x => x.Address == headProtocol.Address && x.OwnerName == headProtocol.OwnerName && x.PermissionGlobalSID == headProtocol.PermissionGlobalSID && x.PermissionNumber == headProtocol.PermissionNumber && x.PermissionStart == headProtocol.PermissionStart && x.PermissionStop == headProtocol.PermissionStop && (Math.Abs(x.Latitude.Value - headProtocol.Latitude.Value) < 0.0000001) && (Math.Abs(x.Longitude.Value - headProtocol.Longitude.Value) < 0.0000001));
+                        }
+                        else if ((headProtocol.Longitude != null) && (headProtocol.Latitude != null) && (string.IsNullOrEmpty(headProtocol.PermissionNumber)))
+                        {
+                            allDetailProtocolsForPerm = listDetailProtocols.FindAll(x => (Math.Abs(x.Latitude.Value - headProtocol.Latitude.Value) < 0.0000001) && (Math.Abs(x.Longitude.Value - headProtocol.Longitude.Value) < 0.0000001));
+                        }
+                          
                         if ((allDetailProtocolsForPerm!=null) && (allDetailProtocolsForPerm.Count>0))
                         {
                             headProtocol.Address = allDetailProtocolsForPerm[0].Address;
@@ -748,10 +761,22 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             headProtocol.PermissionStop = allDetailProtocolsForPerm[0].PermissionStop;
                             headProtocol.StandardName = allDetailProtocolsForPerm[0].StandardName;
                             headProtocol.TitleSensor= allDetailProtocolsForPerm[0].TitleSensor;
-                            headProtocol.DetailProtocols = allDetailProtocolsForPerm.ToArray();
+
+                            var allDetailProtocol = new List<DetailProtocols>();
+                            for (int j=0; j< allDetailProtocolsForPerm.Count; j++)
+                            {
+                                var fndProtocolTemp = allDetailProtocolsForPermTemp.Find(x => x.Id == allDetailProtocolsForPerm[j].Id);
+                                if (fndProtocolTemp==null)
+                                {
+                                    allDetailProtocol.Add(allDetailProtocolsForPerm[j]);
+                                    allDetailProtocolsForPermTemp.Add(allDetailProtocolsForPerm[j]);
+                                }
+                            }
+                            headProtocol.DetailProtocols = allDetailProtocol.ToArray();
                         }
                     }
                 }
+                listHeadProtocols.RemoveAll(x => x.DetailProtocols == null || (x.DetailProtocols != null && x.DetailProtocols.Length == 0));
             }
             catch (Exception e)
             {

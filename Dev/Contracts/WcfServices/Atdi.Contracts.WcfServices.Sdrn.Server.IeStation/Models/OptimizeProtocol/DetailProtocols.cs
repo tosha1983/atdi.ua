@@ -14,6 +14,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
     [DataContract(Namespace =Specification.Namespace)]
     public class DetailProtocols
     {
+        [DataMember]
+        public long? Id { get; set; }
         /// <summary>
         /// Дата вимірювання
         /// </summary>
