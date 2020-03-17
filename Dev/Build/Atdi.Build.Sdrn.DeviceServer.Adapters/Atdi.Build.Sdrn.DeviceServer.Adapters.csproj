@@ -88,6 +88,11 @@ copy "$(TargetDir)NationalInstruments.VisaNS.dll" "..\..\..\..\Delivery\Atdi.Sdr
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
 copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSTSMx.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
 
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
+copy "$(TargetDir)Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL.dll.config" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
+copy "$(TargetDir)Ivi.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
+copy "$(TargetDir)RohdeSchwarz.Visa.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSFPL\Bin$(ConfigurationName)"
+
 copy "$(TargetDir)UserLowLevelErrorMessageHandler.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
 copy "$(TargetDir)RohdeSchwarz.ViCom.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"
 copy "$(TargetDir)RohdeSchwarz.Tools.Net.dll" "..\..\..\..\Delivery\Atdi.Sdrn\Device\AppServer\Adapters\RSTSMx\Bin$(ConfigurationName)"

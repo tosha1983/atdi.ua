@@ -123,9 +123,6 @@
   <data name="Adm" xml:space="preserve">
     <value>Adm</value>
   </data>
-  <data name="Adress" xml:space="preserve">
-    <value>Adress</value>
-  </data>
   <data name="AGLM" xml:space="preserve">
     <value>AGL, m</value>
   </data>
@@ -576,9 +573,6 @@
   <data name="SearchStationInICSM" xml:space="preserve">
     <value>Search Station in ICSM</value>
   </data>
-  <data name="SensorIds" xml:space="preserve">
-    <value>Sensor ID</value>
-  </data>
   <data name="SensorName" xml:space="preserve">
     <value>Sensor Name</value>
   </data>
@@ -744,9 +738,6 @@
   <data name="TypeSpectrumOccupation" xml:space="preserve">
     <value>Type Spectrum Occupation</value>
   </data>
-  <data name="Type_Measurements" xml:space="preserve">
-    <value>Type Measurements</value>
-  </data>
   <data name="UpFreq" xml:space="preserve">
     <value>Up Freq</value>
   </data>
@@ -804,7 +795,7 @@
     <value>Import from CSV</value>
   </data>
   <data name="MaxFreqMHz" xml:space="preserve">
-    <value>Max freq MHz</value>
+    <value>Max freq, MHz</value>
   </data>
   <data name="MinFreqMHz" xml:space="preserve">
     <value>Min freq MHz</value>
@@ -847,12 +838,6 @@
   </data>
   <data name="EouseDate" xml:space="preserve">
     <value>Eouse Date</value>
-  </data>
-  <data name="Freq_MHz" xml:space="preserve">
-    <value>Freq, MHz</value>
-  </data>
-  <data name="Level_dBm" xml:space="preserve">
-    <value>Level dBm</value>
   </data>
   <data name="Month" xml:space="preserve">
     <value>Month</value>

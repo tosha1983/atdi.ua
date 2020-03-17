@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using SDRI = Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using VM = XICSM.ICSControlClient.Models.Views;
 using M = XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Environment.Wpf;
@@ -508,25 +509,25 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 SensorIds = source.SensorIds
             };
         }
-        public static VM.DataSynchronizationProcessProtocolsViewModel Map(SDR.Protocols source)
+        public static VM.DataSynchronizationProcessProtocolsViewModel Map(SDRI.Protocols source)
         {
             if (source == null)
                 return null;
 
             if (source.Sensor == null)
-                source.Sensor = new SDR.Sensor();
+                source.Sensor = new SDRI.Sensor();
 
             if (source.StationExtended == null)
-                source.StationExtended = new SDR.StationExtended();
+                source.StationExtended = new SDRI.StationExtended();
 
             if (source.DataRefSpectrum == null)
-                source.DataRefSpectrum = new SDR.DataRefSpectrum();
+                source.DataRefSpectrum = new SDRI.DataRefSpectrum();
 
             if (source.RadioControlParams == null)
-                source.RadioControlParams = new SDR.RadioControlParams();
+                source.RadioControlParams = new SDRI.RadioControlParams();
 
             if (source.ProtocolsLinkedWithEmittings == null)
-                source.ProtocolsLinkedWithEmittings = new SDR.ProtocolsWithEmittings();
+                source.ProtocolsLinkedWithEmittings = new SDRI.ProtocolsWithEmittings();
 
             return new VM.DataSynchronizationProcessProtocolsViewModel
             {

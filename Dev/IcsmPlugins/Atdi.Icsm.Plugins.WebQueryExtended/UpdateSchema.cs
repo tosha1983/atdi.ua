@@ -262,6 +262,7 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
 
             CreateViewForAccess(s, "XV_WEB_DOCFILES", "WebQuery_WebDocFiles_View", plugin3, "LICENCE", "WebQuery_DocFiles");
             {
+                /*
                 s.DeclareField("NID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("SSTANDARD", "VARCHAR(50)", null, null, null);
                 s.DeclareField("SIEEE", "VARCHAR(100)", null, null, null);
@@ -288,6 +289,26 @@ namespace XICSM.Atdi.Icsm.Plugins.WebQueryExtended
                 s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("SDE_ID", "NUMBER(9,0)", null, null, null);
                 s.DeclareField("SVE_ID", "NUMBER(9,0)", null, null, null);
+                */
+                s.DeclareField("RADIOTECH", "VARCHAR(50)", null, null, null);
+                s.DeclareField("RADIOTECH_NAME", "VARCHAR(255)", null, null, null);
+                s.DeclareField("IEEE", "VARCHAR(100)", null, null, null);
+                s.DeclareField("STATUS", "VARCHAR(4)", null, null, null);
+                s.DeclareField("EDRPOU", "VARCHAR(50)", null, null, null);
+                s.DeclareField("ADDRESS", "VARCHAR(4000)", null, null, null);
+                s.DeclareField("CONC_NUM", "VARCHAR(200)", null, null, null);
+                s.DeclareField("CONC_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("CONC_DATE_TO", "DATE", "Date", null, null);
+                s.DeclareField("DOZV_NUM", "VARCHAR(200)", null, null, null);
+                s.DeclareField("DOZV_DATE_FROM", "DATE", "Date", null, null);
+                s.DeclareField("DOZV_DATE_TO", "DATE", "Date", null, null);
+                s.DeclareField("DOZV_DATE_CANCEL", "DATE", "Date", null, null);
+                s.DeclareField("EVE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EVES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("VE_S_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDE_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("EDES_ID", "NUMBER(9,0)", null, null, null);
+                s.DeclareField("DE_S_ID", "NUMBER(9,0)", null, null, null);
             }
         }
 

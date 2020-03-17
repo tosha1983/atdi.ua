@@ -75,7 +75,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadData()
         {
-            var sdrProtocols = SVC.SdrnsControllerWcfClient.GetProtocols();
+            var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocols();
             this._protocols.Source = sdrProtocols;
         }
         private void CheckEnablePrintCommand()
@@ -87,7 +87,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnFilterApplyCommand(object parameter)
         {
-            var sdrProtocols = SVC.SdrnsControllerWcfClient.GetProtocolsByParameters(null,
+            var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocolsByParameters(null,
                 this._dataFilter.CreatedBy,
                 this._dataFilter.DateCreated,
                 null,
@@ -221,8 +221,8 @@ namespace XICSM.ICSControlClient.ViewModels
             if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
             {
                 recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
-                var bm = new System.Drawing.Bitmap(1200, 600);
-                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1200, 600);
+                var bm = new System.Drawing.Bitmap(1300, 600);
+                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 600);
                 InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
                 bm.Dispose();
                 GC.Collect();
