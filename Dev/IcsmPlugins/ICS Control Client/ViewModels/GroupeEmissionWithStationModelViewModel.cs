@@ -441,6 +441,19 @@ namespace XICSM.ICSControlClient.ViewModels
 
                         if (applId != IM.NullI)
                         {
+                            IMRecordset rsAppl = new IMRecordset("XNRFA_APPL", IMRecordset.Mode.ReadOnly);
+                            rsAppl.Select("ID,DOZV_DATE_CANCEL");
+                            rsAppl.SetWhere("ID", IMRecordset.Operation.Eq, applId);
+
+                            for (rsAppl.Open(); !rsAppl.IsEOF(); rsAppl.MoveNext())
+                            {
+                                stationExtended.PermissionCancelDate = rsAppl.GetT("DOZV_DATE_CANCEL");
+                            }
+                            if (rsAppl.IsOpen())
+                                rsAppl.Close();
+                            rsAppl.Destroy();
+
+
                             IMRecordset rs3 = new IMRecordset("XNRFA_PAC_TO_APPL", IMRecordset.Mode.ReadOnly);
                             rs3.Select("DOC_NUM_TV,DOC_DATE,DOC_END_DATE");
                             rs3.SetWhere("APPL_ID", IMRecordset.Operation.Eq, applId);

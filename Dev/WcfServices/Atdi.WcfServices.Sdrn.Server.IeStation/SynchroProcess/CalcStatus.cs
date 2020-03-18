@@ -13,6 +13,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 {
     public class CalcStatus
     {
+        private static DateTime? NullT=new DateTime(01,01,01,0,0,0);
 
         /// <summary>
         /// Вычисление статуса для записей таблицы RefSpectrum
@@ -30,17 +31,17 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             var StatusMeas = "";
             DateTime? Start = null;
             DateTime? Stop = null;
-            if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
+            if (((permissionCancelDate == null) || (permissionCancelDate == NullT)) && (permissionStop != null) && (permissionStart != null) && (permissionStop != NullT) && (permissionStart != NullT))
             {
                 Start = permissionStart;
                 Stop = permissionStop;
             }
-            else if ((permissionCancelDate != null) && (permissionStart != null))
+            else if ((permissionCancelDate != null) && (permissionStart != null) && (permissionStart != NullT))
             {
                 Start = permissionStart;
                 Stop = permissionCancelDate;
             }
-            else if (!string.IsNullOrEmpty(DocNum) && (testStartDate != null) && (testStopDate != null))
+            else if (!string.IsNullOrEmpty(DocNum) && (testStartDate != null) && (testStopDate != null) && (testStartDate != NullT) && (testStopDate != NullT))
             {
                 Start = testStartDate;
                 Stop = testStopDate;
@@ -80,7 +81,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         {
             var StatusMeas = "";
 
-            if ((permissionCancelDate == null) && (permissionStop != null) && (permissionStart != null))
+            if (((permissionCancelDate == null) || (permissionCancelDate == NullT)) && (permissionStop != null) && (permissionStart != null) && (permissionStop != NullT) && (permissionStart != NullT))
             {
                 if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionStop >= dateMeasFromRefSpectrum) == true)
                 {
@@ -98,7 +99,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     StatusMeas = "I";
                 }
             }
-            else if ((permissionCancelDate != null) && (permissionStart != null))
+            else if ((permissionCancelDate != null) && (permissionStart != null) && (permissionCancelDate != NullT) && (permissionStart != NullT))
             {
                 if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionCancelDate >= dateMeasFromRefSpectrum) == true)
                 {
@@ -116,7 +117,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     StatusMeas = "I";
                 }
             }
-            else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null))
+            else if (!string.IsNullOrEmpty(docNum) && (testStartDate != null) && (testStopDate != null) && (testStartDate != NullT) && (testStopDate != NullT))
             {
                 if ((testStartDate <= dateMeasFromRefSpectrum) && (testStopDate >= dateMeasFromRefSpectrum) == true)
                 {
