@@ -114,10 +114,29 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
             if (this.Markers.Count > 0)
             {
                 var rect = this.GetRectOfAllMarkers(null);
+
                 if (rect.HasValue)
                     this.SetZoomToFitRect(rect.Value);
                 else
                     this.ZoomAndCenterMarkers(null);
+
+                //if (rect.HasValue)
+                //{
+                //    var marker1 = new GMapMarker(rect.Value.LocationRightBottom)
+                //    {
+                //        Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Width = 1, Height = 1 },
+                //        ZIndex = int.MaxValue
+                //    };
+                //    this.Markers.Add(marker1);
+
+                //    var marker2 = new GMapMarker(rect.Value.LocationTopLeft)
+                //    {
+                //        Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Width = 1, Height = 1 },
+                //        ZIndex = int.MaxValue
+                //    };
+                //    this.Markers.Add(marker2);
+                //    this.ZoomAndCenterMarkers(null);
+                //}
             }
         }
 

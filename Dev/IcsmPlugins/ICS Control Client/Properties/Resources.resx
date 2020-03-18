@@ -706,7 +706,7 @@
     <value>Time From</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Time</value>
+    <value>Time Meas</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
     <value>Time Start</value>

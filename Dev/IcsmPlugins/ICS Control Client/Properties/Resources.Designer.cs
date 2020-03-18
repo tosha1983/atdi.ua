@@ -2428,7 +2428,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time.
+        ///   Looks up a localized string similar to Time Meas.
         /// </summary>
         public static string TimeMeas {
             get {

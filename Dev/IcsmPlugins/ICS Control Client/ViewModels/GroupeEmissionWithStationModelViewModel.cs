@@ -223,6 +223,10 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var spectrums = SVC.SdrnsControllerWcfClientIeStation.GetAllRefSpectrum();
             this._refSpectrums.Source = spectrums;
+            if (spectrums.Length == 1)
+            {
+                this._currentRefSpectrums = new List<RefSpectrumViewModel>() { Mappers.Map(spectrums[0]) };
+            }
         }
         private void SelectSensors()
         {
@@ -355,6 +359,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     DateCreated = DateTime.Now,
                     CreatedBy = IM.ConnectedUser()
                 };
+
+                ReloadRefSpectrums();
 
                 var RefSpectrumIdsBySDRN = new List<long>();
                 var stationsExtended = new Dictionary<string, SDRI.StationExtended>();

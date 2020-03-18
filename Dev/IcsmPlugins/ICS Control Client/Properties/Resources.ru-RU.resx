@@ -889,7 +889,7 @@
     <value>Время от</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Время</value>
+    <value>Время измерения</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
     <value>Время начала</value>

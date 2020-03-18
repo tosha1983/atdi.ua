@@ -532,6 +532,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 GlobalSID = source.GlobalSID,
                 Latitude = source.Latitude,
                 Longitude = source.Longitude,
+                Coordinates = (source.Latitude.HasValue ? source.Latitude.Value.ToString() : "") + ", " + (source.Longitude.HasValue ? source.Longitude.Value.ToString() : ""),
                 Level_dBm = source.Level_dBm,
                 OwnerName = source.OwnerName,
                 PermissionGlobalSID = source.PermissionGlobalSID,
@@ -543,6 +544,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 RadioControlMeasFreq_MHz = source.RadioControlMeasFreq_MHz,
                 SensorLatitude = source.SensorLatitude,
                 SensorLongitude = source.SensorLongitude,
+                SensorCoordinates = (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : "") + ", " + (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : ""),
                 SensorName = source.SensorName,
                 Standard = source.Standard,
                 StandardName = source.StandardName,
@@ -553,5 +555,24 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };
         }
-    }
+        public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
+        {
+            if (source == null)
+                return null;
+
+            return new VM.RefSpectrumViewModel
+            {
+                Id = source.Id,
+                FileName = source.FileName,
+                DateCreated = source.DateCreated,
+                CreatedBy = source.CreatedBy,
+                CountImportRecords = source.CountImportRecords,
+                MinFreqMHz = source.MinFreqMHz,
+                MaxFreqMHz = source.MaxFreqMHz,
+                CountSensors = source.CountSensors,
+                DataRefSpectrum = source.DataRefSpectrum
+            };
+
+        }
+    };
 }
