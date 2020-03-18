@@ -84,7 +84,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionStop >= dateMeasFromRefSpectrum) == true)
                 {
-                    if (isEmitingContain)
+                    if (isEmitingContain==false)
                     {
                         StatusMeas = "U";
                     }
@@ -102,7 +102,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 if ((permissionStart <= dateMeasFromRefSpectrum) && (permissionCancelDate >= dateMeasFromRefSpectrum) == true)
                 {
-                    if (isEmitingContain)
+                    if (isEmitingContain == false)
                     {
                         StatusMeas = "U";
                     }
@@ -120,7 +120,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 if ((testStartDate <= dateMeasFromRefSpectrum) && (testStopDate >= dateMeasFromRefSpectrum) == true)
                 {
-                    if (isEmitingContain)
+                    if (isEmitingContain == false)
                     {
                         StatusMeas = "U";
                     }
