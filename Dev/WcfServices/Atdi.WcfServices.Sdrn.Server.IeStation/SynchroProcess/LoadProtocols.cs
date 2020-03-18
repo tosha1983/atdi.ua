@@ -634,7 +634,6 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         protocols.BandWidth = readerProtocols.GetValue(c => c.STATION_EXTENDED.BandWidth);
                         protocols.CurentStatusStation = readerProtocols.GetValue(c => c.STATION_EXTENDED.CurentStatusStation);
                         protocols.Level_dBm = readerProtocols.GetValue(c => c.Level_dBm);
-                        protocols.ProtocolsLinkedWithEmittings = new ProtocolsWithEmittings();
 
 
                         var builderLinkProtocolsWithEmittings = this._dataLayer.GetBuilder<MD.ILinkProtocolsWithEmittings>().From();
