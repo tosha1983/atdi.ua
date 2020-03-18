@@ -430,20 +430,30 @@ namespace XICSM.ICSControlClient.ViewModels
                         rs.Destroy();
 
                         int applId = IM.NullI;
-                        IMRecordset rs2 = new IMRecordset("ALLSTATIONS", IMRecordset.Mode.ReadOnly);
-                        rs2.Select("ID,PERM_NUM,PERM_DATE,PERM_DATE_STOP");
-                        rs2.SetWhere("TABLE_NAME", IMRecordset.Operation.Eq, dataSpectrum.TableName);
-                        rs2.SetWhere("TABLE_ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
-                        for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
+                        IMRecordset rsAppl = new IMRecordset("XNRFA_APPL", IMRecordset.Mode.ReadOnly);
+                        rsAppl.Select("ID,DOZV_DATE_CANCEL,DOZV_NUM,DOZV_DATE_FROM,DOZV_DATE_TO");
+                        rsAppl.SetWhere("OBJ_TABLE", IMRecordset.Operation.Eq, dataSpectrum.TableName);
+                        rsAppl.SetAdditional(string.Format("([OBJ_ID1]={0}) OR ([OBJ_ID2]={0}) OR ([OBJ_ID3]={0}) OR ([OBJ_ID4]={0}) OR ([OBJ_ID5]={0}) OR ([OBJ_ID6]={0})", dataSpectrum.TableId));
+                        for (rsAppl.Open(); !rsAppl.IsEOF(); rsAppl.MoveNext())
                         {
-                            stationExtended.PermissionNumber = rs2.GetS("PERM_NUM");
-                            stationExtended.PermissionStart = rs2.GetT("PERM_DATE");
-                            stationExtended.PermissionStop = rs2.GetT("PERM_DATE_STOP");
-                            applId = rs2.GetI("ID");
+                            stationExtended.PermissionNumber = rsAppl.GetS("DOZV_NUM");
+                            if (rsAppl.GetT("DOZV_DATE_FROM") != IM.NullT)
+                            {
+                                stationExtended.PermissionStart = rsAppl.GetT("DOZV_DATE_FROM");
+                            }
+                            if (rsAppl.GetT("DOZV_DATE_TO") != IM.NullT)
+                            {
+                                stationExtended.PermissionStop = rsAppl.GetT("DOZV_DATE_TO");
+                            }
+                            if (rsAppl.GetT("DOZV_DATE_CANCEL") != IM.NullT)
+                            {
+                                stationExtended.PermissionCancelDate = rsAppl.GetT("DOZV_DATE_CANCEL");
+                            }
+                            applId = rsAppl.GetI("ID");
                         }
-                        if (rs2.IsOpen())
-                            rs2.Close();
-                        rs2.Destroy();
+                        if (rsAppl.IsOpen())
+                            rsAppl.Close();
+                        rsAppl.Destroy();
 
                         if (applId != IM.NullI)
                         {
@@ -454,8 +464,14 @@ namespace XICSM.ICSControlClient.ViewModels
                             for (rs3.Open(); !rs3.IsEOF(); rs3.MoveNext())
                             {
                                 stationExtended.DocNum = rs3.GetS("DOC_NUM_TV");
-                                stationExtended.TestStartDate = rs3.GetT("DOC_DATE");
-                                stationExtended.TestStopDate = rs3.GetT("DOC_END_DATE");
+                                if (rs3.GetT("DOC_DATE") != IM.NullT)
+                                {
+                                    stationExtended.TestStartDate = rs3.GetT("DOC_DATE");
+                                }
+                                if (rs3.GetT("DOC_END_DATE") != IM.NullT)
+                                {
+                                    stationExtended.TestStopDate = rs3.GetT("DOC_END_DATE");
+                                }
                             }
                             if (rs3.IsOpen())
                                 rs3.Close();
