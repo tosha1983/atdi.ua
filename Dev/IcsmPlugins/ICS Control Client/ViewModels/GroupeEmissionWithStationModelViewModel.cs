@@ -431,8 +431,14 @@ namespace XICSM.ICSControlClient.ViewModels
                         for (rs2.Open(); !rs2.IsEOF(); rs2.MoveNext())
                         {
                             stationExtended.PermissionNumber = rs2.GetS("PERM_NUM");
-                            stationExtended.PermissionStart = rs2.GetT("PERM_DATE");
-                            stationExtended.PermissionStop = rs2.GetT("PERM_DATE_STOP");
+                            if (rs2.GetT("PERM_DATE") != IM.NullT)
+                            {
+                                stationExtended.PermissionStart = rs2.GetT("PERM_DATE");
+                            }
+                            if (rs2.GetT("PERM_DATE_STOP") != IM.NullT)
+                            {
+                                stationExtended.PermissionStop = rs2.GetT("PERM_DATE_STOP");
+                            }
                             applId = rs2.GetI("ID");
                         }
                         if (rs2.IsOpen())
@@ -447,7 +453,10 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             for (rsAppl.Open(); !rsAppl.IsEOF(); rsAppl.MoveNext())
                             {
-                                stationExtended.PermissionCancelDate = rsAppl.GetT("DOZV_DATE_CANCEL");
+                                if (rsAppl.GetT("DOZV_DATE_CANCEL") != IM.NullT)
+                                {
+                                    stationExtended.PermissionCancelDate = rsAppl.GetT("DOZV_DATE_CANCEL");
+                                }
                             }
                             if (rsAppl.IsOpen())
                                 rsAppl.Close();
@@ -461,8 +470,14 @@ namespace XICSM.ICSControlClient.ViewModels
                             for (rs3.Open(); !rs3.IsEOF(); rs3.MoveNext())
                             {
                                 stationExtended.DocNum = rs3.GetS("DOC_NUM_TV");
-                                stationExtended.TestStartDate = rs3.GetT("DOC_DATE");
-                                stationExtended.TestStopDate = rs3.GetT("DOC_END_DATE");
+                                if (rs3.GetT("DOC_DATE") != IM.NullT)
+                                {
+                                    stationExtended.TestStartDate = rs3.GetT("DOC_DATE");
+                                }
+                                if (rs3.GetT("DOC_END_DATE") != IM.NullT)
+                                {
+                                    stationExtended.TestStopDate = rs3.GetT("DOC_END_DATE");
+                                }
                             }
                             if (rs3.IsOpen())
                                 rs3.Close();

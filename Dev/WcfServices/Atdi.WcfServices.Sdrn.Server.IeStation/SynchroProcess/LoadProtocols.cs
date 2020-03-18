@@ -423,6 +423,15 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                         c => c.SYNCHRO_PROCESS.Id
                                         );
 
+
+                var dic = new Dictionary<string, string>();
+                dic.Add("T", "Operating according to Test");
+                dic.Add("A", "Operating according to License");
+                dic.Add("U", "Transmitter operation not fixed");
+                dic.Add("I", "Illegally operated transmitter");
+                dic.Add("N", "New");
+                
+
                 if (processId != null)
                 {
                     builderProtocols.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
@@ -631,6 +640,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             protocols.StationTxFreq = string.Join(";", txFreq);
                         }
                         protocols.StatusMeas = readerProtocols.GetValue(c => c.STATION_EXTENDED.StatusMeas);
+                        if (protocols.StatusMeas != null)
+                        {
+                            protocols.StatusMeas = dic[protocols.StatusMeas];
+                        }
                         protocols.BandWidth = readerProtocols.GetValue(c => c.STATION_EXTENDED.BandWidth);
                         protocols.CurentStatusStation = readerProtocols.GetValue(c => c.STATION_EXTENDED.CurentStatusStation);
                         protocols.Level_dBm = readerProtocols.GetValue(c => c.Level_dBm);
