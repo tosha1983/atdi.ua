@@ -1180,7 +1180,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                     protocol.ProtocolsLinkedWithEmittings.WorkTimeStart = minStart;
                                     protocol.ProtocolsLinkedWithEmittings.WorkTimeStop = maxStop;
                                 }
-                                lstProtocols.Add(protocol);
+
+                                var foundProtocol = lstProtocols.Find(x => x.DataRefSpectrum.Id == dataRefSpectrum.Id);
+
+                                if (foundProtocol == null)
+                                {
+                                    lstProtocols.Add(protocol);
+                                }
                             }
                         }
                     }
@@ -1328,6 +1334,15 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
                 }
                 
+            }
+
+            if (stationsDataToCorrespondList.Count > emittingsDataToCorrespondList.Count)
+            {
+                stationsDataToCorrespondList.RemoveRange(emittingsDataToCorrespondList.Count, stationsDataToCorrespondList.Count - emittingsDataToCorrespondList.Count);
+            }
+            else if (stationsDataToCorrespondList.Count < emittingsDataToCorrespondList.Count)
+            {
+                emittingsDataToCorrespondList.RemoveRange(stationsDataToCorrespondList.Count, emittingsDataToCorrespondList.Count - stationsDataToCorrespondList.Count);
             }
 
             //Convert data to correspond into array
