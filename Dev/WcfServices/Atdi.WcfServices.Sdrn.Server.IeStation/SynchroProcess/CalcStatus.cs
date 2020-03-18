@@ -227,6 +227,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         startDateVal = startDate;
                     }
                 }
+                else
+                {
+                    startDateVal = startDate;
+                }
             }
             return startDateVal;
         }

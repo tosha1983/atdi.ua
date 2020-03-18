@@ -335,9 +335,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                         builderUpdateStationExtended.SetValue(c => c.CurentStatusStation, stationsExtended[i].CurentStatusStation);
                                     }
 
-                                    if (readerStationExtendedFrom.GetValue(c => c.PermissionGlobalSID) != stationsExtended[i].PermissionGlobalSID)
+                                    var permissionGlobalSID = GetGlobalSID(stationsExtended[i].OKPO, stationsExtended[i].StationName);
+                                    if (readerStationExtendedFrom.GetValue(c => c.PermissionGlobalSID) != permissionGlobalSID)
                                     {
-                                        var permissionGlobalSID = GetGlobalSID(stationsExtended[i].OKPO, stationsExtended[i].StationName);
                                         if (!string.IsNullOrEmpty(permissionGlobalSID))
                                         {
                                             isChanged = true;
@@ -491,15 +491,14 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 builderStationExtendedInsert.SetValue(c => c.PermissionCancelDate, stationsExtended[i].PermissionCancelDate);
                                 isChangedSuccess = true;
                             }
-                            if (stationsExtended[i].PermissionGlobalSID != null)
+
+                            var permissionGlobalSID = GetGlobalSID(stationsExtended[i].OKPO, stationsExtended[i].StationName);
+                            if (!string.IsNullOrEmpty(permissionGlobalSID))
                             {
-                                var permissionGlobalSID = GetGlobalSID(stationsExtended[i].OKPO, stationsExtended[i].StationName);
-                                if (!string.IsNullOrEmpty(permissionGlobalSID))
-                                {
-                                    builderStationExtendedInsert.SetValue(c => c.PermissionGlobalSID, permissionGlobalSID);
-                                    isChangedSuccess = true;
-                                }
+                                builderStationExtendedInsert.SetValue(c => c.PermissionGlobalSID, permissionGlobalSID);
+                                isChangedSuccess = true;
                             }
+
                             if (stationsExtended[i].StationTxFreq != null)
                             {
                                 builderStationExtendedInsert.SetValue(c => c.StationTxFreq, stationsExtended[i].StationTxFreq);
