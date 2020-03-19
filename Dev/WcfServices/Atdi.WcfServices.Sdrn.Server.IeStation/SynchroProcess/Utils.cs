@@ -339,7 +339,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="sensorId"></param>
         /// <returns></returns>
-        public bool DeleteLinkSensors(long[] sensorId)
+        public bool DeleteLinkSensors(long[] sensorId, long synchroProcessId)
         {
             var isSuccess = false;
             try
@@ -350,6 +350,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
                     var builderDeleteLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().Delete();
                     builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SensorId, ConditionOperator.NotIn, sensorId);
+                    builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
                     scope.Executor.Execute(builderDeleteLinkSensorsWithSynchroProcess);
 
                     scope.Commit();
@@ -369,7 +370,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="sensorId"></param>
         /// <returns></returns>
-        public bool DeleteRefSpectrumBySensorId(long[] sensorId)
+        public bool DeleteRefSpectrumBySensorId(long[] sensorId, long[] headRefSpectrumIdsBySDRN)
         {
             var isSuccess = false;
             try
@@ -380,6 +381,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
                     var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
                     builderDeleteRefSpectrum.Where(c => c.SensorId, ConditionOperator.NotIn, sensorId);
+                    builderDeleteRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.In, headRefSpectrumIdsBySDRN);
                     scope.Executor.Execute(builderDeleteRefSpectrum);
 
                     scope.Commit();
