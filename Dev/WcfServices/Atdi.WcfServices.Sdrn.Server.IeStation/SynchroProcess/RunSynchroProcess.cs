@@ -734,7 +734,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <param name="areas"></param>
         /// <param name="stationsExtended"></param>
         /// <returns></returns>
-        public bool DeleteDuplicateRefSpectrumRecords(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
+        public bool DeleteDuplicateRefSpectrumRecords(DataSynchronizationBase dataSynchronization, long[] headRefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended, ref List<RefSpectrum> refSpectrums)
         {
             bool isSuccess = false;
             try
@@ -744,7 +744,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 var listDataRefSpectrumForDelete = new List<DataRefSpectrum>();
                 var utils = new Utils(this._dataLayer, this._logger);
                 utils.DeleteLinkSensors(sensorIdsBySDRN, dataSynchronization.Id.Value);
-                utils.DeleteRefSpectrumBySensorId(sensorIdsBySDRN, headRefSpectrumIdsBySDRN);
+                //utils.DeleteRefSpectrumBySensorId(sensorIdsBySDRN, headRefSpectrumIdsBySDRN);
 
                 var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
@@ -762,6 +762,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 }
 
                 var lstStations = stationsExtended.ToList();
+                var fndorderByDateMeas = from z in listDataRefSpectrum orderby z.DateMeas descending select z;
+                listDataRefSpectrum = fndorderByDateMeas.ToList();
                 for (int h = 0; h < listDataRefSpectrum.Count; h++)
                 {
                     var fndStation = lstStations.Find(z => z.TableId == listDataRefSpectrum[h].TableId && z.TableName == listDataRefSpectrum[h].TableName);
@@ -769,6 +771,21 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     {
                         listDataRefSpectrum[h].StatusMeas = CalcStatus.CalcStatusMeasForRefSpectrum(fndStation.PermissionCancelDate, fndStation.PermissionStop, fndStation.PermissionStart, fndStation.DocNum, fndStation.TestStartDate, fndStation.TestStopDate, listDataRefSpectrum[h].DateMeas);
                         utils.UpdateStatusRefSpectrum(listDataRefSpectrum[h]);
+                        for (int i = 0; i < listRefSpectrum.Length; i++)
+                        {
+                            var refSpectrum = listRefSpectrum[i];
+                            if (refSpectrum.DataRefSpectrum != null)
+                            {
+                                for (int k = 0; k < refSpectrum.DataRefSpectrum.Length; k++)
+                                {
+                                    if (refSpectrum.DataRefSpectrum[k].Id == listDataRefSpectrum[h].Id)
+                                    {
+                                        refSpectrum.DataRefSpectrum[k].StatusMeas = listDataRefSpectrum[h].StatusMeas;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -837,7 +854,43 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
                 }
 
+                var arr = listDataRefSpectrumForDelete.ToArray();
+                if ((arr != null) && (arr.Length > 0))
+                {
+                    //for (int i = 0; i < arr.Length; i++)
+                    //{
+                        //listDataRefSpectrum.RemoveAll(x => x.Id == arr[i].Id);
+                    //}
+
+                    var delIndex = new List<long?>();
+                    for (int i = 0; i < listRefSpectrum.Length; i++)
+                    {
+                        var refSpectrum = listRefSpectrum[i];
+                        if (refSpectrum.DataRefSpectrum != null)
+                        {
+                            for (int j = 0; j < arr.Length; j++)
+                            {
+                                var tempRefSpectrumDataRefSpectrum = refSpectrum.DataRefSpectrum.ToList();
+                                tempRefSpectrumDataRefSpectrum.RemoveAll(x => x.Id == arr[j].Id);
+                                refSpectrum.DataRefSpectrum = tempRefSpectrumDataRefSpectrum.ToArray();
+                                if (refSpectrum.DataRefSpectrum.Length == 0)
+                                {
+                                    delIndex.Add(refSpectrum.Id);
+                                }
+                            }
+                        }
+                        listRefSpectrum[i] = refSpectrum;
+                    }
+                    var lst = listRefSpectrum.ToList();
+                    for (int i = 0; i < delIndex.Count; i++)
+                    {
+                        lst.RemoveAll(x => x.Id == delIndex[i]);
+                    }
+                }
+
+                refSpectrums = listRefSpectrum.ToList();
                 // непосредственное удаление записей из БД
+                /*
                 var arr = listDataRefSpectrumForDelete.ToArray();
                 if ((arr != null) && (arr.Length > 0))
                 {
@@ -853,9 +906,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         scope.Commit();
                     }
                 }
+                */
 
-                utils.RemoveEmptyHeadRefSpectrum(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
-
+                //utils.RemoveEmptyHeadRefSpectrum(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
                 isSuccess = true;
             }
             catch (Exception e)
@@ -2383,7 +2436,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     // набор stationsExtended
                     var stationsExtended = GetStationExtended(dataSynchronization, headRefSpectrumIdsBySDRN);
 
-                    var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
+                    var listRefSpectrum = new List<RefSpectrum>();
+                    var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended, ref listRefSpectrum);
                     if (isSuccessDeleteRefSpectrum == true)
                     {
                         var sensors = new Sensor[sensorIdsBySDRN.Length];
@@ -2392,17 +2446,18 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             sensors[j] = loadSensor.LoadBaseDateSensor(sensorIdsBySDRN[j]);
                         }
 
+                        var arrRefSpectrum = listRefSpectrum.ToArray();
                         // заново вычитываем из БД все RefSpectrum (после удаления дубликатов) 
-                        var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+                        //var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
                         // Весь массив разбивается на группы (далее группа сенсора) по следующему признаку: Одинаковые ID Sensor, Freq MHz
-                        var groupsSensors = GetGroupSensors(listRefSpectrum);
+                        var groupsSensors = GetGroupSensors(arrRefSpectrum);
 
                         var listProtocolsOutput = new List<Protocols>();
                         for (int h = 0; h < groupsSensors.Length; h++)
                         {
                             //здесь получаем массив RefSpectrum, который соответсвует группе groupsSensors[h]
-                            var refSpectrum = SelectGroupSensor(groupsSensors[h], listRefSpectrum);
+                            var refSpectrum = SelectGroupSensor(groupsSensors[h], arrRefSpectrum);
 
                             // Подготовка данных для синхронизации группы сенсора. Из БД ICSControl выбираются все Emitting для которых:
                             //-таск имеет Collect emission for instrumental estimation = true;
@@ -2454,7 +2509,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             if (isSuccessOperation)
                             {
                                 // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                                var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, dataSynchronization.Id.Value);
+                                var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, arrRefSpectrum, dataSynchronization.Id.Value);
                                 if (isSuccesFinalOperationSynchro)
                                 {
                                     utils.ClearAllLinksByProcessId(currentDataSynchronizationProcess.Id.Value);
@@ -2518,20 +2573,23 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         var isSuccessUpdateAreas = SynchroAreas(areas);
                         if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
                         {
-                            var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
+                            var listRefSpectrum = new List<RefSpectrum>();
+                            var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended, ref listRefSpectrum);
                             if (isSuccessDeleteRefSpectrum == true)
                             {
                                 // заново вычитываем из БД все RefSpectrum (после удаления дубликатов) 
-                                var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+                                //var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+
+                                var arrRefSpectrum = listRefSpectrum.ToArray();
 
                                 // Весь массив разбивается на группы (далее группа сенсора) по следующему признаку: Одинаковые ID Sensor, Freq MHz
-                                var groupsSensors = GetGroupSensors(listRefSpectrum);
+                                var groupsSensors = GetGroupSensors(arrRefSpectrum);
 
                                 var listProtocolsOutput = new List<Protocols>();
                                 for (int h = 0; h < groupsSensors.Length; h++)
                                 {
                                     //здесь получаем массив RefSpectrum, который соответсвует группе groupsSensors[h]
-                                    var refSpectrum = SelectGroupSensor(groupsSensors[h], listRefSpectrum);
+                                    var refSpectrum = SelectGroupSensor(groupsSensors[h], arrRefSpectrum);
 
                                     // Подготовка данных для синхронизации группы сенсора. Из БД ICSControl выбираются все Emitting для которых:
                                     //-таск имеет Collect emission for instrumental estimation = true;
@@ -2586,7 +2644,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                     if (isSuccessOperation)
                                     {
                                         // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                                        var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, listRefSpectrum, synchroProcessId.Value);
+                                        var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, arrRefSpectrum, synchroProcessId.Value);
                                         if (isSuccesFinalOperationSynchro)
                                         {
                                             utils.ClearAllLinksByProcessId(synchroProcessId.Value);

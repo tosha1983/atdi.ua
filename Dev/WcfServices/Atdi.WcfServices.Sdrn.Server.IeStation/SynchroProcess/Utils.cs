@@ -534,6 +534,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     builderUpdateRefSpectrum.Where(c => c.TableId, ConditionOperator.Equal, dataRefSpectrum.TableId);
                     builderUpdateRefSpectrum.Where(c => c.TableName, ConditionOperator.Equal, dataRefSpectrum.TableName);
                     builderUpdateRefSpectrum.Where(c => c.SensorId, ConditionOperator.Equal, dataRefSpectrum.SensorId);
+                    builderUpdateRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, dataRefSpectrum.HeadId);
                     if (!string.IsNullOrEmpty(dataRefSpectrum.StatusMeas))
                     {
                         builderUpdateRefSpectrum.SetValue(c => c.StatusMeas, dataRefSpectrum.StatusMeas);
