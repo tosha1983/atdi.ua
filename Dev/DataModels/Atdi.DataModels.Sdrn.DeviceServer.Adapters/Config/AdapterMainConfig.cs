@@ -26,11 +26,16 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
         [XmlElement]
         public AdapterEquipmentInfo AdapterEquipmentInfo = new AdapterEquipmentInfo();
 
+        [XmlElement]
+        public AvtoRefLevel AvtoRefLevel = new AvtoRefLevel();
+
         [XmlArray]
         public AdapterRadioPathParameter[] AdapterRadioPathParameters = new AdapterRadioPathParameter[] { };
 
         [XmlArray]
         public AdapterResultPool[] AdapterTraceResultPools = new AdapterResultPool[] { };
+
+        
 
         public void Serialize(string FilePath)
         {

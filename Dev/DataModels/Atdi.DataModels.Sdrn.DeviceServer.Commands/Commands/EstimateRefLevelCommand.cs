@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeviceServer.Commands.Parameters;
 
-namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
+namespace Atdi.DataModels.Sdrn.DeviceServer.Commands.Commands
 {
-    public class MesureTraceCommand: CommandBase<Parameters.MesureTraceParameter>
+    public class EstimateRefLevelCommand : CommandBase<Parameters.MesureTraceParameter>
     {
-        public MesureTraceCommand()
+        public EstimateRefLevelCommand()
             : base(CommandType.MesureTrace, new MesureTraceParameter())
         {
         }
 
-        public MesureTraceCommand(MesureTraceParameter parameter) 
+        public EstimateRefLevelCommand(MesureTraceParameter parameter)
             : base(CommandType.MesureTrace, parameter)
         {
         }

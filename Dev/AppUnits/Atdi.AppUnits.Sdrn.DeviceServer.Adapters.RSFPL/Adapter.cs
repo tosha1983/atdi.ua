@@ -92,7 +92,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 }
                 else
                 {
-                    throw new Exception("Invalid initialize/connect adapter In connect");
+                    throw new Exception("Invalid initialize/connect adapter in connect");
                 }
             }
             #region Exception
@@ -128,7 +128,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 //context.Lock(CommandType.MesureTrace);
 
                 // если нужно заблокировать выполняему комманду то достатчоно вызвать метод без параметров и блокируется комманда которая выполняется
-                long t1 = timeService.TimeStamp.Ticks;
                 context.Lock();
                 //Переключимся на Spectrum
                 if (!mode)
@@ -2670,6 +2669,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 AntennaManufacturer = "AntennaManufacturer",
                 AntennaName = "Omni",
                 AntennaSN = "123"
+            };
+            config.AvtoRefLevel = new CFG.AvtoRefLevel()
+            {
+                Start_dBm = 10,
+                Stop_dBm = -80,
+                Step_dB = 10,
+                PersentOverload = 15,
+                NumberScan = 10
             };
             config.AdapterRadioPathParameters = new CFG.AdapterRadioPathParameter[]
             {
