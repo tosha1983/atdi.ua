@@ -13,18 +13,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
     {
         protected override Func<SDR.RefSpectrum, VM.RefSpectrumViewModel> GetMapper()
         {
-            return source => new VM.RefSpectrumViewModel
-            {
-                Id = source.Id,
-                FileName = source.FileName,
-                DateCreated = source.DateCreated,
-                CreatedBy = source.CreatedBy,
-                CountImportRecords = source.CountImportRecords,
-                MinFreqMHz = source.MinFreqMHz,
-                MaxFreqMHz = source.MaxFreqMHz,
-                CountSensors = source.CountSensors,
-                DataRefSpectrum = source.DataRefSpectrum
-            };
+            return Mappers.Map;
         }
     }
 }

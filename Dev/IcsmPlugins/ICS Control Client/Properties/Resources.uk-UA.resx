@@ -889,7 +889,7 @@
     <value>Час від</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Час</value>
+    <value>Час вимірювання</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
     <value>Час початку</value>

@@ -35,6 +35,9 @@ namespace XICSM.ICSControlClient.Models.Views
         public double? SensorLatitude { get; set; }
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
+        public string SensorCoordinates { get; set; }
+        public string Coordinates { get; set; }
+
         public string OwnerName { get; set; }
         public string Standard { get; set; }
         public string Address { get; set; }

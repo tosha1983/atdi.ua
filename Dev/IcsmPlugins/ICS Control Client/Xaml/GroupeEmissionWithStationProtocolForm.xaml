@@ -77,7 +77,7 @@
       <Button Margin="0,20,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
       <Button Margin="0,20,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
       <Button Margin="0,20,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
-      <DataGrid IsReadOnly="True" Margin="5, 90, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Protocols}" SelectedItem="{Binding CurrentProtocol}">
+      <DataGrid x:Name="GroupeEmissionProtocol" IsReadOnly="True" Margin="5, 90, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Protocols}" SelectedItem="{Binding CurrentProtocol}">
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSID}" Binding="{Binding Path=GSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas}"></DataGridTextColumn>
@@ -87,12 +87,12 @@
           <DataGridTextColumn Header="{x:Static res:Resources.NumberPermission}" Binding="{Binding Path=NumberPermission}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionPeriod, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=NetworkId}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
         </DataGrid.Columns>
       </DataGrid>
       <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
       </GridSplitter>
-      <cdg:CustomDataGrid Grid.Row="2" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProtocolDetails}" SelectedItemsList="{Binding CurrentProtocolDetails, Mode=TwoWay}">
+      <cdg:CustomDataGrid x:Name="GroupeEmissionProtocolDetail" Grid.Row="2" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProtocolDetails}" SelectedItemsList="{Binding CurrentProtocolDetails, Mode=TwoWay}">
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDReal}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDICSM}" Binding="{Binding Path=PermissionGlobalSID}"></DataGridTextColumn>
@@ -100,9 +100,23 @@
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionChannel}" Binding="{Binding Path=StationChannel}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeas}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyMeasured}" Binding="{Binding Path=RadioControlMeasFreq_MHz}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyBandwidthMeasured_kHz}" Binding="{Binding Path=RadioControlBandWidth_KHz}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FieldStrength_dBV_m}" Binding="{Binding Path=FieldStrength}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.SignalLevel_dB}" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas_OnlyDate, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=DateMeas_OnlyTime, StringFormat='{}{0:HH:mm}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.MeasurementDuration}" Binding="{Binding Path=DurationMeasurement}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesOfMeasured}" Binding="{Binding Path=SensorCoordinates}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesDeclared}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=Address}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.NumberPermission}" Binding="{Binding Path=PermissionNumber}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionStop}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.StatusStation}" Binding="{Binding Path=CurentStatusStation}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=TitleSensor}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>
         </DataGrid.Columns>
         <DataGrid.ContextMenu>
           <ContextMenu>
