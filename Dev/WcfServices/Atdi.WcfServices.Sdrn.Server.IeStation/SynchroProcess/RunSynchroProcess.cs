@@ -2213,51 +2213,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
 
 
-        public long[] GetHeadRefSpectrumIdsBySDRN(DataSynchronizationBase dataSynchronization)
-        {
-            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetHeadRefSpectrumIdsBySDRN.Text);
-            var headRefSpectrumIds = new List<long>();
-            if (dataSynchronization != null)
-            {
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var queryLinkHeadRefSpectrumFrom = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>()
-                .From()
-                .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.HEAD_REF_SPECTRUM.Id)
-                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
-                queryExecuter.Fetch(queryLinkHeadRefSpectrumFrom, readerLinkHeadRefSpectrum =>
-                {
-                    while (readerLinkHeadRefSpectrum.Read())
-                    {
-                        headRefSpectrumIds.Add(readerLinkHeadRefSpectrum.GetValue(c => c.HEAD_REF_SPECTRUM.Id));
-                    }
-                    return true;
-                });
-            }
-            return headRefSpectrumIds.ToArray();
-        }
-
-        public long[] GetSensorIdsBySDRN(DataSynchronizationBase dataSynchronization)
-        {
-            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetSensorIdsBySDRN.Text);
-            var sensorIdsBySDRN = new List<long>();
-            if (dataSynchronization != null)
-            {
-                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
-                var queryLinkSensorsWithSynchroProcessFrom = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>()
-                .From()
-                .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.SensorId)
-                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
-                queryExecuter.Fetch(queryLinkSensorsWithSynchroProcessFrom, readerLinkSensorsWithSynchroProcess =>
-                {
-                    while (readerLinkSensorsWithSynchroProcess.Read())
-                    {
-                        sensorIdsBySDRN.Add(readerLinkSensorsWithSynchroProcess.GetValue(c => c.SensorId));
-                    }
-                    return true;
-                });
-            }
-            return sensorIdsBySDRN.ToArray();
-        }
+       
 
         public Area[] GetAreas(DataSynchronizationBase dataSynchronization)
         {
@@ -2404,6 +2360,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
 
 
+
         public void RecoveryDataSynchronizationProcess()
         {
             try
@@ -2425,10 +2382,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     var dataSynchronization = currentDataSynchronizationProcess;
 
                     // набор идентификаторов headRefSpectrumIdsBySDRN
-                    var headRefSpectrumIdsBySDRN = GetHeadRefSpectrumIdsBySDRN(dataSynchronization);
+                    var headRefSpectrumIdsBySDRN = utils.GetHeadRefSpectrumIdsBySDRN(dataSynchronization);
 
                     // набор идентификаторов sensorIdsBySDRN
-                    var sensorIdsBySDRN = GetSensorIdsBySDRN(dataSynchronization);
+                    var sensorIdsBySDRN = utils.GetSensorIdsBySDRN(dataSynchronization);
 
                     // набор areas
                     var areas = GetAreas(dataSynchronization);
@@ -2533,134 +2490,146 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.RunDataSynchronizationProcess.Text);
                 RunSynchroProcess.IsAlreadyRunProcess = true;
-
                 var utils = new Utils(this._dataLayer, this._logger);
-                var currentDataSynchronizationProcess = utils.CurrentDataSynchronizationProcess();
 
-                //если процесс синхронизации не запущен, тогда создаем новый
-                if (currentDataSynchronizationProcess == null)
+                bool isSuccessCheckRunSynchroProcess = utils.CheckRunSynchroProcess(dataSynchronization.DateStart, dataSynchronization.DateEnd);
+                if (isSuccessCheckRunSynchroProcess == false)
                 {
-                    //areas = GetAreas(dataSynchronization);
-                    // создаем запись в таблице SynchroProcess
-                    var synchroProcessId = CreateDataSynchronizationProcess(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas);
-                    if (synchroProcessId != null)
+                    return false;
+                }
+                else
+                {
+                    System.Threading.Tasks.Task.Run(() =>
                     {
-                        dataSynchronization.Id = synchroProcessId;
-                        var loadSensor = new LoadSensor(this._dataLayer, this._logger);
-                        var sensors = new Sensor[sensorIdsBySDRN.Length];
-                        for (int j = 0; j < sensorIdsBySDRN.Length; j++)
-                        {
-                            sensors[j] = loadSensor.LoadBaseDateSensor(sensorIdsBySDRN[j]);
-                        }
+                        var currentDataSynchronizationProcess = utils.CurrentDataSynchronizationProcess();
 
-                        // обновление перечня станций
-                        //stationsExtended = GetStationExtended(dataSynchronization, headRefSpectrumIdsBySDRN);
-                        var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
-                        var listStationsExtended = new List<StationExtended>();
-                        if ((stationsExtended != null) && (stationsExtended.Length > 0))
+                        //если процесс синхронизации не запущен, тогда создаем новый
+                        if (currentDataSynchronizationProcess == null)
                         {
-                            for (int i = 0; i < stationsExtended.Length; i++)
+                            //areas = GetAreas(dataSynchronization);
+                            // создаем запись в таблице SynchroProcess
+                            var synchroProcessId = CreateDataSynchronizationProcess(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas);
+                            if (synchroProcessId != null)
                             {
-                                if ((!string.IsNullOrEmpty(stationsExtended[i].TableName)) && (stationsExtended[i].TableId > 0))
+                                dataSynchronization.Id = synchroProcessId;
+                                var loadSensor = new LoadSensor(this._dataLayer, this._logger);
+                                var sensors = new Sensor[sensorIdsBySDRN.Length];
+                                for (int j = 0; j < sensorIdsBySDRN.Length; j++)
                                 {
-                                    listStationsExtended.Add(stationsExtended[i]);
+                                    sensors[j] = loadSensor.LoadBaseDateSensor(sensorIdsBySDRN[j]);
                                 }
-                            }
-                        }
-                        stationsExtended = listStationsExtended.ToArray();
-                        // обновление областей и контуров
 
-                        var isSuccessUpdateAreas = SynchroAreas(areas);
-                        if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
-                        {
-                            var listRefSpectrum = new List<RefSpectrum>();
-                            var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended, ref listRefSpectrum);
-                            if (isSuccessDeleteRefSpectrum == true)
-                            {
-                                // заново вычитываем из БД все RefSpectrum (после удаления дубликатов) 
-                                //var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
-
-                                var arrRefSpectrum = listRefSpectrum.ToArray();
-
-                                // Весь массив разбивается на группы (далее группа сенсора) по следующему признаку: Одинаковые ID Sensor, Freq MHz
-                                var groupsSensors = GetGroupSensors(arrRefSpectrum);
-
-                                var listProtocolsOutput = new List<Protocols>();
-                                for (int h = 0; h < groupsSensors.Length; h++)
+                                // обновление перечня станций
+                                //stationsExtended = GetStationExtended(dataSynchronization, headRefSpectrumIdsBySDRN);
+                                var isSuccessUpdateStationExtended = SynchroStationsExtended(stationsExtended);
+                                var listStationsExtended = new List<StationExtended>();
+                                if ((stationsExtended != null) && (stationsExtended.Length > 0))
                                 {
-                                    //здесь получаем массив RefSpectrum, который соответсвует группе groupsSensors[h]
-                                    var refSpectrum = SelectGroupSensor(groupsSensors[h], arrRefSpectrum);
-
-                                    // Подготовка данных для синхронизации группы сенсора. Из БД ICSControl выбираются все Emitting для которых:
-                                    //-таск имеет Collect emission for instrumental estimation = true;
-                                    // -результат пришел в рамках даты начала отчета, даты конца отчета;
-                                    // -сенсор где был получен результат совпадает с ID Sensor
-                                    //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
-
-                                    var emittings = GetEmittings(refSpectrum, stationsExtended, dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
-                                    if ((emittings != null) && (emittings.Length > 0))
+                                    for (int i = 0; i < stationsExtended.Length; i++)
                                     {
-                                        // Синхронизация излучений с записями группы сенсора
-                                        var protocol = new List<Protocols>();
-                                        SynchroEmittings(refSpectrum, emittings, emittingParameters, ref protocol);
-
-                                        listProtocolsOutput.AddRange(protocol);
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < refSpectrum.Length; i++)
+                                        if ((!string.IsNullOrEmpty(stationsExtended[i].TableName)) && (stationsExtended[i].TableId > 0))
                                         {
-                                            var RefSpectrum = new RefSpectrum();
-                                            for (int j = 0; j < refSpectrum[i].DataRefSpectrum.Length; j++)
-                                            {
-                                                // получение очередного значения dataRefSpectrum
-                                                var dataRefSpectrum = refSpectrum[i].DataRefSpectrum[j];
+                                            listStationsExtended.Add(stationsExtended[i]);
+                                        }
+                                    }
+                                }
+                                stationsExtended = listStationsExtended.ToArray();
+                                // обновление областей и контуров
 
-                                                // обявляем очередной экземпляр переменной Protocols
-                                                var protocol = new Protocols();
-                                                protocol.DataRefSpectrum = new DataRefSpectrum();
-                                                // копируем данные с переменной dataRefSpectrum
-                                                protocol.DataRefSpectrum = dataRefSpectrum;
-                                                listProtocolsOutput.Add(protocol);
+                                var isSuccessUpdateAreas = SynchroAreas(areas);
+                                if ((isSuccessUpdateAreas == true) && (isSuccessUpdateStationExtended == true))
+                                {
+                                    var listRefSpectrum = new List<RefSpectrum>();
+                                    var isSuccessDeleteRefSpectrum = DeleteDuplicateRefSpectrumRecords(dataSynchronization, headRefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended, ref listRefSpectrum);
+                                    if (isSuccessDeleteRefSpectrum == true)
+                                    {
+                                        // заново вычитываем из БД все RefSpectrum (после удаления дубликатов) 
+                                        //var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
+
+                                        var arrRefSpectrum = listRefSpectrum.ToArray();
+
+                                        // Весь массив разбивается на группы (далее группа сенсора) по следующему признаку: Одинаковые ID Sensor, Freq MHz
+                                        var groupsSensors = GetGroupSensors(arrRefSpectrum);
+
+                                        var listProtocolsOutput = new List<Protocols>();
+                                        for (int h = 0; h < groupsSensors.Length; h++)
+                                        {
+                                            //здесь получаем массив RefSpectrum, который соответсвует группе groupsSensors[h]
+                                            var refSpectrum = SelectGroupSensor(groupsSensors[h], arrRefSpectrum);
+
+                                            // Подготовка данных для синхронизации группы сенсора. Из БД ICSControl выбираются все Emitting для которых:
+                                            //-таск имеет Collect emission for instrumental estimation = true;
+                                            // -результат пришел в рамках даты начала отчета, даты конца отчета;
+                                            // -сенсор где был получен результат совпадает с ID Sensor
+                                            //-частота Freq MHz(из группы сенсора) находиться в пределах начальной и конечной частоты Emitting
+
+                                            var emittings = GetEmittings(refSpectrum, stationsExtended, dataSynchronization.DateStart, dataSynchronization.DateEnd, groupsSensors[h], out Calculation.EmitParams[] emittingParameters);
+                                            if ((emittings != null) && (emittings.Length > 0))
+                                            {
+                                                // Синхронизация излучений с записями группы сенсора
+                                                var protocol = new List<Protocols>();
+                                                SynchroEmittings(refSpectrum, emittings, emittingParameters, ref protocol);
+
+                                                listProtocolsOutput.AddRange(protocol);
+                                            }
+                                            else
+                                            {
+                                                for (int i = 0; i < refSpectrum.Length; i++)
+                                                {
+                                                    var RefSpectrum = new RefSpectrum();
+                                                    for (int j = 0; j < refSpectrum[i].DataRefSpectrum.Length; j++)
+                                                    {
+                                                        // получение очередного значения dataRefSpectrum
+                                                        var dataRefSpectrum = refSpectrum[i].DataRefSpectrum[j];
+
+                                                        // обявляем очередной экземпляр переменной Protocols
+                                                        var protocol = new Protocols();
+                                                        protocol.DataRefSpectrum = new DataRefSpectrum();
+                                                        // копируем данные с переменной dataRefSpectrum
+                                                        protocol.DataRefSpectrum = dataRefSpectrum;
+                                                        listProtocolsOutput.Add(protocol);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+
+                                        // 
+                                        var arrayProtocols = listProtocolsOutput.ToArray();
+
+                                        // заполнение полным перечнем данных (расширенными сведениями о станциях и сенсорах)
+                                        FillingProtocolStationData(arrayProtocols, sensors, stationsExtended, synchroProcessId);
+
+                                        // Группировка данных
+                                        OrderProtocols(arrayProtocols);
+                                        // предварительная очистка таблиц Protocols и LinkProtocolsWithEmittings для текущего synchroProcessId
+                                        if (ClearProtocol(synchroProcessId.Value))
+                                        {
+                                            // здесь вызов процецедуры сохранения массива значений protocol
+                                            var isSuccessOperation = SaveOutputProtocolsToDB(arrayProtocols);
+                                            if (isSuccessOperation)
+                                            {
+                                                // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
+                                                var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, arrRefSpectrum, synchroProcessId.Value);
+                                                if (isSuccesFinalOperationSynchro)
+                                                {
+                                                    utils.ClearAllLinksByProcessId(synchroProcessId.Value);
+                                                    this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DataSynchronizationProcessCompleted.Text);
+                                                }
                                             }
                                         }
                                     }
                                 }
-
-
-                                // 
-                                var arrayProtocols = listProtocolsOutput.ToArray();
-
-                                // заполнение полным перечнем данных (расширенными сведениями о станциях и сенсорах)
-                                FillingProtocolStationData(arrayProtocols, sensors, stationsExtended, synchroProcessId);
-
-                                // Группировка данных
-                                OrderProtocols(arrayProtocols);
-                                // предварительная очистка таблиц Protocols и LinkProtocolsWithEmittings для текущего synchroProcessId
-                                if (ClearProtocol(synchroProcessId.Value))
+                                else
                                 {
-                                    // здесь вызов процецедуры сохранения массива значений protocol
-                                    var isSuccessOperation = SaveOutputProtocolsToDB(arrayProtocols);
-                                    if (isSuccessOperation)
-                                    {
-                                        // запись итоговой информации в ISynchroProcess (и установка статуса в "С" - Completed)
-                                        var isSuccesFinalOperationSynchro = SaveDataSynchronizationProcessToDB(arrayProtocols, arrRefSpectrum, synchroProcessId.Value);
-                                        if (isSuccesFinalOperationSynchro)
-                                        {
-                                            utils.ClearAllLinksByProcessId(synchroProcessId.Value);
-                                            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.DataSynchronizationProcessCompleted.Text);
-                                        }
-                                    }
+                                    this._logger.Warning(Contexts.ThisComponent, Categories.Processing, Events.OccurredUnexpectedErrorsStationsOrAreas);
                                 }
                             }
                         }
-                        else
-                        {
-                            this._logger.Warning(Contexts.ThisComponent, Categories.Processing, Events.OccurredUnexpectedErrorsStationsOrAreas);
-                        }
-                    }
+                        isSuccess = true;
+                    });
+                    return true;
                 }
-                isSuccess= true;
             }
             catch (Exception e)
             {

@@ -69,7 +69,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             var importRefSpectrum = new ImportRefSpectrumData(_dataLayer, _logger);
             return importRefSpectrum.DeleteRefSpectrum(RefSpectrumIdsBySDRN);
         }
-        
+
 
         /// <summary>
         /// Run DataSynchronizationProcess
@@ -77,20 +77,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <returns></returns>
         public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
-            try
-            {
-                var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
-                System.Threading.Tasks.Task.Run(() =>   
-                {
-                    runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
-                });
-                return true;
-            }
-            catch (Exception e)
-            {
-                this._logger.Exception(Contexts.ThisComponent, e);
-                return false;
-            }
+            var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
+            return runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
         }
 
         /// <summary>
