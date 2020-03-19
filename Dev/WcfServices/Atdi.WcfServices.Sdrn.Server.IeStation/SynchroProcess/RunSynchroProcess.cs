@@ -1361,12 +1361,15 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 // ---- Удаление использованных станций
                 for (int i = 0; i < initialRefSpectrums.Count; i++)
                 {
-                    var listDataSpectrum = initialRefSpectrums[i].DataRefSpectrum.ToList();
-                    for (int j = 0; j < numOfIterations; j++)
+                    if ((stationsDataToCorrespondList.Count - 1) >= i)
                     {
-                        listDataSpectrum.RemoveAll(x => x.Id == stationsDataToCorrespondList[i].DataRefSpectrumId);
+                        var listDataSpectrum = initialRefSpectrums[i].DataRefSpectrum.ToList();
+                        for (int j = 0; j < numOfIterations; j++)
+                        {
+                            listDataSpectrum.RemoveAll(x => x.Id == stationsDataToCorrespondList[i].DataRefSpectrumId);
+                        }
+                        initialRefSpectrums[i].DataRefSpectrum = listDataSpectrum.ToArray();
                     }
-                    initialRefSpectrums[i].DataRefSpectrum = listDataSpectrum.ToArray();
                 }
                     
 
