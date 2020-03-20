@@ -1393,6 +1393,24 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GSID sync with emissions could not be started. Since it has already been carried out for a given period of time (or part) and the selected sensors (one or several) and the selected file (one or several) with reference spectra. Change the settings and run again..
+        /// </summary>
+        public static string Message_GSIDSyncWithEmissionsCouldNotBeStarted {
+            get {
+                return ResourceManager.GetString("Message_GSIDSyncWithEmissionsCouldNotBeStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Process started successfully..
+        /// </summary>
+        public static string Message_ProcessStartedSuccessfully {
+            get {
+                return ResourceManager.GetString("Message_ProcessStartedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MHz.
         /// </summary>
         public static string MHz {
@@ -2208,6 +2226,42 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Status {
             get {
                 return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegally operated transmitter.
+        /// </summary>
+        public static string Status_IllegallyOperatedTransmitter {
+            get {
+                return ResourceManager.GetString("Status_IllegallyOperatedTransmitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operating according to License.
+        /// </summary>
+        public static string Status_OperatingAccordingToLicense {
+            get {
+                return ResourceManager.GetString("Status_OperatingAccordingToLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operating according to Test.
+        /// </summary>
+        public static string Status_OperatingAccordingToTest {
+            get {
+                return ResourceManager.GetString("Status_OperatingAccordingToTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmitter operation not fixed.
+        /// </summary>
+        public static string Status_TransmitterOperationNotFixed {
+            get {
+                return ResourceManager.GetString("Status_TransmitterOperationNotFixed", resourceCulture);
             }
         }
         
