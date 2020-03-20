@@ -514,6 +514,25 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
             if (source == null)
                 return null;
 
+            string statusMeasFull = "-";
+            switch (source.StatusMeas)
+            {
+                case "T":
+                    statusMeasFull = Properties.Resources.Status_OperatingAccordingToTest;
+                    break;
+                case "A":
+                    statusMeasFull = Properties.Resources.Status_OperatingAccordingToLicense;
+                    break;
+                case "U":
+                    statusMeasFull = Properties.Resources.Status_TransmitterOperationNotFixed;
+                    break;
+                case "I":
+                    statusMeasFull = Properties.Resources.Status_IllegallyOperatedTransmitter;
+                    break;
+                default:
+                    break;
+            }
+
             return new VM.DataSynchronizationProcessProtocolsViewModel
             {
                 
@@ -551,6 +570,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 StationChannel = source.StationChannel,
                 StationTxFreq = source.StationTxFreq,
                 StatusMeas = source.StatusMeas,
+                StatusMeasFull = statusMeasFull,
                 TitleSensor = source.TitleSensor,
                 ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };

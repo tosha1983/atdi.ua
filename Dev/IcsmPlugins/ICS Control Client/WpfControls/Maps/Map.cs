@@ -69,7 +69,15 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
                             IList<PointLatLng> polygonPoints = new List<PointLatLng>();
                             polygon.Points.ToList().ForEach(point =>
                             {
-                                polygonPoints.Add(new PointLatLng(point.Lat, point.Lon));
+                                var polyPoint = new PointLatLng(point.Lat, point.Lon);
+                                polygonPoints.Add(polyPoint);
+
+                                var marker = new GMapMarker(polyPoint)
+                                {
+                                    Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(polygon.Color), Fill = new System.Windows.Media.SolidColorBrush(polygon.Color), Opacity = 0.85, Width = 1, Height = 1 },
+                                    ZIndex = int.MaxValue
+                                };
+                                this.Markers.Add(marker);
                             });
 
                             GMapPolygon mapPolygon = new GMapPolygon(polygonPoints);
@@ -113,26 +121,28 @@ namespace XICSM.ICSControlClient.WpfControls.Maps
 
             if (this.Markers.Count > 0)
             {
-                var rect = this.GetRectOfAllMarkers(null);
+                //var rect = this.GetRectOfAllMarkers(null);
 
-                if (rect.HasValue)
-                    this.SetZoomToFitRect(rect.Value);
-                else
+                //if (rect.HasValue)
+                //    this.SetZoomToFitRect(rect.Value);
+                //else
                     this.ZoomAndCenterMarkers(null);
 
                 //if (rect.HasValue)
                 //{
                 //    var marker1 = new GMapMarker(rect.Value.LocationRightBottom)
                 //    {
-                //        Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Width = 1, Height = 1 },
-                //        ZIndex = int.MaxValue
+                //        Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Opacity = 0.85, Width = 10, Height = 10 },
+                //        ZIndex = int.MaxValue,
+                //        Offset = new Point() { X = -10 / 2, Y = -10 / 2 }
                 //    };
                 //    this.Markers.Add(marker1);
 
                 //    var marker2 = new GMapMarker(rect.Value.LocationTopLeft)
                 //    {
-                //        Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Width = 1, Height = 1 },
-                //        ZIndex = int.MaxValue
+                //        Shape = new Ellipse() { Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black), Opacity = 0.85, Width = 10, Height = 10 },
+                //        ZIndex = int.MaxValue,
+                //        Offset = new Point() { X = -10 / 2, Y = -10 / 2 }
                 //    };
                 //    this.Markers.Add(marker2);
                 //    this.ZoomAndCenterMarkers(null);

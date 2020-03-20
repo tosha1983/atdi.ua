@@ -505,7 +505,10 @@ namespace XICSM.ICSControlClient.ViewModels
                     areas.Add(area);
                 }
 
-                SVC.SdrnsControllerWcfClientIeStation.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN.ToArray(), sensorIdsBySDRN.ToArray(), areas.ToArray(), stationsExtended.Values.ToArray());
+                if (SVC.SdrnsControllerWcfClientIeStation.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN.ToArray(), sensorIdsBySDRN.ToArray(), areas.ToArray(), stationsExtended.Values.ToArray()))
+                    MessageBox.Show(Properties.Resources.Message_ProcessStartedSuccessfully);
+                else
+                    MessageBox.Show(Properties.Resources.Message_GSIDSyncWithEmissionsCouldNotBeStarted);
             }
             catch (Exception e)
             {

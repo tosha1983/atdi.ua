@@ -20,6 +20,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public string StationTxFreq { get; set; }
         public string StationChannel { get; set; }
         public string StatusMeas { get; set; }
+        public string StatusMeasFull { get; set; }
         public string SensorName { get; set; }
         public double? Freq_MHz { get; set; }
         public double? BandWidth { get; set; }

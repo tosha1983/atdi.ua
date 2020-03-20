@@ -960,4 +960,22 @@
   <data name="ZTR" xml:space="preserve">
     <value>ЗТР</value>
   </data>
+  <data name="Message_GSIDSyncWithEmissionsCouldNotBeStarted" xml:space="preserve">
+    <value>Синхронизация GSID с излучениями не может быть запущена. Поскольку она уже проводилась для данного периода времени (или части) и выбранных сенсоров (одного или нескольких) и выбранного файла (одного или нескольких) с реферативными спектрами. Измените параметры и запустите повторно. </value>
+  </data>
+  <data name="Message_ProcessStartedSuccessfully" xml:space="preserve">
+    <value>Процес успешно запущен.</value>
+  </data>
+  <data name="Status_IllegallyOperatedTransmitter" xml:space="preserve">
+    <value>НДП</value>
+  </data>
+  <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
+    <value>Лицензиат</value>
+  </data>
+  <data name="Status_OperatingAccordingToTest" xml:space="preserve">
+    <value>Тестовое включение</value>
+  </data>
+  <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
+    <value>Незафиксированная работа РЭС</value>
+  </data>
 </root>
