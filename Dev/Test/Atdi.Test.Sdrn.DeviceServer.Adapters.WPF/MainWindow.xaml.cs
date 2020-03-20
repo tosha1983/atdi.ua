@@ -85,17 +85,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             //ANThread.Start();
             //AND += ANConnect;
 
-            AN2Thread = new Thread(AN2Works);
-            AN2Thread.Name = "AN2Thread";
-            AN2Thread.IsBackground = true;
-            AN2Thread.Start();
-            AN2D += AN2Connect;
+            //AN2Thread = new Thread(AN2Works);
+            //AN2Thread.Name = "AN2Thread";
+            //AN2Thread.IsBackground = true;
+            //AN2Thread.Start();
+            //AN2D += AN2Connect;
 
-            //SHThread = new Thread(SHWorks);
-            //SHThread.Name = "SHThread";
-            //SHThread.IsBackground = true;
-            //SHThread.Start();
-            //SHD += SHConnect;
+            SHThread = new Thread(SHWorks);
+            SHThread.Name = "SHThread";
+            SHThread.IsBackground = true;
+            SHThread.Start();
+            SHD += SHConnect;
 
             //GPSThread = new Thread(GPSWorks);
             //GPSThread.Name = "GPSThread";
@@ -253,7 +253,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 var adapterConfig = new ADP.SignalHound.AdapterConfig()
                 {
-                    SerialNumber = 18250280,//"18250087",// "16319373",
+                    SerialNumber = 16319373,//18250280,//"18250087",// "16319373",
                     GPSPPSConnected = true,
                     Reference10MHzConnected = false,
                     //SyncCPUtoGPS = true,
@@ -926,7 +926,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
-                SHadapter.MesureTraceCommandHandler(command, context);
+                SHadapter.EstimateRefLevelCommandHandler(command, context);
             }
             finally
             {
