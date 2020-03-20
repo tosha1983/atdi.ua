@@ -130,9 +130,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
                         {
-                            foreach (SDR.DetailProtocols row in this._currentProtocolDetails)
+                            foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
                             {
-                                PrintRow(Mappers.Map(row), folderDialog.SelectedPath);
+                                PrintRow(row, folderDialog.SelectedPath);
                             }
                             MessageBox.Show("Процедура формирования отчетов успешно завершена!");
                         }
