@@ -23,11 +23,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         private static bool IsAlreadyRunProcess;
         private readonly IDataLayer<EntityDataOrm> _dataLayer;
         private readonly ILogger _logger;
+        private readonly ComponentConfig _componentConfig;
 
-        public RunSynchroProcess(IDataLayer<EntityDataOrm> dataLayer, ILogger logger)
+        public RunSynchroProcess(IDataLayer<EntityDataOrm> dataLayer, ComponentConfig componentConfig, ILogger logger)
         {
             this._dataLayer = dataLayer;
             this._logger = logger;
+            this._componentConfig = componentConfig;
         }
 
 
@@ -1922,8 +1924,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                         CorrelationAnalize = readerMeasTaskSignaling.GetValue(x => x.CorrelationAnalize),
                                         CorrelationFactor = readerMeasTaskSignaling.GetValue(x => x.CorrelationFactor),
                                         MaxFreqDeviation = readerMeasTaskSignaling.GetValue(x => x.MaxFreqDeviation),
-                                        TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(x => x.TimeBetweenWorkTimes_sec),
-                                        TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(x => x.TypeJoinSpectrum)
+                                        TimeBetweenWorkTimes_sec = readerMeasTaskSignaling.GetValue(x => x.TimeBetweenWorkTimes_sec) == null ? this._componentConfig.TimeBetweenWorkTimes_sec : readerMeasTaskSignaling.GetValue(x => x.TimeBetweenWorkTimes_sec),
+                                        TypeJoinSpectrum = readerMeasTaskSignaling.GetValue(x => x.TypeJoinSpectrum),
+                                        CorrelationAdaptation = this._componentConfig.CorrelationAdaptation,
+                                        MaxNumberEmitingOnFreq = this._componentConfig.MaxNumberEmitingOnFreq,
+                                        MinCoeffCorrelation = this._componentConfig.MinCoeffCorrelation,
+                                        UkraineNationalMonitoring = this._componentConfig.UkraineNationalMonitoring
                                     });
                                 }
                                 return true;

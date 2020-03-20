@@ -21,13 +21,15 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         private readonly IEventEmitter _eventEmitter;
         private readonly ILogger _logger;
         private readonly IPipelineSite _pipelineSite;
+        private readonly ComponentConfig _componentConfig;
 
-        public SdrnsControllerIeStation(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, IPipelineSite pipelineSite, ILogger logger)
+        public SdrnsControllerIeStation(IEventEmitter eventEmitter, IDataLayer<EntityDataOrm> dataLayer, IPipelineSite pipelineSite, ComponentConfig componentConfig, ILogger logger)
         {
             this._eventEmitter = eventEmitter;
             this._dataLayer = dataLayer;
             this._logger = logger;
             this._pipelineSite = pipelineSite;
+            this._componentConfig = componentConfig;
         }
 
 
@@ -77,7 +79,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// <returns></returns>
         public bool RunDataSynchronizationProcess(DataSynchronizationBase dataSynchronization, long[] RefSpectrumIdsBySDRN, long[] sensorIdsBySDRN, Area[] areas, StationExtended[] stationsExtended)
         {
-            var runSynchroProcess = new RunSynchroProcess(_dataLayer, _logger);
+            var runSynchroProcess = new RunSynchroProcess(_dataLayer, _componentConfig, _logger);
             return runSynchroProcess.RunDataSynchronizationProcess(dataSynchronization, RefSpectrumIdsBySDRN, sensorIdsBySDRN, areas, stationsExtended);
         }
 
