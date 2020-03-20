@@ -2670,7 +2670,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
                 AntennaName = "Omni",
                 AntennaSN = "123"
             };
-            config.AvtoRefLevel = new CFG.AvtoRefLevel()
+            config.AutoRefLevel = new CFG.AdapterAutoRefLevel()
             {
                 Start_dBm = 10,
                 Stop_dBm = -80,
