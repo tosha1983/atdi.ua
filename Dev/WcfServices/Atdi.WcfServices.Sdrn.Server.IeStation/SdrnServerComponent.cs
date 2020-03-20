@@ -25,6 +25,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
         protected override void OnInstall()
         {
+            var exampleConfig = this.Config.Extract<ComponentConfig>();
+            this.Container.RegisterInstance(exampleConfig, ServiceLifetime.Singleton);
+
             base.OnInstall();
             this.Container.Register<RunSynchroProcess, RunSynchroProcess>(ServiceLifetime.Singleton);
         }
