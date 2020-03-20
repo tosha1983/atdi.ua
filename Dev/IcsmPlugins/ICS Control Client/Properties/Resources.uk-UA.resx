@@ -966,6 +966,18 @@
   <data name="Message_ProcessStartedSuccessfully" xml:space="preserve">
     <value>Процес успішно запущений.</value>
   </data>
+  <data name="State_A" xml:space="preserve">
+    <value>Активний</value>
+  </data>
+  <data name="State_C" xml:space="preserve">
+    <value>Завершений</value>
+  </data>
+  <data name="State_F" xml:space="preserve">
+    <value>Вимушений зупинитися</value>
+  </data>
+  <data name="State_N" xml:space="preserve">
+    <value>Новий</value>
+  </data>
   <data name="Status_IllegallyOperatedTransmitter" xml:space="preserve">
     <value>НДП</value>
   </data>
@@ -977,5 +989,8 @@
   </data>
   <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
     <value>Незафіксована робота РЕЗ</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Час</value>
   </data>
 </root>

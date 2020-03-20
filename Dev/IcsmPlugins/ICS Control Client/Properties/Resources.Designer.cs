@@ -2176,6 +2176,42 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string State_A {
+            get {
+                return ResourceManager.GetString("State_A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complete.
+        /// </summary>
+        public static string State_C {
+            get {
+                return ResourceManager.GetString("State_C", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forced to stop.
+        /// </summary>
+        public static string State_F {
+            get {
+                return ResourceManager.GetString("State_F", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string State_N {
+            get {
+                return ResourceManager.GetString("State_N", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Station Address.
         /// </summary>
         public static string StationAddress {
@@ -2460,6 +2496,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string TheNumberOfPointsInTheChannelDuringScanning {
             get {
                 return ResourceManager.GetString("TheNumberOfPointsInTheChannelDuringScanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string Time {
+            get {
+                return ResourceManager.GetString("Time", resourceCulture);
             }
         }
         

@@ -179,6 +179,26 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 source.SignalingMeasTaskParameters.InterruptionParameters = new SDR.SignalingInterruptionParameters();
             }
 
+            string statusFull = "";
+
+            switch (source.Status)
+            {
+                case "N":
+                    statusFull = Properties.Resources.State_N;
+                    break;
+                case "C":
+                    statusFull = Properties.Resources.State_C;
+                    break;
+                case "F":
+                    statusFull = Properties.Resources.State_F;
+                    break;
+                case "A":
+                    statusFull = Properties.Resources.State_A;
+                    break;
+                default:
+                    break;
+            }
+
             return new VM.MeasTaskViewModel
             {
                 CreatedBy = source.CreatedBy,
@@ -270,6 +290,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Prio = source.Prio.ToNull(),
                 ResultType = source.ResultType,
                 Status = source.Status,
+                StatusFull = statusFull,
                 Task = source.Task,
                 Type = source.Type,
                 StationsForMeasurements = source.StationsForMeasurements,
@@ -593,6 +614,49 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 DataRefSpectrum = source.DataRefSpectrum
             };
 
+        }
+        public static VM.ShortMeasTaskViewModel Map(SDR.ShortMeasTask source)
+        {
+            if (source == null)
+                return null;
+            string statusFull = "";
+
+            switch (source.Status)
+            {
+                case "N":
+                    statusFull = Properties.Resources.State_N;
+                    break;
+                case "C":
+                    statusFull = Properties.Resources.State_C;
+                    break;
+                case "F":
+                    statusFull = Properties.Resources.State_F;
+                    break;
+                case "A":
+                    statusFull = Properties.Resources.State_A;
+                    break;
+                default:
+                    break;
+            }
+
+            return new VM.ShortMeasTaskViewModel
+            {
+                CreatedBy = source.CreatedBy,
+                DateCreated = source.DateCreated.ToNull(),
+                ExecutionMode = source.ExecutionMode,
+                Id = source.Id.Value,
+                MaxTimeBs = source.MaxTimeBs.ToNull(),
+                Name = source.Name,
+                OrderId = source.OrderId,
+                Prio = source.Prio.ToNull(),
+                ResultType = source.ResultType,
+                Status = source.Status,
+                StatusFull = statusFull,
+                Task = source.Task,
+                Type = source.Type,
+                TypeMeasurements = source.TypeMeasurements,
+                TypeMeasurementsString = source.TypeMeasurements.ToString()
+            };
         }
     };
 }
