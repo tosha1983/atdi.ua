@@ -45,11 +45,10 @@ STORAGE    (
            )
 LOGGING 
 NOCOMPRESS 
-LOB (STATUS_NOTE) STORE AS 
+LOB (BODY_CONTENT) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
-        RETENTION
         NOCACHE
         INDEX       (
           TABLESPACE USERS
@@ -62,7 +61,7 @@ LOB (STATUS_NOTE) STORE AS
                       BUFFER_POOL      DEFAULT
                      ))
         STORAGE    (
-                    INITIAL          64K
+                    INITIAL          104K
                     NEXT             1M
                     MINEXTENTS       1
                     MAXEXTENTS       UNLIMITED
@@ -70,11 +69,10 @@ LOB (STATUS_NOTE) STORE AS
                     BUFFER_POOL      DEFAULT
                    )
       )
-  LOB (BODY_CONTENT) STORE AS SECUREFILE 
+  LOB (STATUS_NOTE) STORE AS SECUREFILE 
       ( TABLESPACE  USERS 
         ENABLE      STORAGE IN ROW
         CHUNK       8192
-        RETENTION
         NOCACHE
         INDEX       (
           TABLESPACE USERS
@@ -97,7 +95,8 @@ LOB (STATUS_NOTE) STORE AS
       )
 NOCACHE
 NOPARALLEL
-MONITORING;
+MONITORING
+ENABLE ROW MOVEMENT;
 
 
 CREATE UNIQUE INDEX ICSC.AMQP_MESSAGES_ID_PK ON ICSC.AMQP_MESSAGES

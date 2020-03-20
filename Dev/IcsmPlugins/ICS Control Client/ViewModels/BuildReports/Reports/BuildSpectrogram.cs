@@ -173,14 +173,23 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 var maxX = XVal.Max();
 
                 var deltaXMin = minX - _option.XMin;
-                var deltaXMax = _option.XMax- maxX;
+                var deltaXMax = _option.XMax - maxX;
                 var minVal = Math.Min(deltaXMin, deltaXMax);
-                if (stepX > minVal)
+                if (deltaXMin < 0)
                 {
-                    _option.XMax = _option.XMax + 3 *stepX;
+                    _option.XMin = _option.XMin + deltaXMin;
                 }
-                
-                
+                if (deltaXMax < 0)
+                {
+                    _option.XMax = _option.XMax - deltaXMax;
+                }
+
+                //if (stepX > minVal)
+                //{
+                //_option.XMax = _option.XMax + 3 *stepX;
+                //}
+
+
                 for (dx = _option.XMin + stepX; dx < _option.XMax; dx += stepX)
                 {
                     var X1 = NormalizePoint(new PointF(dx, _option.YMin), Width, Height, _option).X;

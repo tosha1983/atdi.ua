@@ -93,7 +93,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 {
                     while (readerSynchroProcess.Read())
                     {
-                        dataSynchronizationProcess =  new DataSynchronizationProcess();
+                        dataSynchronizationProcess = new DataSynchronizationProcess();
                         dataSynchronizationProcess.CreatedBy = readerSynchroProcess.GetValue(c => c.CreatedBy);
                         dataSynchronizationProcess.DateCreated = readerSynchroProcess.GetValue(c => c.CreatedDate);
                         dataSynchronizationProcess.DateStart = readerSynchroProcess.GetValue(c => c.DateStart);
@@ -107,11 +107,12 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         }
                         else
                         {
-                            dataSynchronizationProcess.Status =  Status.E;
+                            dataSynchronizationProcess.Status = Status.E;
                         }
                     }
                     return true;
                 });
+             
             }
             catch (Exception e)
             {
@@ -280,13 +281,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 {
                     scope.BeginTran();
 
-                    var builderDeleteLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().Delete();
-                    builderDeleteLinkHeadRefSpectrum.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
-                    scope.Executor.Execute(builderDeleteLinkHeadRefSpectrum);
+                    //var builderDeleteLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().Delete();
+                    //builderDeleteLinkHeadRefSpectrum.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
+                    //scope.Executor.Execute(builderDeleteLinkHeadRefSpectrum);
 
-                    var builderDeleteLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().Delete();
-                    builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
-                    scope.Executor.Execute(builderDeleteLinkSensorsWithSynchroProcess);
+                    //var builderDeleteLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().Delete();
+                    //builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
+                    //scope.Executor.Execute(builderDeleteLinkSensorsWithSynchroProcess);
 
                     var builderDeleteLinkArea = this._dataLayer.GetBuilder<MD.ILinkArea>().Delete();
                     builderDeleteLinkArea.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
@@ -295,6 +296,169 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     scope.Commit();
                 }
                 isSuccess = true;
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return isSuccess;
+        }
+
+        public long[] GetHeadRefSpectrumIdsBySDRN(DataSynchronizationBase dataSynchronization)
+        {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetHeadRefSpectrumIdsBySDRN.Text);
+            var headRefSpectrumIds = new List<long>();
+            if (dataSynchronization != null)
+            {
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var queryLinkHeadRefSpectrumFrom = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>()
+                .From()
+                .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.HEAD_REF_SPECTRUM.Id)
+                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
+                queryExecuter.Fetch(queryLinkHeadRefSpectrumFrom, readerLinkHeadRefSpectrum =>
+                {
+                    while (readerLinkHeadRefSpectrum.Read())
+                    {
+                        headRefSpectrumIds.Add(readerLinkHeadRefSpectrum.GetValue(c => c.HEAD_REF_SPECTRUM.Id));
+                    }
+                    return true;
+                });
+            }
+            return headRefSpectrumIds.ToArray();
+        }
+
+        public long[] GetSensorIdsBySDRN(DataSynchronizationBase dataSynchronization)
+        {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetSensorIdsBySDRN.Text);
+            var sensorIdsBySDRN = new List<long>();
+            if (dataSynchronization != null)
+            {
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var queryLinkSensorsWithSynchroProcessFrom = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>()
+                .From()
+                .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.SensorId)
+                .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, dataSynchronization.Id);
+                queryExecuter.Fetch(queryLinkSensorsWithSynchroProcessFrom, readerLinkSensorsWithSynchroProcess =>
+                {
+                    while (readerLinkSensorsWithSynchroProcess.Read())
+                    {
+                        sensorIdsBySDRN.Add(readerLinkSensorsWithSynchroProcess.GetValue(c => c.SensorId));
+                    }
+                    return true;
+                });
+            }
+            return sensorIdsBySDRN.ToArray();
+        }
+
+        public long[] GetAllHeadRefSpectrumIdsBySDRN()
+        {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetHeadRefSpectrumIdsBySDRN.Text);
+            var headRefSpectrumIds = new List<long>();
+
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var queryLinkHeadRefSpectrumFrom = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>()
+            .From()
+            .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.HEAD_REF_SPECTRUM.Id)
+            .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.GreaterThan, 0);
+            queryExecuter.Fetch(queryLinkHeadRefSpectrumFrom, readerLinkHeadRefSpectrum =>
+            {
+                while (readerLinkHeadRefSpectrum.Read())
+                {
+                    headRefSpectrumIds.Add(readerLinkHeadRefSpectrum.GetValue(c => c.HEAD_REF_SPECTRUM.Id));
+                }
+                return true;
+            });
+            return headRefSpectrumIds.ToArray();
+        }
+
+        public long[] GetAllSensorIdsBySDRN()
+        {
+            this._logger.Info(Contexts.ThisComponent, Categories.Processing, Events.GetSensorIdsBySDRN.Text);
+            var sensorIdsBySDRN = new List<long>();
+
+            var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+            var queryLinkSensorsWithSynchroProcessFrom = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>()
+            .From()
+            .Select(c => c.Id, c => c.SYNCHRO_PROCESS.DateStart, c => c.SYNCHRO_PROCESS.DateEnd, c => c.SYNCHRO_PROCESS.CreatedBy, c => c.SYNCHRO_PROCESS.CreatedDate, c => c.SensorId)
+            .Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.GreaterThan, 0);
+            queryExecuter.Fetch(queryLinkSensorsWithSynchroProcessFrom, readerLinkSensorsWithSynchroProcess =>
+            {
+                while (readerLinkSensorsWithSynchroProcess.Read())
+                {
+                    sensorIdsBySDRN.Add(readerLinkSensorsWithSynchroProcess.GetValue(c => c.SensorId));
+                }
+                return true;
+            });
+
+            return sensorIdsBySDRN.ToArray();
+        }
+
+        /// <summary>
+        /// Проверка возможности запуска процесса синхронизации
+        /// </summary>
+        /// <param name="processId"></param>
+        /// <returns></returns>
+        public bool CheckRunSynchroProcess(DateTime start, DateTime stop)
+        {
+            var isSuccess = true;
+            try
+            {
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                // набор идентификаторов headRefSpectrumIdsBySDRN
+                var headRefSpectrumIdsBySDRN = GetAllHeadRefSpectrumIdsBySDRN();
+
+                // набор идентификаторов sensorIdsBySDRN
+                var sensorIdsBySDRN = GetAllSensorIdsBySDRN();
+
+
+                var builderSynchroProcess = this._dataLayer.GetBuilder<MD.ISynchroProcess>().From();
+                builderSynchroProcess.Select(c => c.Id, c => c.DateStart, c => c.DateEnd);
+                builderSynchroProcess.Where(c => c.Id, ConditionOperator.GreaterEqual, 0);
+                queryExecuter.Fetch(builderSynchroProcess, readerSynchroProcess =>
+                {
+                    while (readerSynchroProcess.Read())
+                    {
+                        var dateStartActualSynchroProcess = readerSynchroProcess.GetValue(c => c.DateStart);
+                        var dateEndActualSynchroProcess = readerSynchroProcess.GetValue(c => c.DateEnd);
+                        if ((((dateStartActualSynchroProcess >= start) && (dateEndActualSynchroProcess <= stop))
+                            || ((dateStartActualSynchroProcess >= start) && (dateStartActualSynchroProcess <= stop))
+                            || ((dateEndActualSynchroProcess >= start) && (dateEndActualSynchroProcess <= stop))) == true)
+                        {
+                            var builderLinkHeadRefSpectrum = this._dataLayer.GetBuilder<MD.ILinkHeadRefSpectrum>().From();
+                            builderLinkHeadRefSpectrum.Select(c => c.Id, c => c.HEAD_REF_SPECTRUM.Id);
+                            builderLinkHeadRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.In, headRefSpectrumIdsBySDRN);
+                            builderLinkHeadRefSpectrum.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, readerSynchroProcess.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderLinkHeadRefSpectrum, readerLinkHeadRefSpectrum =>
+                            {
+                                while (readerLinkHeadRefSpectrum.Read())
+                                {
+                                    isSuccess = false;
+                                    break;
+                                }
+                                return true;
+                            });
+
+
+                            var builderLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().From();
+                            builderLinkSensorsWithSynchroProcess.Select(c => c.Id, c => c.SensorId);
+                            builderLinkSensorsWithSynchroProcess.Where(c => c.SensorId, ConditionOperator.In, sensorIdsBySDRN);
+                            builderLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, readerSynchroProcess.GetValue(c => c.Id));
+                            queryExecuter.Fetch(builderLinkSensorsWithSynchroProcess, readerLinkSensorsWithSynchroProcess =>
+                            {
+                                while (readerLinkSensorsWithSynchroProcess.Read())
+                                {
+                                    isSuccess = false;
+                                    break;
+                                }
+                                return true;
+                            });
+
+                        }
+                    }
+                    return true;
+                });
+
             }
             catch (Exception e)
             {
@@ -339,7 +503,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="sensorId"></param>
         /// <returns></returns>
-        public bool DeleteLinkSensors(long[] sensorId)
+        public bool DeleteLinkSensors(long[] sensorId, long synchroProcessId)
         {
             var isSuccess = false;
             try
@@ -350,6 +514,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
                     var builderDeleteLinkSensorsWithSynchroProcess = this._dataLayer.GetBuilder<MD.ILinkSensorsWithSynchroProcess>().Delete();
                     builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SensorId, ConditionOperator.NotIn, sensorId);
+                    builderDeleteLinkSensorsWithSynchroProcess.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, synchroProcessId);
                     scope.Executor.Execute(builderDeleteLinkSensorsWithSynchroProcess);
 
                     scope.Commit();
@@ -369,7 +534,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
         /// </summary>
         /// <param name="sensorId"></param>
         /// <returns></returns>
-        public bool DeleteRefSpectrumBySensorId(long[] sensorId)
+        public bool DeleteRefSpectrumBySensorId(long[] sensorId, long[] headRefSpectrumIdsBySDRN)
         {
             var isSuccess = false;
             try
@@ -380,6 +545,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
 
                     var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
                     builderDeleteRefSpectrum.Where(c => c.SensorId, ConditionOperator.NotIn, sensorId);
+                    builderDeleteRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.In, headRefSpectrumIdsBySDRN);
                     scope.Executor.Execute(builderDeleteRefSpectrum);
 
                     scope.Commit();
@@ -532,6 +698,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     builderUpdateRefSpectrum.Where(c => c.TableId, ConditionOperator.Equal, dataRefSpectrum.TableId);
                     builderUpdateRefSpectrum.Where(c => c.TableName, ConditionOperator.Equal, dataRefSpectrum.TableName);
                     builderUpdateRefSpectrum.Where(c => c.SensorId, ConditionOperator.Equal, dataRefSpectrum.SensorId);
+                    builderUpdateRefSpectrum.Where(c => c.HEAD_REF_SPECTRUM.Id, ConditionOperator.Equal, dataRefSpectrum.HeadId);
                     if (!string.IsNullOrEmpty(dataRefSpectrum.StatusMeas))
                     {
                         builderUpdateRefSpectrum.SetValue(c => c.StatusMeas, dataRefSpectrum.StatusMeas);
