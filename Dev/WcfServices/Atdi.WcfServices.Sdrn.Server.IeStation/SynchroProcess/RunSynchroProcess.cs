@@ -1276,7 +1276,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
-            DeleteUnestimatedEmittings(emittings);
+            emittings = DeleteUnestimatedEmittings(emittings);
 
             var listOfEmitings = ConvertEmittings.ConvertArray(emittings).ToList();
 
