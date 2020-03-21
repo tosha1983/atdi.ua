@@ -136,12 +136,22 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             return result;
         }
 
+        private PointF DeNormalizePoint(PointF pt, double Width, double Height, ChartOption _option)
+        {
+            PointF result = new PointF()
+            {
+                X = (float)(pt.X * (_option.XMax - _option.XMin) / Width) + _option.XMin,
+                Y = (float)(((Height - pt.Y) * (_option.YMax - _option.YMin) + _option.YMin * Height) / Height)
+            };
+            return result;
+        }
+
         public void CreateBitmapSpectrogram(DataSynchronizationProcessProtocolsViewModel emit, Bitmap bm,  int ActualWidth, int ActualHeight)
         {
             var _option = GetChartOption(emit);
             var Width = ActualWidth;
             var Height = ActualHeight;
-            var cnt = 30;
+            var cnt = 40;
             var pt = new PointF();
             float dx, dy;
             using (Graphics gr = Graphics.FromImage(bm))
@@ -163,7 +173,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                     var line = new List<PointF>();
                     for (int i = 0; i < points.Points.Length; i++)
                     {
-                        var point = NormalizePoint(points.Points[i], Width, Height, _option);
+                        var point = NormalizePoint(points.Points[i], Width + cnt, Height, _option);
                         XVal.Add(points.Points[i].X);
                     }
 
@@ -184,11 +194,25 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                     _option.XMax = _option.XMax - deltaXMax;
                 }
 
-                //if (stepX > minVal)
-                //{
-                //_option.XMax = _option.XMax + 3 *stepX;
-                //}
-
+                var coordValues = new List<double>();
+                foreach (var lines in _option.LinesArray)
+                {
+                    if (lines.IsVertical)
+                    {
+                        SizeF size = gr.MeasureString(lines.Name, stringFont);
+                        var pointDest = DeNormalizePoint(new PointF(lines.Point.X+size.Width, lines.Point.Y + size.Height), Width, Height, _option);
+                        var pointStart = DeNormalizePoint(new PointF(lines.Point.X, lines.Point.Y), Width, Height, _option);
+                        coordValues.Add(_option.XMax + (pointDest.X-pointStart.X + stepX));
+                    }
+                }
+                if (coordValues.Count > 0)
+                {
+                    var maxVal = coordValues.Max();
+                    if (maxVal > _option.XMax)
+                    {
+                        _option.XMax = (float)maxVal;
+                    }
+                }
 
                 for (dx = _option.XMin + stepX; dx < _option.XMax; dx += stepX)
                 {
@@ -286,15 +310,15 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
 
                     if (dy == _option.YMin)
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X, pt.Y - 5));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X+10, pt.Y - 5));
                     }
                     else if (LessOrEqual((dy + _option.YTick), _option.YMax))
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X, pt.Y));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 10, pt.Y));
                     }
                     else
                     {
-                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X, pt.Y + 5));
+                        gr.DrawString(dy.ToString(), stringFont, Brushes.Black, new PointF(pt.X + 10, pt.Y + 5));
                     }
                 }
 
@@ -360,7 +384,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
                 System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
                 drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
                 gr.DrawString(_option.XLabel, stringFont, Brushes.Black, new PointF((float)Width / 2, Height + 15));
-                gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(2, ((float)Height / 2)-10), drawFormat);
+                gr.DrawString(_option.YLabel, stringFont, Brushes.Black, new PointF(1, ((float)Height / 2)-10), drawFormat);
             }
         }
 
