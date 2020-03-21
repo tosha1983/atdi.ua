@@ -81,6 +81,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             logger.Verbouse(Contexts.ThisComponent, "AdapterTraceResultPools were not found in the configuration " +
                                 "file and were replaced with the default values for this adapter.");
                         }
+                        if (tac.Main.AutoRefLevel == null)
+                        {
+                            SetDefaulAvtoRefLevelConfig(ref tac.Main);
+                            tac.SetThisAdapterConfig(tac.Main, fileName);
+                            logger.Verbouse(Contexts.ThisComponent, "AdapterAutoRefLevels were not found in the configuration " +
+                                "file and were replaced with the default values for this adapter.");
+                        }
                         mainConfig = tac.Main;
                     }
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
@@ -367,9 +374,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     }
                     ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, context);
 
-                    ValidateAndSetAttRefLevel(command.Parameter.Att_dB, command.Parameter.RefLevel_dBm, context);
-
-                    ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
 
                     ValidateAndSetRBWVBWTracePointSweepTime(command.Parameter.RBW_Hz, command.Parameter.VBW_Hz, command.Parameter.TracePoint, command.Parameter.SweepTime_s, context);
 
@@ -1317,6 +1321,60 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         }
         private void GetAndPushRefLevelResults(COM.MesureTraceCommand command, IExecutionContext context)
         {
+            uint traceLen = 0;
+
+            ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
+            int steps = (mainConfig.AutoRefLevel.Stop_dBm - mainConfig.AutoRefLevel.Start_dBm) / mainConfig.AutoRefLevel.Step_dB;
+            TempRefLevelData[] data = new TempRefLevelData[steps];
+            int reflevel = 10000000;
+            for (int i = 0; i < steps; i++)
+            {
+                data[i] = new TempRefLevelData()
+                {
+                    RefLevel = mainConfig.AutoRefLevel.Start_dBm - mainConfig.AutoRefLevel.Step_dB * i,
+                    PercentRFOverload = 0,
+                    RFOverloadState = new bool[mainConfig.AutoRefLevel.NumberScan]
+                };
+                ValidateAndSetAttRefLevel(command.Parameter.Att_dB, data[i].RefLevel, context);
+                for (int l = 0; l < mainConfig.AutoRefLevel.NumberScan; l++)
+                {
+                    data[i].RFOverloadState[l] = false;
+                    StatusError(AdapterDriver.bbQueryTraceInfo(deviceId, ref traceLen, ref resFreqStep, ref resFreqStart));
+
+                    if (Status != EN.Status.DeviceConnectionErr ||
+                        Status != EN.Status.DeviceInvalidErr ||
+                        Status != EN.Status.DeviceNotOpenErr ||
+                        Status != EN.Status.USBTimeoutErr)
+                    {
+                        isRuning = true;
+                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                    }
+                    if (Status == EN.Status.ADCOverflow)
+                    {
+                        data[i].RFOverloadState[l] = true;
+                    }
+                    StatusError(AdapterDriver.bbFetchTrace_32f(deviceId, unchecked((int)traceLen), sweepMin, sweepMax));
+                    if (Status == EN.Status.ADCOverflow)
+                    {
+                        data[i].RFOverloadState[l] = true;
+                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                    }
+                    if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
+                    {
+
+                        //break;
+                    }
+                }
+                if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
+                {
+                    reflevel = data[i - 1].RefLevel;
+                    break;
+                }
+            }
+            if (reflevel == 10000000)
+            {
+                reflevel = mainConfig.AutoRefLevel.Stop_dBm;
+            }
 
         }
 
@@ -1680,9 +1738,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             // сформировано пустое место
         }
 
-        #if DEBUG
+#if DEBUG
         public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
-        #endif
+#endif
         private bool GetIQStream(ref COMR.MesureIQStreamResult iQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool withPPS, bool justWithSignal)
         {
             bool done = false;
@@ -1961,14 +2019,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 AntennaName = "Omni",
                 AntennaSN = "123"
             };
-            config.AvtoRefLevel = new CFG.AvtoRefLevel()
-            {
-                Start_dBm = 10,
-                Stop_dBm = -80,
-                Step_dB = 10,
-                PersentOverload = 15,
-                NumberScan = 10
-            };
+            SetDefaulAvtoRefLevelConfig(ref config);
             config.AdapterRadioPathParameters = new CFG.AdapterRadioPathParameter[]
             {
                 new CFG.AdapterRadioPathParameter()
@@ -2047,6 +2098,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     MaxSize = 20,
                     Size = 1000000
                 },
+            };
+        }
+
+        private void SetDefaulAvtoRefLevelConfig(ref CFG.AdapterMainConfig config)
+        {
+            config.AutoRefLevel = new CFG.AdapterAutoRefLevel()
+            {
+                Start_dBm = 10,
+                Stop_dBm = -80,
+                Step_dB = 10,
+                PersentOverload = 15,
+                NumberScan = 10
             };
         }
 
@@ -2137,7 +2200,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         private class TempRefLevelData
         {
-
+            public int RefLevel = 0;
+            public float PercentRFOverload = 0;
+            public bool[] RFOverloadState = new bool[] { };
         }
     }
 

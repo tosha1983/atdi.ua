@@ -995,6 +995,18 @@
   <data name="Message_ProcessStartedSuccessfully" xml:space="preserve">
     <value>Process started successfully.</value>
   </data>
+  <data name="State_A" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="State_C" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="State_F" xml:space="preserve">
+    <value>Forced to stop</value>
+  </data>
+  <data name="State_N" xml:space="preserve">
+    <value>New</value>
+  </data>
   <data name="Status_IllegallyOperatedTransmitter" xml:space="preserve">
     <value>Illegally operated transmitter</value>
   </data>
@@ -1006,5 +1018,8 @@
   </data>
   <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
     <value>Transmitter operation not fixed</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
   </data>
 </root>

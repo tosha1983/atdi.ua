@@ -15,6 +15,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("Status", WidthRule = ColumnWidthRule.AutoSize, Width = 100)]
         public string Status { get; set; }
 
+        [WpfColumn("StatusFull", WidthRule = ColumnWidthRule.AutoSize, Width = 100)]
+        public string StatusFull { get; set; }
+
         [WpfColumn("Type", WidthRule = ColumnWidthRule.AutoSize, Width = 100)]
         public string Type { get; set; }
 

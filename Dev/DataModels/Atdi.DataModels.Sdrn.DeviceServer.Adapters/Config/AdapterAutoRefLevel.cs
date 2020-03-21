@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
 {
     [Serializable]
-    public class AvtoRefLevel
+    public class AdapterAutoRefLevel
     {
         [XmlElement]
         public int Start_dBm = 0;

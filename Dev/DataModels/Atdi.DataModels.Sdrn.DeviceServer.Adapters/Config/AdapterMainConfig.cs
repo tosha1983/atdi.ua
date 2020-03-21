@@ -27,7 +27,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
         public AdapterEquipmentInfo AdapterEquipmentInfo = new AdapterEquipmentInfo();
 
         [XmlElement]
-        public AvtoRefLevel AvtoRefLevel = new AvtoRefLevel();
+        public AdapterAutoRefLevel AutoRefLevel = new AdapterAutoRefLevel();
 
         [XmlArray]
         public AdapterRadioPathParameter[] AdapterRadioPathParameters = new AdapterRadioPathParameter[] { };

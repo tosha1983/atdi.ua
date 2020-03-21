@@ -354,6 +354,11 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void OnChangedCurrentShortMeasTaskAction(ShortMeasTaskViewModel shortMeasTask)
         {
+            var appSettings = ConfigurationManager.AppSettings;
+            string currentUICulture = appSettings["UICulture"];
+            if (!string.IsNullOrEmpty(currentUICulture))
+                System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo(currentUICulture);
+
             if (shortMeasTask != null)
             {
                 Debug.Print($"OnChangedCurrentShortMeasTaskAction: ID = '{shortMeasTask.Id}'");
@@ -748,6 +753,11 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadMeasResaltDetail(MeasurementResultsViewModel measurementResults)
         {
+            var appSettings = ConfigurationManager.AppSettings;
+            string currentUICulture = appSettings["UICulture"];
+            if (!string.IsNullOrEmpty(currentUICulture))
+                System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo(currentUICulture);
+
             if (measurementResults != null)
             {
                 if (measurementResults.TypeMeasurements == SDR.MeasurementType.MonitoringStations)

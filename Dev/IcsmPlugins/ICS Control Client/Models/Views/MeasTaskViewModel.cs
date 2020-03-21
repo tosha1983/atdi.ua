@@ -14,42 +14,28 @@ namespace XICSM.ICSControlClient.Models.Views
     {
 
         public long Id { get; set; }
-
         public int? OrderId { get; set; }
-
         public string Status { get; set; }
-
+        public string StatusFull { get; set; }
         public string Type { get; set; }
-
         public string Name { get; set; }
-
         public MeasTaskExecutionMode ExecutionMode { get; set; }
-
         public MeasTaskType Task { get; set; }
-
         public int? Prio { get; set; }
-
         public MeasTaskResultType ResultType { get; set; }
-
         public IList<MeasTaskResultType> ResultTypeValues
         {
             get { return Enum.GetValues(typeof(MeasTaskResultType)).Cast<MeasTaskResultType>().ToList<MeasTaskResultType>(); }
         }
-
         public int? MaxTimeBs { get; set; }
-
         public DateTime? DateCreated { get; set; }
-
         public string CreatedBy { get; set; }
-
         public MeasurementType MeasDtParamTypeMeasurements { get; set; }
-
         public IList<MeasurementType> MeasDtParamTypeMeasurementsValues
         {
             //get { return Enum.GetValues(typeof(MeasurementType)).Cast<MeasurementType>().ToList<MeasurementType>(); }
             get { return new List<MeasurementType>() { MeasurementType.Level, MeasurementType.SpectrumOccupation, MeasurementType.Signaling }; }
         }
-
         public bool IsAutoMeasDtParamRBW { get; set; }
         public double? MeasDtParamRBW { get; set; }
 
