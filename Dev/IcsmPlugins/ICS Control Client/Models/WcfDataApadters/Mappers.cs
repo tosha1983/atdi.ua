@@ -179,6 +179,54 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 source.SignalingMeasTaskParameters.InterruptionParameters = new SDR.SignalingInterruptionParameters();
             }
 
+            string statusFull = "";
+            switch (source.Status)
+            {
+                case "N":
+                    statusFull = Properties.Resources.State_N;
+                    break;
+                case "C":
+                    statusFull = Properties.Resources.State_C;
+                    break;
+                case "F":
+                    statusFull = Properties.Resources.State_F;
+                    break;
+                case "A":
+                    statusFull = Properties.Resources.State_A;
+                    break;
+                default:
+                    break;
+            }
+
+            string measOtherTypeSpectrumOccupationFull = "";
+            switch (source.MeasOther.TypeSpectrumOccupation)
+            {
+                case SDR.SpectrumOccupationType.FreqBandwidthOccupation:
+                    measOtherTypeSpectrumOccupationFull = "Frequency band occupancy";
+                    break;
+                case SDR.SpectrumOccupationType.FreqChannelOccupation:
+                    measOtherTypeSpectrumOccupationFull = "Frequency channel occupancy";
+                    break;
+                default:
+                    break;
+            }
+
+            string measFreqParamModeFull = "";
+            switch (source.MeasFreqParam.Mode)
+            {
+                case SDR.FrequencyMode.FrequencyList:
+                    measFreqParamModeFull = "Frequency List";
+                    break;
+                case SDR.FrequencyMode.FrequencyRange:
+                    measFreqParamModeFull = "Frequency Range";
+                    break;
+                case SDR.FrequencyMode.SingleFrequency:
+                    measFreqParamModeFull = "Single Frequency";
+                    break;
+                default:
+                    break;
+            }
+
             return new VM.MeasTaskViewModel
             {
                 CreatedBy = source.CreatedBy,
@@ -194,23 +242,29 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
                 MeasDtParamMeasTime = (source.MeasDtParam.MeasTime.ToNull().HasValue && source.MeasDtParam.MeasTime.Value == 0.001) ? null : source.MeasDtParam.MeasTime.ToNull(),
                 IsAutoMeasDtParamMeasTime = (source.MeasDtParam.MeasTime.ToNull().HasValue && source.MeasDtParam.MeasTime.Value == 0.001),
+                MeasDtParamMeasTimeView = (source.MeasDtParam.MeasTime.HasValue && source.MeasDtParam.MeasTime.Value == 0.001) ? "Auto" : source.MeasDtParam.MeasTime.ToNull().ToString(),
 
                 MeasDtParamPreamplification = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1) ? (int?)null : source.MeasDtParam.Preamplification ?? 0,
                 IsAutoMeasDtParamPreamplification = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1),
+                MeasDtParamPreamplificationView = (source.MeasDtParam.Preamplification.HasValue && source.MeasDtParam.Preamplification.Value == -1) ? "Auto" : source.MeasDtParam.Preamplification.ToNull().ToString(),
 
                 MeasDtParamRBW = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1) ? null : source.MeasDtParam.RBW.ToNull(),
                 IsAutoMeasDtParamRBW = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1),
+                MeasDtParamRBWView = (source.MeasDtParam.RBW.HasValue && source.MeasDtParam.RBW.Value == -1) ? "Auto" : source.MeasDtParam.RBW.ToNull().ToString(),
 
                 MeasDtParamRfAttenuation = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1) ? (double?)null : source.MeasDtParam.RfAttenuation.GetValueOrDefault(),
                 IsAutoMeasDtParamRfAttenuation = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1),
+                MeasDtParamRfAttenuationView = (source.MeasDtParam.RfAttenuation.HasValue && source.MeasDtParam.RfAttenuation.Value == -1) ? "Auto" : source.MeasDtParam.RfAttenuation.ToNull().ToString(),
 
                 MeasDtParamTypeMeasurements = source.MeasDtParam.TypeMeasurements,
 
                 MeasDtParamVBW = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1) ? null : source.MeasDtParam.VBW.ToNull(),
                 IsAutoMeasDtParamVBW = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1),
+                MeasDtParamVBWView = (source.MeasDtParam.VBW.HasValue && source.MeasDtParam.VBW.Value == -1) ? "Auto" : source.MeasDtParam.VBW.ToNull().ToString(),
 
                 MeasDtParamReferenceLevel = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000) ? null : source.MeasDtParam.ReferenceLevel.ToNull(),
                 IsAutoMeasDtParamReferenceLevel = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000),
+                MeasDtParamReferenceLevelView = (source.MeasDtParam.ReferenceLevel.HasValue && source.MeasDtParam.ReferenceLevel.Value == 1000000000) ? "Auto" : source.MeasDtParam.ReferenceLevel.ToNull().ToString(),
 
                 AllowableExcess_dB = source.SignalingMeasTaskParameters.allowableExcess_dB.ToNull(),
                 CompareTraceJustWithRefLevels = source.SignalingMeasTaskParameters.CompareTraceJustWithRefLevels,
@@ -224,8 +278,11 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 CorrelationFactor = source.SignalingMeasTaskParameters.CorrelationFactor.ToNull(),
                 DetailedMeasurementsBWEmission = source.SignalingMeasTaskParameters.DetailedMeasurementsBWEmission,
                 Standard = source.SignalingMeasTaskParameters.Standard,
+
                 triggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? null : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz,
                 IsAutoTriggerLevel_dBm_Hz = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999),
+                triggerLevel_dBm_HzView = (source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.HasValue && source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.Value == -999) ? "Auto" : source.SignalingMeasTaskParameters.triggerLevel_dBm_Hz.ToNull().ToString(),
+
                 CollectEmissionInstrumentalEstimation = source.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation,
 
                 CrossingBWPercentageForBadSignals = source.SignalingMeasTaskParameters.GroupingParameters.CrossingBWPercentageForBadSignals.ToNull(),
@@ -247,6 +304,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
 
                 MeasFreqParamMeasFreqs = (source.MeasFreqParam.MeasFreqs ?? (new SDR.MeasFreq[] { })).Select(i => i.Freq).ToArray(),
                 MeasFreqParamMode = source.MeasFreqParam.Mode,
+                MeasFreqParamModeFull = measFreqParamModeFull,
                 MeasFreqParamRgL = source.MeasFreqParam.RgL.ToNull(),
                 MeasFreqParamRgU = source.MeasFreqParam.RgU.ToNull(),
                 MeasFreqParamStep = source.MeasFreqParam.Step.ToNull(),
@@ -256,6 +314,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasOtherNChenal = source.MeasOther.NChenal.ToNull(),
                 MeasOtherSwNumber = source.MeasOther.SwNumber.ToNull(),
                 MeasOtherTypeSpectrumOccupation = source.MeasOther.TypeSpectrumOccupation,
+                MeasOtherTypeSpectrumOccupationFull = measOtherTypeSpectrumOccupationFull,
                 MeasOtherTypeSpectrumScan = source.MeasOther.TypeSpectrumScan,
 
                 MeasTimeParamListDays = source.MeasTimeParamList.Days,
@@ -270,6 +329,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 Prio = source.Prio.ToNull(),
                 ResultType = source.ResultType,
                 Status = source.Status,
+                StatusFull = statusFull,
                 Task = source.Task,
                 Type = source.Type,
                 StationsForMeasurements = source.StationsForMeasurements,
@@ -593,6 +653,49 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 DataRefSpectrum = source.DataRefSpectrum
             };
 
+        }
+        public static VM.ShortMeasTaskViewModel Map(SDR.ShortMeasTask source)
+        {
+            if (source == null)
+                return null;
+            string statusFull = "";
+
+            switch (source.Status)
+            {
+                case "N":
+                    statusFull = Properties.Resources.State_N;
+                    break;
+                case "C":
+                    statusFull = Properties.Resources.State_C;
+                    break;
+                case "F":
+                    statusFull = Properties.Resources.State_F;
+                    break;
+                case "A":
+                    statusFull = Properties.Resources.State_A;
+                    break;
+                default:
+                    break;
+            }
+
+            return new VM.ShortMeasTaskViewModel
+            {
+                CreatedBy = source.CreatedBy,
+                DateCreated = source.DateCreated.ToNull(),
+                ExecutionMode = source.ExecutionMode,
+                Id = source.Id.Value,
+                MaxTimeBs = source.MaxTimeBs.ToNull(),
+                Name = source.Name,
+                OrderId = source.OrderId,
+                Prio = source.Prio.ToNull(),
+                ResultType = source.ResultType,
+                Status = source.Status,
+                StatusFull = statusFull,
+                Task = source.Task,
+                Type = source.Type,
+                TypeMeasurements = source.TypeMeasurements,
+                TypeMeasurementsString = source.TypeMeasurements.ToString()
+            };
         }
     };
 }

@@ -29,5 +29,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 		/// </summary>
 		public Maps.Coordinate Target;
 
+		public bool CheckReverse = true;
+
+		public bool HasError = false;
+
 	}
 }

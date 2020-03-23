@@ -745,9 +745,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 var listDataRefSpectrum = new List<DataRefSpectrum>();
                 var listDataRefSpectrumForDelete = new List<DataRefSpectrum>();
                 var utils = new Utils(this._dataLayer, this._logger);
-                utils.DeleteLinkSensors(sensorIdsBySDRN, dataSynchronization.Id.Value);
-                //utils.DeleteRefSpectrumBySensorId(sensorIdsBySDRN, headRefSpectrumIdsBySDRN);
-
+                //utils.DeleteLinkSensors(sensorIdsBySDRN, dataSynchronization.Id.Value);
                 var listRefSpectrum = utils.GetRefSpectrumByIds(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
 
                 // Заполняем список listDataRefSpectrum перечнем всех DataRefSpectrum
@@ -859,11 +857,6 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 var arr = listDataRefSpectrumForDelete.ToArray();
                 if ((arr != null) && (arr.Length > 0))
                 {
-                    //for (int i = 0; i < arr.Length; i++)
-                    //{
-                        //listDataRefSpectrum.RemoveAll(x => x.Id == arr[i].Id);
-                    //}
-
                     var delIndex = new List<long?>();
                     for (int i = 0; i < listRefSpectrum.Length; i++)
                     {
@@ -891,26 +884,6 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 }
 
                 refSpectrums = listRefSpectrum.ToList();
-                // непосредственное удаление записей из БД
-                /*
-                var arr = listDataRefSpectrumForDelete.ToArray();
-                if ((arr != null) && (arr.Length > 0))
-                {
-                    using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
-                    {
-                        scope.BeginTran();
-                        for (int h = 0; h < arr.Length; h++)
-                        {
-                            var builderDeleteRefSpectrum = this._dataLayer.GetBuilder<MD.IRefSpectrum>().Delete();
-                            builderDeleteRefSpectrum.Where(c => c.Id, ConditionOperator.Equal, arr[h].Id);
-                            scope.Executor.Execute(builderDeleteRefSpectrum);
-                        }
-                        scope.Commit();
-                    }
-                }
-                */
-
-                //utils.RemoveEmptyHeadRefSpectrum(headRefSpectrumIdsBySDRN, sensorIdsBySDRN);
                 isSuccess = true;
             }
             catch (Exception e)
@@ -1276,7 +1249,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             
             // count 
             int desiredNumberOfEmittings = CountUniqueStations(refSpectrums);
-            DeleteUnestimatedEmittings(emittings);
+            emittings = DeleteUnestimatedEmittings(emittings);
 
             var listOfEmitings = ConvertEmittings.ConvertArray(emittings).ToList();
 

@@ -71,7 +71,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					// выполняем расчет
 					try
 					{
+						System.Diagnostics.Debug.WriteLine($"EXECUTED TASK: ResultID=#{state.ResultId}");
+						var timer = System.Diagnostics.Stopwatch.StartNew();
 						handler.Run();
+						timer.Stop();
+						System.Diagnostics.Debug.WriteLine($"EXECUTED TASK: {timer.Elapsed.TotalMilliseconds}ms/{timer.Elapsed.TotalSeconds}sec");
 					}
 					catch (Exception e)
 					{

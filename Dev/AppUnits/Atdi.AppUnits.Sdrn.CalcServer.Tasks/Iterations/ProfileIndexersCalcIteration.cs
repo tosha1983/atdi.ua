@@ -33,7 +33,86 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 		{
 			var area = data.Area;
 			var count = Calculate(data.Point, data.Target, area.LowerLeft, area.AxisX.Step, area.AxisY.Step,
-				data.Result, area.AxisX.Number, area.AxisY.Number);
+				data.Result, area.AxisY.Number);
+
+			//if (data.CheckReverse)
+			//{
+			//	var tempPoint = data.Point;
+			//	data.Point = data.Target;
+			//	data.Target = tempPoint;
+
+			//	var forwardIndexers = new Indexer[count];
+			//	Array.Copy(data.Result, 0, forwardIndexers, 0, count);
+
+			//	var reverseCount = Calculate(data.Point, data.Target, area.LowerLeft, area.AxisX.Step, area.AxisY.Step,
+			//		data.Result, area.AxisY.Number);
+
+
+			//	var countErrors = 0;
+			//	var xErrors = 0;
+			//	var yErrors = 0;
+
+				
+			//	if (count != reverseCount)
+			//	{
+			//		++countErrors;
+			//		//System.Diagnostics.Debug.WriteLine($"CHECK REVERSE PROFILE: Point={tempPoint}, Target={data.Point}");
+			//		//System.Diagnostics.Debug.WriteLine($"CHECK REVERSE PROFILE: There was a mismatch. ForwardCount={count}, reverseCount={reverseCount}");
+			//	}
+			//	else
+			//	{
+			//		for (int i = 0; i < count; i++)
+			//		{
+			//			var forward = forwardIndexers[i];
+			//			var reverse = data.Result[count - i - 1];
+			//			if (forward.XIndex != reverse.XIndex)
+			//			{
+			//				//System.Diagnostics.Debug.WriteLine($"CHECK REVERSE PROFILE: Point={tempPoint}, Target={data.Point}");
+			//				//System.Diagnostics.Debug.WriteLine($"CHECK REVERSE PROFILE: There was a mismatch. ForwardXIndex={forward.XIndex}, ReverseXIndex={reverse.XIndex}");
+			//				++xErrors;
+			//			}
+			//			if (forward.YIndex != reverse.YIndex)
+			//			{
+			//				//System.Diagnostics.Debug.WriteLine($"CHECK REVERSE PROFILE: Point={tempPoint}, Target={data.Point}");
+			//				//System.Diagnostics.Debug.WriteLine($"CHECK REVERSE PROFILE: There was a mismatch. ForwardYIndex={forward.YIndex}, ReverseYIndex={reverse.YIndex}");
+			//				++yErrors;
+			//			}
+			//		}
+			//	}
+
+				
+			//	Array.Copy(forwardIndexers, 0, data.Result, 0, count);
+			//	tempPoint = data.Point;
+			//	data.Point = data.Target;
+			//	data.Target = tempPoint;
+
+			//	if (countErrors > 0 || xErrors > 0 || yErrors > 0)
+			//	{
+			//		data.HasError = true;
+			//		var rule = "Rule 0";
+			//		if (data.Target.Y > data.Point.Y && data.Target.X > data.Point.X)
+			//		{
+			//			rule = "Rule 1";
+			//		}
+			//		else if (data.Target.Y < data.Point.Y && data.Target.X < data.Point.X)
+			//		{
+			//			rule = "Rule 2";
+			//		}
+			//		else if (data.Target.Y > data.Point.Y && data.Target.X < data.Point.X)
+			//		{
+			//			rule = "Rule 3";
+			//		}
+			//		else if (data.Target.Y < data.Point.Y && data.Target.X > data.Point.X)
+			//		{
+			//			rule = "Rule 4";
+			//		}
+			//		System.Diagnostics.Debug.WriteLine($"CHECK MISMATCH REVERSE PROFILE: Rule={rule}, Point={tempPoint}, Target={data.Point}, XCount={xErrors}, YCount={yErrors}, ForwardCount={count}, Count{countErrors}, ReverseCount={reverseCount}");
+			//	}
+			//	else
+			//	{
+			//		data.HasError = false;
+			//	}
+			//}
 			return count;
 		}
 
@@ -41,10 +120,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 			Coordinate point, 
 			Coordinate target, 
 			Coordinate location, 
-			double axisXStep, 
-			double axisYStep,
-			Indexer[] indexers, 
-			int axisXNumber,
+			decimal axisXStep, 
+			decimal axisYStep,
+			Indexer[] indexers,
 			int axisYNumber)
 		{
 			var count = 0;
@@ -54,15 +132,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 			var xPointIndex = (int)Math.Floor((point.X - location.X) / axisXStep);
 			var yPointIndex = (int)Math.Floor((point.Y - location.Y) / axisYStep);
 
-			//var __XIndex = (int)Math.Ceiling((x - this.UpperLeftX + 1) / (double)this.AxisXStep) - 1,
-			//YIndex = this.AxisYNumber - ((int)Math.Ceiling((y - (this.UpperLeftY - (this.AxisYNumber * this.AxisYStep)) + 1) / (double)this.AxisYStep))
-
 			var xCurrentIndex = xPointIndex;
 			var yCurrentIndex = yPointIndex;
 
-
 			var xDelta = target.X - point.X;
 			var yDelta = target.Y - point.Y;
+
+			// уменьшаем на одну операцию
+			axisYNumber -= 1;
 
 			// бредовый случай, но все же одна точка профиля есть
 			if (point.X == target.X && point.Y == target.Y)
@@ -70,14 +147,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				indexers[count++] = new Indexer()
 				{
 					XIndex = xCurrentIndex,
-					YIndex = axisYNumber - yCurrentIndex - 1
+					YIndex = axisYNumber - yCurrentIndex 
 				};
-				//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-				//profile[count++] = buffer[index];
-				//if (dataSize == 2)
-				//{
-				//	profile[count++] = buffer[index + 1];
-				//}
 			}
 			// особый случай, по диаганаль, ровный цыкл
 			else if (xDelta == yDelta)
@@ -94,14 +165,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							indexers[count++] = new Indexer()
 							{
 								XIndex = xCurrentIndex,
-								YIndex = axisYNumber - yCurrentIndex - 1
+								YIndex = axisYNumber - yCurrentIndex
 							};
-							//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-							//profile[count++] = buffer[index];
-							//if (dataSize == 2)
-							//{
-							//	profile[count++] = buffer[index + 1];
-							//}
 						}
 					}
 					else
@@ -113,14 +178,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							indexers[count++] = new Indexer()
 							{
 								XIndex = xCurrentIndex,
-								YIndex = axisYNumber - yCurrentIndex - 1
+								YIndex = axisYNumber - yCurrentIndex 
 							};
-							//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-							//profile[count++] = buffer[index];
-							//if (dataSize == 2)
-							//{
-							//	profile[count++] = buffer[index + 1];
-							//}
 						}
 					}
 				}
@@ -135,14 +194,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							indexers[count++] = new Indexer()
 							{
 								XIndex = xCurrentIndex,
-								YIndex = axisYNumber - yCurrentIndex - 1
+								YIndex = axisYNumber - yCurrentIndex
 							};
-							//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-							//profile[count++] = buffer[index];
-							//if (dataSize == 2)
-							//{
-							//	profile[count++] = buffer[index + 1];
-							//}
 						}
 					}
 					else
@@ -154,15 +207,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							indexers[count++] = new Indexer()
 							{
 								XIndex = xCurrentIndex,
-								YIndex = axisYNumber - yCurrentIndex - 1
+								YIndex = axisYNumber - yCurrentIndex
 							};
-
-							//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-							//profile[count++] = buffer[index];
-							//if (dataSize == 2)
-							//{
-							//	profile[count++] = buffer[index + 1];
-							//}
 						}
 					}
 				}
@@ -178,15 +224,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 				else
@@ -196,15 +235,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 			}
@@ -219,15 +251,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 				else
@@ -237,181 +262,160 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 			}
 			else
 			{
 				// будет математика
-				var k = ((double)yDelta / (double)xDelta);
+				//var k = Math.Abs((double)yDelta / (double)xDelta);
+
+				var xAbsDelta = Math.Abs(xDelta);
+				var yAbsDelta = Math.Abs(yDelta);
+
 				// берем первое значение для опорной точки
 
 				indexers[count++] = new Indexer()
 				{
 					XIndex = xCurrentIndex,
-					YIndex = axisYNumber - yCurrentIndex - 1
+					YIndex = axisYNumber - yCurrentIndex
 				};
-
-				//profile[count++] = buffer[yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize];
-				//if (dataSize == 2)
-				//{
-				//	profile[count++] = buffer[yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize + 1];
-				//}
 
 				if (target.Y > point.Y && target.X > point.X)
 				{
+					var xd = (point.X - location.X) / axisXStep - 1;
+					var yd = (point.Y - location.Y) / axisYStep - 1;
+					
 					while (xCurrentIndex != xTargetIndex || yCurrentIndex != yTargetIndex)
 					{
-						var a = ((yCurrentIndex + 1) > ((xCurrentIndex + 1) * k));
-						if (a)
+						var left =  (yCurrentIndex - yd) * xAbsDelta;
+						var right = (xCurrentIndex - xd) * yAbsDelta;
+						//var a = ((yCurrentIndex + 1 - yd) * xAbsDelta > ((xCurrentIndex + 1 - xd) * yAbsDelta));
+						if (left > right)
 						{
 							++xCurrentIndex;
 						}
-						else
+						else //if (left <= right)
 						{
 							++yCurrentIndex;
 						}
 
 						if (xCurrentIndex > xTargetIndex || yCurrentIndex > yTargetIndex)
 						{
-							throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
+							System.Diagnostics.Debug.WriteLine($"Something went wrong: Rule=1, Point=[{point}], Target=[{target}], xPointIndex={xPointIndex}, xCurrentIndex={xCurrentIndex}, xTargetIndex={xTargetIndex}, yPointIndex={yPointIndex}, yCurrentIndex={yCurrentIndex}, yTargetIndex={yTargetIndex}");
+							break;
+							//throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
 						}
 
-						//++count;
-						// тут брать очередное значение из буфера
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 				else if (target.Y < point.Y && target.X < point.X)
 				{
-					var xd = (target.X - location.X) % axisXStep + xTargetIndex;
-					var yd = (target.Y - location.Y) % axisYStep + yTargetIndex;
+					var xd = (target.X - location.X) / axisXStep;
+					var yd = (target.Y - location.Y) / axisYStep;
+
 					while (xCurrentIndex != xTargetIndex || yCurrentIndex != yTargetIndex)
 					{
-						var a = (yCurrentIndex - 1 - yd ) < ((xCurrentIndex - 1 - xd) * k);
-						if (a)
+						var left = (yCurrentIndex - yd) * xAbsDelta;
+						var right = (xCurrentIndex - xd) * yAbsDelta;
+						//var a = (yCurrentIndex - yd ) * xAbsDelta <= ((xCurrentIndex - xd) * yAbsDelta);
+						if (left <= right)
 						{
 							--xCurrentIndex;
 						}
-						else
+						else //if (left >= right)
 						{
 							--yCurrentIndex;
 						}
 
 						if (xCurrentIndex < xTargetIndex || yCurrentIndex < yTargetIndex)
 						{
-							throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
+							System.Diagnostics.Debug.WriteLine($"Something went wrong: Rule=2, Point=[{point}], Target=[{target}], xPointIndex={xPointIndex}, xCurrentIndex={xCurrentIndex}, xTargetIndex={xTargetIndex}, yPointIndex={yPointIndex}, yCurrentIndex={yCurrentIndex}, yTargetIndex={yTargetIndex}");
+							break;
 						}
 
-						//++count;
-						// тут брать очередное значение из буфера
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 				else if (target.Y > point.Y && target.X < point.X)
 				{
-					var yd = (target.Y - location.Y) % axisYStep + yTargetIndex;
-					var xd = (target.X - location.X) % axisXStep + xTargetIndex;
+					var xd =  (point.X - location.X) / axisXStep;
+					var yd = (point.Y - location.Y) / axisYStep - 1;
 					while (xCurrentIndex != xTargetIndex || yCurrentIndex != yTargetIndex)
 					{
-						var a = (yCurrentIndex + 1 - yd) > ((xCurrentIndex - 1 - xd) * k);
-						if (a)
+						var left = (yCurrentIndex - yd) * xAbsDelta;
+						var right = (xd - xCurrentIndex) * yAbsDelta;
+
+						//var a = (yCurrentIndex + 1 - yd) * xAbsDelta > ((xd - xCurrentIndex) * yAbsDelta);
+						if (left > right)
 						{
 							--xCurrentIndex;
 						}
-						else
+						else //if (left <= right)
 						{
 							++yCurrentIndex;
 						}
 
 						if (xCurrentIndex < xTargetIndex || yCurrentIndex > yTargetIndex)
 						{
-							throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
+							System.Diagnostics.Debug.WriteLine($"Something went wrong: Rule=3, Point=[{point}], Target=[{target}], xPointIndex={xPointIndex}, xCurrentIndex={xCurrentIndex}, xTargetIndex={xTargetIndex}, yPointIndex={yPointIndex}, yCurrentIndex={yCurrentIndex}, yTargetIndex={yTargetIndex}");
+							break;
 						}
 
-						//++count;
-						// тут брать очередное значение из буфера
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
 				}
 				else if (target.Y < point.Y && target.X > point.X)
 				{
-					var yd = (target.Y - location.Y) % axisYStep + yTargetIndex;
-					var xd = (target.X - location.X) % axisXStep + xTargetIndex;
+					var xd = (target.X - location.X) / axisXStep - 1;
+					var yd = (target.Y - location.Y) / axisYStep;
+
 					while (xCurrentIndex != xTargetIndex || yCurrentIndex != yTargetIndex)
 					{
-						var a = (yCurrentIndex - 1 - yd) < ((xCurrentIndex + 1 - xd) * k);
-						if (a)
+						var left = (yCurrentIndex - yd) * xAbsDelta;
+						var right = (xd - xCurrentIndex) * yAbsDelta;
+						//var a = (yCurrentIndex - yd) * xAbsDelta <= ((xd - xCurrentIndex - 1) * yAbsDelta);
+						if (left <= right)
 						{
 							++xCurrentIndex;
 						}
-						else
+						else //if (left >= right)
 						{
 							--yCurrentIndex;
 						}
 
 						if (xCurrentIndex > xTargetIndex || yCurrentIndex < yTargetIndex)
 						{
-							throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
+							System.Diagnostics.Debug.WriteLine($"Something went wrong: Rule=4, Point=[{point}], Target=[{target}], xPointIndex={xPointIndex}, xCurrentIndex={xCurrentIndex}, xTargetIndex={xTargetIndex}, yPointIndex={yPointIndex}, yCurrentIndex={yCurrentIndex}, yTargetIndex={yTargetIndex}");
+							break;
+							//throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
 						}
 
-						//++count;
-						// тут брать очередное значение из буфера
 						indexers[count++] = new Indexer()
 						{
 							XIndex = xCurrentIndex,
-							YIndex = axisYNumber - yCurrentIndex - 1
+							YIndex = axisYNumber - yCurrentIndex
 						};
-
-						//var index = yCurrentIndex * axisX.Number * dataSize + xCurrentIndex * dataSize;
-						//profile[count++] = buffer[index];
-						//if (dataSize == 2)
-						//{
-						//	profile[count++] = buffer[index + 1];
-						//}
 					}
+				}
+				else
+				{
+					System.Diagnostics.Debug.WriteLine($"Something went wrong. This is Unknown rule");
 				}
 			}
 

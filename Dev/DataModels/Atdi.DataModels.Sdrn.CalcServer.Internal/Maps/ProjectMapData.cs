@@ -38,7 +38,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 
 		public override string ToString()
 		{
-			return $"ID={Id}; Area=[{UpperLeft}:{LowerRight}]; AxisX='{this.AxisX}'; AxisY='{this.AxisY}'";
+			return $"ID={Id}; Area=[{UpperLeft}:{LowerRight}]; AxisX=[{this.AxisX}]; AxisY=[{this.AxisY}]";
 		}
 	}
 }
