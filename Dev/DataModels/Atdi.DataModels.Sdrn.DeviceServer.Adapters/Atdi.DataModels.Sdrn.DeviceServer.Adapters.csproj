@@ -45,6 +45,7 @@
     <Compile Include="Config\AdapterRadioPathParameter.cs" />
     <Compile Include="Config\AdapterMainConfig.cs" />
     <Compile Include="Config\AdapterResultPool.cs" />
+    <Compile Include="Config\AdapterAutoRefLevel.cs" />
     <Compile Include="Config\ThisAdapterConfig.cs" />
     <Compile Include="DeviceOption.cs" />
     <Compile Include="Enums\LevelUnit.cs" />

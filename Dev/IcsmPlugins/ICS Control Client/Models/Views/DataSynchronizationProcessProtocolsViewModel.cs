@@ -11,54 +11,42 @@ namespace XICSM.ICSControlClient.Models.Views
     public class DataSynchronizationProcessProtocolsViewModel
     {
         public long? Id { get; set; }
+        public DateTime? DateMeas { get; set; }
+        public DateTime? DateCreated { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateStart { get; set; }
-        public DateTime DateEnd { get; set; }
-        public Status Status { get; set; }
-
-        public string SensorName { get; set; }
-        public string Administration { get; set; }
-        public string NetworkId { get; set; }
-        public string Remark { get; set; }
-        public DateTime? BiuseDate { get; set; }
-        public DateTime? EouseDate { get; set; }
-        public Double? Azimuth { get; set; }
-        public Double? Elevation { get; set; }
-        public Double? AGL { get; set; }
-        public string TypeSensor { get; set; }
-        public Double? StepMeasTime { get; set; }
-        public Double? RxLoss { get; set; }
-        public Double? OpHHFr { get; set; }
-        public Double? OpHHTo { get; set; }
-        public string OpDays { get; set; }
-        public SensorLocation[] Locations { get; set; }
-
-
-        public string Standard { get; set; }
         public string StandardName { get; set; }
+        public string GlobalSID { get; set; }
+        public string PermissionGlobalSID { get; set; }
+        public string StationTxFreq { get; set; }
+        public string StationChannel { get; set; }
+        public string StatusMeas { get; set; }
+        public string StatusMeasFull { get; set; }
+        public string SensorName { get; set; }
+        public double? Freq_MHz { get; set; }
+        public double? BandWidth { get; set; }
+        public double? RadioControlMeasFreq_MHz { get; set; }
+        public double? RadioControlBandWidth_KHz { get; set; }
+        public double? RadioControlDeviationFreq_MHz { get; set; }
+        public double? Level_dBm { get; set; }
+        public double? FieldStrength { get; set; }
+        public DateTime? DateMeas_OnlyDate { get; set; }
+        public TimeSpan? DateMeas_OnlyTime { get; set; }
+        public TimeSpan? DurationMeasurement { get; set; }
+        public double? SensorLongitude { get; set; }
+        public double? SensorLatitude { get; set; }
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
+        public string SensorCoordinates { get; set; }
+        public string Coordinates { get; set; }
+
         public string OwnerName { get; set; }
+        public string Standard { get; set; }
+        public string Address { get; set; }
         public string PermissionNumber { get; set; }
         public DateTime? PermissionStart { get; set; }
         public DateTime? PermissionStop { get; set; }
-        public string Address { get; set; }
-        public DataLocation Location { get; set; }
-        public double? BandWidth { get; set; }
-        public string DesigEmission { get; set; }
-        public string Province { get; set; }
-
-        public long SensorId { get; set; }
-        public string GlobalSID { get; set; }
-        public double Freq_MHz { get; set; }
-        public double Level_dBm { get; set; }
-        public double? DispersionLow { get; set; }
-        public double? DispersionUp { get; set; }
-        public double? Percent { get; set; }
-        public DateTime DateMeas { get; set; }
-
-        public double? RadioControlMeasFreq_MHz { get; set; }
-        public double? RadioControlBandWidth { get; set; }
-
+        public string TitleSensor { get; set; }
+        public string CurentStatusStation { get; set; }
         public ProtocolsWithEmittings ProtocolsLinkedWithEmittings { get; set; }
     }
 }

@@ -1342,9 +1342,9 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
         }
         private void DeleteOldResult(long subTaskSensorId)
         {
-            var queryDelSubTaskSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().Delete();
-            queryDelSubTaskSensor.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId);
-            this._queryExecutor.Execute(queryDelSubTaskSensor);
+            //var queryDelSubTaskSensor = this._dataLayer.GetBuilder<MD.ILinkSubTaskSensorMasterId>().Delete();
+            //queryDelSubTaskSensor.Where(c => c.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId);
+            //this._queryExecutor.Execute(queryDelSubTaskSensor);
 
             var queryDelResLoc = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Delete();
             queryDelResLoc.Where(c => c.RES_MEAS.SUBTASK_SENSOR.Id, ConditionOperator.Equal, subTaskSensorId);

@@ -73,10 +73,8 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*"></RowDefinition>
-                  <RowDefinition Height="Auto"></RowDefinition>
-                  <RowDefinition Height="50"></RowDefinition>
                 </Grid.RowDefinitions>
-                <ScrollViewer Grid.Column="0" Grid.Row="0">
+                <ScrollViewer Grid.Column="0" Grid.Row="0" Margin="10">
                   <Grid DataContext="{Binding CurrentMeasTask}">
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition Width="120" />
@@ -1202,16 +1200,7 @@
                     </Expander>                    
                   </Grid>
                 </ScrollViewer>
-                <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
-                <Grid Grid.Row="2">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                  </Grid.RowDefinitions>
-                  <Button Grid.Row="1" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40">
+                <Button Grid.Row="1" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="50" Height="20" VerticalAlignment="Bottom">
                     <Button.Style>
                       <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="False"/>
@@ -1253,7 +1242,6 @@
                       </Style>
                     </Button.Style>
                   </Button>
-                </Grid> 
               </Grid>
             </GroupBox>
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>

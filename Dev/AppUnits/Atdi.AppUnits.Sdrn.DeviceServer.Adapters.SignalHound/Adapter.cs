@@ -81,6 +81,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             logger.Verbouse(Contexts.ThisComponent, "AdapterTraceResultPools were not found in the configuration " +
                                 "file and were replaced with the default values for this adapter.");
                         }
+                        if (tac.Main.AutoRefLevel == null)
+                        {
+                            SetDefaulAvtoRefLevelConfig(ref tac.Main);
+                            tac.SetThisAdapterConfig(tac.Main, fileName);
+                            logger.Verbouse(Contexts.ThisComponent, "AdapterAutoRefLevels were not found in the configuration " +
+                                "file and were replaced with the default values for this adapter.");
+                        }
                         mainConfig = tac.Main;
                     }
                     (MesureTraceDeviceProperties mtdp, MesureIQStreamDeviceProperties miqdp) = GetProperties(mainConfig);
@@ -89,6 +96,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
+
+                    //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
                 }
             }
             #region Exception
@@ -345,6 +354,74 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
         }
 
+        public void EstimateRefLevelCommandHandler(COM.MesureTraceCommand command, IExecutionContext context)
+        {
+            try
+            {
+                if (isRuning)
+                {
+                    /// если нужно проводим блокировку комманд который мы не сможем обслужить пока что то меряем в течении выполнени яэтой комманды
+                    /// и подсказывая этим инфраструктуре что этот устрйостов некоторое время не сможет обрабатываить такие комманды
+                    //context.Lock(CommandType.MesureTrace);
+
+                    // если нужно заблокировать выполняему комманду то достатчоно вызвать метод без параметров и блокируется комманда которая выполняется
+                    context.Lock();
+
+                    if (idleState)
+                    {
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
+                    }
+                    ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz, context);
+
+
+                    ValidateAndSetRBWVBWTracePointSweepTime(command.Parameter.RBW_Hz, command.Parameter.VBW_Hz, command.Parameter.TracePoint, command.Parameter.SweepTime_s, context);
+
+                    ValidateAndSetTraceCount(command.Parameter.TraceCount, context);
+
+                    ValidateAndSetTraceDetectors(command.Parameter.DetectorType, context);
+
+                    traceType = lpc.TraceType(command.Parameter.TraceType);
+                    LevelUnit = lpc.LevelUnit(command.Parameter.LevelUnit);
+
+                    if (deviceMode != EN.Mode.Sweeping || flagMode != EN.Flag.StreamIQ)
+                    {
+                        deviceMode = EN.Mode.Sweeping;
+                        flagMode = EN.Flag.StreamIQ;
+                    }
+                    StatusError(AdapterDriver.bbInitiate(deviceId, (uint)deviceMode, (uint)flagMode), context);
+
+                    idleState = true;
+                    //Меряем
+                    GetAndPushRefLevelResults(command, context);
+                    //Померяли
+                    if (idleState)
+                    {
+                        StatusError(AdapterDriver.bbAbort(deviceId), context);
+                        idleState = false;
+                    }
+                    // снимаем блокировку с текущей команды
+                    context.Unlock();
+                    // подтверждаем окончание выполнения комманды 
+                    // важно: всн ранее устапнволеные в контексте обработки текущей команыд блокировки снимаются автоматически
+                    context.Finish();
+                    // дальше кода быть не должно, освобождаем поток
+                }
+                else
+                {
+                    throw new Exception("The device with serial number " + deviceSerialNumber + " does not work");
+                }
+            }
+            catch (Exception e)
+            {
+                // желательно записать влог
+                logger.Exception(Contexts.ThisComponent, e);
+                // этот вызов обязательный в случаи обрыва
+                context.Unlock();
+                context.Abort(e);
+                // дальше кода быть не должно, освобождаем поток
+            }
+        }
         #region Param
         private readonly long uTCOffset = 621355968000000000;
         public EN.Status Status = EN.Status.NoError;
@@ -639,15 +716,26 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             sweepTime = lpc.SweepTime(this, sweepTime);
             if (rbw == 0)
             {
+                throw new Exception("RBW must be set greater than zero.");
+            }
+            else
+            {
                 if (vbw == 0)
                 {
+                    throw new Exception("VBW must be set greater than zero.");
+                }
+                else
+                {
                     if (tracePoint == 0)
+                    {
+                        throw new Exception("TracePoint must be set greater than zero.");
+                    }
+                    else
                     {
                         if (tracePoint > tracePointsMaxPool)
                         {
                             throw new Exception("TracePoint exceeds pool size. Max TracePoint " + tracePointsMaxPool.ToString());
                         }
-
                         if (rbw < 0)
                         {
                             //decimal[] natrbw = new decimal[] { 0.301m, 0.602m, 1.204m, 2.4m, 4.81m, 9.63m, 19.26m, 38.52m, 77.05m, 154.11m, 308.22m, 616.45m, 1232, 2465, 4931, 9863, 19720, 39450, 78900, 157100, 315600, 631200, 1262000, 2525000, 5050000, 10100000};
@@ -693,7 +781,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                                 SweepTime = sweepTime;
                             }
                             StatusError(AdapterDriver.bbConfigureSweepCoupling(deviceId, RBW, VBW, SweepTime, (uint)rBWShape, (uint)rejection));
-
                         }
                         else
                         {
@@ -708,19 +795,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                             }
                         }
                     }
-                    else
-                    {
-                        throw new Exception("TracePoint must be set greater than zero.");
-                    }
                 }
-                else
-                {
-                    throw new Exception("VBW must be set greater than zero.");
-                }
-            }
-            else
-            {
-                throw new Exception("RBW must be set greater than zero.");
             }
         }
 
@@ -1244,6 +1319,65 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
             }
         }
+        private void GetAndPushRefLevelResults(COM.MesureTraceCommand command, IExecutionContext context)
+        {
+            uint traceLen = 0;
+
+            ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
+            int steps = (mainConfig.AutoRefLevel.Stop_dBm - mainConfig.AutoRefLevel.Start_dBm) / mainConfig.AutoRefLevel.Step_dB;
+            TempRefLevelData[] data = new TempRefLevelData[steps];
+            int reflevel = 10000000;
+            for (int i = 0; i < steps; i++)
+            {
+                data[i] = new TempRefLevelData()
+                {
+                    RefLevel = mainConfig.AutoRefLevel.Start_dBm - mainConfig.AutoRefLevel.Step_dB * i,
+                    PercentRFOverload = 0,
+                    RFOverloadState = new bool[mainConfig.AutoRefLevel.NumberScan]
+                };
+                ValidateAndSetAttRefLevel(command.Parameter.Att_dB, data[i].RefLevel, context);
+                for (int l = 0; l < mainConfig.AutoRefLevel.NumberScan; l++)
+                {
+                    data[i].RFOverloadState[l] = false;
+                    StatusError(AdapterDriver.bbQueryTraceInfo(deviceId, ref traceLen, ref resFreqStep, ref resFreqStart));
+
+                    if (Status != EN.Status.DeviceConnectionErr ||
+                        Status != EN.Status.DeviceInvalidErr ||
+                        Status != EN.Status.DeviceNotOpenErr ||
+                        Status != EN.Status.USBTimeoutErr)
+                    {
+                        isRuning = true;
+                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                    }
+                    if (Status == EN.Status.ADCOverflow)
+                    {
+                        data[i].RFOverloadState[l] = true;
+                    }
+                    StatusError(AdapterDriver.bbFetchTrace_32f(deviceId, unchecked((int)traceLen), sweepMin, sweepMax));
+                    if (Status == EN.Status.ADCOverflow)
+                    {
+                        data[i].RFOverloadState[l] = true;
+                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                    }
+                    if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
+                    {
+
+                        //break;
+                    }
+                }
+                if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
+                {
+                    reflevel = data[i - 1].RefLevel;
+                    break;
+                }
+            }
+            if (reflevel == 10000000)
+            {
+                reflevel = mainConfig.AutoRefLevel.Stop_dBm;
+            }
+
+        }
+
         private void FindTracePoolName(int size, ref bool state, ref string name)
         {
             if (size > tracePointsMaxPool)
@@ -1603,10 +1737,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             }
             // сформировано пустое место
         }
+
 #if DEBUG
         public float[] IQArr = new float[] { -1, -1, -1, -1 };//del
 #endif
-
         private bool GetIQStream(ref COMR.MesureIQStreamResult iQStreamResult, TempIQData tempIQStream, IExecutionContext context, bool withPPS, bool justWithSignal)
         {
             bool done = false;
@@ -1885,6 +2019,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 AntennaName = "Omni",
                 AntennaSN = "123"
             };
+            SetDefaulAvtoRefLevelConfig(ref config);
             config.AdapterRadioPathParameters = new CFG.AdapterRadioPathParameter[]
             {
                 new CFG.AdapterRadioPathParameter()
@@ -1963,6 +2098,18 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     MaxSize = 20,
                     Size = 1000000
                 },
+            };
+        }
+
+        private void SetDefaulAvtoRefLevelConfig(ref CFG.AdapterMainConfig config)
+        {
+            config.AutoRefLevel = new CFG.AdapterAutoRefLevel()
+            {
+                Start_dBm = 10,
+                Stop_dBm = -80,
+                Step_dB = 10,
+                PersentOverload = 15,
+                NumberScan = 10
             };
         }
 
@@ -2049,7 +2196,13 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             public long[] BlockTime;//время с железа в наносекндах относительно new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)
             public long[] BlockTimeDelta;//Фактическая длительность этого блока (вообще всех)
             #endregion
+        }
 
+        private class TempRefLevelData
+        {
+            public int RefLevel = 0;
+            public float PercentRFOverload = 0;
+            public bool[] RFOverloadState = new bool[] { };
         }
     }
 

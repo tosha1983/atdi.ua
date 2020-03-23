@@ -10,7 +10,7 @@ using XICSM.ICSControlClient.Environment.Wpf;
 using XICSM.ICSControlClient.Models.WcfDataApadters;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using MP = XICSM.ICSControlClient.WpfControls.Maps;
-using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
+using SDR = Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using System.Windows;
 using FRM = System.Windows.Forms;
 using FM = XICSM.ICSControlClient.Forms;
@@ -32,21 +32,25 @@ namespace XICSM.ICSControlClient.ViewModels
 {
     public class GroupeEmissionWithStationProtocolModelViewModel : WpfViewModelBase
     {
-        private IList _currentProtocols;
+        private DataSynchronizationProcessViewModel _currentProtocol;
+        private IList _currentProtocolDetails;
         private GroupeEmissionProtocolDataFilter _dataFilter;
         private bool _isEnabledPrintAllCommand = false;
 
-        private DataSynchronizationProcessProtocolDataAdapter _protocols;
+        private DataSynchronizationProcessDataAdapter _protocols;
+        private DataSynchronizationProcessProtocolDataAdapter _protocolDetails;
 
         public WpfCommand FilterApplyCommand { get; set; }
         public WpfCommand PrintSelectedCommand { get; set; }
         public WpfCommand PrintAllCommand { get; set; }
 
-        public DataSynchronizationProcessProtocolDataAdapter Protocols => this._protocols;
+        public DataSynchronizationProcessDataAdapter Protocols => this._protocols;
+        public DataSynchronizationProcessProtocolDataAdapter ProtocolDetails => this._protocolDetails;
 
         public GroupeEmissionWithStationProtocolModelViewModel()
         {
-            this._protocols = new DataSynchronizationProcessProtocolDataAdapter();
+            this._protocols = new DataSynchronizationProcessDataAdapter();
+            this._protocolDetails = new DataSynchronizationProcessProtocolDataAdapter();
             this._dataFilter = new GroupeEmissionProtocolDataFilter();
             this.FilterApplyCommand = new WpfCommand(this.OnFilterApplyCommand);
             this.PrintSelectedCommand = new WpfCommand(this.OnPrintSelectedCommand);
@@ -54,12 +58,17 @@ namespace XICSM.ICSControlClient.ViewModels
             IsEnabledPrintAllCommand = false;
             this.ReloadData();
         }
-        public IList CurrentProtocols
+        public DataSynchronizationProcessViewModel CurrentProtocol
         {
-            get => this._currentProtocols;
+            get => this._currentProtocol;
+            set => this.Set(ref this._currentProtocol, value, () => { this.ReloadDataDetail(); });
+        }
+        public IList CurrentProtocolDetails
+        {
+            get => this._currentProtocolDetails;
             set
-            {   
-                this._currentProtocols = value;
+            {
+                this._currentProtocolDetails = value;
                 CheckEnablePrintCommand();
             }
         }
@@ -77,6 +86,11 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var sdrProtocols = SVC.SdrnsControllerWcfClientIeStation.GetProtocols();
             this._protocols.Source = sdrProtocols;
+        }
+        private void ReloadDataDetail()
+        {
+            if (this._currentProtocol != null)
+            this._protocolDetails.Source = this._currentProtocol.DetailProtocols;
         }
         private void CheckEnablePrintCommand()
         {
@@ -116,9 +130,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
                         {
-                            foreach (var row in this._protocols.Source)
+                            foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
                             {
-                                PrintRow(Mappers.Map(row), folderDialog.SelectedPath);
+                                PrintRow(row, folderDialog.SelectedPath);
                             }
                             MessageBox.Show("Процедура формирования отчетов успешно завершена!");
                         }
@@ -136,7 +150,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
                 {
-                    foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocols)
+                    foreach (DataSynchronizationProcessProtocolsViewModel row in this._currentProtocolDetails)
                     {
                         PrintRow(row, folderDialog.SelectedPath);
                     }
@@ -162,41 +176,27 @@ namespace XICSM.ICSControlClient.ViewModels
             rs.Put("PERMISSION_START", row.PermissionStart);
             rs.Put("PERMISSION_STOP", row.PermissionStop);
             rs.Put("ADDRESS", row.Address);
-            if (row.Location != null)
+            if (row.Longitude.HasValue)
             {
-                rs.Put("LONGITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Longitude, Coordinates.EnumCoordLine.Lon));
-                rs.Put("LATITUDE", ConvertCoordinates.DecToDmsToString(row.Location.Latitude, Coordinates.EnumCoordLine.Lat));
+                rs.Put("LONGITUDE", ConvertCoordinates.DecToDmsToString(row.Longitude.Value, Coordinates.EnumCoordLine.Lon));
+                rs.Put("SENSOR_LON", ConvertCoordinates.DecToDmsToString(row.Longitude.Value, Coordinates.EnumCoordLine.Lon));
             }
-            if ((row.Locations != null) && (row.Locations.Length > 0))
+            if (row.Latitude.HasValue)
             {
-                var lstSensorLocation = row.Locations.ToList();
-                var orderSensorLocation = lstSensorLocation.OrderByDescending(c => c.DataCreated);
-                lstSensorLocation = orderSensorLocation.ToList();
-                var actualSensorLocation = lstSensorLocation[0];
-                if (actualSensorLocation.Lon != null)
-                {
-                    rs.Put("SENSOR_LON", ConvertCoordinates.DecToDmsToString(actualSensorLocation.Lon.Value, Coordinates.EnumCoordLine.Lon));
-                }
-                if (actualSensorLocation.Lat != null)
-                {
-                    rs.Put("SENSOR_LAT", ConvertCoordinates.DecToDmsToString(actualSensorLocation.Lat.Value, Coordinates.EnumCoordLine.Lat));
-                }
+                rs.Put("LATITUDE", ConvertCoordinates.DecToDmsToString(row.Latitude.Value, Coordinates.EnumCoordLine.Lat));
+                rs.Put("SENSOR_LAT", ConvertCoordinates.DecToDmsToString(row.Latitude.Value, Coordinates.EnumCoordLine.Lat));
             }
+
             rs.Put("SENSOR_NAME", row.SensorName);
             rs.Put("DATE_MEAS", row.DateMeas);
-            rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz, 3));
-            if (row.BandWidth != null)
-            {
+            if (row.Freq_MHz.HasValue)
+                rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz.Value, 3));
+            if (row.BandWidth.HasValue)
                 rs.Put("S_BW", Math.Round(row.BandWidth.Value, 3));
-            }
-            if (row.RadioControlMeasFreq_MHz != null)
-            {
+            if (row.RadioControlMeasFreq_MHz.HasValue)
                 rs.Put("FREQ_MHZ", Math.Round(row.RadioControlMeasFreq_MHz.Value, 3));
-            }
-            if (row.RadioControlBandWidth != null)
-            {
-                rs.Put("BW", Math.Round(row.RadioControlBandWidth.Value, 3));
-            }
+            if (row.RadioControlBandWidth_KHz.HasValue)
+                rs.Put("BW", Math.Round(row.RadioControlBandWidth_KHz.Value, 3));
             if (row.ProtocolsLinkedWithEmittings != null)
             {
                 if (row.ProtocolsLinkedWithEmittings.CurentPower_dBm != null)
@@ -204,7 +204,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     rs.Put("LEVEL_DBM", Math.Round(row.ProtocolsLinkedWithEmittings.CurentPower_dBm.Value, 1));
                 }
             }
-            rs.Put("DESIG_EMISSION", row.DesigEmission);
+            //rs.Put("DESIG_EMISSION", row.DesigEmission);
             rs.Put("GLOBAL_SID", row.GlobalSID);
             rs.Put("CREATED_BY", GetUserFio(IM.ConnectedUser()));
             rs.Update();
@@ -245,9 +245,6 @@ namespace XICSM.ICSControlClient.ViewModels
             if (rsDel.IsOpen())
                 rsDel.Close();
             rsDel.Destroy();
-
-
-
         }
 
         public static string GetUserFio(string login)

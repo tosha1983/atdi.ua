@@ -18,6 +18,5 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Commands
             : base(CommandType.MesureTrace, parameter)
         {
         }
-
     }
 }

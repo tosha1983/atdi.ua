@@ -92,6 +92,7 @@ copy "..\..\..\..\IcsmPlugins\ICS Control Client\Xaml\*.xaml" "..\..\..\..\Deliv
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\IcsmSchema\ICSControlClient.Schema" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\ICSControlClient.Schema"
 copy "..\..\..\..\IcsmPlugins\ICS Control Client\ICSM 6.2.70\IcsmReport\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\IcsmReport\*.*"
 
-</PostBuildEvent>
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Bin\$(ConfigurationName)\ru-RU\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\ru-RU\*.*"
+copy "..\..\..\..\IcsmPlugins\ICS Control Client\Bin\$(ConfigurationName)\uk-UA\*.*" "..\..\..\..\Delivery\Atdi.Sdrn\Client\IcsmPlugin\Bin$(ConfigurationName)\uk-UA\*.*"</PostBuildEvent>
   </PropertyGroup>
 </Project>

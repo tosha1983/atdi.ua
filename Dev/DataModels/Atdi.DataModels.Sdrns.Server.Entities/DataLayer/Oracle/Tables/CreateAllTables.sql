@@ -1,4 +1,31 @@
-﻿CREATE SEQUENCE ICSC.AMQP_MESSAGES_LOG_ID_SEQ
+﻿CREATE SEQUENCE ICSC.HEALTH_LOG_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+  
+CREATE SEQUENCE ICSC.HEALTH_LOG_DETAIL_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+CREATE SEQUENCE ICSC.HEALTH_LOG_DATA_ID_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 0
+  NOCYCLE
+  CACHE 2
+  NOORDER;
+
+
+
+CREATE SEQUENCE ICSC.AMQP_MESSAGES_LOG_ID_SEQ
   START WITH 1
   MAXVALUE 9999999999999999999999999999
   MINVALUE 0
@@ -619,6 +646,176 @@ CREATE SEQUENCE WORK_TIME_ID_SEQ
   NOORDER;
 
 
+CREATE TABLE ICSC.HEALTH_LOG
+(
+  ID                NUMBER(15)                  NOT NULL,
+  SENDER_LOG_ID     NUMBER(15),
+  SENDER_TYPE_CODE  NUMBER(3),
+  SENDER_TYPE_NAME  NVARCHAR2(50),
+  SENDER_INSTANCE   NVARCHAR2(250),
+  SENDER_HOST       NVARCHAR2(250),
+  SOURCE_TYPE_CODE  NUMBER(3)                   NOT NULL,
+  SOURCE_TYPE_NAME  NVARCHAR2(50)               NOT NULL,
+  SOURCE_INSTANCE   NVARCHAR2(250)              NOT NULL,
+  SOURCE_TECHID     NVARCHAR2(250),
+  SOURCE_HOST       NVARCHAR2(250),
+  EVENT_CODE        NUMBER(3)                   NOT NULL,
+  EVENT_NAME        NVARCHAR2(50)               NOT NULL,
+  DISPATCH_TIME     TIMESTAMP(7) WITH TIME ZONE NOT NULL,
+  RECEIVED_TIME     TIMESTAMP(7) WITH TIME ZONE NOT NULL,
+  FORWARDED_TIME    TIMESTAMP(7) WITH TIME ZONE,
+  EVENT_NOTE        NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (EVENT_NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+CREATE TABLE ICSC.HEALTH_LOG_DATA
+(
+  ID         NUMBER(15)                         NOT NULL,
+  JSON_DATA  NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (JSON_DATA) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE TABLE ICSC.HEALTH_LOG_DETAIL
+(
+  ID              NUMBER(15)                    NOT NULL,
+  HEALTH_ID       NUMBER(15)                    NOT NULL,
+  CREATED_DATE    TIMESTAMP(7) WITH TIME ZONE   NOT NULL,
+  MESSAGE         NVARCHAR2(250)                NOT NULL,
+  THREAD_ID       NUMBER(9)                     NOT NULL,
+  SOURCE          RAW(450),
+  SITE_TYPE_CODE  NUMBER(3)                     NOT NULL,
+  SITE_TYPE_NAME  NVARCHAR2(50)                 NOT NULL,
+  SITE_INSTANCE   NVARCHAR2(250)                NOT NULL,
+  SITE_HOST       NVARCHAR2(250),
+  NOTE            NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+LOB (NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
 CREATE TABLE LINK_ONLINE_MEAS
 (
   ID                     NUMBER(15)             NOT NULL,
@@ -988,7 +1185,7 @@ NOPARALLEL
 MONITORING;
 
 
-CREATE TABLE AMQP_MESSAGES
+CREATE TABLE ICSC.AMQP_MESSAGES
 (
   ID                     NUMBER(15)             NOT NULL,
   STATUS_CODE            NUMBER(3)              NOT NULL,
@@ -1020,11 +1217,73 @@ CREATE TABLE AMQP_MESSAGES
   HEADER_PROTOCOL        NVARCHAR2(50),
   HEADER_BODYAQNAME      NVARCHAR2(250)
 )
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
 LOGGING 
 NOCOMPRESS 
+LOB (BODY_CONTENT) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
+  LOB (STATUS_NOTE) STORE AS SECUREFILE 
+      ( TABLESPACE  USERS 
+        ENABLE      STORAGE IN ROW
+        CHUNK       8192
+        NOCACHE
+        INDEX       (
+          TABLESPACE USERS
+          STORAGE    (
+                      INITIAL          64K
+                      NEXT             1
+                      MINEXTENTS       1
+                      MAXEXTENTS       UNLIMITED
+                      PCTINCREASE      0
+                      BUFFER_POOL      DEFAULT
+                     ))
+        STORAGE    (
+                    INITIAL          104K
+                    NEXT             1M
+                    MINEXTENTS       1
+                    MAXEXTENTS       UNLIMITED
+                    PCTINCREASE      0
+                    BUFFER_POOL      DEFAULT
+                   )
+      )
 NOCACHE
 NOPARALLEL
-MONITORING;
+MONITORING
+ENABLE ROW MOVEMENT;
 
 
 CREATE TABLE LINK_RES_SENSOR
@@ -1661,13 +1920,27 @@ CREATE TABLE AMQP_EVENTS
 (
   ID            NUMBER(15)                      NOT NULL,
   PROP_TYPE     VARCHAR2(250 CHAR),
-  CREATED_DATE  TIMESTAMP(7) WITH TIME ZONE
+  CREATED_DATE  TIMESTAMP(7) WITH TIME ZONE     DEFAULT sysdate               NOT NULL
 )
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
 LOGGING 
 NOCOMPRESS 
 NOCACHE
 NOPARALLEL
-MONITORING;
+MONITORING
+ENABLE ROW MOVEMENT;
 
 
 CREATE TABLE REFERENCE_LEVELS
@@ -1975,7 +2248,7 @@ CREATE TABLE ICSC.AMQP_MESSAGES_LOG
   STATUS_NAME   NVARCHAR2(50),
   STATUS_NOTE   VARCHAR2(4000 BYTE),
   CREATED_DATE  TIMESTAMP(7) WITH TIME ZONE     NOT NULL,
-  THREAD_ID     NUMBER(9),
+  THREAD_ID     NUMBER(9)                       NOT NULL,
   SOURCE        NVARCHAR2(450)
 )
 TABLESPACE USERS
@@ -1984,6 +2257,10 @@ PCTFREE    10
 INITRANS   1
 MAXTRANS   255
 STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
             PCTINCREASE      0
             BUFFER_POOL      DEFAULT
            )
@@ -1991,7 +2268,8 @@ LOGGING
 NOCOMPRESS 
 NOCACHE
 NOPARALLEL
-MONITORING;
+MONITORING
+ENABLE ROW MOVEMENT;
 
 
 
@@ -2007,6 +2285,33 @@ NOCOMPRESS
 NOCACHE
 NOPARALLEL
 MONITORING;
+
+CREATE UNIQUE INDEX ICSC.HEALTH_LOG_PK ON ICSC.HEALTH_LOG
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+CREATE UNIQUE INDEX ICSC.HEALTH_LOG_DATA_PK ON ICSC.HEALTH_LOG_DATA
+(ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
 
 
 CREATE UNIQUE INDEX ICSC.AMQP_MESSAGES_LOG_PK ON ICSC.AMQP_MESSAGES_LOG
@@ -2686,7 +2991,7 @@ end;
 SHOW ERRORS;
 
 
-CREATE OR REPLACE FUNCTION      GetID (inttable_name IN varchar2)
+CREATE OR REPLACE FUNCTION ICSC.GetID (inttable_name IN varchar2)
 return number
 is
 n number(15);
@@ -3118,9 +3423,35 @@ into n
 from dual;
 end if;
 
+if inttable_name ='AMQP_MESSAGES_LOG' then
+select ICSC.AMQP_MESSAGES_LOG_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+
+if inttable_name ='HEALTH_LOG' then
+select ICSC.HEALTH_LOG_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='HEALTH_LOG_DATA' then
+select ICSC.HEALTH_LOG_DATA_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
+if inttable_name ='HEALTH_LOG_DETAIL' then
+select ICSC.HEALTH_LOG_DETAIL_ID_SEQ.nextval
+into n
+from dual;
+end if;
+
 return(n);
 end;
 /
+
 
 SHOW ERRORS;
 
@@ -3149,6 +3480,21 @@ SELECT   DISTINCT Tcaz_1.LON AS LON,
             INNER JOIN
                ICSC.RES_STGENERAL Tcaz_4
             ON Tcaz_4.RES_MEAS_STATION_ID = Tcaz_2.ID;
+
+ALTER TABLE ICSC.HEALTH_LOG ADD (
+  CONSTRAINT HEALTH_LOG_PK
+ PRIMARY KEY
+ (ID));
+
+
+ ALTER TABLE ICSC.HEALTH_LOG_DATA ADD (
+  CONSTRAINT HEALTH_LOG_DATA_PK
+ PRIMARY KEY
+ (ID));
+
+ ALTER TABLE ICSC.HEALTH_LOG_DETAIL ADD (
+  PRIMARY KEY
+ (ID));
 
 
 ALTER TABLE LINK_ONLINE_MEAS ADD (

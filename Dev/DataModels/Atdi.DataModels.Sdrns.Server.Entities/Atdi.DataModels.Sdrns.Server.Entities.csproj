@@ -135,6 +135,9 @@
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AMQP_MESSAGES_LOG_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AREA_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.AREA_LOCATION_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.HEALTH_LOG_DETAIL_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.HEALTH_LOG_DATA_ID_SEQ.sql" />
+    <Content Include="DataLayer\Oracle\Sequences\ICSC.HEALTH_LOG_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.HEAD_REF_SPECTRUM_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_AREA_ID_SEQ.sql" />
     <Content Include="DataLayer\Oracle\Sequences\ICSC.LINK_HEAD_REF_SPECTRUM_ID_SEQ.sql" />
@@ -156,6 +159,9 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.AREA.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.AREA_LOCATION.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.HEAD_REF_SPECTRUM.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.HEALTH_LOG.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.HEALTH_LOG_DATA.sql" />
+    <Content Include="DataLayer\Oracle\Tables\ICSC.HEALTH_LOG_DETAIL.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_AREA.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_HEAD_REF_SPECTRUM.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.LINK_ONLINE_MEAS.sql" />

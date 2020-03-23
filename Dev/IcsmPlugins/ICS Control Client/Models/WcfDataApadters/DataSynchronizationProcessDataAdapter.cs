@@ -9,18 +9,22 @@ using XICSM.ICSControlClient.Environment.Wpf;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
-    public class DataSynchronizationProcessDataAdapter : WpfDataAdapter<SDR.DataSynchronizationProcess, VM.DataSynchronizationProcessViewModel, DataSynchronizationProcessDataAdapter>
+    public class DataSynchronizationProcessDataAdapter : WpfDataAdapter<SDR.HeadProtocols, VM.DataSynchronizationProcessViewModel, DataSynchronizationProcessDataAdapter>
     {
-        protected override Func<SDR.DataSynchronizationProcess, VM.DataSynchronizationProcessViewModel> GetMapper()
+        protected override Func<SDR.HeadProtocols, VM.DataSynchronizationProcessViewModel> GetMapper()
         {
             return source => new VM.DataSynchronizationProcessViewModel
             {
-                Id = source.Id,
-                Status = source.Status,
-                DateCreated = source.DateCreated,
-                DateStart = source.DateStart,
-                DateEnd =  source.DateEnd,
-                CreatedBy = source.CreatedBy
+                GSID = source.PermissionGlobalSID,
+                DateMeas = source.DateMeas,
+                Owner = source.OwnerName,
+                StationAddress = source.Address,
+                Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
+                NumberPermission = source.PermissionNumber,
+                PermissionPeriod = source.PermissionStart,
+                PermissionStart = source.PermissionStop,
+                SensorName = source.TitleSensor,
+                DetailProtocols = source.DetailProtocols
             };
         }
     }

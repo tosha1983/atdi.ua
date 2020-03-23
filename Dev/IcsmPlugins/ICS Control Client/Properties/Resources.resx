@@ -706,7 +706,7 @@
     <value>Time From</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
-    <value>Time</value>
+    <value>Time Meas</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
     <value>Time Start</value>
@@ -913,5 +913,113 @@
   </data>
   <data name="Year" xml:space="preserve">
     <value>Year</value>
+  </data>
+  <data name="Coordinates" xml:space="preserve">
+    <value>Coordinates</value>
+  </data>
+  <data name="CoordinatesDeclared" xml:space="preserve">
+    <value>Coordinates declared</value>
+  </data>
+  <data name="CoordinatesOfMeasured" xml:space="preserve">
+    <value>Coordinates of measured</value>
+  </data>
+  <data name="FieldStrength_dBV_m" xml:space="preserve">
+    <value>Field strength dBμV/m</value>
+  </data>
+  <data name="FrequencyBandwidthMeasured_kHz" xml:space="preserve">
+    <value>Frequency bandwidth measured, kHz</value>
+  </data>
+  <data name="FrequencyDeviation" xml:space="preserve">
+    <value>Frequency deviation</value>
+  </data>
+  <data name="FrequencyMeasured" xml:space="preserve">
+    <value>Frequency measured</value>
+  </data>
+  <data name="GSIDICSM" xml:space="preserve">
+    <value>GSID ICSM</value>
+  </data>
+  <data name="GSIDReal" xml:space="preserve">
+    <value>GSID real</value>
+  </data>
+  <data name="MeasurementDuration" xml:space="preserve">
+    <value>Measurement duration</value>
+  </data>
+  <data name="NumberPermission" xml:space="preserve">
+    <value>Number permission</value>
+  </data>
+  <data name="Owner1" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="OwnerOfStation" xml:space="preserve">
+    <value>Owner of station</value>
+  </data>
+  <data name="PermissionChannel" xml:space="preserve">
+    <value>Permission channel</value>
+  </data>
+  <data name="PermissionFrequency_MHz" xml:space="preserve">
+    <value>Permission frequency, MHz</value>
+  </data>
+  <data name="PermissionPeriod" xml:space="preserve">
+    <value>Permission period</value>
+  </data>
+  <data name="PermissionStart1" xml:space="preserve">
+    <value>Permission start</value>
+  </data>
+  <data name="Plan" xml:space="preserve">
+    <value>Plan</value>
+  </data>
+  <data name="RadioMonitoringResult" xml:space="preserve">
+    <value>Radio monitoring result</value>
+  </data>
+  <data name="SignalLevel_dB" xml:space="preserve">
+    <value>Signal Level (dB)</value>
+  </data>
+  <data name="StationAddress" xml:space="preserve">
+    <value>Station Address</value>
+  </data>
+  <data name="StatusStation" xml:space="preserve">
+    <value>Status station</value>
+  </data>
+  <data name="TRBS" xml:space="preserve">
+    <value>TRBS</value>
+  </data>
+  <data name="ZTR" xml:space="preserve">
+    <value>ZTR</value>
+  </data>
+  <data name="GSID" xml:space="preserve">
+    <value>GSID</value>
+  </data>
+  <data name="Message_GSIDSyncWithEmissionsCouldNotBeStarted" xml:space="preserve">
+    <value>GSID sync with emissions could not be started. Since it has already been carried out for a given period of time (or part) and the selected sensors (one or several) and the selected file (one or several) with reference spectra. Change the settings and run again.</value>
+  </data>
+  <data name="Message_ProcessStartedSuccessfully" xml:space="preserve">
+    <value>Process started successfully.</value>
+  </data>
+  <data name="State_A" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="State_C" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="State_F" xml:space="preserve">
+    <value>Forced to stop</value>
+  </data>
+  <data name="State_N" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Status_IllegallyOperatedTransmitter" xml:space="preserve">
+    <value>Illegally operated transmitter</value>
+  </data>
+  <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
+    <value>Operating according to License</value>
+  </data>
+  <data name="Status_OperatingAccordingToTest" xml:space="preserve">
+    <value>Operating according to Test</value>
+  </data>
+  <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
+    <value>Transmitter operation not fixed</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
   </data>
 </root>

@@ -73,10 +73,8 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*"></RowDefinition>
-                  <RowDefinition Height="Auto"></RowDefinition>
-                  <RowDefinition Height="50"></RowDefinition>
                 </Grid.RowDefinitions>
-                <ScrollViewer Grid.Column="0" Grid.Row="0">
+                <ScrollViewer Grid.Column="0" Grid.Row="0" Margin="10">
                   <Grid DataContext="{Binding CurrentMeasTask}">
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition Width="120" />
@@ -96,7 +94,7 @@
                     <Label Height="18" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.Name}"  />
                     <TextBox Height="18" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Text="{Binding Path=Name}"/>
 
-                    <Label Height="18" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.Type_Measurements}"  />
+                    <Label Height="18" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content = "{x:Static res:Resources.TypeMeasurements}"  />
                     <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding MeasDtParamTypeMeasurements, Mode=TwoWay}" ItemsSource="{Binding MeasDtParamTypeMeasurementsValues}" IsEnabled="False"/>
 
                     <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="{x:Static res:Resources.TimeMeas}" IsExpanded="true">
@@ -759,6 +757,18 @@
                                   </Binding.ValidationRules>
                                 </Binding>
                               </TextBox.Text>
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
                             </TextBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.MarginForReferenceLevelCalculationDB}"  />
@@ -816,6 +826,18 @@
                                   </Binding.ValidationRules>
                                 </Binding>
                               </TextBox.Text>
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
                             </TextBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "{x:Static res:Resources.PercOfIntersectionOfSpectrumsToCombineEmissionsLowLevelSignals}"  />
@@ -827,6 +849,18 @@
                                   </Binding.ValidationRules>
                                 </Binding>
                               </TextBox.Text>
+                              <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
                             </TextBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="6" Padding="5,0,0,0" Content = "{x:Static res:Resources.LevelForBandwithEstimation}"  />
@@ -841,7 +875,21 @@
                             </TextBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="7" Padding="5,0,0,0" Content = "{x:Static res:Resources.UsingCorrelationAnalysis}"/>
-                            <CheckBox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" IsChecked="{Binding Path=CorrelationAnalize}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" IsChecked="{Binding Path=CorrelationAnalize}">
+                              <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </CheckBox.Style>
+                            </CheckBox>
+                              
 
                             <Label Height="18" Grid.Column="0" Grid.Row="8" Padding="5,0,0,0" Content = "{x:Static res:Resources.CorrelationCoefficient}"  />
                             <TextBox x:Name="CorrelationFactor" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3" >
@@ -849,6 +897,12 @@
                                 <Style TargetType="TextBox">
                                   <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=CorrelationAnalize}" Value="True">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
                                       <Setter  Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Path=CorrelationAnalize}" Value="False">
@@ -899,7 +953,20 @@
                             </TextBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="11" Padding="5,0,0,0" Content = "{x:Static res:Resources.CheckingEmissionInChannels}"/>
-                            <CheckBox Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3" IsChecked="{Binding Path=AnalyzeByChannel}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="11" Grid.ColumnSpan="3" IsChecked="{Binding Path=AnalyzeByChannel}">
+                              <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </CheckBox.Style>
+                            </CheckBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="12" Padding="5,0,0,0" Content = "{x:Static res:Resources.CollectEmissionForInstrumentalEstimation}"/>
                             <CheckBox Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="3" IsChecked="{Binding Path=CollectEmissionInstrumentalEstimation}"/>
@@ -934,7 +1001,20 @@
                               <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content = "{x:Static res:Resources.AnalysisOnlyWithContraventionOfReferenceLevel}"/>
-                            <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CompareTraceJustWithRefLevels}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Path=CompareTraceJustWithRefLevels}">
+                              <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </CheckBox.Style>
+                            </CheckBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.AutomaticDivisionOfEmissions}"  />
                             <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding Path=AutoDivisionEmitting}"/>
@@ -984,7 +1064,20 @@
                             </TextBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.DetailedMeasurementsOfTheEmissionBandwith}"  />
-                            <CheckBox Grid.Column="1" Grid.Row="4" IsChecked="{Binding Path=DetailedMeasurementsBWEmission}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="4" IsChecked="{Binding Path=DetailedMeasurementsBWEmission}">
+                              <CheckBox.Style>
+                                <Style TargetType="CheckBox">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="true">
+                                      <Setter  Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=CollectEmissionInstrumentalEstimation}" Value="false">
+                                      <Setter  Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </CheckBox.Style>
+                            </CheckBox>
 
                             <Label Height="18" Grid.Column="0" Grid.Row="5" Padding="5,0,0,0" Content = "{x:Static res:Resources.TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith}"  />
                             <TextBox x:Name="MinPointForDetailBW" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MinPointForDetailBW}" >
@@ -1107,16 +1200,7 @@
                     </Expander>                    
                   </Grid>
                 </ScrollViewer>
-                <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
-                <Grid Grid.Row="2">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                  </Grid.RowDefinitions>
-                  <Button Grid.Row="1" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="120" Height="40">
+                <Button Grid.Row="1" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="50" Height="20" VerticalAlignment="Bottom">
                     <Button.Style>
                       <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="False"/>
@@ -1158,7 +1242,6 @@
                       </Style>
                     </Button.Style>
                   </Button>
-                </Grid> 
               </Grid>
             </GroupBox>
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>

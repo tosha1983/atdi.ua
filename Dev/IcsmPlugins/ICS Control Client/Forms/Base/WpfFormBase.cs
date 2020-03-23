@@ -426,6 +426,52 @@ namespace XICSM.ICSControlClient.Forms
                     return true;
                 });
             }
+            if (grid.Name == "GroupeEmissionProtocolDetail")
+            {
+                (grid.ItemsSource as ADP.DataSynchronizationProcessProtocolDataAdapter).ClearFilter();
+                (grid.ItemsSource as ADP.DataSynchronizationProcessProtocolDataAdapter).ApplyFilter(c =>
+                { 
+                    foreach (var filter in _dataGridFilters[grid].FiltersNumeric)
+                    {
+                        if (filter.Key == "RadioControlMeasFreq_MHz")
+                        {
+                            if (filter.Value.FromValue.HasValue && c.RadioControlMeasFreq_MHz.HasValue && c.RadioControlMeasFreq_MHz < filter.Value.FromValue)
+                                return false;
+                            if (filter.Value.ToValue.HasValue && c.RadioControlMeasFreq_MHz.HasValue && c.RadioControlMeasFreq_MHz > filter.Value.ToValue)
+                                return false;
+                        }
+                        if (filter.Key == "RadioControlBandWidth_KHz")
+                        {
+                            if (filter.Value.FromValue.HasValue && c.RadioControlBandWidth_KHz.HasValue && c.RadioControlBandWidth_KHz < filter.Value.FromValue)
+                                return false;
+                            if (filter.Value.ToValue.HasValue && c.RadioControlBandWidth_KHz.HasValue && c.RadioControlBandWidth_KHz > filter.Value.ToValue)
+                                return false;
+                        }
+                        if (filter.Key == "FieldStrength")
+                        {
+                            if (filter.Value.FromValue.HasValue && c.FieldStrength.HasValue && c.FieldStrength < filter.Value.FromValue)
+                                return false;
+                            if (filter.Value.ToValue.HasValue && c.FieldStrength.HasValue && c.FieldStrength > filter.Value.ToValue)
+                                return false;
+                        }
+                        if (filter.Key == "Level_dBm")
+                        {
+                            if (filter.Value.FromValue.HasValue && c.Level_dBm.HasValue && c.Level_dBm < filter.Value.FromValue)
+                                return false;
+                            if (filter.Value.ToValue.HasValue && c.Level_dBm.HasValue && c.Level_dBm > filter.Value.ToValue)
+                                return false;
+                        }
+                        if (filter.Key == "RadioControlDeviationFreq_MHz")
+                        {
+                            if (filter.Value.FromValue.HasValue && c.RadioControlDeviationFreq_MHz.HasValue && c.RadioControlDeviationFreq_MHz < filter.Value.FromValue)
+                                return false;
+                            if (filter.Value.ToValue.HasValue && c.RadioControlDeviationFreq_MHz.HasValue && c.RadioControlDeviationFreq_MHz > filter.Value.ToValue)
+                                return false;
+                        }
+                    }
+                    return true;
+                });
+            }
         }
         Type GetColumnType(CTR.DataGrid grid, string columnName)
         {
@@ -456,6 +502,16 @@ namespace XICSM.ICSControlClient.Forms
                 if (columnName == "HitCount") return typeof(int);
                 if (columnName == "PersentAvailability") return typeof(float);
             }
+
+            if (grid.Name == "GroupeEmissionProtocolDetail")
+            {
+                if (columnName == "RadioControlMeasFreq_MHz") return typeof(double?);
+                if (columnName == "RadioControlBandWidth_KHz") return typeof(double?);
+                if (columnName == "FieldStrength") return typeof(double?);
+                if (columnName == "Level_dBm") return typeof(double?);
+                if (columnName == "RadioControlDeviationFreq_MHz") return typeof(double);
+            }
+
             //if (grid.Name == "GridSensor")
             //{
             //    if (columnName == "LowerFreq") return typeof(double);
@@ -497,9 +553,10 @@ namespace XICSM.ICSControlClient.Forms
 
 
                 //if (grd.Name == "GridSensor" || grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")
+                //if (grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes" || grd.Name == "GroupeEmissionProtocolDetail")
                 if (grd.Name == "GridEmittings" || grd.Name == "GridWorkTimes")
-                {
-                    List<DataGridColumnHeader> columnHeaders = GetVisualChildCollection<DataGridColumnHeader>(grd);
+                    {
+                        List<DataGridColumnHeader> columnHeaders = GetVisualChildCollection<DataGridColumnHeader>(grd);
                     foreach (DataGridColumnHeader columnHeader in columnHeaders)
                     {
                         //var columnName = (((columnHeader.Column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
