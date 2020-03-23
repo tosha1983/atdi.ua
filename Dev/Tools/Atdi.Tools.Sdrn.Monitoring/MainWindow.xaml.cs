@@ -43,7 +43,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
         public MainWindow()
         {
-            Thread.Sleep(5000);
+            //Thread.Sleep(5000);
             InitializeComponent();
             Task.Run((Action)LoadEnvironmentDescription);
         }
@@ -326,7 +326,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
             configTree.Visibility = Visibility.Hidden;
             gridLogEvents.Visibility = Visibility.Hidden;
             groupStatistics.Visibility = Visibility.Hidden;
-            gridHealthLog.Visibility = Visibility.Hidden;
+            groupHealthLog.Visibility = Visibility.Hidden;
 
 		}
         private void ShowConfig(string endpointKey)
@@ -679,7 +679,92 @@ namespace Atdi.Tools.Sdrn.Monitoring
 					gridHealthLog.ItemsSource = logeventData;
 				}
 			}
-			gridHealthLog.Visibility = Visibility.Visible;
+			groupHealthLog.Visibility = Visibility.Visible;
+		}
+
+		private void gridHealthLog_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine($"gridHealthLog_SelectionChanged: {e.AddedItems.Count}");
+			if (e.AddedItems.Count > 0)
+			{
+				var healthId = (e.AddedItems[0] as HealthLogResult).Id;
+				this.ShowHealthDetail(healthId);
+				this.ShowHealthContent(healthId);
+			}
+			
+		}
+
+		private void ShowHealthDetail(long healthId)
+		{
+			var endpointKey = Convert.ToString(((mainTree.SelectedItem as TreeViewItem).Parent as TreeViewItem).Tag);
+			using (var wc = new HttpClient())
+			{
+				var detailResult = new List<HealthLogDetailResult>();
+				var ormNamespace = _namespaces[endpointKey];
+				var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/SDRN_Server_DB/{ormNamespace}/HealthLogDetail?select=Id,CreatedDate,Message,Note,Source,ThreadId,SiteTypeCode,SiteTypeName,SiteInstance,SiteHost&OrderBy=Id&Top=1000&filter=HEALTH.Id eq {healthId}").Result;
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					var dicFields = new Dictionary<string, int>();
+					var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+					foreach (var field in log.Fields)
+						dicFields[field.Path] = field.Index;
+
+					foreach (object[] record in log.Records)
+					{
+						var healthLogRecord = new HealthLogDetailResult();
+
+						healthLogRecord.Id = Convert.ToInt64(record[dicFields["Id"]]);
+						healthLogRecord.CreatedDate = (DateTime)record[dicFields["CreatedDate"]];
+						healthLogRecord.Message = (string)record[dicFields["Message"]];
+						healthLogRecord.Note = (string)record[dicFields["Note"]];
+						healthLogRecord.ThreadId = Convert.ToInt32(record[dicFields["ThreadId"]]);
+						healthLogRecord.Source = (string)record[dicFields["Source"]];
+
+
+						healthLogRecord.SiteHost = (string)(record[dicFields["SiteHost"]]);
+						healthLogRecord.SiteInstance = (string)record[dicFields["SiteInstance"]];
+						healthLogRecord.SiteTypeCode = Convert.ToByte(record[dicFields["SiteTypeCode"]]);
+						healthLogRecord.SiteTypeName = (string)record[dicFields["SiteTypeName"]];
+
+						detailResult.Add(healthLogRecord);
+					}
+					gridHealthDetail.ItemsSource = detailResult;
+				}
+			}
+			
+		}
+
+		private void ShowHealthContent(long healthId)
+		{
+			var endpointKey = Convert.ToString(((mainTree.SelectedItem as TreeViewItem).Parent as TreeViewItem).Tag);
+			using (var wc = new HttpClient())
+			{
+				
+				var ormNamespace = _namespaces[endpointKey];
+				var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/SDRN_Server_DB/{ormNamespace}/HealthLogData?select=JsonData&filter=Id eq {healthId}").Result;
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					var dicFields = new Dictionary<string, int>();
+					var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+					foreach (var field in log.Fields)
+						dicFields[field.Path] = field.Index;
+
+					foreach (object[] record in log.Records)
+					{
+						textHealthContent.Text = FormatJson((string)record[dicFields["JsonData"]]);
+					}
+					
+				}
+			}
+
+		}
+
+		private static string FormatJson(string json)
+		{
+			dynamic parsedJson = JsonConvert.DeserializeObject(json);
+			return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
 		}
 	}
 }

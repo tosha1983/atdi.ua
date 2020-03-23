@@ -97,7 +97,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
 
-                    //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
+                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
                 }
             }
             #region Exception
@@ -1324,7 +1324,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             uint traceLen = 0;
 
             ValidateAndSetGain(command.Parameter.PreAmp_dB, context);
-            int steps = (mainConfig.AutoRefLevel.Stop_dBm - mainConfig.AutoRefLevel.Start_dBm) / mainConfig.AutoRefLevel.Step_dB;
+            int steps = (mainConfig.AutoRefLevel.Start_dBm - mainConfig.AutoRefLevel.Stop_dBm) / mainConfig.AutoRefLevel.Step_dB;
             TempRefLevelData[] data = new TempRefLevelData[steps];
             int reflevel = 10000000;
             for (int i = 0; i < steps; i++)
@@ -1336,6 +1336,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                     RFOverloadState = new bool[mainConfig.AutoRefLevel.NumberScan]
                 };
                 ValidateAndSetAttRefLevel(command.Parameter.Att_dB, data[i].RefLevel, context);
+                StatusError(AdapterDriver.bbInitiate(deviceId, (uint)deviceMode, (uint)flagMode), context);
                 for (int l = 0; l < mainConfig.AutoRefLevel.NumberScan; l++)
                 {
                     data[i].RFOverloadState[l] = false;
@@ -1347,26 +1348,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                         Status != EN.Status.USBTimeoutErr)
                     {
                         isRuning = true;
-                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                        //data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
                     }
                     if (Status == EN.Status.ADCOverflow)
                     {
-                        data[i].RFOverloadState[l] = true;
+                        //data[i].RFOverloadState[l] = true;
+                        data[i].PercentRFOverload += 100.0f / mainConfig.AutoRefLevel.NumberScan;
                     }
                     StatusError(AdapterDriver.bbFetchTrace_32f(deviceId, unchecked((int)traceLen), sweepMin, sweepMax));
                     if (Status == EN.Status.ADCOverflow)
                     {
                         data[i].RFOverloadState[l] = true;
-                        data[i].PercentRFOverload += 1 / mainConfig.AutoRefLevel.NumberScan;
+                        data[i].PercentRFOverload += 100.0f / mainConfig.AutoRefLevel.NumberScan;
                     }
                     if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
                     {
-
-                        //break;
+                        break;//выйдем из внутреннего цикла
                     }
                 }
+                //проверим как получилось
                 if (data[i].PercentRFOverload > mainConfig.AutoRefLevel.PersentOverload)
                 {
+                    //выйдем из цикла перебора опорного уровня т.к. дальше будит только хуже 
+                    //и т.к. сдесь уже все плохо то предыдущее можно использовать
                     reflevel = data[i - 1].RefLevel;
                     break;
                 }
@@ -1375,7 +1379,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
             {
                 reflevel = mainConfig.AutoRefLevel.Stop_dBm;
             }
-
         }
 
         private void FindTracePoolName(int size, ref bool state, ref string name)
