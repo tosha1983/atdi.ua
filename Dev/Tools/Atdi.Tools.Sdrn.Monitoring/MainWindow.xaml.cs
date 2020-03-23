@@ -30,7 +30,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
         const string TAG_CONFIG = "Config";
         const string TAG_LOG_EVENTS = "LogEvents";
         const string TAG_STATISTICS = "Statistics";
-        Dictionary<string, TreeViewItem> statEntryTreeDic = new Dictionary<string, TreeViewItem>();
+        const string TAG_LOG_HEALTH = "HealthLog";
+
+		Dictionary<string, TreeViewItem> statEntryTreeDic = new Dictionary<string, TreeViewItem>();
         Dictionary<string, TreeViewItem> statCounterTreeDic = new Dictionary<string, TreeViewItem>();
         List<StatisticEntryRecord> statEntrysList = new List<StatisticEntryRecord>();
         List<StatisticCounterRecord> statCurrCounterList = new List<StatisticCounterRecord>();
@@ -237,7 +239,22 @@ namespace Atdi.Tools.Sdrn.Monitoring
                                 twEndPointItem.Items.Add(twStatisticItem);
                             });
                         }
-                    }
+
+                        // 7. 
+                        var responseHealth = wc.GetAsync(endpointUrl.Value + $"/api/orm/metadata/entity/{ormNamespace}/HealthLog").Result;
+                        if (responseHealth.StatusCode == HttpStatusCode.OK)
+                        {
+	                        UIContext(() =>
+	                        {
+		                        var twHealthItem = new TreeViewItem();
+		                        twHealthItem.Header = "Health Log";
+		                        twHealthItem.Tag = TAG_LOG_HEALTH;
+		                        twHealthItem.IsExpanded = true;
+		                        twHealthItem.Foreground = Brushes.Navy;
+		                        twEndPointItem.Items.Add(twHealthItem);
+	                        });
+                        }
+					}
 
                     UIContext(() => 
                     {
@@ -294,7 +311,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
                             this.ShowLogEvents((item.Parent as TreeViewItem).Tag.ToString());
                         if (item.Tag.ToString() == TAG_STATISTICS)
                             this.ShowStatistics((item.Parent as TreeViewItem).Tag.ToString());
-                    }
+                        if (item.Tag.ToString() == TAG_LOG_HEALTH)
+	                        this.ShowHealthLog((item.Parent as TreeViewItem).Tag.ToString());
+					}
                 }
             }
             catch (Exception er)
@@ -307,7 +326,9 @@ namespace Atdi.Tools.Sdrn.Monitoring
             configTree.Visibility = Visibility.Hidden;
             gridLogEvents.Visibility = Visibility.Hidden;
             groupStatistics.Visibility = Visibility.Hidden;
-        }
+            gridHealthLog.Visibility = Visibility.Hidden;
+
+		}
         private void ShowConfig(string endpointKey)
         {
             configTree.Items.Clear();
@@ -606,5 +627,59 @@ namespace Atdi.Tools.Sdrn.Monitoring
             if (!string.IsNullOrEmpty((item.Parent as TreeViewItem).Tag.ToString()))
                 this.RefreshStatistics((item.Parent as TreeViewItem).Tag.ToString());
         }
-    }
+
+
+		private void ShowHealthLog(string endpointKey)
+		{
+			using (var wc = new HttpClient())
+			{
+				var logeventData = new List<HealthLogResult>();
+				var ormNamespace = _namespaces[endpointKey];
+				var response = wc.GetAsync(endpointUrls[endpointKey] + $"/api/orm/data/SDRN_Server_DB/{ormNamespace}/HealthLog?select=Id,SenderLogId,SenderTypeCode,SenderTypeName,SenderInstance,SenderHost,SourceTypeCode,SourceTypeName,SourceInstance,SourceTechId,SourceHost,EventCode,EventName,EventNote,DispatchTime,ReceivedTime,ForwardedTime&OrderBy=Id desc&Top=1000").Result;
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					var dicFields = new Dictionary<string, int>();
+					var log = JsonConvert.DeserializeObject<DataSetResult>(response.Content.ReadAsStringAsync().Result);
+
+					foreach (var field in log.Fields)
+						dicFields[field.Path] = field.Index;
+
+					foreach (object[] record in log.Records)
+					{
+						var healthLogRecord = new HealthLogResult();
+
+						healthLogRecord.Id = Convert.ToInt64(record[dicFields["Id"]]);
+						healthLogRecord.DispatchTime = (DateTime)record[dicFields["DispatchTime"]];
+						healthLogRecord.ReceivedTime = (DateTime)record[dicFields["ReceivedTime"]];
+						var forwardedTime = record[dicFields["ForwardedTime"]];
+						if (forwardedTime != null)
+						{
+							healthLogRecord.ForwardedTime = (DateTime)forwardedTime;
+						}
+						
+
+						healthLogRecord.SenderLogId = Convert.ToInt64(record[dicFields["SenderLogId"]]);
+						healthLogRecord.SenderHost = (string)(record[dicFields["SenderHost"]]);
+						healthLogRecord.SenderInstance = (string)record[dicFields["SenderInstance"]];
+						healthLogRecord.SenderTypeCode = Convert.ToByte(record[dicFields["SenderTypeCode"]]);
+						healthLogRecord.SenderTypeName = (string)record[dicFields["SenderTypeName"]];
+
+						healthLogRecord.SourceHost = (string)(record[dicFields["SourceHost"]]);
+						healthLogRecord.SourceInstance = (string)record[dicFields["SourceInstance"]];
+						healthLogRecord.SourceTechId = (string)record[dicFields["SourceTechId"]];
+						healthLogRecord.SourceTypeCode = Convert.ToByte(record[dicFields["SourceTypeCode"]]);
+						healthLogRecord.SourceTypeName = (string)record[dicFields["SourceTypeName"]];
+
+						healthLogRecord.EventCode = Convert.ToByte(record[dicFields["EventCode"]]);
+						healthLogRecord.EventName = (string)record[dicFields["EventName"]];
+						healthLogRecord.EventNote = (string)record[dicFields["EventNote"]];
+
+						logeventData.Add(healthLogRecord);
+					}
+					gridHealthLog.ItemsSource = logeventData;
+				}
+			}
+			gridHealthLog.Visibility = Visibility.Visible;
+		}
+	}
 }

@@ -450,10 +450,34 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			//map.Max = DecodeInt(body, 390, 10);
 
 			// валидация
+			ValidateMap(map);
+
+			// Карту нужно сдивнуть в лево и вверх на step/2
+			var xOffset = map.AxisX.Step / 2;
+			var yOffset = map.AxisY.Step / 2;
+
+			map.Coordinates.UpperLeft.X -= xOffset;
+			map.Coordinates.UpperRight.X -= xOffset;
+			map.Coordinates.LowerLeft.X -= xOffset;
+			map.Coordinates.LowerRight.X -= xOffset;
+			map.Coordinates.UpperLeft.Y += yOffset;
+			map.Coordinates.UpperRight.Y += yOffset;
+			map.Coordinates.LowerLeft.Y += yOffset;
+			map.Coordinates.LowerRight.Y += yOffset;
+
+			// повторная валидация после сдвига
+			ValidateMap(map);
+
+			return map;
+		}
+
+		private static void ValidateMap(AtdiMapFile map)
+		{
 			if (map.Coordinates.UpperLeft.Y != map.Coordinates.UpperRight.Y)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the upper axis y");
 			}
+
 			if (map.Coordinates.LowerLeft.Y != map.Coordinates.LowerRight.Y)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the lower axis y");
@@ -474,6 +498,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			{
 				throw new InvalidDataException("Incorrect coordinates for the upper axis X");
 			}
+
 			if (map.Coordinates.LowerLeft.X > map.Coordinates.LowerRight.X)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the lower axis X");
@@ -483,6 +508,7 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			{
 				throw new InvalidDataException("Incorrect coordinates for the left axis y");
 			}
+
 			if (map.Coordinates.UpperRight.Y < map.Coordinates.LowerRight.Y)
 			{
 				throw new InvalidDataException("Incorrect coordinates for the right axis y");
@@ -492,12 +518,13 @@ namespace Atdi.AppUnits.Sdrn.Infocenter
 			{
 				throw new InvalidDataException("Incorrect X-coordinates or X-axis properties");
 			}
+
 			if (map.AxisY.Size != map.Coordinates.AxisY)
 			{
 				throw new InvalidDataException("Incorrect Y-coordinates or Y-axis properties");
 			}
-			return map;
 		}
+
 
 		private static float DecodeFloat(byte[] source, uint offset, uint size)
 		{

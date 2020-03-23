@@ -60,8 +60,7 @@ namespace Atdi.Test.Api.Sdrn.Device.BusController
                     TestSensor(source.Token, (int)op[0], (string)op[1], (string)op[2], (string)op[3]);
                 }, source.Token);
 
-				break;
-				;
+				
             }
 
             Console.ReadLine();

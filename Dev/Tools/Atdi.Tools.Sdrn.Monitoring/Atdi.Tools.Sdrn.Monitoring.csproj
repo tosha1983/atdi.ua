@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="ExceptionData.cs" />
     <Compile Include="HostInfo.cs" />
+    <Compile Include="RequestResults\HealthLogResult.cs" />
     <Compile Include="RequestResults\StatisticEntryRecord.cs" />
     <Compile Include="RequestResults\StatisticCounterKey.cs" />
     <Compile Include="RequestResults\LogEventResult.cs" />
