@@ -1,6 +1,7 @@
 ﻿using Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.DTO;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -24,9 +25,9 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 
 			//LoadContextStation(10);
 
-			var projectId = 1; // CreateProject();
+			//var projectId = CreateProject();
 
-			
+
 
 			//var stationId = CreateContextStation(clientContextId, "Station #0001", "CS: 000001128236263565");
 			//Console.ReadLine();
@@ -34,15 +35,15 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			//var mapId = CreateProjectMap(
 			//		projectId,
 			//		"Main",
-			//		"Львов: тестирования расчета профелей",
+			//		"Львов: тестирования расчета профелей 2",
 			//		new MapCoordinate
 			//		{
-			//			X = 276330,
-			//			Y = 5532474
+			//			X = 276328,
+			//			Y = 5532476
 			//		},
 			//		new MapAxis
 			//		{
-			//			Number = 4122, 
+			//			Number = 4122,
 			//			Step = 5
 			//		},
 			//		new MapAxis
@@ -53,22 +54,22 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			//	);
 
 			//ChangeProjectMapStatus(mapId, 1, "Pending", "The status of waiting for map processing");
-			var clientContextId = CreateClientContext(projectId);
-
 			//Console.WriteLine($"Created Project ID #{projectId}, Map Id #{mapId}. Press any key to change status");
-			//Console.WriteLine($"Created Client Context ID #{clientContextId}. Press any key to change status");
+			
 			//Console.WriteLine($"Wait maps preparing ... Press any key to continue");
 			//Console.ReadLine();
 
-			var taskId = CreateCoverageProfilesCalcTask(1);
+			var projectId = 2;
+			var clientContextId = CreateClientContext(projectId);
+			var taskId = CreateCoverageProfilesCalcTask(projectId, @"C:\Temp\Maps\Profiles\Station.csv");
 			ChangeCalcTaskStatus(taskId, 2, "Available", "The status of available task for calculation");
-
-			Console.WriteLine($"Created calc task with ID #{taskId}. Press any key to change status");
-
 			var resultId = CreateCalcResult(clientContextId, taskId);
 
+			Console.WriteLine($"Created Client Context ID #{clientContextId}.");
+			Console.WriteLine($"Created Calc Task with ID #{taskId}.");
 			Console.WriteLine($"Created result task with ID #{taskId}. Press any key to change status");
-			
+
+			Console.WriteLine($"Press any key to start calculation");
 			Console.ReadLine();
 
 			ChangeCalcResultStatus(resultId, 1, "Pending", "The status of waiting calculation result");
@@ -76,10 +77,10 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			Console.WriteLine($"Wait calculation ... Press any key to show result");
 			Console.ReadLine();
 
-			var mapFile = LoadProjectMapContent(4);
-			MapMaker.Make(mapFile, @"C:\Temp\Maps\Out");
+			//var mapFile = LoadProjectMapContent(4);
+			//MapMaker.Make(mapFile, @"C:\Temp\Maps\Out");
 
-			Console.ReadLine();
+			//Console.ReadLine();
 		}
 
 		static long CreateProject()
@@ -622,8 +623,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 						"Main",
 						0,
 						"InPairs",
-						new int[] { 289460,  287135,  284115,  290540,  288580,  287555},
-						new int[] { 5529044, 5525564, 5526779, 5525594, 5524024, 5524844},
+						new int[] {  289460,  287135,  287135,  289460,    284115,  290540,  290540,  284115,   288580,  287555,  287555,  288580},
+						new int[] { 5529044, 5525564, 5525564, 5529044,   5526779, 5525594, 5525594, 5526779,  5524024, 5524844, 5524844, 5524024},
 						@"C:\Temp\Maps\Profiles"
 					}
 				};
@@ -643,6 +644,80 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 				throw;
 			}
 			
+		}
+
+		static long CreateCoverageProfilesCalcTask(long projectId, string path)
+		{
+			try
+			{
+				var csv = File.ReadAllLines(path);
+				var xArray = new int[csv.Length - 1];
+				var yArray = new int[csv.Length - 1];
+
+				for (int i = 1; i < csv.Length; i++)
+				{
+					var row = csv[i];
+					var parts = row.Split(';');
+					xArray[i - 1] = (int)Math.Round(double.Parse(parts[0]));
+					yArray[i - 1] = (int)Math.Round(double.Parse(parts[1]));
+				}
+
+				var request = new DTO.RecordCreateRequest
+				{
+					Context = "SDRN_CalcServer_DB",
+					Namespace = "Atdi.DataModels.Sdrn.CalcServer.Entities",
+					Entity = "CoverageProfilesCalcTask",
+					Fields = new string[]
+					{
+						"TypeCode",
+						"TypeName",
+						"StatusCode",
+						"StatusName",
+						"StatusNote",
+						"OwnerInstance",
+						"OwnerTaskId",
+						"PROJECT.Id",
+						"MapName",
+						"ModeCode",
+						"ModeName",
+						"PointsX",
+						"PointsY",
+						"ResultPath"
+					},
+					Values = new object[]
+					{
+						1,
+						"CoverageProfilesCalc",
+						0,
+						"Created",
+						null,
+						Program.ClientInstance,
+						Guid.NewGuid().ToString(),
+						projectId,
+						"Main",
+						2,
+						"AllWithAll",
+						xArray, // new int[] {  289460,  287135,  287135,  289460,    284115,  290540,  290540,  284115,   288580,  287555,  287555,  288580},
+						yArray, // new int[] { 5529044, 5525564, 5525564, 5529044,   5526779, 5525594, 5525594, 5526779,  5524024, 5524844, 5524844, 5524024},
+						@"C:\Temp\Maps\Profiles"
+					}
+				};
+
+				var response = client.PostAsJsonAsync(
+					"/appserver/v1/api/orm/data/$Record/create", request).GetAwaiter().GetResult();
+
+				response.EnsureSuccessStatusCode();
+
+				var result = response.Content.ReadAsAsync<SimplePkRecordCreateResult>().GetAwaiter().GetResult();
+				// return task ID.
+				return result.PrimaryKey.Id;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+
 		}
 
 		static long ChangeCalcTaskStatus(long taskId, int statusCode, string statusName, string statusNote)
