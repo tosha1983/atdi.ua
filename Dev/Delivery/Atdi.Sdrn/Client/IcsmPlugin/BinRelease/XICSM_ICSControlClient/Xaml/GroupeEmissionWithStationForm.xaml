@@ -56,8 +56,8 @@
             <DatePicker Grid.Column="1" Grid.Row="1" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStart, StringFormat='{}{0:dd.MM.yyyy}'}"/>
             <Label Height="40" Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resources.DateStop}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <DatePicker Grid.Column="1" Grid.Row="2" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>
-            <Button Grid.Column="2" Grid.RowSpan="3" Margin="5, 5, 100, 5" IsEnabled="{Binding IsEnabledStart}" Content="{x:Static res:Resources.StartCommand}" Command="{Binding StartCommand}" Width="50" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <Button Grid.Column="2" Grid.RowSpan="3" Margin="5, 5, 30, 5" Content="{x:Static res:Resources.ProtocolCommand}" Command="{Binding ProtocolCommand}" Width="50" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" Grid.RowSpan="3" Margin="5, 5, 120, 5" IsEnabled="{Binding IsEnabledStart}" Content="{x:Static res:Resources.StartCommand}" Command="{Binding StartCommand}" Width="70" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" Grid.RowSpan="3" Margin="5, 5, 30, 5" Content="{x:Static res:Resources.ProtocolCommand}" Command="{Binding ProtocolCommand}" Width="70" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
           </Grid>          
         </GroupBox>
         <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5, 105, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Areas}" SelectedItemsList="{Binding CurrentAreas, Mode=TwoWay}">
