@@ -1,4 +1,5 @@
-﻿using Atdi.Contracts.Api.DataBus;
+﻿using Atdi.DataModels.DataConstraint;
+using Atdi.Contracts.Api.DataBus;
 using Atdi.DataModels.Api.DataBus;
 using Atdi.DataModels.Sdrns.Server;
 using Atdi.Platform.Logging;
@@ -87,7 +88,23 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                                 builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emitting.ReferenceLevel_dBm);
                                 builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emitting.TriggerDeviationFromReference);
                                 builderInsertEmitting.SetValue(c => c.RES_MEAS.Id, resMeas.Id);
-                                builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
+
+                                var builderSubTaskSensorMaster = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                                builderSubTaskSensorMaster.Select(x => x.SENSOR.Id);
+                                builderSubTaskSensorMaster.Where(x => x.Id, ConditionOperator.Equal, subMeasTaskSensorId);
+                                scope.Executor.Fetch(builderSubTaskSensorMaster, readerSubTaskSensorMaster =>
+                                {
+                                    while (readerSubTaskSensorMaster.Read())
+                                    {
+                                        builderInsertEmitting.SetValue(c => c.SensorId, (int?)readerSubTaskSensorMaster.GetValue(x => x.SENSOR.Id));
+                                        break;
+                                    }
+                                    return true;
+                                });
+
+
+                                //builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
+
                                 if (emitting.EmittingParameters != null)
                                 {
                                     builderInsertEmitting.SetValue(c => c.RollOffFactor, emitting.EmittingParameters.RollOffFactor);
