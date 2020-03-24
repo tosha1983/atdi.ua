@@ -39,9 +39,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			public Coordinate Point;
 			public Coordinate Target;
 
-			public ResultProfileRecord[] Records { get; set; }
+			public ResultProfileRecord[] Records;
 
-			public int Count { get; set; }
+			public int Count;
+
+			public string Map;
+
+			public string ForwardXIndex;
+			public string ForwardYIndex;
+
+			public string ReversXIndex;
+			public string ReversYIndex;
 		}
 
 		private struct ResultProfileRecord
@@ -169,7 +177,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			}
 			else if (_parameters.Mode == CoverageProfilesCalcModeCode.AllWithAll)
 			{
-				for (var i = 1; i < _parameters.PointsX.Length; i++)
+				var count = 0;
+				for (var i = 0; i < _parameters.PointsX.Length; i++)
 				{
 					var point = new Coordinate()
 					{
@@ -178,8 +187,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 						// ReSharper disable once PossibleInvalidOperationException
 						Y = this._parameters.PointsY[i]
 					};
-					for (var j = i + 1; j < _parameters.PointsX.Length; j++)
+					for (var j = 0; j < _parameters.PointsX.Length; j++)
 					{
+						if (i == j)
+						{
+							continue;
+						}
+
 						var target = new Coordinate()
 						{
 							X = _parameters.PointsX[j],
@@ -188,8 +202,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 						var fullFileName = fileName + $"_I{i:D5}X{j:D5}.mpf";
 						CalcProfile(indexesBuffer, point, target, iteration, fullFileName);
+						++count;
 					}
 				}
+				System.Diagnostics.Debug.WriteLine($"Count profiles: {count}");
 			}
 			else
 			{
@@ -212,30 +228,78 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 			var count = iteration.Run(this._taskContext, iterationData);
 
-			var result = new ResultProfile()
-			{
-				Point = point,
-				Target = target,
-				Records = new ResultProfileRecord[count],
-				Count = count
-			};
-			for (var j = 0; j < count; j++)
-			{
-				var indexer = iterationData.Result[j];
-				var mapIndex = indexer.YIndex * _mapData.AxisX.Number + indexer.XIndex;
+			//var result = new ResultProfile()
+			//{
+			//	Point = point,
+			//	Target = target,
+			//	Records = new ResultProfileRecord[count],
+			//	Count = count,
+			//	Map = _mapData.ToString()
+			//};
+			//for (var j = 0; j < count; j++)
+			//{
+			//	var indexer = iterationData.Result[j];
+			//	var mapIndex = indexer.YIndex * _mapData.AxisX.Number + indexer.XIndex;
 
-				result.Records[j] = new ResultProfileRecord
-				{
-					Num = j,
-					Index = mapIndex,
-					Indexer = indexer,
-					Relief = _mapData.ReliefContent[mapIndex],
-					Building = _mapData.BuildingContent[mapIndex],
-					Clutter = _mapData.ClutterContent[mapIndex]
-				};
-			}
+			//	result.Records[j] = new ResultProfileRecord
+			//	{
+			//		Num = j,
+			//		Index = mapIndex,
+			//		Indexer = indexer,
+			//		Relief = _mapData.ReliefContent[mapIndex],
+			//		Building = _mapData.BuildingContent[mapIndex],
+			//		Clutter = _mapData.ClutterContent[mapIndex]
+			//	};
+			//}
 
-			File.AppendAllText(fileName, JsonConvert.SerializeObject(result, Formatting.Indented), Encoding.UTF8);
+			//if (iterationData.HasError)
+			//{
+			//	result.ForwardXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).ToArray());
+			//	result.ForwardYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).ToArray());
+
+			//	result.ReversXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).Reverse().ToArray());
+			//	result.ReversYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).Reverse().ToArray());
+
+			//	File.AppendAllText(fileName, JsonConvert.SerializeObject(result, Formatting.Indented), Encoding.UTF8);
+
+			//	iterationData.Point = target;
+			//	iterationData.Target = point;
+
+			//	count = iteration.Run(this._taskContext, iterationData);
+
+			//	result = new ResultProfile()
+			//	{
+			//		Point = point,
+			//		Target = target,
+			//		Records = new ResultProfileRecord[count],
+			//		Count = count,
+			//		Map = _mapData.ToString()
+			//	};
+			//	for (var j = 0; j < count; j++)
+			//	{
+			//		var indexer = iterationData.Result[j];
+			//		var mapIndex = indexer.YIndex * _mapData.AxisX.Number + indexer.XIndex;
+
+			//		result.Records[j] = new ResultProfileRecord
+			//		{
+			//			Num = j,
+			//			Index = mapIndex,
+			//			Indexer = indexer,
+			//			Relief = _mapData.ReliefContent[mapIndex],
+			//			Building = _mapData.BuildingContent[mapIndex],
+			//			Clutter = _mapData.ClutterContent[mapIndex]
+			//		};
+			//	}
+
+			//	result.ForwardXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).ToArray());
+			//	result.ForwardYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).ToArray());
+
+			//	result.ReversXIndex = string.Join(", ", result.Records.Select(r => r.Indexer.XIndex.ToString()).Reverse().ToArray());
+			//	result.ReversYIndex = string.Join(", ", result.Records.Select(r => r.Indexer.YIndex.ToString()).Reverse().ToArray());
+
+			//	File.AppendAllText(fileName + ".reveres", JsonConvert.SerializeObject(result, Formatting.Indented), Encoding.UTF8);
+			//}
+
 		}
 
 		private void ValidateTaskParameters()

@@ -33,6 +33,66 @@
                 <DataGridTextColumn Header="Duration" Binding="{Binding Path=Duration}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <GroupBox x:Name="groupHealthLog" Header="Statistics"  Margin="0, 5, 5, 5" Grid.Column="2" Grid.Row="0" Visibility="Hidden" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <DataGrid x:Name="gridHealthLog" IsReadOnly="True" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" Visibility="Visible" MouseDoubleClick="gridLogEvents_DblClick" SelectionChanged="gridHealthLog_SelectionChanged" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DispatchTime" Binding="{Binding Path=DispatchTime}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="ReceivedTime" Binding="{Binding Path=ReceivedTime}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SourceTypeCode" Binding="{Binding Path=SourceTypeCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SourceTypeName" Binding="{Binding Path=SourceTypeName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SourceInstance" Binding="{Binding Path=SourceInstance}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SourceTechId" Binding="{Binding Path=SourceTechId}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SourceHost" Binding="{Binding Path=SourceHost}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="EventCode" Binding="{Binding Path=EventCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="EventName" Binding="{Binding Path=EventName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="EventNote" Binding="{Binding Path=EventNote}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SenderLogId" Binding="{Binding Path=SenderLogId}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SenderTypeCode" Binding="{Binding Path=SenderTypeCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SenderTypeName" Binding="{Binding Path=SenderTypeName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SenderInstance" Binding="{Binding Path=SenderInstance}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SenderHost" Binding="{Binding Path=SenderHost}"></DataGridTextColumn>
+
+                        
+                        
+                        <DataGridTextColumn Header="ForwardedTime" Binding="{Binding Path=ForwardedTime}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" ShowsPreview="False" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" ></GridSplitter>
+                <DataGrid x:Name="gridHealthDetail" IsReadOnly="True" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" Visibility="Visible" MouseDoubleClick="gridLogEvents_DblClick" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="CreatedDate" Binding="{Binding Path=CreatedDate}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Message" Binding="{Binding Path=Message}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Note" Binding="{Binding Path=Note}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Source" Binding="{Binding Path=Source}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="ThreadId" Binding="{Binding Path=ThreadId}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SiteTypeCode" Binding="{Binding Path=SiteTypeCode}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SiteTypeName" Binding="{Binding Path=SiteTypeName}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SiteInstance" Binding="{Binding Path=SiteInstance}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="SiteHost" Binding="{Binding Path=SiteHost}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ShowsPreview="False" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                <TextBox x:Name="textHealthContent" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto"  ></TextBox>
+            </Grid>
+            
+        </GroupBox>
         <GroupBox x:Name="groupStatistics" Header="Statistics"  Margin="0, 5, 5, 5" Grid.Column="2" Grid.Row="0" Visibility="Hidden" Grid.ColumnSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>

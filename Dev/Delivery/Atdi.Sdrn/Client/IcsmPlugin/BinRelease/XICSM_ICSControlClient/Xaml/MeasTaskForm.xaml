@@ -1111,7 +1111,7 @@
                                   </Style.Triggers>
                                 </Style>
                               </Label.Style>
-                          </Label>
+                            </Label>
                             <ComboBox Grid.Column="3" Grid.Row="7" SelectedValue="{Binding StandardInstEstim, Mode=TwoWay}" ItemsSource="{Binding StandardInstEstimValues}">
                               <ComboBox.Style>
                                 <Style TargetType="ComboBox">

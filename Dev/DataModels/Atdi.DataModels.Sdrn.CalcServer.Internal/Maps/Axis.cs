@@ -28,7 +28,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 
 		public override string ToString()
 		{
-			return $"Num = '{Number}', Step = '{Step}', Size = '{Size}'";
+			return $"Num='{Number}', Step='{Step}', Size='{Size}'";
 		}
 	}
 }

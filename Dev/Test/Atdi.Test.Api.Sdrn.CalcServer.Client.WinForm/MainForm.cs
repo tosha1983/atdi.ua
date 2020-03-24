@@ -46,7 +46,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.WinForm
 			var xStart = 10;
 			var yStart = 10;
 
-			var xWidth = 1000;
+			//var xWidth = 1000;
 			var yWidth = 400;
 
 			yStart = yWidth + 200;

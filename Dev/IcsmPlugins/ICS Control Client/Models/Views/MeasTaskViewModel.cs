@@ -38,26 +38,23 @@ namespace XICSM.ICSControlClient.Models.Views
         }
         public bool IsAutoMeasDtParamRBW { get; set; }
         public double? MeasDtParamRBW { get; set; }
+        public string MeasDtParamRBWView { get; set; }
 
         public bool IsAutoMeasDtParamVBW { get; set; }
         public double? MeasDtParamVBW { get; set; }
+        public string MeasDtParamVBWView { get; set; }
 
         public bool IsAutoMeasDtParamRfAttenuation { get; set; }
         public double? MeasDtParamRfAttenuation { get; set; }
+        public string MeasDtParamRfAttenuationView { get; set; }
+
+
         public double? MeasDtParamIfAttenuation { get; set; }
 
         //bool _IsAutoMeasDtParamMeasTime;
         public bool IsAutoMeasDtParamMeasTime { get; set; }
-        //{
-        //    get => this._IsAutoMeasDtParamMeasTime;
-        //    set 
-        //    {
-        //        this._IsAutoMeasDtParamMeasTime = value;
-        //        if (value)
-        //            this.MeasDtParamMeasTime = null;
-        //    }
-        //}
-    public double? MeasDtParamMeasTime { get; set; }
+        public double? MeasDtParamMeasTime { get; set; }
+        public string MeasDtParamMeasTimeView { get; set; }
 
         public DetectingType MeasDtParamDetectType { get; set; }
 
@@ -70,18 +67,21 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public bool IsAutoMeasDtParamPreamplification { get; set; }
         public int? MeasDtParamPreamplification { get; set; }
+        public string MeasDtParamPreamplificationView { get; set; }
 
         public bool IsAutoMeasDtParamReferenceLevel { get; set; }
         public double? MeasDtParamReferenceLevel { get; set; }
+        public string MeasDtParamReferenceLevelView { get; set; }
 
         public MeasurementMode MeasDtParamMode { get; set; }
 
         public FrequencyMode MeasFreqParamMode { get; set; }
-
         public IList<FrequencyMode> MeasFreqParamModeValues
         {
             get { return Enum.GetValues(typeof(FrequencyMode)).Cast<FrequencyMode>().ToList<FrequencyMode>(); }
         }
+        public string MeasFreqParamModeFull { get; set; }
+
         public double? MeasFreqParamRgL { get; set; }
 
         public double? MeasFreqParamRgU { get; set; }
@@ -108,6 +108,7 @@ namespace XICSM.ICSControlClient.Models.Views
         {
             get { return Enum.GetValues(typeof(SpectrumOccupationType)).Cast<SpectrumOccupationType>().ToList<SpectrumOccupationType>(); }
         }
+        public string MeasOtherTypeSpectrumOccupationFull { get; set; }
 
         public double? MeasOtherLevelMinOccup { get; set; }
 
@@ -134,8 +135,11 @@ namespace XICSM.ICSControlClient.Models.Views
         public bool? FiltrationTrace { get; set; }
         public double? windowBW { get; set; }
         public double? AllowableExcess_dB { get; set; }
+
         public bool IsAutoTriggerLevel_dBm_Hz { get; set; }
         public double? triggerLevel_dBm_Hz { get; set; }
+        public string triggerLevel_dBm_HzView { get; set; }
+
         public double? CrossingBWPercentageForGoodSignals { get; set; }
         public double? CrossingBWPercentageForBadSignals { get; set; }
         public double? DiffLevelForCalcBW { get; set; }
