@@ -35,6 +35,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
                 epsgCoordinate.X = GetDouble(coordinatesString[0]);
                 epsgCoordinate.Y = GetDouble(coordinatesString[1]);
             }
+            else
+            {
+                throw new NotImplementedException(Events.MethodGetArrCoordinatesFromWktStringReturnNullOrCountElementsNotEqual2.Text);
+            }
             return epsgCoordinate;
         }
 
@@ -46,6 +50,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             {
                 wgs84Coordinate.Longitude = GetDouble(coordinatesString[0]);
                 wgs84Coordinate.Latitude = GetDouble(coordinatesString[1]);
+            }
+            else
+            {
+                throw new NotImplementedException(Events.MethodGetArrCoordinatesFromWktStringReturnNullOrCountElementsNotEqual2.Text);
             }
             return wgs84Coordinate;
         }

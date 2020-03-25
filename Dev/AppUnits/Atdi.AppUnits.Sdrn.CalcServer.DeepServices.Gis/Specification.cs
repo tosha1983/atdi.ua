@@ -22,6 +22,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
     {
         public static readonly EventText ForAtdiNameProjectionNoAlgorithmConvertingToEPSG = $"For 'Atdi Name Projection' - '{0}' no algorithm for converting to EPSG code has been defined!";
         public static readonly EventText ForEPSGNoAlgorithmConvertingToAtdiNameProjection = $"For EPSG code - '{0}' no algorithm for converting to 'Atdi Name Projection' code has been defined!";
+        public static readonly EventText MethodGetArrCoordinatesFromWktStringReturnNullOrCountElementsNotEqual2 = "Method 'GetArrCoordinatesFromWktString' return null, empty or count elements not equal 2!";
     }
     static class TraceScopeNames
     {

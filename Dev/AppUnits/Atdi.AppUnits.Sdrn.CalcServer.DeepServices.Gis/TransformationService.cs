@@ -11,6 +11,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
     public class TransformationService : ITransformation
     {
         private readonly ILogger _logger;
+        private const uint Epsg4326 = 4326;
+        private const uint PrefixEpsgN = 326;
+        private const uint PrefixEpsgS = 327;
+        private const string PrefixAtdiProjectionN = "4UTN";
+        private const string PrefixAtdiProjectionS = "4UTS";
 
 
         public TransformationService(ILogger logger)
@@ -26,7 +31,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             var epsgCoordinate = new EpsgCoordinate();
             try
             {
-                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, 4326, toProjection);
+                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, Epsg4326, toProjection);
                 var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.Longitude, coordinate.Latitude));
                 var transform = new CoordinateTransformation(source, destination);
                 ogrGeom.Transform(transform);
@@ -72,7 +77,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             var epsgProjectionCoordinate = new EpsgProjectionCoordinate();
             try
             {
-                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, 4326, toProjection);
+                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, Epsg4326, toProjection);
                 var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.Longitude, coordinate.Latitude));
                 var transform = new CoordinateTransformation(source, destination);
                 ogrGeom.Transform(transform);
@@ -130,7 +135,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             var wgs84Coordinate = new Wgs84Coordinate();
             try
             {
-                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, fromProjection, 4326);
+                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, fromProjection, Epsg4326);
                 var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y));
                 var transform = new CoordinateTransformation(source, destination);
                 ogrGeom.Transform(transform);
@@ -153,7 +158,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             var wgs84Coordinate = new Wgs84Coordinate();
             try
             {
-                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, coordinate.Projection, 4326);
+                Utils.PrepareConvertation(out SpatialReference source, out SpatialReference destination, coordinate.Projection, Epsg4326);
                 var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y));
                 var transform = new CoordinateTransformation(source, destination);
                 ogrGeom.Transform(transform);
@@ -177,15 +182,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             try
             {
                 var epsgCodeString = epsgCode.ToString();
-                if (epsgCodeString.StartsWith("326"))
+                if (epsgCodeString.StartsWith(PrefixEpsgN.ToString()))
                 {
-                    var code = epsgCodeString.Replace("326", "");
-                    atdiNameProjection = "4UTN" + code;
+                    var code = epsgCodeString.Replace(PrefixEpsgN.ToString(), "");
+                    atdiNameProjection = PrefixAtdiProjectionN + code;
                 }
-                else if (epsgCodeString.StartsWith("327"))
+                else if (epsgCodeString.StartsWith(PrefixEpsgS.ToString()))
                 {
-                    var code = epsgCodeString.Replace("327", "");
-                    atdiNameProjection = "4UTS" + code;
+                    var code = epsgCodeString.Replace(PrefixEpsgS.ToString(), "");
+                    atdiNameProjection = PrefixAtdiProjectionS + code;
                 }
                 else
                 {
@@ -205,15 +210,15 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
             try
             {
                 var number = "";
-                if (atdiProjection.Contains("4UTN"))
+                if (atdiProjection.Contains(PrefixAtdiProjectionN))
                 {
-                    var code = atdiProjection.Replace("4UTN", "");
-                    number = "326" + code;
+                    var code = atdiProjection.Replace(PrefixAtdiProjectionN, "");
+                    number = PrefixEpsgN.ToString() + code;
                 }
-                else if (atdiProjection.Contains("4UTS"))
+                else if (atdiProjection.Contains(PrefixAtdiProjectionS))
                 {
-                    var code = atdiProjection.Replace("4UTS", "");
-                    number = "327" + code;
+                    var code = atdiProjection.Replace(PrefixAtdiProjectionS, "");
+                    number = PrefixEpsgS.ToString() + code;
                 }
                 else
                 {
