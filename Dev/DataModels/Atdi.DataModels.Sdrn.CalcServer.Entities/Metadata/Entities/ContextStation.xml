@@ -24,6 +24,12 @@
     <Field Name="RECEIVER" SourceName="ContextStationReceiver" SourceType="Extension" Title="Station Receiver" Required="true"/>
     <Field Name="ANTENNA" SourceName="ContextStationAntenna" SourceType="Extension" Title="Station Antenna " Required="true"/>
 
+    <Field Name="COORDINATES" SourceName="ContextStationCoordinates" SourceType="Reference" Title="Coordinates" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

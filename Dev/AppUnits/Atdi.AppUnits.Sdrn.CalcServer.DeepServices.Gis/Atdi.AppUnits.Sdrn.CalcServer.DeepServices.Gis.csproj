@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DBBCBDEB-202D-4068-94F6-BB78BD47D51A}</ProjectGuid>
+    <ProjectGuid>{F1F30AB9-7598-424D-9CDE-95412583ECCF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.Contracts.Sdrn.CalcServer.DeepServices</RootNamespace>
-    <AssemblyName>Atdi.Contracts.Sdrn.CalcServer.DeepServices</AssemblyName>
+    <RootNamespace>Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis</RootNamespace>
+    <AssemblyName>Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,15 +41,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDeepService.cs" />
-    <Compile Include="IExampleDeepService.cs" />
+    <Compile Include="AppServerComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransformationService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices\Atdi.DataModels.Sdrn.CalcServer.DeepServices.csproj">
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis\Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis.csproj">
+      <Project>{567B4C34-9FF5-4C05-9E7B-D1ED94EADAAF}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices\Atdi.Contracts.Sdrn.CalcServer.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis\Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices\Atdi.DataModels.Sdrn.CalcServer.DeepServices.csproj">
       <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.DeepServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
+      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
+      <Name>Atdi.AppUnits</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
