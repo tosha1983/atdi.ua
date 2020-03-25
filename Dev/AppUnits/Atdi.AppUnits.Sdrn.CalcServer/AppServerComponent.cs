@@ -7,6 +7,7 @@ using Atdi.Api.EventSystem;
 using Atdi.AppUnits.Sdrn.CalcServer.Services;
 using Atdi.Contracts.Api.EventSystem;
 using Atdi.Contracts.Sdrn.CalcServer;
+using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
 using Atdi.Contracts.Sdrn.CalcServer.Internal;
 using Atdi.Platform;
 using Atdi.Platform.AppComponent;
@@ -159,6 +160,43 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 			}
 
+			// подключаем низкоуровневые сервисы 
+			var deepServiceInterfaceType = typeof(IDeepService);
+			var deepServiceTypes = typeResolver.ForeachInAllAssemblies(
+				(type) =>
+				{
+					if (!type.IsClass
+					    || type.IsAbstract
+					    || type.IsInterface
+					    || type.IsEnum)
+					{
+						return false;
+					}
+
+					var ft = type.GetInterface(deepServiceInterfaceType.FullName);
+					return ft != null;
+				}
+			).ToArray();
+
+			foreach (var deepServiceImplType in deepServiceTypes)
+			{
+				try
+				{
+					var interfaces = deepServiceImplType.GetInterfaces();
+					foreach (var deepServiceContractType in interfaces)
+					{
+						if (deepServiceContractType.GetInterface(iterationHandlerInterfaceType.FullName) != null)
+						{
+							this.Container.Register(deepServiceContractType, deepServiceImplType, ServiceLifetime.Singleton);
+							Logger.Verbouse(Contexts.ThisComponent, Categories.Registration, Events.DeepServiceTypeWasRegistered.With(deepServiceImplType.AssemblyQualifiedName));
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Exception(Contexts.ThisComponent, Categories.Registration, e);
+				}
+			}
 
 			// подключаем обработчики событий
 			var eventDispatcher = this.Resolver.Resolve<IEventDispatcher>();

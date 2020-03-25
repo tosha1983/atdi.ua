@@ -34,7 +34,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		IContextStationReceiver RECEIVER { get; set; }
 
 		IContextStationAntenna ANTENNA { get; set; }
-	}
+
+		IContextStationCoordinates COORDINATES { get; set; }
+}
 
 
 	public enum StationTypeCode

@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E295AAB5-3BB0-47A9-A5D1-D77B061398CC}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.Api.Sdrn.CalcServer.Client</RootNamespace>
-    <AssemblyName>Atdi.Test.Api.Sdrn.CalcServer.Client</AssemblyName>
+    <ProjectGuid>{D83887B2-4444-4207-A703-C99B94A4C170}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,14 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,29 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModels\MapType.cs" />
-    <Compile Include="DataModels\MapFile.cs" />
-    <Compile Include="DataModels\MapAxis.cs" />
-    <Compile Include="DataModels\MapCoordinate.cs" />
-    <Compile Include="DataModels\MapCoordinates.cs" />
-    <Compile Include="DTO\Reqests.cs" />
-    <Compile Include="Helpers\Compressor.cs" />
-    <Compile Include="Helpers\SerializationExtension.cs" />
-    <Compile Include="MapMaker.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="EpsgCoordinate.cs" />
+    <Compile Include="EpsgProjectionCoordinate.cs" />
+    <Compile Include="Wgs84Coordinate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
-      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
-      <Name>Atdi.DataModels.EntityOrm</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
