@@ -985,7 +985,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
             if (!string.IsNullOrEmpty(stationName))
             {
                 string CodeOwener = "0";
-                if (okpo == "14333937") { CodeOwener = "1"; };
+                if ((okpo == "14333937") || (okpo == "35862001")) { CodeOwener = "1"; };
                 if (okpo == "22859846") { CodeOwener = "6"; };
                 if (okpo == "21673832") { CodeOwener = "3"; };
                 if (okpo == "37815221") { CodeOwener = "7"; };
