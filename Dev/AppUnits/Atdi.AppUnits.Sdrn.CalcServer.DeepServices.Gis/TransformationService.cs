@@ -206,10 +206,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
 
         public uint ConvertProjectionToCode(string atdiProjection)
         {
-            uint? outProjectionCode = null;
+            var number = "";
             try
             {
-                var number = "";
                 if (atdiProjection.Contains(PrefixAtdiProjectionN))
                 {
                     var code = atdiProjection.Replace(PrefixAtdiProjectionN, "");
@@ -224,18 +223,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis
                 {
                     throw new NotImplementedException(Events.ForAtdiNameProjectionNoAlgorithmConvertingToEPSG.With(atdiProjection).Text);
                 }
-                outProjectionCode = Convert.ToUInt32(number);
             }
             catch (Exception e)
             {
                 _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
             }
-            return outProjectionCode.Value;
+            return Convert.ToUInt32(number); 
         }
 
         public void Dispose()
         {
-
+            
         }
     }
 }
