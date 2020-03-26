@@ -1022,4 +1022,7 @@
   <data name="Time" xml:space="preserve">
     <value>Time</value>
   </data>
+  <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
+    <value>Select a sensor to switch to on line measurement mode</value>
+  </data>
 </root>

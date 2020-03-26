@@ -74,7 +74,7 @@
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <ScrollViewer Grid.Column="0" Grid.Row="0" Margin="10">
+                <ScrollViewer Grid.Column="0" Grid.Row="0" Margin="10, 10, 10, 25">
                   <Grid DataContext="{Binding CurrentMeasTask}">
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition Width="120" />
@@ -100,9 +100,9 @@
                     <Expander Grid.ColumnSpan="4" Grid.Row="2" Header="{x:Static res:Resources.TimeMeas}" IsExpanded="true">
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="75" />
+                          <ColumnDefinition Width="100" />
                           <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="75" />
+                          <ColumnDefinition Width="100" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -133,10 +133,10 @@
                         </DatePicker>
 
                         <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeStart}"  />
-                        <TextBox x:Name="MeasTimeParamListTimeStart" Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStart, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
+                        <TextBox x:Name="MeasTimeParamListTimeStart" Grid.Column="1" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStart, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}" Width="100" HorizontalAlignment="Left"/>
 
                         <Label Height="18" Grid.Column="2" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.TimeStop}"  />
-                        <TextBox x:Name="MeasTimeParamListTimeStop" Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}"/>
+                        <TextBox x:Name="MeasTimeParamListTimeStop" Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasTimeParamListTimeStop, Mode=TwoWay, StringFormat='{}{0:HH:mm}'}" Width="100" HorizontalAlignment="Left"/>
 
                         <!--<Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.DurationS}"  />
                         <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding Path=MeasTimeParamListPerInterval}">
@@ -161,7 +161,7 @@
                     <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="{x:Static res:Resources.Frequency}" IsExpanded="false">
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="100" />
+                          <ColumnDefinition Width="130" />
                           <ColumnDefinition Width="*" />
                           <ColumnDefinition Width="100" />
                           <ColumnDefinition Width="*" />
@@ -377,7 +377,7 @@
                     <Expander Grid.ColumnSpan="4" Grid.Row="4" Header="{x:Static res:Resources.DetectorParameters}" IsExpanded="false">
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="130" />
+                          <ColumnDefinition Width="170" />
                           <ColumnDefinition Width="30" />
                           <ColumnDefinition Width="25" />
                           <ColumnDefinition Width="*" />
@@ -427,7 +427,7 @@
                           </TextBox.Style>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="1" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.VBWkHz}"  />
+                        <Label Height="18" Grid.Column="1" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"  />
                         <CheckBox Grid.Column="2" Grid.Row="1" IsChecked="{Binding Path=IsAutoMeasDtParamVBW}">
                           <CheckBox.Style>
                             <Style TargetType="CheckBox">
@@ -445,7 +445,7 @@
                             </Style>
                           </CheckBox.Style>
                         </CheckBox>
-                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.Auto}"/>
+                        <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content = "{x:Static res:Resources.VBWkHz}"/>
                         <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding Path=MeasDtParamVBW}">
                           <TextBox.Style>
                             <Style TargetType="TextBox">
@@ -987,7 +987,7 @@
                           </GroupBox.Style>
                           <Grid>
                             <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="400" />
+                              <ColumnDefinition Width="350" />
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>

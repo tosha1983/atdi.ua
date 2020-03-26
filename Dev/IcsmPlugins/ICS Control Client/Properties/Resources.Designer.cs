@@ -1411,6 +1411,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a sensor to switch to on line measurement mode.
+        /// </summary>
+        public static string Message_SelectASensorToSwitchToOnLineMeasurementMode {
+            get {
+                return ResourceManager.GetString("Message_SelectASensorToSwitchToOnLineMeasurementMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MHz.
         /// </summary>
         public static string MHz {
