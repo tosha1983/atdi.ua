@@ -48,6 +48,7 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="CoverageProfilesCalcTask.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
+    <Compile Include="PointFieldStrengthCalcTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
