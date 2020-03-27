@@ -118,6 +118,15 @@
             <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
           </DataGrid.Columns>
+          <!--<DataGrid.RowStyle>
+            <Style TargetType="{x:Type DataGridRow}">
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True" >
+                  <Setter Property="RowBackground" Value="Black" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.RowStyle>-->
         </cdg:CustomDataGrid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>

@@ -567,7 +567,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                                 if (i >= 1)
                                 {
-                                    DateTime dateMeas = DateTime.ParseExact(record[10], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                    DateTime dateMeas = DateTime.ParseExact(record[10], "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                                     var refSpecDataLine = new SDRI.DataRefSpectrum()
                                     {

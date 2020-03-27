@@ -48,7 +48,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             return degree + minutes + seconds;
         }
 
-        private string DecToDmsToString2(double coordDec, EnumCoordLine line)
+        public static string DecToDmsToString2(double coordDec, EnumCoordLine line)
         {
             double coord = IMPosition.Dec2Dms(coordDec);
 

@@ -1798,11 +1798,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print All (station).
+        /// </summary>
+        public static string PrintAllRez {
+            get {
+                return ResourceManager.GetString("PrintAllRez", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Print Selected.
         /// </summary>
         public static string PrintSelected {
             get {
                 return ResourceManager.GetString("PrintSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print Selected (station).
+        /// </summary>
+        public static string PrintSelectedRez {
+            get {
+                return ResourceManager.GetString("PrintSelectedRez", resourceCulture);
             }
         }
         

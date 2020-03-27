@@ -1025,4 +1025,10 @@
   <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
     <value>Select a sensor to switch to on line measurement mode</value>
   </data>
+  <data name="PrintAllRez" xml:space="preserve">
+    <value>Print All (station)</value>
+  </data>
+  <data name="PrintSelectedRez" xml:space="preserve">
+    <value>Print Selected (station)</value>
+  </data>
 </root>

@@ -9,6 +9,8 @@ using VM = XICSM.ICSControlClient.Models.Views;
 using M = XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Environment.Wpf;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
+using XICSM.ICSControlClient.ViewModels.Reports;
+using XICSM.ICSControlClient.ViewModels.Coordinates;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
@@ -611,7 +613,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 GlobalSID = source.GlobalSID,
                 Latitude = source.Latitude,
                 Longitude = source.Longitude,
-                Coordinates = (source.Latitude.HasValue ? source.Latitude.Value.ToString() : "") + ", " + (source.Longitude.HasValue ? source.Longitude.Value.ToString() : ""),
+                //Coordinates = (source.Latitude.HasValue ? source.Latitude.Value.ToString() : "") + ", " + (source.Longitude.HasValue ? source.Longitude.Value.ToString() : ""),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat) + ", " + ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon),
                 Level_dBm = source.Level_dBm,
                 OwnerName = source.OwnerName,
                 PermissionGlobalSID = source.PermissionGlobalSID,
@@ -623,7 +626,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 RadioControlMeasFreq_MHz = source.RadioControlMeasFreq_MHz,
                 SensorLatitude = source.SensorLatitude,
                 SensorLongitude = source.SensorLongitude,
-                SensorCoordinates = (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : "") + ", " + (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : ""),
+                //SensorCoordinates = (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : "") + ", " + (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : ""),
+                SensorCoordinates = ConvertCoordinates.DecToDmsToString2(source.SensorLatitude.GetValueOrDefault(), EnumCoordLine.Lat) + ", " + ConvertCoordinates.DecToDmsToString2(source.SensorLongitude.GetValueOrDefault(), EnumCoordLine.Lon),
                 SensorName = source.SensorName,
                 Standard = source.Standard,
                 StandardName = source.StandardName,

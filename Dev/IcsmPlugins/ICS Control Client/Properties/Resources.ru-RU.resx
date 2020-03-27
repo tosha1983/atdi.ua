@@ -988,12 +988,18 @@
     <value>Тестовое включение</value>
   </data>
   <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
-    <value>Незафиксированная работа РЭС</value>
+    <value>Лицензиат; Незафиксированная работа РЭС</value>
   </data>
   <data name="Time" xml:space="preserve">
     <value>Время</value>
   </data>
   <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
     <value>Для перехода в режим измерений on line выберите сенсор</value>
+  </data>
+  <data name="PrintAllRez" xml:space="preserve">
+    <value>Печатать все (РЭС)</value>
+  </data>
+  <data name="PrintSelectedRez" xml:space="preserve">
+    <value>Печатать выделенное (РЭС)</value>
   </data>
 </root>

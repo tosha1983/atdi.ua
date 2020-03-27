@@ -38,42 +38,42 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.Owner}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="60,50,0,0" Height="20" Width="80" Text="{Binding Path=Owner}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.OwnerOfStation}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="90,50,0,0" Height="20" Width="80" Text="{Binding Path=Owner}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="150,50,0,0" Height="40" Content="{x:Static res:Resources.DateMeas}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="220,50,0,0" Height="20" Width="20" Text="{Binding Path=DateMeasDay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="240,50,0,0" Height="20" Width="20" Text="{Binding Path=DateMeasMonth}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="260,50,0,0" Height="20" Width="40" Text="{Binding Path=DateMeasYear}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="180,50,0,0" Height="40" Content="{x:Static res:Resources.DateMeas}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="290,50,0,0" Height="20" Width="20" Text="{Binding Path=DateMeasDay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="310,50,0,0" Height="20" Width="20" Text="{Binding Path=DateMeasMonth}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="330,50,0,0" Height="20" Width="40" Text="{Binding Path=DateMeasYear}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="310,50,0,0" Height="40" Content="{x:Static res:Resources.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="370,50,0,0" Height="20" Width="80" Text="{Binding Path=Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="380,50,0,0" Height="40" Content="{x:Static res:Resources.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="440,50,0,0" Height="20" Width="80" Text="{Binding Path=Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="460,50,0,0" Height="40" Content="{x:Static res:Resources.FreqMHz}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="520,50,0,0" Height="20" Width="60" Text="{Binding Path=Freq_MHz}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="530,50,0,0" Height="40" Content="{x:Static res:Resources.FreqMHz}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="610,50,0,0" Height="20" Width="60" Text="{Binding Path=Freq_MHz}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="590,50,0,0" Height="40" Content="{x:Static res:Resources.Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="640,50,0,0" Height="20" Width="80" Text="{Binding Path=Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="680,50,0,0" Height="40" Content="{x:Static res:Resources.Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="730,50,0,0" Height="20" Width="80" Text="{Binding Path=Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="730,50,0,0" Height="40" Content="{x:Static res:Resources.CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="800,50,0,0" Height="20" Width="80" Text="{Binding Path=CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="820,50,0,0" Height="40" Content="{x:Static res:Resources.CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="890,50,0,0" Height="20" Width="80" Text="{Binding Path=CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="890,50,0,0" Height="40" Content="{x:Static res:Resources.DateCreated}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <DatePicker Margin="970,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+        <Label Margin="980,50,0,0" Height="40" Content="{x:Static res:Resources.DateCreated}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <DatePicker Margin="1070,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy}'}"/>
 
-        <Label Margin="1080,50,0,0" Height="40" Content="{x:Static res:Resources.Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="1140,50,0,0" Height="20" Width="80" Text="{Binding Path=Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <!--<Label Margin="1180,50,0,0" Height="40" Content="{x:Static res:Resources.Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="1250,50,0,0" Height="20" Width="80" Text="{Binding Path=Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
 
-        <Label Margin="1230,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="1340,50,0,0" Height="20" Width="80" Text="{Binding Path=PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Margin="1180,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Margin="1260,50,0,0" Height="20" Width="80" Text="{Binding Path=PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Label Margin="1430,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionStart}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <DatePicker Margin="1530,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+        <Label Margin="1350,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionStart}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <DatePicker Margin="1450,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy}'}"/>
 
-        <Label Margin="1640,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionStop}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <DatePicker Margin="1730,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+        <Label Margin="1560,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionStop}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <DatePicker Margin="1660,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>
       </Grid>
-      <Button Margin="1850,50,0,0" Content="{x:Static res:Resources.ApplyCommand}" Width="50" Height="20" Command="{Binding FilterApplyCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+      <Button Margin="1770,50,0,0" Content="{x:Static res:Resources.ApplyCommand}" Width="80" Height="20" Command="{Binding FilterApplyCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
       <Button Margin="0,20,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
       <Button Margin="0,20,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
       <Button Margin="0,20,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
@@ -81,7 +81,8 @@
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSID}" Binding="{Binding Path=GSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Owner}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasStation}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=StationAddress}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.Coordinates}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.NumberPermission}" Binding="{Binding Path=NumberPermission}"></DataGridTextColumn>
@@ -100,6 +101,7 @@
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionChannel}" Binding="{Binding Path=StationChannel}" Width="200"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyMeasured}" Binding="{Binding Path=RadioControlMeasFreq_MHz}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FrequencyBandwidthMeasured_kHz}" Binding="{Binding Path=RadioControlBandWidth_KHz}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.FieldStrength_dBV_m}" Binding="{Binding Path=FieldStrength}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.SignalLevel_dB}" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
@@ -120,8 +122,8 @@
         </DataGrid.Columns>
         <DataGrid.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static res:Resources.PrintSelected}" Command="{Binding PrintSelectedCommand}"/>
-            <MenuItem Header="{x:Static res:Resources.PrintAll}" Command="{Binding PrintAllCommand}"/>
+            <MenuItem Header="{x:Static res:Resources.PrintSelectedRez}" Command="{Binding PrintSelectedCommand}"/>
+            <MenuItem Header="{x:Static res:Resources.PrintAllRez}" Command="{Binding PrintAllCommand}"/>
           </ContextMenu>
         </DataGrid.ContextMenu>
       </cdg:CustomDataGrid> 

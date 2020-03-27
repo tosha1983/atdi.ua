@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using SDR = Atdi.Contracts.WcfServices.Sdrn.Server.IeStation;
 using VM = XICSM.ICSControlClient.Models.Views;
 using XICSM.ICSControlClient.Environment.Wpf;
+using XICSM.ICSControlClient.ViewModels.Coordinates;
+using XICSM.ICSControlClient.ViewModels.Reports;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
@@ -19,11 +21,13 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 DateMeas = source.DateMeas,
                 Owner = source.OwnerName,
                 StationAddress = source.Address,
-                Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
+                //Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat) + ", " + ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon),
                 NumberPermission = source.PermissionNumber,
                 PermissionPeriod = source.PermissionStart,
                 PermissionStart = source.PermissionStop,
                 SensorName = source.TitleSensor,
+                StatusMeasStation = source.StatusMeasStation,
                 DetailProtocols = source.DetailProtocols
             };
         }

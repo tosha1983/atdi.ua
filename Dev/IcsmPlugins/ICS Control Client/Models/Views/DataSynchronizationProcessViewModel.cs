@@ -37,6 +37,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("SensorName", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string SensorName { get; set; }
 
+        [WpfColumn("StatusMeasStation", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StatusMeasStation { get; set; }
+
         public DetailProtocols[] DetailProtocols { get; set; }
     }
 }
