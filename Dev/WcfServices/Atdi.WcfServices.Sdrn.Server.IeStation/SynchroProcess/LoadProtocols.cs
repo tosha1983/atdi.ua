@@ -801,17 +801,24 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             var protocolWithStatusI = allDetailProtocolsForPerm.Find(x => x.StatusMeas == "I");
                             var protocolWithStatusA = allDetailProtocolsForPerm.Find(x => x.StatusMeas == "A");
 
-                            if ((protocolWithStatusI != null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                            if (allDetailProtocolsForPerm[0].StatusMeasStation != "N")
                             {
-                                headProtocol.StatusMeasStation = "I";
-                            }
-                            else if ((protocolWithStatusI == null) && (protocolWithStatusA != null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
-                            {
-                                headProtocol.StatusMeasStation = "A";
-                            }
-                            else if ((protocolWithStatusI == null) && (protocolWithStatusA == null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
-                            {
-                                headProtocol.StatusMeasStation = "U";
+                                if ((protocolWithStatusI != null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                                {
+                                    headProtocol.StatusMeasStation = "I";
+                                }
+                                else if ((protocolWithStatusI == null) && (protocolWithStatusA != null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                                {
+                                    headProtocol.StatusMeasStation = "A";
+                                }
+                                else if ((protocolWithStatusI == null) && (protocolWithStatusA == null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                                {
+                                    headProtocol.StatusMeasStation = "U";
+                                }
+                                else
+                                {
+                                    headProtocol.StatusMeasStation = allDetailProtocolsForPerm[0].StatusMeasStation;
+                                }
                             }
                             else
                             {
