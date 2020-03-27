@@ -982,7 +982,7 @@
     <value>НДП</value>
   </data>
   <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
-    <value>Ліцензіат</value>
+    <value>Ліцензіат; Фіксується робота РЕЗ</value>
   </data>
   <data name="Status_OperatingAccordingToTest" xml:space="preserve">
     <value>Тестове включення</value>

@@ -982,7 +982,7 @@
     <value>НДП</value>
   </data>
   <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
-    <value>Лицензиат</value>
+    <value>Лицензиат; Зафиксирована работа РЭС</value>
   </data>
   <data name="Status_OperatingAccordingToTest" xml:space="preserve">
     <value>Тестовое включение</value>
