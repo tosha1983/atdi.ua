@@ -360,7 +360,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     CreatedBy = IM.ConnectedUser()
                 };
 
-                ReloadRefSpectrums();
+                //ReloadRefSpectrums();
 
                 var RefSpectrumIdsBySDRN = new List<long>();
                 var stationsExtended = new Dictionary<string, SDRI.StationExtended>();
