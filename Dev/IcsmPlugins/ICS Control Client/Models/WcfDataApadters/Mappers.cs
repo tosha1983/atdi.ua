@@ -639,7 +639,50 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };
         }
-        public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
+        public static VM.DataSynchronizationProcessViewModel Map(SDRI.HeadProtocols source)
+        {
+            if (source == null)
+                return null;
+
+            string statusMeasStationFull = "-";
+            switch (source.StatusMeasStation)
+            {
+                case "T":
+                    statusMeasStationFull = Properties.Resources.Status_OperatingAccordingToTest;
+                    break;
+                case "A":
+                    statusMeasStationFull = Properties.Resources.Status_OperatingAccordingToLicense;
+                    break;
+                case "U":
+                    statusMeasStationFull = Properties.Resources.Status_TransmitterOperationNotFixed;
+                    break;
+                case "I":
+                    statusMeasStationFull = Properties.Resources.Status_IllegallyOperatedTransmitter;
+                    break;
+                default:
+                    break;
+            }
+
+            return new VM.DataSynchronizationProcessViewModel
+            {
+                GSID = source.PermissionGlobalSID,
+                DateMeas = source.DateMeas,
+                Owner = source.OwnerName,
+                StationAddress = source.Address,
+                //Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat) + ", " + ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon),
+                NumberPermission = source.PermissionNumber,
+                PermissionPeriod = source.PermissionStart,
+                PermissionStart = source.PermissionStop,
+                SensorName = source.TitleSensor,
+                StatusMeasStation = source.StatusMeasStation,
+                StatusMeasStationFull = statusMeasStationFull,
+                DetailProtocols = source.DetailProtocols
+            };
+        }
+
+
+    public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
         {
             if (source == null)
                 return null;

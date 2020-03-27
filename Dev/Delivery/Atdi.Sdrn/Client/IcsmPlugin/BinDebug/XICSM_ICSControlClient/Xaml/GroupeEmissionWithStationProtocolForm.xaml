@@ -81,7 +81,7 @@
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSID}" Binding="{Binding Path=GSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasStation}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasStationFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=StationAddress}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.Coordinates}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>

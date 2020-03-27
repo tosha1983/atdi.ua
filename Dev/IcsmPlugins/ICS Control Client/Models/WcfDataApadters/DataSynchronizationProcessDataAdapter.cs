@@ -15,21 +15,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
     {
         protected override Func<SDR.HeadProtocols, VM.DataSynchronizationProcessViewModel> GetMapper()
         {
-            return source => new VM.DataSynchronizationProcessViewModel
-            {
-                GSID = source.PermissionGlobalSID,
-                DateMeas = source.DateMeas,
-                Owner = source.OwnerName,
-                StationAddress = source.Address,
-                //Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
-                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat) + ", " + ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon),
-                NumberPermission = source.PermissionNumber,
-                PermissionPeriod = source.PermissionStart,
-                PermissionStart = source.PermissionStop,
-                SensorName = source.TitleSensor,
-                StatusMeasStation = source.StatusMeasStation,
-                DetailProtocols = source.DetailProtocols
-            };
+            return Mappers.Map;
         }
     }
 }

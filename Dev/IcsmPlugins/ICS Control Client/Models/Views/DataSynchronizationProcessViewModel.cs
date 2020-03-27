@@ -40,6 +40,9 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("StatusMeasStation", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string StatusMeasStation { get; set; }
 
+        [WpfColumn("StatusMeasStationFull", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StatusMeasStationFull { get; set; }
+
         public DetailProtocols[] DetailProtocols { get; set; }
     }
 }
