@@ -43,4 +43,27 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
 		public DateTimeOffset? ForwardedTime { get; set; }
 	}
+
+    public class HealthLogDetailResult
+    {
+	    public long Id { get; set; }
+
+	    public string Message { get; set; }
+
+	    public string Note { get; set; }
+
+	    public DateTimeOffset CreatedDate { get; set; }
+
+	    public int ThreadId { get; set; }
+
+	    public string Source { get; set; }
+
+	    public byte SiteTypeCode { get; set; }
+
+	    public string SiteTypeName { get; set; }
+
+	    public string SiteInstance { get; set; }
+
+	    public string SiteHost { get; set; }
+	}
 }

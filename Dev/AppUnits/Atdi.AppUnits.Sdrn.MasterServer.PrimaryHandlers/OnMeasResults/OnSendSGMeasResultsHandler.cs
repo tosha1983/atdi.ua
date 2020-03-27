@@ -1,4 +1,5 @@
-﻿using Atdi.Contracts.Api.DataBus;
+﻿using Atdi.DataModels.DataConstraint;
+using Atdi.Contracts.Api.DataBus;
 using Atdi.DataModels.Api.DataBus;
 using Atdi.DataModels.Sdrns.Server;
 using Atdi.Platform.Logging;
@@ -47,6 +48,8 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
 
                 using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                 {
+                    int? subMeasTaskSensorIdMasterServer = null;
+
                     var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                     builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
                     builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
@@ -59,6 +62,20 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                     var resMeas = scope.Executor.Execute<MD.IResMeas_PK>(builderInsertIResMeas);
                     if (resMeas.Id > 0)
                     {
+                        var builderSubTaskSensorMaster = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                        builderSubTaskSensorMaster.Select(x => x.SENSOR.Id);
+                        builderSubTaskSensorMaster.Where(x => x.Id, ConditionOperator.Equal, subMeasTaskSensorId);
+                        scope.Executor.Fetch(builderSubTaskSensorMaster, readerSubTaskSensorMaster =>
+                        {
+                            while (readerSubTaskSensorMaster.Read())
+                            {
+                                subMeasTaskSensorIdMasterServer = (int?)readerSubTaskSensorMaster.GetValue(x => x.SENSOR.Id);
+                                break;
+                            }
+                            return true;
+                        });
+
+
                         var builderInsertResLocSensorMeas = this._dataLayer.GetBuilder<MD.IResLocSensorMeas>().Insert();
                         builderInsertResLocSensorMeas.SetValue(c => c.Agl, measResult.Location.AGL);
                         builderInsertResLocSensorMeas.SetValue(c => c.Asl, measResult.Location.ASL);
@@ -87,7 +104,10 @@ namespace Atdi.AppUnits.Sdrn.MasterServer.PrimaryHandlers
                                 builderInsertEmitting.SetValue(c => c.ReferenceLevel_dBm, emitting.ReferenceLevel_dBm);
                                 builderInsertEmitting.SetValue(c => c.TriggerDeviationFromReference, emitting.TriggerDeviationFromReference);
                                 builderInsertEmitting.SetValue(c => c.RES_MEAS.Id, resMeas.Id);
-                                builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
+
+                                builderInsertEmitting.SetValue(c => c.SensorId, subMeasTaskSensorIdMasterServer);
+                                //builderInsertEmitting.SetValue(c => c.SensorId, emitting.SensorId);
+
                                 if (emitting.EmittingParameters != null)
                                 {
                                     builderInsertEmitting.SetValue(c => c.RollOffFactor, emitting.EmittingParameters.RollOffFactor);

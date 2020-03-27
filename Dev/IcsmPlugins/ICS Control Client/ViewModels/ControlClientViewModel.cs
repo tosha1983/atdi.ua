@@ -1364,6 +1364,11 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnDoubleClickSensorCommand(object parameter)
         {
+            if (this._currentShortSensor == null)
+            {
+                MessageBox.Show(Properties.Resources.Message_SelectASensorToSwitchToOnLineMeasurementMode);
+                return;
+            }
             var dlgForm = new FM.OnlineMeasurementForm(this._currentShortSensor, null);
             dlgForm.ShowDialog();
             dlgForm.Dispose();

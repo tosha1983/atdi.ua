@@ -10,7 +10,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[EntityPrimaryKey]
 	public interface ICoverageProfilesCalcTask_PK : ICalcTask_PK
 	{
-		//long Id { get; set; }
 	}
 
 	[Entity]

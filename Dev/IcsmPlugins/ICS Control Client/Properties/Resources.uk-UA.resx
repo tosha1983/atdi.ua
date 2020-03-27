@@ -993,4 +993,7 @@
   <data name="Time" xml:space="preserve">
     <value>Час</value>
   </data>
+  <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
+    <value>Для переходу у режим вимірювань on line виберіть сенсор</value>
+  </data>
 </root>
