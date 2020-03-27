@@ -1795,7 +1795,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.RSFPL
         {
             bool res = false;
             rm = new ResourceManager();
-
+            
             session = (TcpipSession)rm.Open(String.Concat("TCPIP::", adapterConfig.IPAddress, "::hislip"));//, AccessModes.None, 20000);
             timeOutRMinTicks = session.TimeoutMilliseconds * 10000;
             formattedIO = session.FormattedIO;
