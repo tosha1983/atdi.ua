@@ -636,9 +636,10 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             protocols.StationTxFreq = string.Join(";", txFreq);
                         }
                         protocols.StatusMeas = readerProtocols.GetValue(c => c.STATION_EXTENDED.StatusMeas);
+                        protocols.StatusMeasStation = readerProtocols.GetValue(c => c.STATION_EXTENDED.StatusMeas);
                         //if (protocols.StatusMeas != null)
                         //{
-                            //protocols.StatusMeas = dic[protocols.StatusMeas];
+                        //protocols.StatusMeas = dic[protocols.StatusMeas];
                         //}
                         protocols.BandWidth = readerProtocols.GetValue(c => c.STATION_EXTENDED.BandWidth);
                         protocols.CurentStatusStation = readerProtocols.GetValue(c => c.STATION_EXTENDED.CurentStatusStation);
@@ -699,6 +700,13 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             if (protocols.StatusMeas=="A")
                             {
                                 protocols.StatusMeas = "U";
+                            }
+                        }
+                        else
+                        {
+                            if (protocols.StatusMeas == "U")
+                            {
+                                protocols.StatusMeas = "A";
                             }
                         }
 
@@ -789,6 +797,26 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                             headProtocol.PermissionStop = allDetailProtocolsForPerm[0].PermissionStop;
                             headProtocol.StandardName = allDetailProtocolsForPerm[0].StandardName;
                             headProtocol.TitleSensor= allDetailProtocolsForPerm[0].TitleSensor;
+
+                            var protocolWithStatusI = allDetailProtocolsForPerm.Find(x => x.StatusMeas == "I");
+                            var protocolWithStatusA = allDetailProtocolsForPerm.Find(x => x.StatusMeas == "A");
+
+                            if ((protocolWithStatusI != null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                            {
+                                headProtocol.StatusMeasStation = "I";
+                            }
+                            else if ((protocolWithStatusI == null) && (protocolWithStatusA != null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                            {
+                                headProtocol.StatusMeasStation = "A";
+                            }
+                            else if ((protocolWithStatusI == null) && (protocolWithStatusA == null) && (allDetailProtocolsForPerm[0].StatusMeasStation != "T"))
+                            {
+                                headProtocol.StatusMeasStation = "U";
+                            }
+                            else
+                            {
+                                headProtocol.StatusMeasStation = allDetailProtocolsForPerm[0].StatusMeasStation;
+                            }
 
                             var allDetailProtocol = new List<DetailProtocols>();
                             for (int j=0; j< allDetailProtocolsForPerm.Count; j++)
