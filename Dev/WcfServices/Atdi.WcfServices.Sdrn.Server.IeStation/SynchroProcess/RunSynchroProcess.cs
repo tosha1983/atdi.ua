@@ -1347,8 +1347,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         {
                             for (int j = 0; j < foundEmitting.WorkTimes.Length; j++)
                             {
-                                if ((foundDRefSpectrum.DateMeas < foundEmitting.WorkTimes[j].StartEmitting.Date)
-                                    || (foundDRefSpectrum.DateMeas > foundEmitting.WorkTimes[j].StopEmitting.Date))
+                                if ((foundDRefSpectrum.DateMeas.Date < foundEmitting.WorkTimes[j].StartEmitting.Date)
+                                    || (foundDRefSpectrum.DateMeas.Date > foundEmitting.WorkTimes[j].StopEmitting.Date))
                                 {
                                     uncorrespondEmittingsSpectrum.Add(foundEmitting.Spectrum);
                                     stationsDataToCorrespondList.RemoveRange(i, 1);
