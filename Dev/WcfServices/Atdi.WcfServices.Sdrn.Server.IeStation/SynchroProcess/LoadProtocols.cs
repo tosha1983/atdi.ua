@@ -364,7 +364,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 string ownerName,
                                 string permissionNumber,
                                 DateTime? permissionStart,
-                                DateTime? permissionStop)
+                                DateTime? permissionStop,
+                                string statusMeas)
         {
             var loadSynchroProcessData = new Utils(this._dataLayer, this._logger);
             var loadSensor = new LoadSensor(this._dataLayer, this._logger);
@@ -458,6 +459,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 {
                     builderProtocols.Where(c => c.DateMeasMonth, ConditionOperator.Equal, DateMeasMonth);
                 }
+
 
                 if (DateMeasYear != null)
                 {
@@ -687,10 +689,30 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 {
                                     protocols.DurationMeasurement = readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStop) - readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStart);
                                 }
+                                
                             }
                             return true;
                         });
-                        listDetailProtocols.Add(protocols);
+
+                        if (protocols.ProtocolsLinkedWithEmittings==null)
+                        {
+                            if (protocols.StatusMeas=="A")
+                            {
+                                protocols.StatusMeas = "U";
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(statusMeas))
+                        {
+                            if (protocols.StatusMeas == statusMeas)
+                            {
+                                listDetailProtocols.Add(protocols);
+                            }
+                        }
+                        else
+                        {
+                            listDetailProtocols.Add(protocols);
+                        }
                     }
                     return true;
                 });

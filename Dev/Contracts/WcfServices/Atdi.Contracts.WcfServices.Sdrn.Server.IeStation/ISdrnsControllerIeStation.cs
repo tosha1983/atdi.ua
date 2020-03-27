@@ -104,7 +104,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
                                                     string ownerName,
                                                     string permissionNumber,
                                                     DateTime? permissionStart,
-                                                    DateTime? permissionStop);
+                                                    DateTime? permissionStop,
+                                                    string statusMeas);
 
     }
 }
