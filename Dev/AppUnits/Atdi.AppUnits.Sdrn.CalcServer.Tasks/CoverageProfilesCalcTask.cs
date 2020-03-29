@@ -15,6 +15,7 @@ using Atdi.Contracts.Sdrn.CalcServer.Internal;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using System.IO;
 using Newtonsoft.Json;
+#pragma warning disable 649
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -56,10 +57,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		{
 			public int Num;
 			public int Index;
+#pragma warning disable 649
 			public Indexer Indexer;
 			public short Relief;
 			public byte Clutter;
 			public byte Building;
+#pragma warning restore 649
 		};
 
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;

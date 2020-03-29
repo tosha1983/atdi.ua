@@ -7,8 +7,8 @@
     <ProjectGuid>{B26B6BD9-699D-46B8-BA43-0D0BA803087E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrn.CalcServer.DeepServices</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrn.CalcServer.DeepServices</AssemblyName>
+    <RootNamespace>Atdi.DataModels.Sdrn.DeepServices</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrn.DeepServices</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

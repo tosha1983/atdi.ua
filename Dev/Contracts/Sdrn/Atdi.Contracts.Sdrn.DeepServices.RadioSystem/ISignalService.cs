@@ -12,10 +12,9 @@ namespace Atdi.Contracts.Sdrn.DeepServices.RadioSystem
 		/// <summary>
 		/// 
 		/// </summary>
-		void CalcLoss(ref CalcLossArgs args, ref CalcLossResult result);
+		void CalcLoss(in CalcLossArgs args, ref CalcLossResult result);
 
-		void CalcAntennaGain();
+		void CalcAntennaGain(in CalcAntennaGainArgs args, ref CalcAntennaGainResult result);
 
-		
 	}
 }

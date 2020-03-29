@@ -7,8 +7,8 @@
     <ProjectGuid>{DBBCBDEB-202D-4068-94F6-BB78BD47D51A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.Contracts.Sdrn.CalcServer.DeepServices</RootNamespace>
-    <AssemblyName>Atdi.Contracts.Sdrn.CalcServer.DeepServices</AssemblyName>
+    <RootNamespace>Atdi.Contracts.Sdrn.DeepServices</RootNamespace>
+    <AssemblyName>Atdi.Contracts.Sdrn.DeepServices</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

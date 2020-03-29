@@ -7,8 +7,8 @@
     <ProjectGuid>{C67FBE11-FEF0-48AD-9912-61BF4C61DB03}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.DataModels.Sdrn.CalcServer.DeepServices.RadioSystem</RootNamespace>
-    <AssemblyName>Atdi.DataModels.Sdrn.CalcServer.DeepServices.RadioSystem</AssemblyName>
+    <RootNamespace>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</RootNamespace>
+    <AssemblyName>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,7 +42,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PropagationModels\AbsorptionCalcBlock.cs" />
+    <Compile Include="PropagationModels\AdditionalCalcBlock.cs" />
+    <Compile Include="PropagationModels\AtmosphericCalcBlock.cs" />
+    <Compile Include="PropagationModels\ClutterCalcBlock.cs" />
+    <Compile Include="PropagationModels\DiffractionCalcBlock.cs" />
+    <Compile Include="PropagationModels\DuctingCalcBlock.cs" />
+    <Compile Include="PropagationModels\GlobalParams.cs" />
+    <Compile Include="PropagationModels\MainCalcBlock.cs" />
+    <Compile Include="PropagationModels\PropagationModel.cs" />
+    <Compile Include="PropagationModels\ReflectionCalcBlock.cs" />
+    <Compile Include="PropagationModels\SubPathDiffractionCalcBlock.cs" />
+    <Compile Include="PropagationModels\TropoCalcBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignalService\CalcAntennaGainArgs.cs" />
+    <Compile Include="SignalService\CalcAntennaGainResult.cs" />
     <Compile Include="SignalService\CalcLossArgs.cs" />
     <Compile Include="SignalService\CalcLossResult.cs" />
   </ItemGroup>
@@ -51,5 +66,6 @@
       <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

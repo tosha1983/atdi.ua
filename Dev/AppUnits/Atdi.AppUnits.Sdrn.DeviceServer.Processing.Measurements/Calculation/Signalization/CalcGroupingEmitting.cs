@@ -307,10 +307,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                 {
                     if (!MasterEmitting.Spectrum.СorrectnessEstimations) { JoinAttachableEmittingToMasterEmitting = false; }
                 }
-                else if (false)//MasterEmitting.MeanDeviationFromReference != AttachableEmitting.MeanDeviationFromReference)
-                {
-                    if (AttachableEmitting.MeanDeviationFromReference > MasterEmitting.MeanDeviationFromReference) { JoinAttachableEmittingToMasterEmitting = false; }
-                }
+                //else if (false)//MasterEmitting.MeanDeviationFromReference != AttachableEmitting.MeanDeviationFromReference)
+                //{
+                //    if (AttachableEmitting.MeanDeviationFromReference > MasterEmitting.MeanDeviationFromReference) { JoinAttachableEmittingToMasterEmitting = false; }
+                //}
                 else if ((AnalyzeByChannel))
                 {
                     int k = CompareTwoEmittingCenterWithStartEnd(MasterEmitting, AttachableEmitting);

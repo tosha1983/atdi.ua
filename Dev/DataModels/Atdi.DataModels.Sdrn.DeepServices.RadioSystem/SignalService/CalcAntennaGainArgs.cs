@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
+namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
-    public class Class1
-    {
-    }
+	public struct CalcAntennaGainArgs
+	{
+	}
 }
