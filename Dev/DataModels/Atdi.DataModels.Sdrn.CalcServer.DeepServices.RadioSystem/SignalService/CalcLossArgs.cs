@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.CalcServer.DeepServices
+namespace Atdi.DataModels.Sdrn.CalcServer.DeepServices.RadioSystem.SignalService
 {
-    public class Class1
-    {
-    }
+	public struct CalcLossArgs
+	{
+	}
 }

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CF434BDC-4CB1-4F7D-B85E-55C86352B4E9}</ProjectGuid>
+    <ProjectGuid>{D576643B-FCDB-4873-9F08-ABCFBB5E9E8F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.AppUnits.Sdrn.CalcServer.DeepServices</RootNamespace>
-    <AssemblyName>Atdi.AppUnits.Sdrn.CalcServer.DeepServices</AssemblyName>
+    <RootNamespace>Atdi.Contracts.Sdrn.CalcServer.DeepServices.RadioSystem</RootNamespace>
+    <AssemblyName>Atdi.Contracts.Sdrn.CalcServer.DeepServices.RadioSystem</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,7 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ISignalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.CalcServer.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices\Atdi.DataModels.Sdrn.CalcServer.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.Contracts.Sdrn.CalcServer.DeepServices\Atdi.Contracts.Sdrn.CalcServer.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
