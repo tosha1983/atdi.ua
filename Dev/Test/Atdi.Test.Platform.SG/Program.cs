@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Platform.Workflows;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis;
-using Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis;
-using Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis;
+using Atdi.Contracts.Sdrn.DeepServices;
+using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.AppUnits.Sdrn.DeepServices.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 
 namespace Atdi.Test.Platform.SG

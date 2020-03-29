@@ -4,16 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Atdi.Contracts.Sdrn.CalcServer;
-using Atdi.Contracts.Sdrn.DeepServices;
-using Atdi.DataModels.Sdrn.CalcServer;
 
-namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
+namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
 {
     public class AppServerComponent : AppUnitComponent
 	{
 		public AppServerComponent()
-			: base("SdrnCalcServerTasksAppUnit")
+			: base("SdrnDeepServicesGisAppUnit")
 		{
 
 		}
