@@ -277,7 +277,7 @@
     <value>CtoI</value>
   </data>
   <data name="CurentPowerDBm" xml:space="preserve">
-    <value>Текуча потужність, дБм</value>
+    <value>Поточна потужність, дБм</value>
   </data>
   <data name="DateCreated" xml:space="preserve">
     <value>Дата створення</value>
@@ -655,7 +655,7 @@
     <value>Дозвіл дійсний з</value>
   </data>
   <data name="PermissionStart1" xml:space="preserve">
-    <value>Дата використання плану</value>
+    <value>Кінцева дата виконання плану</value>
   </data>
   <data name="PermissionStop" xml:space="preserve">
     <value>Дозвіл дійсний до</value>
@@ -799,7 +799,7 @@
     <value>Частота від, МГц</value>
   </data>
   <data name="StationAddress" xml:space="preserve">
-    <value>Адрес РЕЗ</value>
+    <value>Адреса РЕЗ</value>
   </data>
   <data name="StationName" xml:space="preserve">
     <value>Назва станції</value>
@@ -982,15 +982,24 @@
     <value>НДП</value>
   </data>
   <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
-    <value>Ліцензіат</value>
+    <value>Ліцензіат; Фіксується робота РЕЗ</value>
   </data>
   <data name="Status_OperatingAccordingToTest" xml:space="preserve">
     <value>Тестове включення</value>
   </data>
   <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
-    <value>Незафіксована робота РЕЗ</value>
+    <value>Ліцензіат; НЕ зафіксована робота РЕЗ</value>
   </data>
   <data name="Time" xml:space="preserve">
     <value>Час</value>
+  </data>
+  <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
+    <value>Для переходу у режим вимірювань on line виберіть сенсор</value>
+  </data>
+  <data name="PrintAllRez" xml:space="preserve">
+    <value>Друкувати все (РЕЗ)</value>
+  </data>
+  <data name="PrintSelectedRez" xml:space="preserve">
+    <value>Друкувати обране (РЕЗ)</value>
   </data>
 </root>

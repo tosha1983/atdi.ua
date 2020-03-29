@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E936DEE3-81DF-4ECA-84FA-DE7A0D1B2747}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.Test.Platform.SG</RootNamespace>
+    <AssemblyName>Atdi.Test.Platform.SG</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Atdi.Test.Platform.SG.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis\Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis.csproj">
+      <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
+      <Name>Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.CalcServer.DeepServices\Atdi.AppUnits.Sdrn.CalcServer.DeepServices.csproj">
+      <Project>{cf434bdc-4cb1-4f7d-b85e-55c86352b4e9}</Project>
+      <Name>Atdi.AppUnits.Sdrn.CalcServer.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis\Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis.csproj">
+      <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices\Atdi.Contracts.Sdrn.CalcServer.DeepServices.csproj">
+      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
+      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis\Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

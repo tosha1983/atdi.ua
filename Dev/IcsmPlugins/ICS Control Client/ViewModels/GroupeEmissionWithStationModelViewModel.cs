@@ -360,7 +360,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     CreatedBy = IM.ConnectedUser()
                 };
 
-                ReloadRefSpectrums();
+                //ReloadRefSpectrums();
 
                 var RefSpectrumIdsBySDRN = new List<long>();
                 var stationsExtended = new Dictionary<string, SDRI.StationExtended>();
@@ -376,11 +376,11 @@ namespace XICSM.ICSControlClient.ViewModels
                         var stationExtended = new SDRI.StationExtended();
 
                         IMRecordset rs = new IMRecordset(dataSpectrum.TableName, IMRecordset.Mode.ReadOnly);
-                        rs.Select("Position.NAME,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION,NAME,Owner.CODE,STATUS");
+                        rs.Select("Position.NAME,Position.REMARK,Position.LATITUDE,Position.LONGITUDE,BW,Owner.NAME,STANDARD,RadioSystem.DESCRIPTION,Position.PROVINCE,DESIG_EMISSION,NAME,Owner.CODE,STATUS");
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                         {
-                            stationExtended.Address = rs.GetS("Position.NAME");
+                            stationExtended.Address = rs.GetS("Position.REMARK");
                             stationExtended.Location = new SDRI.DataLocation() { Latitude = rs.GetD("Position.LATITUDE"), Longitude = rs.GetD("Position.LONGITUDE") };
                             stationExtended.BandWidth = rs.GetD("BW");
                             stationExtended.OwnerName = rs.GetS("Owner.NAME");
@@ -567,7 +567,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                                 if (i >= 1)
                                 {
-                                    DateTime dateMeas = DateTime.ParseExact(record[10], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                    DateTime dateMeas = DateTime.ParseExact(record[10], "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                                     var refSpecDataLine = new SDRI.DataRefSpectrum()
                                     {

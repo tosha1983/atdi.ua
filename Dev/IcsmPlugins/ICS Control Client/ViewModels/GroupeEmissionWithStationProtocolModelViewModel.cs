@@ -116,7 +116,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._dataFilter.Owner,
                 this._dataFilter.PermissionNumber,
                 this._dataFilter.PermissionStart,
-                this._dataFilter.PermissionStop);
+                this._dataFilter.PermissionStop,
+                "");
             this._protocols.Source = sdrProtocols;
         }
         private void OnPrintAllCommand(object parameter)

@@ -17,12 +17,12 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Adapters.Config
         public int Stop_dBm = 0;
 
         [XmlElement]
-        public int Step_dB = 0;
+        public uint Step_dB = 0;
 
         [XmlElement]
-        public int NumberScan = 0;
+        public uint NumberScan = 0;
 
         [XmlElement]
-        public int PersentOverload = 0;
+        public uint PersentOverload = 0;
     }
 }

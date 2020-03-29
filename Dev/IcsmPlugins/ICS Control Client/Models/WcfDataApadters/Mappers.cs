@@ -9,6 +9,8 @@ using VM = XICSM.ICSControlClient.Models.Views;
 using M = XICSM.ICSControlClient.Models;
 using XICSM.ICSControlClient.Environment.Wpf;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
+using XICSM.ICSControlClient.ViewModels.Reports;
+using XICSM.ICSControlClient.ViewModels.Coordinates;
 
 namespace XICSM.ICSControlClient.Models.WcfDataApadters
 {
@@ -611,7 +613,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 GlobalSID = source.GlobalSID,
                 Latitude = source.Latitude,
                 Longitude = source.Longitude,
-                Coordinates = (source.Latitude.HasValue ? source.Latitude.Value.ToString() : "") + ", " + (source.Longitude.HasValue ? source.Longitude.Value.ToString() : ""),
+                //Coordinates = (source.Latitude.HasValue ? source.Latitude.Value.ToString() : "") + ", " + (source.Longitude.HasValue ? source.Longitude.Value.ToString() : ""),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
                 Level_dBm = source.Level_dBm,
                 OwnerName = source.OwnerName,
                 PermissionGlobalSID = source.PermissionGlobalSID,
@@ -623,7 +626,8 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 RadioControlMeasFreq_MHz = source.RadioControlMeasFreq_MHz,
                 SensorLatitude = source.SensorLatitude,
                 SensorLongitude = source.SensorLongitude,
-                SensorCoordinates = (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : "") + ", " + (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : ""),
+                //SensorCoordinates = (source.SensorLatitude.HasValue ? source.SensorLatitude.Value.ToString() : "") + ", " + (source.SensorLongitude.HasValue ? source.SensorLongitude.Value.ToString() : ""),
+                SensorCoordinates = ConvertCoordinates.DecToDmsToString2(source.SensorLongitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.SensorLatitude.GetValueOrDefault(), EnumCoordLine.Lat),
                 SensorName = source.SensorName,
                 Standard = source.Standard,
                 StandardName = source.StandardName,
@@ -635,7 +639,50 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 ProtocolsLinkedWithEmittings = source.ProtocolsLinkedWithEmittings
             };
         }
-        public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
+        public static VM.DataSynchronizationProcessViewModel Map(SDRI.HeadProtocols source)
+        {
+            if (source == null)
+                return null;
+
+            string statusMeasStationFull = "-";
+            switch (source.StatusMeasStation)
+            {
+                case "T":
+                    statusMeasStationFull = Properties.Resources.Status_OperatingAccordingToTest;
+                    break;
+                case "A":
+                    statusMeasStationFull = Properties.Resources.Status_OperatingAccordingToLicense;
+                    break;
+                case "U":
+                    statusMeasStationFull = Properties.Resources.Status_TransmitterOperationNotFixed;
+                    break;
+                case "I":
+                    statusMeasStationFull = Properties.Resources.Status_IllegallyOperatedTransmitter;
+                    break;
+                default:
+                    break;
+            }
+
+            return new VM.DataSynchronizationProcessViewModel
+            {
+                GSID = source.PermissionGlobalSID,
+                DateMeas = source.DateMeas,
+                Owner = source.OwnerName,
+                StationAddress = source.Address,
+                //Coordinates = source.Longitude.ToString() + ", " + source.Latitude.ToString(),
+                Coordinates = ConvertCoordinates.DecToDmsToString2(source.Longitude.GetValueOrDefault(), EnumCoordLine.Lon) + ", " + ConvertCoordinates.DecToDmsToString2(source.Latitude.GetValueOrDefault(), EnumCoordLine.Lat),
+                NumberPermission = source.PermissionNumber,
+                PermissionPeriod = source.PermissionStart,
+                PermissionStart = source.PermissionStop,
+                SensorName = source.TitleSensor,
+                StatusMeasStation = source.StatusMeasStation,
+                StatusMeasStationFull = statusMeasStationFull,
+                DetailProtocols = source.DetailProtocols
+            };
+        }
+
+
+    public static VM.RefSpectrumViewModel Map(SDRI.RefSpectrum source)
         {
             if (source == null)
                 return null;

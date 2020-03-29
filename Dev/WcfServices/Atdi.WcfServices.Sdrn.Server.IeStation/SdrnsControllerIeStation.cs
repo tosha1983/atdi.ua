@@ -167,7 +167,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                                     string ownerName,
                                                     string permissionNumber,
                                                     DateTime? permissionStart,
-                                                    DateTime? permissionStop)
+                                                    DateTime? permissionStop,
+                                                    string statusMeas)
         {
             var loadProtocols = new LoadProtocols(_dataLayer, _logger);
             return loadProtocols.GetDetailProtocolsByParameters(processId, createdBy,
@@ -184,7 +185,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                                     ownerName,
                                                     permissionNumber,
                                                     permissionStart,
-                                                    permissionStop);
+                                                    permissionStop,
+                                                    statusMeas);
         }
 
         public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()
