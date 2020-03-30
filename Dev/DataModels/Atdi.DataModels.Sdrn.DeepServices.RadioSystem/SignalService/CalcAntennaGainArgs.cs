@@ -8,5 +8,6 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
 	public struct CalcAntennaGainArgs
 	{
+
 	}
 }

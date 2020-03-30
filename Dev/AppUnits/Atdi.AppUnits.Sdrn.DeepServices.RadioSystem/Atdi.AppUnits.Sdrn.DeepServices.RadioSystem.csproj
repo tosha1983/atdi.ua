@@ -45,6 +45,7 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="SignalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Signal\CalcLoss.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
@@ -79,5 +80,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
