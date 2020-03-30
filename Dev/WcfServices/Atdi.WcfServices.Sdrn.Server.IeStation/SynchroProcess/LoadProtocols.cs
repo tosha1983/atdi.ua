@@ -357,7 +357,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 short? DateMeasDay,
                                 short? DateMeasMonth,
                                 short? DateMeasYear,
-                                double? freq,
+                                double? freqStart,
+                                double? freqStop,
                                 double? probability,
                                 string standard,
                                 string province,
@@ -433,10 +434,16 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     builderProtocols.Where(c => c.SYNCHRO_PROCESS.Id, ConditionOperator.Equal, processId);
                 }
 
-                if (freq != null)
+                if (freqStart != null)
                 {
-                    builderProtocols.Where(c => c.Freq_MHz, ConditionOperator.Equal, freq);
+                    builderProtocols.Where(c => c.Freq_MHz, ConditionOperator.GreaterEqual, freqStart);
                 }
+
+                if (freqStop != null)
+                {
+                    builderProtocols.Where(c => c.Freq_MHz, ConditionOperator.LessEqual, freqStop);
+                }
+
                 if (!string.IsNullOrEmpty(permissionNumber))
                 {
                     builderProtocols.Where(c => c.PermissionNumber, ConditionOperator.Like, "%" + permissionNumber + "%");
@@ -506,7 +513,8 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                 }
 
                 if ((processId == null)
-                    && (freq == null)
+                    && (freqStart == null)
+                    && (freqStop == null)
                     && (permissionStart == null)
                     && (permissionStop == null)
                     && (DateMeasMonth == null)
