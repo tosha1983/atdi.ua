@@ -31,6 +31,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
 
     static class Exceptions
     {
-
+        public static readonly string ErrorConvertAtdiProjectionNameToEPSGCode = "Error convert Atdi projection name to EPSG code";
+        public static readonly string ErrorConvertEPSGCodeToAtdiProjectionName = "Error convert EPSG code to Atdi projection name";
+        public static readonly string ErrorConvertCoordinatesToWgs84Format = "Error convert coordinates to Wgs84 format";
+        public static readonly string ErrorConvertCoordinatesToEPSGFormat = "Error convert coordinates to EPSG format";
+        
     }
 }

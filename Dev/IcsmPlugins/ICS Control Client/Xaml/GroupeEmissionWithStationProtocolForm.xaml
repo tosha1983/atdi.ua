@@ -106,7 +106,7 @@
           <DataGridTextColumn Header="{x:Static res:Resources.FieldStrength_dBV_m}" Binding="{Binding Path=FieldStrength}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.SignalLevel_dB}" Binding="{Binding Path=Level_dBm}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas_OnlyDate, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=DateMeas_OnlyTime, StringFormat='{}{0:HH:mm}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=DateMeas_OnlyTime}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.MeasurementDuration}" Binding="{Binding Path=DurationMeasurement}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesOfMeasured}" Binding="{Binding Path=SensorCoordinates}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesDeclared}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>

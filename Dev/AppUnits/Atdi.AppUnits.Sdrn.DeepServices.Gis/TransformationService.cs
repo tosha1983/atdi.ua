@@ -10,7 +10,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
 {
     public class TransformationService : ITransformation
     {
-        private readonly ILogger _logger;
         private const uint Epsg4326 = 4326;
         private const uint PrefixEpsgN = 326;
         private const uint PrefixEpsgS = 327;
@@ -18,9 +17,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
         private const string PrefixAtdiProjectionS = "4UTS";
 
 
-        public TransformationService(ILogger logger)
+        public TransformationService()
         {
-            this._logger = logger;
             GdalConfiguration.ConfigureGdal();
             GdalConfiguration.ConfigureOgr();
         }
@@ -44,7 +42,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
             return epsgCoordinate;
         }
@@ -67,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
             return epsgCoordinate;
         }
@@ -96,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
             return epsgProjectionCoordinate;
         }
@@ -125,7 +123,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
             return epsgProjectionCoordinate;
         }
@@ -148,7 +146,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToWgs84Format, e);
             }
             return wgs84Coordinate;
         }
@@ -171,7 +169,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToWgs84Format, e);
             }
             return wgs84Coordinate;
         }
@@ -199,7 +197,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertEPSGCodeToAtdiProjectionName, e);
             }
             return atdiNameProjection;
         }
@@ -226,7 +224,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             }
             catch (Exception e)
             {
-                _logger.Exception(Contexts.ThisComponent, Categories.Convert, e, this);
+                throw new InvalidOperationException(Exceptions.ErrorConvertAtdiProjectionNameToEPSGCode, e);
             }
             return Convert.ToUInt32(number); 
         }
