@@ -7,7 +7,7 @@ using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.DataModels;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.Contracts.Sdrn.CalcServer;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
+using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Iterations

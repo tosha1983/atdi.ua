@@ -269,13 +269,13 @@ namespace Atdi.Modules.Sdrn.Calculation
             {
                 if (!MasterEmitting.Spectrum.СorrectnessEstimations) { JoinAttachableEmittingToMasterEmitting = false; }
             }
-            else if (false)//MasterEmitting.MeanDeviationFromReference != AttachableEmitting.MeanDeviationFromReference)
-            {
-                if (AttachableEmitting.MeanDeviationFromReference > MasterEmitting.MeanDeviationFromReference)
-                {
-                    JoinAttachableEmittingToMasterEmitting = false;
-                }
-            }
+            //else if (false)//MasterEmitting.MeanDeviationFromReference != AttachableEmitting.MeanDeviationFromReference)
+            //{
+            //    if (AttachableEmitting.MeanDeviationFromReference > MasterEmitting.MeanDeviationFromReference)
+            //    {
+            //        JoinAttachableEmittingToMasterEmitting = false;
+            //    }
+            //}
             else if ((emitParams.AnalyzeByChannel.Value))
             {
                 int k = CompareTwoEmittingCenterWithStartEnd(MasterEmitting, AttachableEmitting);

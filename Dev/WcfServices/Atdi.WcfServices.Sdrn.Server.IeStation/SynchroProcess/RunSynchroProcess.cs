@@ -811,6 +811,28 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     }
                 }
 
+                //поиск полных дубликатов
+                for (int h = 0; h < listDataRefSpectrum.Count; h++)
+                {
+                    var findData = listDataRefSpectrum.FindAll(x => x.TableId == listDataRefSpectrum[h].TableId && x.TableName == listDataRefSpectrum[h].TableName && x.SensorId == listDataRefSpectrum[h].SensorId && x.GlobalSID == listDataRefSpectrum[h].GlobalSID && x.Freq_MHz == listDataRefSpectrum[h].Freq_MHz && x.DateMeas == listDataRefSpectrum[h].DateMeas && x.DispersionLow == listDataRefSpectrum[h].DispersionLow && x.DispersionUp == listDataRefSpectrum[h].DispersionUp && x.Level_dBm == listDataRefSpectrum[h].Level_dBm && x.Percent == listDataRefSpectrum[h].Percent && x.StatusMeas == listDataRefSpectrum[h].StatusMeas);
+                    if (findData != null)
+                    {
+                        var orderByDateMeas = from z in findData orderby z.HeadId descending select z;
+                        if ((orderByDateMeas != null) && (orderByDateMeas.Count() > 1))
+                        {
+                            var fndValorderByDateMeas = from z in orderByDateMeas orderby z.DateMeas descending select z;
+                            var orderByDateMeasArray = fndValorderByDateMeas.ToArray();
+                            for (int g = 1; g < orderByDateMeasArray.Length; g++)
+                            {
+                                if (!listDataRefSpectrumForDelete.Contains(orderByDateMeasArray[g]))
+                                {
+                                    listDataRefSpectrumForDelete.Add(orderByDateMeasArray[g]);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Записи, дата которых (Date Meas) находиться за пределами даты начала отчета, даты конца отчета удаляются 
                 var findDataRep = listDataRefSpectrum.FindAll(x => (x.DateMeas >= dataSynchronization.DateStart && x.DateMeas <= dataSynchronization.DateEnd) == false);
                 if (findDataRep != null)
@@ -881,6 +903,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                     {
                         lst.RemoveAll(x => x.Id == delIndex[i]);
                     }
+                    listRefSpectrum = lst.ToArray();
                 }
 
                 refSpectrums = listRefSpectrum.ToList();
@@ -1625,6 +1648,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 builderProtocolsInsert.SetValue(c => c.DateMeasDay, (short)protocol.DataRefSpectrum.DateMeas.Day);
                                 builderProtocolsInsert.SetValue(c => c.DateMeasMonth, (short)protocol.DataRefSpectrum.DateMeas.Month);
                                 builderProtocolsInsert.SetValue(c => c.DateMeasYear, (short)protocol.DataRefSpectrum.DateMeas.Year);
+                                builderProtocolsInsert.SetValue(c => c.TimeMeas, protocol.DataRefSpectrum.DateMeas);
                                 builderProtocolsInsert.SetValue(c => c.DispersionLow, protocol.DataRefSpectrum.DispersionLow);
                                 builderProtocolsInsert.SetValue(c => c.DispersionUp, protocol.DataRefSpectrum.DispersionUp);
                                 builderProtocolsInsert.SetValue(c => c.Freq_MHz, protocol.DataRefSpectrum.Freq_MHz);

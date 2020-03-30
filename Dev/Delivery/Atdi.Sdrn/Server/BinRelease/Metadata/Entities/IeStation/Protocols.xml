@@ -29,6 +29,7 @@
     <Field Desc="SensorId" Title="SensorId" Name="SensorId" DataType="Integer.64" SourceName="SENSOR_ID" SourceType="Column" Required="false"/>
     <Field Desc="RadioControlMeasFreq_MHz" Title="RadioControlMeasFreq_MHz" Name="RadioControlMeasFreq_MHz" DataType="Double.30.10" SourceName="RADIO_CONTROL_FREQ_MHZ" SourceType="Column" Required="false"/>
     <Field Desc="RadioControlBandWidth" Title="RadioControlBandWidth" Name="RadioControlBandWidth" DataType="Double.30.10" SourceName="RADIO_CONTROL_BW" SourceType="Column" Required="false"/>
+    <Field Name="TimeMeas" DataType="DateTimeOffset" SourceName="TIME_MEAS" SourceType="Column" Desc="The time of meas" Title="Dispatch time" Required="true"/>
     <Field Name="STATION_EXTENDED" SourceName="IeStation.StationExtended" SourceType="Reference" Required="true" Desc="" Title="Relation Protocols to StationExtended"/>
     <Field Name="SYNCHRO_PROCESS" SourceName="IeStation.SynchroProcess" SourceType="Reference" Required="true" Desc="" Title="Relation Protocols to SynchroProcess"/>
   </Fields>

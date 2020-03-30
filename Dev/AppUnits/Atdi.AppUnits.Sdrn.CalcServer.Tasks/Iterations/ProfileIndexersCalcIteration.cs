@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.Sdrn.CalcServer;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
+using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.Platform.Logging;

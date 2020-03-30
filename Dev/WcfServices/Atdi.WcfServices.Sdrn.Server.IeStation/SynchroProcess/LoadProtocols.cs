@@ -382,6 +382,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                         c => c.DateMeasYear,
                                         c => c.DispersionLow,
                                         c => c.DispersionUp,
+                                        c => c.TimeMeas,
                                         c => c.Freq_MHz,
                                         c => c.GlobalSID,
                                         c => c.Id,
@@ -606,7 +607,11 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                         protocols.TitleSensor = sensorData.Title;
                         protocols.StandardName = readerProtocols.GetValue(c => c.STATION_EXTENDED.StandardName);
                         protocols.DateMeas_OnlyDate = dateMeas.Date;
-                        protocols.DateMeas_OnlyTime = dateMeas.TimeOfDay;
+                        var timeMeas = readerProtocols.GetValue(c => c.TimeMeas);
+                        if (timeMeas != null)
+                        {
+                            protocols.DateMeas_OnlyTime = timeMeas.Value.TimeOfDay;
+                        }
                         protocols.DateCreated = process.DateCreated;
                         protocols.CreatedBy = process.CreatedBy;
                         //protocols.DurationMeasurement = 

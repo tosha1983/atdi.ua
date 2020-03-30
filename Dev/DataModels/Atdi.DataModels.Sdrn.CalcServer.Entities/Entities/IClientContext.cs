@@ -23,6 +23,28 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		DateTimeOffset CreatedDate { get; set; }
 
+		IClientContextGlobalParams GLOBAL_PARAMS { get; set; }
+
+		IClientContextMainBlock MAIN_BLOCK { get; set; }
+
+		IClientContextDiffraction DIFFRACTION_BLOCK { get; set; }
+
+		IClientContextSubPathDiffraction SUB_PATH_DIFFRACTION_BLOCK { get; set; }
+
+		IClientContextTropo TROPO_BLOCK { get; set; }
+
+		IClientContextDucting  DUCTING_BLOCK { get; set; }
+
+		IClientContextAbsorption  ABSORPTION_BLOCK { get; set; }
+
+		IClientContextReflection  REFLECTION_BLOCK { get; set; }
+
+		IClientContextAtmospheric ATMOSPHERIC_BLOCK { get; set; }
+
+		IClientContextAdditional ADDITIONAL_BLOCK { get; set; }
+
+		IClientContextClutter CLUTTER_BLOCK { get; set; }
+
 	}
 
 }
