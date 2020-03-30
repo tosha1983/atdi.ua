@@ -134,9 +134,9 @@ namespace XICSM.ICSControlClient.Forms
                         _dataGridFilters[grd].FiltersNumeric[columnName].ToValue = dlgForm.FilterToValue;
 
                         //column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
-                        column.Column.Header = column.Column.Header + " (Filter:";
+                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
+                        column.Column.Header = column.Column.Header + $" ({Properties.Resources.MenuFilter}:";
                         if (dlgForm.FilterFromValue.HasValue)
                             column.Column.Header = column.Column.Header + " >= " + dlgForm.FilterFromValue.ToString() + ";";
                         if (dlgForm.FilterToValue.HasValue)
@@ -149,8 +149,8 @@ namespace XICSM.ICSControlClient.Forms
                             _dataGridFilters[grd].FiltersNumeric.Remove(columnName);
 
                         column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
+                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
                     }
                 }
             }
@@ -177,9 +177,9 @@ namespace XICSM.ICSControlClient.Forms
                         _dataGridFilters[grd].FiltersBool[columnName].Value = dlgForm.FilterValue;
 
                         //column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
-                        column.Column.Header = column.Column.Header + " (Filter: =" + dlgForm.FilterValue.Value.ToString() + ";)";
+                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
+                        column.Column.Header = column.Column.Header + $" ({Properties.Resources.MenuFilter}: =" + dlgForm.FilterValue.Value.ToString() + ";)";
                     }
                     else
                     {
@@ -187,8 +187,47 @@ namespace XICSM.ICSControlClient.Forms
                             _dataGridFilters[grd].FiltersBool.Remove(columnName);
 
                         column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Column.Header.ToString().IndexOf(" (Filter:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf(" (Filter:"));
+                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
+                    }
+                }
+            }
+
+            else if ((GetColumnType(grd, columnName) == typeof(string)))
+            {
+                var dlgForm = new FM.gridFilterString();
+                dlgForm.Left = pointToScreen.X;
+                dlgForm.Top = pointToScreen.Y;
+                dlgForm.Text = column.Column.Header.ToString();
+                if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
+                {
+                    dlgForm.FilterValue = _dataGridFilters[grd].FiltersString[columnName].Value;
+                }
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+
+                if (dlgForm.IsPresOK)
+                {
+                    if (!string.IsNullOrEmpty(dlgForm.FilterValue))
+                    {
+                        if (!_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
+                            _dataGridFilters[grd].FiltersString.Add(columnName, new DataGridFilterString());
+
+                        _dataGridFilters[grd].FiltersString[columnName].Value = dlgForm.FilterValue;
+
+                        //column.Foreground = new SolidColorBrush(Colors.Green);
+                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
+                        column.Column.Header = column.Column.Header + $" ({Properties.Resources.MenuFilter}: =" + dlgForm.FilterValue + ";)";
+                    }
+                    else
+                    {
+                        if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
+                            _dataGridFilters[grd].FiltersString.Remove(columnName);
+
+                        column.Foreground = new SolidColorBrush(Colors.Black);
+                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
                     }
                 }
             }
@@ -204,9 +243,9 @@ namespace XICSM.ICSControlClient.Forms
             _dataGridFilters[grd].FiltersBool.Clear();
             foreach (var column in grd.Columns)
             {
-                if (column.Header.ToString().IndexOf(" (Filter:") > 0)
+                if (column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
                 {
-                    column.Header = column.Header.ToString().Remove(column.Header.ToString().IndexOf(" (Filter:"));
+                    column.Header = column.Header.ToString().Remove(column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
 
                     //Style style = new Style(typeof(DataGridColumnHeader));
                     //style.Setters.Add(new Setter { Property = CTR.Control.ForegroundProperty, Value = new SolidColorBrush(Colors.Black)});
@@ -398,6 +437,14 @@ namespace XICSM.ICSControlClient.Forms
                         if (filter.Key == "Contravention" && filter.Value.Value.HasValue && c.Contravention != filter.Value.Value.Value)
                             return false;
                     }
+                    foreach (var filter in _dataGridFilters[grid].FiltersString)
+                    {
+                        if (filter.Key == "SensorName" && !c.SensorName.Contains(filter.Value.Value))
+                            return false;
+                        if (filter.Key == "IcsmTable" && c.IcsmTable.Contains(filter.Value.Value))
+                            return false;
+                    }
+
                     return true;
                 });
             }
@@ -542,8 +589,10 @@ namespace XICSM.ICSControlClient.Forms
             {
                 if (grd.ContextMenu == null)
                     grd.ContextMenu = new CTR.ContextMenu();
+                if (grd.SelectionMode == DataGridSelectionMode.Extended)
+                    grd.SelectedItems.Clear();
 
-                var itemCSV = new CTR.MenuItem() { Header = "Save to CSV", Name = "SaveToCSV" };
+                var itemCSV = new CTR.MenuItem() { Header = Properties.Resources.SaveToCSV, Name = "SaveToCSV" };
                 itemCSV.Click += DataGrid_MenuClick_SaveToCSV;
                 grd.ContextMenu.Items.Add(itemCSV);
 
@@ -562,13 +611,18 @@ namespace XICSM.ICSControlClient.Forms
                         //var columnName = (((columnHeader.Column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
                         //if (GetColumnType(grd, columnName) != typeof(object))
                         //{
-                            var item = new CTR.MenuItem() { Header = "Filter...", Name = "Filter" };
+                            var item = new CTR.MenuItem() { Header = $"{Properties.Resources.MenuFilter}...", Name = "Filter" };
                             item.Click += DataGrid_Column_MenuFilterClick;
                             columnHeader.ContextMenu = new CTR.ContextMenu();
                             columnHeader.ContextMenu.Items.Add(item);
                         //}
                     }
-                    _dataGridFilters.Add(grd, new DataGridFilters() { FiltersNumeric = new Dictionary<string, DataGridFilterNumeric>(), FiltersBool = new Dictionary<string, DataGridFilterBool>() });
+                    _dataGridFilters.Add(grd, new DataGridFilters()
+                    {
+                        FiltersNumeric = new Dictionary<string, DataGridFilterNumeric>(),
+                        FiltersBool = new Dictionary<string, DataGridFilterBool>(),
+                        FiltersString = new Dictionary<string, DataGridFilterString>()
+                    });
                 }
             }
         }

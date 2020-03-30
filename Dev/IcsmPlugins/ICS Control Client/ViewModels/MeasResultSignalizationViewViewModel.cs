@@ -751,16 +751,16 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private string GetCurrentEmittingCaption()
         {
-            return $"Emissions ({this._emittings.Count()})";
+            return $"{Properties.Resources.Emissions} ({this._emittings.Count()})";
         }
 
         private CS.ChartOption GetChartOption(double? startFreq, double? stopFreq)
         {
             var option = new CS.ChartOption
             {
-                Title = "Ref level",
-                YLabel = "Level (dBm)",
-                XLabel = "Freq (MHz)",
+                Title = Properties.Resources.ReferenceLevel,
+                YLabel = Properties.Resources.LeveldBm,
+                XLabel = Properties.Resources.FreqMHz,
                 ChartType = CS.ChartType.Line,
                 XInnerTickCount = 5,
                 YInnerTickCount = 5,
@@ -929,9 +929,9 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var option = new CS.ChartOption
             {
-                Title = "Levels Distribution",
-                YLabel = "P",
-                XLabel = "Levels",
+                Title = Properties.Resources.LevelsDistribution,
+                YLabel = "%",
+                XLabel = Properties.Resources.Levels,
                 ChartType = CS.ChartType.Columns,
                 XInnerTickCount = 10,
                 YInnerTickCount = 10,

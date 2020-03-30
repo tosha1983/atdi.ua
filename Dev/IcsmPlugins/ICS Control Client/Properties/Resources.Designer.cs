@@ -763,6 +763,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Emissions.
+        /// </summary>
+        public static string Emissions {
+            get {
+                return ResourceManager.GetString("Emissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to End of use.
         /// </summary>
         public static string EndOfUse {
@@ -925,7 +934,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to From.
+        ///   Looks up a localized string similar to from.
         /// </summary>
         public static string From {
             get {
@@ -1195,11 +1204,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Levels.
+        /// </summary>
+        public static string Levels {
+            get {
+                return ResourceManager.GetString("Levels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Levels difference for emission division, dB.
         /// </summary>
         public static string LevelsDifferenceForEmissionDivisionDB {
             get {
                 return ResourceManager.GetString("LevelsDifferenceForEmissionDivisionDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Levels distribution.
+        /// </summary>
+        public static string LevelsDistribution {
+            get {
+                return ResourceManager.GetString("LevelsDistribution", resourceCulture);
             }
         }
         
@@ -1389,6 +1416,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string MeasurementDuration {
             get {
                 return ResourceManager.GetString("MeasurementDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string MenuFilter {
+            get {
+                return ResourceManager.GetString("MenuFilter", resourceCulture);
             }
         }
         
@@ -1699,6 +1735,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Permission is valid.
+        /// </summary>
+        public static string PermissionIsValid {
+            get {
+                return ResourceManager.GetString("PermissionIsValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permission Number.
         /// </summary>
         public static string PermissionNumber {
@@ -1888,6 +1933,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reference level.
+        /// </summary>
+        public static string ReferenceLevel {
+            get {
+                return ResourceManager.GetString("ReferenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reference Level, dBm.
         /// </summary>
         public static string ReferenceLevelDBm {
@@ -2010,6 +2064,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string RxLoss {
             get {
                 return ResourceManager.GetString("RxLoss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save to CSV.
+        /// </summary>
+        public static string SaveToCSV {
+            get {
+                return ResourceManager.GetString("SaveToCSV", resourceCulture);
             }
         }
         
@@ -2608,7 +2671,7 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To.
+        ///   Looks up a localized string similar to to.
         /// </summary>
         public static string To {
             get {

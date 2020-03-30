@@ -10,6 +10,7 @@ namespace XICSM.ICSControlClient.Forms
     {
         public Dictionary<string, DataGridFilterBool> FiltersBool;
         public Dictionary<string, DataGridFilterNumeric> FiltersNumeric;
+        public Dictionary<string, DataGridFilterString> FiltersString;
     }
     public class DataGridFilter
     {
@@ -23,4 +24,9 @@ namespace XICSM.ICSControlClient.Forms
     {
         public bool? Value;
     }
+    public class DataGridFilterString : DataGridFilter
+    {
+        public string Value;
+    }
+
 }
