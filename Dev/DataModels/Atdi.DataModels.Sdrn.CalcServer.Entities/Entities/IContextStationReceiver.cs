@@ -27,7 +27,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 	}
 
-	public enum Polarization
+	public enum PolarizationCode
 	{
 		/// <summary>
 		/// Unknown

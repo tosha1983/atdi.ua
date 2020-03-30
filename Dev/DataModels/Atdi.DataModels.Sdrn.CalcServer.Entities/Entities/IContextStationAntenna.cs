@@ -23,6 +23,14 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		string ItuPatternName { get; set; }
 
+		IContextStationPattern HH_PATTERN { get; set; }
+
+		IContextStationPattern HV_PATTERN { get; set; }
+
+		IContextStationPattern VH_PATTERN { get; set; }
+
+		IContextStationPattern VV_PATTERN { get; set; }
+
 	}
 
 	public enum ItuPattern
