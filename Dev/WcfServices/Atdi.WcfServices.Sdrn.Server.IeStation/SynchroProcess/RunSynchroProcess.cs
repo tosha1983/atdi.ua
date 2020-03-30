@@ -1648,6 +1648,7 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 builderProtocolsInsert.SetValue(c => c.DateMeasDay, (short)protocol.DataRefSpectrum.DateMeas.Day);
                                 builderProtocolsInsert.SetValue(c => c.DateMeasMonth, (short)protocol.DataRefSpectrum.DateMeas.Month);
                                 builderProtocolsInsert.SetValue(c => c.DateMeasYear, (short)protocol.DataRefSpectrum.DateMeas.Year);
+                                builderProtocolsInsert.SetValue(c => c.TimeMeas, protocol.DataRefSpectrum.DateMeas);
                                 builderProtocolsInsert.SetValue(c => c.DispersionLow, protocol.DataRefSpectrum.DispersionLow);
                                 builderProtocolsInsert.SetValue(c => c.DispersionUp, protocol.DataRefSpectrum.DispersionUp);
                                 builderProtocolsInsert.SetValue(c => c.Freq_MHz, protocol.DataRefSpectrum.Freq_MHz);
