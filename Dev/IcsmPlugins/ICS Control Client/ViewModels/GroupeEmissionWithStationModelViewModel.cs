@@ -152,6 +152,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             IMRecordset rs = new IMRecordset("AREA", IMRecordset.Mode.ReadOnly);
             rs.Select("ID,NAME,DENSITY,CREATED_BY,DATE_CREATED,POINTS,CSYS");
+            rs.OrderBy("NAME", OrderDirection.Ascending);
             for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
             {
                 var area = new SDRI.Area()
@@ -352,6 +353,47 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
+                bool checkSensorHitting = false;
+                if (this._currentAreas != null && this._currentSensors != null)
+                {
+                    foreach (ShortSensorViewModel sensor in this._currentSensors)
+                    {
+                        var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(sensor.Id);
+                        if (svcSensor != null)
+                        {
+                            if (svcSensor.Locations != null && svcSensor.Locations.Length > 0)
+                            {
+                                foreach (var loc in svcSensor.Locations
+                                                            .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+                                                                    || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+                                                                    && l.Lon.HasValue
+                                                                    && l.Lat.HasValue)
+                                                            .ToArray())
+                                {
+                                    foreach (AreasViewModel area in this._currentAreas)
+                                    {
+                                        if (CheckHitting(area.Location, loc))
+                                        {
+                                            checkSensorHitting = true;
+                                            break;
+                                        }
+                                    }
+                                    if (checkSensorHitting)
+                                        break;
+                                }
+                            }
+                        }
+                        if (checkSensorHitting)
+                            break;
+                    }
+                }
+
+                if (!checkSensorHitting)
+                {
+                    MessageBox.Show(Properties.Resources.Message_NotASingleSensorGetsIntoTheSelectedRegion);
+                    return;
+                }
+
                 var dataSynchronization = new SDRI.DataSynchronizationBase()
                 {
                     DateStart = DateStart.Value,
@@ -519,12 +561,15 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                var RefSpectrumIdsBySDRN = new List<long>();
-                foreach (RefSpectrumViewModel spectrum in this._currentRefSpectrums)
-                    RefSpectrumIdsBySDRN.Add(spectrum.Id.Value);
+                if (MessageBox.Show(Properties.Resources.Message_AreYouDureYouWantToDeleteTheEntry, "ICS Control Client", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var RefSpectrumIdsBySDRN = new List<long>();
+                    foreach (RefSpectrumViewModel spectrum in this._currentRefSpectrums)
+                        RefSpectrumIdsBySDRN.Add(spectrum.Id.Value);
 
-                SVC.SdrnsControllerWcfClientIeStation.DeleteRefSpectrum(RefSpectrumIdsBySDRN.ToArray());
-                this.ReloadRefSpectrums();
+                    SVC.SdrnsControllerWcfClientIeStation.DeleteRefSpectrum(RefSpectrumIdsBySDRN.ToArray());
+                    this.ReloadRefSpectrums();
+                }
             }
             catch (Exception e)
             {

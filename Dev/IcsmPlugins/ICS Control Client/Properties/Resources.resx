@@ -1058,4 +1058,22 @@
   <data name="SaveToCSV" xml:space="preserve">
     <value>Save to CSV</value>
   </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="LatitudeDeclared" xml:space="preserve">
+    <value>Latitude declared</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="LongitudeDeclared" xml:space="preserve">
+    <value>Longitude declared</value>
+  </data>
+  <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
+    <value>Are you sure you want to delete the entry?</value>
+  </data>
+  <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
+    <value>Not a single sensor gets into the selected region!</value>
+  </data>
 </root>

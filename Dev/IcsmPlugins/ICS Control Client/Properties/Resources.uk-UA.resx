@@ -1029,4 +1029,22 @@
   <data name="SaveToCSV" xml:space="preserve">
     <value>Експорт у CSV</value>
   </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="LatitudeDeclared" xml:space="preserve">
+    <value>Широта заявлена</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Довгота</value>
+  </data>
+  <data name="LongitudeDeclared" xml:space="preserve">
+    <value>Довгота заявлена</value>
+  </data>
+  <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
+    <value>Ви дійсно хочете видалити запис?</value>
+  </data>
+  <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
+    <value>В вибраний регіон не потрапляє ні один сенсор!</value>
+  </data>
 </root>
