@@ -57,7 +57,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// <summary>
 		/// M
 		/// </summary>
-		M =5
+		M = 5
 	}
 
 }
