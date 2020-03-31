@@ -422,7 +422,8 @@ namespace XICSM.ICSControlClient.ViewModels
                         rs.SetWhere("ID", IMRecordset.Operation.Eq, dataSpectrum.TableId);
                         for (rs.Open(); !rs.IsEOF(); rs.MoveNext())
                         {
-                            stationExtended.Address = rs.GetS("Position.REMARK");
+                            //stationExtended.Address = rs.GetS("Position.REMARK");
+                            stationExtended.Address = OrmCs.OrmSchema.Linker.ExecuteScalarString(string.Format("(SELECT ICSM.ADDRESS_FULL('{0}',id) from %{0} s where s.id={1})", dataSpectrum.TableName, dataSpectrum.TableId));
                             stationExtended.Location = new SDRI.DataLocation() { Latitude = rs.GetD("Position.LATITUDE"), Longitude = rs.GetD("Position.LONGITUDE") };
                             stationExtended.BandWidth = rs.GetD("BW");
                             stationExtended.OwnerName = rs.GetS("Owner.NAME");
