@@ -56,9 +56,11 @@
     <Compile Include="PropagationModels\TropoCalcBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SignalService\CalcAntennaGainArgs.cs" />
-    <Compile Include="SignalService\CalcAntennaGainResult.cs" />
     <Compile Include="SignalService\CalcLossArgs.cs" />
     <Compile Include="SignalService\CalcLossResult.cs" />
+    <Compile Include="Stations\PolarizationType.cs" />
+    <Compile Include="Stations\StationAntenna.cs" />
+    <Compile Include="Stations\StationAntennaPattern.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
