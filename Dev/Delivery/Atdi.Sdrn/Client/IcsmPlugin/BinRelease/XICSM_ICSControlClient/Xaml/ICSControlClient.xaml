@@ -133,10 +133,9 @@
                         <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=StatusFull}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.TypeMeasurements}" Binding="{Binding Path=TypeMeasurementsString}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH}'}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.ExecutionMode}" Binding="{Binding Path=ExecutionMode}"></DataGridTextColumn>
                       </DataGrid.Columns>
                       <DataGrid.ContextMenu>
                         <ContextMenu>
@@ -696,8 +695,8 @@
                             <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.SensorTechId}" Binding="{Binding Path=SensorTechId}"></DataGridTextColumn>
+                            <!--<DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorTitle}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowFreq}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpFreq}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.CountStationMeasurements}" Binding="{Binding Path=CountStationMeasurements}"></DataGridTextColumn>

@@ -119,13 +119,12 @@
           <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesDeclared}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=Address}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=Address}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.NumberPermission}" Binding="{Binding Path=PermissionNumber}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StatusStation}" Binding="{Binding Path=CurentStatusStation}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=TitleSensor}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>
         </DataGrid.Columns>
         <DataGrid.ContextMenu>
           <ContextMenu>

@@ -169,6 +169,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Areas.
+        /// </summary>
+        public static string Areas {
+            get {
+                return ResourceManager.GetString("Areas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Associated.
         /// </summary>
         public static string AssociatedCommand {
@@ -1947,6 +1956,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string ReferenceLevelDBm {
             get {
                 return ResourceManager.GetString("ReferenceLevelDBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Referent spectras for instrumental evaluation.
+        /// </summary>
+        public static string ReferentSpectrasForInstrumentalEvaluation {
+            get {
+                return ResourceManager.GetString("ReferentSpectrasForInstrumentalEvaluation", resourceCulture);
             }
         }
         
