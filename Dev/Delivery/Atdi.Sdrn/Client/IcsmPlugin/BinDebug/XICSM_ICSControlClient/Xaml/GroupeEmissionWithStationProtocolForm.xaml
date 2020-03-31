@@ -108,8 +108,8 @@
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas_OnlyDate, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=DateMeas_OnlyTime}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.MeasurementDuration}" Binding="{Binding Path=DurationMeasurement}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesOfMeasured}" Binding="{Binding Path=SensorCoordinatesLon}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Latitude}" Binding="{Binding Path=SensorCoordinatesLat}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LongitudeMeasured}" Binding="{Binding Path=SensorCoordinatesLon}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LatitudeMeasured}" Binding="{Binding Path=SensorCoordinatesLat}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.LongitudeDeclared}" Binding="{Binding Path=CoordinatesLon}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.LatitudeDeclared}" Binding="{Binding Path=CoordinatesLat}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>

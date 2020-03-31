@@ -1064,11 +1064,17 @@
   <data name="LatitudeDeclared" xml:space="preserve">
     <value>Latitude declared</value>
   </data>
+  <data name="LatitudeMeasured" xml:space="preserve">
+    <value>Latitude measured</value>
+  </data>
   <data name="Longitude" xml:space="preserve">
     <value>Longitude</value>
   </data>
   <data name="LongitudeDeclared" xml:space="preserve">
     <value>Longitude declared</value>
+  </data>
+  <data name="LongitudeMeasured" xml:space="preserve">
+    <value>Longitude measured</value>
   </data>
   <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
     <value>Are you sure you want to delete the entry?</value>

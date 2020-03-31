@@ -1177,6 +1177,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Latitude measured.
+        /// </summary>
+        public static string LatitudeMeasured {
+            get {
+                return ResourceManager.GetString("LatitudeMeasured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Level.
         /// </summary>
         public static string Level {
@@ -1290,6 +1299,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string LongitudeDeclared {
             get {
                 return ResourceManager.GetString("LongitudeDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitude measured.
+        /// </summary>
+        public static string LongitudeMeasured {
+            get {
+                return ResourceManager.GetString("LongitudeMeasured", resourceCulture);
             }
         }
         

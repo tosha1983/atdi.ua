@@ -1035,11 +1035,17 @@
   <data name="LatitudeDeclared" xml:space="preserve">
     <value>Широта заявлена</value>
   </data>
+  <data name="LatitudeMeasured" xml:space="preserve">
+    <value>Широта виміряна</value>
+  </data>
   <data name="Longitude" xml:space="preserve">
     <value>Довгота</value>
   </data>
   <data name="LongitudeDeclared" xml:space="preserve">
     <value>Довгота заявлена</value>
+  </data>
+  <data name="LongitudeMeasured" xml:space="preserve">
+    <value>Довгота виміряна</value>
   </data>
   <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
     <value>Ви дійсно хочете видалити запис?</value>
