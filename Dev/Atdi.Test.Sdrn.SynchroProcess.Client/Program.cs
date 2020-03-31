@@ -22,7 +22,7 @@ namespace Atdi.Test.Sdrn.SynchroProcess.Client
 
             //var proc = sdrnServer.GetAllDataSynchronizationProcess();
 
-            var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "A");
+            var proc2 = sdrnServer.GetDetailProtocolsByParameters(null, null, null, null, null, null, null, null, 2000, 2800, null, null, null, null, null, null, null, "A");
             //bool isSuccess  = sdrnServer.DeleteRefSpectrum(new long[] { 9});  
             /*
             DataSynchronizationBase dataSynchronizationBase = new DataSynchronizationBase();

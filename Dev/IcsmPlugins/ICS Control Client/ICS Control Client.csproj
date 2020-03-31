@@ -96,11 +96,11 @@
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
     <Compile Include="Forms\Base\DataGridFilters.cs" />
-    <Compile Include="Forms\Base\filterString.cs">
+    <Compile Include="Forms\Base\gridFilterString.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Base\filterString.Designer.cs">
-      <DependentUpon>filterString.cs</DependentUpon>
+    <Compile Include="Forms\Base\gridFilterString.Designer.cs">
+      <DependentUpon>gridFilterString.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\GraphicForm.cs">
       <SubType>Form</SubType>
@@ -108,17 +108,17 @@
     <Compile Include="Forms\GraphicForm.Designer.cs">
       <DependentUpon>GraphicForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Base\filterBool.cs">
+    <Compile Include="Forms\Base\gridFilterBool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Base\filterBool.Designer.cs">
-      <DependentUpon>filterBool.cs</DependentUpon>
+    <Compile Include="Forms\Base\gridFilterBool.Designer.cs">
+      <DependentUpon>gridFilterBool.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Base\filterNumeric.cs">
+    <Compile Include="Forms\Base\gridFilterNumeric.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Base\filterNumeric.Designer.cs">
-      <DependentUpon>filterNumeric.cs</DependentUpon>
+    <Compile Include="Forms\Base\gridFilterNumeric.Designer.cs">
+      <DependentUpon>gridFilterNumeric.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\GroupeEmissionWithStationForm.cs">
       <SubType>Form</SubType>
@@ -426,17 +426,17 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\Base\filterString.resx">
-      <DependentUpon>filterString.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Base\gridFilterString.resx">
+      <DependentUpon>gridFilterString.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GraphicForm.resx">
       <DependentUpon>GraphicForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Base\filterBool.resx">
-      <DependentUpon>filterBool.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Base\gridFilterBool.resx">
+      <DependentUpon>gridFilterBool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Base\filterNumeric.resx">
-      <DependentUpon>filterNumeric.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Base\gridFilterNumeric.resx">
+      <DependentUpon>gridFilterNumeric.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GroupeEmissionWithStationForm.resx">
       <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>

@@ -330,7 +330,7 @@
     <value>Frequency to, MHz</value>
   </data>
   <data name="From" xml:space="preserve">
-    <value>From</value>
+    <value>from</value>
   </data>
   <data name="Gain" xml:space="preserve">
     <value>Gain</value>
@@ -721,7 +721,7 @@
     <value>Time To</value>
   </data>
   <data name="To" xml:space="preserve">
-    <value>To</value>
+    <value>to</value>
   </data>
   <data name="TraceCount" xml:space="preserve">
     <value>Trace Count</value>
@@ -1025,10 +1025,31 @@
   <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
     <value>Select a sensor to switch to on line measurement mode</value>
   </data>
+  <data name="Emissions" xml:space="preserve">
+    <value>Emissions</value>
+  </data>
+  <data name="Levels" xml:space="preserve">
+    <value>Levels</value>
+  </data>
+  <data name="LevelsDistribution" xml:space="preserve">
+    <value>Levels distribution</value>
+  </data>
+  <data name="MenuFilter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="PermissionIsValid" xml:space="preserve">
+    <value>Permission is valid</value>
+  </data>
   <data name="PrintAllRez" xml:space="preserve">
     <value>Print All (station)</value>
   </data>
   <data name="PrintSelectedRez" xml:space="preserve">
     <value>Print Selected (station)</value>
+  </data>
+  <data name="ReferenceLevel" xml:space="preserve">
+    <value>Reference level</value>
+  </data>
+  <data name="SaveToCSV" xml:space="preserve">
+    <value>Save to CSV</value>
   </data>
 </root>

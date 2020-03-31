@@ -68,6 +68,15 @@
             <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
           </DataGrid.Columns>
+          <DataGrid.CellStyle>
+            <Style TargetType="{x:Type DataGridCell}">
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Background" Value="#FF0078D7" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.CellStyle>
         </cdg:CustomDataGrid>        
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <cdg:CustomDataGrid Grid.Row="2" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding RefSpectrums}" SelectedItemsList="{Binding CurrentRefSpectrums, Mode=TwoWay}">
@@ -87,6 +96,15 @@
               <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteRefSpectrumCommand}"/>
             </ContextMenu>
           </DataGrid.ContextMenu>
+          <DataGrid.CellStyle>
+            <Style TargetType="{x:Type DataGridCell}">
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Background" Value="#FF0078D7" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.CellStyle>
         </cdg:CustomDataGrid>
       </Grid>
       <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
@@ -118,15 +136,15 @@
             <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
             <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
           </DataGrid.Columns>
-          <!--<DataGrid.RowStyle>
-            <Style TargetType="{x:Type DataGridRow}">
+          <DataGrid.CellStyle>
+            <Style TargetType="{x:Type DataGridCell}">
               <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True" >
-                  <Setter Property="RowBackground" Value="Black" />
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Background" Value="#FF0078D7" />
                 </Trigger>
               </Style.Triggers>
             </Style>
-          </DataGrid.RowStyle>-->
+          </DataGrid.CellStyle>
         </cdg:CustomDataGrid>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>

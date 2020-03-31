@@ -37,7 +37,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         }
         public static HeadProtocols[] GetProtocols()
         {
-            return GetProtocolsByParameters(null, "", null, null, null, null, null, null, null, null, "", "", "", "", null, null, "");
+            return GetProtocolsByParameters(null, "", null, null, null, null, null, null, null, null, null, "", "", "", "", null, null, "");
         }
         public static HeadProtocols[] GetProtocolsByParameters(long? processId,
                                                     string createdBy,
@@ -47,7 +47,8 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                                                     short? DateMeasDay,
                                                     short? DateMeasMonth,
                                                     short? DateMeasYear,
-                                                    double? freq,
+                                                    double? freqStart,
+                                                    double? freqStop,
                                                     double? probability,
                                                     string standard,
                                                     string province,
@@ -57,7 +58,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                                                     DateTime? permissionStop,
                                                     string statusMeas)
         {
-            return Execute(contract => contract.GetDetailProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freq, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop, statusMeas));
+            return Execute(contract => contract.GetDetailProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freqStart, freqStop, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop, statusMeas));
         }
         public static HeadProtocols[] GetDetailProtocolsByParameters(long? processId,
                                                     string createdBy,
@@ -67,7 +68,8 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                                                     short? DateMeasDay,
                                                     short? DateMeasMonth,
                                                     short? DateMeasYear,
-                                                    double? freq,
+                                                    double? freqStart,
+                                                    double? freqStop,
                                                     double? probability,
                                                     string standard,
                                                     string province,
@@ -77,7 +79,7 @@ namespace XICSM.ICSControlClient.WcfServiceClients
                                                     DateTime? permissionStop,
                                                     string statusMeas)
         {
-            return Execute(contract => contract.GetDetailProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freq, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop, statusMeas));
+            return Execute(contract => contract.GetDetailProtocolsByParameters(processId, "", DateCreated, DateStart, DateStop, DateMeasDay, DateMeasMonth, DateMeasYear, freqStart, freqStop, probability, standard, province, ownerName, permissionNumber, permissionStart, permissionStop, statusMeas));
         }
     }
 }

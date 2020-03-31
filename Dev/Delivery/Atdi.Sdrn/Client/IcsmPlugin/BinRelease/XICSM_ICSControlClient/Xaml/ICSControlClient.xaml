@@ -133,7 +133,7 @@
                         <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=StatusFull}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.TypeMeasurements}" Binding="{Binding Path=TypeMeasurementsString}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH}'}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.ExecutionMode}" Binding="{Binding Path=ExecutionMode}"></DataGridTextColumn>
@@ -1160,6 +1160,9 @@
                       <MenuItem Header="{x:Static res:Resources.EditSensorTitle}" Command="{Binding EditSensorTitleCommand}"/>
                     </ContextMenu>
                   </DataGrid.ContextMenu>
+                  <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickSensorCommand}" CommandParameter="{Binding ShortSensors/}"/>
+                  </DataGrid.InputBindings>
                 </DataGrid>
                 <Button Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Refresh}" Width="70" Height="20" Command="{Binding RefreshShortSensorsCommand}"/>
                 <Button Grid.Column="0" Grid.Row="0" Margin="85,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.OnLine}" Width="70" Height="20" Command="{Binding DoubleClickSensorCommand}"/>

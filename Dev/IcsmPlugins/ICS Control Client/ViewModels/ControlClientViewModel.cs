@@ -1377,9 +1377,12 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             if (this._currentMeasurementResult != null)
             {
-                var dlgForm = new FM.MeasResultSignalizationForm(this._currentMeasurementResult.MeasSdrResultsId, 0, null, null);
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
+                if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.Signaling)
+                {
+                    var dlgForm = new FM.MeasResultSignalizationForm(this._currentMeasurementResult.MeasSdrResultsId, 0, null, null);
+                    dlgForm.ShowDialog();
+                    dlgForm.Dispose();
+                }
             }
         }
         private void OnEditSensorTitleCommand(object parameter)

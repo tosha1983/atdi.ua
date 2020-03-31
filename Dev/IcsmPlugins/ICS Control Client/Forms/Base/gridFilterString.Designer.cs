@@ -1,6 +1,6 @@
 ﻿namespace XICSM.ICSControlClient.Forms
 {
-    partial class filterString
+    partial class gridFilterString
     {
         /// <summary>
         /// Required designer variable.

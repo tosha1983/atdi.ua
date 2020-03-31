@@ -11,13 +11,13 @@ using ICSM;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class filterString : Form
+    public partial class gridFilterString : Form
     {
         string _filterValue = "";
 
         public bool IsPresOK = false;
 
-        public filterString()
+        public gridFilterString()
         {
             InitializeComponent();
         }
