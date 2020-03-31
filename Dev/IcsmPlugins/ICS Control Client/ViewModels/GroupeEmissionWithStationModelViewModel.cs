@@ -222,7 +222,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadRefSpectrums()
         {
             var spectrums = SVC.SdrnsControllerWcfClientIeStation.GetAllRefSpectrum();
-            this._refSpectrums.Source = spectrums;
+            this._refSpectrums.Source = spectrums.OrderByDescending(o => o.Id).ToArray();
             if (spectrums.Length == 1)
             {
                 this._currentRefSpectrums = new List<RefSpectrumViewModel>() { Mappers.Map(spectrums[0]) };

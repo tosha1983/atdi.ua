@@ -1002,6 +1002,9 @@
   <data name="PrintSelectedRez" xml:space="preserve">
     <value>Друкувати обране (РЕЗ)</value>
   </data>
+  <data name="Areas" xml:space="preserve">
+    <value>Регіони</value>
+  </data>
   <data name="Emissions" xml:space="preserve">
     <value>Випромінювання</value>
   </data>
@@ -1019,6 +1022,9 @@
   </data>
   <data name="ReferenceLevel" xml:space="preserve">
     <value>Реферативний рівень</value>
+  </data>
+  <data name="ReferentSpectrasForInstrumentalEvaluation" xml:space="preserve">
+    <value>Реферативні спектри для інструментальної оцінки</value>
   </data>
   <data name="SaveToCSV" xml:space="preserve">
     <value>Експорт у CSV</value>

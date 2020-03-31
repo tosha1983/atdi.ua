@@ -1025,6 +1025,9 @@
   <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
     <value>Select a sensor to switch to on line measurement mode</value>
   </data>
+  <data name="Areas" xml:space="preserve">
+    <value>Areas</value>
+  </data>
   <data name="Emissions" xml:space="preserve">
     <value>Emissions</value>
   </data>
@@ -1048,6 +1051,9 @@
   </data>
   <data name="ReferenceLevel" xml:space="preserve">
     <value>Reference level</value>
+  </data>
+  <data name="ReferentSpectrasForInstrumentalEvaluation" xml:space="preserve">
+    <value>Referent spectras for instrumental evaluation</value>
   </data>
   <data name="SaveToCSV" xml:space="preserve">
     <value>Save to CSV</value>
