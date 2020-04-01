@@ -31,7 +31,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             if ((sec % 10) != 0)
             {
                 double tmp = (double)sec / 10.0;
-                seconds = tmp.ToString(" 00.0");
+                seconds = tmp.ToString(" 00");
             }
             else
             {
@@ -69,7 +69,7 @@ namespace XICSM.ICSControlClient.ViewModels.Reports
             if ((sec % 10) != 0)
             {
                 double tmp = (double)sec / 10.0;
-                seconds = tmp.ToString(" 00.0");
+                seconds = tmp.ToString(" 00");
             }
             else
             {
