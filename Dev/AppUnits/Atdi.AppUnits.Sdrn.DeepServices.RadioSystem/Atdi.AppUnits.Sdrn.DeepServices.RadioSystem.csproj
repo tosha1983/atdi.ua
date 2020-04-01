@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AntennaCalc\CalcAntennaGain.cs" />
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="SignalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
