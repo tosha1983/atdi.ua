@@ -130,7 +130,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 {
                     if ((angle > pattern.Angle_deg[i]) && (angle < pattern.Angle_deg[i + 1]))
                     {
-                        PatternLoss = pattern.Loss_dB[i] + (pattern.Loss_dB[i + 1] - pattern.Loss_dB[i]) * (angle - pattern.Angle_deg[i]) / (pattern.Angle_deg[i - 1] - pattern.Angle_deg[i]);
+                        PatternLoss = pattern.Loss_dB[i] + (pattern.Loss_dB[i + 1] - pattern.Loss_dB[i]) * (angle - pattern.Angle_deg[i]) / (pattern.Angle_deg[i + 1] - pattern.Angle_deg[i]);
                         break;
                     }
                 }
@@ -154,7 +154,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
                 if ((angle > pattern.Angle_deg[i]) && (angle < pattern.Angle_deg[i + 1]))
                 {
-                    PatternLoss = pattern.Loss_dB[i] + (pattern.Loss_dB[i + 1] - pattern.Loss_dB[i]) * (angle - pattern.Angle_deg[i]) / (pattern.Angle_deg[i - 1] - pattern.Angle_deg[i]);
+                    PatternLoss = pattern.Loss_dB[i] + (pattern.Loss_dB[i + 1] - pattern.Loss_dB[i]) * (angle - pattern.Angle_deg[i]) / (pattern.Angle_deg[i + 1] - pattern.Angle_deg[i]);
                     break;
                 }
             }

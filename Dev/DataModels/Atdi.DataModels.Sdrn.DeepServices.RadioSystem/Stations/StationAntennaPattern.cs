@@ -10,6 +10,6 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 	{
 		public float[] Loss_dB;
 
-		public float[] Angle_deg;
+		public double [] Angle_deg;
 	}
 }
