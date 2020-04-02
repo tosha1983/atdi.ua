@@ -1025,6 +1025,9 @@
   <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
     <value>Select a sensor to switch to on line measurement mode</value>
   </data>
+  <data name="Areas" xml:space="preserve">
+    <value>Areas</value>
+  </data>
   <data name="Emissions" xml:space="preserve">
     <value>Emissions</value>
   </data>
@@ -1049,7 +1052,34 @@
   <data name="ReferenceLevel" xml:space="preserve">
     <value>Reference level</value>
   </data>
+  <data name="ReferentSpectrasForInstrumentalEvaluation" xml:space="preserve">
+    <value>Referent spectras for instrumental evaluation</value>
+  </data>
   <data name="SaveToCSV" xml:space="preserve">
     <value>Save to CSV</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="LatitudeDeclared" xml:space="preserve">
+    <value>Latitude declared</value>
+  </data>
+  <data name="LatitudeMeasured" xml:space="preserve">
+    <value>Latitude measured</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="LongitudeDeclared" xml:space="preserve">
+    <value>Longitude declared</value>
+  </data>
+  <data name="LongitudeMeasured" xml:space="preserve">
+    <value>Longitude measured</value>
+  </data>
+  <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
+    <value>Are you sure you want to delete the entry?</value>
+  </data>
+  <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
+    <value>Not a single sensor gets into the selected region!</value>
   </data>
 </root>

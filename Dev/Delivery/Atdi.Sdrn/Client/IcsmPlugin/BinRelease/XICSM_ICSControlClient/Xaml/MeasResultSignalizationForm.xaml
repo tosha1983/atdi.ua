@@ -154,7 +154,7 @@
                   <DataGridTextColumn Header="{x:Static res:Resources.SignalLevelDBm}" Binding="{Binding Path=SignalLevel_dBm}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.RollOffFactor}" Binding="{Binding Path=RollOffFactor}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.StandardBW}" Binding="{Binding Path=StandardBW}"></DataGridTextColumn>
-                  <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
+                  <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorTitle}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.SumHitCount}" Binding="{Binding Path=SumHitCount}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.IcsmID}" Binding="{Binding Path=IcsmID}"></DataGridTextColumn>
                   <DataGridTextColumn Header="{x:Static res:Resources.IcsmTable}" Binding="{Binding Path=IcsmTable}"></DataGridTextColumn>

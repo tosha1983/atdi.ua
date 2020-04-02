@@ -27,80 +27,73 @@
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"></RowDefinition>
         <RowDefinition Height="*"></RowDefinition>
         <RowDefinition Height="Auto"></RowDefinition>
         <RowDefinition Height="*"></RowDefinition>
       </Grid.RowDefinitions>
-      <Grid DataContext="{Binding DataFilter}">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
+      <WrapPanel Margin="5">
+        <Label Height="40" Content="{x:Static res:Resources.OwnerOfStation}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.Owner}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <WrapPanel>
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.OwnerOfStation}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="80" Text="{Binding Path=Owner}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.DateMeas}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="20" Text="{Binding Path=DataFilter.DateMeasDay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="20" Text="{Binding Path=DataFilter.DateMeasMonth}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="40" Text="{Binding Path=DataFilter.DateMeasYear}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.DateMeas}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="20" Text="{Binding Path=DateMeasDay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="20" Text="{Binding Path=DateMeasMonth}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="40" Text="{Binding Path=DateMeasYear}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="80" Text="{Binding Path=Standard}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.FreqMHz}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.From}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="60" Text="{Binding Path=DataFilter.FreqStart}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="60" Text="{Binding Path=DataFilter.FreqStop}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.FreqMHz}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <Label Margin="0,50,0,0" Height="40" Content="{x:Static res:Resources.From}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="60" Text="{Binding Path=FreqStart}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <Label Margin="0,50,0,0" Height="40" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="60" Text="{Binding Path=FreqStop}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="80" Text="{Binding Path=Province}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="80" Text="{Binding Path=CreatedBy}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.DateCreated}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <DatePicker Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DataFilter.DateCreated, StringFormat='{}{0:dd.MM.yyyy}'}"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.DateCreated}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <DatePicker Margin="0,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+        <!--<Label Height="40" Content="{x:Static res:Resources.Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+      <TextBox Height="20" Width="80" Text="{Binding Path=Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
 
-          <!--<Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox Margin="0,50,0,0" Height="20" Width="80" Text="{Binding Path=Probability}" HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
+        <Label Height="40" Content="{x:Static res:Resources.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox Height="20" Width="80" Text="{Binding Path=DataFilter.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <TextBox Margin="0,50,0,0" Height="20" Width="80" Text="{Binding Path=PermissionNumber}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-          <Label Margin="10,50,0,0" Height="40" Content="{x:Static res:Resources.PermissionIsValid}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <Label Margin="0,50,0,0" Height="40" Content="{x:Static res:Resources.From}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <DatePicker Margin="0,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy}'}"/>
-          <Label Margin="0,50,0,0" Height="40" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-          <DatePicker Margin="0,50,0,0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>          
-          
-        </WrapPanel>        
-      </Grid>
-      <Button Margin="0,50,10,0" Content="{x:Static res:Resources.ApplyCommand}" Width="80" Height="20" Command="{Binding FilterApplyCommand}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-      <Button Margin="0,20,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
-      <Button Margin="0,20,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
-      <Button Margin="0,20,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
-      <DataGrid x:Name="GroupeEmissionProtocol" IsReadOnly="True" Margin="5, 90, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Protocols}" SelectedItem="{Binding CurrentProtocol}">
+        <Label Height="40" Content="{x:Static res:Resources.PermissionIsValid}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Height="40" Content="{x:Static res:Resources.From}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <DatePicker Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DataFilter.PermissionStart, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+        <Label Height="40" Content="{x:Static res:Resources.To}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <DatePicker Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedDate="{Binding Path=DataFilter.PermissionStop, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+        <Button Margin="10,0,0,0" Content="{x:Static res:Resources.ApplyCommand}" Width="80" Height="20" Command="{Binding FilterApplyCommand}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+      </WrapPanel>
+      <DataGrid Grid.Row="1" x:Name="GroupeEmissionProtocol" IsReadOnly="True" Margin="5,30,5,5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Protocols}" SelectedItem="{Binding CurrentProtocol}">
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSID}" Binding="{Binding Path=GSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.RadioMonitoringResult}" Binding="{Binding Path=StatusMeasStationFull}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=Owner}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=StationAddress}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Coordinates}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.Longitude}" Binding="{Binding Path=CoordinatesLon}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.Latitude}" Binding="{Binding Path=CoordinatesLat}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.NumberPermission}" Binding="{Binding Path=NumberPermission}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionPeriod, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionPeriod, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>
         </DataGrid.Columns>
       </DataGrid>
-      <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+      <Button Grid.Row="1" Margin="0,0,130,0" Content="{x:Static res:Resources.TRBS}" Width="50" Height="20" Command="{Binding FilterTRBSCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
+      <Button Grid.Row="1" Margin="0,0,70,0" Content="{x:Static res:Resources.ZTR}" Width="50" Height="20" Command="{Binding FilterZTRCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
+      <Button Grid.Row="1" Margin="0,0,10,0" Content="{x:Static res:Resources.Plan}" Width="50" Height="20" Command="{Binding FilterPlanCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="False"/>
+
+      <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="2" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
       </GridSplitter>
-      <cdg:CustomDataGrid x:Name="GroupeEmissionProtocolDetail" Grid.Row="2" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProtocolDetails}" SelectedItemsList="{Binding CurrentProtocolDetails, Mode=TwoWay}">
+      <cdg:CustomDataGrid x:Name="GroupeEmissionProtocolDetail" Grid.Row="3" IsReadOnly="True" Margin="5, 5, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProtocolDetails}" SelectedItemsList="{Binding CurrentProtocolDetails, Mode=TwoWay}">
         <DataGrid.Columns>
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDReal}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.GSIDICSM}" Binding="{Binding Path=PermissionGlobalSID}"></DataGridTextColumn>
@@ -115,17 +108,18 @@
           <DataGridTextColumn Header="{x:Static res:Resources.DateMeas}" Binding="{Binding Path=DateMeas_OnlyDate, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=DateMeas_OnlyTime}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.MeasurementDuration}" Binding="{Binding Path=DurationMeasurement}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesOfMeasured}" Binding="{Binding Path=SensorCoordinates}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.CoordinatesDeclared}" Binding="{Binding Path=Coordinates}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LongitudeMeasured}" Binding="{Binding Path=SensorCoordinatesLon}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LatitudeMeasured}" Binding="{Binding Path=SensorCoordinatesLat}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LongitudeDeclared}" Binding="{Binding Path=CoordinatesLon}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.LatitudeDeclared}" Binding="{Binding Path=CoordinatesLat}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.OwnerOfStation}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standard}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=Address}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.StationAddress}" Binding="{Binding Path=Address}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.NumberPermission}" Binding="{Binding Path=PermissionNumber}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionStart}" Binding="{Binding Path=PermissionStart, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
+          <DataGridTextColumn Header="{x:Static res:Resources.PermissionPeriod}" Binding="{Binding Path=PermissionStop, StringFormat='{}{0:dd.MM.yyyy}'}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.StatusStation}" Binding="{Binding Path=CurentStatusStation}"></DataGridTextColumn>
           <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=TitleSensor}"></DataGridTextColumn>
-          <DataGridTextColumn Header="{x:Static res:Resources.FrequencyDeviation}" Binding="{Binding Path=RadioControlDeviationFreq_MHz}"></DataGridTextColumn>
         </DataGrid.Columns>
         <DataGrid.ContextMenu>
           <ContextMenu>

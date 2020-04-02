@@ -15,7 +15,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 
 		public float CalcAntennaGain(in CalcAntennaGainArgs args)
 		{
-			return 33;
+            return Signal.CalcAntennaGain.Calc(in args);
 		}
 
 		public void CalcLoss(in CalcLossArgs args, ref CalcLossResult result)

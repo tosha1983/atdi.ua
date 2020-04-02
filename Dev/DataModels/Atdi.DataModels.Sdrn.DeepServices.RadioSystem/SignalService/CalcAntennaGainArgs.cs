@@ -9,8 +9,10 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
 	public struct CalcAntennaGainArgs
 	{
-		public PolarizationType Polarization;
-
 		public StationAntenna Antenna;
-	}
+        public PolarizationType PolarizationEquipment;
+        public PolarizationType PolarizationWave;
+        public double AzimutToPoint_deg;
+        public double TiltToPoint_deg;
+    }
 }

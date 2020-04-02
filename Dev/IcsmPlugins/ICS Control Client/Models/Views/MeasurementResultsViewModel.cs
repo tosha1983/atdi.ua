@@ -33,6 +33,7 @@ namespace XICSM.ICSControlClient.Models.Views
         public int? StationsNumber { get; set; }
         public int? PointsNumber { get; set; }
         public string SensorName { get; set; }
+        public string SensorTitle { get; set; }
         public string SensorTechId { get; set; }
         public int? CountStationMeasurements { get; set; }
         public int? CountUnknownStationMeasurements { get; set; }
