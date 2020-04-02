@@ -45,6 +45,7 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="SignalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Signal\CalcDiffraction.cs" />
     <Compile Include="Signal\CalcLoss.cs" />
   </ItemGroup>
   <ItemGroup>
