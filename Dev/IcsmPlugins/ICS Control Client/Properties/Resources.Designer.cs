@@ -169,6 +169,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Areas.
+        /// </summary>
+        public static string Areas {
+            get {
+                return ResourceManager.GetString("Areas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Associated.
         /// </summary>
         public static string AssociatedCommand {
@@ -1150,6 +1159,33 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Latitude.
+        /// </summary>
+        public static string Latitude {
+            get {
+                return ResourceManager.GetString("Latitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latitude declared.
+        /// </summary>
+        public static string LatitudeDeclared {
+            get {
+                return ResourceManager.GetString("LatitudeDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latitude measured.
+        /// </summary>
+        public static string LatitudeMeasured {
+            get {
+                return ResourceManager.GetString("LatitudeMeasured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Level.
         /// </summary>
         public static string Level {
@@ -1245,6 +1281,33 @@ namespace XICSM.ICSControlClient.Properties {
         public static string LonDEC {
             get {
                 return ResourceManager.GetString("LonDEC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitude.
+        /// </summary>
+        public static string Longitude {
+            get {
+                return ResourceManager.GetString("Longitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitude declared.
+        /// </summary>
+        public static string LongitudeDeclared {
+            get {
+                return ResourceManager.GetString("LongitudeDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitude measured.
+        /// </summary>
+        public static string LongitudeMeasured {
+            get {
+                return ResourceManager.GetString("LongitudeMeasured", resourceCulture);
             }
         }
         
@@ -1429,11 +1492,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete the entry?.
+        /// </summary>
+        public static string Message_AreYouDureYouWantToDeleteTheEntry {
+            get {
+                return ResourceManager.GetString("Message_AreYouDureYouWantToDeleteTheEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GSID sync with emissions could not be started. Since it has already been carried out for a given period of time (or part) and the selected sensors (one or several) and the selected file (one or several) with reference spectra. Change the settings and run again..
         /// </summary>
         public static string Message_GSIDSyncWithEmissionsCouldNotBeStarted {
             get {
                 return ResourceManager.GetString("Message_GSIDSyncWithEmissionsCouldNotBeStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a single sensor gets into the selected region!.
+        /// </summary>
+        public static string Message_NotASingleSensorGetsIntoTheSelectedRegion {
+            get {
+                return ResourceManager.GetString("Message_NotASingleSensorGetsIntoTheSelectedRegion", resourceCulture);
             }
         }
         
@@ -1947,6 +2028,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string ReferenceLevelDBm {
             get {
                 return ResourceManager.GetString("ReferenceLevelDBm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Referent spectras for instrumental evaluation.
+        /// </summary>
+        public static string ReferentSpectrasForInstrumentalEvaluation {
+            get {
+                return ResourceManager.GetString("ReferentSpectrasForInstrumentalEvaluation", resourceCulture);
             }
         }
         

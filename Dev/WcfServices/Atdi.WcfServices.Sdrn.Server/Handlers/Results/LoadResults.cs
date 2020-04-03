@@ -77,7 +77,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         {
                             var querySensor = this._dataLayer.GetBuilder<MD.ISensor>()
                             .From()
-                            .Select(c => c.Id, c => c.Name, c => c.TechId)
+                            .Select(c => c.Id, c => c.Name, c => c.TechId, c => c.Title)
                             .Where(c => c.Id, ConditionOperator.Equal, reader.GetValue(c => c.SensorId).Value);
                             queryExecuter.Fetch(querySensor, readerSensor =>
                             {
@@ -85,6 +85,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                 {
                                     emitting.SensorName = readerSensor.GetValue(c => c.Name);
                                     emitting.SensorTechId = readerSensor.GetValue(c => c.TechId);
+                                    emitting.SensorTitle = readerSensor.GetValue(c => c.Title);
                                     listSensors.Add(new Sensor()
                                     {
                                         Id = new SensorIdentifier()
@@ -92,6 +93,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                                             Value = reader.GetValue(c => c.SensorId).Value
                                         },
                                         Name = readerSensor.GetValue(c => c.Name),
+                                        Title = readerSensor.GetValue(c => c.Title),
                                         Equipment = new SensorEquip()
                                         {
                                             TechId = readerSensor.GetValue(c => c.TechId)
@@ -109,6 +111,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             {
                                 emitting.SensorName = fndSensor.Name;
                                 emitting.SensorTechId = fndSensor.Equipment.TechId;
+                                emitting.SensorTitle = fndSensor.Title;
                             }
                         }
                     }
@@ -2483,6 +2486,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Title);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
@@ -2739,6 +2743,7 @@ namespace Atdi.WcfServices.Sdrn.Server
 
                         levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
                         levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
+                        levelmeasurementResults.SensorTitle = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Title);
                         Emitting[] emittings = null;
                         ReferenceLevels referenceLevels = null;
                         GetEmittingAndReferenceLevels(readerResMeas.GetValue(c => c.Id), isLoadAllData, out emittings, out referenceLevels,  StartFrequency_Hz,  StopFrequency_Hz);
@@ -2774,6 +2779,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SUBTASK.Id);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Name);
                 builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.TechId);
+                builderResMeas.Select(c => c.SUBTASK_SENSOR.SENSOR.Title);
                 builderResMeas.Select(c => c.N);
                 builderResMeas.Select(c => c.ScansNumber);
                 
@@ -2862,6 +2868,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         });
                         */
                         levelmeasurementResults.SensorName = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Name);
+                        levelmeasurementResults.SensorTitle = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.Title);
                         levelmeasurementResults.SensorTechId = readerResMeas.GetValue(c => c.SUBTASK_SENSOR.SENSOR.TechId);
 
                         levelmeasurementResults.CountUnknownStationMeasurements = 0;

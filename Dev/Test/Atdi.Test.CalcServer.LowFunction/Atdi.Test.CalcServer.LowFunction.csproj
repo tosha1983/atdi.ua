@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B8D91488-2850-46A9-9E32-9D1DD7D02683}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</RootNamespace>
-    <AssemblyName>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</AssemblyName>
+    <ProjectGuid>{660961C1-926C-46A5-9402-86C31C358F73}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Test.CalcServer.LowFunction</RootNamespace>
+    <AssemblyName>Atdi.Test.CalcServer.LowFunction</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,9 +22,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,46 +43,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntennaCalc\CalcAntennaGain.cs" />
-    <Compile Include="AppServerComponent.cs" />
-    <Compile Include="SignalService.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Signal\CalcDiffraction.cs" />
-    <Compile Include="Signal\CalcLoss.cs" />
+    <Compile Include="TestCalcAntennaPattern.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
-      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
-      <Name>Atdi.Common</Name>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem\Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{b8d91488-2850-46a9-9e32-9d1dd7d02683}</Project>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.RadioSystem\Atdi.Contracts.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{d576643b-fcdb-4873-9f08-abcfbb5e9e8f}</Project>
       <Name>Atdi.Contracts.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
-      <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
-      <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
       <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
       <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
-      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
-      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
-      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
-      <Name>Atdi.Platform</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Atdi.AppUnits\Atdi.AppUnits.csproj">
-      <Project>{aa445e89-a706-4a2a-b28e-edbae056652b}</Project>
-      <Name>Atdi.AppUnits</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

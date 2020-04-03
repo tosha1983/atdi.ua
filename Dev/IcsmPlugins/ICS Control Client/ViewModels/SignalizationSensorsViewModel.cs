@@ -472,7 +472,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 using (var wc = new HttpClient())
                 {
                     string filter = $"(Id in ({string.Join(",", emittingsIds.Keys.ToArray())}))";
-                    string fields = "Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm,ReferenceLevel_dBm,MeanDeviationFromReference,TriggerDeviationFromReference,RollOffFactor,StandardBW,StationID,StationTableName,LevelsDistributionCount,LevelsDistributionLvl,RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,RES_MEAS.SUBTASK_SENSOR.SENSOR.Name";
+                    string fields = "Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm,ReferenceLevel_dBm,MeanDeviationFromReference,TriggerDeviationFromReference,RollOffFactor,StandardBW,StationID,StationTableName,LevelsDistributionCount,LevelsDistributionLvl,RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,RES_MEAS.SUBTASK_SENSOR.SENSOR.Title";
                     string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select={fields}&filter={filter}";
                     var response = wc.GetAsync(request).Result;
                     if (response.StatusCode == HttpStatusCode.OK)
@@ -502,6 +502,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 AssociatedStationID = Convert.ToInt64(record[dicFields["StationID"]]),
                                 AssociatedStationTableName = (string)record[dicFields["StationTableName"]],
                                 SensorName = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
+                                SensorTitle = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.Title"]],
                                 SensorTechId = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]]
                             };
 
@@ -540,7 +541,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     long emittingId = 0;
                     string filter = $"(EMITTING.Id in ({string.Join(",", ids)}))";
-                    string fields = "StartEmitting,StopEmitting,HitCount,PersentAvailability,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.CurentPower_dBm,EMITTING.ReferenceLevel_dBm,EMITTING.MeanDeviationFromReference,EMITTING.TriggerDeviationFromReference,EMITTING.RollOffFactor,EMITTING.StandardBW,EMITTING.StationID,EMITTING.StationTableName,EMITTING.LevelsDistributionCount,EMITTING.LevelsDistributionLvl,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,EMITTING.RES_MEAS.Id";
+                    string fields = "StartEmitting,StopEmitting,HitCount,PersentAvailability,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.CurentPower_dBm,EMITTING.ReferenceLevel_dBm,EMITTING.MeanDeviationFromReference,EMITTING.TriggerDeviationFromReference,EMITTING.RollOffFactor,EMITTING.StandardBW,EMITTING.StationID,EMITTING.StationTableName,EMITTING.LevelsDistributionCount,EMITTING.LevelsDistributionLvl,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Title,EMITTING.RES_MEAS.Id";
                     string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/WorkTime?select={fields}&filter={filter}&orderBy=EMITTING.Id";
                     var response = wc.GetAsync(request).Result;
                     if (response.StatusCode == HttpStatusCode.OK)
@@ -577,6 +578,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                     AssociatedStationID = Convert.ToInt64(record[dicFields["EMITTING.StationID"]]),
                                     AssociatedStationTableName = (string)record[dicFields["EMITTING.StationTableName"]],
                                     SensorName = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
+                                    SensorTitle = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Title"]],
                                     SensorTechId = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]],
                                     MeasResultId = Convert.ToInt64(record[dicFields["EMITTING.RES_MEAS.Id"]])
                                 };

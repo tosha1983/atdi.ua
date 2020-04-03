@@ -1002,6 +1002,9 @@
   <data name="PrintSelectedRez" xml:space="preserve">
     <value>Друкувати обране (РЕЗ)</value>
   </data>
+  <data name="Areas" xml:space="preserve">
+    <value>Регіони</value>
+  </data>
   <data name="Emissions" xml:space="preserve">
     <value>Випромінювання</value>
   </data>
@@ -1020,7 +1023,34 @@
   <data name="ReferenceLevel" xml:space="preserve">
     <value>Реферативний рівень</value>
   </data>
+  <data name="ReferentSpectrasForInstrumentalEvaluation" xml:space="preserve">
+    <value>Реферативні спектри для інструментальної оцінки</value>
+  </data>
   <data name="SaveToCSV" xml:space="preserve">
     <value>Експорт у CSV</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="LatitudeDeclared" xml:space="preserve">
+    <value>Широта заявлена</value>
+  </data>
+  <data name="LatitudeMeasured" xml:space="preserve">
+    <value>Широта виміряна</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Довгота</value>
+  </data>
+  <data name="LongitudeDeclared" xml:space="preserve">
+    <value>Довгота заявлена</value>
+  </data>
+  <data name="LongitudeMeasured" xml:space="preserve">
+    <value>Довгота виміряна</value>
+  </data>
+  <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
+    <value>Ви дійсно хочете видалити запис?</value>
+  </data>
+  <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
+    <value>В вибраний регіон не потрапляє ні один сенсор!</value>
   </data>
 </root>

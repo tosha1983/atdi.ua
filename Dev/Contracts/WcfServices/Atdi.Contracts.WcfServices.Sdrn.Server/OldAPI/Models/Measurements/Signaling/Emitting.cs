@@ -22,6 +22,7 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         public EmittingParameters EmittingParameters;
         public string SensorName;
         public string SensorTechId;
+        public string SensorTitle;
         public String AssociatedStationTableName;
         public long AssociatedStationID;
         public long MeasResultId;
