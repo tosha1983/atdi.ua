@@ -65,9 +65,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.Container.Register<IEventDispatcher, EventDispatcher>(ServiceLifetime.Singleton);
 
 			// шина данных 
+			
 			this.Container.Register<MapBuilder>(ServiceLifetime.Singleton);
 			this.Container.Register<ProcessJob>(ServiceLifetime.Singleton);
 			this.Container.Register<TaskWorkerJob>(ServiceLifetime.Singleton);
+			this.Container.Register<IClientContextService, ClientContextService>(ServiceLifetime.Singleton);
 			this.Container.Register<IMapService, MapService>(ServiceLifetime.Singleton);
 		}
 

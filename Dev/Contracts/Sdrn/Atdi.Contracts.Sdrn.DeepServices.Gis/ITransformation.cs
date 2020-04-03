@@ -27,4 +27,13 @@ namespace Atdi.Contracts.Sdrn.DeepServices.Gis
 
 		Wgs84Coordinate ConvertCoordinateToWgs84(EpsgProjectionCoordinate coordinate);
 	}
+
+	public static class TransformationExtension
+	{
+		public static AtdiCoordinate ConvertCoordinateToAtdi(this ITransformation transformation, in Wgs84Coordinate coordinate, string toProjection)
+		{
+			var id = transformation.ConvertProjectionToCode(toProjection);
+			return transformation.ConvertCoordinateToEpgs(coordinate, id);
+		}
+	}
 }

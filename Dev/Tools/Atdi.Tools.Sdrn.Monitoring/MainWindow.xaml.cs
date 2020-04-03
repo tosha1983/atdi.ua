@@ -43,7 +43,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
 
         public MainWindow()
         {
-            //Thread.Sleep(5000);
+            Thread.Sleep(1000 * 60);
             InitializeComponent();
             Task.Run((Action)LoadEnvironmentDescription);
         }

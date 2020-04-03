@@ -11,8 +11,10 @@
   </DataSource>
   <Fields>
     <Field Name="StationId" SourceType="Column" SourceName="STATION_ID" DataType="Integer.64"  Required="true" Title="Station" Desc="The station in which the record of the pattern is created" />
-    <Field Name="X" SourceType="Column" SourceName="X" DataType="Integer.32"  Required="true" Title="X-axis" Desc="The coordinate along the X-axis" />
-    <Field Name="Y" SourceType="Column" SourceName="Y" DataType="Integer.32"  Required="true" Title="Y-axis" Desc="The coordinate along the Y-axis" />
+    <Field Name="AtdiX" SourceType="Column" SourceName="ATDI_X" DataType="Integer.32"  Required="true" Title="X-axis" Desc="The coordinate along the X-axis" />
+    <Field Name="AtdiY" SourceType="Column" SourceName="ATDI_Y" DataType="Integer.32"  Required="true" Title="Y-axis" Desc="The coordinate along the Y-axis" />
+    <Field Name="EpsgX" SourceType="Column" SourceName="EPSG_X" DataType="Double.30.10"  Required="true" Title="X-axis" Desc="The coordinate along the X-axis" />
+    <Field Name="EpsgY" SourceType="Column" SourceName="EPSG_Y" DataType="Double.30.10"  Required="true" Title="Y-axis" Desc="The coordinate along the Y-axis" />
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="StationId"/>

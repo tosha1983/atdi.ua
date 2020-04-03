@@ -24,7 +24,7 @@
     <Field Name="FinishTime" SourceType="Column" SourceName="FINISH_TIME" DataType="DateTimeOffset" Required="false" Title="Created date" Desc="The date and the time of completion of the calculation process"  />
 
     <Field Name="TASK" SourceType="Reference" SourceName="CalcTask"  Required="true" Title="Task" Desc="The task is created for the calculation" />
-    <Field Name="CONTEXT" SourceType="Reference" SourceName="ClientContext"  Required="true" Title="Context" Desc="The client context in which the record of the calculation result is created" />
+    
   </Fields>
   <PrimaryKey Clustered="true">
     <FieldRef Name="Id"/>

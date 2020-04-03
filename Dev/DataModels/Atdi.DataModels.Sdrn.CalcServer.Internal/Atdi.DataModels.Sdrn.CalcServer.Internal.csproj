@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clients\ClientContext.cs" />
+    <Compile Include="Clients\ClientContextStation.cs" />
+    <Compile Include="Iterations\FieldStrengthCalcResult.cs" />
+    <Compile Include="Iterations\FieldStrengthCalcData.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcData.cs" />
     <Compile Include="Iterations\VoidData.cs" />
     <Compile Include="Iterations\VoidResult.cs" />
@@ -54,6 +58,19 @@
     <Compile Include="Maps\ProjectMapType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
+      <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices.RadioSystem\Atdi.DataModels.Sdrn.DeepServices.RadioSystem.csproj">
+      <Project>{c67fbe11-fef0-48ad-9912-61bf4c61db03}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.RadioSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -13,8 +13,8 @@
   <Fields>
     <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
     <Field Name="BW_kHz" SourceType="Column" Required="true" SourceName="BW_KHZ" DataType="Double.30.10" Title="BW, kHz" Desc="The BW in kHz"/>
-    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Double.30.10" Title="Loss, dB" Desc="The Loss in dB"/>
-    <Field Name="MaxPower_dBm" SourceType="Column" Required="true" SourceName="MAX_POWER_DBM" DataType="Double.30.10" Title="PowMax, dBm" Desc="The PowMax in dBm"/>
+    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Float.22.8" Title="Loss, dB" Desc="The Loss in dB"/>
+    <Field Name="MaxPower_dBm" SourceType="Column" Required="true" SourceName="MAX_POWER_DBM" DataType="Float.22.8" Title="PowMax, dBm" Desc="The PowMax in dBm"/>
 
     <Field Name="PolarizingCode" SourceType="Column" SourceName="POLARIZING_CODE" DataType="Code.u08" Required="true" Title="Transmitter Polarization Code" Desc="The code of the Polarization of the transmitter"  />
     <Field Name="PolarizingName" SourceType="Column" SourceName="POLARIZING_NAME" DataType="Text.50" Title="Transmitter Polarization Name" Desc="The name of the Polarization of the transmitter" />

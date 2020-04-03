@@ -42,8 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtdiCoordinate.cs" />
     <Compile Include="EpsgCoordinate.cs" />
     <Compile Include="EpsgProjectionCoordinate.cs" />
+    <Compile Include="Wgs84Site.cs" />
     <Compile Include="Wgs84Coordinate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

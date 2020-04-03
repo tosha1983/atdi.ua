@@ -8,13 +8,13 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations
 {
 	public class StationAntenna
 	{
-		public double Gain_dB;
+		public float Gain_dB;
 
 		public double Tilt_deg;
 
 		public double Azimuth_deg;
 
-		public double XPD_dB;
+		public float XPD_dB;
 
 		public AntennaItuPattern ItuPattern;
 

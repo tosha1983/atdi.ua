@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
+	
+
 	/// <summary>
 	/// Метровые координаты
 	/// </summary>
@@ -13,5 +15,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 	{
 		public double X;
 		public double Y;
+
+
 	}
 }
