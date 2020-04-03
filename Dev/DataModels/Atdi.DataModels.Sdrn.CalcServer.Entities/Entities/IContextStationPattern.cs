@@ -20,7 +20,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	public interface IContextStationPattern : IContextStationPattern_PK
 	{
 		float[] Loss_dB { get; set; }
-		float[] Angle_deg { get; set; }
+
+		double[] Angle_deg { get; set; }
 	}
 
 
