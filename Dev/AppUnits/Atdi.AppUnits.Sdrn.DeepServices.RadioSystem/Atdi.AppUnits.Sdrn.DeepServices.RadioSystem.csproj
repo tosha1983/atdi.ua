@@ -44,10 +44,11 @@
   <ItemGroup>
     <Compile Include="AntennaCalc\CalcAntennaGain.cs" />
     <Compile Include="AppServerComponent.cs" />
+    <Compile Include="PropagationCalc\ITU525.cs" />
     <Compile Include="SignalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Signal\CalcDiffraction.cs" />
-    <Compile Include="Signal\CalcLoss.cs" />
+    <Compile Include="PropagationCalc\CalcDiffraction.cs" />
+    <Compile Include="PropagationCalc\PropagationLoss.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
