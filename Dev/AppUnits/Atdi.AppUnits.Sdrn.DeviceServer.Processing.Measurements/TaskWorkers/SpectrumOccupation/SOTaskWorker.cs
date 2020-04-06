@@ -282,7 +282,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 {
                                     _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                                 }
-
+                                /*
                                 if (maximumDurationMeas < 0)
                                 {
                                     context.Task.taskParameters.status = StatusTask.C.ToString();
@@ -293,6 +293,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                 context.Task.lastResultParameters = null;
                                 context.Task.LastTimeSend = currTime;
+                                */
+
+
+                                /////
+                                var recalcStopTime = currTime;
+
+                                if (maximumDurationMeas < 0)
+                                {
+                                    context.Task.taskParameters.status = StatusTask.C.ToString();
+                                    measResult.Status = StatusTask.C.ToString();
+                                    var dayStart = measResult.StartTime.Day;
+                                    var dayStop = recalcStopTime.Day;
+                                    if (dayStop != dayStart)
+                                    {
+                                        recalcStopTime = new DateTime(measResult.StartTime.Year, measResult.StartTime.Month, measResult.StartTime.Day, 23, 59, 59, 999);
+                                        measResult.StopTime = recalcStopTime;
+                                        measResult.Measured = recalcStopTime;
+                                    }
+                                }
+
+                                this._measResultsByStringRepository.Create(measResult);
+                                context.Task.lastResultParameters = null;
+                                context.Task.LastTimeSend = recalcStopTime;
+
+
                             }
                         });
 
