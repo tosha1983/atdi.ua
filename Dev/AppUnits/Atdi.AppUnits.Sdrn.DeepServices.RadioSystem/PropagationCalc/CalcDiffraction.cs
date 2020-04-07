@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
+namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc
 {
     
 
@@ -16,22 +16,18 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             public float alphaToA_deg;
             public float alphaToB_deg;
         }
-
-        private struct NuMaxFinding
-        {
-            public float h_a;
-            public float h_b;
-            public float lambda_m;
-            public float d_ab;
-            public float[] hs;
-            public float r_e;
-        }
+        
 
         private struct NuMaxOut
         {
             public float nuMax;
             public int nMax;
             //public float hNMax;
+        }
+
+        public static float SubDeygout91(float d_km)
+        {
+            return 10.0f + 0.04f * d_km;
         }
 
         private static float CalcElevAngle(float h1, float h2, float d, float rE)
@@ -48,32 +44,33 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         }
 
         //private NuMaxOut FindMaxNu(in NuMaxFinding nuMaxFinding, ref NuMaxOut nuMaxOut)
-        private static NuMaxOut FindMaxNu(float hA, float hB, float lambda, float dAB, float[] profile, float rE)
+        private static NuMaxOut FindMaxNu(float hA, float hB, float wavelength, float dAB, in float[] profile, int profileStart, int profileEnd, float rE)
         {
             
-            float dN = dAB / profile.Length;
+            float dN = dAB / (profileEnd - profileStart);
             float dAN = dN;
-            float dNB = dN * (profile.Length - 1);
-            float hNMax = profile[0] + dAN * dNB / (2 * rE) - (hA * dNB + hB * dAN) / dAB;
-            float nuMax = (float)(hNMax * Math.Sqrt(2 * dAB / (lambda * dAN * dNB)));
+            float dNB = dN * (profileEnd - profileStart - 1);
+            float inv2rE = 1 / (2 * rE);
+            float invDaB = 1 / dAB;
+            float hNMax = profile[0] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
 
             // float h_n_max = -9999.0;
             // float nu_max = -9999.0;
             NuMaxOut nuMaxOut = new NuMaxOut();
-            nuMaxOut.nuMax = nuMax;
+            nuMaxOut.nuMax = (float)(hNMax * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)));
             nuMaxOut.nMax = 0;
             //nuMaxOut.hNMax = hNMax;
             if (profile.Length > 1)
             {
-                for (int n = 1; n < profile.Length - 1; n++)
+                for (int n = profileStart; n < profileEnd; n++)
                 {
-                    dAN = dN * n;
-                    dNB = dN * (profile.Length - n);
-                    float h = profile[n] + dAN * dNB / (2 * rE) - (hA * dNB + hB * dAN) / dAB;
+                    dAN = dN * n - profileStart + 1;
+                    dNB = dN * (profileEnd - n);
+                    float h = profile[n] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
 
-                    float nuN = (float)(h * Math.Sqrt(2 * dAB / (lambda * dAN * dNB)));
+                    float nuN = (float)(h * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)));
 
-                    if (nuN > nuMax)
+                    if (nuN > nuMaxOut.nuMax)
                     {
                         nuMaxOut.nuMax = nuN;
                         nuMaxOut.nMax = n;
@@ -101,40 +98,40 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             return (float)(1.0 - Math.Exp(-J / 6.0f));
         }
 
-        public static DiffractionLoss Deygout91 (float hA_m, float  hB_m, float freq_MHz, float d_km, float[] profile_m, float rE_km )
+        public static DiffractionLoss Deygout91 (float hA_m, float  hB_m, float freq_MHz, float d_km, in float[] profile_m, int profileStart, int profileEnd, float rE_km, float subDiffractionLoss)
         {
             DiffractionLoss diffractionLoss = new DiffractionLoss();
 
             float dAB = d_km * 1000;
             float rE = rE_km * 1000;
-            float lambda = 300 / freq_MHz;
-            hA_m += profile_m[0];
-            hB_m += profile_m[profile_m.Length - 1];
+            float wavelength = 300 / freq_MHz;
+            hA_m += profile_m[profileStart];
+            hB_m += profile_m[profileEnd];
 
             NuMaxOut nu;
-            nu = FindMaxNu(hA_m, hB_m, lambda, dAB, profile_m, rE);
+            nu = FindMaxNu(hA_m, hB_m, wavelength, dAB, profile_m, profileStart, profileEnd, rE);
 
             float nuP = nu.nuMax;
-            int p = nu.nMax;
+            //int p = nu.nMax;
 
-            float dN = dAB / profile_m.Length;
-            float dAP = dN * p;
+            float dN = dAB / (profileEnd - profileStart);
+            float dAP = dN * nu.nMax;
             
-            float dPB = dN * (profile_m.Length - p);
+            float dPB = dN * (profileEnd - profileStart - nu.nMax);
             
             if (nuP > -0.78)
             {
-                float[] profileAP = new float[p];
-                Array.Copy(profile_m, profileAP, p);
-                NuMaxOut nuT = FindMaxNu(hA_m, profile_m[p], lambda, dAP, profileAP, rE);
+                //float[] profileAP = new float[p];
+                //Array.Copy(profile_m, profileAP, p);
+                NuMaxOut nuT = FindMaxNu(hA_m, profile_m[nu.nMax], wavelength, dAP, profile_m, profileStart, nu.nMax, rE);
 
-                float[] profilePB = new float[profile_m.Length - p];
-                Array.Copy(profile_m, p, profilePB, profile_m.Length - p - 1, profile_m.Length - p - 1);
-                NuMaxOut nuR = FindMaxNu(profile_m[p], hB_m, lambda, dPB, profilePB, rE);
+                //float[] profilePB = new float[profile_m.Length - p];
+                //Array.Copy(profile_m, p, profilePB, profile_m.Length - p - 1, profile_m.Length - p - 2);
+                NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hB_m, wavelength, dPB, profile_m, nu.nMax, profileEnd, rE);
                 //D = math.sqrt(2 * r_e) * (math.sqrt(h_a) + math.sqrt(h_b));
                 //C = 10.0 + 0.04 * D;
-                float C = 10.0f + 0.04f * dAB;
-                diffractionLoss.loss_dB = J(nuP) + T(J(nuT.nuMax) + J(nuR.nuMax) + C);
+                //float C = 10.0f + 0.04f * dAB;
+                diffractionLoss.loss_dB = J(nuP) + T(J(nuT.nuMax) + J(nuR.nuMax) + subDiffractionLoss);
             }
             else diffractionLoss.loss_dB = 0;
 

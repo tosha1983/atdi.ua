@@ -20,7 +20,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 
 		public void CalcLoss(in CalcLossArgs args, ref CalcLossResult result)
 		{
-			Signal.CalcLoss.CalclMainBlock(in args.Model.MainBlock);
+            Signal.PropagationLoss.Calc(args);
 		}
 
 		private void CalcMainBlock(in MainCalcBlock block)
