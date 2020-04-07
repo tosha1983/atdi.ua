@@ -16,6 +16,7 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -24,6 +25,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly IClientContextService _contextService;
+		private readonly IMapRepository _mapRepository;
 		private readonly IIterationsPool _iterationsPool;
 		private readonly ITransformation _transformation;
 		private readonly ILogger _logger;
@@ -33,6 +35,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		private ClientContext _clientContext;
 		private ClientContextStation _contextStation;
 		private PropagationModel _propagationModel;
+		private ProjectMapData _mapData;
 
 		private class TaskParameters
 		{
@@ -48,12 +51,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		public PointFieldStrengthCalcTask(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			IClientContextService contextService,
+			IMapRepository mapRepository,
 			IIterationsPool iterationsPool,
 			ITransformation transformation,
 			ILogger logger)
 		{
 			_calcServerDataLayer = calcServerDataLayer;
 			_contextService = contextService;
+			_mapRepository = mapRepository;
 			_iterationsPool = iterationsPool;
 			_transformation = transformation;
 			_logger = logger;
@@ -84,7 +89,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			this._propagationModel = _contextService.GetPropagationModel(this._calcDbScope, taskContext.ClientContextId);
 
 			// тут валидация контекста
+
+			// найти и загрузить карту
+			this._mapData = _mapRepository.GetMapByName(this._taskContext.ProjectId, this._parameters.MapName);
 		}
+		
 
 		public void Run()
 		{
@@ -94,8 +103,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			{
 				Antenna = _contextStation.Antenna,
 				PropagationModel = _propagationModel,
-				PointCoordinate = _transformation.ConvertCoordinateToAtdi(_parameters.PointSite, _parameters.Projection),
-				StationCoordinate = _contextStation.Coordinate
+				PointCoordinate = _contextStation.Coordinate,
+				TargetCoordinate = _transformation.ConvertCoordinateToAtdi(_parameters.PointSite, _parameters.Projection),
+				MapArea = _mapData.Area,
+				BuildingContent = _mapData.BuildingContent,
+				ClutterContent = _mapData.ClutterContent,
+				ReliefContent = _mapData.ReliefContent
 			};
 
 			var iteration = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();

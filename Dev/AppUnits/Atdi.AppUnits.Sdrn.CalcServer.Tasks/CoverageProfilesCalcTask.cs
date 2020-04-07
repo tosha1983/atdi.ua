@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Atdi.Contracts.Sdrn.CalcServer.Internal;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using System.IO;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Newtonsoft.Json;
 #pragma warning disable 649
 
@@ -37,8 +38,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		private class ResultProfile
 		{
-			public Coordinate Point;
-			public Coordinate Target;
+			public AtdiCoordinate Point;
+			public AtdiCoordinate Target;
 
 			public ResultProfileRecord[] Records;
 
@@ -66,7 +67,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		};
 
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
-		private readonly IMapService _mapService;
+		private readonly IMapRepository _mapService;
 		private readonly IIterationsPool _iterationsPool;
 		private readonly ILogger _logger;
 		private ITaskContext _taskContext;
@@ -76,7 +77,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		public CoverageProfilesCalcTask(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
-			IMapService mapService,
+			IMapRepository mapService,
 			IIterationsPool iterationsPool,
 			ILogger logger)
 		{
@@ -130,7 +131,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				$"profile_P{_taskContext.ProjectId:D6}_T{_taskContext.TaskId:D8}_R{_taskContext.ResultId:D10}");
 
 			// беффер хранения индексов получени яданных профиля
-			var indexesBuffer = new Indexer[this._mapData.AxisX.Number + this._mapData.AxisY.Number];
+			var indexesBuffer = new ProfileIndexer[this._mapData.AxisX.Number + this._mapData.AxisY.Number];
 
 			var iteration = this._iterationsPool.GetIteration<ProfileIndexersCalcData, int>();
 
@@ -141,14 +142,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				{
 					var fullFileName = fileName + $"_I{i:D5}.mpf";
 
-					var point = new Coordinate()
+					var point = new AtdiCoordinate()
 					{
 						// ReSharper disable once PossibleInvalidOperationException
 						X = this._parameters.PointsX[i],
 						// ReSharper disable once PossibleInvalidOperationException
 						Y = this._parameters.PointsY[i]
 					};
-					var target = new Coordinate()
+					var target = new AtdiCoordinate()
 					{
 						X = _parameters.PointsX[++i],
 						Y = _parameters.PointsY[i]
@@ -159,7 +160,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			}
 			else if (_parameters.Mode == CoverageProfilesCalcModeCode.FirstWithAll)
 			{
-				var point = new Coordinate()
+				var point = new AtdiCoordinate()
 				{
 					// ReSharper disable once PossibleInvalidOperationException
 					X = this._parameters.PointsX[0],
@@ -168,7 +169,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				};
 				for (var i = 1; i < _parameters.PointsX.Length; i++)
 				{
-					var target = new Coordinate()
+					var target = new AtdiCoordinate()
 					{
 						X = _parameters.PointsX[i],
 						Y = _parameters.PointsY[i]
@@ -183,7 +184,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				var count = 0;
 				for (var i = 0; i < _parameters.PointsX.Length; i++)
 				{
-					var point = new Coordinate()
+					var point = new AtdiCoordinate()
 					{
 						// ReSharper disable once PossibleInvalidOperationException
 						X = this._parameters.PointsX[i],
@@ -197,7 +198,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 							continue;
 						}
 
-						var target = new Coordinate()
+						var target = new AtdiCoordinate()
 						{
 							X = _parameters.PointsX[j],
 							Y = _parameters.PointsY[j]
@@ -218,7 +219,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			
 		}
 
-		private void CalcProfile(Indexer[] indexesBuffer, Coordinate point, Coordinate target, IIterationHandler<ProfileIndexersCalcData, int> iteration,
+		private void CalcProfile(ProfileIndexer[] indexesBuffer, AtdiCoordinate point, AtdiCoordinate target, IIterationHandler<ProfileIndexersCalcData, int> iteration,
 			string fileName)
 		{
 			var iterationData = new ProfileIndexersCalcData

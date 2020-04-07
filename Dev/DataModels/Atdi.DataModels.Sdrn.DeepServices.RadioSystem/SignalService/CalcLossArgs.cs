@@ -10,5 +10,20 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 	public struct CalcLossArgs
 	{
 		public PropagationModel Model;
+
+		public short[] ReliefProfile;
+
+		public byte[] ClutterProfile;
+
+		public byte[] BuildingProfile;
+
+		public short[] HeightProfile;
+
+		public int ProfileLength;
+
+		public int ReliefStartIndex;
+		public int ClutterStartIndex;
+		public int BuildingStartIndex;
+		public int HeightStartIndex;
 	}
 }

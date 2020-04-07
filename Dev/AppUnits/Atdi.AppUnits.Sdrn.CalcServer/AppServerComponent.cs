@@ -70,7 +70,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			this.Container.Register<ProcessJob>(ServiceLifetime.Singleton);
 			this.Container.Register<TaskWorkerJob>(ServiceLifetime.Singleton);
 			this.Container.Register<IClientContextService, ClientContextService>(ServiceLifetime.Singleton);
-			this.Container.Register<IMapService, MapService>(ServiceLifetime.Singleton);
+			this.Container.Register<IMapRepository, MapService>(ServiceLifetime.Singleton);
 		}
 
 		protected override void OnActivateUnit()

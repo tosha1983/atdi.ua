@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 {
@@ -14,16 +15,16 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 	/// </summary>
 	public struct AreaCoordinates
 	{
-		public Coordinate UpperLeft;
-		public Coordinate LowerRight;
+		public AtdiCoordinate UpperLeft;
+		public AtdiCoordinate LowerRight;
 
-		public Coordinate LowerLeft => new Coordinate
+		public AtdiCoordinate LowerLeft => new AtdiCoordinate
 		{
 			X = UpperLeft.X,
 			Y = LowerRight.Y
 		};
 
-		public Coordinate UpperRight => new Coordinate
+		public AtdiCoordinate UpperRight => new AtdiCoordinate
 		{
 			X = LowerRight.X,
 			Y = UpperLeft.Y

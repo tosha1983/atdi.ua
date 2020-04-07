@@ -43,8 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtdiCoordinate.cs" />
+    <Compile Include="AtdiAxis.cs" />
     <Compile Include="EpsgCoordinate.cs" />
     <Compile Include="EpsgProjectionCoordinate.cs" />
+    <Compile Include="AtdiMapArea.cs" />
+    <Compile Include="MapService\CalcProfileIndexersArgs.cs" />
+    <Compile Include="MapService\CalcProfileIndexersResult.cs" />
+    <Compile Include="ProfileIndexer.cs" />
     <Compile Include="Wgs84Site.cs" />
     <Compile Include="Wgs84Coordinate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,5 +60,6 @@
       <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
