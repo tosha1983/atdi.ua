@@ -405,6 +405,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.AppUnits.Sdrn.DeepServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.CalcServer.LowFunction", "Test\Atdi.Test.CalcServer.LowFunction\Atdi.Test.CalcServer.LowFunction.csproj", "{660961C1-926C-46A5-9402-86C31C358F73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Test.DeepServices.CalcDiffraction", "Test\Atdi.Test.CalcServer.CalcDiffraction\Atdi.Test.DeepServices.CalcDiffraction.csproj", "{0AA02AB7-19C8-4954-A62C-A271519871BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2046,6 +2048,18 @@ Global
 		{660961C1-926C-46A5-9402-86C31C358F73}.Release|x64.Build.0 = Release|Any CPU
 		{660961C1-926C-46A5-9402-86C31C358F73}.Release|x86.ActiveCfg = Release|Any CPU
 		{660961C1-926C-46A5-9402-86C31C358F73}.Release|x86.Build.0 = Release|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Debug|x64.Build.0 = Debug|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Debug|x86.Build.0 = Debug|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Release|x64.ActiveCfg = Release|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Release|x64.Build.0 = Release|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Release|x86.ActiveCfg = Release|Any CPU
+		{0AA02AB7-19C8-4954-A62C-A271519871BD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2240,6 +2254,7 @@ Global
 		{F1F30AB9-7598-424D-9CDE-95412583ECCF} = {0A19D627-1C7A-43C0-A7DF-2F27C1981142}
 		{B8D91488-2850-46A9-9E32-9D1DD7D02683} = {0A19D627-1C7A-43C0-A7DF-2F27C1981142}
 		{660961C1-926C-46A5-9402-86C31C358F73} = {9B3AC25D-D0D4-41B5-824D-DF78A982FFD1}
+		{0AA02AB7-19C8-4954-A62C-A271519871BD} = {9B3AC25D-D0D4-41B5-824D-DF78A982FFD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5098ACB0-865F-4136-B16E-747897FBA792}
