@@ -47,9 +47,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc
         private static NuMaxOut FindMaxNu(float hA, float hB, float wavelength, float dAB, in float[] profile, int profileStart, int profileEnd, float rE)
         {
             
-            float dN = dAB / profile.Length;
+            float dN = dAB / (profileEnd - profileStart);
             float dAN = dN;
-            float dNB = dN * (profile.Length - 1);
+            float dNB = dN * (profileEnd - profileStart - 1);
             float inv2rE = 1 / (2 * rE);
             float invDaB = 1 / dAB;
             float hNMax = profile[0] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
@@ -62,10 +62,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc
             //nuMaxOut.hNMax = hNMax;
             if (profile.Length > 1)
             {
-                for (int n = 1; n < profile.Length - 1; n++)
+                for (int n = profileStart; n < profileEnd; n++)
                 {
-                    dAN = dN * n;
-                    dNB = dN * (profile.Length - n);
+                    dAN = dN * n - profileStart + 1;
+                    dNB = dN * (profileEnd - n);
                     float h = profile[n] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
 
                     float nuN = (float)(h * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)));
@@ -105,8 +105,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc
             float dAB = d_km * 1000;
             float rE = rE_km * 1000;
             float wavelength = 300 / freq_MHz;
-            hA_m += profile_m[0];
-            hB_m += profile_m[profile_m.Length - 1];
+            hA_m += profile_m[profileStart];
+            hB_m += profile_m[profileEnd];
 
             NuMaxOut nu;
             nu = FindMaxNu(hA_m, hB_m, wavelength, dAB, profile_m, profileStart, profileEnd, rE);
@@ -114,10 +114,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc
             float nuP = nu.nuMax;
             //int p = nu.nMax;
 
-            float dN = dAB / profile_m.Length;
+            float dN = dAB / (profileEnd - profileStart);
             float dAP = dN * nu.nMax;
             
-            float dPB = dN * (profile_m.Length - nu.nMax);
+            float dPB = dN * (profileEnd - profileStart - nu.nMax);
             
             if (nuP > -0.78)
             {

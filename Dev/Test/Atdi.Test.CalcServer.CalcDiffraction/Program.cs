@@ -32,7 +32,7 @@ namespace Atdi.Test.CalcServer
 
             float C = CalcDifraction.SubDeygout91(dt4_km);
 
-            CalcDifraction.Deygout91(ha_m, hb_m, freq_MHz, dt4_km, ht4_m, 0, ht4_m.Length, re_km, C);
+            CalcDifraction.Deygout91(ha_m, hb_m, freq_MHz, dt4_km, ht4_m, 0, ht4_m.Length - 1, re_km, C);
         }
     }
 }
