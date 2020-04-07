@@ -1,4 +1,5 @@
 ﻿using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,18 +56,18 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 			       && y >= this.LowerRightY;
 		}
 
-		public Coordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)
+		public AtdiCoordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)
 		{
-			return new Coordinate
+			return new AtdiCoordinate
 			{
 				X = this.UpperLeftX + this.AxisXStep * xIndex,
 				Y = this.UpperLeftY - this.AxisYStep * yIndex
 			};
 		}
 
-		public Coordinate IndexToLowerRightCoordinate(int xIndex, int yIndex)
+		public AtdiCoordinate IndexToLowerRightCoordinate(int xIndex, int yIndex)
 		{
-			return new Coordinate
+			return new AtdiCoordinate
 			{
 				X = this.UpperLeftX + this.AxisXStep * xIndex + this.AxisXStep,
 				Y = this.UpperLeftY - this.AxisYStep * yIndex - this.AxisYStep

@@ -59,7 +59,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			public int Num;
 			public int Index;
 #pragma warning disable 649
-			public Indexer Indexer;
+			public ProfileIndexer Indexer;
 			public short Relief;
 			public byte Clutter;
 			public byte Building;
