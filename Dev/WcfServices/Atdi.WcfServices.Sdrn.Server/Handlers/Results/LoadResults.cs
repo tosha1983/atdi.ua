@@ -2559,6 +2559,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLevels.Select(c => c.LimitSpect);
                         builderResLevels.Select(c => c.OccupancyLvl);
                         builderResLevels.Select(c => c.OccupancySpect);
+                        builderResLevels.Select(c => c.LevelMinArr);
+                        builderResLevels.Select(c => c.SpectrumOccupationArr);
                         builderResLevels.Select(c => c.PDiffLvl);
                         builderResLevels.Select(c => c.PMaxLvl);
                         builderResLevels.Select(c => c.PMinLvl);
@@ -2601,6 +2603,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     spectrumOccupationMeasurementResult.Id = new MeasurementResultIdentifier();
                                     spectrumOccupationMeasurementResult.Id.Value = readerResLevels.GetValue(c => c.Id);
                                     spectrumOccupationMeasurementResult.Value = readerResLevels.GetValue(c => c.OccupancySpect);
+                                    spectrumOccupationMeasurementResult.LevelMinArr = readerResLevels.GetValue(c => c.LevelMinArr);
+                                    spectrumOccupationMeasurementResult.SpectrumOccupationArr = readerResLevels.GetValue(c => c.SpectrumOccupationArr);
                                     listMeasResult.Add(spectrumOccupationMeasurementResult);
                                 }
                             }
@@ -3025,6 +3029,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                         builderResLevels.Select(c => c.LimitSpect);
                         builderResLevels.Select(c => c.OccupancyLvl);
                         builderResLevels.Select(c => c.OccupancySpect);
+                        builderResLevels.Select(c => c.LevelMinArr);
+                        builderResLevels.Select(c => c.SpectrumOccupationArr);
                         builderResLevels.Select(c => c.PDiffLvl);
                         builderResLevels.Select(c => c.PMaxLvl);
                         builderResLevels.Select(c => c.PMinLvl);
@@ -3067,6 +3073,8 @@ namespace Atdi.WcfServices.Sdrn.Server
                                     spectrumOccupationMeasurementResult.Id = new MeasurementResultIdentifier();
                                     spectrumOccupationMeasurementResult.Id.Value = readerResLevels.GetValue(c => c.Id);
                                     spectrumOccupationMeasurementResult.Value = readerResLevels.GetValue(c => c.OccupancySpect);
+                                    spectrumOccupationMeasurementResult.LevelMinArr = readerResLevels.GetValue(c => c.LevelMinArr);
+                                    spectrumOccupationMeasurementResult.SpectrumOccupationArr = readerResLevels.GetValue(c => c.SpectrumOccupationArr);
                                     listMeasResult.Add(spectrumOccupationMeasurementResult);
                                 }
                             }

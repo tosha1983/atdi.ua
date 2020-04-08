@@ -26,6 +26,11 @@ namespace Atdi.DataModels.Sdrns.Server
         [DataMember]
         public double? LevelMinOccup;
         /// <summary>
+        /// Support multy Level
+        /// </summary>
+        [DataMember]
+        public bool? SupportMultyLevel;
+        /// <summary>
         /// Number of steps for measurements in channel 
         /// </summary>
         [DataMember]

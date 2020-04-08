@@ -234,6 +234,11 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.Z.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
+                                    else if ((actionType == MeasTaskMode.Update.ToString()) && (measTask.Id != null))
+                                    {
+                                        saveMeasTask.UpdateMeasTaskParametersAndRecalcResults(measTask);
+                                        IdTsk = measTask.Id.Value;
+                                    }
 
                                     if ((IdTsk != null) && (isSendMessageToBus))
                                     {
@@ -701,6 +706,69 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                             task = measTaskedit;
                             result.State = CommonOperationState.Success;
                         }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                result.State = CommonOperationState.Fault;
+                result.FaultCause = e.Message;
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return result;
+        }
+
+        public CommonOperation UpdateMeasTask(ref MeasTask data, out PrepareSendEvent[] prepareSendEventArr)
+        {
+            prepareSendEventArr = null;
+            var result = new CommonOperation();
+            try
+            {
+                PrepareSendEvent[] prepareSendEvents = null;
+                var measTask = data;
+                var loadSensor = new LoadSensor(_dataLayer, _logger);
+                var measTaskProcess = new MeasTaskProcess(this._eventEmitter, this._dataLayer, this._environment, this._messagePublisher, this._logger);
+                var measTaskIdentifier = new MeasTaskIdentifier();
+
+                using (this._logger.StartTrace(Contexts.ThisComponent, Categories.MessageProcessing, this))
+                {
+                    if (measTask.Id == null) measTask.Id = measTaskIdentifier;
+                    if (measTask.Status == null) measTask.Status = Status.N.ToString();
+                    var SensorIds = new List<long>();
+                    if (measTask.Sensors != null)
+                    {
+                        for (int u = 0; u < measTask.Sensors.Length; u++)
+                        {
+                            var station = measTask.Sensors[u];
+                            if (station.SensorId != null)
+                            {
+                                if (station.SensorId.Value > 0)
+                                {
+                                    if (!SensorIds.Contains(station.SensorId.Value))
+                                    {
+                                        var sensorIdentifier = loadSensor.LoadSensorId(station.SensorId.Value, out string sensorName, out string sensorTechId);
+                                        if (sensorIdentifier != null)
+                                        {
+                                            if (sensorIdentifier.Value > 0)
+                                            {
+                                                SensorIds.Add(station.SensorId.Value);
+                                                station.SensorName = sensorName;
+                                                station.SensorTechId = sensorTechId;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    var massSensor = SensorIds.ToArray();
+                    if (massSensor.Length > 0)
+                    {
+                        measTaskProcess.Process(measTask, massSensor, MeasTaskMode.Update.ToString(), false, out bool isSuccessTemp, out long? ID, true, out prepareSendEvents);
+                        prepareSendEventArr = prepareSendEvents;
+                        data = measTask;
+                        result.State = CommonOperationState.Success;
                     }
                 }
             }

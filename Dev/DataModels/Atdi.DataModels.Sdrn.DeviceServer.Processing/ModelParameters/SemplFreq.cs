@@ -15,5 +15,7 @@ namespace Atdi.DataModels.Sdrn.DeviceServer.Processing
         public float LevelMindBm { get; set; }
         public float LevelMaxdBm { get; set; }
         public float OcupationPt { get; set; }
+        public float? LevelMinArr { get; set; }
+        public float[] SpectrumOccupationArr { get; set; }
     }
 }
