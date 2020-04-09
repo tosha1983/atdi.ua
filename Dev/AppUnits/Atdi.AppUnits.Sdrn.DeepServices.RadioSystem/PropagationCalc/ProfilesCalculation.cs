@@ -10,12 +10,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
     internal static class ProfilesCalculation
     {
-        public static void CalcTilts(double re_km, double ha_m, double hm_m, double d_km, in short[] profile, int StartPosition, int IndexerCount, out double tiltA_deg, out double tiltB_deg)
+        public static void CalcTilts(double re_km, double ha_m, double hb_m, double d_km, in short[] profile, int StartPosition, int IndexerCount, out double tiltA_deg, out double tiltB_deg)
         {
             tiltA_deg = 0;
             tiltB_deg = 0;
         }
-        public static void CalcTilts(double re_km, double ha_m, double hm_m, double d_km, out double tiltA_deg, out double tiltB_deg)
+        public static void CalcTilts(double re_km, double h1_m, double h2_m, double d_km, out double tiltA_deg, out double tiltB_deg)
         {
             tiltA_deg = 0;
             tiltB_deg = 0;
