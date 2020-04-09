@@ -60,6 +60,7 @@
     <Compile Include="PipelineHandlers\Online\SendEventOnlineMeasurementPipelineHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="Subscribes\OnReceivedUpdateTaskCreateToMasterServerEvent.cs" />
     <Compile Include="Subscribes\OnReceivedStopTaskCreateToMasterServerEvent.cs" />
     <Compile Include="Subscribes\OnReceivedRunTaskCreateToMasterServerEvent.cs" />
     <Compile Include="Subscribes\OnReceivedNewTaskCreateToMasterServerEvent.cs" />

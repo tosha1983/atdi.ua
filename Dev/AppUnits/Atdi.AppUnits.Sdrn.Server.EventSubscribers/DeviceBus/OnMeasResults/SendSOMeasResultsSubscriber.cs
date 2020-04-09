@@ -225,9 +225,28 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertResLevels.SetValue(c => c.VMinLvl, freqSample.LevelMin_dBm);
                             if (freqSample.Level_dBm >= -150 && freqSample.Level_dBm <= 20)
                                 builderInsertResLevels.SetValue(c => c.ValueLvl, freqSample.Level_dBm);
+                            if (freqSample.LevelMinArr >= -150 && freqSample.LevelMinArr <= 20)
+                                builderInsertResLevels.SetValue(c => c.LevelMinArr, freqSample.LevelMinArr);
                             if (freqSample.Level_dBmkVm >= 10 && freqSample.Level_dBmkVm <= 140)
                                 builderInsertResLevels.SetValue(c => c.ValueSpect, freqSample.Level_dBmkVm);
                             builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
+                            if ((freqSample.SpectrumOccupationArr!=null) && (freqSample.SpectrumOccupationArr.Length>0))
+                            {
+                                var checkSpectrumOccupationArr = new List<float>();
+                                for (int i = 0; i < freqSample.SpectrumOccupationArr.Length; i++)
+                                {
+                                    var spectVal = freqSample.SpectrumOccupationArr[i];
+                                    if (freqSample.Occupation_Pt >=0 && freqSample.Occupation_Pt <= 100)
+                                    {
+                                        checkSpectrumOccupationArr.Add(spectVal);
+                                    }
+                                }
+                                var spectrumOccupationArr = checkSpectrumOccupationArr.ToArray();
+                                if (spectrumOccupationArr.Length > 0)
+                                {
+                                    builderInsertResLevels.SetValue(c => c.SpectrumOccupationArr, spectrumOccupationArr);
+                                }
+                            }
                             builderInsertResLevels.SetValue(c => c.FreqMeas, freqSample.Freq_MHz);
                             builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, context.resMeasId);
                             if (validationResult)

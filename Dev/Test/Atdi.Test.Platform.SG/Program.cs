@@ -33,19 +33,26 @@ namespace Atdi.Test.Platform.SG
                     var transformation = resolver.Resolve<ITransformation>();
                     var logger = resolver.Resolve<ILogger>();
 
+                    var Longitude = 36.2527;
+                    var Latitude = 49.9808;
+
                     for (int i = 0; i <= 100000; i++)
                     {
                         var code = transformation.ConvertProjectionToAtdiName(32635);
                         var code_ = transformation.ConvertProjectionToCode("4UTN35");
-                        var epsgCoordinate = transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = 36.2527, Latitude = 49.9808 }, 32635);
+                        var epsgCoordinate = transformation.ConvertCoordinateToEpgs(new Wgs84Coordinate() { Longitude = Longitude, Latitude = Latitude }, 32635);
                         var epsgCoordinate2 = transformation.ConvertCoordinateToEpgs(new EpsgCoordinate() { X = epsgCoordinate.X, Y = epsgCoordinate.Y }, 32635, 4326);
 
-                        var EpsgProjectionCoordinate = transformation.ConvertCoordinateToEpgsProjection(new Wgs84Coordinate() { Longitude = 36.2527, Latitude = 49.9808 }, 32635);
+                        var EpsgProjectionCoordinate = transformation.ConvertCoordinateToEpgsProjection(new Wgs84Coordinate() { Longitude = Longitude, Latitude = Latitude }, 32635);
                         var EpsgProjectionCoordinate2 = transformation.ConvertCoordinateToEpgsProjection(new EpsgProjectionCoordinate() { X = EpsgProjectionCoordinate.X, Y = EpsgProjectionCoordinate.Y, Projection = EpsgProjectionCoordinate.Projection }, 4326);
 
                         var Wgs84Coordinate = transformation.ConvertCoordinateToWgs84(new EpsgCoordinate() { X = EpsgProjectionCoordinate.X, Y = EpsgProjectionCoordinate.Y }, 32635);
 
                         var Wgs84Coordinate2 = transformation.ConvertCoordinateToWgs84(new EpsgProjectionCoordinate() { X = EpsgProjectionCoordinate.X, Y = EpsgProjectionCoordinate.Y, Projection = 32635 });
+
+                        Console.WriteLine("X: " + Wgs84Coordinate2.Longitude + " Y: " + Wgs84Coordinate2.Latitude);
+                        Longitude += 0.000000001;
+                        Latitude -= 0.000000001;
                     }
 
                 }

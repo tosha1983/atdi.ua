@@ -416,6 +416,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
             builderMeasOther.Select(c => c.Id);
             builderMeasOther.Select(c => c.LevelMinOccup);
+            builderMeasOther.Select(c => c.SupportMultyLevel);
             builderMeasOther.Select(c => c.MEAS_TASK.Id);
             builderMeasOther.Select(c => c.Nchenal);
             builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -425,6 +426,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                 while (readerMeasOther.Read())
                 {
                     spectrumOccupationParameters.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                    spectrumOccupationParameters.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                     spectrumOccupationParameters.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                     SpectrumOccupationType typeSpectrumOccupation;

@@ -94,7 +94,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
             // IResLevels
             var freqSampleList = new List<FrequencySample>();
             var builderResMeasLevels = this._dataLayer.GetBuilder<MD.IResLevels>().From();
-            builderResMeasLevels.Select(c => c.VMMaxLvl, c => c.VMinLvl, c => c.ValueLvl, c => c.ValueSpect, c => c.OccupancySpect, c => c.FreqMeas);
+            builderResMeasLevels.Select(c => c.VMMaxLvl, c => c.VMinLvl, c => c.ValueLvl, c => c.ValueSpect, c => c.OccupancySpect, c => c.FreqMeas, c => c.LevelMinArr, c => c.SpectrumOccupationArr);
             builderResMeasLevels.Where(c => c.RES_MEAS.Id, ConditionOperator.Equal, measResultId);
             this._queryExecutor.Fetch(builderResMeasLevels, readerResMeasLevels =>
             {
@@ -107,6 +107,8 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers
                     freqSample.LevelMin_dBm = readerResMeasLevels.GetValue(c => c.VMinLvl).GetValueOrDefault();
                     freqSample.Level_dBm = readerResMeasLevels.GetValue(c => c.ValueLvl).GetValueOrDefault();
                     freqSample.Level_dBmkVm = readerResMeasLevels.GetValue(c => c.ValueSpect).GetValueOrDefault();
+                    freqSample.LevelMinArr = readerResMeasLevels.GetValue(c => c.LevelMinArr);
+                    freqSample.SpectrumOccupationArr = readerResMeasLevels.GetValue(c => c.SpectrumOccupationArr);
                     freqSampleList.Add(freqSample);
                 }
                 return true;

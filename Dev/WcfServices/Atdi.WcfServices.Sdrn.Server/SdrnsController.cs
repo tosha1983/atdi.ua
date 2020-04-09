@@ -48,6 +48,29 @@ namespace Atdi.WcfServices.Sdrn.Server
             return new MeasTaskIdentifier() { Value = result.MeasTaskIdPipeResult };
         }
 
+        public CommonOperationResult UpdateMeasTaskParametersAndRecalcResults(MeasTask task)
+        {
+            var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientCommands);
+            var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+            {
+                MeasTaskPipeBox = MapperForMeasTask.ToMap(task),
+                MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.Update
+            });
+
+            var commonOperationResult = new CommonOperationResult();
+            commonOperationResult.FaultCause = result.CommonOperationPipeBoxResult.FaultCause;
+            switch (result.CommonOperationPipeBoxResult.State)
+            {
+                case SdrnsServer.CommonOperationState.Fault:
+                    commonOperationResult.State = CommonOperationState.Fault;
+                    break;
+                case SdrnsServer.CommonOperationState.Success:
+                    commonOperationResult.State = CommonOperationState.Success;
+                    break;
+            }
+            return commonOperationResult;
+        }
+
         public bool DeleteEmitting(long[] emittingsId)
         {
             var saveResDb = new SaveResults(_dataLayer, _logger);

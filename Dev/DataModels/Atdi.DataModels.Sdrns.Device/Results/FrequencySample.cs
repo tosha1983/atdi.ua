@@ -55,5 +55,15 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public float Occupation_Pt { get; set; }
+        /// <summary>
+        /// Level min array 
+        /// </summary>
+        [DataMember]
+        public float? LevelMinArr { get; set; }
+        /// <summary>
+        /// Spectrum occupation array 
+        /// </summary>
+        [DataMember]
+        public float[] SpectrumOccupationArr { get; set; }
     }
 }
