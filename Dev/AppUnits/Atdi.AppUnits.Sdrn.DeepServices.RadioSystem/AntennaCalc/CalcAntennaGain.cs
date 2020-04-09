@@ -13,7 +13,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 	internal static class CalcAntennaGain
 	{
         
-        public static float Calc(in CalcAntennaGainArgs args)
+        public static double Calc(in CalcAntennaGainArgs args)
 		{
             var antenna = args.Antenna;
             if (antenna is null) { return 0; }

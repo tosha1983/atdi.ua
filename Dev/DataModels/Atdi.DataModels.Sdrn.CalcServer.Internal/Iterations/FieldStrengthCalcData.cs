@@ -13,7 +13,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 	public struct FieldStrengthCalcData
 	{
 		public PropagationModel PropagationModel;
-
+        
 		public StationAntenna Antenna;
 
 		public AtdiCoordinate PointCoordinate;
@@ -27,5 +27,15 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 		public byte[] ClutterContent { get; set; }
 
 		public byte[] BuildingContent { get; set; }
-	}
+
+        public double Freq_Mhz;
+        /// <summary>
+        /// Высота первой точки (Базовой станции) 
+        /// </summary>
+        public double Hpoint_m;
+        /// <summary>
+        /// Высота второй точки (Точька, Абонент, Кореспондирующая станция)
+        /// </summary>
+        public double Htarget_m;
+    }
 }

@@ -8,8 +8,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
 	public struct FieldStrengthCalcResult
 	{
-		public float FS_dBuVm;
-
-		public float Level_dBm;
+		public double FS_dBuVm;
+		public double Level_dBm;
 	}
 }
