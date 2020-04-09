@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="AntennaCalc\CalcAntennaGain.cs" />
     <Compile Include="AppServerComponent.cs" />
-    <Compile Include="PropagationCalc\CalcSubDiffraction.cs" />
     <Compile Include="PropagationCalc\Absorption.cs" />
     <Compile Include="PropagationCalc\ProfilesCalculation.cs" />
     <Compile Include="PropagationCalc\Deygout91.cs" />
