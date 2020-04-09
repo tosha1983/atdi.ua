@@ -61,6 +61,9 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         case MeasTaskMode.Stop:
                             commonOperationResult = measTaskProcess.StopMeasTask(ref data.MeasTaskPipeBox, out prepareSendEvents);
                             break;
+                        case MeasTaskMode.Update:
+                            commonOperationResult = measTaskProcess.UpdateMeasTask(ref data.MeasTaskPipeBox, out prepareSendEvents);
+                            break;
                         default:
                             throw new NotImplementedException($"Value type not supported '{data.MeasTaskModePipeBox}')");
                     }

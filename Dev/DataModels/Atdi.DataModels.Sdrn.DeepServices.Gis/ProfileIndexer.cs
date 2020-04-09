@@ -4,19 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
+namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
-	/// <summary>
-	/// Координаты
-	/// </summary>
-	public struct Indexer
+	public struct ProfileIndexer
 	{
 		public int XIndex;
 		public int YIndex;
 
 		public override string ToString()
 		{
-			return $"[{YIndex:D4}:{XIndex:D4}]";
+			return $"[{YIndex:D5}:{XIndex:D5}]";
 		}
 	}
 }

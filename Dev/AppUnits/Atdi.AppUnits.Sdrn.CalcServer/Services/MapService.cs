@@ -13,10 +13,11 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.AppUnits.Sdrn.CalcServer.Helpers;
 using Atdi.Common.Extensions;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 {
-	internal class MapService : IMapService
+	internal class MapService : IMapRepository
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly ILogger _logger;
@@ -79,22 +80,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 				return new ProjectMapData()
 				{
 					Id = reader.GetValue(c => c.Id),
-					AxisX = new Axis()
+					AxisX = new AtdiAxis()
 					{
 						Number = reader.GetValue(c => c.AxisXNumber).GetValueOrDefault(),
 						Step = reader.GetValue(c => c.AxisXStep).GetValueOrDefault()
 					},
-					AxisY = new Axis()
+					AxisY = new AtdiAxis()
 					{
 						Number = reader.GetValue(c => c.AxisYNumber).GetValueOrDefault(),
 						Step = reader.GetValue(c => c.AxisYStep).GetValueOrDefault()
 					},
-					UpperLeft = new Coordinate()
+					UpperLeft = new AtdiCoordinate()
 					{
 						X = reader.GetValue(c => c.UpperLeftX).GetValueOrDefault(),
 						Y = reader.GetValue(c => c.UpperLeftY).GetValueOrDefault(),
 					},
-					LowerRight = new Coordinate()
+					LowerRight = new AtdiCoordinate()
 					{
 						X = reader.GetValue(c => c.LowerRightX).GetValueOrDefault(),
 						Y = reader.GetValue(c => c.LowerRightY).GetValueOrDefault(),

@@ -19,7 +19,11 @@ namespace Atdi.DataModels.Sdrns.Device
         /// </summary>
         [DataMember]
         public double LevelMinOccup_dBm { get; set; }
-
+        /// <summary>
+        /// Support multy Level
+        /// </summary>
+        [DataMember]
+        public bool? SupportMultyLevel;
         /// <summary>
         /// Spectrum occupancy mode
         /// </summary>

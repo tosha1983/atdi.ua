@@ -15,7 +15,7 @@ namespace Atdi.Contracts.Sdrn.DeepServices.RadioSystem
 		void CalcLoss(in CalcLossArgs args, ref CalcLossResult result);
 
 
-		float CalcAntennaGain(in CalcAntennaGainArgs args);
+		double CalcAntennaGain(in CalcAntennaGainArgs args);
 
 	}
 }
