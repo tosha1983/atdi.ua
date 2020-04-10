@@ -19,15 +19,20 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		public AppServerComponent()
 			: base("SdrnCalcServerTasksAppUnit")
 		{
+			
+		}
+
+		protected override void OnInstallUnit()
+		{
 			// конфигурация
 			var componentConfig = this.Config.Extract<AppServerComponentConfig>();
 			this.Container.RegisterInstance(componentConfig, ServiceLifetime.Singleton);
 		}
 
-		protected override void OnInstallUnit()
+		protected override void OnActivateUnit()
 		{
 			var poolSite = this.Resolver.Resolve<IObjectPoolSite>();
-			var appConfig = this.Resolver.Resolve<AppServerComponentConfig>(); 
+			var appConfig = this.Resolver.Resolve<AppServerComponentConfig>();
 			var indexerArrayPool = poolSite.Register(new ObjectPoolDescriptor<ProfileIndexer[]>()
 			{
 				Key = ObjectPools.GisProfileIndexerArrayObjectPool,
@@ -67,6 +72,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				MaxSize = appConfig.ThresholdsGisProfileDataObjectPoolMaxSize.GetValueOrDefault(10),
 				Factory = () => new short[appConfig.ThresholdsGisProfileDataArrayLength.GetValueOrDefault(10_000)]
 			});
+			base.OnActivateUnit();
 		}
 	}
 }

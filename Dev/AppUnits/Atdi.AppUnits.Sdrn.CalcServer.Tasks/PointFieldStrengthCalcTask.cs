@@ -20,7 +20,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
-	[TaskHandler(CalcTaskType.CoverageProfilesCalc)]
+	[TaskHandler(CalcTaskType.PointFieldStrengthCalc)]
 	public class PointFieldStrengthCalcTask : ITaskHandler
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;

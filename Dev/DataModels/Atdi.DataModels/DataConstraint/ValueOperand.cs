@@ -201,7 +201,14 @@ namespace Atdi.DataModels.DataConstraint
                             Value = DateTimeOffset.Parse(valDTString)
                         };
                     }
-                    return new DateTimeOffsetValueOperand
+                    if (value is DateTime  valDateTime)
+                    {
+	                    return new DateTimeOffsetValueOperand
+	                    {
+		                    Value = valDateTime
+						};
+                    }
+					return new DateTimeOffsetValueOperand
                     {
                         Value = (DateTimeOffset)(value)
                     };

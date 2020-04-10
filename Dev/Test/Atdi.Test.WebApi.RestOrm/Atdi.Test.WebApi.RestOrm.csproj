@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E295AAB5-3BB0-47A9-A5D1-D77B061398CC}</ProjectGuid>
+    <ProjectGuid>{D911E3FA-019D-44E1-BF68-724AFE8A2C09}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.Api.Sdrn.CalcServer.Client</RootNamespace>
-    <AssemblyName>Atdi.Test.Api.Sdrn.CalcServer.Client</AssemblyName>
+    <RootNamespace>Atdi.Test.WebApi.RestOrm</RootNamespace>
+    <AssemblyName>Atdi.Test.WebApi.RestOrm</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,8 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,34 +49,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModels\MapType.cs" />
-    <Compile Include="DataModels\MapFile.cs" />
-    <Compile Include="DataModels\MapAxis.cs" />
-    <Compile Include="DataModels\MapCoordinate.cs" />
-    <Compile Include="DataModels\MapCoordinates.cs" />
-    <Compile Include="DTO\Reqests.cs" />
-    <Compile Include="Helpers\Compressor.cs" />
-    <Compile Include="Helpers\SerializationExtension.cs" />
-    <Compile Include="MapMaker.cs" />
+    <Compile Include="ORM\CreateQuery.cs" />
+    <Compile Include="ORM\CreationMethodHandler.cs" />
+    <Compile Include="ORM\DTO\EntityRequest.cs" />
+    <Compile Include="ORM\DTO\RecordCreationRequest.cs" />
+    <Compile Include="ORM\DTO\RecordCreationResult.cs" />
+    <Compile Include="ORM\ExpressionExtensions.cs" />
+    <Compile Include="ORM\FilterOperator.cs" />
+    <Compile Include="ORM\ICreateQuery.cs" />
+    <Compile Include="ORM\IDataReader.cs" />
+    <Compile Include="ORM\IDeleteQuery.cs" />
+    <Compile Include="ORM\IFilteringQuery.cs" />
+    <Compile Include="ORM\IQueryBuilder.cs" />
+    <Compile Include="ORM\IQueryExecutor.cs" />
+    <Compile Include="ORM\IQueryFilter.cs" />
+    <Compile Include="ORM\IReadQuery.cs" />
+    <Compile Include="ORM\IUpdateQuery.cs" />
+    <Compile Include="ORM\IWebApiMethodHandler.cs" />
+    <Compile Include="ORM\IWebApiQuery.cs" />
+    <Compile Include="ORM\ProxyInstanceFactory.cs" />
+    <Compile Include="ORM\WebApiDataContext.cs" />
+    <Compile Include="ORM\WebApiDataLayer.cs" />
+    <Compile Include="ORM\WebApiEndpoint.cs" />
+    <Compile Include="ORM\WebApiQueryBuilder.cs" />
+    <Compile Include="ORM\WebApiQueryExecutor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\PointFieldStrengthCalcTask.cs" />
-    <Compile Include="Test\TestDataGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
-      <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
-      <Name>Atdi.DataModels.EntityOrm</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
