@@ -44,5 +44,15 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public double? Occupancy;
+        /// <summary>
+        /// Level Min array
+        /// </summary>
+        [DataMember]
+        public float? LevelMinArr;
+        /// <summary>
+        /// Spectrum occupation array
+        /// </summary>
+        [DataMember]
+        public float[] SpectrumOccupationArr;
     }
 }

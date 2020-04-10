@@ -684,6 +684,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SO_NChenal; }
                         if (taskSDR.SOParam.LevelMinOccup_dBm <= 0) { taskParameters.LevelMinOccup_dBm = taskSDR.SOParam.LevelMinOccup_dBm; } else { taskParameters.LevelMinOccup_dBm = -80; }
                         taskParameters.TypeOfSO = sOtype;
+                        taskParameters.SupportMultyLevel = taskSDR.SOParam.SupportMultyLevel==null ? false : taskSDR.SOParam.SupportMultyLevel.Value;
                         if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
                         {
                             // формируем начало и конец для измерений 

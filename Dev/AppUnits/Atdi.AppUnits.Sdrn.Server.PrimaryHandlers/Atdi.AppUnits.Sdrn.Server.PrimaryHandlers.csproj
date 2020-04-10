@@ -66,6 +66,7 @@
     <Compile Include="Subscribes\OnReceivedDelMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedNewMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedRunMeasTaskEvent.cs" />
+    <Compile Include="Subscribes\OnReceivedUpdateMeasTaskEvent.cs" />
     <Compile Include="Subscribes\OnReceivedStopMeasTaskEvent.cs" />
   </ItemGroup>
   <ItemGroup>

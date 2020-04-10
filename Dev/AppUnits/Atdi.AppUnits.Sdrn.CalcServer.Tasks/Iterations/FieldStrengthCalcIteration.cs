@@ -277,7 +277,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 						}
 					}
 				}
-
+                var d_km = GeometricСalculations.GetDistance_km(data.PointCoordinate.X, data.PointCoordinate.Y, data.TargetCoordinate.X, data.TargetCoordinate.Y);
 				var lossArgs = new CalcLossArgs
 				{
 					Model = data.PropagationModel,
@@ -289,18 +289,22 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 					HeightStartIndex = 0,
 					ReliefProfile = reliefBuffer,
 					ReliefStartIndex = 0,
-					ProfileLength = profileLenght
+					ProfileLength = profileLenght,
+                    Freq_Mhz = data.Freq_Mhz,
+                    D_km = d_km,
+                    Ha_m = data.Hpoint_m,
+                    Hb_m = data.Htarget_m
 				};
 
 				var lossResult = new CalcLossResult();
 				
 				_signalService.CalcLoss(in lossArgs, ref lossResult);
 
-				var antennaGainArgs = new CalcAntennaGainArgs
+                var antennaGainArgs = new CalcAntennaGainArgs
 				{
 					Antenna = data.Antenna,
-					AzimutToPoint_deg = lossResult.Tilt1_Deg,
-					TiltToPoint_deg = lossResult.Tilt2_Deg,
+					AzimutToPoint_deg = lossResult.Tilta_Deg,
+					TiltToPoint_deg = lossResult.Tiltb_Deg,
 					PolarizationEquipment = PolarizationType.CL,
 					PolarizationWave = PolarizationType.CL
 				};

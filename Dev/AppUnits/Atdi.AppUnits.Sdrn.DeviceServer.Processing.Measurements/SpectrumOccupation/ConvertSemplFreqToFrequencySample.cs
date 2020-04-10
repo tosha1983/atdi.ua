@@ -26,7 +26,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         Level_dBmkVm = semplFreqs[i].LeveldBmkVm,
                         LevelMax_dBm = semplFreqs[i].LevelMaxdBm,
                         LevelMin_dBm = semplFreqs[i].LevelMindBm,
-                        Occupation_Pt = semplFreqs[i].OcupationPt
+                        Occupation_Pt = semplFreqs[i].OcupationPt,
+                        LevelMinArr = semplFreqs[i].LevelMinArr,
+                        SpectrumOccupationArr = semplFreqs[i].SpectrumOccupationArr
                     };
                 }
             }
