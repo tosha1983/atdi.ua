@@ -12,7 +12,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 	internal static class PropagationLoss
 	{
 
-        public static CalcLossResult[] Calc(CalcLossArgs args)
+        public static CalcLossResult Calc(CalcLossArgs args)
         {// Нужно тестировать
             double Lbf_dB = CalclMainBlock(in args);
             double Ldsub_dB = 0;
@@ -39,25 +39,19 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             { ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.HeightProfile, args.BuildingStartIndex, args.ProfileLength, out tilta, out tiltb); }
             else
             { ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, out tilta, out tiltb); }
-            List<CalcLossResult> calcLossResult = new List<CalcLossResult>();
-            CalcLossResult LossResult1 = new CalcLossResult()
+            CalcLossResult LossResult = new CalcLossResult()
             {
-                Tilta_Deg = tilta,
-                Tiltb_Deg = tiltb,
-                Loss_dB = Lbf_dB + Ld_dB + Lclutter_dB
+                TiltaD_Deg = tilta,
+                TiltbD_Deg = tiltb,
+                LossD_dB = Lbf_dB + Ld_dB + Lclutter_dB
             };
-            calcLossResult.Add(LossResult1);
             if (args.Model.AbsorptionBlock.Available)
             {
-                CalcLossResult LossResult2 = new CalcLossResult()
-                {
-                    Tilta_Deg = Labsorption_dB.Tilta_Deg,
-                    Tiltb_Deg = Labsorption_dB.Tiltb_Deg,
-                    Loss_dB = Lbf_dB + Labsorption_dB.Loss_dB
-                };
-                calcLossResult.Add(LossResult2);
+                LossResult.TiltaA_Deg = Labsorption_dB.LossD_dB;
+                LossResult.TiltbA_Deg = Labsorption_dB.TiltaA_Deg;
+                LossResult.LossA_dB = Lbf_dB + Labsorption_dB.TiltbA_Deg;
             }
-            return calcLossResult.ToArray();
+            return LossResult;
         }
         private static float CalclMainBlock(in CalcLossArgs args)
 		{
@@ -150,9 +144,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             CalcLossResult result = new CalcLossResult()
             {
-                Loss_dB = Labsorption_dB + Ld_dB,
-                Tilta_Deg = tilta,
-                Tiltb_Deg = tiltb
+                LossA_dB = Labsorption_dB + Ld_dB,
+                TiltaA_Deg = tilta,
+                TiltbA_Deg = tiltb
             };
             return result;
         }

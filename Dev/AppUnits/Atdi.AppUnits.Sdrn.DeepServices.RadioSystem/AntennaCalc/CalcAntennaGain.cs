@@ -17,8 +17,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 		{
             var antenna = args.Antenna;
             if (antenna is null) { return 0; }
-            var tilt_deg = args.TiltToPoint_deg;
-            var azimut_deg = args.AzimutToPoint_deg;
+            var tilt_deg = args.TiltToTarget_deg;
+            var azimut_deg = args.AzimutToTarget_deg;
             var polarizationEquipment = args.PolarizationEquipment;
             var polarizationWave = args.PolarizationWave;
      

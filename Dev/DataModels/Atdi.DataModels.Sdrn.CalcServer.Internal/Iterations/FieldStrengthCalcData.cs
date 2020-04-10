@@ -29,6 +29,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 		public byte[] BuildingContent { get; set; }
 
         public double Freq_Mhz;
+        public PolarizationType StationTranmitterPolarization;
+        public float StationTransmitterMaxPow_dBm;
+        public float StationTransmitterLoss_dB;
         /// <summary>
         /// Высота первой точки (Базовой станции) 
         /// </summary>

@@ -19,15 +19,15 @@ namespace Atdi.Test.CalcServer.LowFunction
             Random rand = new Random();
             var ArrStation = createStation(nstation);
             SignalService sig = new SignalService();
-            float[] resArr = new float[nstation* points];
+            double[] resArr = new double[nstation* points];
             DateTime startTime = DateTime.Now;
             for (int i = 0; nstation > i; i++)
             {
                 var St = ArrStation[i];
                 for (int j = 0; points>j; j++)
                 {
-                    St.AzimutToPoint_deg = rand.Next(360);
-                    St.TiltToPoint_deg = -10 + rand.Next(15);
+                    St.AzimutToTarget_deg = rand.Next(360);
+                    St.TiltToTarget_deg = -10 + rand.Next(15);
                     resArr[i*points+j] =  sig.CalcAntennaGain(St);
                 }
             }
