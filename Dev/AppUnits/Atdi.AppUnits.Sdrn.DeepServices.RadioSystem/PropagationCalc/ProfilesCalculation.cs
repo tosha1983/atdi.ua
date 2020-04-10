@@ -17,15 +17,13 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
         public static void CalcTilts(double re_km, double ha_m, double hb_m, double d_km, in short[] profile_m, int profileStartPosition, int profilePointsNumber, out double tiltA_deg, out double tiltB_deg)
         {
-           //both implementations requires testing 
+
             double dN = d_km / (profilePointsNumber - profileStartPosition);
             double h1_m = ha_m + profile_m[profileStartPosition];
             double h2_m = hb_m + profile_m[profilePointsNumber];
-            double angleArgAB = CalcElevAngleArgs(h1_m, h2_m, d_km, re_km);
-            double angleArgBA = CalcElevAngleArgs(h2_m, h1_m, d_km, re_km);
-
-            double maxAngleArgAB = angleArgAB;
-            double maxAngleArgBA = angleArgBA;
+            
+            double maxAngleArgAB = CalcElevAngleArgs(h1_m, h2_m, d_km, re_km);
+            double maxAngleArgBA = CalcElevAngleArgs(h2_m, h1_m, d_km, re_km);
 
 
             for (int n = profileStartPosition; n < profilePointsNumber - 1; n++)
