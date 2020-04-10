@@ -297,25 +297,34 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				};
 
 				var lossResult = new CalcLossResult();
-				
 				_signalService.CalcLoss(in lossArgs, ref lossResult);
-
+                var AzimutToTarget = GeometricСalculations.GetAzimut(data.PointCoordinate.X, data.PointCoordinate.Y, data.TargetCoordinate.X, data.TargetCoordinate.Y);
                 var antennaGainArgs = new CalcAntennaGainArgs
 				{
 					Antenna = data.Antenna,
-					AzimutToPoint_deg = lossResult.Tilta_Deg,
-					TiltToPoint_deg = lossResult.Tiltb_Deg,
-					PolarizationEquipment = PolarizationType.CL,
-					PolarizationWave = PolarizationType.CL
-				};
-
-				var antennaGain = _signalService.CalcAntennaGain(in antennaGainArgs);
-
-				return new FieldStrengthCalcResult
+					AzimutToTarget_deg = AzimutToTarget,
+                    TiltToTarget_deg = lossResult.TiltaD_Deg,
+					PolarizationEquipment = data.StationPolarization,
+                    PolarizationWave = data.StationPolarization
+                };
+				var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
+                double Level_dBm = data.StationTransmitterMaxPow_dBm - data.StationTransmitterLoss_dB + antennaGainD - lossResult.LossD_dB;
+                if (data.PropagationModel.AbsorptionBlock.Available)
+                {// нужен учет дополнительного пути распространения
+                    double Loss1 = lossResult.LossD_dB - antennaGainD;
+                    antennaGainArgs.TiltToTarget_deg = lossResult.TiltaA_Deg;
+                    var antennaGainA = _signalService.CalcAntennaGain(in antennaGainArgs);
+                    double Loss2 = lossResult.LossA_dB - antennaGainA;
+                    double LossSum = Math.Min(Loss1, Loss2);
+                    //LossSum = LossSum - 10 * Math.Log10(Math.Pow(10, -0.1 * (Loss1 - LossSum))+ Math.Pow(10, -0.1 * (Loss2 - LossSum)));
+                    Level_dBm = data.StationTransmitterMaxPow_dBm - data.StationTransmitterLoss_dB + LossSum;
+                }
+                double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Freq_Mhz);
+                return new FieldStrengthCalcResult
 				{
-					FS_dBuVm = antennaGain,
-					Level_dBm = lossResult.Loss_dB
-				};
+					FS_dBuVm = FS_dBuVm,
+					Level_dBm = Level_dBm
+                };
 			}
 			catch (Exception)
 			{
