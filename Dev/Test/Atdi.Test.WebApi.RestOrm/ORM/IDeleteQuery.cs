@@ -1,6 +1,6 @@
 ﻿namespace Atdi.Test.WebApi.RestOrm.ORM
 {
-	public interface IDeleteQuery : IFilteringQuery, IWebApiQuery
+	public interface IDeleteQuery : IFilteringQuery<IDeleteQuery>, IWebApiQuery
 	{
 	}
 

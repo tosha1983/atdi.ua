@@ -3,6 +3,11 @@ using System.Linq.Expressions;
 
 namespace Atdi.Test.WebApi.RestOrm.ORM
 {
+	public interface IFilterSite
+	{
+		void SetFilter(string condition);
+	}
+
 	public interface IQueryFilter<TEntity, out TQuery>
 	{
 		IQueryFilter<TEntity, TQuery> Condition<TValue>(Expression<Func<TEntity, TValue>> leftOperandPathExpression,

@@ -49,11 +49,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ORM\CreateQuery.cs" />
-    <Compile Include="ORM\CreationMethodHandler.cs" />
+    <Compile Include="ORM\DTO\RecordDeleteRequest.cs" />
+    <Compile Include="ORM\DTO\RecordDeleteResponse.cs" />
+    <Compile Include="ORM\DTO\RecordUpdateResponse.cs" />
+    <Compile Include="ORM\DTO\RecordUpdateRequest.cs" />
+    <Compile Include="ORM\DTO\RecordReadRequest.cs" />
+    <Compile Include="ORM\DTO\RecordReadResponse.cs" />
+    <Compile Include="ORM\Methods\DeleteMethodHandler.cs" />
+    <Compile Include="ORM\Methods\UpdateMethodHandler.cs" />
+    <Compile Include="ORM\Methods\DeleteQuery.cs" />
+    <Compile Include="ORM\Methods\UpdateQuery.cs" />
+    <Compile Include="ORM\Methods\CreateQuery.cs" />
+    <Compile Include="ORM\Methods\CreateMethodHandler.cs" />
     <Compile Include="ORM\DTO\EntityRequest.cs" />
     <Compile Include="ORM\DTO\RecordCreationRequest.cs" />
-    <Compile Include="ORM\DTO\RecordCreationResult.cs" />
+    <Compile Include="ORM\DTO\RecordCreationResponse.cs" />
     <Compile Include="ORM\ExpressionExtensions.cs" />
     <Compile Include="ORM\FilterOperator.cs" />
     <Compile Include="ORM\ICreateQuery.cs" />
@@ -67,9 +77,13 @@
     <Compile Include="ORM\IUpdateQuery.cs" />
     <Compile Include="ORM\IWebApiMethodHandler.cs" />
     <Compile Include="ORM\IWebApiQuery.cs" />
+    <Compile Include="ORM\Methods\QueryFilter.cs" />
+    <Compile Include="ORM\Methods\ReadMethodHandler.cs" />
+    <Compile Include="ORM\Methods\ReadQuery.cs" />
     <Compile Include="ORM\ProxyInstanceFactory.cs" />
     <Compile Include="ORM\WebApiDataContext.cs" />
     <Compile Include="ORM\WebApiDataLayer.cs" />
+    <Compile Include="ORM\WebApiDataReader.cs" />
     <Compile Include="ORM\WebApiEndpoint.cs" />
     <Compile Include="ORM\WebApiQueryBuilder.cs" />
     <Compile Include="ORM\WebApiQueryExecutor.cs" />

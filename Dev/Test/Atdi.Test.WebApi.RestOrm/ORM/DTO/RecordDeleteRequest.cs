@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Test.WebApi.RestOrm.ORM.DTO
 {
-
-	public class RecordCreationResult
+	public class RecordDeleteRequest : EntityRequest
 	{
-		public int Count;
-
-		public object PrimaryKey;
+		public string[] Filter;
 	}
 }

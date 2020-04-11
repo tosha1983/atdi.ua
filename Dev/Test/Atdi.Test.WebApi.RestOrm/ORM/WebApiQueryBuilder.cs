@@ -48,17 +48,17 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 
 		public IDeleteQuery Delete()
 		{
-			throw new NotImplementedException();
+			return new DeleteQuery(_entityNamespace, _entityName);
 		}
 
 		public IReadQuery Read()
 		{
-			throw new NotImplementedException();
+			return new ReadQuery(_entityNamespace, _entityName);
 		}
 
 		public IUpdateQuery Update()
 		{
-			throw new NotImplementedException();
+			return new UpdateQuery(_entityNamespace, _entityName);
 		}
 	}
 
@@ -74,7 +74,6 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 
 			_entityName = (entityTypeName[0] == 'I' ? entityTypeName.Substring(1, entityTypeName.Length - 1) : entityTypeName);
 			_entityNamespace = entityType.Namespace;
-
 		}
 
 		public string EntityName => _entityName;
@@ -88,17 +87,17 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 
 		public IDeleteQuery<TEntity> Delete()
 		{
-			throw new NotImplementedException();
+			return new DeleteQuery<TEntity>(new DeleteQuery(_entityNamespace, _entityName));
 		}
 
 		public IReadQuery<TEntity> Read()
 		{
-			throw new NotImplementedException();
+			return new ReadQuery<TEntity>(new ReadQuery(_entityNamespace, _entityName));
 		}
 
 		public IUpdateQuery<TEntity> Update()
 		{
-			throw new NotImplementedException();
+			return new UpdateQuery<TEntity>(new UpdateQuery(_entityNamespace, _entityName));
 		}
 	}
 }

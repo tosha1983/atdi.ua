@@ -4,7 +4,7 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 {
 	public interface IQueryExecutor
 	{
-		int Execute(IWebApiQuery webQuery);
+		long Execute(IWebApiQuery webQuery);
 
 		TResult Execute<TResult>(IWebApiQuery webQuery);
 

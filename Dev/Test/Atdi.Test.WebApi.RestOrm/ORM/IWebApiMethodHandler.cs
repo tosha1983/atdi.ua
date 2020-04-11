@@ -9,13 +9,13 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 
 		DTO.EntityRequest CreateRequest(IWebApiQuery query);
 
-		int Handle(HttpResponseMessage response);
+		long Handle(HttpResponseMessage response);
 
 		TResult Handle<TResult>(HttpResponseMessage response);
 
-		TResult ExecuteAndFetch<TResult>(HttpResponseMessage response, Func<IDataReader, TResult> handler);
+		TResult Handle<TResult>(HttpResponseMessage response, Func<IDataReader, TResult> handler);
 
-		TResult ExecuteAndFetch<TEntity, TResult>(HttpResponseMessage response, Func<IDataReader<TEntity>, TResult> handler);
+		TResult Handle<TEntity, TResult>(HttpResponseMessage response, Func<IDataReader<TEntity>, TResult> handler);
 	}
 
 	public interface IWebApiRequestCreator

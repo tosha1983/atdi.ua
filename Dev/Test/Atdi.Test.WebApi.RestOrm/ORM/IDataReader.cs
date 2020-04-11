@@ -5,7 +5,7 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 {
 	public interface IDataReader
 	{
-		int Count { get; }
+		long Count { get; }
 
 		bool Read();
 
@@ -14,10 +14,12 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 		bool IsNull(string path);
 
 		bool IsNotNull(string path);
+
+		bool Has(string path);
 	}
 	public interface IDataReader<TEntity>
 	{
-		int Count { get; }
+		long Count { get; }
 
 		bool Read();
 
@@ -26,5 +28,7 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 		bool IsNull<TValue>(Expression<Func<TEntity, TValue>> pathExpression);
 
 		bool IsNotNull<TValue>(Expression<Func<TEntity, TValue>> pathExpression);
+
+		bool Has<TValue>(Expression<Func<TEntity, TValue>> pathExpression);
 	}
 }

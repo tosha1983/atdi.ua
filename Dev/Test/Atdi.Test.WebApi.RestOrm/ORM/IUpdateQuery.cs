@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Atdi.Test.WebApi.RestOrm.ORM
 {
-	public interface IUpdateQuery: IFilteringQuery, IWebApiQuery
+	public interface IUpdateQuery: IFilteringQuery<IUpdateQuery>, IWebApiQuery
 	{
 		IUpdateQuery SetValue<TValue>(string path, TValue value);
 

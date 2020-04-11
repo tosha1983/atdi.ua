@@ -9,7 +9,19 @@ using System.Threading.Tasks;
 
 namespace Atdi.Test.WebApi.RestOrm
 {
-	
+	class Project : IProject
+	{
+		public long Id { get; set; }
+		public string Name { get; set; }
+		public string Note { get; set; }
+		public string OwnerInstance { get; set; }
+		public Guid OwnerProjectId { get; set; }
+		public DateTimeOffset CreatedDate { get; set; }
+		public byte StatusCode { get; set; }
+		public string StatusName { get; set; }
+		public string StatusNote { get; set; }
+		public string Projection { get; set; }
+	}
 	class Program
 	{
 		static void Main(string[] args)
@@ -36,8 +48,97 @@ namespace Atdi.Test.WebApi.RestOrm
 			//var count = executor.Execute(webQuery);
 
 			var projectPk = executor.Execute<IProject_PK>(webQuery);
+
+			TestReadMethod(executor, dataLayer);
+			TestUpdateMethod(executor, dataLayer);
+			TestDeleteMethod(executor, dataLayer);
 		}
 
+		static void TestUpdateMethod(IQueryExecutor executor, WebApiDataLayer dataLayer)
+		{
+			var webQuery = dataLayer.GetBuilder<IProject>()
+				.Update()
+				.SetValue(c => c.StatusCode, (byte) ProjectStatusCode.Available)
+				.SetValue(c => c.StatusName, ProjectStatusCode.Available.ToString())
+				.Filter(c => c.Id, 28);
+			var count = executor.Execute(webQuery);
+		}
+
+		static void TestDeleteMethod(IQueryExecutor executor, WebApiDataLayer dataLayer)
+		{
+			var webQuery = dataLayer.GetBuilder<IProject>()
+				.Delete()
+				.Filter(c => c.Id, 29);
+			var count = executor.Execute(webQuery);
+		}
+
+		static void TestReadMethod(IQueryExecutor executor, WebApiDataLayer dataLayer)
+		{
+			var webQuery = dataLayer.GetBuilder<IProject>()
+				.Read()
+				.Select(
+					c => c.Id,
+					c => c.Name,
+					c => c.StatusName,
+					c => c.StatusCode,
+					c => c.Projection,
+					c => c.CreatedDate,
+					c => c.Note,
+					c => c.OwnerInstance,
+					c => c.OwnerProjectId,
+					c => c.StatusNote,
+					c => c.Note
+				)
+				.OrderByDesc(c => c.Projection, c => c.StatusCode)
+				.OrderByAsc(c => c.Id, c => c.CreatedDate)
+				.Filter(c => c.Projection, "4UTN35")
+				.Filter(c => c.StatusCode, FilterOperator.In, 
+					(byte) ProjectStatusCode.Created,
+					(byte) ProjectStatusCode.Available)
+				.BeginFilter()
+					.Begin()
+						.Condition(c=>c.OwnerInstance, "Atdi.Test.WebApi.RestOrm")
+						.And()
+						.Condition(c => c.Id, FilterOperator.GreaterThan, -100)
+					.End()
+					.Or()
+					.Begin()
+						.Condition(c => c.OwnerInstance, "Atdi.Test.WebApi.RestOrm")
+						.And()
+						.Condition(c => c.Id, FilterOperator.GreaterThan, -100)
+					.End()
+					.Or()
+					.Condition(c => c.CreatedDate, FilterOperator.LessEqual, DateTimeOffset.Now)
+					.Or()
+					.Condition(c => c.CreatedDate, FilterOperator.Between, DateTimeOffset.MinValue, DateTimeOffset.MaxValue)
+				.EndFilter()
+				.OnTop(100);
+
+			var count = executor.Execute(webQuery);
+			var request = ((IWebApiRequestCreator) webQuery).Create();
+
+			var records = executor.ExecuteAndFetch(webQuery, reader =>
+			{
+				var data = new IProject[reader.Count];
+				var index = 0;
+				while (reader.Read())
+				{
+					var project = new Project();
+					project.Id = reader.GetValue(c => c.Id);
+					project.Name = reader.GetValue(c => c.Name);
+					project.Projection = reader.GetValue(c => c.Projection);
+					project.CreatedDate = reader.GetValue(c => c.CreatedDate);
+					project.StatusCode = reader.GetValue(c => c.StatusCode);
+					project.Note = reader.GetValue(c => c.Note);
+					project.StatusNote = reader.GetValue(c => c.StatusNote);
+					project.OwnerProjectId = reader.GetValue(c => c.OwnerProjectId);
+					project.StatusName = reader.GetValue(c => c.StatusName);
+					project.OwnerInstance = reader.GetValue(c => c.OwnerInstance);
+					data[index++] = project;
+				}
+				return data;
+			});
+		}
 
 		static void Example1()
 		{

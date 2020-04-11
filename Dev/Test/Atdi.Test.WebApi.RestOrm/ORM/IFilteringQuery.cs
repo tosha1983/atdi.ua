@@ -3,9 +3,9 @@ using System.Linq.Expressions;
 
 namespace Atdi.Test.WebApi.RestOrm.ORM
 {
-	public interface IFilteringQuery
+	public interface IFilteringQuery<out TQuery>
 	{
-		IReadQuery Filter(string condition);
+		TQuery Filter(string condition);
 	}
 
 	public interface IFilteringQuery<TEntity, out TQuery>

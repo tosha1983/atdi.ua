@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Test.WebApi.RestOrm.ORM.Methods;
 
 namespace Atdi.Test.WebApi.RestOrm.ORM
 {
@@ -19,7 +20,10 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 			ProxyInstanceFactory = new ProxyInstanceFactory();
 			MethodHandlers = new Dictionary<WebApiQueryType, IWebApiMethodHandler>
 			{
-				[WebApiQueryType.Create] = new CreationMethodHandler(ProxyInstanceFactory)
+				[WebApiQueryType.Create] = new CreateMethodHandler(ProxyInstanceFactory),
+				[WebApiQueryType.Read] = new ReadMethodHandler(ProxyInstanceFactory),
+				[WebApiQueryType.Update] = new UpdateMethodHandler(ProxyInstanceFactory),
+				[WebApiQueryType.Delete] = new DeleteMethodHandler(ProxyInstanceFactory)
 			};
 
 		}
@@ -48,7 +52,7 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 			return $"{uri1}/{uri2}";
 		}
 
-		public int Execute(IWebApiQuery webQuery)
+		public long Execute(IWebApiQuery webQuery)
 		{
 			var handler = MethodHandlers[webQuery.QueryType];
 			var request = handler.CreateRequest(webQuery);
@@ -65,17 +69,47 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 
 		public TResult Execute<TResult>(IWebApiQuery webQuery)
 		{
-			throw new NotImplementedException();
+			var handler = MethodHandlers[webQuery.QueryType];
+			var request = handler.CreateRequest(webQuery);
+			request.Context = _dataContext.Name;
+
+			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, handler.WebMethodUrl), request)
+				.GetAwaiter()
+				.GetResult();
+			response.EnsureSuccessStatusCode();
+			var result = handler.Handle<TResult>(response);
+
+			return result;
 		}
 
 		public TResult ExecuteAndFetch<TResult>(IWebApiQuery webQuery, Func<IDataReader, TResult> handler)
 		{
-			throw new NotImplementedException();
+			var methodHandler = MethodHandlers[webQuery.QueryType];
+			var request = methodHandler.CreateRequest(webQuery);
+			request.Context = _dataContext.Name;
+
+			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request)
+				.GetAwaiter()
+				.GetResult();
+			response.EnsureSuccessStatusCode();
+			var result = methodHandler.Handle(response, handler);
+
+			return result;
 		}
 
 		public TResult ExecuteAndFetch<TEntity, TResult>(IWebApiQuery<TEntity> webQuery, Func<IDataReader<TEntity>, TResult> handler)
 		{
-			throw new NotImplementedException();
+			var methodHandler = MethodHandlers[webQuery.QueryType];
+			var request = methodHandler.CreateRequest(webQuery);
+			request.Context = _dataContext.Name;
+
+			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request)
+				.GetAwaiter()
+				.GetResult();
+			response.EnsureSuccessStatusCode();
+			var result = methodHandler.Handle(response, handler);
+
+			return result;
 		}
 	}
 }

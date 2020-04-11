@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Atdi.Test.WebApi.RestOrm.ORM
 {
-	public interface IReadQuery : IFilteringQuery, IWebApiQuery
+	public interface IReadQuery : IFilteringQuery<IReadQuery>, IWebApiQuery
 	{
 		IReadQuery Select(string path);
 

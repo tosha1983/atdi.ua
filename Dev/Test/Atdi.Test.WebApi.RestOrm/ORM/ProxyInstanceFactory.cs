@@ -82,7 +82,7 @@ namespace Atdi.Test.WebApi.RestOrm.ORM
 
 
 			var proxyType = proxyTypeBuilder.CreateType();
-			//assemblyBuilder.Save($"{an.Name}.EntitiesProxy.dll");
+			assemblyBuilder.Save($"{an.Name}.EntitiesProxy.dll");
 
 			return proxyType;
 		}
