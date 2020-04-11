@@ -88,152 +88,37 @@ namespace XICSM.ICSControlClient.Forms
             this.InitializeSplitters();
             this.InitializeDataGrids();
         }
-        private void DataGrid_Column_MenuFilterClick(object sender, EventArgs e)
+        void DataGrid_Column_MenuFilterClick(object sender, EventArgs e)
         {
             var column = ((sender as CTR.MenuItem).Parent as CTR.ContextMenu).PlacementTarget as DataGridColumnHeader;
+            var columnName = (((column.Column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
 
             var dep = column as DependencyObject;
             while (dep != null && !(dep is CTR.DataGrid))
                 dep = VisualTreeHelper.GetParent(dep);
 
             var grd = dep as CTR.DataGrid;
-            var pointToScreen = System.Windows.Forms.Control.MousePosition;
-            var columnName = (((column.Column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
+            var columnType = GetColumnType(grd, columnName);
 
-            if (GetColumnType(grd, columnName) == typeof(double)
-                || GetColumnType(grd, columnName) == typeof(double?)
-                || GetColumnType(grd, columnName) == typeof(decimal)
-                || GetColumnType(grd, columnName) == typeof(decimal?)
-                || GetColumnType(grd, columnName) == typeof(int)
-                || GetColumnType(grd, columnName) == typeof(int?)
-                || GetColumnType(grd, columnName) == typeof(long)
-                || GetColumnType(grd, columnName) == typeof(long?)
-                || GetColumnType(grd, columnName) == typeof(float)
-                || GetColumnType(grd, columnName) == typeof(float?))
+            if (columnType == typeof(double) || columnType == typeof(double?)
+                || columnType == typeof(decimal) || columnType == typeof(decimal?)
+                || columnType == typeof(int) || columnType == typeof(int?)
+                || columnType == typeof(long) || columnType == typeof(long?)
+                || columnType == typeof(float) || columnType == typeof(float?))
             {
-                var dlgForm = new FM.gridFilterNumeric();
-                dlgForm.Left = pointToScreen.X;
-                dlgForm.Top = pointToScreen.Y;
-                dlgForm.Text = column.Column.Header.ToString();
-                if (_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
-                {
-                    dlgForm.FilterFromValue = _dataGridFilters[grd].FiltersNumeric[columnName].FromValue;
-                    dlgForm.FilterToValue = _dataGridFilters[grd].FiltersNumeric[columnName].ToValue;
-                }
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
-
-                if (dlgForm.IsPresOK)
-                {
-                    if (dlgForm.FilterFromValue.HasValue || dlgForm.FilterToValue.HasValue)
-                    {
-                        if (!_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
-                            _dataGridFilters[grd].FiltersNumeric.Add(columnName, new DataGridFilterNumeric());
-
-                        _dataGridFilters[grd].FiltersNumeric[columnName].FromValue = dlgForm.FilterFromValue;
-                        _dataGridFilters[grd].FiltersNumeric[columnName].ToValue = dlgForm.FilterToValue;
-
-                        //column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
-                        column.Column.Header = column.Column.Header + $" ({Properties.Resources.MenuFilter}:";
-                        if (dlgForm.FilterFromValue.HasValue)
-                            column.Column.Header = column.Column.Header + " >= " + dlgForm.FilterFromValue.ToString() + ";";
-                        if (dlgForm.FilterToValue.HasValue)
-                            column.Column.Header = column.Column.Header + " <= " + dlgForm.FilterToValue.ToString() + ";";
-                        column.Column.Header = column.Column.Header + ")";
-                    }
-                    else
-                    {
-                        if (_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
-                            _dataGridFilters[grd].FiltersNumeric.Remove(columnName);
-
-                        column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
-                    }
-                }
+                PrepareFilterForm(new FM.gridFilterNumeric(), grd, column);
             }
-            else if ((GetColumnType(grd, columnName) == typeof(bool)) || (GetColumnType(grd, columnName) == typeof(bool?)))
+            else if ((columnType == typeof(bool)) || (columnType == typeof(bool?)))
             {
-                var dlgForm = new FM.gridFilterBool();
-                dlgForm.Left = pointToScreen.X;
-                dlgForm.Top = pointToScreen.Y;
-                dlgForm.Text = column.Column.Header.ToString();
-                if (_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
-                {
-                    dlgForm.FilterValue = _dataGridFilters[grd].FiltersBool[columnName].Value;
-                }
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
-
-                if (dlgForm.IsPresOK)
-                {
-                    if (dlgForm.FilterValue.HasValue)
-                    {
-                        if (!_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
-                            _dataGridFilters[grd].FiltersBool.Add(columnName, new DataGridFilterBool());
-
-                        _dataGridFilters[grd].FiltersBool[columnName].Value = dlgForm.FilterValue;
-
-                        //column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
-                        column.Column.Header = column.Column.Header + $" ({Properties.Resources.MenuFilter}: =" + dlgForm.FilterValue.Value.ToString() + ";)";
-                    }
-                    else
-                    {
-                        if (_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
-                            _dataGridFilters[grd].FiltersBool.Remove(columnName);
-
-                        column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
-                    }
-                }
+                PrepareFilterForm(new FM.gridFilterBool(), grd, column);
             }
-
-            else if ((GetColumnType(grd, columnName) == typeof(string)))
+            else if ((columnType == typeof(string)))
             {
-                var dlgForm = new FM.gridFilterString();
-                dlgForm.Left = pointToScreen.X;
-                dlgForm.Top = pointToScreen.Y;
-                dlgForm.Text = column.Column.Header.ToString();
-                if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
-                {
-                    dlgForm.FilterValue = _dataGridFilters[grd].FiltersString[columnName].Value;
-                }
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
-
-                if (dlgForm.IsPresOK)
-                {
-                    if (!string.IsNullOrEmpty(dlgForm.FilterValue))
-                    {
-                        if (!_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
-                            _dataGridFilters[grd].FiltersString.Add(columnName, new DataGridFilterString());
-
-                        _dataGridFilters[grd].FiltersString[columnName].Value = dlgForm.FilterValue;
-
-                        //column.Foreground = new SolidColorBrush(Colors.Green);
-                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
-                        column.Column.Header = column.Column.Header + $" ({Properties.Resources.MenuFilter}: =" + dlgForm.FilterValue + ";)";
-                    }
-                    else
-                    {
-                        if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
-                            _dataGridFilters[grd].FiltersString.Remove(columnName);
-
-                        column.Foreground = new SolidColorBrush(Colors.Black);
-                        if (column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
-                            column.Column.Header = column.Column.Header.ToString().Remove(column.Column.Header.ToString().IndexOf($" ({Properties.Resources.MenuFilter}:"));
-                    }
-                }
+                PrepareFilterForm(new FM.gridFilterString(), grd, column);
             }
             DataGridApplyFilters(grd);
         }
-        private void DataGrid_MenuClick_ClearAllFilters(object sender, EventArgs e)
+        void DataGrid_MenuClick_ClearAllFilters(object sender, EventArgs e)
         {
             var menuItem = sender as CTR.MenuItem;
             var contextMenu = menuItem.Parent as CTR.ContextMenu;
@@ -256,7 +141,7 @@ namespace XICSM.ICSControlClient.Forms
 
             DataGridApplyFilters(grd);
         }
-        private void DataGrid_MenuClick_SaveToCSV(object sender, EventArgs e)
+        void DataGrid_MenuClick_SaveToCSV(object sender, EventArgs e)
         {
             var menuItem = sender as CTR.MenuItem;
             var contextMenu = menuItem.Parent as CTR.ContextMenu;
@@ -271,7 +156,6 @@ namespace XICSM.ICSControlClient.Forms
                 int recCount = grid.Items.Count;
                 string[] output = new string[recCount + 1];
 
-                    
                 var csvRow = new List<string>();
                 var columnsBindName = new List<string>();
                     
@@ -313,7 +197,6 @@ namespace XICSM.ICSControlClient.Forms
                 System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
                 System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
             }
-            
         }
         void DataGridApplyFilters(CTR.DataGrid grid)
         {
@@ -439,7 +322,7 @@ namespace XICSM.ICSControlClient.Forms
                     }
                     foreach (var filter in _dataGridFilters[grid].FiltersString)
                     {
-                        if (filter.Key == "SensorName" && !c.SensorName.Contains(filter.Value.Value))
+                        if (filter.Key == "SensorTitle" && !c.SensorTitle.Contains(filter.Value.Value))
                             return false;
                         if (filter.Key == "IcsmTable" && c.IcsmTable.Contains(filter.Value.Value))
                             return false;
@@ -519,67 +402,6 @@ namespace XICSM.ICSControlClient.Forms
                     return true;
                 });
             }
-        }
-        Type GetColumnType(CTR.DataGrid grid, string columnName)
-        {
-            if (grid.Name == "GridEmittings")
-            {
-                if (columnName == "StartFrequency_MHz") return typeof(double);
-                if (columnName == "StopFrequency_MHz") return typeof(double);
-                if (columnName == "CurentPower_dBm") return typeof(double);
-                if (columnName == "ReferenceLevel_dBm") return typeof(double);
-                if (columnName == "MeanDeviationFromReference") return typeof(double);
-                if (columnName == "TriggerDeviationFromReference") return typeof(double);
-                if (columnName == "EmissionFreqMHz") return typeof(double);
-                if (columnName == "Bandwidth_kHz") return typeof(double);
-                if (columnName == "CorrectnessEstimations") return typeof(bool);
-                if (columnName == "Contravention") return typeof(bool);
-                if (columnName == "TraceCount") return typeof(int);
-                if (columnName == "SignalLevel_dBm") return typeof(float);
-                if (columnName == "RollOffFactor") return typeof(double);
-                if (columnName == "StandardBW") return typeof(double);
-                if (columnName == "SensorName") return typeof(string);
-                if (columnName == "SumHitCount") return typeof(int);
-                if (columnName == "IcsmID") return typeof(long);
-                if (columnName == "IcsmTable") return typeof(string);
-                if (columnName == "MeasResultId") return typeof(long);
-            }
-            if (grid.Name == "GridWorkTimes")
-            {
-                if (columnName == "HitCount") return typeof(int);
-                if (columnName == "PersentAvailability") return typeof(float);
-            }
-
-            if (grid.Name == "GroupeEmissionProtocolDetail")
-            {
-                if (columnName == "RadioControlMeasFreq_MHz") return typeof(double?);
-                if (columnName == "RadioControlBandWidth_KHz") return typeof(double?);
-                if (columnName == "FieldStrength") return typeof(double?);
-                if (columnName == "Level_dBm") return typeof(double?);
-                if (columnName == "RadioControlDeviationFreq_MHz") return typeof(double);
-            }
-
-            //if (grid.Name == "GridSensor")
-            //{
-            //    if (columnName == "LowerFreq") return typeof(double);
-            //    if (columnName == "UpperFreq") return typeof(double);
-            //}
-
-
-            ////Type[] typeArguments = grd.ItemsSource.GetType();
-
-            //int i = 0;
-            //foreach (dynamic row in grd.Items)
-            //{
-            //    //string text = row.Row.ItemArray[i++].ToString();
-            //    foreach (var prop in row.GetType().GetProperties())
-            //    {
-            //        string propName = prop.Name;
-            //        object value = prop.GetValue(row, null);
-            //    }
-
-            //}
-            return typeof(object);
         }
         void InitializeDataGrids()
         {
@@ -719,6 +541,168 @@ namespace XICSM.ICSControlClient.Forms
         {
             return GetTreeKey(splitter) + "/GridSplitter/" + splitter.HorizontalAlignment.ToString() + "/" + splitter.VerticalAlignment.ToString() + "/" + splitter.GetValue(CTR.Grid.RowProperty) + "/" + splitter.GetValue(CTR.Grid.ColumnProperty);
         }
+        Type GetColumnType(CTR.DataGrid grid, string columnName)
+        {
+            if (grid.Name == "GridEmittings")
+            {
+                if (columnName == "StartFrequency_MHz") return typeof(double);
+                if (columnName == "StopFrequency_MHz") return typeof(double);
+                if (columnName == "CurentPower_dBm") return typeof(double);
+                if (columnName == "ReferenceLevel_dBm") return typeof(double);
+                if (columnName == "MeanDeviationFromReference") return typeof(double);
+                if (columnName == "TriggerDeviationFromReference") return typeof(double);
+                if (columnName == "EmissionFreqMHz") return typeof(double);
+                if (columnName == "Bandwidth_kHz") return typeof(double);
+                if (columnName == "CorrectnessEstimations") return typeof(bool);
+                if (columnName == "Contravention") return typeof(bool);
+                if (columnName == "TraceCount") return typeof(int);
+                if (columnName == "SignalLevel_dBm") return typeof(float);
+                if (columnName == "RollOffFactor") return typeof(double);
+                if (columnName == "StandardBW") return typeof(double);
+                if (columnName == "SensorTitle") return typeof(string);
+                if (columnName == "SumHitCount") return typeof(int);
+                if (columnName == "IcsmID") return typeof(long);
+                if (columnName == "IcsmTable") return typeof(string);
+                if (columnName == "MeasResultId") return typeof(long);
+            }
+            if (grid.Name == "GridWorkTimes")
+            {
+                if (columnName == "HitCount") return typeof(int);
+                if (columnName == "PersentAvailability") return typeof(float);
+            }
+
+            if (grid.Name == "GroupeEmissionProtocolDetail")
+            {
+                if (columnName == "RadioControlMeasFreq_MHz") return typeof(double?);
+                if (columnName == "RadioControlBandWidth_KHz") return typeof(double?);
+                if (columnName == "FieldStrength") return typeof(double?);
+                if (columnName == "Level_dBm") return typeof(double?);
+                if (columnName == "RadioControlDeviationFreq_MHz") return typeof(double);
+            }
+
+            //if (grid.Name == "GridSensor")
+            //{
+            //    if (columnName == "LowerFreq") return typeof(double);
+            //    if (columnName == "UpperFreq") return typeof(double);
+            //}
+
+
+            ////Type[] typeArguments = grd.ItemsSource.GetType();
+            
+            //int i = 0;
+            //foreach (dynamic row in grd.Items)
+            //{
+            //    //string text = row.Row.ItemArray[i++].ToString();
+            //    foreach (var prop in row.GetType().GetProperties())
+            //    {
+            //        string propName = prop.Name;
+            //        object value = prop.GetValue(row, null);
+            //    }
+
+            //}
+            return typeof(object);
+        }
+
+        void PrepareFilterForm<T>(T form, CTR.DataGrid grd, DataGridColumnHeader column) where T : gridFilterBase
+        {
+            var columnName = (((column.Column as CTR.DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
+            var columnHeader = column.Column.Header.ToString();
+            var pointToScreen = System.Windows.Forms.Control.MousePosition;
+
+            form.Left = pointToScreen.X;
+            form.Top = pointToScreen.Y;
+            form.Text = columnHeader;
+
+            if (form is FM.gridFilterNumeric)
+            {
+                var frm = form as FM.gridFilterNumeric;
+                if (_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
+                {
+                    frm.FilterFromValue = _dataGridFilters[grd].FiltersNumeric[columnName].FromValue;
+                    frm.FilterToValue = _dataGridFilters[grd].FiltersNumeric[columnName].ToValue;
+                }
+            }
+            else if (form is FM.gridFilterBool)
+            {
+                var frm = form as FM.gridFilterBool;
+                if (_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
+                {
+                    frm.FilterValue = _dataGridFilters[grd].FiltersBool[columnName].Value;
+                }
+            }
+            else if (form is FM.gridFilterString)
+            {
+                var frm = form as FM.gridFilterString;
+                if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
+                {
+                    frm.FilterValue = _dataGridFilters[grd].FiltersString[columnName].Value;
+                }
+            }
+
+            form.ShowDialog();
+            form.Dispose();
+
+            if (form.IsPresOK)
+            {
+                if (columnHeader.IndexOf($" ({Properties.Resources.MenuFilter}:") > 0)
+                {
+                    column.Column.Header = columnHeader.Remove(columnHeader.IndexOf($" ({Properties.Resources.MenuFilter}:"));
+                    column.Foreground = new SolidColorBrush(Colors.Black);
+                }
+
+                string filterText = "";
+                if (form is FM.gridFilterNumeric)
+                {
+                    var frm = form as FM.gridFilterNumeric;
+                    if (frm.FilterFromValue.HasValue || frm.FilterToValue.HasValue)
+                    {
+                        if (!_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
+                            _dataGridFilters[grd].FiltersNumeric.Add(columnName, new DataGridFilterNumeric() { FromValue = frm.FilterFromValue, ToValue = frm.FilterToValue });
+
+                        if (frm.FilterFromValue.HasValue)
+                            filterText = filterText + " >= " + frm.FilterFromValue.ToString() + ";";
+                        if (frm.FilterToValue.HasValue)
+                            filterText = filterText + " <= " + frm.FilterToValue.ToString() + ";";
+                    }
+                    else if (_dataGridFilters[grd].FiltersNumeric.ContainsKey(columnName))
+                        _dataGridFilters[grd].FiltersNumeric.Remove(columnName);
+                }
+                else if (form is FM.gridFilterBool)
+                {
+                    var frm = form as FM.gridFilterBool;
+                    if (frm.FilterValue.HasValue)
+                    {
+                        if (!_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
+                            _dataGridFilters[grd].FiltersBool.Add(columnName, new DataGridFilterBool() { Value = frm.FilterValue });
+
+                        filterText = frm.FilterValue.Value.ToString();
+                    }
+                    else if (_dataGridFilters[grd].FiltersBool.ContainsKey(columnName))
+                        _dataGridFilters[grd].FiltersBool.Remove(columnName);
+                }
+                else if (form is FM.gridFilterString)
+                {
+                    var frm = form as FM.gridFilterString;
+                    if (!string.IsNullOrEmpty(frm.FilterValue))
+                    {
+                        if (!_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
+                            _dataGridFilters[grd].FiltersString.Add(columnName, new DataGridFilterString() { Value = frm.FilterValue });
+                        
+                        filterText = frm.FilterValue;
+                    }
+                    else if (_dataGridFilters[grd].FiltersString.ContainsKey(columnName))
+                        _dataGridFilters[grd].FiltersString.Remove(columnName);
+                }
+
+                if (!string.IsNullOrEmpty(filterText))
+                {
+                    column.Foreground = new SolidColorBrush(Colors.Green);
+                    column.Column.Header = $"{column.Column.Header} ({Properties.Resources.MenuFilter}: {filterText})";
+                }
+            }
+        }
+
+        #region VisualTree
         static string GetTreeKey(DependencyObject depObj)
         {
             string key = "";
@@ -726,9 +710,7 @@ namespace XICSM.ICSControlClient.Forms
             {
                 var obj = VisualTreeHelper.GetParent(depObj);
                 if (obj != null)
-                {
                     key = GetTreeKey(obj) + "/" + obj.DependencyObjectType.Name;
-                }
             }
             return key;
         }
@@ -745,13 +727,9 @@ namespace XICSM.ICSControlClient.Forms
             {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
                 if (child is T)
-                {
                     visualCollection.Add(child as T);
-                }
                 else if (child != null)
-                {
                     GetVisualChildCollection(child, visualCollection);
-                }
             }
         }
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -762,16 +740,13 @@ namespace XICSM.ICSControlClient.Forms
                 {
                     DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
                     if (child != null && child is T)
-                    {
                         yield return (T)child;
-                    }
 
                     foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
                         yield return childOfChild;
-                    }
                 }
             }
         }
+        #endregion
     }
 }

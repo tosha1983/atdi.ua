@@ -96,6 +96,12 @@
     <Compile Include="Environment\Wpf\WpfExtensions.cs" />
     <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
     <Compile Include="Forms\Base\DataGridFilters.cs" />
+    <Compile Include="Forms\Base\gridFilterBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\gridFilterBase.Designer.cs">
+      <DependentUpon>gridFilterBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Base\gridFilterString.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -426,6 +432,9 @@
     <Content Include="ICSM 6.2.70\OrmCs.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Base\gridFilterBase.resx">
+      <DependentUpon>gridFilterBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Base\gridFilterString.resx">
       <DependentUpon>gridFilterString.cs</DependentUpon>
     </EmbeddedResource>

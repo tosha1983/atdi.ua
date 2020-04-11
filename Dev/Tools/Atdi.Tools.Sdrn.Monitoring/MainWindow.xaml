@@ -16,7 +16,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TreeView x:Name="mainTree" Grid.Column="0" Grid.Row="0" Margin="5" SelectedItemChanged="mainTree_SelectedItemChange"/>
+        <Button x:Name="cmdRefreshMainTree" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" Margin="5" Content="Refresh" Width="75" Height="25" Click="cmdRefreshMainTree_Click"/>
+        <TreeView x:Name="mainTree" Grid.Column="0" Grid.Row="0" Margin="5,35,5,5" SelectedItemChanged="mainTree_SelectedItemChange"/>
         <GridSplitter Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
         <TreeView x:Name="configTree" Grid.Column="2" Grid.Row="0" Margin="5" Visibility="Hidden" Grid.ColumnSpan="2"/>
         <DataGrid x:Name="gridLogEvents" IsReadOnly="True" Grid.Column="2" Grid.Row="0" Margin="5" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" Visibility="Hidden" MouseDoubleClick="gridLogEvents_DblClick" Grid.ColumnSpan="2">
@@ -66,9 +67,6 @@
                         <DataGridTextColumn Header="SenderTypeName" Binding="{Binding Path=SenderTypeName}"></DataGridTextColumn>
                         <DataGridTextColumn Header="SenderInstance" Binding="{Binding Path=SenderInstance}"></DataGridTextColumn>
                         <DataGridTextColumn Header="SenderHost" Binding="{Binding Path=SenderHost}"></DataGridTextColumn>
-
-                        
-                        
                         <DataGridTextColumn Header="ForwardedTime" Binding="{Binding Path=ForwardedTime}"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
