@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 {
@@ -10,13 +11,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 	{
 		public long Id { get; set; }
 
-		public Axis AxisX { get; set; }
+		public AtdiAxis AxisX { get; set; }
 
-		public Axis AxisY { get; set; }
+		public AtdiAxis AxisY { get; set; }
 
-		public Coordinate UpperLeft { get; set; }
+		public AtdiCoordinate UpperLeft { get; set; }
 
-		public Coordinate LowerRight { get; set; }
+		public AtdiCoordinate LowerRight { get; set; }
 
 		public short[] ReliefContent { get; set; }
 
@@ -29,7 +30,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
 			return !(x >= LowerRight.X || x < UpperLeft.X || y >= UpperLeft.Y || y < LowerRight.Y);
 		}
 
-		public MapArea Area => new MapArea
+		public AtdiMapArea Area => new AtdiMapArea
 		{
 			AxisX = this.AxisX,
 			AxisY = this.AxisY,

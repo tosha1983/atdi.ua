@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Maps
+namespace Atdi.DataModels.Sdrn.DeepServices.Gis
 {
 	/// <summary>
 	/// Масштаб оси
 	/// </summary>
-	public struct Axis
+	public struct AtdiAxis
 	{
 		/// <summary>
 		/// Кол-во шагов

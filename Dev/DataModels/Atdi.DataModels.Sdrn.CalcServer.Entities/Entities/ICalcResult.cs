@@ -17,8 +17,6 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	{
 		ICalcTask TASK { get; set; }
 
-		IClientContext CONTEXT { get; set; }
-
 		byte StatusCode { get; set; }
 
 		string StatusName { get; set; }

@@ -15,7 +15,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[Entity]
 	public interface IPointFieldStrengthCalcResult : ICalcTask, IPointFieldStrengthCalcResult_PK
 	{
-		double FS_dBuVm { get; set; }
+		float FS_dBuVm { get; set; }
+		float Level_dBm { get; set; }
 	}
 
 }

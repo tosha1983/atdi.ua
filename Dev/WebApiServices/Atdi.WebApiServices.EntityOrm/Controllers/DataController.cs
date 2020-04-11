@@ -53,66 +53,76 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
         [Route("$DataSet")]
         public IHttpActionResult GetDataSet([FromBody] DTO.DataSetRequest query)
         {
-            if (!this.CheckQuery(query, out string messaage))
-            {
-                return BadRequest(messaage);
-            }
+	        try
+	        {
+				if (!this.CheckQuery(query, out string messaage))
+				{
+					return BadRequest(messaage);
+				}
 
-            if (!this.TryEnsureEntityMetadata(query.QName, out IEntityMetadata entity, out messaage))
-            {
-                return BadRequest(messaage);
-            }
+				if (!this.TryEnsureEntityMetadata(query.QName, out IEntityMetadata entity, out messaage))
+				{
+					return BadRequest(messaage);
+				}
 
-            if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out messaage))
-            {
-                return BadRequest(messaage);
-            }
+				if (!this.TryParseFields(entity, query.Select, out DTO.FieldDescriptor[] fields, out messaage))
+				{
+					return BadRequest(messaage);
+				}
 
-            var ormQuery = _dataLayer.Builder
-                .From(query.QName)
-                .Select(fields.Select(f => f.Path).ToArray());
+				var ormQuery = _dataLayer.Builder
+					.From(query.QName)
+					.Select(fields.Select(f => f.Path).ToArray());
 
-            if (query.Top > 0)
-            {
-                ormQuery.OnTop((int)query.Top);
-            }
-            if (query.Filter != null && query.Filter.Length > 0)
-            {
-                var condition = Helpers.FilterParser.Parse(query.Filter);
-                ormQuery.Where(condition);
-            }
-            if (query.OrderBy != null && query.OrderBy.Length > 0)
-            {
-                var orderByExpressions = Helpers.FieldParser.ParseOrderBy(query.OrderBy);
-                ormQuery.OrderBy(orderByExpressions);
-            }
+				if (query.Top > 0)
+				{
+					ormQuery.OnTop((int)query.Top);
+				}
+				if (query.Filter != null && query.Filter.Length > 0)
+				{
+					var condition = Helpers.FilterParser.Parse(query.Filter);
+					ormQuery.Where(condition);
+				}
+				if (query.OrderBy != null && query.OrderBy.Length > 0)
+				{
+					var orderByExpressions = Helpers.FieldParser.ParseOrderBy(query.OrderBy);
+					ormQuery.OrderBy(orderByExpressions);
+				}
 
-            using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
-            {
-                return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
-                {
-                    var result = new DTO.DataSetResult
-                    {
-                        Fields = fields
-                    };
-                    var records = new List<object[]>();
-                    long count = 0;
-                    while (reader.Read())
-                    {
-                        var record = new object[fields.Length];
-                        for (int i = 0; i < fields.Length; i++)
-                        {
-                            var field = fields[i];
-                            record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
-                        }
-                        records.Add(record);
-                        ++count;
-                    }
-                    result.Records = records.ToArray();
-                    result.Count = count;
-                    return (IHttpActionResult)Ok(result);
-                });
-            }
+				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
+				{
+					return scope.Executor.ExecuteAndFetch(ormQuery, reader =>
+					{
+						var result = new DTO.DataSetResult
+						{
+							Fields = fields
+						};
+						var records = new List<object[]>();
+						long count = 0;
+						while (reader.Read())
+						{
+							var record = new object[fields.Length];
+							for (int i = 0; i < fields.Length; i++)
+							{
+								var field = fields[i];
+								record[i] = reader.GetValue((DataType)field.Type.VarTypeCode, field.Path);
+							}
+							records.Add(record);
+							++count;
+						}
+						result.Records = records.ToArray();
+						result.Count = count;
+						return (IHttpActionResult)Ok(result);
+					});
+				}
+			}
+	        catch (Exception e)
+	        {
+				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetDataSet", e);
+
+				throw;
+	        }
+            
         }
 
 
@@ -326,6 +336,91 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			{
 				var count = scope.Executor.Execute(ormQuery);
 				var result = new DTO.RecordUpdateResult()
+				{
+					Count = count
+				};
+				return (IHttpActionResult)Ok(result);
+			}
+		}
+
+		[HttpPost]
+		[Route("$DataSet/update")]
+		public IHttpActionResult UpdateDataRecords([FromBody] DTO.DataRecordsUpdateRequest request)
+		{
+			if (!this.CheckQuery(request, out var message))
+			{
+				return BadRequest(message);
+			}
+
+			if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+			{
+				return BadRequest(message);
+			}
+			if (!this.TryParseFields(entity, request.Fields, out IFieldMetadata[] fields, out message))
+			{
+				return BadRequest(message);
+			}
+			if (request.Filter == null || request.Filter.Length == 0)
+			{
+				return BadRequest("Undefined filter");
+			}
+
+
+			var ormQuery = _dataLayer.Builder
+				.Update(request.QName);
+
+			for (var i = 0; i < request.Fields.Length; i++)
+			{
+				var field = fields[i];
+				var value = ValueOperand.Create(field.DataType.CodeVarType,
+					ParseValue(field.DataType, request.Values[i]));
+				ormQuery.SetValue(request.Fields[i], value);
+			}
+
+			var condition = Helpers.FilterParser.Parse(request.Filter);
+			ormQuery.Where(condition);
+
+
+			using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+			{
+				var count = scope.Executor.Execute(ormQuery);
+				var result = new DTO.RecordUpdateResult()
+				{
+					Count = count
+				};
+				return (IHttpActionResult)Ok(result);
+			}
+		}
+
+		[HttpPost]
+		[Route("$DataSet/delete")]
+		public IHttpActionResult DeleteDataRecords([FromBody] DTO.DataRecordsDeleteRequest request)
+		{
+			if (!this.CheckQuery(request, out var message))
+			{
+				return BadRequest(message);
+			}
+
+			if (!this.TryEnsureEntityMetadata(request.QName, out var entity, out message))
+			{
+				return BadRequest(message);
+			}
+			
+			if (request.Filter == null || request.Filter.Length == 0)
+			{
+				return BadRequest("Undefined filter");
+			}
+
+			var ormQuery = _dataLayer.Builder
+				.Delete(request.QName);
+
+			var condition = Helpers.FilterParser.Parse(request.Filter);
+			ormQuery.Where(condition);
+
+			using (var scope = _dataLayer.CreateScope(new SimpleDataContext(request.Context)))
+			{
+				var count = scope.Executor.Execute(ormQuery);
+				var result = new DTO.RecordDeleteResult()
 				{
 					Count = count
 				};

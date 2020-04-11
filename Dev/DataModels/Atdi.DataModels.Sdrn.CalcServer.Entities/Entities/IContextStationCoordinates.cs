@@ -15,9 +15,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[Entity]
 	public interface IContextStationCoordinates : IContextStationCoordinates_PK
 	{
-		int X { get; set; }
+		int AtdiX { get; set; }
 
-		int Y { get; set; }
+		int AtdiY { get; set; }
+
+		double EpsgX { get; set; }
+
+		double EpsgY { get; set; }
 	}
 
 

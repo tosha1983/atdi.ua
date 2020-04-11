@@ -648,6 +648,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
+                        builderMeasOther.Select(c => c.SupportMultyLevel);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -657,6 +658,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerMeasOther.Read())
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                measOther.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                                 SpectrumOccupationType typeSpectrumOccupation;
@@ -1047,6 +1049,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
+                        builderMeasOther.Select(c => c.SupportMultyLevel);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -1056,6 +1059,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerMeasOther.Read())
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                measOther.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                                 SpectrumOccupationType typeSpectrumOccupation;

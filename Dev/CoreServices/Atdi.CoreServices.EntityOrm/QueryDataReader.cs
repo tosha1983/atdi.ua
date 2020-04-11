@@ -892,9 +892,35 @@ namespace Atdi.CoreServices.EntityOrm
             return result;
         }
 
-        #endregion
 
-        public bool Read()
+
+		#endregion
+
+		public bool IsNotNull(Expression<Func<TModel, object>> columnExpression)
+		{
+			if (columnExpression == null)
+			{
+				throw new ArgumentNullException(nameof(columnExpression));
+			}
+
+			var fieldPath = columnExpression.Body.GetMemberName();
+			var ordinal = _dataReader.GetOrdinalByPath(fieldPath);
+			return !_dataReader.IsDBNull(ordinal);
+		}
+
+		public bool IsNull(Expression<Func<TModel, object>> columnExpression)
+		{
+			if (columnExpression == null)
+			{
+				throw new ArgumentNullException(nameof(columnExpression));
+			}
+
+			var fieldPath = columnExpression.Body.GetMemberName();
+			var ordinal = _dataReader.GetOrdinalByPath(fieldPath);
+			return _dataReader.IsDBNull(ordinal);
+		}
+
+		public bool Read()
         {
             return this._dataReader.Read();
         }

@@ -14,7 +14,7 @@
     <Field Name="AntennaPlane" SourceType="Column" SourceName="ANTENNA_PLANE" DataType="Text.1" Title="Antenna Plane" Desc="The name of the Antenna Plane" Required="true" />
     <Field Name="WavePlane" SourceType="Column" SourceName="WAVE_PLANE" DataType="Text.1" Title="Wave Plane" Desc="The name of the Wave Plane" Required="true" />
 
-    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Array.Float" Title="Loss, dB" Desc="The Loss in dB"/>
+    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Array.Double" Title="Loss, dB" Desc="The Loss in dB"/>
     <Field Name="Angle_deg" SourceType="Column" Required="true" SourceName="ANGLE_DEG" DataType="Array.Float" Title="Angle, deg" Desc="The Angle in degree"/>
 
 

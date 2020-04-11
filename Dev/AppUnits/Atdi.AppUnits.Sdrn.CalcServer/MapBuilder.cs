@@ -17,6 +17,7 @@ using IC=Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using DM = Atdi.AppUnits.Sdrn.CalcServer.DataModel;
 using Atdi.Common.Extensions;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer
 {
@@ -26,7 +27,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 		{
 			public int XIndex;
 			public int YIndex;
-			public Coordinate UpperLeft;
+			public AtdiCoordinate UpperLeft;
 			public byte[] CellArea;
 			public int Amount;
 
@@ -517,7 +518,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			// GC.Collect();
 		}
 
-		private DM.SourceMapSectorData LoadMapSector(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, Coordinate upperLeft, Coordinate lowerRight)
+		private DM.SourceMapSectorData LoadMapSector(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, AtdiCoordinate upperLeft, AtdiCoordinate lowerRight)
 		{
 			var sourceMapQuery = _infocenterDataLayer.GetBuilder<IC.IMapSector>()
 					.From()

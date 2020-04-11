@@ -13,9 +13,9 @@
   <Fields>
     <Field Name="Freq_MHz" SourceType="Column" Required="true" SourceName="FREQ_MHZ" DataType="Double.30.10" Title="Freq, MHz" Desc="The Freq in MHz"/>
     <Field Name="BW_kHz" SourceType="Column" Required="true" SourceName="BW_KHZ" DataType="Double.30.10" Title="BW, kHz" Desc="The BW in kHz"/>
-    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Double.30.10" Title="Loss, dB" Desc="The Loss in dB"/>
-    <Field Name="KTBF_dBm" SourceType="Column" Required="true" SourceName="KTBF_DBM" DataType="Double.30.10" Title="KTBF, dBm" Desc="The KTBF in dBm"/>
-    <Field Name="Threshold_dBm" SourceType="Column" Required="true" SourceName="THRESHOLD_DBM" DataType="Double.30.10" Title="Threshold, dBm" Desc="The Threshold in dBm"/>
+    <Field Name="Loss_dB" SourceType="Column" Required="true" SourceName="LOSS_DB" DataType="Float.22.8" Title="Loss, dB" Desc="The Loss in dB"/>
+    <Field Name="KTBF_dBm" SourceType="Column" Required="true" SourceName="KTBF_DBM" DataType="Float.22.8" Title="KTBF, dBm" Desc="The KTBF in dBm"/>
+    <Field Name="Threshold_dBm" SourceType="Column" Required="true" SourceName="THRESHOLD_DBM" DataType="Float.22.8" Title="Threshold, dBm" Desc="The Threshold in dBm"/>
 
     <Field Name="PolarizingCode" SourceType="Column" SourceName="POLARIZING_CODE" DataType="Code.u08" Required="true" Title="Transmitter Polarization Code" Desc="The code of the Polarization of the transmitter"  />
     <Field Name="PolarizingName" SourceType="Column" SourceName="POLARIZING_NAME" DataType="Text.50" Title="Transmitter Polarization Name" Desc="The name of the Polarization of the transmitter" />

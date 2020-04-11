@@ -116,7 +116,10 @@ namespace Atdi.Contracts.CoreServices.DataLayer
     {
         bool Read();
 
-        int GetValue(Expression<Func<TModel, int>> columnExpression);
+		bool IsNull(Expression<Func<TModel, object>> columnExpression);
+		bool IsNotNull(Expression<Func<TModel, object>> columnExpression);
+
+		int GetValue(Expression<Func<TModel, int>> columnExpression);
         int? GetValue(Expression<Func<TModel, int?>> columnExpression);
         int[] GetValue(Expression<Func<TModel, int[]>> columnExpression);
 

@@ -26,169 +26,174 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
 
         public EpsgCoordinate ConvertCoordinateToEpgs(Wgs84Coordinate coordinate, uint toProjection)
         {
-            var epsgCoordinate = new EpsgCoordinate();
             try
             {
-                Utils.PrepareConverting(out SpatialReference source, out SpatialReference destination, Epsg4326, toProjection);
-                var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.Longitude, coordinate.Latitude));
-                var transform = new CoordinateTransformation(source, destination);
-                ogrGeom.Transform(transform);
-                ogrGeom.ExportToWkt(out string outGeom);
-                epsgCoordinate = Utils.GetEpsgCoordinate(outGeom);
-                ogrGeom.Dispose();
-                transform.Dispose();
-                source.Dispose();
-                destination.Dispose();
+                using (var source = new SpatialReference(null))
+                using (var destination = new SpatialReference(null))
+                {
+                    source.ImportFromEPSG((int)Epsg4326);
+                    destination.ImportFromEPSG((int)toProjection);
+                    using (var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.Longitude, coordinate.Latitude)))
+                    using (var transform = new CoordinateTransformation(source, destination))
+                    {
+                        ogrGeom.Transform(transform);
+                        ogrGeom.ExportToWkt(out string outGeom);
+                        return Utils.GetEpsgCoordinate(outGeom);
+                    }
+                } 
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
-            return epsgCoordinate;
         }
 
         public EpsgCoordinate ConvertCoordinateToEpgs(EpsgCoordinate coordinate, uint fromProjection, uint toProjection)
         {
-            var epsgCoordinate = new EpsgCoordinate();
             try
             {
-                Utils.PrepareConverting(out SpatialReference source, out SpatialReference destination, fromProjection, toProjection);
-                var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y));
-                var transform = new CoordinateTransformation(source, destination);
-                ogrGeom.Transform(transform);
-                ogrGeom.ExportToWkt(out string outGeom);
-                epsgCoordinate = Utils.GetEpsgCoordinate(outGeom);
-                ogrGeom.Dispose();
-                transform.Dispose();
-                source.Dispose();
-                destination.Dispose();
+                using (var source = new SpatialReference(null))
+                using (var destination = new SpatialReference(null))
+                {
+                    source.ImportFromEPSG((int)fromProjection);
+                    destination.ImportFromEPSG((int)toProjection);
+                    using (var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y)))
+                    using (var transform = new CoordinateTransformation(source, destination))
+                    {
+                        ogrGeom.Transform(transform);
+                        ogrGeom.ExportToWkt(out string outGeom);
+                        return Utils.GetEpsgCoordinate(outGeom);
+                    }
+                }
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
-            return epsgCoordinate;
         }
 
         public EpsgProjectionCoordinate ConvertCoordinateToEpgsProjection(Wgs84Coordinate coordinate, uint toProjection)
         {
-            var epsgProjectionCoordinate = new EpsgProjectionCoordinate();
             try
             {
-                Utils.PrepareConverting(out SpatialReference source, out SpatialReference destination, Epsg4326, toProjection);
-                var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.Longitude, coordinate.Latitude));
-                var transform = new CoordinateTransformation(source, destination);
-                ogrGeom.Transform(transform);
-                ogrGeom.ExportToWkt(out string outGeom);
-                var epsgProjCoord = Utils.GetEpsgCoordinate(outGeom);
-                epsgProjectionCoordinate = new EpsgProjectionCoordinate()
+                using (var source = new SpatialReference(null))
+                using (var destination = new SpatialReference(null))
                 {
-                    Projection = toProjection,
-                    X = epsgProjCoord.X,
-                    Y = epsgProjCoord.Y
-                };
-                ogrGeom.Dispose();
-                transform.Dispose();
-                source.Dispose();
-                destination.Dispose();
+                    source.ImportFromEPSG((int)Epsg4326);
+                    destination.ImportFromEPSG((int)toProjection);
+                    using (var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.Longitude, coordinate.Latitude)))
+                    using (var transform = new CoordinateTransformation(source, destination))
+                    {
+                        ogrGeom.Transform(transform);
+                        ogrGeom.ExportToWkt(out string outGeom);
+                        var epsgProjCoord = Utils.GetEpsgCoordinate(outGeom);
+                        return new EpsgProjectionCoordinate()
+                        {
+                            Projection = toProjection,
+                            X = epsgProjCoord.X,
+                            Y = epsgProjCoord.Y
+                        };
+                    }
+                }
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
-            return epsgProjectionCoordinate;
         }
 
         public EpsgProjectionCoordinate ConvertCoordinateToEpgsProjection(EpsgProjectionCoordinate coordinate, uint toProjection)
         {
-            var epsgProjectionCoordinate = new EpsgProjectionCoordinate();
             try
             {
-                Utils.PrepareConverting(out SpatialReference source, out SpatialReference destination, coordinate.Projection, toProjection);
-                var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y));
-                var transform = new CoordinateTransformation(source, destination);
-                ogrGeom.Transform(transform);
-                ogrGeom.ExportToWkt(out string outGeom);
-                var epsgProjCoord = Utils.GetEpsgCoordinate(outGeom);
-                epsgProjectionCoordinate = new EpsgProjectionCoordinate()
+                using (var source = new SpatialReference(null))
+                using (var destination = new SpatialReference(null))
                 {
-                    Projection = toProjection,
-                    X = epsgProjCoord.X,
-                    Y = epsgProjCoord.Y
-                };
-                ogrGeom.Dispose();
-                transform.Dispose();
-                source.Dispose();
-                destination.Dispose();
+                    source.ImportFromEPSG((int)coordinate.Projection);
+                    destination.ImportFromEPSG((int)toProjection);
+                    using (var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y)))
+                    using (var transform = new CoordinateTransformation(source, destination))
+                    {
+                        ogrGeom.Transform(transform);
+                        ogrGeom.ExportToWkt(out string outGeom);
+                        var epsgProjCoord = Utils.GetEpsgCoordinate(outGeom);
+                        return new EpsgProjectionCoordinate()
+                        {
+                            Projection = toProjection,
+                            X = epsgProjCoord.X,
+                            Y = epsgProjCoord.Y
+                        };
+                    }
+                }
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToEPSGFormat, e);
             }
-            return epsgProjectionCoordinate;
         }
 
         public Wgs84Coordinate ConvertCoordinateToWgs84(EpsgCoordinate coordinate, uint fromProjection)
         {
-            var wgs84Coordinate = new Wgs84Coordinate();
             try
             {
-                Utils.PrepareConverting(out SpatialReference source, out SpatialReference destination, fromProjection, Epsg4326);
-                var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y));
-                var transform = new CoordinateTransformation(source, destination);
-                ogrGeom.Transform(transform);
-                ogrGeom.ExportToWkt(out string outGeom);
-                wgs84Coordinate = Utils.GetWgs84Coordinate(outGeom);
-                ogrGeom.Dispose();
-                transform.Dispose();
-                source.Dispose();
-                destination.Dispose();
+                using (var source = new SpatialReference(null))
+                using (var destination = new SpatialReference(null))
+                {
+                    source.ImportFromEPSG((int)fromProjection);
+                    destination.ImportFromEPSG((int)Epsg4326);
+                    using (var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y)))
+                    using (var transform = new CoordinateTransformation(source, destination))
+                    {
+                        ogrGeom.Transform(transform);
+                        ogrGeom.ExportToWkt(out string outGeom);
+                        return Utils.GetWgs84Coordinate(outGeom);
+                    }
+                }
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToWgs84Format, e);
             }
-            return wgs84Coordinate;
         }
 
         public Wgs84Coordinate ConvertCoordinateToWgs84(EpsgProjectionCoordinate coordinate)
         {
-            var wgs84Coordinate = new Wgs84Coordinate();
             try
             {
-                Utils.PrepareConverting(out SpatialReference source, out SpatialReference destination, coordinate.Projection, Epsg4326);
-                var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y));
-                var transform = new CoordinateTransformation(source, destination);
-                ogrGeom.Transform(transform);
-                ogrGeom.ExportToWkt(out string outGeom);
-                wgs84Coordinate = Utils.GetWgs84Coordinate(outGeom);
-                ogrGeom.Dispose();
-                transform.Dispose();
-                source.Dispose();
-                destination.Dispose();
+                using (var source = new SpatialReference(null))
+                using (var destination = new SpatialReference(null))
+                {
+                    source.ImportFromEPSG((int)coordinate.Projection);
+                    destination.ImportFromEPSG((int)Epsg4326);
+                    using (var ogrGeom = Geometry.CreateFromWkt(Utils.GenerateWktString(coordinate.X, coordinate.Y)))
+                    using (var transform = new CoordinateTransformation(source, destination))
+                    {
+                        ogrGeom.Transform(transform);
+                        ogrGeom.ExportToWkt(out string outGeom);
+                        return Utils.GetWgs84Coordinate(outGeom);
+                    }
+                }
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertCoordinatesToWgs84Format, e);
             }
-            return wgs84Coordinate;
         }
 
         public string ConvertProjectionToAtdiName(uint epsgCode)
         {
-            var atdiNameProjection = "";
             try
             {
                 var epsgCodeString = epsgCode.ToString();
                 if (epsgCodeString.StartsWith(PrefixEpsgN.ToString()))
                 {
                     var code = epsgCodeString.Replace(PrefixEpsgN.ToString(), "");
-                    atdiNameProjection = PrefixAtdiProjectionN + code;
+                    return PrefixAtdiProjectionN + code;
                 }
                 else if (epsgCodeString.StartsWith(PrefixEpsgS.ToString()))
                 {
                     var code = epsgCodeString.Replace(PrefixEpsgS.ToString(), "");
-                    atdiNameProjection = PrefixAtdiProjectionS + code;
+                    return PrefixAtdiProjectionS + code;
                 }
                 else
                 {
@@ -199,23 +204,21 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertEPSGCodeToAtdiProjectionName, e);
             }
-            return atdiNameProjection;
         }
 
         public uint ConvertProjectionToCode(string atdiProjection)
         {
-            var number = "";
             try
             {
                 if (atdiProjection.Contains(PrefixAtdiProjectionN))
                 {
                     var code = atdiProjection.Replace(PrefixAtdiProjectionN, "");
-                    number = PrefixEpsgN.ToString() + code;
+                    return Convert.ToUInt32(PrefixEpsgN.ToString() + code);
                 }
                 else if (atdiProjection.Contains(PrefixAtdiProjectionS))
                 {
                     var code = atdiProjection.Replace(PrefixAtdiProjectionS, "");
-                    number = PrefixEpsgS.ToString() + code;
+                    return Convert.ToUInt32(PrefixEpsgS.ToString() + code);
                 }
                 else
                 {
@@ -226,7 +229,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
             {
                 throw new InvalidOperationException(Exceptions.ErrorConvertAtdiProjectionNameToEPSGCode, e);
             }
-            return Convert.ToUInt32(number); 
         }
 
         public void Dispose()

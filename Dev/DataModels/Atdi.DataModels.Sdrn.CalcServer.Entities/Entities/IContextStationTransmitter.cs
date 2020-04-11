@@ -15,9 +15,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		double BW_kHz { get; set; }
 
-		double Loss_dB { get; set; }
+		float Loss_dB { get; set; }
 
-		double MaxPower_dBm { get; set; }
+		float MaxPower_dBm { get; set; }
 
 		byte PolarizingCode { get; set; }
 

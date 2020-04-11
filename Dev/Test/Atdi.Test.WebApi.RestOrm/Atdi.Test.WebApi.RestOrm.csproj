@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D911E3FA-019D-44E1-BF68-724AFE8A2C09}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Test.WebApi.RestOrm</RootNamespace>
+    <AssemblyName>Atdi.Test.WebApi.RestOrm</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ORM\DTO\RecordDeleteRequest.cs" />
+    <Compile Include="ORM\DTO\RecordDeleteResponse.cs" />
+    <Compile Include="ORM\DTO\RecordUpdateResponse.cs" />
+    <Compile Include="ORM\DTO\RecordUpdateRequest.cs" />
+    <Compile Include="ORM\DTO\RecordReadRequest.cs" />
+    <Compile Include="ORM\DTO\RecordReadResponse.cs" />
+    <Compile Include="ORM\Methods\DeleteMethodHandler.cs" />
+    <Compile Include="ORM\Methods\UpdateMethodHandler.cs" />
+    <Compile Include="ORM\Methods\DeleteQuery.cs" />
+    <Compile Include="ORM\Methods\UpdateQuery.cs" />
+    <Compile Include="ORM\Methods\CreateQuery.cs" />
+    <Compile Include="ORM\Methods\CreateMethodHandler.cs" />
+    <Compile Include="ORM\DTO\EntityRequest.cs" />
+    <Compile Include="ORM\DTO\RecordCreationRequest.cs" />
+    <Compile Include="ORM\DTO\RecordCreationResponse.cs" />
+    <Compile Include="ORM\ExpressionExtensions.cs" />
+    <Compile Include="ORM\FilterOperator.cs" />
+    <Compile Include="ORM\ICreateQuery.cs" />
+    <Compile Include="ORM\IDataReader.cs" />
+    <Compile Include="ORM\IDeleteQuery.cs" />
+    <Compile Include="ORM\IFilteringQuery.cs" />
+    <Compile Include="ORM\IQueryBuilder.cs" />
+    <Compile Include="ORM\IQueryExecutor.cs" />
+    <Compile Include="ORM\IQueryFilter.cs" />
+    <Compile Include="ORM\IReadQuery.cs" />
+    <Compile Include="ORM\IUpdateQuery.cs" />
+    <Compile Include="ORM\IWebApiMethodHandler.cs" />
+    <Compile Include="ORM\IWebApiQuery.cs" />
+    <Compile Include="ORM\Methods\QueryFilter.cs" />
+    <Compile Include="ORM\Methods\ReadMethodHandler.cs" />
+    <Compile Include="ORM\Methods\ReadQuery.cs" />
+    <Compile Include="ORM\ProxyInstanceFactory.cs" />
+    <Compile Include="ORM\WebApiDataContext.cs" />
+    <Compile Include="ORM\WebApiDataLayer.cs" />
+    <Compile Include="ORM\WebApiDataReader.cs" />
+    <Compile Include="ORM\WebApiEndpoint.cs" />
+    <Compile Include="ORM\WebApiQueryBuilder.cs" />
+    <Compile Include="ORM\WebApiQueryExecutor.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
+      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

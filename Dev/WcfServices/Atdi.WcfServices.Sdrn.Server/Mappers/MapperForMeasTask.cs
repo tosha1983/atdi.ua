@@ -112,6 +112,7 @@ namespace Atdi.WcfServices.Sdrn.Server
             {
                 spectrumOccupationParameters = new SdrnsDataModels.SpectrumOccupationParameters();
                 spectrumOccupationParameters.LevelMinOccup = task.MeasOther.LevelMinOccup;
+                spectrumOccupationParameters.SupportMultyLevel = task.MeasOther.SupportMultyLevel;
                 spectrumOccupationParameters.NChenal = task.MeasOther.NChenal;
                 switch (task.MeasOther.TypeSpectrumOccupation)
                 {

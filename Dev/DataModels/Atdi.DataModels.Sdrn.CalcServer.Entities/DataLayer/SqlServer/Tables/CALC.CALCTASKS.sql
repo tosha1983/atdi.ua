@@ -6,7 +6,7 @@ GO
 
 CREATE TABLE [CALC].[CALCTASKS](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[PROJECT_ID] [bigint] NOT NULL,
+	[CONTEXT_ID] [bigint] NOT NULL,
 	[TYPE_CODE] [int] NOT NULL,
 	[TYPE_NAME] [nvarchar](250) NOT NULL,
 	[STATUS_CODE] [tinyint] NOT NULL,

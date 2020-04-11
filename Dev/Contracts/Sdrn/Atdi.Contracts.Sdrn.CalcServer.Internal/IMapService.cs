@@ -7,9 +7,18 @@ using System.Threading.Tasks;
 
 namespace Atdi.Contracts.Sdrn.CalcServer.Internal
 {
-    public interface IMapService
+    public interface IMapRepository
     {
-	    ProjectMapData GetMapByName(long projectId, string mapName);
 	    
+
+		ProjectMapData GetMapByName(long projectId, string mapName);
+	    
+	}
+
+    public static class MapSpecification
+    {
+	    public static readonly short DefaultForRelief = (short)-9999;
+	    public static readonly byte DefaultForClutter = (byte)0;
+	    public static readonly byte DefaultForBuilding = (byte)0;
 	}
 }

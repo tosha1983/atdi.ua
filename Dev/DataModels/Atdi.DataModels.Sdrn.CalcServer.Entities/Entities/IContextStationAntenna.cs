@@ -11,13 +11,13 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	public interface IContextStationAntenna : IContextStation_PK
 	{
 
-		double Gain_dB { get; set; }
+		float Gain_dB { get; set; }
 
 		double Tilt_deg { get; set; }
 
 		double Azimuth_deg { get; set; }
 
-		double XPD_dB { get; set; }
+		float XPD_dB { get; set; }
 
 		byte ItuPatternCode { get; set; }
 

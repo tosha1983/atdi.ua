@@ -126,25 +126,33 @@ namespace Atdi.WebApiServices.EntityOrm.Helpers
         /// <returns></returns>
         public static Condition Parse(string filter)
         {
+	        try
+	        {
+		        var tokens = new List<string>();
+		        var tokenReader = new TokenReader(filter);
+		        while (tokenReader.Read())
+		        {
+			        tokens.Add(tokenReader.Token);
+		        }
 
-            var tokens = new List<string>();
-            var tokenReader = new TokenReader(filter);
-            while (tokenReader.Read())
-            {
-                tokens.Add(tokenReader.Token);
-            }
+		        var lexemes = new Lexeme[tokens.Count];
+		        for (int i = 0; i < tokens.Count; i++)
+		        {
+			        var token = tokens[i];
+			        lexemes[i] = ParseLexeme(token);
+		        }
 
-            var lexemes = new Lexeme[tokens.Count];
-            for (int i = 0; i < tokens.Count; i++)
-            {
-                var token = tokens[i];
-                lexemes[i] = ParseLexeme(token);
-            }
+		        var index = 0;
+		        var condition = ParseExpression(lexemes, ref index);
 
-            var index = 0;
-            var condition = ParseExpression(lexemes, ref index);
-
-            return condition;
+		        return condition;
+			}
+	        catch (Exception e)
+	        {
+		        
+		        throw new InvalidOperationException($"Incorrect filter expression '{filter}'", e);
+	        }
+            
         }
 
         private static Condition ParseExpression(Lexeme[] lexemes, ref int index)

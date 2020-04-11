@@ -13,14 +13,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem
 	public class SignalService : ISignalService
 	{
 
-		public float CalcAntennaGain(in CalcAntennaGainArgs args)
+		public double CalcAntennaGain(in CalcAntennaGainArgs args)
 		{
             return Signal.CalcAntennaGain.Calc(in args);
 		}
 
 		public void CalcLoss(in CalcLossArgs args, ref CalcLossResult result)
 		{
-			Signal.CalcLoss.CalclMainBlock(in args.Model.MainBlock);
+            result = Signal.PropagationLoss.Calc(args);
 		}
 
 		private void CalcMainBlock(in MainCalcBlock block)

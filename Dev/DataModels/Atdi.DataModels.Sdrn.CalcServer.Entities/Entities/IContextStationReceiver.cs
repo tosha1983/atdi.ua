@@ -15,11 +15,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		double BW_kHz { get; set; }
 
-		double Loss_dB { get; set; }
+		float Loss_dB { get; set; }
 
-		double KTBF_dBm { get; set; }
+		float KTBF_dBm { get; set; }
 
-		double Threshold_dBm { get; set; }
+		float Threshold_dBm { get; set; }
 
 		byte PolarizingCode { get; set; }
 

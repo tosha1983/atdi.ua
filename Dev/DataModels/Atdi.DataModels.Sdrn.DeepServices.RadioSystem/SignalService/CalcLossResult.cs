@@ -8,10 +8,11 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 {
 	public struct CalcLossResult
 	{
-		public float Loss_dB;
-
-		public double Tilt1_Deg;
-
-		public double Tilt2_Deg;
-	}
+		public double LossD_dB;
+		public double TiltaD_Deg;
+		public double TiltbD_Deg;
+        public double LossA_dB;
+        public double TiltaA_Deg;
+        public double TiltbA_Deg;
+    }
 }
