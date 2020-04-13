@@ -104,7 +104,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         }
         private static CalcLossResult CalcAbsorptionBlok(in CalcLossArgs args)
         { // Надо тестировать
-            double Labsorption_dB = 0;
             // первоначальный расчет дифракции
             double Ldsub_dB = 0;
             if (args.Model.SubPathDiffractionBlock.Available) { Ldsub_dB = CalcSubPathDiffractionBlok(in args); }
@@ -112,36 +111,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             if (args.Model.DiffractionBlock.Available) { Ld_dB = CalcDiffraction(in args, Ldsub_dB, true); }
             // определение УМ
             ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.ReliefProfile, args.ReliefStartIndex, args.ProfileLength, out double tilta, out double tiltb);
-            // определяем препятсвия которые входят
-            var obs = ProfilesCalculation.EstimationClutterObstacles(in args);
-            for (int i = 0; i<obs.Length-1; i++)
-            {
-                double L1 =0;
-                double L2 =0;
-                switch (args.Model.AbsorptionBlock.ModelType)
-                {
-                    case AbsorptionCalcBlockModelType.Flat:
-                        L1 = AbsorptionCalc.Flat(obs[i]);
-                        break;
-                    case AbsorptionCalcBlockModelType.FlatAndLinear:
-                        L1 = AbsorptionCalc.Flat(obs[i]);
-                        L2 = AbsorptionCalc.Linear(obs[i]);
-                        break;
-                    case AbsorptionCalcBlockModelType.ITU2109AndLinear:
-                        L1 = AbsorptionCalc.ITU2109(obs[i].elevation_deg, args.Freq_Mhz, args.Model.Parameters.Time_pc);
-                        L2 = AbsorptionCalc.Linear(obs[i]);
-                        break;
-                    case AbsorptionCalcBlockModelType.ITU2109_2:
-                        L1 = AbsorptionCalc.ITU2109(obs[i].elevation_deg, args.Freq_Mhz, args.Model.Parameters.Time_pc);
-                        break;
-                    case AbsorptionCalcBlockModelType.Linear:
-                        L2 = AbsorptionCalc.Linear(obs[i]);
-                        break;
-                    default:   
-                        break;
-                }
-                Labsorption_dB = Labsorption_dB + L1 + L2;
-            }
+            AbsorptionCalcBlockModelType AbModel = args.Model.AbsorptionBlock.ModelType;
+            double Freq_MHz = args.Freq_Mhz;
+            double Time_PC = args.Model.Parameters.Time_pc;
+            double Labsorption_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs)=>AbsorptionCalc.CalcAbsorption(AbModel, Freq_MHz, Time_PC, currentLoss, obs),in args, tilta, tiltb);
             CalcLossResult result = new CalcLossResult()
             {
                 LossA_dB = Labsorption_dB + Ld_dB,
@@ -152,30 +125,13 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         }
         private static double CalcClutterBlok(in CalcLossArgs args)
         {// Надо тестировать
-            double Lclutter_dB = 0;
             // определение УМ
             ProfilesCalculation.CalcTilts(args.Model.Parameters.EarthRadius_km, args.Ha_m, args.Hb_m, args.D_km, args.HeightProfile, args.HeightStartIndex, args.ProfileLength, out double tilta, out double tiltb);
             // определяем препятсвия которые входят
-            var obs = ProfilesCalculation.EstimationClutterObstacles(in args);
-            for (int i = 0; i < obs.Length - 1; i++)
-            {
-                if (obs[i].endPoint)
-                {
-                    double L1 = 0;
-                    switch (args.Model.ClutterBlock.ModelType)
-                    {
-                        case ClutterCalcBlockModelType.ITU2109:
-                            L1 = AbsorptionCalc.ITU2109(obs[i].elevation_deg, args.Freq_Mhz, args.Model.Parameters.Time_pc);
-                            break;
-                        case ClutterCalcBlockModelType.Flat:
-                            L1 = AbsorptionCalc.Flat(obs[i]);
-                            break;
-                        default:
-                            break;
-                    }
-                    Lclutter_dB = L1;
-                }
-            }
+            ClutterCalcBlockModelType ClModel = args.Model.ClutterBlock.ModelType;
+            double Freq_MHz = args.Freq_Mhz;
+            double Time_PC = args.Model.Parameters.Time_pc;
+            double Lclutter_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs) => AbsorptionCalc.CalcClutter(ClModel, Freq_MHz, Time_PC, currentLoss, obs), in args, tilta, tiltb);
             return Lclutter_dB;
         }
 

@@ -55,18 +55,29 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             tiltA_deg = (Math.Atan(CalcElevAngleArgs(h1_m, h2_m, d_km, re_km))) * 180 / Math.PI;
             tiltB_deg = (Math.Atan(CalcElevAngleArgs(h2_m, h1_m, d_km, re_km))) * 180 / Math.PI;
         }
-        public static EstimationClutterObstaclesResult[] EstimationClutterObstacles(in CalcLossArgs args)
+        /// <summary>
+        /// Функция производит определение препятсвий на трассе и для каждого препятсвия запускает расчет FunctionCalc. Препятсвия определяються от первой точки и до последней
+        /// </summary>
+        /// <param name="FunctionCalc">сама функция расчета ослабления</param>
+        /// <param name="args">профили</param>
+        /// <param name="tilta_deg"></param>
+        /// <param name="tiltb_deg"></param>
+        /// <returns></returns>
+        public static double CalcLossOfObstacles(Func<double, EstimationClutterObstaclesResult, double> FunctionCalc, in CalcLossArgs args, double tilta_deg, double tiltb_deg)
         {
-            List<EstimationClutterObstaclesResult> estimationClutterObstaclesResults = new List<EstimationClutterObstaclesResult>(); // Думаю Андрей тут будет резко против Нужно будет с ним посоветоваться
-            EstimationClutterObstaclesResult estimationClutterObstaclesResult = new EstimationClutterObstaclesResult()
+            double LossObs =0;
+            for (int i = 0; i <10; i++)
             {
-                clutterCode = 1,
-                d_km = 0.12,
-                endPoint = false,
-                elevation_deg = 0
-            };
-            estimationClutterObstaclesResults.Add(estimationClutterObstaclesResult);
-            return estimationClutterObstaclesResults.ToArray();// Думаю Андрей тут будет резко против Нужно будет с ним посоветоваться
+                EstimationClutterObstaclesResult obs = new EstimationClutterObstaclesResult()
+                {
+                    clutterCode = 7, // код клатера определяется из профиля клатеров
+                    d_km = 0.01, // дистанция прохождения в данном клатере
+                    elevation_deg =0.1, // УМ вхождения в клатер
+                    endPoint = false // признак того что это препятсвие в котором (внутри) находиться точка а иди б
+                };
+                LossObs = FunctionCalc(LossObs, obs);
+            }
+            return LossObs;
         }
     }
     public struct EstimationClutterObstaclesResult
