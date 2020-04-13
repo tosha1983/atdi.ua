@@ -10,12 +10,10 @@ using System.Windows.Forms;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class gridFilterBool : Form
+    public partial class gridFilterBool : gridFilterBase
     {
         enum FilterValues { False = 0, True = 1, All = 2 }
         bool? _filterValue = null;
-
-        public bool IsPresOK = false;
 
         public gridFilterBool()
         {

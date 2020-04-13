@@ -131,7 +131,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this.DateStart = DateAndTime.DateSerial(DateTime.Today.Year, DateTime.Today.Month, 1);
             this.DateStop = this.DateStart.Value.AddMonths(1).AddDays(-1);
-
             this.ReloadSensors();
             this.ReloadAreas();
             this.ReloadRefSpectrums();
@@ -262,7 +261,6 @@ namespace XICSM.ICSControlClient.ViewModels
                                             sensorsIds.Add(sensor.Id, sensor);
                                             listSensorsIndexes.Add(index);
                                         }
-                                            
                                     }
                                 }
                             }
@@ -613,7 +611,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                                 if (i >= 1)
                                 {
-                                    DateTime dateMeas = DateTime.ParseExact(record[10], "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                                    DateTime dateMeas = DateTime.ParseExact(record[10], "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                                     var refSpecDataLine = new SDRI.DataRefSpectrum()
                                     {
