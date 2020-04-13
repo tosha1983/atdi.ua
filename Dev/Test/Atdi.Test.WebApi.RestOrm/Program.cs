@@ -1,5 +1,8 @@
-﻿using Atdi.DataModels.Sdrn.CalcServer.Entities;
-using Atdi.Test.WebApi.RestOrm.ORM;
+﻿using Atdi.Api.EntityOrm.WebClient;
+using Atdi.Contracts.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +48,6 @@ namespace Atdi.Test.WebApi.RestOrm
 
 
 			var executor = dataLayer.GetExecutor(endpoint, dataContext);
-			//var count = executor.Execute(webQuery);
-
 			var projectPk = executor.Execute<IProject_PK>(webQuery);
 
 			TestReadMethod(executor, dataLayer);
@@ -115,8 +116,6 @@ namespace Atdi.Test.WebApi.RestOrm
 				.OnTop(100);
 
 			var count = executor.Execute(webQuery);
-			var request = ((IWebApiRequestCreator) webQuery).Create();
-
 			var records = executor.ExecuteAndFetch(webQuery, reader =>
 			{
 				var data = new IProject[reader.Count];

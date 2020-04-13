@@ -304,8 +304,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 					Antenna = data.Antenna,
 					AzimutToTarget_deg = AzimutToTarget,
                     TiltToTarget_deg = lossResult.TiltaD_Deg,
-					PolarizationEquipment = data.StationPolarization,
-                    PolarizationWave = data.StationPolarization
+					//PolarizationEquipment = data.StationPolarization,
+     //               PolarizationWave = data.StationPolarization
                 };
 				var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
                 double Level_dBm = data.StationTransmitterMaxPow_dBm - data.StationTransmitterLoss_dB + antennaGainD - lossResult.LossD_dB;

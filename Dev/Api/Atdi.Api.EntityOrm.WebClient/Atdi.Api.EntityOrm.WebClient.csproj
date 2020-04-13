@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D911E3FA-019D-44E1-BF68-724AFE8A2C09}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Atdi.Test.WebApi.RestOrm</RootNamespace>
-    <AssemblyName>Atdi.Test.WebApi.RestOrm</AssemblyName>
+    <ProjectGuid>{48ACE960-6BA0-4A99-B060-4DBB8A182206}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atdi.Api.EntityOrm.WebClient</RootNamespace>
+    <AssemblyName>Atdi.Api.EntityOrm.WebClient</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,19 +47,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="DTO\EntityRequest.cs" />
+    <Compile Include="DTO\RecordCreationRequest.cs" />
+    <Compile Include="DTO\RecordCreationResponse.cs" />
+    <Compile Include="DTO\RecordDeleteRequest.cs" />
+    <Compile Include="DTO\RecordDeleteResponse.cs" />
+    <Compile Include="DTO\RecordReadRequest.cs" />
+    <Compile Include="DTO\RecordReadResponse.cs" />
+    <Compile Include="DTO\RecordUpdateRequest.cs" />
+    <Compile Include="DTO\RecordUpdateResponse.cs" />
+    <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="IFilterSite.cs" />
+    <Compile Include="IWebApiMethodHandler.cs" />
+    <Compile Include="Methods\CreateMethodHandler.cs" />
+    <Compile Include="Methods\CreateQuery.cs" />
+    <Compile Include="Methods\DeleteMethodHandler.cs" />
+    <Compile Include="Methods\DeleteQuery.cs" />
+    <Compile Include="Methods\QueryFilter.cs" />
+    <Compile Include="Methods\ReadMethodHandler.cs" />
+    <Compile Include="Methods\ReadQuery.cs" />
+    <Compile Include="Methods\UpdateMethodHandler.cs" />
+    <Compile Include="Methods\UpdateQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProxyInstanceFactory.cs" />
+    <Compile Include="WebApiDataLayer.cs" />
+    <Compile Include="WebApiDataReader.cs" />
+    <Compile Include="WebApiQueryBuilder.cs" />
+    <Compile Include="WebApiQueryExecutor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
-      <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
-      <Name>Atdi.Api.EntityOrm.WebClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
@@ -70,10 +84,10 @@
       <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
       <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
-      <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
-      <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
