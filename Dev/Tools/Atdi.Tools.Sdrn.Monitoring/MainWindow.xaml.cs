@@ -19,6 +19,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using SWF = System.Windows.Forms;
 
 namespace Atdi.Tools.Sdrn.Monitoring
 {
@@ -45,6 +46,7 @@ namespace Atdi.Tools.Sdrn.Monitoring
         {
             Thread.Sleep(1000 * 60);
             InitializeComponent();
+            InitializeDataGrids();
             Task.Run((Action)LoadEnvironmentDescription);
         }
 
@@ -627,9 +629,15 @@ namespace Atdi.Tools.Sdrn.Monitoring
             if (!string.IsNullOrEmpty((item.Parent as TreeViewItem).Tag.ToString()))
                 this.RefreshStatistics((item.Parent as TreeViewItem).Tag.ToString());
         }
+        private void cmdRefreshMainTree_Click(object sender, RoutedEventArgs e)
+        {
+            mainTree.Items.Clear();
+            endpointUrls.Clear();
+            _namespaces.Clear();
+            Task.Run((Action)LoadEnvironmentDescription);
+        }
 
-
-		private void ShowHealthLog(string endpointKey)
+        private void ShowHealthLog(string endpointKey)
 		{
 			using (var wc = new HttpClient())
 			{
@@ -766,5 +774,96 @@ namespace Atdi.Tools.Sdrn.Monitoring
 			dynamic parsedJson = JsonConvert.DeserializeObject(json);
 			return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
 		}
-	}
+        void InitializeDataGrids()
+        {
+            PrepareDataGridMenu(gridLogEvents);
+            PrepareDataGridMenu(gridHealthLog);
+            PrepareDataGridMenu(gridHealthDetail);
+            PrepareDataGridMenu(gridCurrentCounter);
+            PrepareDataGridMenu(gridCounterRecords);
+            PrepareDataGridMenu(gridEntryRecords);
+        }
+        void PrepareDataGridMenu(DataGrid grd)
+        {
+            if (grd.ContextMenu == null)
+                grd.ContextMenu = new ContextMenu();
+
+            var itemCSV = new MenuItem() { Header = "Save to CSV", Name = "SaveToCSV" };
+            itemCSV.Click += DataGrid_MenuClick_SaveToCSV;
+            grd.ContextMenu.Items.Add(itemCSV);
+        }
+        void DataGrid_MenuClick_SaveToCSV(object sender, EventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var contextMenu = menuItem.Parent as ContextMenu;
+            var grid = contextMenu.PlacementTarget as DataGrid;
+            SWF.SaveFileDialog sfd = new SWF.SaveFileDialog()
+            {
+                Filter = "CSV (*.csv)|*.csv",
+                FileName = $"DataGrid_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.csv"
+            };
+            if (sfd.ShowDialog() == SWF.DialogResult.OK)
+            {
+                int recCount = grid.Items.Count;
+                string[] output = new string[recCount + 1];
+
+                var csvRow = new List<string>();
+                var columnsBindName = new List<string>();
+
+                foreach (var column in grid.Columns)
+                {
+                    var columnName = (((column as DataGridTextColumn).Binding as System.Windows.Data.Binding).Path as PropertyPath).Path;
+                    columnsBindName.Add(columnName);
+                    csvRow.Add(column.Header.ToString());
+                }
+                output[0] += string.Join(";", csvRow);
+
+                int i = 1;
+
+                if (grid.SelectedItems.Count > 1)
+                    foreach (dynamic row in grid.SelectedItems)
+                    {
+                        csvRow = new List<string>();
+
+                        foreach (var columnName in columnsBindName)
+                        {
+                            var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                            csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
+                        }
+                        output[i++] += string.Join(";", csvRow);
+                    }
+                else
+                    foreach (dynamic row in grid.Items)
+                    {
+                        csvRow = new List<string>();
+
+                        foreach (var columnName in columnsBindName)
+                        {
+                            var cellValue = row.GetType().GetProperty(columnName).GetValue(row, null);
+                            csvRow.Add(cellValue == null ? "" : $"\"{cellValue.ToString()}\"");
+                        }
+                        output[i++] += string.Join(";", csvRow);
+                    }
+
+                System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                System.Windows.MessageBox.Show("Your file was generated and its ready for use.");
+            }
+
+        }
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                        yield return (T)child;
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                        yield return childOfChild;
+                }
+            }
+        }
+    }
 }

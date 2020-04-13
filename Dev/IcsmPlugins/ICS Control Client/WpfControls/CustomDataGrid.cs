@@ -13,9 +13,9 @@ namespace XICSM.ICSControlClient.WpfControls
 {
     public class CustomDataGrid : DataGrid
     {
-        //private IList _setSelectedItemsList;
         private long[] _selectedItemsIndexes;
         private bool _IsChangeSelected = false;
+
         public CustomDataGrid()
         {
             this.SelectionChanged += CustomDataGrid_SelectionChanged;
@@ -23,9 +23,7 @@ namespace XICSM.ICSControlClient.WpfControls
         void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!_IsChangeSelected)
-            {
                 this.SelectedItemsList = this.SelectedItems;
-            }
         }
         public IList SelectedItemsList
         {
@@ -57,38 +55,15 @@ namespace XICSM.ICSControlClient.WpfControls
                 }
             }
         }
-        //public IList SetSelectedItemsList
-        //{
-        //    get { return this._setSelectedItemsList; }
-        //    set
-        //    {
-        //        this._setSelectedItemsList = value;
-        //        if (this._setSelectedItemsList != null)
-        //        {
-        //            _IsChangeSelected = true;
-        //            this.SelectedItems.Clear();
-        //            foreach (var item in value)
-        //            {
-        //                this.SelectedItems.Add(item);
-        //            }
-        //            _IsChangeSelected = false;
-        //        }
-        //    }
-        //}
+
         public static readonly DependencyProperty SelectedItemsListProperty = DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new FrameworkPropertyMetadata(default(IList), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
         public static DependencyProperty SelectedItemsIndexesProperty = DependencyProperty.Register("SelectedItemsIndexes", typeof(long[]), typeof(CustomDataGrid), new FrameworkPropertyMetadata(default(long[]), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
-        //public static DependencyProperty SetSelectedItemsListProperty = DependencyProperty.Register("SetSelectedItemsList", typeof(IList), typeof(CustomDataGrid), new FrameworkPropertyMetadata(default(IList), FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnPropertyChanged)));
 
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             CustomDataGrid grd = sender as CustomDataGrid;
-
             if (e.Property == SelectedItemsIndexesProperty)
-            {
                 grd.SelectedItemsIndexes = (long[])e.NewValue;
-            }
         }
-
-        
     }
 }

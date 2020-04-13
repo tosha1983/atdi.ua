@@ -11,11 +11,9 @@ using ICSM;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class gridFilterString : Form
+    public partial class gridFilterString : gridFilterBase
     {
         string _filterValue = "";
-
-        public bool IsPresOK = false;
 
         public gridFilterString()
         {

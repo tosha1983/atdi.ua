@@ -11,12 +11,10 @@ using ICSM;
 
 namespace XICSM.ICSControlClient.Forms
 {
-    public partial class gridFilterNumeric : Form
+    public partial class gridFilterNumeric : gridFilterBase
     {
         double? _filterFromValue;
         double? _filterToValue;
-
-        public bool IsPresOK = false;
 
         public gridFilterNumeric()
         {

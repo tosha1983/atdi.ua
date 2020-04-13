@@ -50,20 +50,14 @@
             this.txtFilter.TabIndex = 6;
             this.txtFilter.TextChanged += new System.EventHandler(this.ValueChanged);
             // 
-            // filterString
+            // gridFilterString
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(184, 88);
             this.Controls.Add(this.txtFilter);
             this.Controls.Add(this.btnApply);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "filterString";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Name = "gridFilterString";
             this.ResumeLayout(false);
             this.PerformLayout();
 
