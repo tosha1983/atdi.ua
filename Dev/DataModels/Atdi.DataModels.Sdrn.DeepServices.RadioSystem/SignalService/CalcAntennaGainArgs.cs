@@ -12,7 +12,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 		public StationAntenna Antenna;
         public PolarizationType PolarizationEquipment;
         public PolarizationType PolarizationWave;
-        public double AzimutToPoint_deg;
-        public double TiltToPoint_deg;
+        public double AzimutToTarget_deg;
+        public double TiltToTarget_deg;
     }
 }

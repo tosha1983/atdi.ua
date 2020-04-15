@@ -11,8 +11,10 @@ namespace Atdi.Test.CalcServer.LowFunction
     {
         static void Main(string[] args)
         {
-            var CalcAntennaPattern = new TestCalcAntennaPattern();
-            CalcAntennaPattern.Test();
+            //var CalcAntennaPattern = new TestCalcAntennaPattern();
+            //CalcAntennaPattern.Test();
+            var CalcPropagationLoss = new TestPropagationModel();
+            CalcPropagationLoss.Test();
         }
     }
 }

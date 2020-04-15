@@ -49,6 +49,7 @@
     <Compile Include="AppServerComponent.cs" />
     <Compile Include="AppServerComponentConfig.cs" />
     <Compile Include="CoverageProfilesCalcTask.cs" />
+    <Compile Include="Iterations\GeometricСalculations.cs" />
     <Compile Include="Iterations\FieldStrengthCalcIteration.cs" />
     <Compile Include="Iterations\ProfileIndexersCalcIteration.cs" />
     <Compile Include="PointFieldStrengthCalcTask.cs" />

@@ -354,9 +354,38 @@ namespace XICSM.ICSControlClient.ViewModels
                     return;
                 }
 
-                if (this._currentShortSensor == null)
+                if (this._currentShortSensor == null || this._currentShortSensor.Count == 0)
                 {
                     MessageBox.Show("Undefined sensor!");
+                    return;
+                }
+
+                if (!this._currentMeasTask.IsAutoMeasDtParamRfAttenuation && (this._currentMeasTask.MeasDtParamRfAttenuation.HasValue && (this._currentMeasTask.MeasDtParamRfAttenuation < 0 || this._currentMeasTask.MeasDtParamRfAttenuation > 40)))
+                {
+                    MessageBox.Show("The value 'Attenuation, dB' must be in the range from 0 to 40");
+                    return;
+                }
+                if (!this._currentMeasTask.IsAutoMeasDtParamRfAttenuation && (this._currentMeasTask.MeasDtParamRfAttenuation.HasValue && this._currentMeasTask.MeasDtParamRfAttenuation.Value != Math.Round(this._currentMeasTask.MeasDtParamRfAttenuation.Value, 0)))
+                {
+                    MessageBox.Show("The value 'Attenuation, dB' must be an integer");
+                    return;
+                }
+
+                if (!this._currentMeasTask.IsAutoMeasDtParamPreamplification && (this._currentMeasTask.MeasDtParamPreamplification.HasValue && (this._currentMeasTask.MeasDtParamPreamplification < 0 || this._currentMeasTask.MeasDtParamPreamplification > 40)))
+                {
+                    MessageBox.Show("The value 'Gain of preamplifier, dB' must be in the range from 0 to 40");
+                    return;
+                }
+
+                if (!this._currentMeasTask.IsAutoMeasDtParamReferenceLevel && (this._currentMeasTask.MeasDtParamReferenceLevel.HasValue && (this._currentMeasTask.MeasDtParamReferenceLevel < -200 || this._currentMeasTask.MeasDtParamReferenceLevel > 10)))
+                {
+                    MessageBox.Show("The value 'Gain of preamplifier, dB' must be in the range from -200 to 10");
+                    return;
+                }
+
+                if (!this._currentMeasTask.IsAutoTriggerLevel_dBm_Hz && (this._currentMeasTask.triggerLevel_dBm_Hz.HasValue && (this._currentMeasTask.triggerLevel_dBm_Hz < -200 || this._currentMeasTask.triggerLevel_dBm_Hz > -100)))
+                {
+                    MessageBox.Show("The value 'Noise Level' must be in the range from -200 to -100");
                     return;
                 }
 

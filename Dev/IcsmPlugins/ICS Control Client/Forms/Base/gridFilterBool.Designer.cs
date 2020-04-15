@@ -59,12 +59,7 @@
             this.ClientSize = new System.Drawing.Size(202, 84);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.cmbFilter);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "gridFilterBool";
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.ResumeLayout(false);
 
         }
