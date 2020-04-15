@@ -189,7 +189,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Put("SENSOR_LAT", ConvertCoordinates.DecToDmsToString(row.Latitude.Value, Coordinates.EnumCoordLine.Lat));
             }
 
-            rs.Put("SENSOR_NAME", row.SensorName);
+            rs.Put("SENSOR_NAME", row.TitleSensor);
             rs.Put("DATE_MEAS", row.DateMeas);
             if (row.Freq_MHz.HasValue)
                 rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz.Value, 3));
@@ -222,9 +222,10 @@ namespace XICSM.ICSControlClient.ViewModels
             recPtr.Id = id;
             if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
             {
-                recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
-                var bm = new System.Drawing.Bitmap(1300, 600);
-                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 600);
+                //recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
+                var bm = new System.Drawing.Bitmap(1300, 800);
+                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
+                bm.Save("C:\\Temp\\Res.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
                 InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
                 bm.Dispose();
                 GC.Collect();

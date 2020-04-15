@@ -81,7 +81,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                     CollectEmissionInstrumentalEstimation = false;
                 }
 
-                
+
 
                 ///////////// AnalyzeSysInfoEmission /////////////
                 if (taskSDR.SignalingMeasTaskParameters.AnalyzeSysInfoEmission != null)
@@ -568,10 +568,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
             double PercentForCalcNoise = configMessaging.PercentForCalcNoise;
             // сигнализация
 
-            const int SO_Ncount = 10000;
-            const int Signalization_Ncount = 1000000;
-            const int OtherNCount = 1000;
-            const int SO_NChenal = 10;
+            var SO_Ncount = configMessaging.MaxSONcount.Value;
+            var Signalization_Ncount = configMessaging.MaxSignalizationNcount.Value;
+            var OtherNCount = configMessaging.MaxOtherNCount.Value;
+            var SO_NChenal = configMessaging.MaxSONChenal.Value;
 
 
             var taskParameters = new Proc.TaskParameters();
@@ -684,7 +684,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging.Convertor
                         if ((taskSDR.SOParam.MeasurmentNumber > 0) && (taskSDR.SOParam.MeasurmentNumber < 1000)) { taskParameters.NChenal = taskSDR.SOParam.MeasurmentNumber; } else { taskParameters.NChenal = SO_NChenal; }
                         if (taskSDR.SOParam.LevelMinOccup_dBm <= 0) { taskParameters.LevelMinOccup_dBm = taskSDR.SOParam.LevelMinOccup_dBm; } else { taskParameters.LevelMinOccup_dBm = -80; }
                         taskParameters.TypeOfSO = sOtype;
-                        taskParameters.SupportMultyLevel = taskSDR.SOParam.SupportMultyLevel==null ? false : taskSDR.SOParam.SupportMultyLevel.Value;
+                        taskParameters.SupportMultyLevel = taskSDR.SOParam.SupportMultyLevel == null ? false : taskSDR.SOParam.SupportMultyLevel.Value;
                         if ((taskParameters.ListFreqCH != null) && (taskParameters.ListFreqCH.Count > 0))
                         {
                             // формируем начало и конец для измерений 
