@@ -14,12 +14,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             public int nMax;
         }
 
-        private static NuMaxOut FindMaxNu(double hA, double hB, double wavelength, double dAB, in short[] profile, int profileStart, int profileCount, double RE)
+        private static NuMaxOut FindMaxNu(double hA, double hB, double wavelength, double dAB, in short[] profile, int profileStart, int profileLength, double RE)
         {
-            int profileArrayLength = (profileCount - profileStart);
-            double dN = dAB / profileArrayLength;
+            //int __profileArrayLength = (__profileCount - profileStart);
+            double dN = dAB / profileLength;
             double dAN = dN;
-            double dNB = dN * (profileArrayLength - 1);
+            double dNB = dN * (profileLength - 1);
             double inv2rE = 1 / (2 * RE);
             double invDaB = 1 / dAB;
 
@@ -32,12 +32,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 nMax = profileStart
             };
             
-            if (profileArrayLength > 1)
+            if (profileLength > 1)
             {
-                for (int n = profileStart + 1; n < profileCount; n++)
+                for (int n = profileStart + 1; n < profileStart + profileLength; n++)
                 {
                     dAN = dN * (n - profileStart);
-                    dNB = dN * (profileCount - n);
+                    dNB = dN * (profileStart + profileLength - n);
                     double h = profile[n] + dAN * dNB * inv2rE - (hA * dNB + hB * dAN) * invDaB;
 
                     double nuN = (double)(h * Math.Sqrt(2 * dAB / (wavelength * dAN * dNB)));
@@ -65,32 +65,32 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         }
         
 
-        public static double Calc(double ha_m, double hb_m, double Freq_MHz, double d_km, in short[] profile_m, int profileStartPosition, int profilePointsNumber, double rE_km, double SubDiffractionLoss)
+        public static double Calc(double ha_m, double hb_m, double Freq_MHz, double d_km, in short[] profile_m, int profileStartIndex, int profilePointsNumber, double rE_km, double SubDiffractionLoss)
         {
 
             double dAB = d_km * 1000;
             double rE = rE_km * 1000;
             double wavelength = 300 / Freq_MHz;
-            ha_m += profile_m[profileStartPosition];
+            ha_m += profile_m[profileStartIndex];
             hb_m += profile_m[profilePointsNumber];
 
             NuMaxOut nu;
-            nu = FindMaxNu(ha_m, hb_m, wavelength, dAB, profile_m, profileStartPosition, profilePointsNumber, rE);
+            nu = FindMaxNu(ha_m, hb_m, wavelength, dAB, profile_m, profileStartIndex, profilePointsNumber, rE);
 
             double nuP = nu.nuMax;
 
-            double dN = dAB / (profilePointsNumber - profileStartPosition);
+            double dN = dAB / (profilePointsNumber - profileStartIndex);
             double dAP = dN * nu.nMax;
 
-            double dPB = dN * (profilePointsNumber - profileStartPosition - nu.nMax);
+            double dPB = dN * (profilePointsNumber - profileStartIndex - nu.nMax);
 
             double diffractionLoss_dB = 0;
 
             if (nuP > -0.78)
             {
-                NuMaxOut nuT = FindMaxNu(ha_m, profile_m[nu.nMax], wavelength, dAP, in profile_m, profileStartPosition, nu.nMax, rE);
+                NuMaxOut nuT = FindMaxNu(ha_m, profile_m[nu.nMax], wavelength, dAP, in profile_m, profileStartIndex, nu.nMax, rE);
 
-                NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hb_m, wavelength, dPB, in profile_m, nu.nMax, profilePointsNumber, rE);
+                NuMaxOut nuR = FindMaxNu(profile_m[nu.nMax], hb_m, wavelength, dPB, in profile_m, nu.nMax, profilePointsNumber - nu.nMax + profileStartIndex, rE);
                 double C = 10.0f + 0.04 * d_km;
                 diffractionLoss_dB = J(nuP) + (1.0 - Math.Exp(-J(nuP) / 6.0f)) * (J(nuT.nuMax) + J(nuR.nuMax) + C + SubDiffractionLoss);
             }
