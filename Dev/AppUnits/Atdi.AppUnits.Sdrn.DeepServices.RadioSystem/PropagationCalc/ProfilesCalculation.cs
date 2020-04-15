@@ -65,17 +65,94 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         /// <returns></returns>
         public static double CalcLossOfObstacles(Func<double, EstimationClutterObstaclesResult, double> FunctionCalc, in CalcLossArgs args, double tilta_deg, double tiltb_deg)
         {
-            double LossObs =0;
-            for (int i = 0; i <10; i++)
+            
+            double LossObs = 0;
+
+            bool obstacleIntersection = false;
+
+            double pixelLength_km = args.D_km / (args.ProfileLength - args.HeightStartIndex);
+
+            int clutterHeightMin;
+            int clutterHeightMax;
+            
+            double beamAHeight;
+            double beamBHeight;
+            double beamHeight;
+            double beamPrevHeight;
+
+            double alpha;
+            double theta_deg = 0;
+            double distanceTo_km;
+            double distanceInside_km = 0;
+
+            double invRe = 1 / args.Model.Parameters.EarthRadius_km;
+            double invPi = 1 / Math.PI;
+
+            var ha_m = args.Ha_m + args.HeightProfile[args.HeightStartIndex] + args.BuildingProfile[args.HeightStartIndex] + args.ClutterProfile[args.HeightStartIndex];
+            var hb_m = args.Hb_m + args.HeightProfile[args.HeightStartIndex + args.ProfileLength - 1] + args.BuildingProfile[args.HeightStartIndex + args.ProfileLength - 1] + args.ClutterProfile[args.HeightStartIndex + args.ProfileLength - 1];
+
+            for (int i = args.HeightStartIndex; i < args.HeightStartIndex + args.ProfileLength - 1; i++)
             {
-                EstimationClutterObstaclesResult obs = new EstimationClutterObstaclesResult()
+
+                clutterHeightMin = args.HeightProfile[i] + args.BuildingProfile[i];
+                clutterHeightMax = args.HeightProfile[i] + args.BuildingProfile[i] + args.ClutterProfile[i];
+                
+                beamAHeight = pixelLength_km * (i - args.HeightStartIndex) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + ha_m;
+                beamBHeight = pixelLength_km * (args.ProfileLength - i - 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + hb_m;
+
+                // определение луча, который пересекает препятствие
+                if (beamAHeight < beamBHeight)
                 {
-                    clutterCode = 7, // код клатера определяется из профиля клатеров
-                    d_km = 0.01, // дистанция прохождения в данном клатере
-                    elevation_deg =0.1, // УМ вхождения в клатер
-                    endPoint = false // признак того что это препятсвие в котором (внутри) находиться точка а иди б
-                };
-                LossObs = FunctionCalc(LossObs, obs);
+                    beamHeight = beamAHeight;
+                    beamPrevHeight = pixelLength_km * (i - args.HeightStartIndex - 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + ha_m;
+                    alpha = tilta_deg;
+                    distanceTo_km = pixelLength_km * (i - args.HeightStartIndex);
+                }
+                else
+                {
+                    beamHeight = beamBHeight;
+                    beamPrevHeight = pixelLength_km * (args.ProfileLength - i - 2) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + hb_m;
+                    alpha = tiltb_deg;
+                    distanceTo_km = pixelLength_km * (args.ProfileLength - i - 1);
+                }
+
+                // если в данной точке луч пересекает клаттер
+                if (beamHeight > clutterHeightMin && beamHeight < clutterHeightMax)
+                {
+                    // если в предыдущей точке луч не пересекает клаттер, но элемент слоя клаттеров есть - тогда считаем, что луч падает сверху 
+                    if (beamPrevHeight > clutterHeightMin && beamPrevHeight < clutterHeightMax && args.ClutterProfile[i - 1] != 0 && obstacleIntersection == false)
+                    {
+                        theta_deg = alpha - 180 * distanceTo_km * invPi * invRe;
+                    }
+                    else if (obstacleIntersection == false)
+                    {
+                        theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
+                    }
+                    // начало определения длительности прохождения луча в клаттере
+                    obstacleIntersection = true;
+                    distanceInside_km += pixelLength_km;
+                }
+                else if ((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true))
+                {
+                    obstacleIntersection = false;
+                }
+
+                // когда препятствие закончилось, вызывается функция расчёта
+                if (obstacleIntersection == false && distanceInside_km > 0)
+                { 
+                    
+                    EstimationClutterObstaclesResult obs = new EstimationClutterObstaclesResult()
+                    {
+                        clutterCode = 7, // код клатера определяется из профиля клатеров
+                        d_km = distanceInside_km, // дистанция прохождения в данном клатере
+                        elevation_deg = theta_deg, // УМ вхождения в клатер
+                        endPoint = false // признак того что это препятсвие в котором (внутри) находиться точка а иди б
+                    };
+                    LossObs = FunctionCalc(LossObs, obs);
+
+                    distanceInside_km = 0;
+                }
+                
             }
             return LossObs;
         }
