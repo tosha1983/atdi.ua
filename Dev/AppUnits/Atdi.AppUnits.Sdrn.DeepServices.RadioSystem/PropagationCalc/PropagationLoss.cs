@@ -9,7 +9,7 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
-	internal static class PropagationLoss
+	public static class PropagationLoss
 	{
 
         public static CalcLossResult Calc(CalcLossArgs args)
