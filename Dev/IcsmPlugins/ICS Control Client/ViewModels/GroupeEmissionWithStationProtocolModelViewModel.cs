@@ -225,7 +225,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 //recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
                 var bm = new System.Drawing.Bitmap(1300, 800);
                 buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
-                bm.Save("C:\\Temp\\Res.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                //bm.Save("C:\\Temp\\Res.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
                 InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
                 bm.Dispose();
                 GC.Collect();
