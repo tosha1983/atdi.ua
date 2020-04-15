@@ -82,26 +82,27 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             double alpha;
             double theta_deg = 0;
+            double degToRad = Math.PI / 180.0;
             double distanceTo_km;
             double distanceInside_km = 0;
 
             double invRe = 1 / args.Model.Parameters.EarthRadius_km;
             double invPi = 1 / Math.PI;
 
-            var ha_m = args.Ha_m + args.HeightProfile[args.HeightStartIndex] + args.BuildingProfile[args.HeightStartIndex] + args.ClutterProfile[args.HeightStartIndex];
-            var hb_m = args.Hb_m + args.HeightProfile[args.HeightStartIndex + args.ProfileLength - 1] + args.BuildingProfile[args.HeightStartIndex + args.ProfileLength - 1] + args.ClutterProfile[args.HeightStartIndex + args.ProfileLength - 1];
+            var ha_m = args.Ha_m + args.HeightProfile[args.HeightStartIndex] + args.BuildingProfile[args.HeightStartIndex];// + args.ClutterProfile[args.HeightStartIndex];
+            var hb_m = args.Hb_m + args.HeightProfile[args.HeightStartIndex + args.ProfileLength - 1] + args.BuildingProfile[args.HeightStartIndex + args.ProfileLength - 1];// + args.ClutterProfile[args.HeightStartIndex + args.ProfileLength - 1];
 
-            for (int i = args.HeightStartIndex; i < args.HeightStartIndex + args.ProfileLength - 1; i++)
+            for (int i = args.HeightStartIndex + 1; i < args.HeightStartIndex + args.ProfileLength - 1; i++)
             {
 
                 clutterHeightMin = args.HeightProfile[i] + args.BuildingProfile[i];
                 clutterHeightMax = args.HeightProfile[i] + args.BuildingProfile[i] + args.ClutterProfile[i];
                 
-                beamAHeight = pixelLength_km * (i - args.HeightStartIndex) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + ha_m;
-                beamBHeight = pixelLength_km * (args.ProfileLength - i - 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + hb_m;
+                beamAHeight = pixelLength_km * (i - args.HeightStartIndex) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (i - args.HeightStartIndex) * invRe) + ha_m;
+                beamBHeight = pixelLength_km * (args.ProfileLength - i - 1) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (args.ProfileLength - i - 1) * invRe) + hb_m;
 
                 // определение луча, который пересекает препятствие
-                if (beamAHeight < beamBHeight)
+                if (beamAHeight <= beamBHeight)
                 {
                     beamHeight = beamAHeight;
                     beamPrevHeight = pixelLength_km * (i - args.HeightStartIndex - 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + ha_m;
@@ -117,10 +118,10 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 }
 
                 // если в данной точке луч пересекает клаттер
-                if (beamHeight > clutterHeightMin && beamHeight < clutterHeightMax)
+                if (beamHeight >= clutterHeightMin && beamHeight <= clutterHeightMax)
                 {
                     // если в предыдущей точке луч не пересекает клаттер, но элемент слоя клаттеров есть - тогда считаем, что луч падает сверху 
-                    if (beamPrevHeight > clutterHeightMin && beamPrevHeight < clutterHeightMax && args.ClutterProfile[i - 1] != 0 && obstacleIntersection == false)
+                    if (beamPrevHeight >= clutterHeightMin && beamPrevHeight <= clutterHeightMax && args.ClutterProfile[i - 1] != 0 && obstacleIntersection == false)
                     {
                         theta_deg = alpha - 180 * distanceTo_km * invPi * invRe;
                     }
@@ -149,7 +150,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                         endPoint = false // признак того что это препятсвие в котором (внутри) находиться точка а иди б
                     };
                     LossObs = FunctionCalc(LossObs, obs);
-
+                    //LossObs += 1;
                     distanceInside_km = 0;
                 }
                 
