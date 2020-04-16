@@ -23,11 +23,13 @@ namespace XICSM.ICSControlClient.Forms
         private SDR.MeasurementResults _measResult;
         private GeneralResultViewModel _generalResult;
         private SDR.MeasurementType _measType;
-        public GraphicForm(SDR.MeasurementType measType, SDR.MeasurementResults measResult, GeneralResultViewModel generalResult)
+        private int _startType;
+        public GraphicForm(SDR.MeasurementType measType, SDR.MeasurementResults measResult, GeneralResultViewModel generalResult, int startType)
         {
             _measResult = measResult;
             _generalResult = generalResult;
             _measType = measType;
+            _startType = startType;
             InitializeComponent();
         }
 
@@ -43,7 +45,7 @@ namespace XICSM.ICSControlClient.Forms
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
                 this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
-                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new GrapficViewModel(_measType, _measResult, _generalResult);
+                (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = new GrapficViewModel(_measType, _measResult, _generalResult, _startType);
             }
         }
     }

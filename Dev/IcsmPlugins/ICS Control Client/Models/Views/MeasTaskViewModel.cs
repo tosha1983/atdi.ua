@@ -93,6 +93,8 @@ namespace XICSM.ICSControlClient.Models.Views
 
         public double[] MeasFreqParamMeasFreqs { get; set; }
 
+        public bool? SupportMultyLevel { get; set; }
+
         public int? MeasOtherSwNumber { get; set; }
 
         public SpectrumScanType MeasOtherTypeSpectrumScan { get; set; }

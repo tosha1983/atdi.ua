@@ -144,6 +144,7 @@
                           <MenuItem Header="{x:Static res:Resources.Stop}" Command="{Binding StopMeasTaskCommand}"/>
                           <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteMeasTaskCommand}"/>
                           <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding RefreshShortTasksCommand}"/>
+                          <MenuItem Header="{x:Static res:Resources.ChangeLevelOfMinOccupation}" Command="{Binding ChangeLevelOfMinOccupationCommand}" IsEnabled="{Binding ChangeLevelOfMinOccupationEnabled}"/>
                           <!--<MenuItem Header="{x:Static res:Resources.ShowDetail}" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding ShowMeasTaskDetailEnabled}"/>
                           <MenuItem Header="{x:Static res:Resources.HideDetail}" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding HideMeasTaskDetailEnabled}"/>-->
                         </ContextMenu>
@@ -328,14 +329,15 @@
                                   </Expander.Style>
                                   <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="320" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"></RowDefinition>
-                                        <RowDefinition Height="Auto"></RowDefinition>
-                                        <RowDefinition Height="Auto"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
+                                      <RowDefinition Height="Auto"></RowDefinition>
+                                      <RowDefinition Height="Auto"></RowDefinition>
+                                      <RowDefinition Height="Auto"></RowDefinition>
+                                      <RowDefinition Height="Auto"></RowDefinition>
+                                      <RowDefinition Height="*"></RowDefinition>
                                     </Grid.RowDefinitions>
                                     <Label Height="18" Grid.Column="0" Grid.Row="0" Padding="5,0,0,0" Content="{x:Static res:Resources.TypeSpectrumOccupation}"  />
                                     <Label Height="18" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=MeasOtherTypeSpectrumOccupationFull}" FontWeight="Bold" FontSize="12"/>
@@ -343,11 +345,14 @@
                                     <Label Height="18" Grid.Column="0" Grid.Row="1" Padding="5,0,0,0" Content="{x:Static res:Resources.LevelOfMinOccupationDBm}"  />
                                     <Label Height="18" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=MeasOtherLevelMinOccup}" FontWeight="Bold" FontSize="12"/>
 
-                                    <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content="{x:Static res:Resources.NumberTotalScan}"  />
-                                    <Label Height="18" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=MeasOtherNCount}" FontWeight="Bold" FontSize="12"/>
+                                    <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content="{x:Static res:Resources.CollectDataForChangeInTheMinLevel}"  />
+                                    <CheckBox Grid.Column="1" Grid.Row="2" Margin="5,0,0,0" IsChecked="{Binding Path=SupportMultyLevel}" IsEnabled="False"/>
 
-                                    <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content="{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
-                                    <Label Height="18" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=MeasOtherNChenal}" FontWeight="Bold" FontSize="12"/>
+                                    <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content="{x:Static res:Resources.NumberTotalScan}"  />
+                                    <Label Height="18" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=MeasOtherNCount}" FontWeight="Bold" FontSize="12"/>
+
+                                    <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content="{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
+                                    <Label Height="18" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=MeasOtherNChenal}" FontWeight="Bold" FontSize="12"/>
                                   </Grid>
                               </Expander>
                                 <Expander Grid.ColumnSpan="4" Grid.Row="7" Header="{x:Static res:Resources.MonitoringEmissionParameters}">
@@ -693,7 +698,7 @@
                             <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=MeasSdrResultsId}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.TaskId}" Binding="{Binding Path=MeasTaskId}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static res:Resources.TimeMeas}" Binding="{Binding Path=TimeMeas, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                             <DataGridTextColumn Header="{x:Static res:Resources.SubTaskId}" Binding="{Binding Path=SubMeasTaskId}"></DataGridTextColumn>
                             <!--<DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorName}"></DataGridTextColumn>-->
                             <DataGridTextColumn Header="{x:Static res:Resources.SensorName}" Binding="{Binding Path=SensorTitle}"></DataGridTextColumn>
@@ -1149,8 +1154,8 @@
                     <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}"></DataGridTextColumn>
                     <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"></DataGridTextColumn>
                   </DataGrid.Columns>
                   <DataGrid.ContextMenu>
                     <ContextMenu>

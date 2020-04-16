@@ -187,6 +187,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attention!!!.
+        /// </summary>
+        public static string Attention {
+            get {
+                return ResourceManager.GetString("Attention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attenuation, dB.
         /// </summary>
         public static string AttenuationDB {
@@ -331,6 +340,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change level of min occupation.
+        /// </summary>
+        public static string ChangeLevelOfMinOccupation {
+            get {
+                return ResourceManager.GetString("ChangeLevelOfMinOccupation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change time.
         /// </summary>
         public static string ChangeTimeCommand {
@@ -390,6 +408,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Code {
             get {
                 return ResourceManager.GetString("Code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collect data for change in the min. Level.
+        /// </summary>
+        public static string CollectDataForChangeInTheMinLevel {
+            get {
+                return ResourceManager.GetString("CollectDataForChangeInTheMinLevel", resourceCulture);
             }
         }
         
@@ -1501,6 +1528,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want continue.
+        /// </summary>
+        public static string Message_DoYouWantContinue {
+            get {
+                return ResourceManager.GetString("Message_DoYouWantContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GSID sync with emissions could not be started. Since it has already been carried out for a given period of time (or part) and the selected sensors (one or several) and the selected file (one or several) with reference spectra. Change the settings and run again..
         /// </summary>
         public static string Message_GSIDSyncWithEmissionsCouldNotBeStarted {
@@ -1533,6 +1569,16 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Message_SelectASensorToSwitchToOnLineMeasurementMode {
             get {
                 return ResourceManager.GetString("Message_SelectASensorToSwitchToOnLineMeasurementMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option will require additional calculations on the servers and will significantly increase the required amount of memory to store the results..
+        /// </summary>
+        public static string Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults {
+            get {
+                return ResourceManager.GetString("Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificant" +
+                        "lyIncreaseTheRequiredAmountOfMemoryToStoreTheResults", resourceCulture);
             }
         }
         
@@ -2901,6 +2947,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string Year {
             get {
                 return ResourceManager.GetString("Year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You selected option.
+        /// </summary>
+        public static string YouSelectedOption {
+            get {
+                return ResourceManager.GetString("YouSelectedOption", resourceCulture);
             }
         }
         
