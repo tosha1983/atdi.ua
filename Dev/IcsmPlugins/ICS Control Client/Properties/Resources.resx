@@ -1082,4 +1082,22 @@
   <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
     <value>Not a single sensor gets into the selected region!</value>
   </data>
+  <data name="CollectDataForChangeInTheMinLevel" xml:space="preserve">
+    <value>Collect data for change in the min. Level</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention!!!</value>
+  </data>
+  <data name="Message_DoYouWantContinue" xml:space="preserve">
+    <value>Do you want continue</value>
+  </data>
+  <data name="Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults" xml:space="preserve">
+    <value>This option will require additional calculations on the servers and will significantly increase the required amount of memory to store the results.</value>
+  </data>
+  <data name="YouSelectedOption" xml:space="preserve">
+    <value>You selected option</value>
+  </data>
+  <data name="ChangeLevelOfMinOccupation" xml:space="preserve">
+    <value>Change level of min occupation</value>
+  </data>
 </root>

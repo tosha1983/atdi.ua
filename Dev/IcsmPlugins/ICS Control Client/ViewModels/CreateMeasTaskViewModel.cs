@@ -222,6 +222,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentMeasTask.MeasOtherSwNumber = 1;
             this._currentMeasTask.MeasOtherNCount = 1000;
             this._currentMeasTask.MeasOtherNChenal = 10;
+            this._currentMeasTask.SupportMultyLevel = false;
             this._currentMeasTask.MeasOtherTypeSpectrumScan = SDR.SpectrumScanType.Sweep;
             this._currentMeasTask.ResultType = SDR.MeasTaskResultType.MeasurementResult;
             this._currentMeasTask.ExecutionMode = SDR.MeasTaskExecutionMode.Automatic;
@@ -330,6 +331,15 @@ namespace XICSM.ICSControlClient.ViewModels
                 //    return;
                 //}
 
+                if (this._currentMeasTask.SupportMultyLevel.HasValue && this._currentMeasTask.SupportMultyLevel.Value)
+                {
+                    if (MessageBox.Show($"{Properties.Resources.Attention} {Properties.Resources.YouSelectedOption}: “{Properties.Resources.CollectDataForChangeInTheMinLevel}”. {Properties.Resources.Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults} {Properties.Resources.Message_DoYouWantContinue}?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                    {
+                        result = false;
+                        return;
+                    }
+                }
+
                 if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
                     MessageBox.Show("Date Stop should be great of the Date Start!");
@@ -345,7 +355,6 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     MessageBox.Show("The value “The minimum number of points a spectrum must contain in order not to measure bandwith” must be in the range from " + this.CurrentMeasTask.SignalizationNChenal.Value + " to 5000!");
                     return;
-
                 }
 
                 if (string.IsNullOrEmpty(this._currentMeasTask.Name))
@@ -688,7 +697,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     //MeasFreqParam = new SDR.MeasFreqParam()
                     //{
                     //    Mode = this._currentMeasTask.MeasFreqParamMode,
-                    //    RgL = this._currentMeasTask.MeasFreqParamRgL,
+                    //    RgL = this._currentMeasTask.MeasFreqParamRgL, 
                     //    RgU = this._currentMeasTask.MeasFreqParamRgU,
                     //    Step = this._currentMeasTask.MeasFreqParamStep
                     //    //MeasFreqs = new SDR.MeasFreq()
@@ -700,7 +709,8 @@ namespace XICSM.ICSControlClient.ViewModels
                         LevelMinOccup = this._currentMeasTask.MeasOtherLevelMinOccup,
                         SwNumber = this._currentMeasTask.MeasOtherSwNumber,
                         TypeSpectrumScan = this._currentMeasTask.MeasOtherTypeSpectrumScan,
-                        NChenal = this._currentMeasTask.MeasOtherNChenal
+                        NChenal = this._currentMeasTask.MeasOtherNChenal,
+                        SupportMultyLevel = this._currentMeasTask.SupportMultyLevel                        
                     },
                     //MeasSubTasks = ,
                     OrderId = this._currentMeasTask.OrderId,

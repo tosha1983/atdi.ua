@@ -318,6 +318,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 MeasOtherTypeSpectrumOccupation = source.MeasOther.TypeSpectrumOccupation,
                 MeasOtherTypeSpectrumOccupationFull = measOtherTypeSpectrumOccupationFull,
                 MeasOtherTypeSpectrumScan = source.MeasOther.TypeSpectrumScan,
+                SupportMultyLevel = source.MeasOther.SupportMultyLevel ?? false,
 
                 MeasTimeParamListDays = source.MeasTimeParamList.Days,
                 MeasTimeParamListPerInterval = source.MeasTimeParamList.PerInterval.ToNull(),

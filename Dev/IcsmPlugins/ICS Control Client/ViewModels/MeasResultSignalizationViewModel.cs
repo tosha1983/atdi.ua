@@ -1368,7 +1368,6 @@ namespace XICSM.ICSControlClient.ViewModels
                         minX = valX;
                         maxY = valY;
                         minY = valY;
-
                     }
                     else
                     {

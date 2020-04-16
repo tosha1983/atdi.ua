@@ -1053,4 +1053,22 @@
   <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
     <value>В вибранний регион не попадает ни один сенсор!</value>
   </data>
+  <data name="CollectDataForChangeInTheMinLevel" xml:space="preserve">
+    <value>Накапливать данные для возможного изменения максимального уровня</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Внимание!!!</value>
+  </data>
+  <data name="Message_DoYouWantContinue" xml:space="preserve">
+    <value>Действительно продолжить?</value>
+  </data>
+  <data name="Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults" xml:space="preserve">
+    <value>Данная опция потребует дополнительных вычислений на серверах и существенно увеличит требуемый объём памяти для хранения результатов.</value>
+  </data>
+  <data name="YouSelectedOption" xml:space="preserve">
+    <value>Вы выбрали опицию</value>
+  </data>
+  <data name="ChangeLevelOfMinOccupation" xml:space="preserve">
+    <value>Изменить уровень минимальной занятости</value>
+  </data>
 </root>
