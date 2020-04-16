@@ -50,7 +50,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             bool isFindOccup100 = false;
 
             // в данном цикле выполняется поиск значения levelMinArr, которое соответсвует OcupationPt равное 100 (последнее вхождение 100)
-            while (true)
+            for (int m = 0; m < (MaxCountSpectrumOccupationArr * 2); m++)
             {
                 start = 0;
                 var tempFreqChResTempCopy = CopyHelper.CreateDeepCopy(tempFreqChResTemp);
@@ -103,17 +103,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
         {
             var tempLevelMinArr = levelMinArr;
             var idx = 0;
-            int cntMaxOccupt = 0;
             bool isFindOccup100 = false;
             float middleLevelMinArr = levelMinArr;
-            float maxLevel = -1;
             // в данном цикле, выполняется вычисление значений OcupationPt начиная с levelMinArr, которое было получено на пред. шаге 
             var lstSpectrumOccupation = new List<float>();
             if (taskParameters.TypeOfSO == SOType.FreqChannelOccupation)
             {
                 var tempFreqChannelOccupation = CopyHelper.CreateDeepCopy(tempFreqChResTemp);
                 CalcSemplFreq(result, ref start, ref tempFreqChannelOccupation, freqCH, taskParameters.StepSO_kHz, taskParameters.TypeOfSO, middleLevelMinArr, realRBW_Hz);
-                while (true)
+                for (int i = 0; i < (MaxCountSpectrumOccupationArr * 2); i++)
                 {
                     if (tempFreqChannelOccupation.LeveldBm > tempLevelMinArr)
                     {
@@ -131,13 +129,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
             }
             else if (taskParameters.TypeOfSO == SOType.FreqBandwidthOccupation)
             {
-                while (true)
+                for (int i = 0; i < (MaxCountSpectrumOccupationArr * 2); i++)
                 {
                     start = 0;
-                    SemplFreq tempFreqChResTempCopy;
                     // расчет OcupationPt c очередным значением middleLevelMinArr + idx
-
-                    tempFreqChResTempCopy = CopyHelper.CreateDeepCopy(tempFreqChResTemp);
+                    var tempFreqChResTempCopy = CopyHelper.CreateDeepCopy(tempFreqChResTemp);
                     CalcSemplFreq(result, ref start, ref tempFreqChResTempCopy, freqCH, taskParameters.StepSO_kHz, taskParameters.TypeOfSO, middleLevelMinArr + idx, realRBW_Hz);
 
                     lstSpectrumOccupation.Add(tempFreqChResTempCopy.OcupationPt);
@@ -178,7 +174,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                     {
                         ++idx;
                     }
-                    cntMaxOccupt++;
 
                     if (tempFreqChResTempCopy.OcupationPt == 0)
                     {
@@ -186,10 +181,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                         {
                             break;
                         }
-                    }
-                    if (cntMaxOccupt > MaxCountSpectrumOccupationArr * 2)
-                    {
-                        break;
                     }
                 }
             }
@@ -363,7 +354,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                 int index = 0;
                                 int levelMin100 = levelMinArrNew;
-                                while (true)
+                                for (int m = 0; m < (MaxCountSpectrumOccupationArr * 2); m++)
                                 {
                                     var valOccupOld = GetSpectrumOccupationByLevelMin(levelMinArrNew + index, tempLvlMinArrOld, spectrumOccupationArr);
                                     var valOccupNew = ((valOccupOld * lastResultParameters.NN + tempFreqChResTemp.SpectrumOccupationArr[index]) / (lastResultParameters.NN + 1));
