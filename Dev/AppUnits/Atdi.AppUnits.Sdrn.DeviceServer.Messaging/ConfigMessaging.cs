@@ -118,7 +118,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
         ///  определяет насколько процентов должно совпадать излучение если BW не определен по умолчанию 40
         /// </summary>
         [ComponentConfigProperty("CrossingBWPercentageForBadSignals.double")]
-        public double? CrossingBWPercentageForBadSignals { get; set; } 
+        public double? CrossingBWPercentageForBadSignals { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -162,5 +162,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Messaging
 
         [ComponentConfigProperty("HealthJob.RepeatDelay")]
         public int? HealthJobRepeatDelay { get; set; }
-	}
+
+        /// <summary>
+        /// Максимально допустимое число сканирований для SpectrumOccupation
+        /// </summary>
+        public int? MaxSONcount { get; set; }
+        /// <summary>
+        /// Максимально допустимое число сканирований для Signalization
+        /// </summary>
+        public int? MaxSignalizationNcount { get; set; }
+        /// <summary>
+        /// Максимально допустимое число сканирований для других типов измерений
+        /// </summary>
+        public int? MaxOtherNCount { get; set; }
+        /// <summary>
+        /// Максимальное количество измерений, которые могут быть выполнены в канале
+        /// </summary>
+        public int? MaxSONChenal { get; set; }
+
+
+    }
 }

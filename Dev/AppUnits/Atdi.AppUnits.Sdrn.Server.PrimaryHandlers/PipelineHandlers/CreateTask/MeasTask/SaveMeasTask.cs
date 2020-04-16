@@ -68,27 +68,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         if ((spectrumOccupationArr != null) && (spectrumOccupationArr.Length > 0))
                                         {
                                             var id = readerResMeasLevels.GetValue(c => c.Id);
-                                            var subValue = (int)(spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup - readerResMeasLevels.GetValue(c => c.LevelMinArr));
-                                            if ((spectrumOccupationArr.Length - 1) >= subValue)
+                                            if (readerResMeasLevels.GetValue(c => c.LevelMinArr) != null)
                                             {
-                                                var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
-                                                builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
-                                                builderUpdateResLevels.SetValue(c => c.OccupancySpect, spectrumOccupationArr[subValue]);
-                                                scope.Executor.Execute(builderUpdateResLevels);
-                                            }
-                                            else if ((spectrumOccupationArr.Length - 1) < subValue)
-                                            {
-                                                var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
-                                                builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
-                                                builderUpdateResLevels.SetValue(c => c.OccupancySpect, 0);
-                                                scope.Executor.Execute(builderUpdateResLevels);
-                                            }
-                                            else if (subValue < 0)
-                                            {
-                                                var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
-                                                builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
-                                                builderUpdateResLevels.SetValue(c => c.OccupancySpect, 100);
-                                                scope.Executor.Execute(builderUpdateResLevels);
+                                                var subValue = (int)(spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup - readerResMeasLevels.GetValue(c => c.LevelMinArr));
+                                                if (subValue >= 0)
+                                                {
+                                                    if ((spectrumOccupationArr.Length - 1) >= subValue)
+                                                    {
+                                                        var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                        builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                        builderUpdateResLevels.SetValue(c => c.OccupancySpect, spectrumOccupationArr[subValue]);
+                                                        scope.Executor.Execute(builderUpdateResLevels);
+                                                    }
+                                                    else if ((spectrumOccupationArr.Length - 1) < subValue)
+                                                    {
+                                                        var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                        builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                        builderUpdateResLevels.SetValue(c => c.OccupancySpect, 0);
+                                                        scope.Executor.Execute(builderUpdateResLevels);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                    builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                    builderUpdateResLevels.SetValue(c => c.OccupancySpect, 100);
+                                                    scope.Executor.Execute(builderUpdateResLevels);
+                                                }
                                             }
                                         }
                                     }

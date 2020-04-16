@@ -101,7 +101,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
 
                     host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
-                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
+                    host.RegisterHandler<COM.EstimateRefLevelCommand, COMR.EstimateRefLevelResult>(EstimateRefLevelCommandHandler, mtdp);
                 }
             }
             #region Exception
@@ -363,7 +363,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
         /// </summary>
         /// <param name="command"></param>
         /// <param name="context"></param>
-        public void EstimateRefLevelCommandHandler(COM.MesureTraceCommand command, IExecutionContext context)
+        public void EstimateRefLevelCommandHandler(COM.EstimateRefLevelCommand command, IExecutionContext context)
         {
             try
             {
@@ -1363,7 +1363,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound
                 }
             }
         }
-        private void GetAndPushRefLevelResults(COM.MesureTraceCommand command, IExecutionContext context)
+        private void GetAndPushRefLevelResults(COM.EstimateRefLevelCommand command, IExecutionContext context)
         {
             string poolKeyName = "";
             bool poolKeyFind = false;
