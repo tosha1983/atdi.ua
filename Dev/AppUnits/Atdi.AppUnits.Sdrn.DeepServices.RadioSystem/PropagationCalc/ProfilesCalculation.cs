@@ -69,6 +69,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double LossObs = 0;
 
             bool obstacleIntersection = false;
+            bool isEndPoint = false;
 
             double pixelLength_km = args.D_km / (args.ProfileLength - args.ReliefStartIndex);
 
@@ -92,7 +93,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             var ha_m = args.Ha_m + args.ReliefProfile[args.ReliefStartIndex];
             var hb_m = args.Hb_m + args.ReliefProfile[args.ReliefStartIndex + args.ProfileLength - 1];
 
-            for (int i = args.ReliefStartIndex + 1; i < args.ReliefStartIndex + args.ProfileLength - 1; i++)
+            for (int i = args.ReliefStartIndex + 1; i < args.ReliefStartIndex + args.ProfileLength; i++)
             {
 
                 clutterHeightMin = args.ReliefProfile[i] + args.BuildingProfile[i];
@@ -129,6 +130,16 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     {
                         theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
                     }
+
+                    if ((i == args.ReliefStartIndex + 1) || (i == args.ReliefStartIndex + args.ProfileLength - 1))
+                    {
+                        isEndPoint = true;
+                    }
+                    else
+                    {
+                        isEndPoint = false;
+                    }
+
                     // начало определения длительности прохождения луча в клаттере
                     obstacleIntersection = true;
                     distanceInside_km += pixelLength_km;
@@ -147,9 +158,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                         clutterCode = 7, // код клатера определяется из профиля клатеров
                         d_km = distanceInside_km, // дистанция прохождения в данном клатере
                         elevation_deg = theta_deg, // УМ вхождения в клатер
-                        endPoint = false // признак того что это препятсвие в котором (внутри) находиться точка а иди б
+                        endPoint = isEndPoint // признак того что это препятсвие в котором (внутри) находиться точка а иди б
                     };
-                    LossObs += FunctionCalc(LossObs, obs);
+                    LossObs = FunctionCalc(LossObs, obs);
                     //LossObs += 1;
                     distanceInside_km = 0;
                 }
