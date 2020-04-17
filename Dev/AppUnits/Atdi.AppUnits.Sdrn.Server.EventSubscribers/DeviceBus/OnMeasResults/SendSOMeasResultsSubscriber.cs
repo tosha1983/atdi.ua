@@ -254,9 +254,8 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertResLevels.SetValue(c => c.LevelMinArr, freqSample.LevelMinArr);
                             if (freqSample.Level_dBmkVm >= 10 && freqSample.Level_dBmkVm <= 140)
                                 builderInsertResLevels.SetValue(c => c.ValueSpect, freqSample.Level_dBmkVm);
-                            builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
-
                            
+                            float? OccupationPt = null;
 
                             if ((freqSample.SpectrumOccupationArr!=null) && (freqSample.SpectrumOccupationArr.Length>0) && (freqSample.LevelMinArr!=null))
                             {
@@ -274,7 +273,7 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 {
                                     if (levelMinOccup != null)
                                     {
-                                        float? OccupationPt = null;
+                                        
                                         var subValue = (int)(levelMinOccup - freqSample.LevelMinArr.Value);
                                         if (subValue >= 0)
                                         {
@@ -300,6 +299,11 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                     builderInsertResLevels.SetValue(c => c.SpectrumOccupationArr, spectrumOccupationArr);
                                 }
                             }
+                            if (OccupationPt == null)
+                            {
+                                builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
+                            }
+
                             builderInsertResLevels.SetValue(c => c.FreqMeas, freqSample.Freq_MHz);
                             builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, context.resMeasId);
                             if (validationResult)
