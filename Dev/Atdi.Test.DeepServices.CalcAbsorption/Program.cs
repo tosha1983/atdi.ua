@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal;
+//using Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.PropagationCalc;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 
@@ -11,10 +12,11 @@ namespace Atdi.Test.DeepServices.CalcAbsorption
 {
     class Program
     {
-        //private static double FuncCalc (EstimationClutterObstaclesResult obs)
-        //{
-        //    return 0;
-        //}
+        private static double FuncCalc(double arg1, EstimationClutterObstaclesResult arg2)
+        {
+            //throw new NotImplementedException();
+            return 1;
+        }
 
         static void Main(string[] args)
         {
@@ -75,15 +77,23 @@ namespace Atdi.Test.DeepServices.CalcAbsorption
             
             System.Console.WriteLine($"loss count: {loss}");
             System.Console.ReadLine();
-            
 
+            //loss = AbsorptionCalc.ITU2109(0, 1000, 0.01);
+            //System.Console.WriteLine($"absorption loss: {loss} dB");
+            ////System.Console.ReadLine();
 
+            //loss = AbsorptionCalc.ITU2109(0, 100000, 0.4);
+            //System.Console.WriteLine($"absorption loss: {loss} dB");
+
+            //loss = AbsorptionCalc.ITU2109(0, 1000, 0.8);
+            //System.Console.WriteLine($"absorption loss: {loss} dB");
+
+            //loss = AbsorptionCalc.ITU2109(0, 100, 0.8);
+            //System.Console.WriteLine($"absorption loss: {loss} dB");
+
+            System.Console.ReadLine();
         }
 
-        private static double FuncCalc(double arg1, EstimationClutterObstaclesResult arg2)
-        {
-            //throw new NotImplementedException();
-            return 1;
-        }
+        
     }
 }
