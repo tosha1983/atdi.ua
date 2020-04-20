@@ -40,7 +40,14 @@ namespace Atdi.DataModels.EntityOrm.Api
 	    object PrimaryKey { get; set; }
 	}
 
-    public interface IRecordUpdateResult : IRequestResult
+    public interface IRecordApplyResult : IRequestResult
+    {
+	    int Count { get; set; }
+
+	    object PrimaryKey { get; set; }
+    }
+
+	public interface IRecordUpdateResult : IRequestResult
     {
 	    int Count { get; set; }
     }

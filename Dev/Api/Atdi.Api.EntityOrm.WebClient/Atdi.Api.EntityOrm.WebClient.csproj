@@ -48,12 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\EntityRequest.cs" />
-    <Compile Include="DTO\RecordCreationRequest.cs" />
-    <Compile Include="DTO\RecordCreationResponse.cs" />
+    <Compile Include="DTO\RecordCreateRequest.cs" />
+    <Compile Include="DTO\RecordApplyResponse.cs" />
+    <Compile Include="DTO\RecordCreateResponse.cs" />
     <Compile Include="DTO\RecordDeleteRequest.cs" />
     <Compile Include="DTO\RecordDeleteResponse.cs" />
     <Compile Include="DTO\RecordReadRequest.cs" />
     <Compile Include="DTO\RecordReadResponse.cs" />
+    <Compile Include="DTO\RecordApplyRequest.cs" />
     <Compile Include="DTO\RecordUpdateRequest.cs" />
     <Compile Include="DTO\RecordUpdateResponse.cs" />
     <Compile Include="ExpressionExtensions.cs" />
@@ -66,7 +68,9 @@
     <Compile Include="Methods\QueryFilter.cs" />
     <Compile Include="Methods\ReadMethodHandler.cs" />
     <Compile Include="Methods\ReadQuery.cs" />
+    <Compile Include="Methods\ApplyMethodHandler.cs" />
     <Compile Include="Methods\UpdateMethodHandler.cs" />
+    <Compile Include="Methods\ApplyQuery.cs" />
     <Compile Include="Methods\UpdateQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyInstanceFactory.cs" />

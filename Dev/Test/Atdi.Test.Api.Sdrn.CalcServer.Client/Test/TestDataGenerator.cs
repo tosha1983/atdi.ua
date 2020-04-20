@@ -82,7 +82,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Test
                 contextStation.SITE.Latitude_DEC = 49.86417 + 0.1 * (0.5 - rand.NextDouble()); // на самом деле лучше брать из списка станций которые у наc есть
                 contextStation.SITE.Altitude_m = 30;
                 contextStation.TRANSMITTER = Create<IContextStationTransmitter>();
-                contextStation.TRANSMITTER.PolarizingCode = (byte)PolarizationCode.H;
+                contextStation.TRANSMITTER.PolarizationCode = (byte)PolarizationCode.H;
                 contextStation.TRANSMITTER.Loss_dB = 3;
                 contextStation.TRANSMITTER.MaxPower_dBm = 30;
                 contextStation.TRANSMITTER.Freq_MHz = 10000;
@@ -107,14 +107,14 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Test
 			return contextStations;
 		}
 
-		public static IPointFieldStrengthCalcTask GeneratePointFieldStrengthCalcTask()
-		{
-			var task = Create<IPointFieldStrengthCalcTask>();
+		//public static IPointFieldStrengthCalcTask GeneratePointFieldStrengthCalcTask()
+		//{
+		//	var task = Create<IPointFieldStrengthCalcTask>();
 
-			task.MapName = "MainMap";
-			task.PointAltitude_m = 100;
+		//	task.MapName = "MainMap";
+		//	task.PointAltitude_m = 100;
 
-			return task;
-		}
+		//	return task;
+		//}
 	}
 }

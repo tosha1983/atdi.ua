@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 {
+	[EntityPrimaryKey]
+	public interface IContextStationTransmitter_PK
+	{
+		long StationId { get; set; }
+	}
+
 	[Entity]
-	public interface IContextStationTransmitter : IContextStation_PK
+	public interface IContextStationTransmitter : IContextStationTransmitter_PK
 	{
 
 		double Freq_MHz { get; set; }
@@ -19,9 +25,9 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		float MaxPower_dBm { get; set; }
 
-		byte PolarizingCode { get; set; }
+		byte PolarizationCode { get; set; }
 
-		string PolarizingName { get; set; }
+		string PolarizationName { get; set; }
 
 	}
 

@@ -65,7 +65,20 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 	    public object[] Values { get; set; }
     }
 
-    public class DataRecordsDeleteRequest : EntityRequest
+    public class DataRecordApplyRequest : EntityRequest, API.IDataRecordApplyRequest
+	{
+	    public string[] Filter { get; set; }
+
+	    public string[] FieldsToCreate { get; set; }
+
+	    public string[] FieldsToUpdate { get; set; }
+
+		public object[] ValuesToCreate { get; set; }
+
+		public object[] ValuesToUpdate { get; set; }
+	}
+
+	public class DataRecordsDeleteRequest : EntityRequest
     {
 	    public string[] Filter { get; set; }
     }

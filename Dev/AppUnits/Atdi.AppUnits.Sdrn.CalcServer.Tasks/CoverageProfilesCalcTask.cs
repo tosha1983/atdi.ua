@@ -108,7 +108,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			this.ValidateTaskParameters();
 
 			// найти и загрузить карту
-			this._mapData = _mapService.GetMapByName(this._taskContext.ProjectId, this._parameters.MapName);
+			this._mapData = _mapService.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
 
 			// проверить принадлежность точек к карте
 

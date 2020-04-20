@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
 
-	public class RecordCreationResponse
+	public class RecordApplyResponse
 	{
 		public int Count;
 
 		public object PrimaryKey;
 	}
 
-	public class RecordCreationResponse<TPrimaryKey>
+	public class RecordApplyResponse<TPrimaryKey>
 	{
 		public int Count;
 

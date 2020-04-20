@@ -1,9 +1,12 @@
-﻿using Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels;
+﻿using Atdi.DataModels.Api.EntityOrm.WebClient;
+using Atdi.Test.Api.Sdrn.CalcServer.Client.DataModels;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.DTO;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Atdi.Api.EntityOrm.WebClient;
+using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -17,70 +20,84 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
 			Console.ReadLine();
 
-			client.BaseAddress = new Uri("http://localhost:15070/");
-			client.DefaultRequestHeaders.Accept.Clear();
-			client.DefaultRequestHeaders.Accept.Add(
-				new MediaTypeWithQualityHeaderValue("application/json"));
-			
+			RunPointFieldStrengthCalcTask();
 
-			//LoadContextStation(10);
-
-			//var projectId = CreateProject();
-
-
-
-			//var stationId = CreateContextStation(clientContextId, "Station #0001", "CS: 000001128236263565");
-			//Console.ReadLine();
-
-			//var mapId = CreateProjectMap(
-			//		projectId,
-			//		"Main",
-			//		"Львов: тестирования расчета профелей 2",
-			//		new MapCoordinate
-			//		{
-			//			X = 276328,
-			//			Y = 5532476
-			//		},
-			//		new MapAxis
-			//		{
-			//			Number = 4122,
-			//			Step = 5
-			//		},
-			//		new MapAxis
-			//		{
-			//			Number = 3340,
-			//			Step = 5
-			//		}
-			//	);
-
-			//ChangeProjectMapStatus(mapId, 1, "Pending", "The status of waiting for map processing");
-			//Console.WriteLine($"Created Project ID #{projectId}, Map Id #{mapId}. Press any key to change status");
-			
-			//Console.WriteLine($"Wait maps preparing ... Press any key to continue");
-			//Console.ReadLine();
-
-			var projectId = 2;
-			var clientContextId = CreateClientContext(projectId);
-			var taskId = CreateCoverageProfilesCalcTask(projectId, @"C:\Temp\Maps\Profiles\Station.csv");
-			ChangeCalcTaskStatus(taskId, 2, "Available", "The status of available task for calculation");
-			var resultId = CreateCalcResult(clientContextId, taskId);
-
-			Console.WriteLine($"Created Client Context ID #{clientContextId}.");
-			Console.WriteLine($"Created Calc Task with ID #{taskId}.");
-			Console.WriteLine($"Created result task with ID #{taskId}. Press any key to change status");
-
-			Console.WriteLine($"Press any key to start calculation");
 			Console.ReadLine();
-
-			ChangeCalcResultStatus(resultId, 1, "Pending", "The status of waiting calculation result");
-
-			Console.WriteLine($"Wait calculation ... Press any key to show result");
 			Console.ReadLine();
+			//client.BaseAddress = new Uri("http://localhost:15070/");
+			//client.DefaultRequestHeaders.Accept.Clear();
+			//client.DefaultRequestHeaders.Accept.Add(
+			//	new MediaTypeWithQualityHeaderValue("application/json"));
 
-			//var mapFile = LoadProjectMapContent(4);
-			//MapMaker.Make(mapFile, @"C:\Temp\Maps\Out");
 
+			////LoadContextStation(10);
+
+			////var projectId = CreateProject();
+
+
+
+			////var stationId = CreateContextStation(clientContextId, "Station #0001", "CS: 000001128236263565");
+			////Console.ReadLine();
+
+			////var mapId = CreateProjectMap(
+			////		projectId,
+			////		"Main",
+			////		"Львов: тестирования расчета профелей 2",
+			////		new MapCoordinate
+			////		{
+			////			X = 276328,
+			////			Y = 5532476
+			////		},
+			////		new MapAxis
+			////		{
+			////			Number = 4122,
+			////			Step = 5
+			////		},
+			////		new MapAxis
+			////		{
+			////			Number = 3340,
+			////			Step = 5
+			////		}
+			////	);
+
+			////ChangeProjectMapStatus(mapId, 1, "Pending", "The status of waiting for map processing");
+			////Console.WriteLine($"Created Project ID #{projectId}, Map Id #{mapId}. Press any key to change status");
+
+			////Console.WriteLine($"Wait maps preparing ... Press any key to continue");
+			////Console.ReadLine();
+
+			//var projectId = 2;
+			//var clientContextId = CreateClientContext(projectId);
+			//var taskId = CreateCoverageProfilesCalcTask(projectId, @"C:\Temp\Maps\Profiles\Station.csv");
+			//ChangeCalcTaskStatus(taskId, 2, "Available", "The status of available task for calculation");
+			//var resultId = CreateCalcResult(clientContextId, taskId);
+
+			//Console.WriteLine($"Created Client Context ID #{clientContextId}.");
+			//Console.WriteLine($"Created Calc Task with ID #{taskId}.");
+			//Console.WriteLine($"Created result task with ID #{taskId}. Press any key to change status");
+
+			//Console.WriteLine($"Press any key to start calculation");
 			//Console.ReadLine();
+
+			//ChangeCalcResultStatus(resultId, 1, "Pending", "The status of waiting calculation result");
+
+			//Console.WriteLine($"Wait calculation ... Press any key to show result");
+			//Console.ReadLine();
+
+			////var mapFile = LoadProjectMapContent(4);
+			////MapMaker.Make(mapFile, @"C:\Temp\Maps\Out");
+
+			////Console.ReadLine();
+		}
+
+		static void RunPointFieldStrengthCalcTask()
+		{
+			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+			var dataLayer = new WebApiDataLayer();
+
+			PointFieldStrengthCalcTask.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
 		}
 
 		static long CreateProject()

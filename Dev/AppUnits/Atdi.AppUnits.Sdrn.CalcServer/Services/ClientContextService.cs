@@ -46,6 +46,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			var query = _calcServerDataLayer.GetBuilder<IClientContext>()
 				.From()
 				.Select(c => c.Id)
+				.Select(c => c.PROJECT.Id)
 				.Select(c => c.OwnerInstance)
 				.Select(c => c.CreatedDate)
 				.Select(c => c.OwnerContextId)
@@ -147,7 +148,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new DiffractionCalcBlock
 				{
 					ModelType = (DiffractionCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -173,7 +174,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new SubPathDiffractionCalcBlock
 				{
 					ModelType = (SubPathDiffractionCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -199,7 +200,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new TropoCalcBlock
 				{
 					ModelType = (TropoCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -222,7 +223,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 				return new DuctingCalcBlock
 				{
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -248,7 +249,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new AbsorptionCalcBlock
 				{
 					ModelType = (AbsorptionCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -271,7 +272,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				}
 				return new ReflectionCalcBlock
 				{
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -297,7 +298,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new AtmosphericCalcBlock
 				{
 					ModelType = (AtmosphericCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -323,7 +324,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new AdditionalCalcBlock
 				{
 					ModelType = (AdditionalCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -349,7 +350,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 				return new ClutterCalcBlock
 				{
 					ModelType = (ClutterCalcBlockModelType)reader.GetValue(c => c.ModelTypeCode),
-					Available = true
+					Available = reader.GetValue(c => c.Available)
 				};
 			});
 		}
@@ -372,19 +373,19 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					try
 					{
 						// все измененяи в рамках тразакции
-						calcDbScope.BeginTran();
+						//calcDbScope.BeginTran();
 
 						// пока обрабатываем только координаты
 						this.PrepareStationsSites(calcDbScope, contextId);
 
 						// фиксируем состояние
 						this.ChangeContextStatus(calcDbScope, contextId, ClientContextStatusCode.Prepared);
-						calcDbScope.Commit();
+						//calcDbScope.Commit();
 						_logger.Verbouse(Contexts.ThisComponent, Categories.MapPreparation, $"Prepared project map with id #{contextId}");
 					}
 					catch (Exception e)
 					{
-						calcDbScope.Rollback();
+						//calcDbScope.Rollback();
 						this.ChangeContextStatus(calcDbScope, contextId, ClientContextStatusCode.Failed, e.ToString());
 						throw;
 					}
@@ -452,6 +453,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 
 				var insQuery = _calcServerDataLayer.GetBuilder<IContextStationCoordinates>()
 					.Insert()
+					.SetValue(c => c.StationId, station.StationId)
 					.SetValue(c => c.EpsgX, epsgCoordinate.X)
 					.SetValue(c => c.EpsgY, epsgCoordinate.Y)
 					.SetValue(c => c.AtdiX, (int)epsgCoordinate.X)
@@ -492,29 +494,46 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					.Select(
 						c => c.Id,
 						c => c.CONTEXT.Id,
-						c => c.TypeCode,
+						c => c.StateCode,
 						c => c.CreatedDate,
 						c => c.CallSign,
 						c => c.Name,
+
 						c => c.SITE.Latitude_DEC,
 						c => c.SITE.Longitude_DEC,
 						c => c.SITE.Altitude_m,
+
 						c => c.COORDINATES.AtdiX,
 						c => c.COORDINATES.AtdiY,
+
 						c => c.ANTENNA.Azimuth_deg,
 						c => c.ANTENNA.Gain_dB,
 						c => c.ANTENNA.ItuPatternCode,
 						c => c.ANTENNA.Tilt_deg,
 						c => c.ANTENNA.XPD_dB,
+
+						c => c.ANTENNA.HH_PATTERN.StationId,
 						c => c.ANTENNA.HH_PATTERN.Angle_deg,
 						c => c.ANTENNA.HH_PATTERN.Loss_dB,
+
+						c => c.ANTENNA.HV_PATTERN.StationId,
 						c => c.ANTENNA.HV_PATTERN.Angle_deg,
 						c => c.ANTENNA.HV_PATTERN.Loss_dB,
+
+						c => c.ANTENNA.VH_PATTERN.StationId,
 						c => c.ANTENNA.VH_PATTERN.Angle_deg,
 						c => c.ANTENNA.VH_PATTERN.Loss_dB,
-						c => c.ANTENNA.VV_PATTERN.Angle_deg,
-						c => c.ANTENNA.VV_PATTERN.Loss_dB
 
+						c => c.ANTENNA.VV_PATTERN.StationId,
+						c => c.ANTENNA.VV_PATTERN.Angle_deg,
+						c => c.ANTENNA.VV_PATTERN.Loss_dB,
+
+						c => c.TRANSMITTER.StationId,
+						c => c.TRANSMITTER.Loss_dB,
+						c => c.TRANSMITTER.Freq_MHz,
+						c => c.TRANSMITTER.BW_kHz,
+						c => c.TRANSMITTER.MaxPower_dBm,
+						c => c.TRANSMITTER.PolarizationCode
 					)
 					.Where(c => c.Id, ConditionOperator.Equal, stationId)
 					.Where(c => c.CONTEXT.Id, ConditionOperator.Equal, contextId);
@@ -531,7 +550,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					Id = reader.GetValue(c => c.Id),
 					ContextId = contextId,
 					CreatedDate = reader.GetValue(c => c.CreatedDate),
-					Type = (ClientContextStationType)reader.GetValue(c => c.TypeCode),
+					Type = (ClientContextStationType)reader.GetValue(c => c.StateCode),
 					CallSign = reader.GetValue(c => c.CallSign),
 					Name = reader.GetValue(c => c.Name),
 					Site = new Wgs84Site
@@ -552,8 +571,21 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 						Azimuth_deg = reader.GetValue(c => c.ANTENNA.Azimuth_deg),
 						ItuPattern = (AntennaItuPattern)reader.GetValue(c => c.ANTENNA.ItuPatternCode),
 						Tilt_deg = reader.GetValue(c => c.ANTENNA.Tilt_deg)
-					}
+					},
+					
 				};
+
+				if (reader.IsNotNull(c => c.TRANSMITTER.StationId))
+				{
+					stationRecord.Transmitter = new StationTransmitter
+					{
+						Loss_dB = reader.GetValue(c => c.TRANSMITTER.Loss_dB),
+						Polarization = (PolarizationType) reader.GetValue(c => c.TRANSMITTER.PolarizationCode),
+						MaxPower_dBm = reader.GetValue(c => c.TRANSMITTER.MaxPower_dBm),
+						BW_kHz = reader.GetValue(c => c.TRANSMITTER.BW_kHz),
+						Freq_MHz = reader.GetValue(c => c.TRANSMITTER.Freq_MHz)
+					};
+				}
 
 				if (reader.IsNotNull(c => c.ANTENNA.HH_PATTERN.StationId))
 				{

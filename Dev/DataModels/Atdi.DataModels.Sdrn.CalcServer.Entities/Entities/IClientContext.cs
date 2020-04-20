@@ -15,13 +15,23 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[Entity]
 	public interface IClientContext : IClientContext_PK
 	{
+		IClientContext BASE_CONTEXT { get; set; }
+
 		IProject PROJECT { get; set; }
+
+		string Name { get; set; }
+
+		string Note { get; set; }
 
 		string OwnerInstance { get; set; }
 
 		Guid OwnerContextId { get; set; }
 
 		DateTimeOffset CreatedDate { get; set; }
+
+		byte TypeCode { get; set; }
+
+		string TypeName { get; set; }
 
 		byte StatusCode { get; set; }
 
@@ -51,6 +61,24 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 
 		IClientContextClutter CLUTTER_BLOCK { get; set; }
 
+	}
+
+	public enum ClientContextTypeCode
+	{
+		/// <summary>
+		/// Контекст создан 
+		/// </summary>
+		Unknown = 0,
+
+		/// <summary>
+		/// Базовій контекст
+		/// </summary>
+		Base = 1,
+
+		/// <summary>
+		/// Обычный клиентский контекст 
+		/// </summary>
+		Client = 2
 	}
 
 	public enum ClientContextStatusCode

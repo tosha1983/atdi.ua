@@ -197,7 +197,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					try
 					{
 						// все измененяи по карте в рамках тразакции
-						calcDbScope.BeginTran();
+						//calcDbScope.BeginTran();
 
 						// чистим контекст карты
 						CleanProjectMapContext(calcDbScope, projectMapId);
@@ -243,12 +243,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 							
 						// фиксируем состояние
 						this.ChangeProjectMapStatus(calcDbScope, projectMapId, ProjectMapStatusCode.Prepared);
-						calcDbScope.Commit();
+						//calcDbScope.Commit();
 						_logger.Verbouse(Contexts.ThisComponent, Categories.MapPreparation, $"Prepared project map with id #{projectMapId}");
 					}
 					catch (Exception e)
 					{
-						calcDbScope.Rollback();
+						//calcDbScope.Rollback();
 						this.ChangeProjectMapStatus(calcDbScope, projectMapId, ProjectMapStatusCode.Failed, e.ToString());
 						throw;
 					}

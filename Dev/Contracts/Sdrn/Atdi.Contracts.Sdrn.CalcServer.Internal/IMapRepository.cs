@@ -1,4 +1,5 @@
-﻿using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+﻿using Atdi.Contracts.CoreServices.DataLayer;
+using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Atdi.Contracts.Sdrn.CalcServer.Internal
     {
 	    
 
-		ProjectMapData GetMapByName(long projectId, string mapName);
+		ProjectMapData GetMapByName(IDataLayerScope dbScope, long projectId, string mapName);
 	    
 	}
 

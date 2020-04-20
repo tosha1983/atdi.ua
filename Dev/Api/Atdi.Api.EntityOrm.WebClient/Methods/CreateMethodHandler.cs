@@ -39,7 +39,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		public long Handle(HttpResponseMessage response)
 		{
 			
-			var result = response.Content.ReadAsAsync<RecordCreationResponse>()
+			var result = response.Content.ReadAsAsync<RecordCreateResponse>()
 				.GetAwaiter()
 				.GetResult();
 
@@ -49,7 +49,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		public TResult Handle<TResult>(HttpResponseMessage response)
 		{
 			var proxyType = _proxyInstanceFactory.GetProxyType<TResult>();
-			var type = typeof(RecordCreationResponse<>);
+			var type = typeof(RecordCreateResponse<>);
 			var responseType = type.MakeGenericType(proxyType);
 
 			//var instance = Activator.CreateInstance(proxyType);

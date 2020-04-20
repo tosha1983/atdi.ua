@@ -66,7 +66,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 		private static readonly Dictionary<ClutterCalcBlockModelType, ProfileOptions> ClutterBlockProfileOptions = new Dictionary<ClutterCalcBlockModelType, ProfileOptions>
 		{
 			[ClutterCalcBlockModelType.Unknown] = ProfileOptions.Empty,
-			[ClutterCalcBlockModelType.ITU2109] = ProfileOptions.AllWithoutHeight
+			[ClutterCalcBlockModelType.ITU2109] = ProfileOptions.AllWithoutHeight,
+			[ClutterCalcBlockModelType.Flat] = ProfileOptions.AllWithoutHeight
 		};
 
 		private static readonly Dictionary<DiffractionCalcBlockModelType, ProfileOptions> DiffractionBlockProfileOptions = new Dictionary<DiffractionCalcBlockModelType, ProfileOptions>
@@ -290,10 +291,10 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 					ReliefProfile = reliefBuffer,
 					ReliefStartIndex = 0,
 					ProfileLength = profileLenght,
-                    Freq_Mhz = data.Freq_Mhz,
+                    Freq_Mhz = data.Transmitter.Freq_MHz,
                     D_km = d_km,
-                    Ha_m = data.Hpoint_m,
-                    Hb_m = data.Htarget_m
+                    Ha_m = data.PointAltitude_m,
+                    Hb_m = data.TargetAltitude_m
 				};
 
 				var lossResult = new CalcLossResult();
@@ -304,11 +305,11 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 					Antenna = data.Antenna,
 					AzimutToTarget_deg = AzimutToTarget,
                     TiltToTarget_deg = lossResult.TiltaD_Deg,
-					PolarizationEquipment = data.StationTranmitterPolarization,
-                    PolarizationWave = data.StationTranmitterPolarization
+					PolarizationEquipment = data.Transmitter.Polarization,
+                    PolarizationWave = data.Transmitter.Polarization
                 };
 				var antennaGainD = _signalService.CalcAntennaGain(in antennaGainArgs);
-                double Level_dBm = data.StationTransmitterMaxPow_dBm - data.StationTransmitterLoss_dB + antennaGainD - lossResult.LossD_dB;
+                double Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + antennaGainD - lossResult.LossD_dB;
                 if (data.PropagationModel.AbsorptionBlock.Available)
                 {// нужен учет дополнительного пути распространения
                     double Loss1 = lossResult.LossD_dB - antennaGainD;
@@ -317,9 +318,9 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     double Loss2 = lossResult.LossA_dB - antennaGainA;
                     double LossSum = Math.Min(Loss1, Loss2);
                     //LossSum = LossSum - 10 * Math.Log10(Math.Pow(10, -0.1 * (Loss1 - LossSum))+ Math.Pow(10, -0.1 * (Loss2 - LossSum)));
-                    Level_dBm = data.StationTransmitterMaxPow_dBm - data.StationTransmitterLoss_dB + LossSum;
+                    Level_dBm = data.Transmitter.MaxPower_dBm - data.Transmitter.Loss_dB + LossSum;
                 }
-                double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Freq_Mhz);
+                double FS_dBuVm = Level_dBm + 77.2 + 20 * Math.Log10(data.Transmitter.Freq_MHz);
                 return new FieldStrengthCalcResult
 				{
 					FS_dBuVm = FS_dBuVm,

@@ -6,13 +6,19 @@ GO
 
 CREATE TABLE [CALC].[CLIENT_CONTEXTS](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[BASE_CONTEXT_ID] [bigint] NULL,
 	[PROJECT_ID] [bigint] NOT NULL,
+	[CONTEXT_NAME] [nvarchar](250) NOT NULL,
+	[CONTEXT_NOTE] [nvarchar](max) NULL,
 	[OWNER_INSTANCE] [nvarchar](250) NOT NULL,
 	[OWNER_CONTEXT_ID] [uniqueidentifier] NOT NULL,
 	[CREATED_DATE] [datetimeoffset](7) NOT NULL,
+	[TYPE_CODE] [tinyint] NOT NULL,
+	[TYPE_NAME] [nvarchar](50) NOT NULL,
 	[STATUS_CODE] [tinyint] NOT NULL,
 	[STATUS_NAME] [nvarchar](50) NOT NULL,
 	[STATUS_NOTE] [nvarchar](max) NULL,
+	
 
  CONSTRAINT [PK_CLIENT_CONTEXTS] PRIMARY KEY CLUSTERED 
 (

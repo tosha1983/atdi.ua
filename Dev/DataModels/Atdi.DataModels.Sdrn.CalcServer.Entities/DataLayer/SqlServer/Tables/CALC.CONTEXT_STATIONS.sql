@@ -8,10 +8,10 @@ CREATE TABLE [CALC].[CONTEXT_STATIONS](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
 	[CONTEXT_ID] [bigint] NOT NULL,
 	[CREATED_DATE] [datetimeoffset](7) NOT NULL,
-	[NAME] [nvarchar](50) NOT NULL,
+	[NAME] [nvarchar](250) NOT NULL,
 	[CALL_SIGN] [nvarchar](50) NOT NULL,
-	[TYPE_CODE] [tinyint] NOT NULL,
-	[TYPE_NAME] [nvarchar](50) NOT NULL,
+	[STATE_CODE] [tinyint] NOT NULL,
+	[STATE_NAME] [nvarchar](50) NOT NULL,
  CONSTRAINT [PK_CONTEXT_STATIONS] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

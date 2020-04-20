@@ -14,6 +14,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Clients;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.Contracts.Sdrn.DeepServices.Gis;
+using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
@@ -32,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		private ITaskContext _taskContext;
 		private IDataLayerScope _calcDbScope;
 		private TaskParameters _parameters;
-		private ClientContext _clientContext;
+		//private ClientContext _clientContext;
 		private ClientContextStation _contextStation;
 		private PropagationModel _propagationModel;
 		private ProjectMapData _mapData;
@@ -77,6 +78,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		public void Load(ITaskContext taskContext)
 		{
+
 			this._taskContext = taskContext;
 			this._calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>();
 
@@ -84,14 +86,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 			this.LoadTaskParameters();
 			this.ValidateTaskParameters();
 
-			this._clientContext = _contextService.GetContextById(this._calcDbScope, taskContext.ClientContextId);
+			//this._clientContext = _contextService.GetContextById(this._calcDbScope, taskContext.ClientContextId);
 			this._contextStation = _contextService.GetContextStation(this._calcDbScope, taskContext.ClientContextId, _parameters.ContextStationId);
 			this._propagationModel = _contextService.GetPropagationModel(this._calcDbScope, taskContext.ClientContextId);
 
 			// тут валидация контекста
 
 			// найти и загрузить карту
-			this._mapData = _mapRepository.GetMapByName(this._taskContext.ProjectId, this._parameters.MapName);
+			this._mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
 		}
 		
 
@@ -104,11 +106,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				Antenna = _contextStation.Antenna,
 				PropagationModel = _propagationModel,
 				PointCoordinate = _contextStation.Coordinate,
+				PointAltitude_m = _contextStation.Site.Altitude,
 				TargetCoordinate = _transformation.ConvertCoordinateToAtdi(_parameters.PointSite, _parameters.Projection),
+				TargetAltitude_m = _parameters.PointSite.Altitude,
 				MapArea = _mapData.Area,
 				BuildingContent = _mapData.BuildingContent,
 				ClutterContent = _mapData.ClutterContent,
-				ReliefContent = _mapData.ReliefContent
+				ReliefContent = _mapData.ReliefContent,
+				Transmitter = _contextStation.Transmitter
 			};
 
 			var iteration = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
@@ -127,18 +132,17 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 		private void LoadTaskParameters()
 		{
-			var query = _calcServerDataLayer.GetBuilder<IPointFieldStrengthCalcTask>()
+			var query = _calcServerDataLayer.GetBuilder<IPointFieldStrengthArgs>()
 				.From()
 				.Select(
-					c => c.Id,
 					c => c.STATION.Id,
 					c => c.PointAltitude_m,
 					c => c.PointLatitude_DEC,
 					c => c.PointLongitude_DEC,
-					c => c.CONTEXT.PROJECT.Projection,
-					c => c.MapName
+					c => c.TASK.CONTEXT.PROJECT.Projection,
+					c => c.TASK.MapName
 				)
-				.Where(c => c.Id, ConditionOperator.Equal, _taskContext.TaskId);
+				.Where(c => c.TaskId, ConditionOperator.Equal, _taskContext.TaskId);
 
 			this._parameters = _calcDbScope.Executor.ExecuteAndFetch(query, reader =>
 			{
@@ -151,25 +155,37 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 					ContextStationId = reader.GetValue(c => c.STATION.Id),
 					PointSite = new Wgs84Site
 					{
-						Latitude = reader.GetValue(c => c.PointLatitude_DEC),
-						Altitude = reader.GetValue(c => c.PointAltitude_m),
-						Longitude = reader.GetValue(c => c.PointLongitude_DEC),
+						Latitude = reader.GetValue(c => c.PointLatitude_DEC).GetValueOrDefault(),
+						Altitude = reader.GetValue(c => c.PointAltitude_m).GetValueOrDefault(),
+						Longitude = reader.GetValue(c => c.PointLongitude_DEC).GetValueOrDefault(),
 					},
-					Projection = reader.GetValue(c => c.CONTEXT.PROJECT.Projection),
-					MapName = reader.GetValue(c => c.MapName)
+					Projection = reader.GetValue(c => c.TASK.CONTEXT.PROJECT.Projection),
+					MapName = reader.GetValue(c => c.TASK.MapName)
 				};
 			});
 		}
 
 		private void SaveTaskResult(in FieldStrengthCalcResult result)
 		{
-			var updateQuery = _calcServerDataLayer.GetBuilder<IPointFieldStrengthCalcResult>()
+			var updateQuery = _calcServerDataLayer.GetBuilder<IPointFieldStrengthResult>()
 				.Update()
-				.SetValue(c => c.FS_dBuVm, result.FS_dBuVm)
-				.SetValue(c => c.Level_dBm, result.Level_dBm)
-				.Where(c => c.Id, ConditionOperator.Equal, _taskContext.ResultId);
-
-			_calcDbScope.Executor.Execute(updateQuery);
+				.SetValue(c => c.FS_dBuVm, (float?)result.FS_dBuVm)
+				.SetValue(c => c.Level_dBm, (float?)result.Level_dBm)
+				.Where(c => c.ResultId, ConditionOperator.Equal, _taskContext.ResultId);
+			var count = _calcDbScope.Executor.Execute(updateQuery);
+			if (count == 0)
+			{
+				var insertQuery = _calcServerDataLayer.GetBuilder<IPointFieldStrengthResult>()
+					.Insert()
+					.SetValue(c => c.ResultId, _taskContext.ResultId)
+					.SetValue(c => c.FS_dBuVm, (float?) result.FS_dBuVm)
+					.SetValue(c => c.Level_dBm, (float?) result.Level_dBm);
+				count = _calcDbScope.Executor.Execute(insertQuery);
+				if (count == 0)
+				{
+					throw new InvalidOperationException($"Can't create result record with ID #{_taskContext.ResultId}");
+				}
+			}
 		}
 	}
 }

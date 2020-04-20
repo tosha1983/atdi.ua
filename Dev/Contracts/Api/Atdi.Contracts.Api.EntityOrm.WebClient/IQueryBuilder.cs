@@ -13,6 +13,8 @@
 		IUpdateQuery Update();
 
 		IDeleteQuery Delete();
+
+		IApplyQuery Apply();
 	}
 
 	public interface IQueryBuilder<TEntity>
@@ -28,5 +30,7 @@
 		IUpdateQuery<TEntity> Update();
 
 		IDeleteQuery<TEntity> Delete();
+
+		IApplyQuery<TEntity> Apply();
 	}
 }

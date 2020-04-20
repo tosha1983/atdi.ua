@@ -52,6 +52,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return new DeleteQuery(_entityNamespace, _entityName);
 		}
 
+		public IApplyQuery Apply()
+		{
+			return new ApplyQuery(_entityNamespace, _entityName);
+		}
+
 		public IReadQuery Read()
 		{
 			return new ReadQuery(_entityNamespace, _entityName);
@@ -80,6 +85,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 		public string EntityName => _entityName;
 
 		public string EntityNamespace => _entityNamespace;
+
+		public IApplyQuery<TEntity> Apply()
+		{
+			return new ApplyQuery<TEntity>(new ApplyQuery(_entityNamespace, _entityName));
+		}
 
 		public ICreateQuery<TEntity> Create()
 		{

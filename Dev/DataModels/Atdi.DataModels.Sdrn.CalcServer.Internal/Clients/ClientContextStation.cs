@@ -28,6 +28,8 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Clients
 
 		public AtdiCoordinate Coordinate;
 
+		public StationTransmitter Transmitter;
+
 	}
 
 	public enum ClientContextStationType

@@ -263,6 +263,20 @@ namespace Atdi.Api.EntityOrm.WebClient
 				return realValue.Value.ToString(CultureInfo.InvariantCulture) + "D";
 			}
 
+			if (type == typeof(Guid))
+			{
+				return "'" + value.ToString() + "'";
+			}
+			if (type == typeof(Guid?))
+			{
+				var realValue = (Guid?)(object)value;
+				if (!realValue.HasValue)
+				{
+					return "null";
+				}
+				return "'" + realValue.Value.ToString() + "'";
+			}
+
 			if (type == typeof(decimal))
 			{
 				return value.ToString() + "N";
@@ -274,9 +288,10 @@ namespace Atdi.Api.EntityOrm.WebClient
 				{
 					return "null";
 				}
-				return realValue.Value.ToString(CultureInfo.InvariantCulture);
+				return realValue.Value.ToString(CultureInfo.InvariantCulture) +"N";
 			}
-			return value.ToString() + "N";
+
+			return value.ToString();
 		}
 
 		public static string[] BuildValues<TValue>(params TValue[] values)

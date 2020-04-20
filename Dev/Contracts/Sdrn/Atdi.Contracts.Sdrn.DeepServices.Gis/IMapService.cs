@@ -7,7 +7,7 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis.MapService;
 
 namespace Atdi.Contracts.Sdrn.DeepServices.Gis
 {
-	public interface IMapService
+	public interface IMapService : IDeepService
 	{
 		void CalcProfileIndexers(in CalcProfileIndexersArgs args, ref CalcProfileIndexersResult result);
 	}

@@ -17,12 +17,12 @@ using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 {
-	internal class MapService : IMapRepository
+	internal class MapRepository : IMapRepository
 	{
 		private readonly IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> _calcServerDataLayer;
 		private readonly ILogger _logger;
 
-		public MapService(
+		public MapRepository(
 			IDataLayer<EntityDataOrm<CalcServerEntityOrmContext>> calcServerDataLayer,
 			ILogger logger)
 		{
@@ -30,27 +30,24 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 			_logger = logger;
 		}
 
-		public ProjectMapData GetMapByName(long projectId, string mapName)
+		public ProjectMapData GetMapByName(IDataLayerScope dbScope, long projectId, string mapName)
 		{
-			using (var calcDbScope = this._calcServerDataLayer.CreateScope<CalcServerDataContext>())
+			var mapData = this.LoadProjectMap(dbScope, projectId, mapName);
+			if (mapData == null)
 			{
-				var mapData = this.LoadProjectMap(calcDbScope, projectId, mapName);
-				if (mapData == null)
-				{
-					throw new InvalidOperationException($"Failed to load map by name '{mapName}' for project with ID #{projectId}");
-				}
-
-				mapData.ReliefContent =
-					this.LoadProjectMapContent<short>(calcDbScope, mapData.Id, ProjectMapType.Relief);
-
-				mapData.ClutterContent =
-					this.LoadProjectMapContent<byte>(calcDbScope, mapData.Id, ProjectMapType.Clutter);
-
-				mapData.BuildingContent =
-					this.LoadProjectMapContent<byte>(calcDbScope, mapData.Id, ProjectMapType.Building);
-
-				return mapData;
+				throw new InvalidOperationException($"Failed to load map by name '{mapName}' for project with ID #{projectId}");
 			}
+
+			mapData.ReliefContent =
+				this.LoadProjectMapContent<short>(dbScope, mapData.Id, ProjectMapType.Relief);
+
+			mapData.ClutterContent =
+				this.LoadProjectMapContent<byte>(dbScope, mapData.Id, ProjectMapType.Clutter);
+
+			mapData.BuildingContent =
+				this.LoadProjectMapContent<byte>(dbScope, mapData.Id, ProjectMapType.Building);
+
+			return mapData;
 		}
 
 		private ProjectMapData LoadProjectMap(IDataLayerScope calcDbScope, long projectId, string mapName)

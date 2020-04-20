@@ -33,6 +33,11 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// <summary>
 		/// ITU 2109 Model
 		/// </summary>
-		ITU2109 = 1
+		ITU2109 = 1,
+
+		/// <summary>
+		/// Flat model
+		/// </summary>
+		Flat = 2
 	}
 }

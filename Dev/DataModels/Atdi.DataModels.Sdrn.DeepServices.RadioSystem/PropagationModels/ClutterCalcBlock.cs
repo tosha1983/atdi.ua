@@ -24,6 +24,7 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels
 		/// ITU 2109 Model
 		/// </summary>
 		ITU2109 = 1,
+
         /// <summary>
         /// Flat Model
         /// </summary>

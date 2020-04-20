@@ -13,16 +13,27 @@
     <Field Name="Id" SourceType="Column"  SourceName="ID" DataType="Counter.64" Title="Project Map ID" Desc="The identifier of the client context"/>
     <Field Name="CONTEXT" SourceType="Reference" SourceName="ClientContext"  Required="true" Title="Context" Desc="The client context in which the record of the station is created" />
     <Field Name="CreatedDate" SourceType="Column" SourceName="CREATED_DATE" DataType="DateTimeOffset"  Required="true" Title="Created date" Desc="The date of the station record created"  />
-    <Field Name="Name" SourceType="Column" SourceName="NAME" DataType="Text.50" Required="true" Title="Station Name" Desc="The name of the station of the context" />
+    <Field Name="Name" SourceType="Column" SourceName="NAME" DataType="Text.250" Required="true" Title="Station Name" Desc="The name of the station of the context" />
     <Field Name="CallSign" SourceType="Column" SourceName="CALL_SIGN" DataType="Text.50" Required="true" Title="Call sign" Desc="The call sign of the station of the context" />
 
-    <Field Name="TypeCode" SourceType="Column" SourceName="TYPE_CODE" DataType="Code.u08" Required="true" Title="Station Type Code" Desc="The code of the type of the station"  />
-    <Field Name="TypeName" SourceType="Column" SourceName="TYPE_NAME" DataType="Text.50" Title="Station Type Name" Desc="The name of the type of the station" />
+    <Field Name="StateCode" SourceType="Column" SourceName="STATE_CODE" DataType="Code.u08" Required="true" Title="Station Type Code" Desc="The code of the type of the station"  />
+    <Field Name="StateName" SourceType="Column" SourceName="STATE_NAME" DataType="Text.50" Title="Station Type Name" Desc="The name of the type of the station" />
 
     <Field Name="SITE" SourceName="ContextStationSite" SourceType="Extension" Title="Station Site" Required="true"/>
-    <Field Name="TRANSMITTER" SourceName="ContextStationTransmitter" SourceType="Extension" Title="Station Transmitter" Required="true"/>
-    <Field Name="RECEIVER" SourceName="ContextStationReceiver" SourceType="Extension" Title="Station Receiver" Required="true"/>
+    
     <Field Name="ANTENNA" SourceName="ContextStationAntenna" SourceType="Extension" Title="Station Antenna " Required="true"/>
+
+    <Field Name="TRANSMITTER" SourceName="ContextStationTransmitter" SourceType="Reference" Title="Station Transmitter" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+
+    <Field Name="RECEIVER" SourceName="ContextStationReceiver" SourceType="Reference" Title="Station Receiver" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
 
     <Field Name="COORDINATES" SourceName="ContextStationCoordinates" SourceType="Reference" Title="Coordinates" Required="false">
       <PrimaryKeyMapping>

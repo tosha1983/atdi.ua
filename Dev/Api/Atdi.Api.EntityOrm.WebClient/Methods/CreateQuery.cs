@@ -36,7 +36,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var fields = new string[count];
 			var values = new object[count];
 
-			var request = new RecordCreationRequest
+			var request = new RecordCreateRequest
 			{
 				Namespace = _entityNamespace,
 				Entity = _entityName,

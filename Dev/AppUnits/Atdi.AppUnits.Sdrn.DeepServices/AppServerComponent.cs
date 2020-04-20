@@ -21,6 +21,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices
 
 		protected override void OnInstallUnit()
 		{
+			
+		}
+
+		protected override void OnActivateUnit()
+		{
+			base.OnActivateUnit();
 			var typeResolver = this.Resolver.Resolve<ITypeResolver>();
 			// подключаем низкоуровневые сервисы 
 			var deepServiceInterfaceType = typeof(IDeepService);

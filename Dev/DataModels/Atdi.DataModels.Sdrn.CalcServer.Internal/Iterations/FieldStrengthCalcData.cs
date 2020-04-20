@@ -22,23 +22,30 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
 		public AtdiMapArea MapArea;
 
-		public short[] ReliefContent { get; set; }
+		public short[] ReliefContent;
 
-		public byte[] ClutterContent { get; set; }
+		public byte[] ClutterContent;
 
-		public byte[] BuildingContent { get; set; }
+		public byte[] BuildingContent;
 
-        public double Freq_Mhz;
-        public PolarizationType StationTranmitterPolarization;
-        public float StationTransmitterMaxPow_dBm;
-        public float StationTransmitterLoss_dB;
+		public StationTransmitter Transmitter;
+
+        //public double TransmitterFreq_Mhz;
+
+        //public PolarizationType TranmitterPolarization;
+
+        //public float TransmitterMaxPow_dBm;
+
+        //public float TransmitterLoss_dB;
+
         /// <summary>
         /// Высота первой точки (Базовой станции) 
         /// </summary>
-        public double Hpoint_m;
+        public double PointAltitude_m;
+
         /// <summary>
         /// Высота второй точки (Точька, Абонент, Кореспондирующая станция)
         /// </summary>
-        public double Htarget_m;
+        public double TargetAltitude_m;
     }
 }

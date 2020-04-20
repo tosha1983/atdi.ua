@@ -331,5 +331,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.Gis
 
 			return indexerPosition - startPosition;
 		}
+
+		public void Dispose()
+		{
+		}
 	}
 }

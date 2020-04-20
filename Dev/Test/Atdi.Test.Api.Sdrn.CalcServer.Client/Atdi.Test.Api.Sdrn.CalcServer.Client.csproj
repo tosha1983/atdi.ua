@@ -68,6 +68,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
+      <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
+      <Name>Atdi.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
+      <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
+      <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
+      <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
+      <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.EntityOrm\Atdi.DataModels.EntityOrm.csproj">
       <Project>{73c8791e-3fc5-4c91-84e5-c19c98096f10}</Project>
       <Name>Atdi.DataModels.EntityOrm</Name>
@@ -75,6 +87,10 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.Entities\Atdi.DataModels.Sdrn.CalcServer.Entities.csproj">
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer\Atdi.DataModels.Sdrn.CalcServer.csproj">
+      <Project>{BA1BB2B6-EC14-4224-8D5D-20D6A6F7041C}</Project>
+      <Name>Atdi.DataModels.Sdrn.CalcServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
