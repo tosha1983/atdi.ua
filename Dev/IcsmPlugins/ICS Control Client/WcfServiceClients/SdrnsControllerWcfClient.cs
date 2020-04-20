@@ -207,6 +207,10 @@ namespace XICSM.ICSControlClient.WcfServiceClients
         {
             return Execute(contract => contract.GetMeasTaskById(taskId));
         }
+        public static CommonOperationResult UpdateMeasTaskParametersAndRecalcResults(MeasTask task)
+        {
+            return Execute(contract => contract.UpdateMeasTaskParametersAndRecalcResults(task));
+        }
 
         #endregion
 

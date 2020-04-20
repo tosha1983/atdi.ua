@@ -130,6 +130,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand DoubleClickResultCommand { get; set; }
         public WpfCommand DoubleClickSensorCommand { get; set; }
         public WpfCommand EditSensorTitleCommand { get; set; }
+        public WpfCommand ChangeLevelOfMinOccupationCommand { get; set; }
 
         #endregion
 
@@ -191,6 +192,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.DoubleClickResultCommand = new WpfCommand(this.OnDoubleClickResultCommand);
             this.EditSensorTitleCommand = new WpfCommand(this.OnEditSensorTitleCommand);
             this.MeasResultCommand = new WpfCommand(this.OnMeasResultCommand);
+            this.ChangeLevelOfMinOccupationCommand = new WpfCommand(this.OnChangeLevelOfMinOccupationCommand);
 
             this._shortMeasTasks = new ShortMeasTaskDataAdatper();
             this._measResults = new MeasurementResultsDataAdatper();
@@ -380,6 +382,11 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 ReloadMeasTaskDetail(currentMeasTask);
             }));
+
+            if (currentMeasTask.SupportMultyLevel.HasValue && currentMeasTask.SupportMultyLevel.Value)
+                ChangeLevelOfMinOccupationEnabled = true;
+            else
+                ChangeLevelOfMinOccupationEnabled = false;
 
             ReloadShortSensors(currentMeasTask);
 
@@ -630,7 +637,13 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._hideMeasResultsDetailEnabled, value);
 
         }
+        bool _changeLevelOfMinOccupationEnabled = false;
+        public bool ChangeLevelOfMinOccupationEnabled
+        {
+            get => this._changeLevelOfMinOccupationEnabled;
+            set => this.Set(ref this._changeLevelOfMinOccupationEnabled, value);
 
+        }
         private void ReloadShortMeasTasks()
         {
             var sdrTasks = SVC.SdrnsControllerWcfClient.GetShortMeasTasks();
@@ -1045,7 +1058,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
 
-                var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult);
+                var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult, 1);
                 form.ShowDialog();
                 form.Dispose();
             }
@@ -1309,6 +1322,23 @@ namespace XICSM.ICSControlClient.ViewModels
             }
 
             SVC.SdrnsControllerWcfClient.StopMeasTask(taskId);
+        }
+
+        private void OnChangeLevelOfMinOccupationCommand(object parameter)
+        {
+            var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(this.CurrentShortMeasTask.Id);
+
+            var newLevel = Interaction.InputBox(Properties.Resources.LevelOfMinOccupationDBm, "ICS Control Client", task.MeasOther.LevelMinOccup.ToString());
+            var level = ConvertToDouble(newLevel);
+            
+            if (level.HasValue)
+            {
+                task.MeasOther.LevelMinOccup = level;
+                SVC.SdrnsControllerWcfClient.UpdateMeasTaskParametersAndRecalcResults(task);
+
+                var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(this.CurrentShortMeasTask.Id);
+                this._measResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
+            }
         }
 
         private void OnRefreshShortTasksCommand(object parameter)

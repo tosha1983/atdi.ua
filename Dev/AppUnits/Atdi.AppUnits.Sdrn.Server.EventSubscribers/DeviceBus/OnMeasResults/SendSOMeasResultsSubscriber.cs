@@ -189,6 +189,31 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                     WriteLog("StartTime must be less than StopTime", "IResMeas", context);
 
                 var subMeasTaskStaId = EnsureSubTaskSensorId(context.sensorName, context.sensorTechId, measResult.Measurement, measResult.TaskId, measResult.Measured, context.scope);
+                double? levelMinOccup = null;
+                var builderSubTaskSensor = this._dataLayer.GetBuilder<MD.ISubTaskSensor>().From();
+                builderSubTaskSensor.Select(c => c.SUBTASK.Id, c => c.SUBTASK.MEAS_TASK.Id);
+                builderSubTaskSensor.Where(c => c.Id, ConditionOperator.Equal, subMeasTaskStaId);
+                this._queryExecutor.Fetch(builderSubTaskSensor, readerSubTaskSensor =>
+                {
+                    while (readerSubTaskSensor.Read())
+                    {
+                        var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
+                        builderMeasOther.Select(c => c.SupportMultyLevel, c => c.LevelMinOccup);
+                        builderMeasOther.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, readerSubTaskSensor.GetValue(c => c.SUBTASK.MEAS_TASK.Id));
+                        this._queryExecutor.Fetch(builderMeasOther, readerMeasOther =>
+                        {
+                            while (readerMeasOther.Read())
+                            {
+                                levelMinOccup = (readerMeasOther.GetValue(c => c.LevelMinOccup));
+                                break;
+                            }
+                            return true;
+                        });
+                    }
+                    return true;
+                });
+
+
                 var builderInsertIResMeas = this._dataLayer.GetBuilder<MD.IResMeas>().Insert();
                 builderInsertIResMeas.SetValue(c => c.MeasResultSID, measResult.ResultId);
                 builderInsertIResMeas.SetValue(c => c.TimeMeas, measResult.Measured);
@@ -229,8 +254,10 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 builderInsertResLevels.SetValue(c => c.LevelMinArr, freqSample.LevelMinArr);
                             if (freqSample.Level_dBmkVm >= 10 && freqSample.Level_dBmkVm <= 140)
                                 builderInsertResLevels.SetValue(c => c.ValueSpect, freqSample.Level_dBmkVm);
-                            builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
-                            if ((freqSample.SpectrumOccupationArr!=null) && (freqSample.SpectrumOccupationArr.Length>0))
+                           
+                            float? OccupationPt = null;
+
+                            if ((freqSample.SpectrumOccupationArr!=null) && (freqSample.SpectrumOccupationArr.Length>0) && (freqSample.LevelMinArr!=null))
                             {
                                 var checkSpectrumOccupationArr = new List<float>();
                                 for (int i = 0; i < freqSample.SpectrumOccupationArr.Length; i++)
@@ -244,9 +271,39 @@ namespace Atdi.AppUnits.Sdrn.Server.EventSubscribers.DeviceBus
                                 var spectrumOccupationArr = checkSpectrumOccupationArr.ToArray();
                                 if (spectrumOccupationArr.Length > 0)
                                 {
+                                    if (levelMinOccup != null)
+                                    {
+                                        
+                                        var subValue = (int)(levelMinOccup - freqSample.LevelMinArr.Value);
+                                        if (subValue >= 0)
+                                        {
+                                            if ((spectrumOccupationArr.Length - 1) >= subValue)
+                                            {
+                                                OccupationPt = spectrumOccupationArr[subValue];
+                                            }
+                                            else if ((spectrumOccupationArr.Length - 1) < subValue)
+                                            {
+                                                OccupationPt = 0;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            OccupationPt = 100;
+                                        }
+
+                                        if (OccupationPt != null)
+                                        {
+                                            builderInsertResLevels.SetValue(c => c.OccupancySpect, OccupationPt);
+                                        }
+                                    }
                                     builderInsertResLevels.SetValue(c => c.SpectrumOccupationArr, spectrumOccupationArr);
                                 }
                             }
+                            if (OccupationPt == null)
+                            {
+                                builderInsertResLevels.SetValue(c => c.OccupancySpect, freqSample.Occupation_Pt);
+                            }
+
                             builderInsertResLevels.SetValue(c => c.FreqMeas, freqSample.Freq_MHz);
                             builderInsertResLevels.SetValue(c => c.RES_MEAS.Id, context.resMeasId);
                             if (validationResult)

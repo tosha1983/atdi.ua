@@ -14,6 +14,7 @@
     <Field Desc="TypeSpectrumOccupation" Title="TypeSpectrumOccupation" Name="TypeSpectrumOccupation" DataType="Text.50" SourceName="TYPE_SPECTRUM_OCCUPATION" SourceType="Column" Required="false"/>
     <Field Desc="LevelMinOccup" Title="LevelMinOccup" Name="LevelMinOccup" DataType="Double.30.10" SourceName="LEVEL_MIN_OCCUP" SourceType="Column" Required="false"/>
     <Field Desc="Nchenal" Title="Nchenal" Name="Nchenal" DataType="Integer.32" SourceName="NCHENAL" SourceType="Column" Required="true"/>
+    <Field Desc="SupportMultyLevel" Title="SupportMultyLevel" Name="SupportMultyLevel" DataType="Boolean" SourceName="SUPP_MULTY_LEVEL" SourceType="Column" Required="false"/>
     <Field Name="MEAS_TASK" SourceName="MeasTask" SourceType="Reference" Required="true" Desc="" Title="Relation MeasOther to MeasTask"/>
   </Fields>
   <PrimaryKey Clustered="true">
