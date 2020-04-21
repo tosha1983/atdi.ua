@@ -30,13 +30,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 var fileName = MakeFileName(typeof(T).Name.ToString());
                 var fullPath = Path.Combine(this._messageFolder, fileName);
-                lock (fileName)
+                //lock (fileName)
                 {
                     IFormatter formatter = new BinaryFormatter();
-                    using (MemoryStream stream = new MemoryStream())
+                    using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                    using (StreamWriter streamWriter = new StreamWriter(file))
                     {
-                        formatter.Serialize(stream, receivedMessage);
-                        File.WriteAllBytes(fullPath, stream.ToArray());
+                        formatter.Serialize(streamWriter.BaseStream, receivedMessage);
+                        streamWriter.Close();
                     }
                 }
                 return fullPath;
@@ -59,7 +60,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 if (File.Exists(fileName))
                 {
-                    lock (fileName)
+                    //lock (fileName)
                     {
                         File.Delete(fileName);
                     }
@@ -86,16 +87,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
             try
             {
-                lock (fileName)
+                //lock (fileName)
                 {
                     var fullPath = Path.Combine(this._messageFolder, fileName);
                     if (File.Exists(fullPath))
                     {
                         IFormatter formatter = new BinaryFormatter();
-                        using (MemoryStream stream = new MemoryStream())
+                        using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                        using (StreamWriter streamWriter = new StreamWriter(file))
                         {
-                            formatter.Serialize(stream, receivedMessage);
-                            File.WriteAllBytes(fullPath, stream.ToArray());
+                            formatter.Serialize(streamWriter.BaseStream, receivedMessage);
+                            streamWriter.Close();
                         }
                     }
                 }

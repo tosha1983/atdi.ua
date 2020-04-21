@@ -172,21 +172,22 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
         private T ReadMessageData(string fileName)
         {
+            T dataobj = default(T);
             if (!File.Exists(fileName))
             {
                 return default(T);
             }
-
             try
             {
-                lock (fileName)
+                //lock (fileName)
                 {
-                    using (var memoryStream = File.Open(fileName, FileMode.Open))
+                    using (FileStream file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+                    using (StreamReader streamReader = new StreamReader(file))
                     {
                         IFormatter formatter = new BinaryFormatter();
                         formatter.Binder = new LocalBinder();
-                        var data = (T)formatter.Deserialize(memoryStream);
-                        return data;
+                        dataobj = (T)formatter.Deserialize(streamReader.BaseStream);
+                        streamReader.Close();
                     }
                 }
             }
@@ -195,6 +196,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 this._logger.Exception(Contexts.ThisComponent, Categories.ErrorGetMessageFromDB, e);
                 throw new InvalidOperationException($"Error read message from DB: {fileName} {e.StackTrace}");
             }
+            return dataobj;
         }
 
 
@@ -205,7 +207,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 if (disposing)
                 {
-                    
+
                 }
                 disposedValue = true;
             }
