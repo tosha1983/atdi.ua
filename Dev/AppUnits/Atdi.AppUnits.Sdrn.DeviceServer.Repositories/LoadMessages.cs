@@ -181,7 +181,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 //lock (fileName)
                 {
-                    using (FileStream file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+                    using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                     using (StreamReader streamReader = new StreamReader(file))
                     {
                         IFormatter formatter = new BinaryFormatter();
