@@ -179,13 +179,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
 
             try
             {
-                var body = File.ReadAllBytes(fileName);
-                using (var memoryStream = new MemoryStream(body))
+                lock (fileName)
                 {
-                    IFormatter formatter = new BinaryFormatter();
-                    formatter.Binder = new LocalBinder();
-                    var data = (T)formatter.Deserialize(memoryStream);
-                    return data;
+                    var body = File.ReadAllBytes(fileName);
+                    using (var memoryStream = new MemoryStream(body))
+                    {
+                        IFormatter formatter = new BinaryFormatter();
+                        formatter.Binder = new LocalBinder();
+                        var data = (T)formatter.Deserialize(memoryStream);
+                        return data;
+                    }
                 }
             }
             catch (Exception e)

@@ -374,9 +374,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                                 var recalcStopTime = currTime;
 
-                                if (maximumDurationMeas < 0)
+                                if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
                                 {
                                     context.Task.taskParameters.status = StatusTask.C.ToString();
+                                    this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                     measResultsNew.Status = StatusTask.C.ToString();
                                     var dayStart = measResultsNew.StartTime.Day;
                                     var dayStop = recalcStopTime.Day;

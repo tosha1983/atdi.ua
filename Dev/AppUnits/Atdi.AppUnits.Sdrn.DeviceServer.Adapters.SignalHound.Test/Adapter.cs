@@ -152,7 +152,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.SignalHound.Test
                     /// сообщаем инфраструктуре что мы готовы обрабатывать комманду MesureGpsLocationExampleCommand
                     /// и при этом возвращать оезультат в типе MesureGpsLocationExampleAdapterResult
                     //host.RegisterHandler<COM.MesureGpsLocationExampleCommand, MesureGpsLocationExampleAdapterResult>(MesureGpsLocationExampleCommandHandler);
-                    host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler);
+                    //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler);
                     host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler);
                 }
             }
