@@ -181,8 +181,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 lock (fileName)
                 {
-                    var body = File.ReadAllBytes(fileName);
-                    using (var memoryStream = new MemoryStream(body))
+                    using (var memoryStream = File.Open(fileName, FileMode.Open))
                     {
                         IFormatter formatter = new BinaryFormatter();
                         formatter.Binder = new LocalBinder();
