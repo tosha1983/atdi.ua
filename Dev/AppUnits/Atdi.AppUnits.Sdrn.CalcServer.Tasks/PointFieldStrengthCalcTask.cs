@@ -116,10 +116,14 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				Transmitter = _contextStation.Transmitter
 			};
 
-			var iteration = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
-			var result = iteration.Run(_taskContext, iterationData);
+			for (int i = 0; i < 1000; i++)
+			{
+				var iteration = _iterationsPool.GetIteration<FieldStrengthCalcData, FieldStrengthCalcResult>();
+				var result = iteration.Run(_taskContext, iterationData);
+			}
+			
 
-			this.SaveTaskResult(in result);
+			///this.SaveTaskResult(in result);
 		}
 
 		private void ValidateTaskParameters()

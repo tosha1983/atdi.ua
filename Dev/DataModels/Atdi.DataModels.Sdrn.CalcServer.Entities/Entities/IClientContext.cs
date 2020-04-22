@@ -71,7 +71,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		Unknown = 0,
 
 		/// <summary>
-		/// Базовій контекст
+		/// Базовый контекст
 		/// </summary>
 		Base = 1,
 
