@@ -166,7 +166,7 @@ namespace XICSM.ICSControlClient.ViewModels
             var buildSpectrogram = new BuildSpectrogram();
             // заполненеие таблицы XPROTOCOL_REPORT
             IMRecordset rs = new IMRecordset("XPROTOCOL_REPORT", IMRecordset.Mode.ReadWrite);
-            rs.Select("ID,DATE_CREATED,STANDARD_NAME,OWNER_NAME,PERMISSION_NUMBER,PERMISSION_START,PERMISSION_STOP,ADDRESS,LONGITUDE,LATITUDE,SENSOR_LON,SENSOR_LAT,SENSOR_NAME,DATE_MEAS,S_FREQ_MHZ,S_BW,FREQ_MHZ,BW,LEVEL_DBM,DESIG_EMISSION,GLOBAL_SID,CREATED_BY");
+            rs.Select("ID,DATE_CREATED,STANDARD_NAME,OWNER_NAME,PERMISSION_NUMBER,PERMISSION_START,PERMISSION_STOP,ADDRESS,LONGITUDE,LATITUDE,SENSOR_LON,SENSOR_LAT,SENSOR_NAME,DATE_MEAS,S_FREQ_MHZ,S_BW,FREQ_MHZ,BW,LEVEL_DBM,DESIG_EMISSION,GLOBAL_SID,CREATED_BY,VISN");
             rs.Open();
             var id = IM.AllocID("XPROTOCOL_REPORT", 1, -1);
             rs.AddNew();
@@ -177,6 +177,14 @@ namespace XICSM.ICSControlClient.ViewModels
             rs.Put("PERMISSION_NUMBER", row.PermissionNumber);
             rs.Put("PERMISSION_START", row.PermissionStart);
             rs.Put("PERMISSION_STOP", row.PermissionStop);
+            if (row.StatusMeas == "A")
+            {
+                rs.Put("VISN", "Параметри РЕЗ відповідають умовам дозволу на експлуатацію");
+            }
+            else
+            {
+                rs.Put("VISN", "Робота РЕЗ не зафіксована");
+            }
             rs.Put("ADDRESS", row.Address);
             if (row.Longitude.HasValue)
             {
@@ -189,7 +197,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Put("SENSOR_LAT", ConvertCoordinates.DecToDmsToString(row.Latitude.Value, Coordinates.EnumCoordLine.Lat));
             }
 
-            rs.Put("SENSOR_NAME", row.SensorName);
+            rs.Put("SENSOR_NAME", row.TitleSensor);
             rs.Put("DATE_MEAS", row.DateMeas);
             if (row.Freq_MHz.HasValue)
                 rs.Put("S_FREQ_MHZ", Math.Round(row.Freq_MHz.Value, 3));
@@ -223,9 +231,10 @@ namespace XICSM.ICSControlClient.ViewModels
             if ((row.ProtocolsLinkedWithEmittings != null) && (row.ProtocolsLinkedWithEmittings.Levels_dBm != null) && (row.ProtocolsLinkedWithEmittings.SpectrumStartFreq_MHz != null) && (row.ProtocolsLinkedWithEmittings.SpectrumSteps_kHz != null))
             {
                 recPtr.PrintRTFReport2(InsertSpectrogram.GetDirTemplates("SHDIR-REP") + @"\REPORT_SIGNALING_SPECTR.IRP", "RUS", nameFile, "", true, false);
-                var bm = new System.Drawing.Bitmap(1300, 600);
-                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 600);
-                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 17000, 8000);
+                var bm = new System.Drawing.Bitmap(1400, 800);
+                buildSpectrogram.CreateBitmapSpectrogram(row, bm, 1300, 700);
+                //bm.Save("C:\\Temp\\Res.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                InsertSpectrogram.InsertImageToRtf(nameFile, bm, 16000, 6800);
                 bm.Dispose();
                 GC.Collect();
             }

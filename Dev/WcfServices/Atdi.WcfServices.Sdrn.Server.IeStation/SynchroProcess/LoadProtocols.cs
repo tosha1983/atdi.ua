@@ -702,8 +702,9 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                 if ((readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStop) != null) && (readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStart) != null))
                                 {
                                     protocols.DurationMeasurement = readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStop) - readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStart);
+                                    protocols.DateMeas_OnlyTime = readerLinkProtocolsWithEmittings.GetValue(c => c.WorkTimeStart).Value.TimeOfDay;
                                 }
-                                
+                                protocols.Level_dBm = readerLinkProtocolsWithEmittings.GetValue(c => c.ReferenceLevel_dBm);
                             }
                             return true;
                         });
