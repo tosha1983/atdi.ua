@@ -181,13 +181,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
             {
                 //lock (fileName)
                 {
-                    using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    using (StreamReader streamReader = new StreamReader(file))
+                    if (File.Exists(fileName))
                     {
-                        IFormatter formatter = new BinaryFormatter();
-                        formatter.Binder = new LocalBinder();
-                        dataobj = (T)formatter.Deserialize(streamReader.BaseStream);
-                        streamReader.Close();
+                        using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            if (file.Length > 0)
+                            {
+                                using (StreamReader streamReader = new StreamReader(file))
+                                {
+                                    IFormatter formatter = new BinaryFormatter();
+                                    formatter.Binder = new LocalBinder();
+                                    dataobj = (T)formatter.Deserialize(streamReader.BaseStream);
+                                    streamReader.Close();
+                                }
+                            }
+                        }
                     }
                 }
             }
