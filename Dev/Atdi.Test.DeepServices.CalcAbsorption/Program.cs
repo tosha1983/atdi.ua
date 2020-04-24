@@ -59,19 +59,19 @@ namespace Atdi.Test.DeepServices.CalcAbsorption
                 ClutterProfile = cluttersHt3_m,
                 BuildingProfile = buildingsHt3_m,
                 HeightProfile = profileHt3_m,
-                ProfileLength = profileHt3_m.Length,
+                ProfileLength = 1775,//profileHt3_m.Length,
                 ReliefStartIndex = 0,
                 ClutterStartIndex = 0,
                 BuildingStartIndex = 0,
                 HeightStartIndex = 0,
                 Freq_Mhz = 3200,
                 D_km = profileDistance3_km,
-                Ha_m = 1,
-                Hb_m = 30
+                Ha_m = 5,
+                Hb_m = 5
             };
 
-            double tilta_deg = 0.3;
-            double tiltb_deg = 0.03;
+            double tilta_deg = 0.0;
+            double tiltb_deg = 0.0;
             
             double loss = ProfilesCalculation.CalcLossOfObstacles(FuncCalc, in lossArgs3, tilta_deg, tiltb_deg);
             
