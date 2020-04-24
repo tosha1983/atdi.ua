@@ -25,6 +25,6 @@ namespace Atdi.DataModels.Sdrn.Infocenter.Entities
 
 		string Note { get; set; }
 
-		long Height_m { get; set; }
+		int Height_m { get; set; }
 	}
 }

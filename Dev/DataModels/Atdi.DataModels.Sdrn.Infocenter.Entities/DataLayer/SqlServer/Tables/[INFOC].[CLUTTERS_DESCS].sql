@@ -6,7 +6,7 @@ GO
 
 CREATE TABLE [INFOC].[CLUTTERS_DESCS](
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[MAP_ID] [bigint] NOT NULL,
+	[MAP_ID] [bigint] NULL,
 	[CREATED_DATE] [datetimeoffset](7) NOT NULL,
 	[NAME] [nvarchar](450) NOT NULL,
 	[NOTE] [nvarchar](max) NULL,
