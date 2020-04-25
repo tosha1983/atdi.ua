@@ -44,7 +44,11 @@ namespace Atdi.Test.CalcServer
             double DiffractionLoss = 0;
             double tiltA;
             double tiltB;
-            
+
+            DiffractionLoss = Deygout91.Calc(10, 10, 100, dt1_km, ht1_m, 0, ht1_m.Length, re_km, C);
+            ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt4_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
+            System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");
+
             DiffractionLoss = Deygout91.Calc(ha_m, hb_m, freq4_MHz, dt4_km, ht4_m, 0, ht4_m.Length - 1, re_km, C);
             ProfilesCalculation.CalcTilts(re_km, ha_m, hb_m, dt4_km, ht4_m, 0, ht4_m.Length - 1, out tiltA, out tiltB);
             System.Console.WriteLine($"L_diff: {DiffractionLoss}; tiltA: {tiltA}; tiltB: {tiltB}");

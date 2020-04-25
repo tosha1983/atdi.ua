@@ -17,22 +17,22 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
         public static void CalcTilts(double re_km, double ha_m, double hb_m, double d_km, in short[] profile_m, int profileStartPosition, int profilePointsNumber, out double tiltA_deg, out double tiltB_deg)
         {
-
+            int profileEndPosition = profileStartPosition + profilePointsNumber - 1;
             double dN = d_km / (profilePointsNumber - profileStartPosition);
             double h1_m = ha_m + profile_m[profileStartPosition];
-            double h2_m = hb_m + profile_m[profilePointsNumber];
+            double h2_m = hb_m + profile_m[profileEndPosition];
             
             double maxAngleArgAB = CalcElevAngleArgs(h1_m, h2_m, d_km, re_km);
             double maxAngleArgBA = CalcElevAngleArgs(h2_m, h1_m, d_km, re_km);
 
 
-            for (int n = profileStartPosition; n < profilePointsNumber - 1; n++)
+            for (int n = profileStartPosition; n < profileEndPosition; n++)
             {
                 double dAN = dN * (n - profileStartPosition);
-                double dNB = dN * (profilePointsNumber - n);
+                double dNB = dN * (profileEndPosition - n);
                 
                 double nAngleArgAB = CalcElevAngleArgs(h1_m, profile_m[n + profileStartPosition], dAN, re_km);
-                double nAngleArgBA = CalcElevAngleArgs(h2_m, profile_m[profilePointsNumber - n], dNB, re_km);
+                double nAngleArgBA = CalcElevAngleArgs(h2_m, profile_m[profileEndPosition - n], dNB, re_km);
 
                 if (maxAngleArgAB < nAngleArgAB)
                 {
@@ -90,17 +90,19 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double invRe = 1 / args.Model.Parameters.EarthRadius_km;
             double invPi = 1 / Math.PI;
 
-            var ha_m = args.Ha_m + args.ReliefProfile[args.ReliefStartIndex];
-            var hb_m = args.Hb_m + args.ReliefProfile[args.ReliefStartIndex + args.ProfileLength - 1];
+            int profileEndIndex = args.ReliefStartIndex + args.ProfileLength - 1;
 
-            for (int i = args.ReliefStartIndex; i < args.ReliefStartIndex + args.ProfileLength; i++)
+            var ha_m = args.Ha_m + args.ReliefProfile[args.ReliefStartIndex];
+            var hb_m = args.Hb_m + args.ReliefProfile[profileEndIndex];
+
+            for (int i = args.ReliefStartIndex + 1; i <= profileEndIndex; i++)
             {
 
                 clutterHeightMin = args.ReliefProfile[i] + args.BuildingProfile[i];
                 clutterHeightMax = args.ReliefProfile[i] + args.BuildingProfile[i] + args.ClutterProfile[i];
                 
                 beamAHeight = pixelLength_km * (i - args.ReliefStartIndex) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (i - args.ReliefStartIndex) * invRe) + ha_m;
-                beamBHeight = pixelLength_km * (args.ProfileLength - i - 1) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (args.ProfileLength - i - 1) * invRe) + hb_m;
+                beamBHeight = pixelLength_km * (profileEndIndex - i) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (profileEndIndex - i) * invRe) + hb_m;
 
                 // определение луча, который пересекает препятствие
                 if (beamAHeight <= beamBHeight)
@@ -113,9 +115,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 else
                 {
                     beamHeight = beamBHeight;
-                    beamPrevHeight = pixelLength_km * (args.ProfileLength - i - 2) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + hb_m;
+                    beamPrevHeight = pixelLength_km * (profileEndIndex - i + 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + hb_m;
                     alpha = tiltb_deg;
-                    distanceTo_km = pixelLength_km * (args.ProfileLength - i - 1);
+                    distanceTo_km = pixelLength_km * (profileEndIndex - i);
                 }
 
                 // если в данной точке луч пересекает клаттер
@@ -131,7 +133,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                         theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
                     }
 
-                    if ((i == args.ReliefStartIndex) || (i == args.ReliefStartIndex + args.ProfileLength - 1))
+                    if ((i == args.ReliefStartIndex + 1) || (i == profileEndIndex))
                     {
                         isEndPoint = true;
                     }
