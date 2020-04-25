@@ -1,4 +1,5 @@
-﻿using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
+﻿using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,14 @@ namespace Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService
 		public int BuildingStartIndex;
 		public int HeightStartIndex;
         public double Freq_Mhz;
-        // Дополнительные параметры определяющие геометрию трассы
-        /// <summary>
-        /// Длинна пролета
-        /// </summary>
-        public double D_km;
+
+        public CluttersDesc CluttersDesc;
+
+		// Дополнительные параметры определяющие геометрию трассы
+		/// <summary>
+		/// Длинна пролета
+		/// </summary>
+		public double D_km;
         /// <summary>
         /// Высота первой точки (Базовой станции) 
         /// </summary>

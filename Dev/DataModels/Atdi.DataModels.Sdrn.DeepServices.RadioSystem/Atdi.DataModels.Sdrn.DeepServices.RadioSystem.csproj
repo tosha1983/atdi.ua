@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gis\CluttersDesc.cs" />
+    <Compile Include="Gis\CluttersDescFreq.cs" />
+    <Compile Include="Gis\CluttersDescFreqClutter.cs" />
     <Compile Include="PropagationModels\AbsorptionCalcBlock.cs" />
     <Compile Include="PropagationModels\AdditionalCalcBlock.cs" />
     <Compile Include="PropagationModels\AtmosphericCalcBlock.cs" />

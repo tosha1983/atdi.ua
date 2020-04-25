@@ -16,7 +16,7 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 	public static class PointFieldStrengthCalcTask
 	{
 		private static readonly string OwnerInstance = "Atdi.Test.Api.Sdrn.CalcServer.Client";
-		private static readonly Guid OwnerProjectId = Guid.Parse("d61ff53f-b655-4d28-8eff-b93f8ed2ee2a");
+		private static readonly Guid OwnerProjectId = Guid.Parse("d61ff53f-b655-4d28-8eff-b93f8ed2ee14");
 		private static readonly Guid OwnerMapId = Guid.Parse("d61ff53f-b655-4d28-8eff-b93f8ed2ee2f");
 		private static readonly string MainProjectMap = "MainMap";
 
@@ -32,6 +32,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks
 
 				//если мы проект менять больше не собираемся, делаем проект доступным
 				MakeProjectAvailable(dataLayer, executor, projectId);
+
+				Console.WriteLine("Press any keys to continue...");
 
 				// определяем контекст
 				var ownerClientContextId = Guid.NewGuid();

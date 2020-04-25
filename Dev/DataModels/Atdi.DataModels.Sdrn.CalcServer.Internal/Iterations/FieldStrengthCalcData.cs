@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 {
@@ -30,18 +31,20 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations
 
 		public StationTransmitter Transmitter;
 
-        //public double TransmitterFreq_Mhz;
+		public CluttersDesc CluttersDesc;
 
-        //public PolarizationType TranmitterPolarization;
+		//public double TransmitterFreq_Mhz;
 
-        //public float TransmitterMaxPow_dBm;
+		//public PolarizationType TranmitterPolarization;
 
-        //public float TransmitterLoss_dB;
+		//public float TransmitterMaxPow_dBm;
 
-        /// <summary>
-        /// Высота первой точки (Базовой станции) 
-        /// </summary>
-        public double PointAltitude_m;
+		//public float TransmitterLoss_dB;
+
+		/// <summary>
+		/// Высота первой точки (Базовой станции) 
+		/// </summary>
+		public double PointAltitude_m;
 
         /// <summary>
         /// Высота второй точки (Точька, Абонент, Кореспондирующая станция)

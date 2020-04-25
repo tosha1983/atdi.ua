@@ -14,6 +14,7 @@ using Atdi.Contracts.Sdrn.CalcServer;
 using Atdi.AppUnits.Sdrn.CalcServer.Helpers;
 using Atdi.Common.Extensions;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 {
@@ -169,6 +170,113 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Services
 			}
 
 
+		}
+
+		public CluttersDesc GetCluttersDesc(IDataLayerScope dbScope, long mapId)
+		{
+			var selDescQuery = _calcServerDataLayer.GetBuilder<ICluttersDesc>()
+				.From()
+				.Select(
+					c => c.Id
+				)
+				.Where(c => c.MAP.Id, ConditionOperator.Equal, mapId)
+				.OrderByDesc(c => c.Id)
+				.OnTop(1);
+
+			var descId = dbScope.Executor.ExecuteAndFetch(selDescQuery, reader =>
+			{
+				if (reader.Read())
+				{
+					return reader.GetValue(c => c.Id);
+				}
+
+				return 0;
+			});
+
+			if (descId == 0)
+			{
+				throw  new InvalidOperationException($"A clutter description not found by map id #{mapId}");
+			}
+
+			var result = new CluttersDesc
+			{
+				Id = descId
+			};
+
+			var selFreqQuery = _calcServerDataLayer.GetBuilder<ICluttersDescFreq>()
+				.From()
+				.Select(
+					c => c.Freq_MHz,
+					c => c.Id
+				)
+				.Where(c => c.CLUTTERS_DESC.Id, ConditionOperator.Equal, descId)
+				.OrderByAsc(c => c.Freq_MHz);
+
+			result.Frequencies = dbScope.Executor.ExecuteAndFetch(selFreqQuery, reader =>
+			{
+				var records = new List<CluttersDescFreq>();
+				while (reader.Read())
+				{
+					var freq = new CluttersDescFreq
+					{
+						Id = reader.GetValue(c => c.Id),
+						Freq_MHz = reader.GetValue(c => c.Freq_MHz),
+						Clutters = new CluttersDescFreqClutter[MapSpecification.CluttersMaxCount]
+					};
+					records.Add(freq);
+				}
+				return records.ToArray();
+			});
+
+			foreach (var freq in result.Frequencies)
+			{
+				var selFreqClutterQuery = _calcServerDataLayer.GetBuilder<ICluttersDescFreqClutter>()
+					.From()
+					.Select(
+						c => c.FlatLoss_dB,
+						c => c.LinearLoss_dBkm,
+						c => c.Reflection,
+						c => c.Code
+					)
+					.Where(c => c.FreqId, ConditionOperator.Equal, freq.Id)
+					.OrderByAsc(c => c.Code);
+
+				dbScope.Executor.ExecuteAndFetch(selFreqClutterQuery, reader =>
+				{
+					while (reader.Read())
+					{
+						var code = reader.GetValue(c => c.Code);
+						freq.Clutters[code].Reflection = reader.GetValue(c => c.Reflection).GetValueOrDefault();
+						freq.Clutters[code].FlatLoss_dB = reader.GetValue(c => c.FlatLoss_dB).GetValueOrDefault();
+						freq.Clutters[code].LinearLoss_dBkm = reader.GetValue(c => c.LinearLoss_dBkm).GetValueOrDefault();
+					}
+					return 0;
+				});
+			}
+
+			var selClutterQuery = _calcServerDataLayer.GetBuilder<ICluttersDescClutter>()
+				.From()
+				.Select(
+					c => c.Code,
+					c => c.Height_m
+				)
+				.Where(c => c.CluttersDescId, ConditionOperator.Equal, descId)
+				.OrderByAsc(c => c.Code);
+
+			dbScope.Executor.ExecuteAndFetch(selClutterQuery, reader =>
+			{
+				while (reader.Read())
+				{
+					foreach (var freq in result.Frequencies)
+					{
+						var code = reader.GetValue(c => c.Code);
+						freq.Clutters[code].Height_m = reader.GetValue(c => c.Height_m);
+					}
+				}
+				return 0;
+			});
+
+			return result;
 		}
 	}
 }

@@ -18,6 +18,7 @@ using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 {
@@ -37,6 +38,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 		private ClientContextStation _contextStation;
 		private PropagationModel _propagationModel;
 		private ProjectMapData _mapData;
+		private CluttersDesc _cluttersDesc;
 
 		private class TaskParameters
 		{
@@ -94,6 +96,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 
 			// найти и загрузить карту
 			this._mapData = _mapRepository.GetMapByName(this._calcDbScope, this._taskContext.ProjectId, this._parameters.MapName);
+			this._cluttersDesc = _mapRepository.GetCluttersDesc(this._calcDbScope, this._mapData.Id);
+
 		}
 		
 
@@ -113,7 +117,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks
 				BuildingContent = _mapData.BuildingContent,
 				ClutterContent = _mapData.ClutterContent,
 				ReliefContent = _mapData.ReliefContent,
-				Transmitter = _contextStation.Transmitter
+				Transmitter = _contextStation.Transmitter,
+				CluttersDesc = _cluttersDesc
 			};
 
 			for (int i = 0; i < 1000; i++)

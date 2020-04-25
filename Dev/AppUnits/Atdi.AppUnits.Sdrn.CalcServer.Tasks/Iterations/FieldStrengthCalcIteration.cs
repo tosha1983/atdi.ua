@@ -294,7 +294,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
                     Freq_Mhz = data.Transmitter.Freq_MHz,
                     D_km = d_km,
                     Ha_m = data.PointAltitude_m,
-                    Hb_m = data.TargetAltitude_m
+                    Hb_m = data.TargetAltitude_m,
+					CluttersDesc = data.CluttersDesc
 				};
 
 				var lossResult = new CalcLossResult();
