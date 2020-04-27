@@ -46,6 +46,7 @@
     <Compile Include="Models\InitOnlineMeasurementModel.cs" />
     <Compile Include="PipelineHandlers\CommandsPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\CommandsSendEventPipelineHandler.cs" />
+    <Compile Include="PipelineHandlers\CreateTask\MeasTask\UpdateMeasTask.cs" />
     <Compile Include="PipelineHandlers\SendEventOnlineMeasurementPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\InitOnlineMeasurementPipelineHandler.cs" />
     <Compile Include="PipelineHandlers\MeasTasksSendPipelineHandler.cs" />

@@ -226,73 +226,84 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
 
                         var action = new Action(() =>
                         {
-                            //реакция на принятые результаты измерения
-                            if (outSpectrumOcupation.fSemplesResult != null)
+                            if (outSpectrumOcupation != null)
                             {
-                                var measResult = new DM.MeasResults();
-                                measResult.Status = "N";
-                                context.Task.CountSendResults++;
-                                //outResultData.ScansNumber = context.Task.CountMeasurementDone;
-                                //measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
-                                measResult.ResultId = Guid.NewGuid().ToString();
-                                measResult.TaskId = context.Task.taskParameters.SDRTaskId;
-                                measResult.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
-                                measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
-                                measResult.ScansNumber = outSpectrumOcupation.NN;
-                                measResult.StartTime = context.Task.LastTimeSend.Value;
-                                measResult.StopTime = currTime;
-                                measResult.Location = new DataModels.Sdrns.GeoLocation();
-                                measResult.Measured = currTime;
-                                //////////////////////////////////////////////
-                                // 
-                                //  Здесь получаем данные с GPS приемника
-                                //  
-                                //////////////////////////////////////////////
-                                var parentProcess = context.Process.Parent;
-                                if (parentProcess != null)
+                                //реакция на принятые результаты измерения
+                                if (outSpectrumOcupation.fSemplesResult != null)
                                 {
-                                    if (parentProcess is DispatchProcess)
+                                    var measResult = new DM.MeasResults();
+                                    measResult.Status = "N";
+                                    context.Task.CountSendResults++;
+                                    //outResultData.ScansNumber = context.Task.CountMeasurementDone;
+                                    //measResult.ResultId = string.Format("{0}|{1}",context.Task.taskParameters.SDRTaskId, context.Task.CountSendResults);
+                                    measResult.ResultId = Guid.NewGuid().ToString();
+                                    measResult.TaskId = context.Task.taskParameters.SDRTaskId;
+                                    measResult.Measurement = DataModels.Sdrns.MeasurementType.SpectrumOccupation;
+                                    measResult.FrequencySamples = outSpectrumOcupation.fSemplesResult.Convert();
+                                    measResult.ScansNumber = outSpectrumOcupation.NN;
+                                    measResult.StartTime = context.Task.LastTimeSend.Value;
+                                    measResult.StopTime = currTime;
+                                    measResult.Location = new DataModels.Sdrns.GeoLocation();
+                                    measResult.Measured = currTime;
+                                    //////////////////////////////////////////////
+                                    // 
+                                    //  Здесь получаем данные с GPS приемника
+                                    //  
+                                    //////////////////////////////////////////////
+                                    var parentProcess = context.Process.Parent;
+                                    if (parentProcess != null)
                                     {
-                                        DispatchProcess dispatchProcessParent = null;
-                                        try
+                                        if (parentProcess is DispatchProcess)
                                         {
-                                            dispatchProcessParent = (parentProcess as DispatchProcess);
-                                            if (dispatchProcessParent != null)
+                                            DispatchProcess dispatchProcessParent = null;
+                                            try
                                             {
-                                                measResult.Location.ASL = dispatchProcessParent.Asl;
-                                                measResult.Location.Lon = dispatchProcessParent.Lon;
-                                                measResult.Location.Lat = dispatchProcessParent.Lat;
+                                                dispatchProcessParent = (parentProcess as DispatchProcess);
+                                                if (dispatchProcessParent != null)
+                                                {
+                                                    measResult.Location.ASL = dispatchProcessParent.Asl;
+                                                    measResult.Location.Lon = dispatchProcessParent.Lon;
+                                                    measResult.Location.Lat = dispatchProcessParent.Lat;
+                                                }
+                                                else
+                                                {
+                                                    _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                                }
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.AfterConvertParentProcessIsNull);
+                                                _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
                                             }
                                         }
-                                        catch (Exception ex)
+                                        else
                                         {
-                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, ex.Message);
+                                            _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
                                         }
                                     }
                                     else
                                     {
-                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNotTypeDispatchProcess);
+                                        _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
                                     }
-                                }
-                                else
-                                {
-                                    _logger.Error(Contexts.SOTaskWorker, Categories.Measurements, Exceptions.ErrorConvertToDispatchProcess, Exceptions.ParentProcessIsNull);
-                                }
+                                    var recalcStopTime = currTime;
+                                    if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
+                                    {
+                                        context.Task.taskParameters.status = StatusTask.C.ToString();
+                                        this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
+                                        measResult.Status = StatusTask.C.ToString();
+                                        var dayStart = measResult.StartTime.Day;
+                                        var dayStop = recalcStopTime.Day;
+                                        if (dayStop != dayStart)
+                                        {
+                                            recalcStopTime = new DateTime(measResult.StartTime.Year, measResult.StartTime.Month, measResult.StartTime.Day, 23, 59, 59, 999);
+                                            measResult.StopTime = recalcStopTime;
+                                            measResult.Measured = recalcStopTime;
+                                        }
+                                    }
 
-                                if (maximumDurationMeas < 0)
-                                {
-                                    context.Task.taskParameters.status = StatusTask.C.ToString();
-                                    measResult.Status = StatusTask.C.ToString();
+                                    this._measResultsByStringRepository.Create(measResult);
+                                    context.Task.lastResultParameters = null;
+                                    context.Task.LastTimeSend = recalcStopTime;
                                 }
-
-                                this._measResultsByStringRepository.Create(measResult);
-
-                                context.Task.lastResultParameters = null;
-                                context.Task.LastTimeSend = currTime;
                             }
                         });
 

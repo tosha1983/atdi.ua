@@ -33,6 +33,8 @@ namespace Atdi.DataModels.Sdrns.Server
         [EnumMember]
         E_T,
         [EnumMember]
-        E
+        E,
+        [EnumMember]
+        S
     }
 }

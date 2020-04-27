@@ -57,7 +57,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         //если в списке появилась отложенная задача
                         while (i < context.Process.listDeferredTasks.Count)
                         {
-                            var taskParameters = context.Process.listDeferredTasks[i];
+                            var arr = context.Process.listDeferredTasks.ToArray();
+                            var taskParameters = arr[i];
 
                             TimeSpan timeSpan = taskParameters.StartTime.Value - DateTime.Now;
                             //запускаем задачу в случае, если время 
@@ -89,9 +90,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(soTask.Id));
                                         _taskStarter.RunParallel(soTask, process, context);
                                         _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(soTask.Id));
-                                        if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
+                                        for (int m = 0; m < arr.Length; m++)
                                         {
-                                            context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
+                                            if (arr[m] != null)
+                                            {
+                                                if (arr[m].SDRTaskId== taskParameters.SDRTaskId)
+                                                {
+                                                    context.Process.listDeferredTasks = context.Process.listDeferredTasks.Remove(arr[m]);
+                                                    break;
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -113,9 +121,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(signalTask.Id));
                                     _taskStarter.RunParallel(signalTask, signalProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(signalTask.Id));
-                                    if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
+                                    for (int m = 0; m < arr.Length; m++)
                                     {
-                                        context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
+                                        if (arr[m] != null)
+                                        {
+                                            if (arr[m].SDRTaskId == taskParameters.SDRTaskId)
+                                            {
+                                                context.Process.listDeferredTasks = context.Process.listDeferredTasks.Remove(arr[m]);
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
                                 else if (taskParameters.MeasurementType == MeasType.BandwidthMeas)
@@ -139,9 +154,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.StartDeferredTask.With(bandWidtTask.Id));
                                     _taskStarter.RunParallel(bandWidtTask, bandWidthProcess, context);
                                     _logger.Info(Contexts.DeferredTaskWorker, Categories.Processing, Events.EndDeferredTask.With(bandWidtTask.Id));
-                                    if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == taskParameters.SDRTaskId) != null)
+                                    for (int m = 0; m < arr.Length; m++)
                                     {
-                                        context.Process.listDeferredTasks.RemoveAll(c => c.SDRTaskId == taskParameters.SDRTaskId);
+                                        if (arr[m] != null)
+                                        {
+                                            if (arr[m].SDRTaskId == taskParameters.SDRTaskId)
+                                            {
+                                                context.Process.listDeferredTasks = context.Process.listDeferredTasks.Remove(arr[m]);
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
                                 else

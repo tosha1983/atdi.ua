@@ -473,7 +473,33 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             return task;
         }
 
-
+        public string GetStatusTask(long id)
+        {
+            string status = "";
+            try
+            {
+                var queryExecuter = this._dataLayer.Executor<SdrnServerDataContext>();
+                var builderMeasTask = this._dataLayer.GetBuilder<MD.IMeasTask>().From();
+                builderMeasTask.Select(c => c.Status);
+                builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, "Z");
+                builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
+                {
+                    while (readerMeasTask.Read())
+                    {
+                        status = readerMeasTask.GetValue(c => c.Status);
+                        break;
+                    }
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.Exception(Contexts.ThisComponent, e);
+            }
+            return status;
+        }
         public MeasTask ReadBaseTask(long id)
         {
             MeasTask measTask = null;

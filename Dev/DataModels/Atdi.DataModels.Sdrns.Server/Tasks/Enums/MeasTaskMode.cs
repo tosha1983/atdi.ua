@@ -19,6 +19,8 @@ namespace Atdi.DataModels.Sdrns.Server
         [EnumMember]
         New,
         [EnumMember]
-        Update
+        Update,
+        [EnumMember]
+        UpdateAndRecalcResults
     }
 }

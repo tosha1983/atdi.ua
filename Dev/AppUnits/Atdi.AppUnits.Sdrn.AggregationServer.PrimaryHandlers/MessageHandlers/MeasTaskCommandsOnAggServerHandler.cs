@@ -87,7 +87,7 @@ namespace Atdi.AppUnits.Sdrn.AggregationServer.PrimaryHandlers.MessageHandlers
                                 var listMeasSubTaskSensorsForDel = listMeasSubTasks.MeasSubTaskSensors.ToList();
                                 for (int j = 0; j < listNotFoundSensors.Count; j++)
                                 {
-                                    listMeasSubTaskSensorsForDel.RemoveAll(x => x.SensorId == listNotFoundSensors[i]);
+                                    listMeasSubTaskSensorsForDel.RemoveAll(x => x.SensorId == listNotFoundSensors[j]);
                                 }
                                 listMeasSubTasks.MeasSubTaskSensors = listMeasSubTaskSensorsForDel.ToArray();
                             }
