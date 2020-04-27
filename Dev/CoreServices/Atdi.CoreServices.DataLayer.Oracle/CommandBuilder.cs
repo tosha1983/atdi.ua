@@ -525,7 +525,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
 
         public string CreateSetClause(string alias, string name, string valueExpression)
         {
-            return $"{name} = {valueExpression}";
+            return $"\"{name}\" = {valueExpression}";
         }
 
         public string CreateDistinct()

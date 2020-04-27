@@ -94,6 +94,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             {
                 this._logger.Info(Contexts.ThisComponent, Categories.MessageProcessing, string.Format(Events.HandlerMeasTaskProcessStart.Text, actionType));
                 var saveMeasTask = new SaveMeasTask(_dataLayer, _logger);
+                var updateMeasTask = new UpdateMeasTask(_dataLayer, _logger);
                 var loadSensor = new LoadSensor(_dataLayer, _logger);
                 var loadMeasTask = new LoadMeasTask(_dataLayer, _logger);
                 long? IdTsk = null;
@@ -234,9 +235,14 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                                         saveMeasTask.SetStatusTasksInDB(measTask, Status.Z.ToString());
                                         IdTsk = measTask.Id.Value;
                                     }
-                                    else if ((actionType == MeasTaskMode.Update.ToString()) && (measTask.Id != null))
+                                    else if ((actionType == MeasTaskMode.UpdateAndRecalcResults.ToString()) && (measTask.Id != null))
                                     {
                                         saveMeasTask.UpdateMeasTaskParametersAndRecalcResults(measTask);
+                                        IdTsk = measTask.Id.Value;
+                                    }
+                                    else if ((actionType == MeasTaskMode.Update.ToString()) && (measTask.Id != null))
+                                    {
+                                        updateMeasTask.UpdateMeasTaskInDB(measTask);
                                         IdTsk = measTask.Id.Value;
                                     }
 
@@ -718,7 +724,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             return result;
         }
 
-        public CommonOperation UpdateMeasTask(ref MeasTask data, out PrepareSendEvent[] prepareSendEventArr)
+        public CommonOperation UpdateMeasTask(MeasTaskMode measTaskMode, ref MeasTask data, out PrepareSendEvent[] prepareSendEventArr)
         {
             prepareSendEventArr = null;
             var result = new CommonOperation();
@@ -765,7 +771,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     var massSensor = SensorIds.ToArray();
                     if (massSensor.Length > 0)
                     {
-                        measTaskProcess.Process(measTask, massSensor, MeasTaskMode.Update.ToString(), false, out bool isSuccessTemp, out long? ID, true, out prepareSendEvents);
+                        measTaskProcess.Process(measTask, massSensor, measTaskMode.ToString(), false, out bool isSuccessTemp, out long? ID, true, out prepareSendEvents);
                         prepareSendEventArr = prepareSendEvents;
                         data = measTask;
                         result.State = CommonOperationState.Success;

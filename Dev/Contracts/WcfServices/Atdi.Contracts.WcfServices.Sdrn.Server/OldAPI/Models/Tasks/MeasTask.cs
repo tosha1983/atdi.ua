@@ -72,6 +72,11 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [DataMember]
         public int? MaxTimeBs;
         /// <summary>
+        /// DateModified
+        /// </summary>
+        [DataMember]
+        public DateTime? DateModified;
+        /// <summary>
         /// DateCreated
         /// </summary>
         [DataMember]

@@ -372,16 +372,30 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                 };
 
 
-                                if (maximumDurationMeas < 0)
+                                var recalcStopTime = currTime;
+
+                                if ((maximumDurationMeas < 0) || (currTime > context.Task.taskParameters.StopTime))
                                 {
                                     context.Task.taskParameters.status = StatusTask.C.ToString();
+                                    this._repositoryTaskParametersByString.Update(context.Task.taskParameters);
                                     measResultsNew.Status = StatusTask.C.ToString();
+                                    var dayStart = measResultsNew.StartTime.Day;
+                                    var dayStop = recalcStopTime.Day;
+                                    if (dayStop!= dayStart)
+                                    {
+                                        recalcStopTime = new DateTime(measResultsNew.StartTime.Year, measResultsNew.StartTime.Month, measResultsNew.StartTime.Day, 23, 59, 59, 999);
+                                        measResultsNew.StopTime = recalcStopTime;
+                                        measResultsNew.Measured = recalcStopTime;
+                                    }
                                 }
 
                                 this._measResultsByStringRepository.Create(measResultsNew);
 
                                 context.Task.MeasResults = null;
-                                context.Task.LastTimeSend = currTime;
+
+                                
+
+                                context.Task.LastTimeSend = recalcStopTime;
                                 context.Task.CounterCallSignaling = 0;
 
                                 var collectEmissionInstrumentalEstimation = context.Task.taskParameters.SignalingMeasTaskParameters.CollectEmissionInstrumentalEstimation;
