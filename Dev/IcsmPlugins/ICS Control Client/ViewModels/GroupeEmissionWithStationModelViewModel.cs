@@ -696,23 +696,11 @@ namespace XICSM.ICSControlClient.ViewModels
                                 || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
                                 && l.Lon.HasValue
                                 && l.Lat.HasValue)
-                        .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                        .Select(l => MapsDrawingHelper.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
                         .ToArray();
                     points.AddRange(sensorPoints);
                 }
             }
-        }
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
         }
     }
 }

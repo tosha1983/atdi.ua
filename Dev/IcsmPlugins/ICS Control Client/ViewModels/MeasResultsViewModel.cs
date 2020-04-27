@@ -326,8 +326,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     //this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
                     var filter = new SDR.ResultsMeasurementsStationFilters()
                     {
-                        FreqBg = ConvertToDouble(this._currentStationsGolbalFilter.FreqBg),
-                        FreqEd = ConvertToDouble(this._currentStationsGolbalFilter.FreqEd),
+                        FreqBg = PluginHelper.ConvertStringToDouble(this._currentStationsGolbalFilter.FreqBg),
+                        FreqEd = PluginHelper.ConvertStringToDouble(this._currentStationsGolbalFilter.FreqEd),
                         MeasGlobalSid = this._currentStationsGolbalFilter.MeasGlobalSid,
                         Standard = this._currentStationsGolbalFilter.Standard
                     };
@@ -645,33 +645,6 @@ namespace XICSM.ICSControlClient.ViewModels
 
             return option;
         }
-
-        private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = System.Windows.Media.Brushes.Green,
-                Fill = System.Windows.Media.Brushes.ForestGreen,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
-
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
-
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
@@ -770,7 +743,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                         if (stationForShow != null)
                         {
-                            points.Add(this.MakeDrawingPointForStation(stationForShow.Site.Lon.Value, stationForShow.Site.Lat.Value));
+                            points.Add(MapsDrawingHelper.MakeDrawingPointForStation(stationForShow.Site.Lon.Value, stationForShow.Site.Lat.Value));
                         }
                     }
                 }
@@ -795,7 +768,7 @@ namespace XICSM.ICSControlClient.ViewModels
                             {
                                 var stationPoints = stationsForShow
                                     .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
-                                    .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
+                                    .Select(s => MapsDrawingHelper.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
                                     .ToArray();
 
                                 if (stationPoints.Length > 0)
@@ -1061,42 +1034,6 @@ namespace XICSM.ICSControlClient.ViewModels
                 SpecLabelText = (_selectedSpectrum + 1).ToString() + " of " + this.CurrentResultsMeasurementsStationData.GeneralResults.Length.ToString();
             else
                 SpecLabelText = "0 of 0";
-        }
-        private double? ConvertToDouble(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return null;
-
-            char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
-            double result = 0;
-            try
-            {
-                if (s != null)
-                    if (!s.Contains(","))
-                        result = double.Parse(s, CultureInfo.InvariantCulture);
-                    else
-                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
-            }
-            catch
-            {
-                try
-                {
-                    result = Convert.ToDouble(s);
-                }
-                catch
-                {
-                    try
-                    {
-                        result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
-                    }
-                    catch
-                    {
-                        //throw new Exception("Wrong string-to-double format");
-                        return null;
-                    }
-                }
-            }
-            return result;
         }
     }
 }

@@ -23,16 +23,15 @@ namespace XICSM.ICSControlClient.WpfControls
         void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!_IsChangeSelected)
-                this.SelectedItemsList = this.SelectedItems;
+                this.SetSelectedItemsList(this.SelectedItems);
         }
-        public IList SelectedItemsList
+
+        public IList GetSelectedItemsList()
+        { return (IList)GetValue(SelectedItemsListProperty); }
+        public void SetSelectedItemsList(IList value)
         {
-            get { return (IList)GetValue(SelectedItemsListProperty); }
-            set
-            {
-                if (!_IsChangeSelected)
-                    SetValue(SelectedItemsListProperty, value);
-            }
+            if (!_IsChangeSelected)
+                SetValue(SelectedItemsListProperty, value);
         }
         public long[] SelectedItemsIndexes
         {

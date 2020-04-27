@@ -107,32 +107,6 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this._stations.Source = this._stationData;
         }
-        private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat, string name)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = System.Windows.Media.Brushes.Green,
-                Fill = System.Windows.Media.Brushes.ForestGreen,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10,
-                Name = name
-            };
-        }
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat, string name)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10,
-                Name = name
-            };
-        }
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
@@ -143,7 +117,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this._currentSensorLocation = this._measResult.LocationSensorMeasurement[this._measResult.LocationSensorMeasurement.Count() - 1];
 
                 if (this._currentSensorLocation.Lon.HasValue && this._currentSensorLocation.Lat.HasValue)
-                    points.Add(this.MakeDrawingPointForSensor("A", this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value, this._measResult.SensorName));
+                    points.Add(MapsDrawingHelper.MakeDrawingPointForSensor("A", this._currentSensorLocation.Lon.Value, this._currentSensorLocation.Lat.Value, this._measResult.SensorName));
             }
 
             if (this._stationData != null && this._stationData.Length > 0)
@@ -151,7 +125,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 foreach (var station in this._stationData)
                 {
                     if (station.Lat != IM.NullD && station.Lon != IM.NullD)
-                        points.Add(this.MakeDrawingPointForStation(station.Lon, station.Lat, station.StationName));
+                        points.Add(MapsDrawingHelper.MakeDrawingPointForStation(station.Lon, station.Lat, station.StationName));
                 }
             }
 

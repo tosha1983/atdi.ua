@@ -13,8 +13,6 @@ using SDR = Atdi.Contracts.WcfServices.Sdrn.Server;
 using SVC = XICSM.ICSControlClient.WcfServiceClients;
 using System.Windows.Controls;
 using Microsoft.VisualBasic;
-using TR = System.Threading;
-using System.Globalization;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -26,6 +24,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private CS.ChartOption _currentChartOption;
         private int _startType;
         private double? _levelMinOccup = null;
+        private bool _supportMultyLevel = false;
 
         public GrapficViewModel(SDR.MeasurementType measType, SDR.MeasurementResults measResult, GeneralResultViewModel generalResult, int startType)
         {
@@ -79,6 +78,12 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             else if (_measType == SDR.MeasurementType.SpectrumOccupation)
             {
+                if (!_levelMinOccup.HasValue)
+                {
+                    var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(this._measResult.Id.MeasTaskId.Value);
+                    _levelMinOccup = task.MeasOther.LevelMinOccup;
+                    _supportMultyLevel = task.MeasOther.SupportMultyLevel.GetValueOrDefault(false);
+                }
                 return this.GetChartOptionBySpectrumOccupation();
             }
             else if (_measType == SDR.MeasurementType.Level)
@@ -178,7 +183,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var option = new CS.ChartOption
             {
-                Title = "Spectrum Occupation",
+                Title = $"Spectrum Occupation ({Properties.Resources.LevelOfMinOccupationDBm}: {_levelMinOccup.ToString()})",
                 YLabel = "Occupation (%)",
                 XLabel = "Freq (Mhz)",
                 ChartType = CS.ChartType.Columns,
@@ -234,11 +239,14 @@ namespace XICSM.ICSControlClient.ViewModels
             option.XMax = preparedDataX.MaxValue;
             option.Points = points;
 
-            var menuItems = new List<CS.ChartMenuItem>()
+            if (_supportMultyLevel)
             {
-                new CS.ChartMenuItem() { Header = Properties.Resources.ChangeLevelOfMinOccupation, Name = "ChangeLevelOccupation" }
-            };
-            option.MenuItems = menuItems.ToArray();
+                var menuItems = new List<CS.ChartMenuItem>()
+                {
+                    new CS.ChartMenuItem() { Header = Properties.Resources.ChangeLevelOfMinOccupation, Name = "ChangeLevelOccupation" }
+                };
+                option.MenuItems = menuItems.ToArray();
+            }
 
             return option;
         }
@@ -246,7 +254,7 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             var option = new CS.ChartOption
             {
-                Title = "Spectrum Occupation",
+                Title = $"Spectrum Occupation ({Properties.Resources.LevelOfMinOccupationDBm}: {_levelMinOccup.ToString()})",
                 YLabel = "Occupation (%)",
                 XLabel = "Freq (Mhz)",
                 ChartType = CS.ChartType.Columns,
@@ -418,17 +426,19 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             try
             {
-                if (!_levelMinOccup.HasValue)
+                var newLevel = Interaction.InputBox(Properties.Resources.LevelOfMinOccupationDBm, "ICS Control Client", _levelMinOccup.ToString());
+                var newLevelMinOcup = PluginHelper.ConvertStringToDouble(newLevel, true);
+
+                if (!newLevelMinOcup.HasValue)
+                    return;
+
+                if (newLevelMinOcup.Value < -150 || newLevelMinOcup.Value > 120)
                 {
-                    var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(this._measResult.Id.MeasTaskId.Value);
-                    _levelMinOccup = task.MeasOther.LevelMinOccup;
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.LevelOfMinOccupationDBm, "-150", "120");
+                    return;
                 }
 
-                var newLevel = Interaction.InputBox(Properties.Resources.LevelOfMinOccupationDBm, "ICS Control Client", _levelMinOccup.ToString());
-                _levelMinOccup = ConvertToDouble(newLevel);
-
-                if (!_levelMinOccup.HasValue)
-                    return;
+                _levelMinOccup = newLevelMinOcup;
 
                 this.CurrentChartOption = GetChartOptionBySpectrumOccupationByMinLevel();
             }
@@ -436,42 +446,6 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 MessageBox.Show(e.ToString());
             }
-        }
-        private double? ConvertToDouble(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return null;
-
-            char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
-            double result = 0;
-            try
-            {
-                if (s != null)
-                    if (!s.Contains(","))
-                        result = double.Parse(s, CultureInfo.InvariantCulture);
-                    else
-                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
-            }
-            catch
-            {
-                try
-                {
-                    result = Convert.ToDouble(s);
-                }
-                catch
-                {
-                    try
-                    {
-                        result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
-                    }
-                    catch
-                    {
-                        //throw new Exception("Wrong string-to-double format");
-                        return null;
-                    }
-                }
-            }
-            return result;
         }
     }
 }

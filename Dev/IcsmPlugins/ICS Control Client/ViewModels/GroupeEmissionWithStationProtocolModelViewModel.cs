@@ -94,7 +94,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void CheckEnablePrintCommand()
         {
-            if (ConvertToDouble(this._dataFilter.FreqStart).HasValue || ConvertToDouble(this._dataFilter.FreqStop).HasValue || (ConvertToShort(this._dataFilter.DateMeasYear).HasValue && ConvertToShort(this._dataFilter.DateMeasMonth).HasValue))
+            if (PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStart).HasValue || PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStop).HasValue || (ConvertToShort(this._dataFilter.DateMeasYear).HasValue && ConvertToShort(this._dataFilter.DateMeasMonth).HasValue))
                 IsEnabledPrintAllCommand = true;
             else
                 IsEnabledPrintAllCommand = false;
@@ -109,8 +109,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 ConvertToShort(this._dataFilter.DateMeasDay),
                 ConvertToShort(this._dataFilter.DateMeasMonth),
                 ConvertToShort(this._dataFilter.DateMeasYear),
-                ConvertToDouble(this._dataFilter.FreqStart),
-                ConvertToDouble(this._dataFilter.FreqStop),
+                PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStart),
+                PluginHelper.ConvertStringToDouble(this._dataFilter.FreqStop),
                 this._dataFilter.Probability,
                 this._dataFilter.Standard,
                 this._dataFilter.Province,
@@ -123,7 +123,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnPrintAllCommand(object parameter)
         {
-            if ((ConvertToShort(_dataFilter.DateMeasYear).HasValue && ConvertToShort(_dataFilter.DateMeasMonth).HasValue) || ConvertToDouble(_dataFilter.FreqStart).HasValue || ConvertToDouble(_dataFilter.FreqStop).HasValue)
+            if ((ConvertToShort(_dataFilter.DateMeasYear).HasValue && ConvertToShort(_dataFilter.DateMeasMonth).HasValue) || PluginHelper.ConvertStringToDouble(_dataFilter.FreqStart).HasValue || PluginHelper.ConvertStringToDouble(_dataFilter.FreqStop).HasValue)
             {
                 if (this._protocols.Source != null && this._protocols.Source.Length > 0)
                 {
@@ -276,42 +276,6 @@ namespace XICSM.ICSControlClient.ViewModels
                 rs.Destroy();
             }
             return retVal;
-        }
-        private double? ConvertToDouble(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return null;
-
-            char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
-            double result = 0;
-            try
-            {
-                if (s != null)
-                    if (!s.Contains(","))
-                        result = double.Parse(s, CultureInfo.InvariantCulture);
-                    else
-                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
-            }
-            catch
-            {
-                try
-                {
-                    result = Convert.ToDouble(s);
-                }
-                catch
-                {
-                    try
-                    {
-                        result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
-                    }
-                    catch
-                    {
-                        //throw new Exception("Wrong string-to-double format");
-                        return null;
-                    }
-                }
-            }
-            return result;
         }
         private short? ConvertToShort(string s)
         {
