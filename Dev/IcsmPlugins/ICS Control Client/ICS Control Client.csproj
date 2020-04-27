@@ -207,6 +207,12 @@
     <Compile Include="Forms\Base\WpfFormBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Base\WpfStandardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\WpfStandardForm.Designer.cs">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\Allotments\Commands\StartSignalizationCommand.cs" />
     <Compile Include="Handlers\Allotments\Forms\CalcSODlg1Form.cs">
       <SubType>Form</SubType>
@@ -276,6 +282,7 @@
     </Compile>
     <Compile Include="Handlers\YetOtherTerrestrialStations\Commands\ShowResultMonitoringCommand.cs" />
     <Compile Include="Handlers\YetOtherTerrestrialStations\YetOtherTerrestrialStationsContextMenuBuilder.cs" />
+    <Compile Include="Helpers\MapsDrawingHelper.cs" />
     <Compile Include="Metadata\FreqPlanChan.cs" />
     <Compile Include="Metadata\AllStations.cs" />
     <Compile Include="Metadata\Allotments.cs" />
@@ -358,6 +365,7 @@
     <Compile Include="Models\WcfDataApadters\StationsEquipmentDataAdapter.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Handlers\PluginCommands.cs" />
+    <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\Tour\Commands\UpdateInspectionsCommand.cs" />
     <Compile Include="Handlers\Tour\Commands\CreateMeasTaskCommand.cs" />
@@ -400,6 +408,7 @@
     <Compile Include="Handlers\OnlineMeasurement\Calculation\BandWidthEstimation.cs" />
     <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcBWForChart.cs" />
     <Compile Include="Handlers\OnlineMeasurement\Calculation\CalcChannelPowForChart.cs" />
+    <Compile Include="ViewModels\SavedTaskViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSensorsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationStationsEquipmentsViewModel.cs" />
     <Compile Include="ViewModels\SignalizationSysInfoViewModel.cs" />
@@ -434,6 +443,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\Base\gridFilterString.resx">
       <DependentUpon>gridFilterString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\WpfFormBase.resx">
+      <DependentUpon>WpfFormBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GraphicForm.resx">
       <DependentUpon>GraphicForm.cs</DependentUpon>
@@ -518,6 +533,10 @@
     <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ICSControlClient.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
     <Page Include="WpfControls\Charts\LineChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

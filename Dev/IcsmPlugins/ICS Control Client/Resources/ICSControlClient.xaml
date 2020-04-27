@@ -60,6 +60,7 @@
             </StatusBar.ItemsPanel>
             <StatusBarItem>
               <ProgressBar Value="0" Width="190" Height="16" IsIndeterminate="{Binding StatusBarIsIndeterminate}"/>
+                
             </StatusBarItem>
             <Separator Grid.Column="1" />
             <StatusBarItem Grid.Column="2">
@@ -115,7 +116,7 @@
                         </Style.Triggers>
                       </Style>
                     </Grid.Style>
-                    <cdg:CustomDataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}" SelectedItemsList="{Binding CurrentShortMeasTasks, Mode=TwoWay}">
+                    <DataGrid Grid.Column="0" Grid.Row="0" IsReadOnly="True" Margin="5, 5, 5, 35" SelectionUnit="FullRow" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding ShortMeasTasks}" SelectedItem="{Binding CurrentShortMeasTask}">
                       <DataGrid.Columns>
                         <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=StatusFull}"></DataGridTextColumn>
                         <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
@@ -132,12 +133,11 @@
                           <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteMeasTaskCommand}"/>
                           <MenuItem Header="{x:Static res:Resources.Refresh}" Command="{Binding RefreshShortTasksCommand}"/>
                           <MenuItem Header="{x:Static res:Resources.ChangeLevelOfMinOccupation}" Command="{Binding ChangeLevelOfMinOccupationCommand}" IsEnabled="{Binding ChangeLevelOfMinOccupationEnabled}"/>
-                          <MenuItem Header="{x:Static res:Resources.Save}" Command="{Binding SaveTasksCommand}"/>
                           <!--<MenuItem Header="{x:Static res:Resources.ShowDetail}" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding ShowMeasTaskDetailEnabled}"/>
                           <MenuItem Header="{x:Static res:Resources.HideDetail}" Command="{Binding ShowHideMeasTaskDetailCommand}" IsEnabled="{Binding HideMeasTaskDetailEnabled}"/>-->
                         </ContextMenu>
                       </DataGrid.ContextMenu>
-                    </cdg:CustomDataGrid>
+                    </DataGrid>
                       
                     <GridSplitter Grid.Column="1" Grid.Row="0" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                     </GridSplitter>
@@ -170,9 +170,9 @@
                               <Label Height="18" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=StatusFull}" FontWeight="Bold" FontSize="12"/>
 
                               <Label Height="18" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Padding="5,0,0,0" Content="{x:Static res:Resources.Name}"  />
-                              <Label Height="18" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=Name}" FontWeight="Bold" FontSize="12"/>
+                              <Label Height="18" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Padding="5,0,0,0" Content="{Binding Path=Name}" FontWeight="Bold" FontSize="12"/>
                               
-                                <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="{x:Static res:Resources.TimeMeas}">
+                                <Expander Grid.ColumnSpan="4" Grid.Row="3" Header="{x:Static res:Resources.Time}">
                                     <Grid>
                                       <Grid.ColumnDefinitions>
                                           <ColumnDefinition Width="100" />
@@ -551,8 +551,7 @@
                             </Grid>
                         </ScrollViewer>
                     </GroupBox>
-                  
-                </Grid>
+                  </Grid>
 
                   <Button Grid.Column="0" Grid.Row="0" Margin="5,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.Run}" IsEnabled="False" Width="70" Height="20" Command="{Binding RunMeasTaskCommand}">
                     <Button.Style>
@@ -610,38 +609,27 @@
                       </Style>
                     </Button.Style>
                   </Button>
-                  <Button Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Margin="325,0,0,5" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="{x:Static res:Resources.SavedTasks}" Width="70" Height="20" Command="{Binding SelectSavedTasksCommand}">
-                    <Button.Style>
-                      <Style TargetType="Button">
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding TaskStationsVisibility}" Value="Hidden">
-                            <Setter Property="Grid.RowSpan" Value="3"/>
-                          </DataTrigger>
-                          <DataTrigger Binding="{Binding TaskStationsVisibility}" Value="Visible">
-                            <Setter Property="Grid.Row" Value="0"/>
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </Button.Style>
-                  </Button>
-                <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                </GridSplitter>
-                <GroupBox Visibility="{Binding TaskStationsVisibility}" Header="{x:Static res:Resources.Stations}" Grid.Row="2">
-                    <DataGrid IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasTaskDetailStations}" SelectedItem="{Binding CurrentMeasTaskStation}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=StationId}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standart}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.GlobalSID}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Owner}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=SiteAdress}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Lon}" Binding="{Binding Path=SiteLon}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Lat}" Binding="{Binding Path=SiteLat}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Region}" Binding="{Binding Path=SiteRegion}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Permission}" Binding="{Binding Path=LicenseDozvilName}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </GroupBox>
+
+                  <GridSplitter Visibility="{Binding TaskStationsVisibility}" Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                  </GridSplitter>
+
+                  <GroupBox Visibility="{Binding TaskStationsVisibility}" Header="{x:Static res:Resources.Stations}" Grid.Row="2">
+                      <DataGrid IsReadOnly="True" Margin="5"  SelectionUnit="FullRow"  SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding MeasTaskDetailStations}" SelectedItem="{Binding CurrentMeasTaskStation}">
+                          <DataGrid.Columns>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=StationId}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Standard}" Binding="{Binding Path=Standart}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.GlobalSID}" Binding="{Binding Path=GlobalSID}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Owner}" Binding="{Binding Path=OwnerName}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Address}" Binding="{Binding Path=SiteAdress}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Lon}" Binding="{Binding Path=SiteLon}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Lat}" Binding="{Binding Path=SiteLat}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Region}" Binding="{Binding Path=SiteRegion}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Permission}" Binding="{Binding Path=LicenseDozvilName}"></DataGridTextColumn>
+                              <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}"></DataGridTextColumn>
+                          </DataGrid.Columns>
+                      </DataGrid>
+                  </GroupBox>
+                
               </Grid>
             </GroupBox>
         

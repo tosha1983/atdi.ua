@@ -89,8 +89,10 @@ namespace XICSM.ICSControlClient.ViewModels
             this.CompareWithTransmitterMaskCommand = new WpfCommand(this.OnCompareWithTransmitterMaskCommand);
             this.CompareWithEmissionOnOtherSensorsCommand = new WpfCommand(this.OnCompareWithEmissionOnOtherSensorsCommand);
 
-            var appSettings = ConfigurationManager.AppSettings;
-            _endpointUrls = appSettings["SdrnServerRestEndpoint"];
+            string _endpointUrls = PluginHelper.GetRestApiEndPoint();
+
+            if (string.IsNullOrEmpty(_endpointUrls))
+                return;
 
             if (this._startType == 0)
                 Task.Run(() => this.ReloadMeasResult());

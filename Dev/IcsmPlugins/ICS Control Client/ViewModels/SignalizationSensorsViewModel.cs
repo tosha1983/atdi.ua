@@ -87,14 +87,10 @@ namespace XICSM.ICSControlClient.ViewModels
             this._shortSensors = new ShortSensorDataAdatper();
             this.StartCommand = new WpfCommand(this.OnStartCommand);
 
-            var appSettings = ConfigurationManager.AppSettings;
-            _endpointUrls = appSettings["SdrnServerRestEndpoint"];
+            string _endpointUrls = PluginHelper.GetRestApiEndPoint();
 
             if (string.IsNullOrEmpty(_endpointUrls))
-            {
-                MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
                 return;
-            }
 
             this.ReloadShortSensors();
         }
@@ -189,18 +185,6 @@ namespace XICSM.ICSControlClient.ViewModels
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
         }
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
@@ -221,7 +205,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                         || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
                                         && l.Lon.HasValue
                                         && l.Lat.HasValue)
-                                .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                                .Select(l => MapsDrawingHelper.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
                                 .ToArray();
 
                             points.AddRange(sensorPoints);

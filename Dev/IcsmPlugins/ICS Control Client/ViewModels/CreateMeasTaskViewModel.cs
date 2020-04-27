@@ -333,7 +333,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (this._currentMeasTask.SupportMultyLevel.HasValue && this._currentMeasTask.SupportMultyLevel.Value)
                 {
-                    if (MessageBox.Show($"{Properties.Resources.Attention} {Properties.Resources.YouSelectedOption}: “{Properties.Resources.CollectDataForChangeInTheMinLevel}”. {Properties.Resources.Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults} {Properties.Resources.Message_DoYouWantContinue}?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                    if (MessageBox.Show($"{Properties.Resources.Attention} {Properties.Resources.YouSelectedOption}: '{Properties.Resources.CollectDataForChangeInTheMinLevel}'. {Properties.Resources.Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults}. {Properties.Resources.Message_DoYouWantContinue}?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                     {
                         result = false;
                         return;
@@ -342,18 +342,18 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (this._currentMeasTask.MeasTimeParamListPerStart > this._currentMeasTask.MeasTimeParamListPerStop)
                 {
-                    MessageBox.Show("Date Stop should be great of the Date Start!");
+                    PluginHelper.ShowMessageValueShouldBeGreatOfThe(Properties.Resources.DateStart, Properties.Resources.DateStop);
                     return;
                 }
                 if (this._currentMeasTask.MeasTimeParamListTimeStart > this._currentMeasTask.MeasTimeParamListTimeStop)
                 {
-                    MessageBox.Show("Time Stop should be great of the Time Start!");
+                    PluginHelper.ShowMessageValueShouldBeGreatOfThe(Properties.Resources.TimeStart, Properties.Resources.TimeStop);
                     return;
                 }
 
                 if (this.CurrentMeasTask.DetailedMeasurementsBWEmission.GetValueOrDefault(false) && this.CurrentMeasTask.MinPointForDetailBW.HasValue && this.CurrentMeasTask.SignalizationNChenal.HasValue && (this.CurrentMeasTask.MinPointForDetailBW.Value < this.CurrentMeasTask.SignalizationNChenal.Value || this.CurrentMeasTask.MinPointForDetailBW.Value > 5000))
                 {
-                    MessageBox.Show("The value “The minimum number of points a spectrum must contain in order not to measure bandwith” must be in the range from " + this.CurrentMeasTask.SignalizationNChenal.Value + " to 5000!");
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.TheMinimumNumberOfPointsASpectrumMustContainInOrderNotToMeasureBandwith, this.CurrentMeasTask.SignalizationNChenal.Value.ToString(), "5000");
                     return;
                 }
 
@@ -371,7 +371,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (!this._currentMeasTask.IsAutoMeasDtParamRfAttenuation && (this._currentMeasTask.MeasDtParamRfAttenuation.HasValue && (this._currentMeasTask.MeasDtParamRfAttenuation < 0 || this._currentMeasTask.MeasDtParamRfAttenuation > 40)))
                 {
-                    MessageBox.Show("The value 'Attenuation, dB' must be in the range from 0 to 40");
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.AttenuationDB, "0", "40");
                     return;
                 }
                 if (!this._currentMeasTask.IsAutoMeasDtParamRfAttenuation && (this._currentMeasTask.MeasDtParamRfAttenuation.HasValue && this._currentMeasTask.MeasDtParamRfAttenuation.Value != Math.Round(this._currentMeasTask.MeasDtParamRfAttenuation.Value, 0)))
@@ -382,19 +382,19 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 if (!this._currentMeasTask.IsAutoMeasDtParamPreamplification && (this._currentMeasTask.MeasDtParamPreamplification.HasValue && (this._currentMeasTask.MeasDtParamPreamplification < 0 || this._currentMeasTask.MeasDtParamPreamplification > 40)))
                 {
-                    MessageBox.Show("The value 'Gain of preamplifier, dB' must be in the range from 0 to 40");
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.GainOfPreamplifierDB, "0", "40");
                     return;
                 }
 
                 if (!this._currentMeasTask.IsAutoMeasDtParamReferenceLevel && (this._currentMeasTask.MeasDtParamReferenceLevel.HasValue && (this._currentMeasTask.MeasDtParamReferenceLevel < -200 || this._currentMeasTask.MeasDtParamReferenceLevel > 10)))
                 {
-                    MessageBox.Show("The value 'Gain of preamplifier, dB' must be in the range from -200 to 10");
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.ReferenceLevelDBm, "-200", "10");
                     return;
                 }
 
                 if (!this._currentMeasTask.IsAutoTriggerLevel_dBm_Hz && (this._currentMeasTask.triggerLevel_dBm_Hz.HasValue && (this._currentMeasTask.triggerLevel_dBm_Hz < -200 || this._currentMeasTask.triggerLevel_dBm_Hz > -100)))
                 {
-                    MessageBox.Show("The value 'Noise Level' must be in the range from -200 to -100");
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.NoiseLevel, "-200", "-100");
                     return;
                 }
 
@@ -473,34 +473,34 @@ namespace XICSM.ICSControlClient.ViewModels
 
                     if (val > 50000)
                     {
-                        MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", PluginHelper.MessageBoxCaption);
                         result = false;
                     }
                     else if (val > 10000)
                     {
-                        if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                             result = false;
                     }
 
                     if (this._currentMeasTask.MeasOtherNCount.HasValue && this._currentMeasTask.MeasOtherNCount > 10000)
                     {
-                        MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources.", PluginHelper.MessageBoxCaption);
                         result = false;
                     }
                     else if (this._currentMeasTask.MeasOtherNCount.HasValue && this._currentMeasTask.MeasOtherNCount > 1000)
                     {
-                        if (MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        if (MessageBox.Show("Attention!!! The “Number total scan” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                             result = false;
                     }
 
                     if (this._currentMeasTask.MeasOtherNChenal.HasValue && this._currentMeasTask.MeasOtherNChenal > 100)
                     {
-                        MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources.", PluginHelper.MessageBoxCaption);
                         result = false;
                     }
                     else if (this._currentMeasTask.MeasOtherNChenal.HasValue && this._currentMeasTask.MeasOtherNChenal > 50)
                     {
-                        if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        if (MessageBox.Show("Attention!!! The “Number of steps for measurements in channel” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                             result = false;
                     }
                 }
@@ -513,23 +513,23 @@ namespace XICSM.ICSControlClient.ViewModels
                         val = this.CurrentMeasTask.SignalizationNChenal * ((this._currentMeasTask.MeasFreqParamRgU - this._currentMeasTask.MeasFreqParamRgL) / this._currentMeasTask.MeasFreqParamStep);
                     if (val > 500)
                     {
-                        MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources.", PluginHelper.MessageBoxCaption);
                         result = false;
                     }
                     else if (val > 100)
                     {
-                        if (MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        if (MessageBox.Show("Attention!!! The “The number of point in the channel during scanning” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                             result = false;
                     }
 
                     if (this._currentMeasTask.SignalizationNCount.HasValue && this._currentMeasTask.SignalizationNCount > 1000000)
                     {
-                        MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources.", "ISC Control Client");
+                        MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources.", PluginHelper.MessageBoxCaption);
                         result = false;
                     }
                     else if (this._currentMeasTask.SignalizationNCount.HasValue && this._currentMeasTask.SignalizationNCount > 1000)
                     {
-                        if (MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        if (MessageBox.Show("Attention!!! The “The maximum number of scan per day” have big value. That task will require lot of sensors resources. Perhaps this will be to the detriment of other tasks. Do you want continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                             result = false;
                     }
 
@@ -537,12 +537,12 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         if (this._currentMeasTask.CorrelationFactor.HasValue && this._currentMeasTask.CorrelationFactor > 1)
                         {
-                            MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions.", "ISC Control Client");
+                            MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions.", PluginHelper.MessageBoxCaption);
                             result = false;
                         }
                         else if (this._currentMeasTask.CorrelationFactor.HasValue && this._currentMeasTask.CorrelationFactor > 0.8)
                         {
-                            if (MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions. Do you want continue?", "ISC Control Client", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                            if (MessageBox.Show("Attention!!! The “Correlation coefficient” have big value. Results will have lot of emissions. Do you want continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                                 result = false;
                         }
                     }
@@ -716,7 +716,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     OrderId = this._currentMeasTask.OrderId,
                     Prio = this._currentMeasTask.Prio,
                     ResultType = this._currentMeasTask.ResultType,
-                    Status = this._currentMeasTask.Status,
+                    Status = "N",
                     Type = this._currentMeasTask.Type,
                     MeasDtParam = new SDR.MeasDtParam()
                     {
@@ -796,6 +796,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
                 else
                 {
+                    WCF.SdrnsControllerWcfClient.RunMeasTask(measTaskId);
                     if (_allotId.HasValue && _allotId.Value > 0)
                     {
                         IMRecordset rsAllot = new IMRecordset("CH_ALLOTMENTS", IMRecordset.Mode.ReadWrite);
@@ -823,14 +824,10 @@ namespace XICSM.ICSControlClient.ViewModels
             var prevTaskData = new List<MeasTask>();
             var taskData = new List<MeasTask>();
 
-            var appSettings = ConfigurationManager.AppSettings;
-            string endpointUrls = appSettings["SdrnServerRestEndpoint"];
+            string endpointUrls = PluginHelper.GetRestApiEndPoint();
 
             if (string.IsNullOrEmpty(endpointUrls))
-            {
-                MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
                 return false;
-            }
 
             var dateBg = this._currentMeasTask.MeasTimeParamListPerStart;
             var dateEd = this._currentMeasTask.MeasTimeParamListPerStop;
@@ -1054,24 +1051,12 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             return result;
         }
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
             var points = new List<MP.MapDrawingDataPoint>();
 
-            if (this._currentShortSensor != null)
+            if (this._currentShortSensor != null && this._currentShortSensor.Count > 0)
                 foreach (ShortSensorViewModel sensor in this._currentShortSensor)
                     DrawSensor(points, sensor.Id);
             else if (this._shortSensors.Source != null && this._shortSensors.Source.Length > 0)
@@ -1094,7 +1079,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
                                 && l.Lon.HasValue
                                 && l.Lat.HasValue)
-                        .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                        .Select(l => MapsDrawingHelper.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
                         .ToArray();
                     points.AddRange(sensorPoints);
                 }

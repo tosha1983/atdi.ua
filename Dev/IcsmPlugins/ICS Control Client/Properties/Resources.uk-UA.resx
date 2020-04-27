@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Activation" xml:space="preserve">
+    <value>Активація</value>
+  </data>
   <data name="AddAssociationStation" xml:space="preserve">
     <value>Асоціювати зі станцією</value>
   </data>
@@ -153,8 +156,14 @@
   <data name="ApplyCommand" xml:space="preserve">
     <value>Застосувати</value>
   </data>
+  <data name="Areas" xml:space="preserve">
+    <value>Регіони</value>
+  </data>
   <data name="AssociatedCommand" xml:space="preserve">
     <value>Асоціювати</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Увага!!!</value>
   </data>
   <data name="AttenuationDB" xml:space="preserve">
     <value>Послаблення, дБ</value>
@@ -189,6 +198,9 @@
   <data name="BWkHz" xml:space="preserve">
     <value>Смуга, кГц</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
   <data name="CancelCommand" xml:space="preserve">
     <value>Відмінити</value>
   </data>
@@ -203,6 +215,9 @@
   </data>
   <data name="CentrFreq_From" xml:space="preserve">
     <value>Центр. частота, МГц від</value>
+  </data>
+  <data name="ChangeLevelOfMinOccupation" xml:space="preserve">
+    <value>Змінити рівень мініальної зайнятості</value>
   </data>
   <data name="ChangeTimeCommand" xml:space="preserve">
     <value>Змінити час</value>
@@ -224,6 +239,9 @@
   </data>
   <data name="Code" xml:space="preserve">
     <value>Код</value>
+  </data>
+  <data name="CollectDataForChangeInTheMinLevel" xml:space="preserve">
+    <value>Накопичувати дані для можливої зміни мінімального рівня</value>
   </data>
   <data name="CollectEmissionForInstrumentalEstimation" xml:space="preserve">
     <value>Інструментальна оцінка випромінювань</value>
@@ -277,7 +295,7 @@
     <value>CtoI</value>
   </data>
   <data name="CurentPowerDBm" xml:space="preserve">
-    <value>Поточна потужність, дБм</value>
+    <value>Текуча потужність, дБм</value>
   </data>
   <data name="DateCreated" xml:space="preserve">
     <value>Дата створення</value>
@@ -336,6 +354,9 @@
   <data name="DistanceKm" xml:space="preserve">
     <value>Відстань, км</value>
   </data>
+  <data name="Download" xml:space="preserve">
+    <value>Завантажити</value>
+  </data>
   <data name="DurationS" xml:space="preserve">
     <value>Тривалість, с</value>
   </data>
@@ -351,6 +372,9 @@
   <data name="EmissionFreqMHz" xml:space="preserve">
     <value>Частота випромінювання</value>
   </data>
+  <data name="Emissions" xml:space="preserve">
+    <value>Випромінювання</value>
+  </data>
   <data name="EndOfUse" xml:space="preserve">
     <value>Експлуатація до</value>
   </data>
@@ -363,8 +387,11 @@
   <data name="ExecutionMode" xml:space="preserve">
     <value>Режим виконання</value>
   </data>
+  <data name="ExportRS" xml:space="preserve">
+    <value>Експорт РС</value>
+  </data>
   <data name="FieldStrength_dBV_m" xml:space="preserve">
-    <value>Напруженість поля дБМкВ/м</value>
+    <value>Напруженість поля дБмкВ/м</value>
   </data>
   <data name="FileName" xml:space="preserve">
     <value>Назва файлу</value>
@@ -477,6 +504,15 @@
   <data name="LatDEC" xml:space="preserve">
     <value>Широта, DEC</value>
   </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="LatitudeDeclared" xml:space="preserve">
+    <value>Широта заявлена</value>
+  </data>
+  <data name="LatitudeMeasured" xml:space="preserve">
+    <value>Широта вимірювання</value>
+  </data>
   <data name="Level" xml:space="preserve">
     <value>Рівень</value>
   </data>
@@ -495,14 +531,32 @@
   <data name="LevelOfMinOccupationDBm" xml:space="preserve">
     <value>Рівень мініальної зайнятості, дБм</value>
   </data>
+  <data name="Levels" xml:space="preserve">
+    <value>Рівні</value>
+  </data>
   <data name="LevelsDifferenceForEmissionDivisionDB" xml:space="preserve">
     <value>Різниця рівнів для розбиття випромінювання, дБ</value>
+  </data>
+  <data name="LevelsDistribution" xml:space="preserve">
+    <value>Розподіл рівнів</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>Завантажити</value>
   </data>
   <data name="Lon" xml:space="preserve">
     <value>Довгота</value>
   </data>
   <data name="LonDEC" xml:space="preserve">
     <value>Довгота, DEC</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Довгота</value>
+  </data>
+  <data name="LongitudeDeclared" xml:space="preserve">
+    <value>Довгота заявлена</value>
+  </data>
+  <data name="LongitudeMeasured" xml:space="preserve">
+    <value>Довгота вимірювання</value>
   </data>
   <data name="LowerFreq" xml:space="preserve">
     <value>Нижня частота</value>
@@ -560,6 +614,42 @@
   </data>
   <data name="MeasurementDuration" xml:space="preserve">
     <value>Тривалість вимірювання</value>
+  </data>
+  <data name="MenuFilter" xml:space="preserve">
+    <value>Фільтр</value>
+  </data>
+  <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
+    <value>Ви дійсно хочете видалити запис?</value>
+  </data>
+  <data name="Message_AreYouSureYouWantToDeleteThisTask" xml:space="preserve">
+    <value>Ви дійсно хочете видалити дану задачу?</value>
+  </data>
+  <data name="Message_DoYouWantContinue" xml:space="preserve">
+    <value>Дійсно продовжити?</value>
+  </data>
+  <data name="Message_GSIDSyncWithEmissionsCouldNotBeStarted" xml:space="preserve">
+    <value>Синхронізація GSID з випромінюваннями не може бути запущена. Оскільки вона вже проводилася для даного періоду часу (або частини) і вибраних сенсорів (одного або декількох) і обраного файлу (одного або декількох) з реферативними спектрами. Змініть параметри і запустіть повторно.</value>
+  </data>
+  <data name="Message_MustBeInTheRange" xml:space="preserve">
+    <value>має бути в межах</value>
+  </data>
+  <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
+    <value>В вибраний регіон не потрапляє ні один сенсор!</value>
+  </data>
+  <data name="Message_ProcessStartedSuccessfully" xml:space="preserve">
+    <value>Процес успішно запущений.</value>
+  </data>
+  <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
+    <value>Для переходу у режим вимірювань on line виберіть сенсор</value>
+  </data>
+  <data name="Message_ShouldBeGreatOfThe" xml:space="preserve">
+    <value>має бути більше ніж</value>
+  </data>
+  <data name="Message_TheValue" xml:space="preserve">
+    <value>Значення</value>
+  </data>
+  <data name="Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults" xml:space="preserve">
+    <value>Дана опція потребує додаткових розрахунків на серверах та істотно збільшить необхідний обсяг пам'яті для зберігання результатів.</value>
   </data>
   <data name="MHz" xml:space="preserve">
     <value>МГц</value>
@@ -645,6 +735,9 @@
   <data name="PermissionFrequency_MHz" xml:space="preserve">
     <value>Частота заявлена МГц</value>
   </data>
+  <data name="PermissionIsValid" xml:space="preserve">
+    <value>Дозвіл дійсний</value>
+  </data>
   <data name="PermissionNumber" xml:space="preserve">
     <value>Дозвіл номер</value>
   </data>
@@ -653,9 +746,6 @@
   </data>
   <data name="PermissionStart" xml:space="preserve">
     <value>Дозвіл дійсний з</value>
-  </data>
-  <data name="PermissionStart1" xml:space="preserve">
-    <value>Кінцева дата виконання плану</value>
   </data>
   <data name="PermissionStop" xml:space="preserve">
     <value>Дозвіл дійсний до</value>
@@ -678,8 +768,14 @@
   <data name="PrintAll" xml:space="preserve">
     <value>Друкувати все</value>
   </data>
+  <data name="PrintAllRez" xml:space="preserve">
+    <value>Друкувати все (РЕЗ)</value>
+  </data>
   <data name="PrintSelected" xml:space="preserve">
     <value>Друкувати обране</value>
+  </data>
+  <data name="PrintSelectedRez" xml:space="preserve">
+    <value>Друкувати обране (РЕЗ)</value>
   </data>
   <data name="Probability" xml:space="preserve">
     <value>Ймовірність</value>
@@ -696,8 +792,17 @@
   <data name="RBWkHz" xml:space="preserve">
     <value>RBW, кГц</value>
   </data>
+  <data name="ReferenceLevel" xml:space="preserve">
+    <value>Реферативний рівень</value>
+  </data>
   <data name="ReferenceLevelDBm" xml:space="preserve">
     <value>Реферативний рівень, дБм</value>
+  </data>
+  <data name="ReferenceSituation" xml:space="preserve">
+    <value>Реферативна ситуація</value>
+  </data>
+  <data name="ReferentSpectrasForInstrumentalEvaluation" xml:space="preserve">
+    <value>Реферативні спектри для інструментальної оцінки</value>
   </data>
   <data name="RefershMeasTasks" xml:space="preserve">
     <value>Оновити задачі</value>
@@ -738,6 +843,21 @@
   <data name="RxLoss" xml:space="preserve">
     <value>Втрати ПРМ</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Збережений</value>
+  </data>
+  <data name="SaveDate" xml:space="preserve">
+    <value>Дата збереження</value>
+  </data>
+  <data name="SavedTasks" xml:space="preserve">
+    <value>Збережені задачі</value>
+  </data>
+  <data name="SaveToCSV" xml:space="preserve">
+    <value>Експорт у CSV</value>
+  </data>
   <data name="ScansNumber" xml:space="preserve">
     <value>К-сть сканувань</value>
   </data>
@@ -769,7 +889,7 @@
     <value>Сигнал/Рівень, дБм</value>
   </data>
   <data name="SignalLevel_dB" xml:space="preserve">
-    <value>Рівень сигналу (дБ)</value>
+    <value>Рівень сигналу (дБм)</value>
   </data>
   <data name="SN" xml:space="preserve">
     <value>SN</value>
@@ -798,8 +918,23 @@
   <data name="StartFreqMHz" xml:space="preserve">
     <value>Частота від, МГц</value>
   </data>
+  <data name="State_A" xml:space="preserve">
+    <value>Активний</value>
+  </data>
+  <data name="State_C" xml:space="preserve">
+    <value>Завершений</value>
+  </data>
+  <data name="State_F" xml:space="preserve">
+    <value>Вимушений зупинитися</value>
+  </data>
+  <data name="State_N" xml:space="preserve">
+    <value>Новий</value>
+  </data>
+  <data name="State_S" xml:space="preserve">
+    <value>Збережений</value>
+  </data>
   <data name="StationAddress" xml:space="preserve">
-    <value>Адреса РЕЗ</value>
+    <value>Адрес РЕЗ</value>
   </data>
   <data name="StationName" xml:space="preserve">
     <value>Назва станції</value>
@@ -818,6 +953,18 @@
   </data>
   <data name="StatusStation" xml:space="preserve">
     <value>Статус обліку РЕЗ</value>
+  </data>
+  <data name="Status_IllegallyOperatedTransmitter" xml:space="preserve">
+    <value>НДП</value>
+  </data>
+  <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
+    <value>Ліцензіат; Фіксується робота РЕЗ</value>
+  </data>
+  <data name="Status_OperatingAccordingToTest" xml:space="preserve">
+    <value>Тестове включення</value>
+  </data>
+  <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
+    <value>Ліцензіат; НЕ зафіксована робота РЕЗ</value>
   </data>
   <data name="StepkHz" xml:space="preserve">
     <value>Крок, кГц</value>
@@ -889,6 +1036,9 @@
     <value>Час від</value>
   </data>
   <data name="TimeMeas" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="TimeMeas1" xml:space="preserve">
     <value>Час вимірювання</value>
   </data>
   <data name="TimeStart" xml:space="preserve">
@@ -954,121 +1104,13 @@
   <data name="Year" xml:space="preserve">
     <value>Рік</value>
   </data>
+  <data name="YouSelectedOption" xml:space="preserve">
+    <value>Ви обрали опцію</value>
+  </data>
   <data name="ZoomUndo" xml:space="preserve">
     <value>Скасувати масштабування</value>
   </data>
   <data name="ZTR" xml:space="preserve">
     <value>ЗТР</value>
-  </data>
-  <data name="Message_GSIDSyncWithEmissionsCouldNotBeStarted" xml:space="preserve">
-    <value>Синхронізація GSID з випромінюваннями не може бути запущена. Оскільки вона вже проводилася для даного періоду часу (або частини) і вибраних сенсорів (одного або декількох) і обраного файлу (одного або декількох) з реферативними спектрами. Змініть параметри і запустіть повторно.</value>
-  </data>
-  <data name="Message_ProcessStartedSuccessfully" xml:space="preserve">
-    <value>Процес успішно запущений.</value>
-  </data>
-  <data name="State_A" xml:space="preserve">
-    <value>Активний</value>
-  </data>
-  <data name="State_C" xml:space="preserve">
-    <value>Завершений</value>
-  </data>
-  <data name="State_F" xml:space="preserve">
-    <value>Вимушений зупинитися</value>
-  </data>
-  <data name="State_N" xml:space="preserve">
-    <value>Новий</value>
-  </data>
-  <data name="Status_IllegallyOperatedTransmitter" xml:space="preserve">
-    <value>НДП</value>
-  </data>
-  <data name="Status_OperatingAccordingToLicense" xml:space="preserve">
-    <value>Ліцензіат; Фіксується робота РЕЗ</value>
-  </data>
-  <data name="Status_OperatingAccordingToTest" xml:space="preserve">
-    <value>Тестове включення</value>
-  </data>
-  <data name="Status_TransmitterOperationNotFixed" xml:space="preserve">
-    <value>Ліцензіат; НЕ зафіксована робота РЕЗ</value>
-  </data>
-  <data name="Time" xml:space="preserve">
-    <value>Час</value>
-  </data>
-  <data name="Message_SelectASensorToSwitchToOnLineMeasurementMode" xml:space="preserve">
-    <value>Для переходу у режим вимірювань on line виберіть сенсор</value>
-  </data>
-  <data name="PrintAllRez" xml:space="preserve">
-    <value>Друкувати все (РЕЗ)</value>
-  </data>
-  <data name="PrintSelectedRez" xml:space="preserve">
-    <value>Друкувати обране (РЕЗ)</value>
-  </data>
-  <data name="Areas" xml:space="preserve">
-    <value>Регіони</value>
-  </data>
-  <data name="Emissions" xml:space="preserve">
-    <value>Випромінювання</value>
-  </data>
-  <data name="Levels" xml:space="preserve">
-    <value>Рівні</value>
-  </data>
-  <data name="LevelsDistribution" xml:space="preserve">
-    <value>Розподіл рівнів</value>
-  </data>
-  <data name="MenuFilter" xml:space="preserve">
-    <value>Фільтр</value>
-  </data>
-  <data name="PermissionIsValid" xml:space="preserve">
-    <value>Дозвіл дійсний</value>
-  </data>
-  <data name="ReferenceLevel" xml:space="preserve">
-    <value>Реферативний рівень</value>
-  </data>
-  <data name="ReferentSpectrasForInstrumentalEvaluation" xml:space="preserve">
-    <value>Реферативні спектри для інструментальної оцінки</value>
-  </data>
-  <data name="SaveToCSV" xml:space="preserve">
-    <value>Експорт у CSV</value>
-  </data>
-  <data name="Latitude" xml:space="preserve">
-    <value>Широта</value>
-  </data>
-  <data name="LatitudeDeclared" xml:space="preserve">
-    <value>Широта заявлена</value>
-  </data>
-  <data name="LatitudeMeasured" xml:space="preserve">
-    <value>Широта виміряна</value>
-  </data>
-  <data name="Longitude" xml:space="preserve">
-    <value>Довгота</value>
-  </data>
-  <data name="LongitudeDeclared" xml:space="preserve">
-    <value>Довгота заявлена</value>
-  </data>
-  <data name="LongitudeMeasured" xml:space="preserve">
-    <value>Довгота виміряна</value>
-  </data>
-  <data name="Message_AreYouDureYouWantToDeleteTheEntry" xml:space="preserve">
-    <value>Ви дійсно хочете видалити запис?</value>
-  </data>
-  <data name="Message_NotASingleSensorGetsIntoTheSelectedRegion" xml:space="preserve">
-    <value>В вибраний регіон не потрапляє ні один сенсор!</value>
-  </data>
-  <data name="CollectDataForChangeInTheMinLevel" xml:space="preserve">
-    <value>Накопичувати дані для можливої зміни мінімального рівня</value>
-  </data>
-  <data name="Attention" xml:space="preserve">
-    <value>Увага!!!</value>
-  </data>
-  <data name="Message_DoYouWantContinue" xml:space="preserve">
-    <value>Дійсно продовжити?</value>
-  </data>
-  <data name="Message_ThisOptionWillRequireAdditionalCalculationsOnTheServersAndWillSignificantlyIncreaseTheRequiredAmountOfMemoryToStoreTheResults" xml:space="preserve">
-    <value>Дана опція потребує додаткових розрахунків на серверах та істотно збільшить необхідний обсяг пам'яті для зберігання результатів.</value>
-  </data>
-  <data name="YouSelectedOption" xml:space="preserve">
-    <value>Ви обрали опцію</value>
-  </data>
-  <data name="ChangeLevelOfMinOccupation" xml:space="preserve">
-    <value>Змінити рівень мініальної зайнятості</value>
   </data>
 </root>

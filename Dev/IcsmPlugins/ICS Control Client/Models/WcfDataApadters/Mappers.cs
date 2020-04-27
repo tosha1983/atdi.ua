@@ -730,6 +730,9 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 case "A":
                     statusFull = Properties.Resources.State_A;
                     break;
+                case "S":
+                    statusFull = Properties.Resources.State_S;
+                    break;
                 default:
                     break;
             }
