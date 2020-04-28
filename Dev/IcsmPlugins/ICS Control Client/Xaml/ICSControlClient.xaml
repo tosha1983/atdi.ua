@@ -1121,6 +1121,7 @@
                       </Grid>
                     </ScrollViewer>
                   </GroupBox>
+                  <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="70" Margin="5,5,0,0" Content="{x:Static res:Resources.ExportRS}" Command="{Binding ExportRSCommand}" Visibility="{Binding ResExportRSVisibility}"/>
                   <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="70" Margin="5,5,0,0" Content="{x:Static res:Resources.GetCSV}" Command="{Binding GetCSVCommand}" Visibility="{Binding ResGetCSVVisibility}"/>
                   <Button Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="70" Margin="85,5,0,0" Content="{x:Static res:Resources.GetGraphic}" Command="{Binding GetGraphicCommand}" Visibility="{Binding ResGetGraphicVisibility}"/>
                 </Grid>

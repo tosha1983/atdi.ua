@@ -651,10 +651,11 @@
                       </Expander.Style>
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="200" />
+                          <ColumnDefinition Width="320" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="Auto"></RowDefinition>
@@ -674,8 +675,11 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberTotalScan}"  />
-                        <TextBox x:Name="MeasOtherNCount" Grid.Column="1" Grid.Row="2">
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.CollectDataForChangeInTheMinLevel}"/>
+                        <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Path=SupportMultyLevel}"/>
+
+                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberTotalScan}"  />
+                        <TextBox x:Name="MeasOtherNCount" Grid.Column="1" Grid.Row="3">
                           <TextBox.Text>
                             <Binding Path="MeasOtherNCount">
                               <Binding.ValidationRules>
@@ -685,8 +689,8 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
-                        <TextBox x:Name="MeasOtherNChenal" Grid.Column="1" Grid.Row="3">
+                        <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
+                        <TextBox x:Name="MeasOtherNChenal" Grid.Column="1" Grid.Row="4">
                           <TextBox.Text>
                             <Binding Path="MeasOtherNChenal">
                               <Binding.ValidationRules>
@@ -730,6 +734,7 @@
                               <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                              <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
                               <RowDefinition Height="Auto"></RowDefinition>
@@ -970,6 +975,9 @@
 
                             <Label Height="18" Grid.Column="0" Grid.Row="12" Padding="5,0,0,0" Content = "{x:Static res:Resources.CollectEmissionForInstrumentalEstimation}"/>
                             <CheckBox Grid.Column="1" Grid.Row="12" Grid.ColumnSpan="3" IsChecked="{Binding Path=CollectEmissionInstrumentalEstimation}"/>
+                            
+                            <Label Height="18" Grid.Column="0" Grid.Row="13" Padding="5,0,0,0" Content = "{x:Static res:Resources.ReferenceSituation}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="13" Grid.ColumnSpan="3" IsChecked="{Binding Path=IsUseRefSpectrum}"/>
                           </Grid>
                         </GroupBox>
                         <GroupBox  Header=""  Margin="0, 5, 5, 5" Grid.Row="1">
@@ -1200,7 +1208,7 @@
                     </Expander>                    
                   </Grid>
                 </ScrollViewer>
-                <Button Grid.Row="1" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="50" Height="20" VerticalAlignment="Bottom">
+                <Button Grid.Row="1" Margin="-60, 5, 5, 5" Content="{x:Static res:Resources.StartCommand}" Command="{Binding CreateMeasTaskCommand}" Width="50" Height="20" VerticalAlignment="Bottom">
                     <Button.Style>
                       <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="False"/>
@@ -1242,6 +1250,7 @@
                       </Style>
                     </Button.Style>
                   </Button>
+                <Button Grid.Row="1" Margin="60, 5, 5, 5" Content="{x:Static res:Resources.Save}" Command="{Binding SaveTasksCommand}" Width="50" Height="20" VerticalAlignment="Bottom"/>
               </Grid>
             </GroupBox>
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.RowSpan="3"></GridSplitter>
