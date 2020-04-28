@@ -15,7 +15,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 	[Entity]
 	public interface ICalcTask : ICalcTask_PK
 	{
-		IProject PROJECT { get; set; }
+		IClientContext CONTEXT { get; set; }
 
 		int TypeCode { get; set; }
 

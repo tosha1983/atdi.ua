@@ -25,6 +25,12 @@ namespace XICSM.ICSControlClient.Models.Views
         [WpfColumn("Coordinates", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string Coordinates { get; set; }
 
+        [WpfColumn("CoordinatesLat", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string CoordinatesLat { get; set; }
+
+        [WpfColumn("CoordinatesLon", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string CoordinatesLon { get; set; }
+
         [WpfColumn("NumberPermission", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string NumberPermission { get; set; }
 
@@ -36,6 +42,12 @@ namespace XICSM.ICSControlClient.Models.Views
 
         [WpfColumn("SensorName", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public string SensorName { get; set; }
+
+        [WpfColumn("StatusMeasStation", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StatusMeasStation { get; set; }
+
+        [WpfColumn("StatusMeasStationFull", WidthRule = ColumnWidthRule.AutoSize, Width = 50, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StatusMeasStationFull { get; set; }
 
         public DetailProtocols[] DetailProtocols { get; set; }
     }

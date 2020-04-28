@@ -31,6 +31,7 @@ using System.Configuration;
 using System.Globalization;
 using TR = System.Threading;
 using Microsoft.VisualBasic;
+using Atdi.Modules.Sdrn.Calculation;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -51,6 +52,7 @@ namespace XICSM.ICSControlClient.ViewModels
         // Tasks
         private MeasTaskViewModel _currentMeasTask;
         private ShortMeasTaskViewModel _currentShortMeasTask;
+        private IList _currentShortMeasTasks;
 
         // Task -> TaskStation
         private MeasTaskDetailStationViewModel _currentMeasTaskStation;
@@ -77,17 +79,9 @@ namespace XICSM.ICSControlClient.ViewModels
         private ModelType _currentModel;
 
         #endregion
-
-        private ShortMeasTaskDataAdatper _shortMeasTasks;
-        private MeasurementResultsDataAdatper _measResults;
-        private ShortSensorDataAdatper _shortSensors;
-        private MeasTaskDetailStationDataAdapter _measTaskDetailStations;
-        private ResultsMeasurementsStationDataAdapter _resultsMeasurementsStations;
-        private LevelMeasurementsCarDataAdapter _levelMeasurements;
         private GeneralResultDataAdapter _generalResults;
         private ResultsMeasurementsStationFilters _currentStationsGolbalFilter;
 
-        private Visibility _measTaskDetailVisibility = Visibility.Visible;
         private Visibility _measResultsDetailVisibility = Visibility.Hidden;
         private Visibility _taskStationsVisibility = Visibility.Hidden;
         private Visibility _resultStationsVisibility = Visibility.Hidden;
@@ -99,6 +93,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private Visibility _resLevelMes1Visibility = Visibility.Hidden;
         private Visibility _resGetCSVVisibility = Visibility.Hidden;
         private Visibility _resGetGraphicVisibility = Visibility.Hidden;
+        private Visibility _resExportRSVisibility = Visibility.Hidden;
 
         private double? _LowFreq;
         private double? _UpFreq;
@@ -113,6 +108,7 @@ namespace XICSM.ICSControlClient.ViewModels
         #region Commands
         public WpfCommand GetCSVCommand { get; set; }
         public WpfCommand GetSOCSVCommand { get; set; }
+        public WpfCommand ExportRSCommand { get; set; }
         public WpfCommand GetGraphicCommand { get; set; }
         public WpfCommand SearchStationCommand { get; set; }
         public WpfCommand PrevSpecCommand { get; set; }
@@ -123,13 +119,15 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand StopMeasTaskCommand { get; set; }
         public WpfCommand RefreshShortTasksCommand { get; set; }
         public WpfCommand RefreshShortSensorsCommand { get; set; }
-        public WpfCommand ShowHideMeasTaskDetailCommand { get; set; }
         public WpfCommand ShowHideMeasResultsDetailCommand { get; set; }
         public WpfCommand MeasResultCommand { get; set; }
         public WpfCommand FilterApplyCommand { get; set; }
-        public WpfCommand DoubleClickResultCommand { get; set; }
         public WpfCommand DoubleClickSensorCommand { get; set; }
         public WpfCommand EditSensorTitleCommand { get; set; }
+        public WpfCommand ChangeLevelOfMinOccupationCommand { get; set; }
+        public WpfCommand SaveTasksCommand { get; set; }
+        public WpfCommand SelectSavedTasksCommand { get; set; }
+        public WpfCommand DoubleClickResultCommand { get; set; }
 
         #endregion
 
@@ -173,8 +171,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this._currentStationsGolbalFilter = new ResultsMeasurementsStationFilters();
 
             this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
-            this.GetSOCSVCommand = new WpfCommand(this.OnGetSOCSVCommand);
             this.GetGraphicCommand = new WpfCommand(this.OnGetGraphicCommand);
+            this.ExportRSCommand = new WpfCommand(this.OnExportRSCommand);
             this.SearchStationCommand = new WpfCommand(this.OnSearchStationCommand);
             this.PrevSpecCommand = new WpfCommand(this.OnPrevSpecCommand);
             this.NextSpecCommand = new WpfCommand(this.OnNextSpecCommand);
@@ -185,19 +183,21 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this.RefreshShortTasksCommand = new WpfCommand(this.OnRefreshShortTasksCommand);
             this.RefreshShortSensorsCommand = new WpfCommand(this.OnRefreshShortSensorsCommand);
-            this.ShowHideMeasTaskDetailCommand = new WpfCommand(this.OnShowHideMeasTaskDetailCommand);
             this.ShowHideMeasResultsDetailCommand = new WpfCommand(this.OnShowHideMeasResultsDetailCommand);
             this.DoubleClickSensorCommand = new WpfCommand(this.OnDoubleClickSensorCommand);
-            this.DoubleClickResultCommand = new WpfCommand(this.OnDoubleClickResultCommand);
             this.EditSensorTitleCommand = new WpfCommand(this.OnEditSensorTitleCommand);
             this.MeasResultCommand = new WpfCommand(this.OnMeasResultCommand);
+            this.ChangeLevelOfMinOccupationCommand = new WpfCommand(this.OnChangeLevelOfMinOccupationCommand);
+            this.SaveTasksCommand = new WpfCommand(this.OnSaveTasksCommand);
+            this.SelectSavedTasksCommand = new WpfCommand(this.OnSelectSavedTasksCommand);
+            this.DoubleClickResultCommand = new WpfCommand(this.OnDoubleClickResultCommand);
 
-            this._shortMeasTasks = new ShortMeasTaskDataAdatper();
-            this._measResults = new MeasurementResultsDataAdatper();
-            this._shortSensors = new ShortSensorDataAdatper();
-            this._measTaskDetailStations = new MeasTaskDetailStationDataAdapter();
-            this._resultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
-            this._levelMeasurements = new LevelMeasurementsCarDataAdapter();
+            this.ShortMeasTasks = new ShortMeasTaskDataAdatper();
+            this.MeasResults = new MeasurementResultsDataAdatper();
+            this.ShortSensors = new ShortSensorDataAdatper();
+            this.MeasTaskDetailStations = new MeasTaskDetailStationDataAdapter();
+            this.ResultsMeasurementsStations = new ResultsMeasurementsStationDataAdapter();
+            this.LevelMeasurements = new LevelMeasurementsCarDataAdapter();
             this._generalResults = new GeneralResultDataAdapter();
 
             this.FilterApplyCommand = new WpfCommand(this.OnFilterApplyCommand);
@@ -381,6 +381,11 @@ namespace XICSM.ICSControlClient.ViewModels
                 ReloadMeasTaskDetail(currentMeasTask);
             }));
 
+            if (currentMeasTask.SupportMultyLevel.HasValue && currentMeasTask.SupportMultyLevel.Value)
+                ChangeLevelOfMinOccupationEnabled = true;
+            else
+                ChangeLevelOfMinOccupationEnabled = false;
+
             ReloadShortSensors(currentMeasTask);
 
             RedrawMap();
@@ -420,6 +425,11 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._currentMeasurementResults;
             set => this.Set(ref this._currentMeasurementResults, value);
         }
+        public IList CurrentShortMeasTasks
+        {
+            get => this._currentShortMeasTasks;
+            set => this.Set(ref this._currentShortMeasTasks, value);
+        }
         public MeasurementResultsViewModel CurrentMeasurementResult
         {
             get => this._currentMeasurementResult;
@@ -449,16 +459,25 @@ namespace XICSM.ICSControlClient.ViewModels
 
             if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation && this.CurrentMeasurementResult != null)
             {
+                ResExportRSVisibility = Visibility.Hidden;
                 ResGetGraphicVisibility = Visibility.Visible;
                 ResGetCSVVisibility = Visibility.Visible;
             }
             else if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.MonitoringStations && this.CurrentMeasurementResult != null)
             {
+                ResExportRSVisibility = Visibility.Hidden;
                 ResGetGraphicVisibility = Visibility.Hidden;
                 ResGetCSVVisibility = Visibility.Visible;
             }
+            else if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.Signaling && this.CurrentMeasurementResult != null)
+            {
+                ResExportRSVisibility = Visibility.Visible;
+                ResGetGraphicVisibility = Visibility.Hidden;
+                ResGetCSVVisibility = Visibility.Hidden;
+            }
             else
             {
+                ResExportRSVisibility = Visibility.Hidden;
                 ResGetGraphicVisibility = Visibility.Hidden;
                 ResGetCSVVisibility = Visibility.Hidden;
             }
@@ -492,25 +511,20 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         #region Sources (Adapters)
 
-        public LevelMeasurementsCarDataAdapter LevelMeasurements => this._levelMeasurements;
+        public LevelMeasurementsCarDataAdapter LevelMeasurements { get; }
 
-        public ShortMeasTaskDataAdatper ShortMeasTasks => this._shortMeasTasks;
+        public ShortMeasTaskDataAdatper ShortMeasTasks { get; }
 
-        public MeasurementResultsDataAdatper MeasResults => this._measResults;
+        public MeasurementResultsDataAdatper MeasResults { get; }
 
-        public ShortSensorDataAdatper ShortSensors => this._shortSensors;
+        public ShortSensorDataAdatper ShortSensors { get; }
 
-        public MeasTaskDetailStationDataAdapter MeasTaskDetailStations => this._measTaskDetailStations;
+        public MeasTaskDetailStationDataAdapter MeasTaskDetailStations { get; }
 
-        public ResultsMeasurementsStationDataAdapter ResultsMeasurementsStations => this._resultsMeasurementsStations;
+        public ResultsMeasurementsStationDataAdapter ResultsMeasurementsStations { get; }
 
         #endregion
 
-        public Visibility MeasTaskDetailVisibility
-        {
-            get => this._measTaskDetailVisibility;
-            set => this.Set(ref this._measTaskDetailVisibility, value, () => { ReloadMeasTaskDetail(this.CurrentMeasTask); });
-        }
         public Visibility MeasResultsDetailVisibility
         {
             get => this._measResultsDetailVisibility;
@@ -587,6 +601,13 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._resGetGraphicVisibility;
             set => this.Set(ref this._resGetGraphicVisibility, value);
         }
+        public Visibility ResExportRSVisibility
+        {
+            get => this._resExportRSVisibility;
+            set => this.Set(ref this._resExportRSVisibility, value);
+        }
+
+
         public double? LowFreq
         {
             get => this._LowFreq;
@@ -630,11 +651,17 @@ namespace XICSM.ICSControlClient.ViewModels
             set => this.Set(ref this._hideMeasResultsDetailEnabled, value);
 
         }
+        bool _changeLevelOfMinOccupationEnabled = false;
+        public bool ChangeLevelOfMinOccupationEnabled
+        {
+            get => this._changeLevelOfMinOccupationEnabled;
+            set => this.Set(ref this._changeLevelOfMinOccupationEnabled, value);
 
+        }
         private void ReloadShortMeasTasks()
         {
             var sdrTasks = SVC.SdrnsControllerWcfClient.GetShortMeasTasks();
-            this._shortMeasTasks.Source = sdrTasks.OrderByDescending(c => c.Id.Value).ToArray();
+            this.ShortMeasTasks.Source = sdrTasks.OrderByDescending(c => c.Id.Value).ToArray();
         }
 
         private void ReloadShortMeasResults(ShortMeasTaskViewModel shortMeasTask)
@@ -651,7 +678,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
 
                     var sdrMeasResults = _dataStore.GetMeasResultsHeaderByTaskId(taskId); // SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(taskId);
-                    this._measResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
+                    this.MeasResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
                 }
                 catch (Exception mes)
                 {
@@ -676,15 +703,15 @@ namespace XICSM.ICSControlClient.ViewModels
             //var taskViewModel = Mappers.Map(task);
             //this.CurrentMeasTask = taskViewModel;
 
-            if (this.MeasTaskDetailVisibility == Visibility.Visible && this._measTaskDetailStations != null)
+            if (this.MeasTaskDetailStations != null)
             {
                 if (measTask != null)
                 {
-                    this._measTaskDetailStations.Source = _dataStore.GetStationDataForMeasurementsByTaskId(measTask.Id);
+                    this.MeasTaskDetailStations.Source = _dataStore.GetStationDataForMeasurementsByTaskId(measTask.Id);
                 }
                 else
                 {
-                    this._measTaskDetailStations.Source = null;
+                    this.MeasTaskDetailStations.Source = null;
                 }
             }
             if (measTask == null)
@@ -692,9 +719,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.TaskStationsVisibility = Visibility.Hidden;
                 return;
             }
-            if (measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations && this.MeasTaskDetailVisibility == Visibility.Visible)
+            if (measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
             {
-                if (this._measTaskDetailStations.Source != null && this._measTaskDetailStations.Source.Length > 0)
+                if (this.MeasTaskDetailStations.Source != null && this.MeasTaskDetailStations.Source.Length > 0)
                     this.TaskStationsVisibility = Visibility.Visible;
                 else
                     this.TaskStationsVisibility = Visibility.Hidden;
@@ -707,7 +734,7 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void ReloadDetailVisible(MeasTaskViewModel measTask)
         {
-            if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations && this.MeasResultsDetailVisibility == Visibility.Visible)
+            if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
             {
                 this.ResFreq1Visibility = Visibility.Collapsed;
                 this.ResFreq2Visibility = Visibility.Visible;
@@ -716,7 +743,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResLevelMes1Visibility = Visibility.Visible;
                 this.ResGetCSVVisibility = Visibility.Visible;
             }
-            else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.SpectrumOccupation && this.MeasResultsDetailVisibility == Visibility.Visible)
+            else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
             {
                 this.ResFreq1Visibility = Visibility.Visible;
                 this.ResFreq2Visibility = Visibility.Collapsed;
@@ -725,7 +752,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResTimeMeasVisibility = Visibility.Collapsed;
                 this.ResLevelMes1Visibility = Visibility.Collapsed;
             }
-            else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Level && this.MeasResultsDetailVisibility == Visibility.Visible)
+            else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Level)
             {
                 this.ResFreq1Visibility = Visibility.Visible;
                 this.ResFreq2Visibility = Visibility.Collapsed;
@@ -733,7 +760,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 this.ResSpecVisibility = Visibility.Collapsed;
                 this.ResLevelMes1Visibility = Visibility.Collapsed;
             }
-            else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling && this.MeasResultsDetailVisibility == Visibility.Visible)
+            else if (measTask != null && measTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.Signaling)
             {
                 this.ResFreq1Visibility = Visibility.Visible;
                 this.ResFreq2Visibility = Visibility.Collapsed;
@@ -765,8 +792,8 @@ namespace XICSM.ICSControlClient.ViewModels
                     //var sdrMeasResults = _dataStore.GetResMeasStationHeaderByResId(measurementResults.MeasSdrResultsId);
                     var filter = new SDR.ResultsMeasurementsStationFilters()
                     {
-                        FreqBg = ConvertToDouble(this._currentStationsGolbalFilter.FreqBg),
-                        FreqEd = ConvertToDouble(this._currentStationsGolbalFilter.FreqEd),
+                        FreqBg = PluginHelper.ConvertStringToDouble(this._currentStationsGolbalFilter.FreqBg),
+                        FreqEd = PluginHelper.ConvertStringToDouble(this._currentStationsGolbalFilter.FreqEd),
                         MeasGlobalSid = this._currentStationsGolbalFilter.MeasGlobalSid,
                         Standard = this._currentStationsGolbalFilter.Standard
                     };
@@ -774,7 +801,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         //this._resultsMeasurementsStations.Source = sdrMeasResults.OrderByDescending(c => c.Id).ToArray();
-                        this._resultsMeasurementsStations.Source = sdrMeasResults;
+                        this.ResultsMeasurementsStations.Source = sdrMeasResults;
                     }));
                 }
 
@@ -806,7 +833,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 //this.CurrentMeasurementResult = null;
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    this._resultsMeasurementsStations.Source = null;
+                    this.ResultsMeasurementsStations.Source = null;
                     LowFreq = null;
                     UpFreq = null;
                 }));
@@ -868,7 +895,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                this._shortSensors.Source = sensors.OrderByDescending(c => c.Id.Value).ToArray();
+                this.ShortSensors.Source = sensors.OrderByDescending(c => c.Id.Value).ToArray();
             }));
         }
 
@@ -876,10 +903,10 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             if (this.CurrentResultsMeasurementsStation == null)
             {
-                this._levelMeasurements.Source = null;
+                this.LevelMeasurements.Source = null;
                 return;
             }
-            this._levelMeasurements.Source = this._currentResultsMeasurementsStationData.LevelMeasurements;
+            this.LevelMeasurements.Source = this._currentResultsMeasurementsStationData.LevelMeasurements;
         }
         private void OnCreateMeasTaskCommand(object parameter)
         {
@@ -889,6 +916,32 @@ namespace XICSM.ICSControlClient.ViewModels
                 measTaskForm.ShowDialog();
                 measTaskForm.Dispose();
                 this.ReloadShortMeasTasks();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnSaveTasksCommand(object parameter)
+        {
+            if(_currentShortMeasTask != null)
+            {
+                var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(_currentShortMeasTask.Id);
+                task.Status = "S";
+                task.DateCreated = DateTime.Now;
+                task.MeasSubTasks = null;
+                task.Id = null;
+                var newTaskId = SVC.SdrnsControllerWcfClient.CreateMeasTask(task);
+            }
+            
+        }
+        private void OnSelectSavedTasksCommand(object parameter)
+        {
+            try
+            {
+                var form = new FM.WpfStandardForm("SavedTaskForm.xaml", "SavedTaskViewModel");
+                form.ShowDialog();
+                form.Dispose();
             }
             catch (Exception e)
             {
@@ -905,6 +958,46 @@ namespace XICSM.ICSControlClient.ViewModels
                     OnGetMSCSVCommand(parameter);
             }
         }
+        private void OnExportRSCommand(object parameter)
+        {
+            if (this._currentMeasurementResult != null && this._currentMeasurementResult != null)
+            {
+                var measResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResult.MeasSdrResultsId, null, null);
+
+                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = $"RS_Result_{this._currentMeasurementResult.MeasSdrResultsId}.csv" };
+                if (sfd.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    var output = new List<string>();
+                    output.Add("MaskLevels_dB;MaskFrequencies_kHz");
+
+                    foreach (var emitting in measResult.Emittings)
+                    {
+                        var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6, 8);
+
+                        for (int i = 0; i < result.MaskLevels_dB.Length - 1; i++)
+                        {
+                            output.Add($"{result.MaskLevels_dB[i]};{result.MaskFrequencies_kHz[i]}");
+                        }
+                    }
+                    System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                    MessageBox.Show("Your file was generated and its ready for use.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("No data for export.");
+                return;
+            }
+        }
+        private void OnDoubleClickResultCommand(object parameter)
+        {
+            if (this._currentMeasurementResult != null && this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.Signaling)
+            {
+                var dlgForm = new FM.MeasResultSignalizationForm(this._currentMeasurementResult.MeasSdrResultsId, 0, null, null);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+            }
+        }
         private void OnGetSOCSVCommand(object parameter)
         {
             try
@@ -912,14 +1005,10 @@ namespace XICSM.ICSControlClient.ViewModels
                 using (var wc = new HttpClient())
                 {
                     {
-                        var appSettings = ConfigurationManager.AppSettings;
-                        string endpointUrls = appSettings["SdrnServerRestEndpoint"] ;
+                        string endpointUrls = PluginHelper.GetRestApiEndPoint();
 
                         if (string.IsNullOrEmpty(endpointUrls))
-                        {
-                            MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
                             return;
-                        }
 
                         if (this._currentMeasurementResults == null || this._currentMeasTask == null)
                             return;
@@ -1025,35 +1114,6 @@ namespace XICSM.ICSControlClient.ViewModels
                 MessageBox.Show(e.ToString());
             }
         }
-        private void OnGetGraphicCommand(object parameter)
-        {
-            try
-            {
-                SDR.MeasurementResults _measResult = null;
-                GeneralResultViewModel _generalResult = null;
-
-                if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.MonitoringStations)
-                {
-                    _generalResult = this._currentGeneralResult;
-                }
-                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
-                {
-                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
-                }
-                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.Level)
-                {
-                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
-                }
-
-                var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult);
-                form.ShowDialog();
-                form.Dispose();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
-        }
         private void OnGetMSCSVCommand(object parameter)
         {
             try
@@ -1122,6 +1182,35 @@ namespace XICSM.ICSControlClient.ViewModels
                     System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
                     MessageBox.Show("Your file was generated and its ready for use.");
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
+        private void OnGetGraphicCommand(object parameter)
+        {
+            try
+            {
+                SDR.MeasurementResults _measResult = null;
+                GeneralResultViewModel _generalResult = null;
+
+                if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.MonitoringStations)
+                {
+                    _generalResult = this._currentGeneralResult;
+                }
+                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
+                {
+                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
+                }
+                else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.Level)
+                {
+                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
+                }
+
+                var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult, 1);
+                form.ShowDialog();
+                form.Dispose();
             }
             catch (Exception e)
             {
@@ -1262,19 +1351,23 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void OnDeleteMeasTaskCommand(object parameter)
         {
-            if (this.CurrentShortMeasTask == null)
-            {
+            if (this.CurrentShortMeasTask == null && this.CurrentShortMeasTasks == null)
                 return;
-            }
-            var taskId = this.CurrentShortMeasTask.Id;
-            var result = System.Windows.Forms.MessageBox.Show("Are you sure?", $"Delete the meas task with ID #{taskId}", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
 
+            var result = System.Windows.Forms.MessageBox.Show("Are you sure?", $"Delete the meas task(s)", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
             if (result != System.Windows.Forms.DialogResult.Yes)
-            {
                 return;
+
+            if (this.CurrentShortMeasTasks != null)
+            {
+                foreach (ShortMeasTaskViewModel task in this.CurrentShortMeasTasks)
+                    SVC.SdrnsControllerWcfClient.DeleteMeasTaskById(task.Id);
+            }
+            else
+            {
+                SVC.SdrnsControllerWcfClient.DeleteMeasTaskById(this.CurrentShortMeasTask.Id);
             }
 
-            SVC.SdrnsControllerWcfClient.DeleteMeasTaskById(taskId);
             this.ReloadShortMeasTasks();
         }
         private void OnRunMeasTaskCommand(object parameter)
@@ -1310,6 +1403,28 @@ namespace XICSM.ICSControlClient.ViewModels
 
             SVC.SdrnsControllerWcfClient.StopMeasTask(taskId);
         }
+        private void OnChangeLevelOfMinOccupationCommand(object parameter)
+        {
+            var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(this.CurrentShortMeasTask.Id);
+
+            var newLevel = Interaction.InputBox(Properties.Resources.LevelOfMinOccupationDBm, "ICS Control Client", task.MeasOther.LevelMinOccup.ToString());
+            var level = PluginHelper.ConvertStringToDouble(newLevel, true);
+
+            if (level.HasValue)
+            {
+                if (level.Value < -150 || level.Value > 120)
+                {
+                    PluginHelper.ShowMessageValueMustBeInTheRange(Properties.Resources.LevelOfMinOccupationDBm, "-150", "120");
+                    return;
+                }
+
+                task.MeasOther.LevelMinOccup = level;
+                SVC.SdrnsControllerWcfClient.UpdateMeasTaskParametersAndRecalcResults(task);
+
+                var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(this.CurrentShortMeasTask.Id);
+                this.MeasResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
+            }
+        }
 
         private void OnRefreshShortTasksCommand(object parameter)
         {
@@ -1320,27 +1435,6 @@ namespace XICSM.ICSControlClient.ViewModels
         private void OnRefreshShortSensorsCommand(object parameter)
         {
             this.ReloadShortSensors(this.CurrentMeasTask);
-        }
-
-        private void OnShowHideMeasTaskDetailCommand(object parameter)
-        {
-            switch (this._measTaskDetailVisibility)
-            {
-                case Visibility.Visible:
-                    this.MeasTaskDetailVisibility = Visibility.Hidden;
-                    this.ShowMeasTaskDetailEnabled = true;
-                    this.HideMeasTaskDetailEnabled = false;
-                    break;
-                case Visibility.Hidden:
-                    this.MeasTaskDetailVisibility = Visibility.Visible;
-                    this.ShowMeasTaskDetailEnabled = false;
-                    this.HideMeasTaskDetailEnabled = true;
-                    break;
-                case Visibility.Collapsed:
-                    break;
-                default:
-                    break;
-            }
         }
         private void OnShowHideMeasResultsDetailCommand(object parameter)
         {
@@ -1372,15 +1466,6 @@ namespace XICSM.ICSControlClient.ViewModels
             var dlgForm = new FM.OnlineMeasurementForm(this._currentShortSensor, null);
             dlgForm.ShowDialog();
             dlgForm.Dispose();
-        }
-        private void OnDoubleClickResultCommand(object parameter)
-        {
-            if (this._currentMeasurementResult != null)
-            {
-                var dlgForm = new FM.MeasResultSignalizationForm(this._currentMeasurementResult.MeasSdrResultsId, 0, null, null);
-                dlgForm.ShowDialog();
-                dlgForm.Dispose();
-            }
         }
         private void OnEditSensorTitleCommand(object parameter)
         {
@@ -1672,33 +1757,6 @@ namespace XICSM.ICSControlClient.ViewModels
 
             return option;
         }
-
-        private MP.MapDrawingDataPoint MakeDrawingPointForStation(double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = System.Windows.Media.Brushes.Green,
-                Fill = System.Windows.Media.Brushes.ForestGreen,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
-
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
-
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
@@ -1708,8 +1766,8 @@ namespace XICSM.ICSControlClient.ViewModels
 
             if (this.CurrentShortSensor != null)
                 DrawSensor(points, this.CurrentShortSensor.Id);
-            else if (this._shortSensors.Source != null && this._shortSensors.Source.Length > 0)
-                foreach (var sensor in this._shortSensors.Source)
+            else if (this.ShortSensors.Source != null && this.ShortSensors.Source.Length > 0)
+                foreach (var sensor in this.ShortSensors.Source)
                     DrawSensor(points, sensor.Id.Value);
 
             if (this._currentMeasurementResult != null)
@@ -1790,7 +1848,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                             if (stationForShow != null)
                             {
-                                points.Add(this.MakeDrawingPointForStation(stationForShow.Site.Lon.Value, stationForShow.Site.Lat.Value));
+                                points.Add(MapsDrawingHelper.MakeDrawingPointForStation(stationForShow.Site.Lon.Value, stationForShow.Site.Lat.Value));
                             }
                         }
                     }
@@ -1815,7 +1873,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 {
                                     var stationPoints = stationsForShow
                                         .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
-                                        .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
+                                        .Select(s => MapsDrawingHelper.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
                                         .ToArray();
 
                                     if (stationPoints.Length > 0)
@@ -1831,7 +1889,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     if (currentMeasTaskStation.SiteLon.HasValue && currentMeasTaskStation.SiteLat.HasValue)
                     {
-                        points.Add(this.MakeDrawingPointForStation(currentMeasTaskStation.SiteLon.Value, currentMeasTaskStation.SiteLat.Value));
+                        points.Add(MapsDrawingHelper.MakeDrawingPointForStation(currentMeasTaskStation.SiteLon.Value, currentMeasTaskStation.SiteLat.Value));
                     }
                 }
                 else if (currentMeasTask != null)
@@ -1842,7 +1900,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     {
                         var stationPoints = taskStations
                             .Where(s => s.Site != null && s.Site.Lon.HasValue && s.Site.Lat.HasValue)
-                            .Select(s => this.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
+                            .Select(s => MapsDrawingHelper.MakeDrawingPointForStation(s.Site.Lon.Value, s.Site.Lat.Value))
                             .ToArray();
 
                         if (stationPoints.Length > 0)
@@ -1876,7 +1934,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
                                 && l.Lon.HasValue
                                 && l.Lat.HasValue)
-                        .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                        .Select(l => MapsDrawingHelper.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
                         .ToArray();
                     points.AddRange(sensorPoints);
                 }
@@ -1992,42 +2050,6 @@ namespace XICSM.ICSControlClient.ViewModels
             _timer?.Dispose();
             _waitForm?.Dispose();
             _userActionTask?.Dispose();
-        }
-        private double? ConvertToDouble(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return null;
-
-            char systemSeparator = TR.Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
-            double result = 0;
-            try
-            {
-                if (s != null)
-                    if (!s.Contains(","))
-                        result = double.Parse(s, CultureInfo.InvariantCulture);
-                    else
-                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
-            }
-            catch
-            {
-                try
-                {
-                    result = Convert.ToDouble(s);
-                }
-                catch
-                {
-                    try
-                    {
-                        result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
-                    }
-                    catch
-                    {
-                        //throw new Exception("Wrong string-to-double format");
-                        return null;
-                    }
-                }
-            }
-            return result;
         }
     }
 }

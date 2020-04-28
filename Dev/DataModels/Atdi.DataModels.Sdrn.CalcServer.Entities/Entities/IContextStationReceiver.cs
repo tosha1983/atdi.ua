@@ -7,27 +7,33 @@ using System.Threading.Tasks;
 
 namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 {
+	[EntityPrimaryKey]
+	public interface IContextStationReceiver_PK
+	{
+		long StationId { get; set; }
+	}
+
 	[Entity]
-	public interface IContextStationReceiver : IContextStation_PK
+	public interface IContextStationReceiver : IContextStationReceiver_PK
 	{
 
 		double Freq_MHz { get; set; }
 
 		double BW_kHz { get; set; }
 
-		double Loss_dB { get; set; }
+		float Loss_dB { get; set; }
 
-		double KTBF_dBm { get; set; }
+		float KTBF_dBm { get; set; }
 
-		double Threshold_dBm { get; set; }
+		float Threshold_dBm { get; set; }
 
-		byte PolarizingCode { get; set; }
+		byte PolarizationCode { get; set; }
 
-		string PolarizingName { get; set; }
+		string PolarizationName { get; set; }
 
 	}
 
-	public enum Polarization
+	public enum PolarizationCode
 	{
 		/// <summary>
 		/// Unknown
@@ -57,7 +63,7 @@ namespace Atdi.DataModels.Sdrn.CalcServer.Entities
 		/// <summary>
 		/// M
 		/// </summary>
-		M =5
+		M = 5
 	}
 
 }

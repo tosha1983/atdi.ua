@@ -51,11 +51,13 @@
     <Compile Include="Parameters\MesureSystemInfoParameter.cs" />
     <Compile Include="Parameters\MesureSystemInfo\FreqType.cs" />
     <Compile Include="Parameters\MesureSystemInfo\GSMBands.cs" />
+    <Compile Include="Parameters\EstimateRefLevelParameter.cs" />
     <Compile Include="Results\Enums\DeviceStatus.cs" />
     <Compile Include="Results\GpsResult.cs" />
     <Compile Include="Results\MesureSystemInfoResult.cs" />
     <Compile Include="Results\MesureSystemInfo\StationSystemInfo.cs" />
     <Compile Include="Results\MesureSystemInfo\SystemInformationBlock.cs" />
+    <Compile Include="Results\EstimateRefLevelResult.cs" />
     <Compile Include="Test\GpsLocation\MesureGpsLocationExampleCommand.cs" />
     <Compile Include="Parameters\MesureIQStreamParameter.cs" />
     <Compile Include="Parameters\MesureTraceParameter.cs" />

@@ -58,15 +58,17 @@ namespace Atdi.CoreServices.EntityOrm
         public static EntityPathDescriptor EnsureEntityPath(IEntityOrmConfig ormConfig, string path, IEntityMetadata relatedEntity)
         {
             // проверим, содержит ли путь часть корневого пространства имен
+            var hasFullPath = false;
             if (path.StartsWith(ormConfig.Namespace, StringComparison.OrdinalIgnoreCase))
             {
                 path = path.Substring(ormConfig.Namespace.Length + 1, path.Length - ormConfig.Namespace.Length - 1);
+                hasFullPath = true; // доступ к сущности через полный путь 
             }
             var pathParts = path.Split('.');
             var entityName = pathParts[pathParts.Length - 1];
             var folders = string.Empty;
 
-            if (relatedEntity != null)
+            if (relatedEntity != null && !hasFullPath)
             {
                 folders = EntityPathDescriptor.GetFoldersFromQualifiedName(ormConfig.Namespace, relatedEntity.QualifiedName);
             }

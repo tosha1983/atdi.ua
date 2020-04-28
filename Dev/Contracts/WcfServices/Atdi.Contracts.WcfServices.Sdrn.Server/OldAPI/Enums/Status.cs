@@ -32,6 +32,8 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         [EnumMember]
         E_T,
         [EnumMember]
-        E
+        E,
+        [EnumMember]
+        S
     }
 }

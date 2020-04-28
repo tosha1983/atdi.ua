@@ -17,16 +17,25 @@ using IC=Atdi.DataModels.Sdrn.Infocenter.Entities;
 using Atdi.Platform.Logging;
 using DM = Atdi.AppUnits.Sdrn.CalcServer.DataModel;
 using Atdi.Common.Extensions;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer
 {
 	internal class MapBuilder
 	{
+		private class InfocCluttersDescFreq
+		{
+			public long Id;
+
+			public double Freq_MHz;
+
+			public string Note;
+		}
 		private struct CoverageSourceMapCell
 		{
 			public int XIndex;
 			public int YIndex;
-			public Coordinate UpperLeft;
+			public AtdiCoordinate UpperLeft;
 			public byte[] CellArea;
 			public int Amount;
 
@@ -196,7 +205,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					try
 					{
 						// все измененяи по карте в рамках тразакции
-						calcDbScope.BeginTran();
+						//calcDbScope.BeginTran();
 
 						// чистим контекст карты
 						CleanProjectMapContext(calcDbScope, projectMapId);
@@ -239,15 +248,16 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 							this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Building);
 							this.BuildMap<byte>(calcDbScope, infoDbScope, projectMapData, ProjectMapType.Clutter);
 						}
-							
+						
+						// поределяемся с описанием клатеров
 						// фиксируем состояние
 						this.ChangeProjectMapStatus(calcDbScope, projectMapId, ProjectMapStatusCode.Prepared);
-						calcDbScope.Commit();
+						//calcDbScope.Commit();
 						_logger.Verbouse(Contexts.ThisComponent, Categories.MapPreparation, $"Prepared project map with id #{projectMapId}");
 					}
 					catch (Exception e)
 					{
-						calcDbScope.Rollback();
+						//calcDbScope.Rollback();
 						this.ChangeProjectMapStatus(calcDbScope, projectMapId, ProjectMapStatusCode.Failed, e.ToString());
 						throw;
 					}
@@ -447,6 +457,225 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 					this.SaveSourceMap(calcDbScope, contentId, sourceMap);
 				}
 			}
+
+			// если карта клатеров, то определимся  с их описанием
+			if (mapType == ProjectMapType.Clutter)
+			{
+				long infocDescId = 0;
+				// за основу берем карты клатеров на которых была построена конечная матрица 
+				var ids = sourceMaps.Where(sm => sm.Used).Select(sm => sm.MapId).OrderBy(v => v).ToArray();
+				if (ids.Length > 0)
+				{
+					//  берем последнюю карту из тех которые были основанием для клатеров
+					for (var i = 0; i < ids.Length; i++)
+					{
+						infocDescId = this.FindInfocClutterDesc(infoDbScope, ids[i]);
+						if (infocDescId > 0)
+						{
+							break;
+						}
+					}
+				}
+
+				if (infocDescId == 0)
+				{
+					infocDescId = this.FindDefaultInfocClutterDesc(infoDbScope);
+					if (infocDescId == 0)
+					{
+						throw new InvalidOperationException("A default clutters description not found in Infocenter");
+					}
+				}
+
+				this.CopyInfocClutterDescToProjectMap(calcDbScope, infoDbScope, infocDescId, projectMap.ProjectMapId);
+			}
+		}
+
+		private long FindDefaultInfocClutterDesc(IDataLayerScope infoDbScope)
+		{
+			var selDescQuery = _infocenterDataLayer.GetBuilder<IC.ICluttersDesc>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.MAP.Id, ConditionOperator.IsNull)
+				.OrderByDesc(c => c.Id)
+				.OnTop(1);
+
+			var infocDescId = infoDbScope.Executor.ExecuteAndFetch(selDescQuery, reader =>
+			{
+				if (reader.Read())
+				{
+					return reader.GetValue(c => c.Id);
+				}
+
+				return 0;
+			});
+
+			return infocDescId;
+		}
+
+		private long FindInfocClutterDesc(IDataLayerScope infoDbScope, long infocMapId)
+		{
+			var selQuery = _infocenterDataLayer.GetBuilder<IC.IMap>()
+				.From()
+				.Select(c => c.TypeCode)
+				.Where(c => c.Id, ConditionOperator.Equal, infocMapId);
+
+			
+			var infocMapType = infoDbScope.Executor.ExecuteAndFetch(selQuery, reader =>
+			{
+				if (reader.Read())
+				{
+					return (ProjectMapType) reader.GetValue(c => c.TypeCode);
+				}
+
+				return ProjectMapType.Unknown;
+			});
+
+			if (infocMapType != ProjectMapType.Clutter)
+			{
+				return 0;
+			}
+
+			// ищим самое посление описание по клатернйо карте
+			var selDescQuery = _infocenterDataLayer.GetBuilder<IC.ICluttersDesc>()
+				.From()
+				.Select(c => c.Id)
+				.Where(c => c.MAP.Id, ConditionOperator.Equal, infocMapId)
+				.OrderByDesc(c => c.Id)
+				.OnTop(1);
+
+			var infocDescId = infoDbScope.Executor.ExecuteAndFetch(selDescQuery, reader =>
+			{
+				if (reader.Read())
+				{
+					return reader.GetValue(c => c.Id);
+				}
+
+				return 0;
+			});
+
+			
+			return infocDescId;
+		}
+
+		private long CopyInfocClutterDescToProjectMap(IDataLayerScope calcDbScope, IDataLayerScope infoDbScope,
+			long infocDescId, long calcMapId)
+		{
+			var selDescQuery = _infocenterDataLayer.GetBuilder<IC.ICluttersDesc>()
+				.From()
+				.Select(c => c.Name)
+				.Select(c => c.Note)
+				.Where(c => c.Id, ConditionOperator.Equal, infocDescId);
+
+			var insDescQuery = _calcServerDataLayer.GetBuilder<ICluttersDesc>()
+				.Insert()
+				.SetValue(c => c.MAP.Id, calcMapId)
+				.SetValue(c => c.InfocDescId, infocDescId);
+
+			infoDbScope.Executor.ExecuteAndFetch(selDescQuery, reader =>
+			{
+				if (!reader.Read())
+				{
+					throw new InvalidOperationException($"A Clutters Description with ID #{infocDescId} not found");
+				}
+
+				insDescQuery.SetValue(c => c.Name, reader.GetValue(cc => cc.Name));
+				insDescQuery.SetValue(c => c.Note, reader.GetValue(cc => cc.Note));
+
+				return 0;
+			});
+
+			var descPk = calcDbScope.Executor.Execute<ICluttersDesc_PK>(insDescQuery);
+
+			var selClutterQuery = _infocenterDataLayer.GetBuilder<IC.ICluttersDescClutter>()
+				.From()
+				.Select(c => c.Code)
+				.Select(c => c.Name)
+				.Select(c => c.Note)
+				.Select(c => c.Height_m)
+				.Where(c => c.CLUTTERS_DESC.Id, ConditionOperator.Equal, infocDescId);
+
+			var insClutterQuery = _calcServerDataLayer.GetBuilder<ICluttersDescClutter>()
+				.Insert()
+				.SetValue(c => c.CluttersDescId, descPk.Id);
+
+			infoDbScope.Executor.ExecuteAndFetch(selClutterQuery, reader =>
+			{
+				while (reader.Read())
+				{
+					insClutterQuery.SetValue(c => c.Name, reader.GetValue(cc => cc.Name));
+					insClutterQuery.SetValue(c => c.Note, reader.GetValue(cc => cc.Note));
+					insClutterQuery.SetValue(c => c.Code, reader.GetValue(cc => cc.Code));
+					insClutterQuery.SetValue(c => c.Height_m, reader.GetValue(cc => cc.Height_m));
+
+					calcDbScope.Executor.Execute(insClutterQuery);
+				}
+				return 0;
+			});
+
+			var selFreqQuery = _infocenterDataLayer.GetBuilder<IC.ICluttersDescFreq>()
+				.From()
+				.Select(c => c.Freq_MHz)
+				.Select(c => c.Note)
+				.Select(c => c.Id)
+				.Where(c => c.CLUTTERS_DESC.Id, ConditionOperator.Equal, infocDescId);
+
+			var infocFreqs = infoDbScope.Executor.ExecuteAndFetch(selFreqQuery, reader =>
+			{
+				var records = new List<InfocCluttersDescFreq>();
+				while (reader.Read())
+				{
+					var record = new InfocCluttersDescFreq
+					{
+						Id = reader.GetValue(c => c.Id),
+						Freq_MHz = reader.GetValue(c => c.Freq_MHz),
+						Note = reader.GetValue(c => c.Note)
+					};
+					records.Add(record);
+				}
+				return records.ToArray();
+			});
+
+			var insFreqQuery = _calcServerDataLayer.GetBuilder<ICluttersDescFreq>()
+				.Insert()
+				.SetValue(c => c.CLUTTERS_DESC.Id, descPk.Id);
+
+			foreach (var infocFreq in infocFreqs)
+			{
+				insFreqQuery.SetValue(c => c.Freq_MHz, infocFreq.Freq_MHz);
+				insFreqQuery.SetValue(c => c.Note, infocFreq.Note);
+
+				var freqPk = calcDbScope.Executor.Execute<ICluttersDescFreq_PK>(insFreqQuery);
+
+				var selFreqClutterQuery = _infocenterDataLayer.GetBuilder<IC.ICluttersDescFreqClutter>()
+					.From()
+					.Select(c => c.Code)
+					.Select(c => c.Reflection)
+					.Select(c => c.FlatLoss_dB)
+					.Select(c => c.LinearLoss_dBkm)
+					.Select(c => c.Note)
+					.Where(c => c.FreqId, ConditionOperator.Equal, infocFreq.Id);
+
+				var insFreqClutterQuery = _calcServerDataLayer.GetBuilder<ICluttersDescFreqClutter>()
+					.Insert()
+					.SetValue(c => c.FreqId, freqPk.Id);
+
+				infoDbScope.Executor.ExecuteAndFetch(selFreqClutterQuery, reader =>
+				{
+					while (reader.Read())
+					{
+						insFreqClutterQuery.SetValue(c => c.Code, reader.GetValue(cc => cc.Code));
+						insFreqClutterQuery.SetValue(c => c.Reflection, reader.GetValue(cc => cc.Reflection));
+						insFreqClutterQuery.SetValue(c => c.FlatLoss_dB, reader.GetValue(cc => cc.FlatLoss_dB));
+						insFreqClutterQuery.SetValue(c => c.LinearLoss_dBkm, reader.GetValue(cc => cc.LinearLoss_dBkm));
+						insFreqClutterQuery.SetValue(c => c.Note , reader.GetValue(cc => cc.Note));
+
+						calcDbScope.Executor.Execute(insFreqClutterQuery);
+					}
+					return 0;
+				});
+
+			}
+			return descPk.Id;
 		}
 
 		/// <summary>
@@ -517,7 +746,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer
 			// GC.Collect();
 		}
 
-		private DM.SourceMapSectorData LoadMapSector(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, Coordinate upperLeft, Coordinate lowerRight)
+		private DM.SourceMapSectorData LoadMapSector(IDataLayerScope infoDbScope, DM.SourceMapData infocenterMap, AtdiCoordinate upperLeft, AtdiCoordinate lowerRight)
 		{
 			var sourceMapQuery = _infocenterDataLayer.GetBuilder<IC.IMapSector>()
 					.From()

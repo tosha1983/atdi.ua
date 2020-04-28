@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.DeepServices;
 using Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example.Tasks;
 using Atdi.Contracts.Sdrn.CalcServer;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
+using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.CalcServer;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Example

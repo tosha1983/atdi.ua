@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
+using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.Platform;
 using Atdi.Platform.Data;
 using Atdi.Platform.Logging;

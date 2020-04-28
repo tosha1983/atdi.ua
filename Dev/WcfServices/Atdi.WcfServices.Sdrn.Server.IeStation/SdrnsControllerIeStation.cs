@@ -160,14 +160,16 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                                     short? DateMeasDay,
                                                     short? DateMeasMonth,
                                                     short? DateMeasYear,
-                                                    double? freq,
+                                                    double? freqStart,
+                                                    double? freqStop,
                                                     double? probability,
                                                     string standard,
                                                     string province,
                                                     string ownerName,
                                                     string permissionNumber,
                                                     DateTime? permissionStart,
-                                                    DateTime? permissionStop)
+                                                    DateTime? permissionStop,
+                                                    string statusMeas)
         {
             var loadProtocols = new LoadProtocols(_dataLayer, _logger);
             return loadProtocols.GetDetailProtocolsByParameters(processId, createdBy,
@@ -177,14 +179,16 @@ namespace Atdi.WcfServices.Sdrn.Server.IeStation
                                                     DateMeasDay,
                                                     DateMeasMonth,
                                                     DateMeasYear,
-                                                    freq,
+                                                    freqStart,
+                                                    freqStop,
                                                     probability,
                                                     standard,
                                                     province,
                                                     ownerName,
                                                     permissionNumber,
                                                     permissionStart,
-                                                    permissionStop);
+                                                    permissionStop,
+                                                    statusMeas);
         }
 
         public DataSynchronizationProcess[] GetAllDataSynchronizationProcess()

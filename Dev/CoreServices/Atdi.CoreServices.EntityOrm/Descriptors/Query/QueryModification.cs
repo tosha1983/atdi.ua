@@ -22,11 +22,6 @@ namespace Atdi.CoreServices.EntityOrm
 
         public void Append(ColumnValue value)
         {
-            if (this._fields.ContainsKey(value.Name))
-            {
-                throw new InvalidOperationException($"A field with path '{value.Name}' has been specified more than once in the modification.");
-            }
-
             var descriptor = this._root.EnsureField(value.Name);
 
             if (descriptor.Field.DataType.CodeVarType != value.DataType)
@@ -39,7 +34,19 @@ namespace Atdi.CoreServices.EntityOrm
                 Descriptor = descriptor,
                 Store = value
             };
-            this._fields.Add(value.Name, fieldValue);
+
+            if (this._fields.ContainsKey(value.Name))
+            {
+	            this._fields[value.Name] = fieldValue;
+
+				//throw new InvalidOperationException($"A field with path '{value.Name}' has been specified more than once in the modification.");
+            }
+            else
+            {
+				this._fields.Add(value.Name, fieldValue);
+			}
+            
+			
         }
 
         public override string ToString()

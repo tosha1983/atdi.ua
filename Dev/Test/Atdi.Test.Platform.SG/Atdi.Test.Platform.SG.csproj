@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,25 +52,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis\Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis.csproj">
+    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.DeepServices.Gis\Atdi.AppUnits.Sdrn.DeepServices.Gis.csproj">
       <Project>{f1f30ab9-7598-424d-9cde-95412583eccf}</Project>
-      <Name>Atdi.AppUnits.Sdrn.CalcServer.DeepServices.Gis</Name>
+      <Name>Atdi.AppUnits.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AppUnits\Atdi.AppUnits.Sdrn.CalcServer.DeepServices\Atdi.AppUnits.Sdrn.CalcServer.DeepServices.csproj">
-      <Project>{cf434bdc-4cb1-4f7d-b85e-55c86352b4e9}</Project>
-      <Name>Atdi.AppUnits.Sdrn.CalcServer.DeepServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis\Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis.csproj">
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices.Gis\Atdi.Contracts.Sdrn.DeepServices.Gis.csproj">
       <Project>{567b4c34-9ff5-4c05-9e7b-d1ed94eadaaf}</Project>
-      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices.Gis</Name>
+      <Name>Atdi.Contracts.Sdrn.DeepServices.Gis</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.CalcServer.DeepServices\Atdi.Contracts.Sdrn.CalcServer.DeepServices.csproj">
+    <ProjectReference Include="..\..\Contracts\Sdrn\Atdi.Contracts.Sdrn.DeepServices\Atdi.Contracts.Sdrn.DeepServices.csproj">
       <Project>{dbbcbdeb-202d-4068-94f6-bb78bd47d51a}</Project>
-      <Name>Atdi.Contracts.Sdrn.CalcServer.DeepServices</Name>
+      <Name>Atdi.Contracts.Sdrn.DeepServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis\Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis.csproj">
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices.Gis\Atdi.DataModels.Sdrn.DeepServices.Gis.csproj">
       <Project>{d83887b2-4444-4207-a703-c99b94a4c170}</Project>
-      <Name>Atdi.DataModels.Sdrn.CalcServer.DeepServices.Gis</Name>
+      <Name>Atdi.DataModels.Sdrn.DeepServices.Gis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.DeepServices\Atdi.DataModels.Sdrn.DeepServices.csproj">
+      <Project>{b26b6bd9-699d-46b8-ba43-0d0ba803087e}</Project>
+      <Name>Atdi.DataModels.Sdrn.DeepServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
       <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>

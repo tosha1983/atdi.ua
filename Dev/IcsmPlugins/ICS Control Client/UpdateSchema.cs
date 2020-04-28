@@ -48,6 +48,7 @@ namespace XICSM.ICSControlClient
                 s.DeclareField("DESIG_EMISSION", "VARCHAR(25)", null, null, null);
                 s.DeclareField("GLOBAL_SID", "VARCHAR(50)", null, null, null);
                 s.DeclareField("CREATED_BY", "VARCHAR(150)", null, null, null);
+                s.DeclareField("VISN", "VARCHAR(250)", null, null, null);
             }
         }
     }

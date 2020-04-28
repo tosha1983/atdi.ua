@@ -12,6 +12,7 @@ using DEV = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.CoreServices.DataLayer;
 using Atdi.Contracts.CoreServices.EntityOrm;
 using Atdi.DataModels.Api.EventSystem;
+using Atdi.DataModels.Sdrns.Server;
 using Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers;
 
 namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
@@ -46,18 +47,22 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.Subscribes
                     {
                         var loadMeasTask = new LoadMeasTask(this._dataLayer, this._logger);
                         var saveMeasTask = new SaveMeasTask(this._dataLayer, this._logger);
-                        var loadTask = loadMeasTask.ReadTask(@event.MeasTaskId);
-                        var listMeasTask = saveMeasTask.CreateeasTaskSDRsApi(loadTask, @event.SensorName, this._environment.ServerInstance, @event.EquipmentTechId, @event.MeasTaskId, @event.SensorId, "New");
-                        if (listMeasTask != null)
+                        var status = loadMeasTask.GetStatusTask(@event.MeasTaskId);
+                        if (status == Status.N.ToString())
                         {
-                            for (int i = 0; i < listMeasTask.Length; i++)
+                            var loadTask = loadMeasTask.ReadTask(@event.MeasTaskId);
+                            var listMeasTask = saveMeasTask.CreateeasTaskSDRsApi(loadTask, @event.SensorName, this._environment.ServerInstance, @event.EquipmentTechId, @event.MeasTaskId, @event.SensorId, "New");
+                            if (listMeasTask != null)
                             {
-                                var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
-                                envelop.SensorName = @event.SensorName;
-                                envelop.SensorTechId = @event.EquipmentTechId;
-                                listMeasTask[i].SensorId = (int)@event.SensorId;
-                                envelop.DeliveryObject = listMeasTask[i];
-                                _messagePublisher.Send(envelop);
+                                for (int i = 0; i < listMeasTask.Length; i++)
+                                {
+                                    var envelop = _messagePublisher.CreateOutgoingEnvelope<MSG.Server.SendMeasTaskMessage, DEV.MeasTask>();
+                                    envelop.SensorName = @event.SensorName;
+                                    envelop.SensorTechId = @event.EquipmentTechId;
+                                    listMeasTask[i].SensorId = (int)@event.SensorId;
+                                    envelop.DeliveryObject = listMeasTask[i];
+                                    _messagePublisher.Send(envelop);
+                                }
                             }
                         }
                     }

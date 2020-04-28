@@ -1,4 +1,5 @@
 ﻿using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,13 +144,13 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 		}
 		public bool IntersectWith(AreaCoordinates area, out AreaCoordinates coverageArea)
 		{
-			coverageArea.UpperLeft = new Coordinate()
+			coverageArea.UpperLeft = new AtdiCoordinate()
 			{
 				X = Math.Max(area.UpperLeft.X, this.UpperLeftX),
 				Y = Math.Min(area.UpperLeft.Y, this.UpperLeftY)
 			};
 
-			coverageArea.LowerRight = new Coordinate()
+			coverageArea.LowerRight = new AtdiCoordinate()
 			{
 				X = Math.Min(area.LowerRight.X, this.LowerRightX),
 				Y = Math.Max(area.LowerRight.Y, this.LowerRightY)
@@ -158,36 +159,36 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 			return coverageArea.Area > 0;
 		}
 
-		public Coordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)
+		public AtdiCoordinate IndexToUpperLeftCoordinate(int xIndex, int yIndex)
 		{
-			return new Coordinate
+			return new AtdiCoordinate
 			{
 				X = this.UpperLeftX + this.AxisXStep * xIndex,
 				Y = this.UpperLeftY - this.AxisYStep * yIndex
 			};
 		}
 
-		public Coordinate IndexToLowerLeftCoordinate(int xIndex, int yIndex)
+		public AtdiCoordinate IndexToLowerLeftCoordinate(int xIndex, int yIndex)
 		{
-			return new Coordinate
+			return new AtdiCoordinate
 			{
 				X = this.UpperLeftX + this.AxisXStep * xIndex,
 				Y = this.UpperLeftY - this.AxisYStep * yIndex - this.AxisYStep
 			};
 		}
 
-		public Coordinate IndexToLowerRightCoordinate(int xIndex, int yIndex)
+		public AtdiCoordinate IndexToLowerRightCoordinate(int xIndex, int yIndex)
 		{
-			return new Coordinate
+			return new AtdiCoordinate
 			{
 				X = this.UpperLeftX + this.AxisXStep * xIndex + this.AxisXStep,
 				Y = this.UpperLeftY - this.AxisYStep * yIndex - this.AxisYStep
 			};
 		}
 
-		public Indexer CoordinateToIndexes(int x, int y)
+		public ProfileIndexer CoordinateToIndexes(int x, int y)
 		{
-			return new Indexer
+			return new ProfileIndexer
 			{
 				XIndex = (int)Math.Ceiling((x - this.UpperLeftX + 1) / (double)this.AxisXStep) - 1,
 				YIndex = this.AxisYNumber - ((int)Math.Ceiling((y - (this.UpperLeftY - (this.AxisYNumber * this.AxisYStep)) + 1) / (double)this.AxisYStep))

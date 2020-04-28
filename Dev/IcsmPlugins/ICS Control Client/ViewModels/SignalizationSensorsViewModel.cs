@@ -87,14 +87,10 @@ namespace XICSM.ICSControlClient.ViewModels
             this._shortSensors = new ShortSensorDataAdatper();
             this.StartCommand = new WpfCommand(this.OnStartCommand);
 
-            var appSettings = ConfigurationManager.AppSettings;
-            _endpointUrls = appSettings["SdrnServerRestEndpoint"];
+            string _endpointUrls = PluginHelper.GetRestApiEndPoint();
 
             if (string.IsNullOrEmpty(_endpointUrls))
-            {
-                MessageBox.Show("Undefined value for SdrnServerRestEndpoint in file ICSM3.exe.config.");
                 return;
-            }
 
             this.ReloadShortSensors();
         }
@@ -189,18 +185,6 @@ namespace XICSM.ICSControlClient.ViewModels
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
             this._shortSensors.Source = sdrSensors;
         }
-        private MP.MapDrawingDataPoint MakeDrawingPointForSensor(string status, double lon, double lat)
-        {
-            return new MP.MapDrawingDataPoint
-            {
-                Color = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Fill = "A".Equals(status, StringComparison.OrdinalIgnoreCase) ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Silver,
-                Location = new Models.Location(lon, lat),
-                Opacity = 0.85,
-                Width = 10,
-                Height = 10
-            };
-        }
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
@@ -221,7 +205,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                         || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
                                         && l.Lon.HasValue
                                         && l.Lat.HasValue)
-                                .Select(l => this.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
+                                .Select(l => MapsDrawingHelper.MakeDrawingPointForSensor(l.Status, l.Lon.Value, l.Lat.Value))
                                 .ToArray();
 
                             points.AddRange(sensorPoints);
@@ -252,6 +236,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     emittings = GetEmittingsForType1();
                 else if (this._startType == 2)
                     emittings = GetEmittingsForType2();
+
+                if (emittings == null)
+                    return;
 
                 _form.Close();
                 var dlgForm = new FM.MeasResultSignalizationForm(0, this._startType, emittings, this._timeMeas);
@@ -469,10 +456,22 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
 
+                if (emittingsIds.Count > 1000 && emittingsIds.Count < 2000)
+                {
+                    if (MessageBox.Show("Attention! Received a large amount of radiation, it will take a long time to get the result. Are you sure you want to continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        return null;
+                }
+
+                if (emittingsIds.Count > 2000)
+                {
+                    MessageBox.Show("Attention! A large number of emissions have been received, please reduce the amount of data obtaining.");
+                    return null;
+                }
+
                 using (var wc = new HttpClient())
                 {
                     string filter = $"(Id in ({string.Join(",", emittingsIds.Keys.ToArray())}))";
-                    string fields = "Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm,ReferenceLevel_dBm,MeanDeviationFromReference,TriggerDeviationFromReference,RollOffFactor,StandardBW,StationID,StationTableName,LevelsDistributionCount,LevelsDistributionLvl,RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,RES_MEAS.SUBTASK_SENSOR.SENSOR.Name";
+                    string fields = "Id,StartFrequency_MHz,StopFrequency_MHz,CurentPower_dBm,ReferenceLevel_dBm,MeanDeviationFromReference,TriggerDeviationFromReference,RollOffFactor,StandardBW,StationID,StationTableName,LevelsDistributionCount,LevelsDistributionLvl,RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,RES_MEAS.SUBTASK_SENSOR.SENSOR.Title";
                     string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/Emitting?select={fields}&filter={filter}";
                     var response = wc.GetAsync(request).Result;
                     if (response.StatusCode == HttpStatusCode.OK)
@@ -502,6 +501,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                 AssociatedStationID = Convert.ToInt64(record[dicFields["StationID"]]),
                                 AssociatedStationTableName = (string)record[dicFields["StationTableName"]],
                                 SensorName = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
+                                SensorTitle = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.Title"]],
                                 SensorTechId = (string)record[dicFields["RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]]
                             };
 
@@ -540,7 +540,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 {
                     long emittingId = 0;
                     string filter = $"(EMITTING.Id in ({string.Join(",", ids)}))";
-                    string fields = "StartEmitting,StopEmitting,HitCount,PersentAvailability,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.CurentPower_dBm,EMITTING.ReferenceLevel_dBm,EMITTING.MeanDeviationFromReference,EMITTING.TriggerDeviationFromReference,EMITTING.RollOffFactor,EMITTING.StandardBW,EMITTING.StationID,EMITTING.StationTableName,EMITTING.LevelsDistributionCount,EMITTING.LevelsDistributionLvl,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,EMITTING.RES_MEAS.Id";
+                    string fields = "StartEmitting,StopEmitting,HitCount,PersentAvailability,EMITTING.Id,EMITTING.StartFrequency_MHz,EMITTING.StopFrequency_MHz,EMITTING.CurentPower_dBm,EMITTING.ReferenceLevel_dBm,EMITTING.MeanDeviationFromReference,EMITTING.TriggerDeviationFromReference,EMITTING.RollOffFactor,EMITTING.StandardBW,EMITTING.StationID,EMITTING.StationTableName,EMITTING.LevelsDistributionCount,EMITTING.LevelsDistributionLvl,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Title,EMITTING.RES_MEAS.Id";
                     string request = $"{_endpointUrls}api/orm/data/SDRN_Server_DB/Atdi.DataModels.Sdrns.Server.Entities/WorkTime?select={fields}&filter={filter}&orderBy=EMITTING.Id";
                     var response = wc.GetAsync(request).Result;
                     if (response.StatusCode == HttpStatusCode.OK)
@@ -577,6 +577,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                     AssociatedStationID = Convert.ToInt64(record[dicFields["EMITTING.StationID"]]),
                                     AssociatedStationTableName = (string)record[dicFields["EMITTING.StationTableName"]],
                                     SensorName = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name"]],
+                                    SensorTitle = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.Title"]],
                                     SensorTechId = (string)record[dicFields["EMITTING.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId"]],
                                     MeasResultId = Convert.ToInt64(record[dicFields["EMITTING.RES_MEAS.Id"]])
                                 };
@@ -689,13 +690,13 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             else if (this._startType == 2)
             {
-                _dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
-                _dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
-                if (_dateStart > _dateStop || _dateStart.AddMonths(1) < _dateStop)
-                {
-                    MessageBox.Show("Incorrect value 'Date From' or 'Date To'!");
-                    return false;
-                }
+                //_dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
+                //_dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
+                //if (_dateStart > _dateStop || _dateStart.AddMonths(1) < _dateStop)
+                //{
+                //    MessageBox.Show("Incorrect value 'Date From' or 'Date To'!");
+                //    return false;
+                //}
                 if (!FreqFrom.HasValue)
                 {
                     MessageBox.Show("Undefined value 'Frequency from, MHz'!");

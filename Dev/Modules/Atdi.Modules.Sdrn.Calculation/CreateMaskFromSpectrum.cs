@@ -32,10 +32,10 @@ namespace Atdi.Modules.Sdrn.Calculation
         /// <param name="initialCutoff_dB">Level at whish estimated in-block limit (recommended 6 .. 15 dB)</param>
         /// <param name="numberOfMask_pt">Numper of point in the mask. Should be even, from 6 to 18 points</param>
         /// <returns></returns>
-        private static spectrumMaskResult CreateMaskFromEmitting(float[] spectrumLevels_dBm, double spectrumStartFreq_MHz, double spectrumSteps_kHz, float maskMargin_dB, float initialCutoff_dB, int numberOfMask_pt)
+        public static spectrumMaskResult CreateMaskFromEmitting(float[] spectrumLevels_dBm, double spectrumStartFreq_MHz, double spectrumSteps_kHz, float maskMargin_dB, float initialCutoff_dB, int numberOfMask_pt)
         {
 
-            if (numberOfMask_pt % 2 == 0 || numberOfMask_pt < 6)
+            if (numberOfMask_pt % 2 != 0 || numberOfMask_pt < 6)
             {
                 throw new InvalidOperationException("Spectrum mask should have at least 6 points. Numbet of points should be even");
             }

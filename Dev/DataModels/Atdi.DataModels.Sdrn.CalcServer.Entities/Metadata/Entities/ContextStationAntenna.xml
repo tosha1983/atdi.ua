@@ -11,10 +11,10 @@
     <Schema>CALC</Schema>
   </DataSource>
   <Fields>
-    <Field Name="Gain_dB" SourceType="Column" Required="true" SourceName="GAIN_DB" DataType="Double.30.10" Title="Gain, dB" Desc="The Gain in dB"/>
+    <Field Name="Gain_dB" SourceType="Column" Required="true" SourceName="GAIN_DB" DataType="Float.22.8" Title="Gain, dB" Desc="The Gain in dB"/>
     <Field Name="Tilt_deg" SourceType="Column" Required="true" SourceName="TILT_DEG" DataType="Double.30.10" Title="Tilt, deg" Desc="The Tilt in degree"/>
     <Field Name="Azimuth_deg" SourceType="Column" Required="true" SourceName="AZIMUTH_DEG" DataType="Double.30.10" Title="Azimuth, deg" Desc="The Azimuth in degree"/>
-    <Field Name="XPD_dB" SourceType="Column" Required="true" SourceName="XPD_DB" DataType="Double.30.10" Title="XPD, dB" Desc="The XPD in dB"/>
+    <Field Name="XPD_dB" SourceType="Column" Required="true" SourceName="XPD_DB" DataType="Float.22.8" Title="XPD, dB" Desc="The XPD in dB"/>
 
 
     <Field Name="ItuPatternCode" SourceType="Column" SourceName="ITU_PATTERN_CODE" DataType="Code.u08" Required="true" Title="ITU Pattern Code" Desc="The code of the ITU Pattern of the antenna"  />

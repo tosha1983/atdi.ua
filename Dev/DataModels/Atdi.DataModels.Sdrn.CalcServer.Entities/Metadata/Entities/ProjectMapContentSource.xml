@@ -14,7 +14,7 @@
 
     <Field Name="CONTENT" SourceType="Reference" SourceName="ProjectMapContent"  Required="true" Title="Map Project" Desc="The project in which the map is created" />
 
-    <Field Name="InfocMapId" DataType="Integer.64" SourceName="INFOC_MAP_ID" SourceType="Column" Desc="The Map ID from Infocentr" Title="Map ID" Required="true"/>
+    <Field Name="InfocMapId" DataType="Integer.64" SourceName="INFOC_MAP_ID" SourceType="Column" Desc="The Map ID from Infocenter" Title="Map ID" Required="true"/>
     <Field Name="InfocMapName" DataType="Text.450" SourceName="INFOC_MAP_NAME" SourceType="Column" Desc="The Map Name from Infocentr" Title="Map Name" Required="true"/>
 
     <Field Name="Coverage" DataType="Decimal.22.8" SourceName="COVERAGE" SourceType="Column" Desc="The coverage percent" Title="Coverage" Required="false"/>

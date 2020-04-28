@@ -55,13 +55,25 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                         Value = ((IntegerValueOperand)value).Value
                     };
                     break;
-                case DataType.DateTime:
+                case DataType.Long:
+	                result = new LongColumnValue
+	                {
+		                Value = ((LongValueOperand)value).Value
+	                };
+	                break;
+				case DataType.DateTime:
                     result = new DateTimeColumnValue
                     {
                         Value = ((DateTimeValueOperand)value).Value
                     };
                     break;
-                case DataType.Double:
+                case DataType.DateTimeOffset:
+	                result = new DateTimeOffsetColumnValue
+					{
+		                Value = ((DateTimeOffsetValueOperand)value).Value
+	                };
+	                break;
+				case DataType.Double:
                     result = new DoubleColumnValue
                     {
                         Value = ((DoubleValueOperand)value).Value

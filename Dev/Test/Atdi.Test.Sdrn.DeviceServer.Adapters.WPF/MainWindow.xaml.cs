@@ -928,7 +928,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 // send command
                 var context = new DummyExecutionContextMy(logger);
-                var command = new CMD.MesureTraceCommand();
+                var command = new CMD.EstimateRefLevelCommand();
                 command.Parameter.Att_dB = 30;
                 command.Parameter.FreqStart_Hz = 104.750m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
                 command.Parameter.FreqStop_Hz = 105.250m * 1000000;// 421.5425m * 1000000;//110000000;

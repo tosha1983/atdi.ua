@@ -43,6 +43,20 @@ namespace XICSM.ICSControlClient.Forms
                 ((UserControl)this._wpfElementHost.Child).DataContext = _model;
             }
         }
+        public MeasTaskForm(long measTaskId)
+        {
+            InitializeComponent();
+
+            var appFolder = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+
+            var fileName = Path.Combine(appFolder, "XICSM_ICSControlClient\\Xaml\\MeasTaskForm.xaml");
+            using (var fileStream = new FileStream(fileName, FileMode.Open))
+            {
+                this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
+                this._model = new CreateMeasTaskViewModel(measTaskId) { _measTaskForm = this };
+                ((UserControl)this._wpfElementHost.Child).DataContext = _model;
+            }
+        }
         public long TaskId
         {
             get => this._taskId;

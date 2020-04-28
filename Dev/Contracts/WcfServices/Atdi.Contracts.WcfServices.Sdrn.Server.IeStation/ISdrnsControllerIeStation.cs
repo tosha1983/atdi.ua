@@ -97,14 +97,16 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server.IeStation
                                                     short? DateMeasDay,
                                                     short? DateMeasMonth,
                                                     short? DateMeasYear,
-                                                    double? freq,
+                                                    double? freqStart,
+                                                    double? freqStop,
                                                     double? probability,
                                                     string standard,
                                                     string province,
                                                     string ownerName,
                                                     string permissionNumber,
                                                     DateTime? permissionStart,
-                                                    DateTime? permissionStop);
+                                                    DateTime? permissionStop,
+                                                    string statusMeas);
 
     }
 }

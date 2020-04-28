@@ -60,34 +60,57 @@
             <Button Grid.Column="2" Grid.RowSpan="3" Margin="5, 5, 30, 5" Content="{x:Static res:Resources.ProtocolCommand}" Command="{Binding ProtocolCommand}" Width="70" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
           </Grid>          
         </GroupBox>
-        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5, 105, 5, 5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Areas}" SelectedItemsList="{Binding CurrentAreas, Mode=TwoWay}">
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=IdentifierFromICSM}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.TypeArea}" Binding="{Binding Path=TypeArea}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-          </DataGrid.Columns>
-        </cdg:CustomDataGrid>        
+        <GroupBox Grid.Row="0" Margin="5, 105, 5, 5" Header="{x:Static res:Resources.Areas}">
+          <cdg:CustomDataGrid IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Areas}" SelectedItemsList="{Binding CurrentAreas, Mode=TwoWay}">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=IdentifierFromICSM}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.TypeArea}" Binding="{Binding Path=TypeArea}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.CellStyle>
+              <Style TargetType="{x:Type DataGridCell}">
+                <Style.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF0078D7" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </DataGrid.CellStyle>
+          </cdg:CustomDataGrid>
+        </GroupBox>
+      
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
-        <cdg:CustomDataGrid Grid.Row="2" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding RefSpectrums}" SelectedItemsList="{Binding CurrentRefSpectrums, Mode=TwoWay}">
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.FileName}" Binding="{Binding Path=FileName}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.CountImportRecords}" Binding="{Binding Path=CountImportRecords}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.MinFreqMHz}" Binding="{Binding Path=MinFreqMHz}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.MaxFreqMHz}" Binding="{Binding Path=MaxFreqMHz}"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.CountSensors}" Binding="{Binding Path=CountSensors}"></DataGridTextColumn>
-          </DataGrid.Columns>
-          <DataGrid.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="{x:Static res:Resources.ImportFromCSV}" Command="{Binding ImportRefSpectrumFromCSVCommand}"/>
-              <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteRefSpectrumCommand}"/>
-            </ContextMenu>
-          </DataGrid.ContextMenu>
-        </cdg:CustomDataGrid>
+        <GroupBox Grid.Row="2" Margin="5" Header="{x:Static res:Resources.ReferentSpectrasForInstrumentalEvaluation}">
+          <cdg:CustomDataGrid Grid.Row="2" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding RefSpectrums}" SelectedItemsList="{Binding CurrentRefSpectrums, Mode=TwoWay}">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.FileName}" Binding="{Binding Path=FileName}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.DateCreated}" Binding="{Binding Path=DateCreated, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.CreatedBy}" Binding="{Binding Path=CreatedBy}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.CountImportRecords}" Binding="{Binding Path=CountImportRecords}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.MinFreqMHz}" Binding="{Binding Path=MinFreqMHz}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.MaxFreqMHz}" Binding="{Binding Path=MaxFreqMHz}"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.CountSensors}" Binding="{Binding Path=CountSensors}"></DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{x:Static res:Resources.ImportFromCSV}" Command="{Binding ImportRefSpectrumFromCSVCommand}"/>
+                <MenuItem Header="{x:Static res:Resources.Delete}" Command="{Binding DeleteRefSpectrumCommand}"/>
+              </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.CellStyle>
+              <Style TargetType="{x:Type DataGridCell}">
+                <Style.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF0078D7" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </DataGrid.CellStyle>
+          </cdg:CustomDataGrid>
+        </GroupBox>
       </Grid>
       <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
       <Grid Grid.Column="2">
@@ -99,26 +122,36 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*" MinHeight="100"></RowDefinition>
         </Grid.RowDefinitions>
-        <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}" SelectedItemsIndexes="{Binding CurrentSensorsIndexes}">
-          <!--SetSelectedItemsList="{Binding SetCurrentSensors}">-->
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
-            <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
-          </DataGrid.Columns>
-        </cdg:CustomDataGrid>
+        <GroupBox Grid.Row="0" Margin="5" Header="{x:Static res:Resources.Sensors}">
+          <cdg:CustomDataGrid Grid.Row="0" IsReadOnly="True" Margin="5" SelectionUnit="FullRow" SelectionMode="Extended" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Sensors}" SelectedItemsList="{Binding CurrentSensors, Mode=TwoWay}" SelectedItemsIndexes="{Binding CurrentSensorsIndexes}">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="{x:Static res:Resources.Id}" Binding="{Binding Path=Id}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Status}" Binding="{Binding Path=Status}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Title}" Binding="{Binding Path=Title}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Name}" Binding="{Binding Path=Name}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Adm}" Binding="{Binding Path=Administration}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Network}" Binding="{Binding Path=NetworkId}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.LowFreqMHz}" Binding="{Binding Path=LowerFreq}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.UpFreqMHz}" Binding="{Binding Path=UpperFreq}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Equipment}" Binding="{Binding Path=EquipName}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Manufacturer}" Binding="{Binding Path=EquipManufacturer}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.SN}" Binding="{Binding Path=EquipCode}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Antenna}" Binding="{Binding Path=AntName}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.Gain}" Binding="{Binding Path=AntGainMax}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.BringIntoUse}" Binding="{Binding Path=BiuseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
+              <DataGridTextColumn Header="{x:Static res:Resources.EndOfUse}" Binding="{Binding Path=EouseDate, StringFormat='{}{0:dd.MM.yyyy 0:HH:mm}'}" CanUserSort="False"></DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.CellStyle>
+              <Style TargetType="{x:Type DataGridCell}">
+                <Style.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF0078D7" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </DataGrid.CellStyle>
+          </cdg:CustomDataGrid>
+        </GroupBox>
         <GridSplitter Grid.Row="1" ShowsPreview="False" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"></GridSplitter>
         <maps:Map Grid.Row="2" DrawingData="{Binding CurrentMapData}"></maps:Map>
       </Grid>

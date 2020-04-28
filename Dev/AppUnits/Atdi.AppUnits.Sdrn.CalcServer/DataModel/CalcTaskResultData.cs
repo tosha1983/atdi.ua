@@ -12,6 +12,8 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.DataModel
 	{
 		public long ProjectId;
 
+		public long ContextId;
+
 		public long TaskId;
 
 		public long ResultId;

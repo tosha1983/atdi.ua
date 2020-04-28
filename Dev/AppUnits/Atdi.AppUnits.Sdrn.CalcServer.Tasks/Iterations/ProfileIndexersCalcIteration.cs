@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.Contracts.Sdrn.CalcServer;
-using Atdi.Contracts.Sdrn.CalcServer.DeepServices;
+using Atdi.Contracts.Sdrn.DeepServices;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Iterations;
 using Atdi.DataModels.Sdrn.CalcServer.Internal.Maps;
+using Atdi.DataModels.Sdrn.DeepServices.Gis;
 using Atdi.Platform.Logging;
 
 namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
@@ -117,12 +118,12 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 		}
 
 		private static int Calculate(
-			Coordinate point, 
-			Coordinate target, 
-			Coordinate location, 
+			AtdiCoordinate point,
+			AtdiCoordinate target,
+			AtdiCoordinate location, 
 			decimal axisXStep, 
 			decimal axisYStep,
-			Indexer[] indexers,
+			ProfileIndexer[] indexers,
 			int axisYNumber)
 		{
 			var count = 0;
@@ -144,7 +145,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 			// бредовый случай, но все же одна точка профиля есть
 			if (point.X == target.X && point.Y == target.Y)
 			{
-				indexers[count++] = new Indexer()
+				indexers[count++] = new ProfileIndexer()
 				{
 					XIndex = xCurrentIndex,
 					YIndex = axisYNumber - yCurrentIndex 
@@ -162,7 +163,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							xCurrentIndex <= xTargetIndex;
 							xCurrentIndex++, yCurrentIndex++)
 						{
-							indexers[count++] = new Indexer()
+							indexers[count++] = new ProfileIndexer()
 							{
 								XIndex = xCurrentIndex,
 								YIndex = axisYNumber - yCurrentIndex
@@ -175,7 +176,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							xCurrentIndex <= xTargetIndex;
 							xCurrentIndex++, yCurrentIndex--)
 						{
-							indexers[count++] = new Indexer()
+							indexers[count++] = new ProfileIndexer()
 							{
 								XIndex = xCurrentIndex,
 								YIndex = axisYNumber - yCurrentIndex 
@@ -191,7 +192,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							xCurrentIndex >= xTargetIndex;
 							xCurrentIndex--, yCurrentIndex++)
 						{
-							indexers[count++] = new Indexer()
+							indexers[count++] = new ProfileIndexer()
 							{
 								XIndex = xCurrentIndex,
 								YIndex = axisYNumber - yCurrentIndex
@@ -204,7 +205,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							xCurrentIndex >= xTargetIndex;
 							xCurrentIndex--, yCurrentIndex--)
 						{
-							indexers[count++] = new Indexer()
+							indexers[count++] = new ProfileIndexer()
 							{
 								XIndex = xCurrentIndex,
 								YIndex = axisYNumber - yCurrentIndex
@@ -221,7 +222,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				{
 					for (yCurrentIndex = yPointIndex; yCurrentIndex <= yTargetIndex; yCurrentIndex++)
 					{
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -232,7 +233,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				{
 					for (yCurrentIndex = yPointIndex; yCurrentIndex >= yTargetIndex; yCurrentIndex--)
 					{
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -248,7 +249,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				{
 					for (xCurrentIndex = xPointIndex; xCurrentIndex <= xTargetIndex; xCurrentIndex++)
 					{
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -259,7 +260,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 				{
 					for (xCurrentIndex = xPointIndex; xCurrentIndex >= xTargetIndex; xCurrentIndex--)
 					{
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -277,7 +278,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 
 				// берем первое значение для опорной точки
 
-				indexers[count++] = new Indexer()
+				indexers[count++] = new ProfileIndexer()
 				{
 					XIndex = xCurrentIndex,
 					YIndex = axisYNumber - yCurrentIndex
@@ -309,7 +310,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							//throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
 						}
 
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -341,7 +342,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							break;
 						}
 
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -373,7 +374,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							break;
 						}
 
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex
@@ -406,7 +407,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
 							//throw new InvalidOperationException($"Something went wrong: xCurrentIndex = {xCurrentIndex}, xTargetIndex = {xTargetIndex}, yCurrentIndex = {yCurrentIndex}, yTargetIndex = {yTargetIndex}");
 						}
 
-						indexers[count++] = new Indexer()
+						indexers[count++] = new ProfileIndexer()
 						{
 							XIndex = xCurrentIndex,
 							YIndex = axisYNumber - yCurrentIndex

@@ -55,6 +55,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
 
@@ -141,6 +142,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, taskId);
                 builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
                 builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
@@ -285,6 +287,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
                 builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
                 builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
@@ -648,6 +651,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
+                        builderMeasOther.Select(c => c.SupportMultyLevel);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -657,6 +661,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerMeasOther.Read())
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                measOther.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                                 SpectrumOccupationType typeSpectrumOccupation;
@@ -770,8 +775,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
-                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
-                builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
                     var measTask = new MeasTask();
@@ -1047,6 +1053,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                         var builderMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().From();
                         builderMeasOther.Select(c => c.Id);
                         builderMeasOther.Select(c => c.LevelMinOccup);
+                        builderMeasOther.Select(c => c.SupportMultyLevel);
                         builderMeasOther.Select(c => c.MEAS_TASK.Id);
                         builderMeasOther.Select(c => c.Nchenal);
                         builderMeasOther.Select(c => c.TypeSpectrumOccupation);
@@ -1056,6 +1063,7 @@ namespace Atdi.WcfServices.Sdrn.Server
                             while (readerMeasOther.Read())
                             {
                                 measOther.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                measOther.SupportMultyLevel = readerMeasOther.GetValue(c => c.SupportMultyLevel);
                                 measOther.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
 
                                 SpectrumOccupationType typeSpectrumOccupation;

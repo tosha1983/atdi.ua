@@ -12,7 +12,19 @@ namespace Atdi.DataModels.EntityOrm.Api
 
 		object[] Values { get; set; }
 	}
-	
+
+	public interface IDataRecordApplyRequest : IEntityRequest
+	{
+		string[] Filter { get; set; }
+
+		string[] FieldsToCreate { get; set; }
+
+		string[] FieldsToUpdate { get; set; }
+
+		object[] ValuesToCreate { get; set; }
+
+		object[] ValuesToUpdate { get; set; }
+	}
 
 	public interface IDataRecordUpdateRequest : IEntityRequest
 	{

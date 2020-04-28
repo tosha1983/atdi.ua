@@ -48,6 +48,7 @@
     <Compile Include="Convertors\SpectrumOccupation\ConvertTaskParametersToMesureTraceParameterForSO.cs" />
     <Compile Include="Convertors\SysInfo\ConvertTaskParametersToMesureSystemInfoParameterForSysInfo.cs" />
     <Compile Include="DispatcherWorker.cs" />
+    <Compile Include="EventProcessing\ConcurrentBag.cs" />
     <Compile Include="EventProcessing\DeferredTaskWorker.cs" />
     <Compile Include="ConfigProcessing.cs" />
     <Compile Include="EventProcessing\CommandHandler.cs" />

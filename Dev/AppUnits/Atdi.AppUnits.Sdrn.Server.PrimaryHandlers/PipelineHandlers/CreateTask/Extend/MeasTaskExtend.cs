@@ -35,7 +35,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
 
         public static void CreateAllSubTasks(this MeasTask task)
         {
-            if (task.Status == Status.N.ToString())
+            if ((task.Status == Status.N.ToString()) || (task.Status == Status.S.ToString()))
             {
                 var ListMST = new List<MeasSubTask>();
                 if (task.TypeMeasurements == MeasurementType.MonitoringStations)
@@ -46,7 +46,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                     MST.Id.Value = 1;
                     MST.TimeStart = task.MeasTimeParamList.PerStart;
                     MST.TimeStop = task.MeasTimeParamList.PerStop;
-                    MST.Status = Status.A.ToString();
+                    MST.Status = task.Status;
                     var ListMSTS = new List<MeasSubTaskSensor>();
                     int j = 0;
                     for (int f=0; f< task.Sensors.Length; f++)
@@ -54,7 +54,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         var St = task.Sensors[f];
                         var MSTS = new MeasSubTaskSensor();
                         MSTS.Id = j; j++;
-                        MSTS.Status = Status.N.ToString();
+                        MSTS.Status = task.Status;
                         MSTS.SensorId = St.SensorId.Value;
                         ListMSTS.Add(MSTS);
                     }
@@ -77,7 +77,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         MST.Id.Value = i; i++;
                         MST.TimeStart = new DateTime(day.Year, day.Month, day.Day, hour_start, min_start, sec_start);
                         MST.TimeStop = new DateTime(day.Year, day.Month, day.Day, hour_stop, min_stop, sec_stop);
-                        MST.Status = Status.A.ToString();
+                        MST.Status = task.Status;
                         var ListMSTS = new List<MeasSubTaskSensor>();
                         int j = 0;
                         for (int f = 0; f < task.Sensors.Length; f++)
@@ -85,7 +85,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                             var St = task.Sensors[f];
                             var MSTS = new MeasSubTaskSensor();
                             MSTS.Id = j; j++;
-                            MSTS.Status = Status.N.ToString();
+                            MSTS.Status = task.Status;
                             MSTS.SensorId = St.SensorId.Value;
                             ListMSTS.Add(MSTS);
                         }
@@ -97,7 +97,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
 
                 task.MeasSubTasks = ListMST.ToArray();
             }
-            task.Status = Status.A.ToString();
+            //task.Status = Status.A.ToString();
         }
 
 

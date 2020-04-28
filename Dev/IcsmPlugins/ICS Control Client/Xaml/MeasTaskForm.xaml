@@ -651,10 +651,11 @@
                       </Expander.Style>
                       <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="200" />
+                          <ColumnDefinition Width="320" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="Auto"></RowDefinition>
                           <RowDefinition Height="Auto"></RowDefinition>
@@ -674,8 +675,11 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberTotalScan}"  />
-                        <TextBox x:Name="MeasOtherNCount" Grid.Column="1" Grid.Row="2">
+                        <Label Height="18" Grid.Column="0" Grid.Row="2" Padding="5,0,0,0" Content = "{x:Static res:Resources.CollectDataForChangeInTheMinLevel}"/>
+                        <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Path=SupportMultyLevel}"/>
+
+                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberTotalScan}"  />
+                        <TextBox x:Name="MeasOtherNCount" Grid.Column="1" Grid.Row="3">
                           <TextBox.Text>
                             <Binding Path="MeasOtherNCount">
                               <Binding.ValidationRules>
@@ -685,8 +689,8 @@
                           </TextBox.Text>
                         </TextBox>
 
-                        <Label Height="18" Grid.Column="0" Grid.Row="3" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
-                        <TextBox x:Name="MeasOtherNChenal" Grid.Column="1" Grid.Row="3">
+                        <Label Height="18" Grid.Column="0" Grid.Row="4" Padding="5,0,0,0" Content = "{x:Static res:Resources.NumberOfStepsForMeasurementsInChannel}"  />
+                        <TextBox x:Name="MeasOtherNChenal" Grid.Column="1" Grid.Row="4">
                           <TextBox.Text>
                             <Binding Path="MeasOtherNChenal">
                               <Binding.ValidationRules>

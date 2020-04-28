@@ -68,7 +68,13 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                         Value = ((DateTimeValueOperand)value).Value
                     };
                     break;
-                case DataType.Double:
+                case DataType.DateTimeOffset:
+	                result = new DateTimeOffsetColumnValue
+	                {
+		                Value = ((DateTimeOffsetValueOperand)value).Value
+	                };
+	                break;
+				case DataType.Double:
                     result = new DoubleColumnValue
                     {
                         Value = ((DoubleValueOperand)value).Value

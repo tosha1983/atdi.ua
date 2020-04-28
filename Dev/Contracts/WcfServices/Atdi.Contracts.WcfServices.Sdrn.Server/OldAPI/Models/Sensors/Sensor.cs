@@ -154,5 +154,10 @@ namespace Atdi.Contracts.WcfServices.Sdrn.Server
         /// </summary>
         [DataMember]
         public SensorPoligonPoint[] Poligon;
+        /// <summary>
+        /// Title
+        /// </summary>
+        [DataMember]
+        public string Title;
     }
 }
