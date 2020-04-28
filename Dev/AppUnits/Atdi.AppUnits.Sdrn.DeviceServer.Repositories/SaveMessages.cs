@@ -33,7 +33,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 //lock (fileName)
                 {
                     IFormatter formatter = new BinaryFormatter();
-                    using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                    using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
                     using (StreamWriter streamWriter = new StreamWriter(file))
                     {
                         formatter.Serialize(streamWriter.BaseStream, receivedMessage);
@@ -93,7 +93,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                     if (File.Exists(fullPath))
                     {
                         IFormatter formatter = new BinaryFormatter();
-                        using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                        using (FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
                         using (StreamWriter streamWriter = new StreamWriter(file))
                         {
                             formatter.Serialize(streamWriter.BaseStream, receivedMessage);

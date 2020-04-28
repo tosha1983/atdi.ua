@@ -287,7 +287,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     {
                                         if (val.Task.taskParameters != null)
                                         {
-                                            if (val.Task.taskParameters.status == StatusTask.C.ToString())
+                                            if ((val.Task.taskParameters.status == StatusTask.C.ToString()) || (val.Task.taskParameters.status == StatusTask.Z.ToString()))
                                             {
                                                 listRunTask.Remove(val.Task.taskParameters.SDRTaskId);
                                                 context.Process.contextSOTasks = context.Process.contextSOTasks.Remove(val);
@@ -305,7 +305,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     {
                                         if (val.Task.taskParameters != null)
                                         {
-                                            if (val.Task.taskParameters.status == StatusTask.C.ToString())
+                                            if ((val.Task.taskParameters.status == StatusTask.C.ToString()) || (val.Task.taskParameters.status == StatusTask.Z.ToString()))
                                             {
                                                 listRunTask.Remove(val.Task.taskParameters.SDRTaskId);
                                                 context.Process.contextSignalizationTasks = context.Process.contextSignalizationTasks.Remove(val);
@@ -323,7 +323,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                     {
                                         if (val.Task.taskParameters != null)
                                         {
-                                            if (val.Task.taskParameters.status == StatusTask.C.ToString())
+                                            if ((val.Task.taskParameters.status == StatusTask.C.ToString()) || (val.Task.taskParameters.status == StatusTask.Z.ToString()))
                                             {
                                                 listRunTask.Remove(val.Task.taskParameters.SDRTaskId);
                                                 context.Process.contextBandWidthTasks = context.Process.contextBandWidthTasks.Remove(val);

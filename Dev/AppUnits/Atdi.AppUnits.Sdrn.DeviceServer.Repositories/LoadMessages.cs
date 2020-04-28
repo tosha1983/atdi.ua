@@ -183,7 +183,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Repositories
                 {
                     if (File.Exists(fileName))
                     {
-                        using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
                             if (file.Length > 0)
                             {
