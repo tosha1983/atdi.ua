@@ -116,6 +116,9 @@ namespace XICSM.ICSControlClient.ViewModels
         {
             this._currentMeasTask = Mappers.Map(this._templateMeasTask);
             this._currentMeasTask.Status = "N";
+            minFq = this._currentMeasTask.MeasFreqParamRgL;
+            maxFq = this._currentMeasTask.MeasFreqParamRgU;
+            this._currentMeasTask.MeasFreqParams = minFq.ToString() + " - " + maxFq.ToString();
             this._currentMeasTask.IsUseRefSpectrum = false;
         }
         private void SetDefaultVaues()
@@ -386,6 +389,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 return;
             measTask.Status = "S";
             measTask.DateCreated = DateTime.Now;
+            measTask.MeasSubTasks = null;
+            measTask.Id = null;
             var newTaskId = SVC.SdrnsControllerWcfClient.CreateMeasTask(measTask);
         }
         private bool PrepareMeasTaskObject(out SDR.MeasTask measTask, bool IsOnlySave = false)
@@ -673,7 +678,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
             }
 
-            if (!IsOnlySave)
+            if (!IsOnlySave && result)
                 if (!GetOthersMeastask())
                     result = false;
 
