@@ -27,6 +27,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Sdrns.Serve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Contracts.WcfServices.Sdrn.Server.IeStation", "..\Dev\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation.csproj", "{CD78D548-DA04-4CB0-9931-2164D9637392}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Api.EntityOrm.WebClient", "..\Dev\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj", "{48ACE960-6BA0-4A99-B060-4DBB8A182206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.DataModels.Api.EntityOrm.WebClient", "..\Dev\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj", "{36AE7031-FC14-4305-BD04-87C70FDA0F25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atdi.Contracts.Api.EntityOrm.WebClient", "..\Dev\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj", "{A252D199-1162-484D-B50A-8C44A4EDD670}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +129,30 @@ Global
 		{CD78D548-DA04-4CB0-9931-2164D9637392}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD78D548-DA04-4CB0-9931-2164D9637392}.Release|x64.ActiveCfg = Release|Any CPU
 		{CD78D548-DA04-4CB0-9931-2164D9637392}.Release|x64.Build.0 = Release|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Debug|x64.Build.0 = Debug|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Release|x64.ActiveCfg = Release|Any CPU
+		{48ACE960-6BA0-4A99-B060-4DBB8A182206}.Release|x64.Build.0 = Release|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Debug|x64.Build.0 = Debug|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Release|x64.ActiveCfg = Release|Any CPU
+		{36AE7031-FC14-4305-BD04-87C70FDA0F25}.Release|x64.Build.0 = Release|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Debug|x64.Build.0 = Debug|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Release|x64.ActiveCfg = Release|Any CPU
+		{A252D199-1162-484D-B50A-8C44A4EDD670}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

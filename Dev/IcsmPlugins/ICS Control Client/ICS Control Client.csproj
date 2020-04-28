@@ -180,6 +180,12 @@
     <Compile Include="Forms\OnlineMeasurementForm.Designer.cs">
       <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SelectRefSpectrums.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SelectRefSpectrums.Designer.cs">
+      <DependentUpon>SelectRefSpectrums.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SignalizationSensorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -486,6 +492,9 @@
     <EmbeddedResource Include="Forms\OnlineMeasurementForm.resx">
       <DependentUpon>OnlineMeasurementForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SelectRefSpectrums.resx">
+      <DependentUpon>SelectRefSpectrums.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SignalizationSensorsForm.resx">
       <DependentUpon>SignalizationSensorsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -564,9 +573,17 @@
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
+      <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
+      <Name>Atdi.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
       <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
       <Name>Atdi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
+      <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
+      <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Contracts\WcfServices\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation\Atdi.Contracts.WcfServices.Sdrn.Server.IeStation.csproj">
       <Project>{cd78d548-da04-4cb0-9931-2164d9637392}</Project>
@@ -576,9 +593,17 @@
       <Project>{bb70f260-1614-4683-b693-bd5fb8848c55}</Project>
       <Name>Atdi.Contracts.WcfServices.Sdrn.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Api.EntityOrm.WebClient\Atdi.DataModels.Api.EntityOrm.WebClient.csproj">
+      <Project>{36ae7031-fc14-4305-bd04-87c70fda0f25}</Project>
+      <Name>Atdi.DataModels.Api.EntityOrm.WebClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Device\Atdi.DataModels.Sdrns.Device.csproj">
       <Project>{4670da92-06cf-4ce4-bbf8-67353a907bd0}</Project>
       <Name>Atdi.DataModels.Sdrns.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
+      <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
       <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>

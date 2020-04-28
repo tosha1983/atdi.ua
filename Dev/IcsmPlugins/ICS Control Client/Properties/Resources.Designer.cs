@@ -315,15 +315,6 @@ namespace XICSM.ICSControlClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        public static string Cancel1 {
-            get {
-                return ResourceManager.GetString("Cancel1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
         public static string CancelCommand {
             get {
                 return ResourceManager.GetString("CancelCommand", resourceCulture);

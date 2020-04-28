@@ -26,7 +26,7 @@ namespace XICSM.ICSControlClient.Forms
             this.Text = caption;
             using (var fileStream = new FileStream(fileName, FileMode.Open))
             {
-                Type modelType = Type.GetType(viewModelClassName, false, true);
+                Type modelType = Type.GetType($"XICSM.ICSControlClient.ViewModels.{viewModelClassName}", false, true);
                 if (modelType != null)
                 {
                     System.Reflection.ConstructorInfo ci = modelType.GetConstructor(new Type[] { });

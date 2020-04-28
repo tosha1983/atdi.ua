@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using TR = System.Threading;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace XICSM.ICSControlClient
 {
@@ -21,7 +22,10 @@ namespace XICSM.ICSControlClient
         {
             MessageBox.Show($"{Properties.Resources.Message_TheValue} '{fieldTo}' {Properties.Resources.Message_ShouldBeGreatOfThe} '{fieldFrom}'!", MessageBoxCaption);
         }
-
+        public static WebApiEndpoint GetEndpoint()
+        {
+            return new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
+        }
         public static double? ConvertStringToDouble(string s, bool isShowMessage = false)
         {
             if (string.IsNullOrEmpty(s))
@@ -70,6 +74,31 @@ namespace XICSM.ICSControlClient
                 return null;
             }
             return endpointUrls;
+        }
+        public static string GetFullTaskStatus(string state)
+        {
+            string statusFull = "";
+            switch (state)
+            {
+                case "N":
+                    statusFull = Properties.Resources.State_N;
+                    break;
+                case "C":
+                    statusFull = Properties.Resources.State_C;
+                    break;
+                case "F":
+                    statusFull = Properties.Resources.State_F;
+                    break;
+                case "A":
+                    statusFull = Properties.Resources.State_A;
+                    break;
+                case "S":
+                    statusFull = Properties.Resources.State_S;
+                    break;
+                default:
+                    break;
+            }
+            return statusFull;
         }
     }
 }

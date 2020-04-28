@@ -714,28 +714,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
         {
             if (source == null)
                 return null;
-            string statusFull = "";
-
-            switch (source.Status)
-            {
-                case "N":
-                    statusFull = Properties.Resources.State_N;
-                    break;
-                case "C":
-                    statusFull = Properties.Resources.State_C;
-                    break;
-                case "F":
-                    statusFull = Properties.Resources.State_F;
-                    break;
-                case "A":
-                    statusFull = Properties.Resources.State_A;
-                    break;
-                case "S":
-                    statusFull = Properties.Resources.State_S;
-                    break;
-                default:
-                    break;
-            }
+            string statusFull = PluginHelper.GetFullTaskStatus(source.Status);
 
             return new VM.ShortMeasTaskViewModel
             {

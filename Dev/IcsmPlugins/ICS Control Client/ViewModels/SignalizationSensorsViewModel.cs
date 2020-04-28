@@ -237,6 +237,9 @@ namespace XICSM.ICSControlClient.ViewModels
                 else if (this._startType == 2)
                     emittings = GetEmittingsForType2();
 
+                if (emittings == null)
+                    return;
+
                 _form.Close();
                 var dlgForm = new FM.MeasResultSignalizationForm(0, this._startType, emittings, this._timeMeas);
                 dlgForm.ShowDialog();
@@ -451,6 +454,18 @@ namespace XICSM.ICSControlClient.ViewModels
                             });
                         }
                     }
+                }
+
+                if (emittingsIds.Count > 1000 && emittingsIds.Count < 2000)
+                {
+                    if (MessageBox.Show("Attention! Received a large amount of radiation, it will take a long time to get the result. Are you sure you want to continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                        return null;
+                }
+
+                if (emittingsIds.Count > 2000)
+                {
+                    MessageBox.Show("Attention! A large number of emissions have been received, please reduce the amount of data obtaining.");
+                    return null;
                 }
 
                 using (var wc = new HttpClient())
@@ -675,13 +690,13 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             else if (this._startType == 2)
             {
-                _dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
-                _dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
-                if (_dateStart > _dateStop || _dateStart.AddMonths(1) < _dateStop)
-                {
-                    MessageBox.Show("Incorrect value 'Date From' or 'Date To'!");
-                    return false;
-                }
+                //_dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
+                //_dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
+                //if (_dateStart > _dateStop || _dateStart.AddMonths(1) < _dateStop)
+                //{
+                //    MessageBox.Show("Incorrect value 'Date From' or 'Date To'!");
+                //    return false;
+                //}
                 if (!FreqFrom.HasValue)
                 {
                     MessageBox.Show("Undefined value 'Frequency from, MHz'!");

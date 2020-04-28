@@ -91,7 +91,8 @@ namespace XICSM.ICSControlClient.ViewModels
             set
             {
                 this._currentAreas = value;
-                SelectSensors();
+                //SelectSensors();
+                ReloadSensors();
                 RedrawMap();
                 CheckEnabledStart();
             }
@@ -138,12 +139,40 @@ namespace XICSM.ICSControlClient.ViewModels
         private void ReloadSensors()
         {
             var sdrSensors = SVC.SdrnsControllerWcfClient.GetShortSensors();
-            this._sensors.Source = sdrSensors;
-            if (sdrSensors.Length == 1)
+            var sensorsIds = new Dictionary<SDR.SensorIdentifier, SDR.ShortSensor>();
+
+            if (this._currentAreas != null && this._currentAreas.Count > 0 && sdrSensors != null && sdrSensors.Length > 0)
             {
-                this._currentSensors = new List<ShortSensorViewModel>() { Mappers.Map(sdrSensors[0]) };
-                RedrawMap();
+                foreach (var sensor in sdrSensors)
+                {
+                    var svcSensor = SVC.SdrnsControllerWcfClient.GetSensorById(sensor.Id.Value);
+                    if (svcSensor != null)
+                    {
+                        if (svcSensor.Locations != null && svcSensor.Locations.Length > 0)
+                        {
+                            foreach (var loc in svcSensor.Locations
+                                                        .Where(l => ("A".Equals(l.Status, StringComparison.OrdinalIgnoreCase)
+                                                                || "Z".Equals(l.Status, StringComparison.OrdinalIgnoreCase))
+                                                                && l.Lon.HasValue
+                                                                && l.Lat.HasValue)
+                                                        .ToArray())
+                            {
+                                foreach (AreasViewModel area in this._currentAreas)
+                                {
+                                    if (CheckHitting(area.Location, loc))
+                                    {
+                                        if (!sensorsIds.ContainsKey(sensor.Id))
+                                            sensorsIds.Add(sensor.Id, sensor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                this._sensors.Source = sensorsIds.Values.ToArray();
             }
+            else
+                this._sensors.Source = sdrSensors;
         }
         private void ReloadAreas()
         {

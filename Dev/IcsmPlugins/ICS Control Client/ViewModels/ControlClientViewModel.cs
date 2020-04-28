@@ -92,6 +92,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private Visibility _resLevelMes1Visibility = Visibility.Hidden;
         private Visibility _resGetCSVVisibility = Visibility.Hidden;
         private Visibility _resGetGraphicVisibility = Visibility.Hidden;
+        private Visibility _resExportRSVisibility = Visibility.Hidden;
 
         private double? _LowFreq;
         private double? _UpFreq;
@@ -106,6 +107,7 @@ namespace XICSM.ICSControlClient.ViewModels
         #region Commands
         public WpfCommand GetCSVCommand { get; set; }
         public WpfCommand GetSOCSVCommand { get; set; }
+        public WpfCommand ExportRSCommand { get; set; }
         public WpfCommand GetGraphicCommand { get; set; }
         public WpfCommand SearchStationCommand { get; set; }
         public WpfCommand PrevSpecCommand { get; set; }
@@ -168,6 +170,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
             this.GetCSVCommand = new WpfCommand(this.OnGetCSVCommand);
             this.GetGraphicCommand = new WpfCommand(this.OnGetGraphicCommand);
+            this.ExportRSCommand = new WpfCommand(this.OnExportRSCommand);
             this.SearchStationCommand = new WpfCommand(this.OnSearchStationCommand);
             this.PrevSpecCommand = new WpfCommand(this.OnPrevSpecCommand);
             this.NextSpecCommand = new WpfCommand(this.OnNextSpecCommand);
@@ -453,16 +456,25 @@ namespace XICSM.ICSControlClient.ViewModels
 
             if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation && this.CurrentMeasurementResult != null)
             {
+                ResExportRSVisibility = Visibility.Hidden;
                 ResGetGraphicVisibility = Visibility.Visible;
                 ResGetCSVVisibility = Visibility.Visible;
             }
             else if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.MonitoringStations && this.CurrentMeasurementResult != null)
             {
+                ResExportRSVisibility = Visibility.Hidden;
                 ResGetGraphicVisibility = Visibility.Hidden;
                 ResGetCSVVisibility = Visibility.Visible;
             }
+            else if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.Signaling && this.CurrentMeasurementResult != null)
+            {
+                ResExportRSVisibility = Visibility.Visible;
+                ResGetGraphicVisibility = Visibility.Hidden;
+                ResGetCSVVisibility = Visibility.Hidden;
+            }
             else
             {
+                ResExportRSVisibility = Visibility.Hidden;
                 ResGetGraphicVisibility = Visibility.Hidden;
                 ResGetCSVVisibility = Visibility.Hidden;
             }
@@ -586,6 +598,13 @@ namespace XICSM.ICSControlClient.ViewModels
             get => this._resGetGraphicVisibility;
             set => this.Set(ref this._resGetGraphicVisibility, value);
         }
+        public Visibility ResExportRSVisibility
+        {
+            get => this._resExportRSVisibility;
+            set => this.Set(ref this._resExportRSVisibility, value);
+        }
+
+
         public double? LowFreq
         {
             get => this._LowFreq;
@@ -906,7 +925,7 @@ namespace XICSM.ICSControlClient.ViewModels
             {
                 var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(_currentShortMeasTask.Id);
                 task.Status = "S";
-                //task.DateCreated
+                task.DateCreated = DateTime.Now;
                 var newTaskId = SVC.SdrnsControllerWcfClient.CreateMeasTask(task);
             }
             
@@ -933,6 +952,10 @@ namespace XICSM.ICSControlClient.ViewModels
                 else if (this._currentMeasTask.MeasDtParamTypeMeasurements == SDR.MeasurementType.MonitoringStations)
                     OnGetMSCSVCommand(parameter);
             }
+        }
+        private void OnExportRSCommand(object parameter)
+        {
+
         }
         private void OnGetSOCSVCommand(object parameter)
         {

@@ -151,6 +151,8 @@ namespace XICSM.ICSControlClient.Models.Views
         public int? SignalizationNChenal { get; set; }
         public bool? AnalyzeByChannel { get; set; }
         public bool? CollectEmissionInstrumentalEstimation { get; set; }
+        public bool IsUseRefSpectrum { get; set; }
+
 
         public bool? CompareTraceJustWithRefLevels { get; set; }
         public bool? AutoDivisionEmitting { get; set; }

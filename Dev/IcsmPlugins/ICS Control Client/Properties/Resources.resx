@@ -201,9 +201,6 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="Cancel1" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
   <data name="CancelCommand" xml:space="preserve">
     <value>Cancel</value>
   </data>
