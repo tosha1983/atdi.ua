@@ -775,9 +775,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                 builderMeasTask.Select(c => c.TimeStop);
                 builderMeasTask.Select(c => c.Type);
                 builderMeasTask.Where(c => c.Id, ConditionOperator.Equal, id);
-                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
-                builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
-                builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.Z.ToString());
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.NotEqual, Status.S.ToString());
+                //builderMeasTask.Where(c => c.Status, ConditionOperator.IsNotNull);
                 queryExecuter.Fetch(builderMeasTask, readerMeasTask =>
                 {
                     var measTask = new MeasTask();
