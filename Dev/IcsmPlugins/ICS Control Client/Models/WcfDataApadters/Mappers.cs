@@ -181,25 +181,7 @@ namespace XICSM.ICSControlClient.Models.WcfDataApadters
                 source.SignalingMeasTaskParameters.InterruptionParameters = new SDR.SignalingInterruptionParameters();
             }
 
-            string statusFull = "";
-            switch (source.Status)
-            {
-                case "N":
-                    statusFull = Properties.Resources.State_N;
-                    break;
-                case "C":
-                    statusFull = Properties.Resources.State_C;
-                    break;
-                case "F":
-                    statusFull = Properties.Resources.State_F;
-                    break;
-                case "A":
-                    statusFull = Properties.Resources.State_A;
-                    break;
-                default:
-                    break;
-            }
-
+            string statusFull = PluginHelper.GetFullTaskStatus(source.Status);
             string measOtherTypeSpectrumOccupationFull = "";
             switch (source.MeasOther.TypeSpectrumOccupation)
             {

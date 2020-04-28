@@ -31,6 +31,7 @@ using System.Configuration;
 using System.Globalization;
 using TR = System.Threading;
 using Microsoft.VisualBasic;
+using Atdi.Modules.Sdrn.Calculation;
 
 namespace XICSM.ICSControlClient.ViewModels
 {
@@ -126,6 +127,7 @@ namespace XICSM.ICSControlClient.ViewModels
         public WpfCommand ChangeLevelOfMinOccupationCommand { get; set; }
         public WpfCommand SaveTasksCommand { get; set; }
         public WpfCommand SelectSavedTasksCommand { get; set; }
+        public WpfCommand DoubleClickResultCommand { get; set; }
 
         #endregion
 
@@ -188,6 +190,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this.ChangeLevelOfMinOccupationCommand = new WpfCommand(this.OnChangeLevelOfMinOccupationCommand);
             this.SaveTasksCommand = new WpfCommand(this.OnSaveTasksCommand);
             this.SelectSavedTasksCommand = new WpfCommand(this.OnSelectSavedTasksCommand);
+            this.DoubleClickResultCommand = new WpfCommand(this.OnDoubleClickResultCommand);
 
             this.ShortMeasTasks = new ShortMeasTaskDataAdatper();
             this.MeasResults = new MeasurementResultsDataAdatper();
@@ -926,6 +929,8 @@ namespace XICSM.ICSControlClient.ViewModels
                 var task = SVC.SdrnsControllerWcfClient.GetMeasTaskHeaderById(_currentShortMeasTask.Id);
                 task.Status = "S";
                 task.DateCreated = DateTime.Now;
+                task.MeasSubTasks = null;
+                task.Id = null;
                 var newTaskId = SVC.SdrnsControllerWcfClient.CreateMeasTask(task);
             }
             
@@ -955,7 +960,43 @@ namespace XICSM.ICSControlClient.ViewModels
         }
         private void OnExportRSCommand(object parameter)
         {
+            if (this._currentMeasurementResult != null && this._currentMeasurementResult != null)
+            {
+                var measResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResult.MeasSdrResultsId, null, null);
 
+                FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = $"RS_Result_{this._currentMeasurementResult.MeasSdrResultsId}.csv" };
+                if (sfd.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    var output = new List<string>();
+                    output.Add("MaskLevels_dB;MaskFrequencies_kHz");
+
+                    foreach (var emitting in measResult.Emittings)
+                    {
+                        var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6, 8);
+
+                        for (int i = 0; i < result.MaskLevels_dB.Length - 1; i++)
+                        {
+                            output.Add($"{result.MaskLevels_dB[i]};{result.MaskFrequencies_kHz[i]}");
+                        }
+                    }
+                    System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
+                    MessageBox.Show("Your file was generated and its ready for use.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("No data for export.");
+                return;
+            }
+        }
+        private void OnDoubleClickResultCommand(object parameter)
+        {
+            if (this._currentMeasurementResult != null && this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.Signaling)
+            {
+                var dlgForm = new FM.MeasResultSignalizationForm(this._currentMeasurementResult.MeasSdrResultsId, 0, null, null);
+                dlgForm.ShowDialog();
+                dlgForm.Dispose();
+            }
         }
         private void OnGetSOCSVCommand(object parameter)
         {

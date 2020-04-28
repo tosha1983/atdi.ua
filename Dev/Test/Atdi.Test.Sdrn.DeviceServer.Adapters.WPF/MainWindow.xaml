@@ -20,7 +20,7 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <local:DrawSpectrum x:Name="DS_AN" />
+                    <local:DrawSpectrum x:Name="DS_KS" />
                     <local:DrawSpectrum x:Name="DS_AN2" Grid.Row="1" />
                     <local:DrawSpectrum x:Name="DS_SH" Grid.Row="2" />
                     <!--<local:DrawIQ x:Name="ANIQ" />
