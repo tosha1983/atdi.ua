@@ -1,0 +1,100 @@
+{
+	"Name": "Имя описания клаттеров",
+	"Note": "Дополнительная расширенная информация",
+	"Clutters": [
+		{
+			"Code": 0,
+			"Name": "Open",
+			"Height_m": 0,
+			"Note": ""
+		},
+		{
+			"Code": 1,
+			"Name": "Village",
+			"Height_m": 6,
+			"Note": ""
+		},
+		{
+			"Code": 2,
+			"Name": "Suburban",
+			"Height_m": 10,
+			"Note": ""
+		}
+	],
+	"Frequencies": [
+		{
+			"Freq_MHz": 170,
+			"Note": "",
+			"Clutters": [
+				{
+					"Code": 0,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				},
+				{
+					"Code": 1,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				},
+				{
+					"Code": 3,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				}
+			]
+		},
+
+		{
+			"Freq_MHz": 250,
+			"Note": "",
+			"Clutters": [
+				{
+					"Code": 0,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				},
+				{
+					"Code": 1,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				},
+				{
+					"Code": 3,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				}
+			]
+		},
+
+		{
+			"Freq_MHz": 500,
+			"Note": "",
+			"Clutters": [
+				{
+					"Code": 0,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				},
+				{
+					"Code": 1,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				},
+				{
+					"Code": 3,
+					"LinearLoss_dBkm": 0.01,
+					"FlatLoss_dB": 0.02,
+					"Reflection": 0.250
+				}
+			]
+		}
+	] 
+}

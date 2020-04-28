@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "ContextStationAntenna"
+  Title       = "Antenna of Context Station"
+  Desc        = "The Antenna of the context station"
+  Type        = "Extension"
+  BaseEntity  = "ContextStation"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>CONTEXT_STATIONS_ANTENNA</Name>
+    <Schema>CALC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Gain_dB" SourceType="Column" Required="true" SourceName="GAIN_DB" DataType="Float.22.8" Title="Gain, dB" Desc="The Gain in dB"/>
+    <Field Name="Tilt_deg" SourceType="Column" Required="true" SourceName="TILT_DEG" DataType="Double.30.10" Title="Tilt, deg" Desc="The Tilt in degree"/>
+    <Field Name="Azimuth_deg" SourceType="Column" Required="true" SourceName="AZIMUTH_DEG" DataType="Double.30.10" Title="Azimuth, deg" Desc="The Azimuth in degree"/>
+    <Field Name="XPD_dB" SourceType="Column" Required="true" SourceName="XPD_DB" DataType="Float.22.8" Title="XPD, dB" Desc="The XPD in dB"/>
+
+
+    <Field Name="ItuPatternCode" SourceType="Column" SourceName="ITU_PATTERN_CODE" DataType="Code.u08" Required="true" Title="ITU Pattern Code" Desc="The code of the ITU Pattern of the antenna"  />
+    <Field Name="ItuPatternName" SourceType="Column" SourceName="ITU_PATTERN_NAME" DataType="Text.50" Title="ITU Pattern Name" Desc="The name of the Polarization of the ITU Pattern of the antenna" />
+
+    <Field Name="HH_PATTERN" SourceName="ContextStationPattern" SourceType="Reference" Title="HH Antenna Pattern" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+        <Mapped KeyFieldName="AntennaPlane" MatchWith="Value">H</Mapped>
+        <Mapped KeyFieldName="WavePlane" MatchWith="Value">H</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+
+    <Field Name="HV_PATTERN" SourceName="ContextStationPattern" SourceType="Reference" Title="HV Antenna Pattern" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+        <Mapped KeyFieldName="AntennaPlane" MatchWith="Value">H</Mapped>
+        <Mapped KeyFieldName="WavePlane" MatchWith="Value">V</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+
+    <Field Name="VH_PATTERN" SourceName="ContextStationPattern" SourceType="Reference" Title="VH Antenna Pattern" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+        <Mapped KeyFieldName="AntennaPlane" MatchWith="Value">V</Mapped>
+        <Mapped KeyFieldName="WavePlane" MatchWith="Value">H</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+
+    <Field Name="VV_PATTERN" SourceName="ContextStationPattern" SourceType="Reference" Title="VV Antenna Pattern" Required="false">
+      <PrimaryKeyMapping>
+        <Mapped KeyFieldName="StationId" MatchWith="SourceName">ID</Mapped>
+        <Mapped KeyFieldName="AntennaPlane" MatchWith="Value">V</Mapped>
+        <Mapped KeyFieldName="WavePlane" MatchWith="Value">V</Mapped>
+      </PrimaryKeyMapping>
+    </Field>
+
+  </Fields>
+
+</Entity>

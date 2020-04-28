@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataType 
+  Name           = "Double.30.10"
+  DataSourceType = "Database"
+  xmlns          =  "http://schemas.atdi.com/orm/entity.xsd">
+  <CodeVarType>Double</CodeVarType>
+  <SourceVarType>DOUBLE</SourceVarType>
+  <Precision>30</Precision>
+  <Scale>10</Scale>
+</DataType>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Entity
+  Name        = "Map"
+  Title       = "Map"
+  Desc        = "The map"
+  Type        = "Normal"
+  xmlns       = "http://schemas.atdi.com/orm/entity.xsd">
+  <DataSource Type="Database" Object="Table">
+    <Name>MAPS</Name>
+    <Schema>INFOC</Schema>
+  </DataSource>
+  <Fields>
+    <Field Name="Id" DataType="Counter.64" SourceName="ID" SourceType="Column" Desc="The id of the map record" Title="Id record"/>
+    
+    <Field Name="StatusCode" DataType="Code.u08" SourceName="STATUS_CODE" SourceType="Column" Desc="The code of the status of the map" Title="Status code" Required="true"/>
+    <Field Name="StatusName" DataType="Text.50" SourceName="STATUS_NAME" SourceType="Column" Desc="The name of the status of the map" Title="Status name" Required="true"/>
+    <Field Name="StatusNote" DataType="Text.MAX" SourceName="STATUS_NOTE" SourceType="Column" Desc="The note of the status of the map" Title="Status note" Required="false"/>
+    
+    <Field Name="CreatedDate" DataType="DateTimeOffset" SourceName="CREATED_DATE" SourceType="Column" Desc="The date of the record created" Title="Created date" Required="true"/>
+
+    <Field Name="TypeCode" DataType="Code.u08" SourceName="TYPE_CODE" SourceType="Column" Desc="The code of the type of the map" Title="Type code" Required="true"/>
+    <Field Name="TypeName" DataType="Text.50" SourceName="TYPE_NAME" SourceType="Column" Desc="The name of the type of the map" Title="Type name" Required="true"/>
+
+    <Field Name="Projection" DataType="Text.50" SourceName="PROJECTION" SourceType="Column" Desc="The projection of the map" Title="Projection" Required="true"/>
+
+    <Field Name="StepUnit" DataType="Text.10" SourceName="STEP_UNIT" SourceType="Column" Desc="The unit of the map step" Title="Step unit" Required="true"/>
+    <Field Name="StepDataType" DataType="Text.50" SourceName="STEP_DATATYPE" SourceType="Column" Desc="The data type of the map step" Title="Step data type" Required="true"/>
+    <Field Name="StepDataSize" DataType="Code.u08" SourceName="STEP_DATASIZE" SourceType="Column" Desc="The data size in bytes of the map step" Title="Step data size" Required="true"/>
+
+
+    <Field Name="AxisXNumber" DataType="Integer.32" SourceName="AXIS_X_NUMBER" SourceType="Column" Desc="The number of map steps along the X axis" Title="X step number" Required="true"/>
+    <Field Name="AxisXStep" DataType="Integer.32" SourceName="AXIS_X_STEP" SourceType="Column" Desc="The len of map step along the X axis" Title="X step len" Required="true"/>
+    <Field Name="AxisYNumber" DataType="Integer.32" SourceName="AXIS_Y_NUMBER" SourceType="Column" Desc="The number of map steps along the Y axis" Title="Y step number" Required="true"/>
+    <Field Name="AxisYStep" DataType="Integer.32" SourceName="AXIS_Y_STEP" SourceType="Column" Desc="The len of map step along the Y axis" Title="Y step len" Required="true"/>
+
+    <Field Name="UpperLeftX" DataType="Integer.32"  SourceName="CRD_UPL_X" SourceType="Column" Desc="The Upper Left X" Title="Upper Left X" Required="true"/>
+    <Field Name="UpperLeftY" DataType="Integer.32"  SourceName="CRD_UPL_Y" SourceType="Column" Desc="The Upper Left Y" Title="Upper Left Y" Required="true"/>
+    <Field Name="UpperRightX" DataType="Integer.32" SourceName="CRD_UPR_X" SourceType="Column" Desc="The Upper Right X" Title="Upper Right X" Required="true"/>
+    <Field Name="UpperRightY" DataType="Integer.32" SourceName="CRD_UPR_Y" SourceType="Column" Desc="The Upper Right Y" Title="Upper Right Y" Required="true"/>
+
+    <Field Name="LowerLeftX" DataType="Integer.32"  SourceName="CRD_LWL_X" SourceType="Column" Desc="The Lower Left X" Title="Lower Left X" Required="true"/>
+    <Field Name="LowerLeftY" DataType="Integer.32"  SourceName="CRD_LWL_Y" SourceType="Column" Desc="The Lower Left Y" Title="Lower Left Y" Required="true"/>
+    <Field Name="LowerRightX" DataType="Integer.32" SourceName="CRD_LWR_X" SourceType="Column" Desc="The Lower Right X" Title="Lower Right X" Required="true"/>
+    <Field Name="LowerRightY" DataType="Integer.32" SourceName="CRD_lWR_Y" SourceType="Column" Desc="The Lower Right Y" Title="Lower Right Y" Required="true"/>
+
+
+    <Field Name="ContentSize" DataType="Integer.32" SourceName="CONTENT_SIZE" SourceType="Column" Desc="The content size in bytes of the map" Title="Content size" Required="true"/>
+    <Field Name="ContentSource" DataType="Text.50" SourceName="CONTENT_SOURCE" SourceType="Column" Desc="The content source of the map" Title="Content source" Required="true"/>
+    <Field Name="FileName" DataType="Text.250" SourceName="FILE_NAME" SourceType="Column" Desc="The file name of the map" Title="File name" Required="false"/>
+    <Field Name="FileSize" DataType="Integer.32" SourceName="FILE_SIZE" SourceType="Column" Desc="The file size in bytes of the map" Title="File size" Required="false"/>
+    <Field Name="MapName" DataType="Text.450" SourceName="MAP_NAME" SourceType="Column" Desc="The name of the map" Title="Map name" Required="true"/>
+    <Field Name="MapNote" DataType="Text.MAX" SourceName="MAP_NOTE" SourceType="Column" Desc="The note of the map" Title="Map note" Required="false"/>
+
+    <Field Name="SectorsCount" DataType="Integer.32"  SourceName="SECTORS_COUNT" SourceType="Column" Desc="The count of sectors" Title="Sectors count" Required="false"/>
+    <Field Name="SectorsXCount" DataType="Integer.32"  SourceName="SECTORS_X_COUNT" SourceType="Column" Desc="The count of sectors by X axis" Title="Sectors by X axis" Required="false"/>
+    <Field Name="SectorsYCount" DataType="Integer.32"  SourceName="SECTORS_Y_COUNT" SourceType="Column" Desc="The count of sectors by Y axis" Title="Sectors by Y axis" Required="false"/>
+    
+  </Fields>
+  <PrimaryKey Clustered="true">
+    <FieldRef Name="Id"/>
+  </PrimaryKey>
+</Entity>
