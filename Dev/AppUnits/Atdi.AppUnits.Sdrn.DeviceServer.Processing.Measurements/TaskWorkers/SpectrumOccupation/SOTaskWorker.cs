@@ -298,6 +298,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing.Measurements
                                             measResult.StopTime = recalcStopTime;
                                             measResult.Measured = recalcStopTime;
                                         }
+
+                                        var deviceCommandResult = new DM.DeviceCommandResult();
+                                        deviceCommandResult.CommandId = "UpdateStatusMeasTask";
+                                        deviceCommandResult.CustDate1 = DateTime.Now;
+                                        deviceCommandResult.Status = StatusTask.C.ToString();
+                                        deviceCommandResult.CustTxt1 = context.Task.taskParameters.SDRTaskId;
+
+
+                                        this._repositoryDeviceCommandResult.Create(deviceCommandResult);
                                     }
 
                                     this._measResultsByStringRepository.Create(measResult);
