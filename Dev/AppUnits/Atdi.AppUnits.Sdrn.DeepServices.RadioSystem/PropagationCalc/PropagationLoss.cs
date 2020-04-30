@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.SignalService;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
@@ -20,6 +21,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double Ld_dB = 0;
             if (args.Model.DiffractionBlock.Available) {Ld_dB = CalcDiffraction(in args, Ldsub_dB);}
             CalcLossResult Labsorption_dB = new CalcLossResult();
+            
             if (args.Model.AbsorptionBlock.Available) { Labsorption_dB = CalcAbsorptionBlok(in args); }
             double Lclutter_dB = 0;
             if (args.Model.ClutterBlock.Available) { Lclutter_dB = CalcClutterBlok(in args); }
@@ -114,7 +116,11 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             AbsorptionCalcBlockModelType AbModel = args.Model.AbsorptionBlock.ModelType;
             double Freq_MHz = args.Freq_Mhz;
             double Time_PC = args.Model.Parameters.Time_pc;
-            double Labsorption_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs)=>AbsorptionCalc.CalcAbsorption(AbModel, Freq_MHz, Time_PC, currentLoss, obs),in args, tilta, tiltb);
+
+            // Вычисляем индекс частоты масива клатеров 
+            int IndexFreqUp = GetIndexClutterArr(in args);
+            var CluttersDesc = args.CluttersDesc;
+            double Labsorption_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs)=>AbsorptionCalc.CalcAbsorption(in CluttersDesc, IndexFreqUp, AbModel, Freq_MHz, Time_PC, currentLoss, obs),in args, tilta, tiltb);
             CalcLossResult result = new CalcLossResult()
             {
                 LossA_dB = Labsorption_dB + Ld_dB,
@@ -131,9 +137,37 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             ClutterCalcBlockModelType ClModel = args.Model.ClutterBlock.ModelType;
             double Freq_MHz = args.Freq_Mhz;
             double Time_PC = args.Model.Parameters.Time_pc;
-            double Lclutter_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs) => AbsorptionCalc.CalcClutter(ClModel, Freq_MHz, Time_PC, currentLoss, obs), in args, tilta, tiltb);
+            // Вычисляем индекс частоты масива клатеров 
+            int IndexFreqUp = GetIndexClutterArr(in args);
+            var CluttersDesc = args.CluttersDesc;
+            double Lclutter_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs) => AbsorptionCalc.CalcClutter(in CluttersDesc, IndexFreqUp, ClModel, Freq_MHz, Time_PC, currentLoss, obs), in args, tilta, tiltb);
             return Lclutter_dB;
         }
+        private static int GetIndexClutterArr(in CalcLossArgs args)
+        {
+            int IndexFreqUp = 0;
+            if (args.CluttersDesc != null)
+            {
+                var model = args.Model;
+                if ((model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.FlatAndLinear) ||
+                   (model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.Flat) ||
+                   (model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.Linear)||
+                   (model.ClutterBlock.ModelType == ClutterCalcBlockModelType.Flat))
+                {
+                    // нужны в расчете параметры клатеров придется интерполировать
+                    IndexFreqUp = args.CluttersDesc.Frequencies.Length;
+                    for (int i = 0; i > args.CluttersDesc.Frequencies.Length; i++)
+                    {
+                        if (args.Freq_Mhz < args.CluttersDesc.Frequencies[i].Freq_MHz)
+                        { IndexFreqUp = i; break; }
+                    }
+                }
+            }
+            return IndexFreqUp;
+        }
+        
+        
+        
 
         //private static float CalcAtmosphericBlok(in CalcLossArgs args)
         //{
