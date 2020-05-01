@@ -102,7 +102,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             {
 
                 clutterHeightMin = args.ReliefProfile[i];
-                clutterHeightMax = args.ReliefProfile[i] + args.ClutterProfile[i];//args.HeightProfile[i];
+                clutterHeightMax = args.HeightProfile[i];//args.ReliefProfile[i] + args.ClutterProfile[i];//args.HeightProfile[i];
 
                 beamAHeight = 1000 * pixelLength_km * (i - args.ReliefStartIndex) * (tanTiltA + .5 * pixelLength_km * (i - args.ReliefStartIndex) * invRe) + ha_m;
                 beamBHeight = 1000 * pixelLength_km * (profileEndIndex - i) * (tanTiltB + .5 * pixelLength_km * (profileEndIndex - i) * invRe) + hb_m;
@@ -165,8 +165,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                         elevation_deg = theta_deg, // УМ вхождения в клатер
                         endPoint = isEndPoint // признак того что это препятсвие в котором (внутри) находиться точка а иди б
                     };
-                    //LossObs = FunctionCalc(LossObs, obs);
-                    LossObs += 1;
+                    LossObs = FunctionCalc(LossObs, obs);
+                    //LossObs += 1;
                     distanceInside_km = 0;
                 }
                 
