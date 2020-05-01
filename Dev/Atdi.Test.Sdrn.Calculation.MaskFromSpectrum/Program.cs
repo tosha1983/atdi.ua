@@ -39,7 +39,7 @@ namespace Atdi.Test.Sdrn.Calculation.MaskFromSpectrum
 
             SpectrumMask testResultMask;
 
-            testResultMask = CreateMaskFromSpectrum.CreateMaskFromEmitting(spectrumLevels_dBm, spectrumStartFreq_MHz, spectrumSteps_kHz, initialCutoff_dB, numberOfMask_pt);
+            //testResultMask = CreateMaskFromSpectrum.CreateMaskFromEmitting(spectrumLevels_dBm, spectrumStartFreq_MHz, spectrumSteps_kHz, initialCutoff_dB, numberOfMask_pt);
 
             //emitting spectrum test
             spectrumSteps_kHz = 2.4425989254268;
