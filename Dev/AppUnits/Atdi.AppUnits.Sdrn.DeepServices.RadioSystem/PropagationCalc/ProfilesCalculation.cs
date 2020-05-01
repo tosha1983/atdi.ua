@@ -149,7 +149,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     obstacleIntersection = true;
                     distanceInside_km += pixelLength_km;
                 }
-                else if (((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true)) || (args.ClutterProfile[i] != args.ClutterProfile[i+1] && i < profileEndIndex ))
+                else if (((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true)) ||
+                    (args.ClutterProfile[i] != args.ClutterProfile[i+1] && i < profileEndIndex && obstacleIntersection == true))
                 {
                     obstacleIntersection = false;
                 }
