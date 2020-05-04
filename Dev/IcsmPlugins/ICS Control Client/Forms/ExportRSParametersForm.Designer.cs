@@ -1,6 +1,6 @@
 ﻿namespace XICSM.ICSControlClient.Forms
 {
-    partial class EportRSParametersForm
+    partial class ExportRSParametersForm
     {
         /// <summary>
         /// Required designer variable.
@@ -33,22 +33,25 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.txtCutoff = new System.Windows.Forms.TextBox();
+            this.txtNumberPoints = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnApply
             // 
-            this.btnApply.Location = new System.Drawing.Point(361, 178);
+            this.btnApply.Location = new System.Drawing.Point(108, 156);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(75, 23);
             this.btnApply.TabIndex = 7;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
             // cmbCorrEstim
             // 
             this.cmbCorrEstim.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCorrEstim.FormattingEnabled = true;
-            this.cmbCorrEstim.Location = new System.Drawing.Point(186, 24);
+            this.cmbCorrEstim.Location = new System.Drawing.Point(150, 25);
             this.cmbCorrEstim.Name = "cmbCorrEstim";
             this.cmbCorrEstim.Size = new System.Drawing.Size(121, 21);
             this.cmbCorrEstim.TabIndex = 6;
@@ -56,7 +59,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(25, 27);
+            this.label1.Location = new System.Drawing.Point(25, 25);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(114, 13);
             this.label1.TabIndex = 8;
@@ -65,7 +68,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(25, 64);
+            this.label2.Location = new System.Drawing.Point(25, 75);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(54, 13);
             this.label2.TabIndex = 9;
@@ -74,17 +77,35 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 105);
+            this.label3.Location = new System.Drawing.Point(24, 125);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 13);
             this.label3.TabIndex = 10;
             this.label3.Text = "Number of mask points";
             // 
-            // EportRSParametersForm
+            // txtCutoff
+            // 
+            this.txtCutoff.Location = new System.Drawing.Point(150, 75);
+            this.txtCutoff.Name = "txtCutoff";
+            this.txtCutoff.Size = new System.Drawing.Size(121, 20);
+            this.txtCutoff.TabIndex = 11;
+            this.txtCutoff.TextChanged += new System.EventHandler(this.txtCutoff_TextChanged);
+            // 
+            // txtNumberPoints
+            // 
+            this.txtNumberPoints.Location = new System.Drawing.Point(150, 125);
+            this.txtNumberPoints.Name = "txtNumberPoints";
+            this.txtNumberPoints.Size = new System.Drawing.Size(121, 20);
+            this.txtNumberPoints.TabIndex = 12;
+            this.txtNumberPoints.TextChanged += new System.EventHandler(this.txtNumberPoints_TextChanged);
+            // 
+            // ExportRSParametersForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(609, 295);
+            this.ClientSize = new System.Drawing.Size(288, 191);
+            this.Controls.Add(this.txtNumberPoints);
+            this.Controls.Add(this.txtCutoff);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -93,7 +114,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "EportRSParametersForm";
+            this.Name = "ExportRSParametersForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ICS Control Client";
             this.ResumeLayout(false);
@@ -108,5 +129,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtCutoff;
+        private System.Windows.Forms.TextBox txtNumberPoints;
     }
 }

@@ -456,13 +456,13 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
 
-                if (emittingsIds.Count > 1000 && emittingsIds.Count < 2000)
+                if (emittingsIds.Count > 5000 && emittingsIds.Count < 20000)
                 {
                     if (MessageBox.Show("Attention! Received a large amount of radiation, it will take a long time to get the result. Are you sure you want to continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                         return null;
                 }
 
-                if (emittingsIds.Count > 2000)
+                if (emittingsIds.Count > 20000)
                 {
                     MessageBox.Show("Attention! A large number of emissions have been received, please reduce the amount of data obtaining.");
                     return null;
@@ -470,7 +470,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
 
                 int counter = 0;
-                var b = emittingsIds.GroupBy(_ => counter++ / 500).Select(v => v.ToArray());
+                var b = emittingsIds.Keys.GroupBy(_ => counter++ / 500).Select(v => v.ToArray());
 
                 foreach (var ids in b.Select(v => String.Join(",", v)))
                 {

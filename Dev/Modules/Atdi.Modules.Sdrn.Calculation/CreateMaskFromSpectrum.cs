@@ -33,15 +33,23 @@ namespace Atdi.Modules.Sdrn.Calculation
         //}
         private static float MaxInSubArray(in float[] data, int index, int length)
         {
-            float maxValue = data[index];
-            for (int i = index + 1; i < index + length; i++)
+            try
             {
-                if (maxValue < data[i])
+                float maxValue = data[index];
+                for (int i = index + 1; i < index + length; i++)
                 {
-                    maxValue = data[i];
+                    if (maxValue < data[i])
+                    {
+                        maxValue = data[i];
+                    }
                 }
+                return maxValue;
             }
-            return maxValue;
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
 
         /// <summary>
