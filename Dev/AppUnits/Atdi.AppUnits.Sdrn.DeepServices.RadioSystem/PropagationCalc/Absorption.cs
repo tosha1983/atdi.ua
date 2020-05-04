@@ -4,33 +4,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.PropagationModels;
+using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
     internal static class AbsorptionCalc
     {
-        public static double CalcAbsorption(AbsorptionCalcBlockModelType ModelType, double Freq_MHz, double Time_pc ,double currentLoss, EstimationClutterObstaclesResult obs)
+        public static double CalcAbsorption(in CluttersDesc cluttersDesc, int index, AbsorptionCalcBlockModelType ModelType, double Freq_MHz, double Time_pc, double currentLoss, EstimationClutterObstaclesResult obs)
         {
             double L1 = 0;
             double L2 = 0;
             switch (ModelType)
             {
                 case AbsorptionCalcBlockModelType.Flat:
-                    L1 = AbsorptionCalc.Flat(obs);
+                    L1 = AbsorptionCalc.Flat(obs, cluttersDesc, index, Freq_MHz);
                     break;
                 case AbsorptionCalcBlockModelType.FlatAndLinear:
-                    L1 = AbsorptionCalc.Flat(obs);
-                    L2 = AbsorptionCalc.Linear(obs);
+                    L1 = AbsorptionCalc.Flat(obs, cluttersDesc, index, Freq_MHz);
+                    L2 = AbsorptionCalc.Linear(obs, cluttersDesc, index, Freq_MHz);
                     break;
                 case AbsorptionCalcBlockModelType.ITU2109AndLinear:
                     L1 = AbsorptionCalc.ITU2109(obs.elevation_deg, Freq_MHz, Time_pc);
-                    L2 = AbsorptionCalc.Linear(obs);
+                    L2 = AbsorptionCalc.Linear(obs, cluttersDesc, index, Freq_MHz);
                     break;
                 case AbsorptionCalcBlockModelType.ITU2109_2:
                     L1 = AbsorptionCalc.ITU2109(obs.elevation_deg, Freq_MHz, Time_pc);
                     break;
                 case AbsorptionCalcBlockModelType.Linear:
-                    L2 = AbsorptionCalc.Linear(obs);
+                    L2 = AbsorptionCalc.Linear(obs, cluttersDesc, index, Freq_MHz);
                     break;
                 default:
                     break;
@@ -38,7 +39,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             var Labsorption_dB = currentLoss + L1 + L2;
             return Labsorption_dB;
         }
-        public static double CalcClutter(ClutterCalcBlockModelType ModelType, double Freq_MHz, double Time_pc, double currentLoss, EstimationClutterObstaclesResult obs)
+        public static double CalcClutter(in CluttersDesc cluttersDesc, int index, ClutterCalcBlockModelType ModelType, double Freq_MHz, double Time_pc, double currentLoss, EstimationClutterObstaclesResult obs)
         {
             if (obs.endPoint)
             {
@@ -46,7 +47,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 switch (ModelType)
                 {
                     case ClutterCalcBlockModelType.Flat:
-                        L1 = AbsorptionCalc.Flat(obs);
+                        L1 = AbsorptionCalc.Flat(obs, cluttersDesc, index, Freq_MHz);
                         break;
                     case ClutterCalcBlockModelType.ITU2109:
                         L1 = AbsorptionCalc.ITU2109(obs.elevation_deg, Freq_MHz, Time_pc);
@@ -59,13 +60,41 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             return currentLoss;
         }
-        private static double Flat(EstimationClutterObstaclesResult estimationClutterObstaclesResult)
+        private static double Flat(EstimationClutterObstaclesResult estimationClutterObstaclesResult, in CluttersDesc cluttersDesc, int indexUp, double Freq_MHz)
         {
-            return 0;
+            double Result = 0;
+            if (indexUp == 0)
+            {
+                Result = interpolation(cluttersDesc.Frequencies[0].Clutters[estimationClutterObstaclesResult.clutterCode].FlatLoss_dB, Freq_MHz, cluttersDesc.Frequencies[0].Freq_MHz, true);
+            }
+            else if (indexUp >= cluttersDesc.Frequencies.Length)
+            {
+                int maxind = cluttersDesc.Frequencies.Length - 1;
+                Result = interpolation(cluttersDesc.Frequencies[maxind].Clutters[estimationClutterObstaclesResult.clutterCode].FlatLoss_dB, Freq_MHz, cluttersDesc.Frequencies[maxind].Freq_MHz, true);
+            }
+            else
+            {
+                Result = interpolation(cluttersDesc.Frequencies[indexUp-1].Clutters[estimationClutterObstaclesResult.clutterCode].FlatLoss_dB, cluttersDesc.Frequencies[indexUp].Clutters[estimationClutterObstaclesResult.clutterCode].FlatLoss_dB,  Freq_MHz, cluttersDesc.Frequencies[indexUp-1].Freq_MHz, cluttersDesc.Frequencies[indexUp].Freq_MHz);
+            }
+            return Result;
         }
-        private static double Linear(EstimationClutterObstaclesResult estimationClutterObstaclesResult)
+        private static double Linear(EstimationClutterObstaclesResult estimationClutterObstaclesResult, in CluttersDesc cluttersDesc, int indexUp, double Freq_MHz)
         {
-            return 0;
+            double Result = 0;
+            if (indexUp == 0)
+            {
+                Result = interpolation(cluttersDesc.Frequencies[0].Clutters[estimationClutterObstaclesResult.clutterCode].LinearLoss_dBkm, Freq_MHz, cluttersDesc.Frequencies[0].Freq_MHz, false);
+            }
+            else if (indexUp >= cluttersDesc.Frequencies.Length)
+            {
+                int maxind = cluttersDesc.Frequencies.Length - 1;
+                Result = interpolation(cluttersDesc.Frequencies[maxind].Clutters[estimationClutterObstaclesResult.clutterCode].LinearLoss_dBkm, Freq_MHz, cluttersDesc.Frequencies[maxind].Freq_MHz, false);
+            }
+            else
+            {
+                Result = interpolation(cluttersDesc.Frequencies[indexUp - 1].Clutters[estimationClutterObstaclesResult.clutterCode].LinearLoss_dBkm, cluttersDesc.Frequencies[indexUp].Clutters[estimationClutterObstaclesResult.clutterCode].LinearLoss_dBkm, Freq_MHz, cluttersDesc.Frequencies[indexUp - 1].Freq_MHz, cluttersDesc.Frequencies[indexUp].Freq_MHz);
+            }
+            return Result*estimationClutterObstaclesResult.d_km;
         }
 
         private static double InvCnDF(double p)
@@ -119,5 +148,23 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             return 10 * Math.Log10(Math.Pow(10 , 0.1 * AB(time_pc, sigma1, mu1)) + Math.Pow(10, 0.1 * AB(time_pc, sigma2, mu2)) + Math.Pow(10, 0.1 * C));
         }
+        private static double interpolation(float value1, double freq, double freq1, bool flat)
+        { // надо проверять
+            double FlatInterpolationSpeed = 9.6; //ITU 2108
+            double LinearInterpolationSpeed = 3; //ITU 2108
+            double InterpolationSpeed;
+            if (flat) { InterpolationSpeed = FlatInterpolationSpeed; } else { InterpolationSpeed = LinearInterpolationSpeed; }
+            double value = value1 + InterpolationSpeed * Math.Log10(freq / freq1);
+            if (value > 0) { return (float)value; }
+            return 0;
+        }
+        private static double interpolation(float value1, float value2, double freq, double freq1, double freq2)
+        { // надо проверять 
+            // Logarifmiq Interpolation
+            double value = value1 + (value2 - value1) * Math.Log10(freq / freq1) / Math.Log10(freq2 / freq1);
+            if (value > 0) { return (float)value; }
+            return 0;
+        }
+
     }
 }

@@ -439,7 +439,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.VBW_Hz = 100;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 10;
+                command.Parameter.TraceCount = 100;
                 command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.MaxHold;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
@@ -461,17 +461,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
                 decimal centr = 100m * 1000000;
-                decimal span = 40.0m * 1000000;//0.025m
+                decimal span = 25.0m * 1000000;//0.025m
 
                 command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 5000;
-                command.Parameter.VBW_Hz = 5000;
+                command.Parameter.RBW_Hz = 50;
+                command.Parameter.VBW_Hz = 50;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = 16000;
+                command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
@@ -492,17 +492,17 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
                 decimal centr = 1850m * 1000000;
-                decimal span = 20.0m * 1000000;//0.025m
+                decimal span = 15.0m * 1000000;//0.025m
 
                 command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 30000;
-                command.Parameter.VBW_Hz = 30000;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
                 command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = 11000;
+                command.Parameter.TracePoint = 500000;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
@@ -2106,7 +2106,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
         {
             object t = new Atdi.DataModels.Sdrn.DeviceServer.Commands.Results.MesureTraceResult()
             {
-                Level = new float[1000000]
+                Level = new float[10000000]
             };
             return (T)t;
             //throw new NotImplementedException();

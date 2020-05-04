@@ -15,16 +15,22 @@ using Atdi.DataModels.Sdrn.DeviceServer;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 {
-    public class Adapter2 : IAdapter
+    public class Adapter : IAdapter
     {
         private readonly ITimeService timeService;
         private readonly ILogger logger;
         private readonly AdapterConfig adapterConfig;
 
+        private IExecutionContext executionContextGps;
+        private ulong resultGPSpart = 0;
+        private COMR.GpsResult resultGPS = null;
+        private COM.Parameters.GpsMode stateGPS = COMP.GpsMode.Stop;
+        private bool resultGPSPublished = false;
+
         private CFG.ThisAdapterConfig tac;
         private CFG.AdapterMainConfig mainConfig;
-        
-        public Adapter2(AdapterConfig adapterConfig, ILogger logger, ITimeService timeService)
+
+        public Adapter(AdapterConfig adapterConfig, ILogger logger, ITimeService timeService)
         {
             this.logger = logger;
             ValidateAndSetAdapterConfig(adapterConfig);
@@ -94,7 +100,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(MesureTraceCommandHandler, rpd, mtdp);
                     //host.RegisterHandler<COM.MesureIQStreamCommand, COMR.MesureIQStreamResult>(MesureIQStreamCommandHandler, miqdp);
                     //host.RegisterHandler<COM.MesureTraceCommand, COMR.MesureTraceResult>(EstimateRefLevelCommandHandler, mtdp);
-
+                    host.RegisterHandler<COM.GpsCommand, COMR.GpsResult>(GPSCommandHandler);
                 }
                 else
                 {
@@ -140,7 +146,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
             #endregion
         }
-
         public void MesureTraceCommandHandler(COM.MesureTraceCommand command, IExecutionContext context)
         {
             try
@@ -167,61 +172,74 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                         #region
                         ValidateAndSetTraceType(command.Parameter.TraceType);
                         ValidateAndSetTraceCount(command.Parameter.TraceCount);
-                        double needRBW = 0, needStep = 0;
-                        int needSweepPoints = 0;
+                        double needRBW = 0;
+                        int needSweepPoints = 0, fftsizeindex = 0, spanindex = 0, spansteps = 0;
 
                         ValidateAndSetFreqStartStop(command.Parameter.FreqStart_Hz, command.Parameter.FreqStop_Hz);
                         ValidateAndSetAttPreAmp(command.Parameter.Att_dB, command.Parameter.PreAmp_dB);
 
-                        //кол-во точек есть, посчитать по RBW
+                        //кол-во точек посчитать по RBW
                         if (command.Parameter.TracePoint < 0 && command.Parameter.RBW_Hz > 0)
                         {
                             needRBW = command.Parameter.RBW_Hz;
-                            needSweepPoints = (int)((command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / (decimal)needRBW);
+                            (spanindex, spansteps) = ValidateAndFindSpanAndSteps((double)FreqSpan);
+                            if (!FindNeedRBW(needRBW, ref fftsizeindex, ref spanindex, ref spansteps))
+                            {
+                                //алахадбар
+                                throw new Exception("RBW unavailable.");
+                            }
                         }
-                        //сколько точек понятно почему и посчитать RBW
-                        else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz < 0)
+                        //сколько точек понятно почему и посчитать RBW ИЛИ забить на rbw считать по точкам
+                        else if ((command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz < 0) ||
+                            (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz > 0))
                         {
                             needSweepPoints = command.Parameter.TracePoint;
-                            needRBW = (double)(command.Parameter.FreqStop_Hz - command.Parameter.FreqStart_Hz) / (needSweepPoints - 1);
+                            (spanindex, spansteps) = ValidateAndFindSpanAndSteps((double)FreqSpan);
+                            if (!FindNeedTracePoints(needSweepPoints, ref fftsizeindex, ref spanindex, ref spansteps))
+                            {
+                                //алахадбар
+                                throw new Exception("TracePoints unavailable.");
+                            }
+
                         }
-                        //сколько точек понятно почему и чему равно RBW
-                        else if (command.Parameter.TracePoint > 0 && command.Parameter.RBW_Hz > 0)
+                        else if (command.Parameter.TracePoint < 0 && command.Parameter.RBW_Hz < 0)
                         {
-                            needSweepPoints = command.Parameter.TracePoint;
-                            needRBW = command.Parameter.RBW_Hz;
+                            //алахадбар
+                            throw new Exception("Auto TracePoint and Auto RBW not available together.");
                         }
                         //needStep = FreqSpan / needSweepPoints;
 
-                        //(double sampleRate, int spanIndex, uint steps, int numFftPointsIndex) = CalcSweepSetting((double)FreqSpan, needRBW, (uint)needSweepPoints);
+                        ////(double sampleRate, int spanIndex, uint steps, int numFftPointsIndex) = CalcSweepSetting((double)FreqSpan, needRBW, (uint)needSweepPoints);
+                        ////double span = gSpans[spanIndex];
+                        //(int spanIndex, int steps) = ValidateAndFindSpanAndSteps((double)FreqSpan);
                         //double span = gSpans[spanIndex];
-                        (int spanIndex, uint steps) = ValidateAndFindSpanAndSteps((double)FreqSpan);
-                        double span = gSpans[spanIndex];
-                        //if (span > gSensorCapabilities.maxSpan) span = gSensorCapabilities.maxSpan;
+                        ////if (span > gSensorCapabilities.maxSpan) span = gSensorCapabilities.maxSpan;
 
-                        double desiredSampleRate = span * gSensorCapabilities.sampleRateToSpanRatio;
+                        //double desiredSampleRate = span * gSensorCapabilities.sampleRateToSpanRatio;
 
-                        // *** WARNING: A workaround for an Electrum BUG... 
-                        // capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
-                        // while tuner's max sample rate is still 28MSa/s.
+                        //// *** WARNING: A workaround for an Electrum BUG... 
+                        //// capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
+                        //// while tuner's max sample rate is still 28MSa/s.
+                        ////double sampleRate = gSensorCapabilities.maxSampleRate;
+                        //if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
                         //double sampleRate = gSensorCapabilities.maxSampleRate;
-                        if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-                        double sampleRate = gSensorCapabilities.maxSampleRate;
 
-                        while (sampleRate / desiredSampleRate > 2)
-                        {
-                            sampleRate /= 2;
-                        }
+                        //while (sampleRate / desiredSampleRate > 2)
+                        //{
+                        //    sampleRate /= 2;
+                        //}
 
-                        uint numFftPoints = fftSize[fftSize.Length - 1];
+                        //uint numFftPoints = fftSize[fftSize.Length - 1];
 
 
-                        double rbw = sampleRate / numFftPoints * windowMult;
+                        //double rbw = sampleRate / numFftPoints * windowMult;
 
-                        uint numPoints = (uint)((double)numFftPoints * (span / sampleRate));
+                        //uint numPoints = (uint)((double)numFftPoints * (span / sampleRate));
 
+
+                        //(double needSampleRate, int needSpanIndex, uint needsteps, int FftPointsIndex) = CalcSweepSetting((double)FreqSpan, needRBW, (uint)needSweepPoints);
                         //Все настроили, теперь померяем и соберем результат
-                        uint points = 0;
+
                         string poolKeyName = "";
                         bool poolKeyFind = false;
                         bool overload = false;
@@ -230,52 +248,102 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                         {
                             traceAveraged.AveragingCount = (int)traceCountToMeas;
                         }
-                        bool setfreq = false;
                         int st = -1;
+                        int points = 0;
                         double freqstep = 0;
+                        double freqstart = 0;
+                        double freqstop = (double)FreqStop;
+                        FftPoints = fftSize[fftsizeindex];
+                        fSpan = gSpans[spanindex];
+                        resultGPSPublished = false;
+                        bool freqResSet = false;
+                        int resFreqStopIndex = 0;
                         for (ulong t = 0; t < traceCountToMeas; t++)
                         {
                             bool overloadonstep = false, overloadonsubstep = false;
 
-                            for (int s = 0; s < steps; s++)//идем по частотам
+                            for (int s = 0; s < spansteps; s++)//идем по частотам
                             {
                                 if (st != s)
                                 {
-                                    double newFreqCentr = (double)FreqStart + 0.5 * span + s * span;
-                                    if (gMeasHandle != IntPtr.Zero)
-                                    {
-                                        AgSalLib.salClose(gMeasHandle);
-                                        gMeasHandle = IntPtr.Zero;
-                                    }
-                                    SetSweepCommandAndStart(newFreqCentr, span, numFftPoints);// fftSize[numFftPointsIndex]);
+                                    gSetupChange = true;
+                                    fCentr = (double)FreqStart + 0.5 * fSpan + s * fSpan;
+                                    gSetupChange = true;
                                     st = s;
                                 }
-                                gSetupChange = true;
-
-                                if (GetTraceData(ref LevelArrTemp2, ref points, ref overloadonsubstep, ref freqstep))
+                                if (GetTraceData(ref LevelArrTemp2, ref points, ref overloadonsubstep, ref freqstart, ref freqstep))
                                 {
+                                    if (!freqResSet && s == 0)
+                                    {
+                                        resFreqStart = freqstart;
+                                        resFreqStep = freqstep;
+                                        freqResSet = true;                                       
+                                        double ddd = 0;
+                                        for (int rf = 0; rf < spansteps * points; rf++)
+                                        {
+                                            ddd = resFreqStart + rf * resFreqStep;
+                                            if (ddd > freqstop)
+                                            {
+                                                resFreqStopIndex = rf;
+                                                break;
+                                            }
+                                            //if (steps * points - 1 == rf)
+                                            //{
+
+                                            //}
+                                        }
+                                    }
+                                    if (resFreqStopIndex == 0)
+                                    {
+                                        LevelArrLength = spansteps * points;
+                                    }
+                                    else
+                                    {
+                                        LevelArrLength = resFreqStopIndex;
+                                    }
                                     if (!overloadonstep && overloadonsubstep)
                                     {
                                         overloadonstep = true;
                                     }
-                                    Array.Copy(LevelArrTemp2, 0, LevelArrTemp, 0 + points * s, points);
+                                    if (freqstart <= freqstop)
+                                    {
+                                        double fcdel = Math.Abs(freqstart - fCentr + 0.5 * fSpan);
+                                        if (fcdel < freqstep)
+                                        {
+                                            Array.Copy(LevelArrTemp2, 0, LevelArrTemp, 0 + points * s, points);
+                                            //обновим координаты
+                                            if (!resultGPSPublished && stateGPS == COMP.GpsMode.Start)
+                                            {
+                                                if (executionContextGps != null &&
+                                                    gDataHeader.location.latitude != 0 &&
+                                                    gDataHeader.location.longitude != 0 &&
+                                                    gDataHeader.location.elevation != 0)
+                                                {
+                                                    resultGPS.Lat = gDataHeader.location.latitude;
+                                                    resultGPS.Lon = gDataHeader.location.longitude;
+                                                    resultGPS.Asl = gDataHeader.location.elevation;
+                                                    executionContextGps.PushResult(resultGPS);
+                                                    resultGPSPublished = true;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            fCentr = (double)FreqStart + 0.5 * fSpan + s * fSpan;
+                                            gSetupChange = true;
+                                            s--;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
                                 else
                                 {
                                     s--;
                                 }
-                                //if (GetTraceData(ref LevelArrTemp2, ref points, ref overloadonsubstep, newFreqCentr, span, numFftPoints))
-                                //{
-                                //    if (!overloadonstep && overloadonsubstep)
-                                //    {
-                                //        overloadonstep = true;
-                                //    }
-                                //    Array.Copy(LevelArrTemp2, 0, LevelArrTemp, 0 + points * s, points);
-                                //}
-                                //else
-                                //{
-                                //    s--;
-                                //}
+
                                 // иногда нужно проверять токен окончания работы комманды
                                 if (context.Token.IsCancellationRequested)
                                 {
@@ -284,7 +352,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                     // если есть порция данных возвращаем ее в обработчки только говрим что поток результатов не законченный и больше уже не будет поступать
                                     if (!poolKeyFind)
                                     {
-                                        FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                                        FindTracePoolName(LevelArrLength, ref poolKeyFind, ref poolKeyName);
                                     }
                                     var result2 = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Ragged);
                                     result2.DeviceStatus = COMR.Enums.DeviceStatus.Normal;
@@ -295,7 +363,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                     // освобождаем поток 
                                     return;
                                 }
-
                             }
                             // иногда нужно проверять токен окончания работы комманды
                             if (context.Token.IsCancellationRequested)
@@ -311,14 +378,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                 overload = true;
                             }
 
-                            SetTraceData(LevelArrTemp, points * steps);
+                            SetTraceData(LevelArrTemp, LevelArrLength);
                             if (traceTypeResult == MEN.TraceType.ClearWrite)
                             {
                                 //публикуем результат
                                 traceCount++;
                                 if (!poolKeyFind)
                                 {
-                                    FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                                    FindTracePoolName(LevelArrLength, ref poolKeyFind, ref poolKeyName);
                                 }
                                 COMR.MesureTraceResult result;
                                 if (traceCountToMeas == traceCount)
@@ -330,22 +397,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                                     result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Next);
                                 }
 
-                                if (command.Parameter.RBW_Hz == -2)
+                                for (int j = 0; j < LevelArrLength; j++)
                                 {
-                                    float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
-                                    for (int j = 0; j < LevelArr.Length; j++)
-                                    {
-                                        result.Level[j] = LevelArr[j] + adj;
-                                    }
+                                    result.Level[j] = LevelArr[j];
                                 }
-                                else
-                                {
-                                    for (int j = 0; j < LevelArr.Length; j++)
-                                    {
-                                        result.Level[j] = LevelArr[j];
-                                    }
-                                }
-                                result.LevelMaxIndex = LevelArr.Length;
+                                result.LevelMaxIndex = LevelArrLength;
                                 result.FrequencyStart_Hz = resFreqStart;
                                 result.FrequencyStep_Hz = resFreqStep;
 
@@ -366,19 +422,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                         }
                         if (gMeasHandle != IntPtr.Zero)
                         {
-                            AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-                            gMeasState = MeasState.Stopping;
-                        }
-                        if (gMeasHandle != IntPtr.Zero)
-                        {
                             AgSalLib.salClose(gMeasHandle);
                             gMeasHandle = IntPtr.Zero;
+                            gMeasState = MeasState.Idle;
                         }
-                        //if (gMeasHandle != IntPtr.Zero)
-                        //{
-                        //    AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-                        //    gMeasState = MeasState.Stopping;
-                        //}
                         if (!context.Token.IsCancellationRequested)
                         {
                             //Если TraceType Average/MinHold/MaxHold то делаем измерений сколько сказали и пушаем только готовый результат
@@ -386,26 +433,16 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                             {
                                 if (!poolKeyFind)
                                 {
-                                    FindTracePoolName(LevelArr.Length, ref poolKeyFind, ref poolKeyName);
+                                    FindTracePoolName(LevelArrLength, ref poolKeyFind, ref poolKeyName);
                                 }
                                 var result = context.TakeResult<COMR.MesureTraceResult>(poolKeyName, traceCount, CommandResultStatus.Final);
 
-                                if (command.Parameter.RBW_Hz == -2)
+
+                                for (int j = 0; j < LevelArrLength; j++)
                                 {
-                                    float adj = (float)(10 * Math.Log10(resFreqStep / RBW));
-                                    for (int j = 0; j < LevelArr.Length; j++)
-                                    {
-                                        result.Level[j] = LevelArr[j] + adj;
-                                    }
+                                    result.Level[j] = LevelArr[j];
                                 }
-                                else
-                                {
-                                    for (int j = 0; j < LevelArr.Length; j++)
-                                    {
-                                        result.Level[j] = LevelArr[j];
-                                    }
-                                }
-                                result.LevelMaxIndex = LevelArr.Length;
+                                result.LevelMaxIndex = LevelArrLength;
                                 result.FrequencyStart_Hz = resFreqStart;
                                 result.FrequencyStep_Hz = resFreqStep;
 
@@ -454,7 +491,29 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
         }
         public void MesureIQStreamCommandHandler(COM.MesureIQStreamCommand command, IExecutionContext context)
         { }
-
+        public void GPSCommandHandler(COM.GpsCommand command, IExecutionContext context)
+        {
+            try
+            {
+                if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Start)
+                {
+                    executionContextGps = context;
+                    resultGPS = new COMR.GpsResult(resultGPSpart++, CommandResultStatus.Next);
+                    stateGPS = COM.Parameters.GpsMode.Start;
+                }
+                else if (command.Parameter.GpsMode == COM.Parameters.GpsMode.Stop)
+                {
+                    stateGPS = COM.Parameters.GpsMode.Stop;
+                }
+            }
+            catch (Exception e)
+            {
+                // желательно записать влог
+                logger.Exception(Contexts.ThisComponent, e);
+                // этот вызов обязательный в случаи обрыва
+                context.Abort(e);
+            }
+        }
         #region Param
         private readonly long uTCOffset = 621355968000000000;
         private string gSensorName = "";
@@ -496,7 +555,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
         public float[] LevelArrTemp = null;
         public float[] LevelArrTemp2 = null;
         public float[] LevelArr = null;
-        public uint LevelArrLength = 0;
+        public int LevelArrLength = 0;
 
         #region Freqs
         public decimal FreqMin = 20000000;
@@ -576,7 +635,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
         public double RBW = 0;
         private int tracePointsMaxPool = 0;
-        private const int tracePointsMax = 500_005;
+        private const int tracePointsMax = 1_200_000;
 
         private double resFreqStart = 10000;
         private double resFreqStep = 10000;
@@ -832,10 +891,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 throw new Exception("TraceCount must be set greater than zero.");
             }
         }
-        private (int SpanIndex, uint Steps) ValidateAndFindSpanAndSteps(double span)
+        private (int SpanIndex, int Steps) ValidateAndFindSpanAndSteps(double span)
         {
             int SpanIndex = 0;
-            uint Steps = 0;
+            int Steps = 0;
             if (span <= gSpans[gSpans.Length - 1])
             {
                 int index = 0;
@@ -860,7 +919,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
             else if (span > gSpans[gSpans.Length - 1])
             {
-                Steps = (uint)Math.Ceiling(span / gSpans[gSpans.Length - 1]);
+                Steps = (int)Math.Ceiling(span / gSpans[gSpans.Length - 1]);
                 SpanIndex = gSpans.Length - 1;
             }
             else
@@ -947,7 +1006,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
 
 
+            err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Tuner);
+            if (SensorError(err, "salLockResource(Tuner)"))
+            {
+                return false;
+            }
 
+            err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Fft);
+            if (SensorError(err, "salLockResource(FFT)"))
+            {
+                return false;
+            }
             //if (!gEnableMonitorMode)
             //{
 
@@ -1000,9 +1069,9 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             else return false;
         }
 
-        private (double sampleRate, int spanIndex, uint steps, int numFftPointsIndex) CalcSweepSetting(double needspan, double needrbw, uint needpoints /*, uint numFftPoints*/)
+        private (double sampleRate, int spanIndex, int steps, int numFftPointsIndex) CalcSweepSetting(double needspan, double needrbw, uint needpoints /*, uint numFftPoints*/)
         {
-            (int spanIndex, uint steps) = ValidateAndFindSpanAndSteps((double)needspan);
+            (int spanIndex, int steps) = ValidateAndFindSpanAndSteps((double)needspan);
             //if (span > gSensorCapabilities.maxSpan) span = gSensorCapabilities.maxSpan;
 
             double desiredSampleRate = gSpans[spanIndex] * gSensorCapabilities.sampleRateToSpanRatio;
@@ -1024,16 +1093,53 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
             double rbw = sampleRate / numFftPoints * windowMult;
 
-            uint numPoints = (uint)((double)numFftPoints * (gSpans[spanIndex] / sampleRate));
+            uint numPointsOnStep = ((uint)((double)numFftPoints * (gSpans[spanIndex] / sampleRate)));
             bool exitLoop = false;
+            double r = 0;
+
             while (!exitLoop)
             {
-                if (numPoints < needpoints) //мало точек
+                if (needpoints < numPointsOnStep * steps) //мало точек, надо больше
                 {
-                    double r = needrbw / rbw;
+                    r = needrbw / rbw;
                     if (r >= 2)//надо увеличить rbw на один шаг
                     {
-                        if (numFftPoints == fftSize[fftSize.Length - 1])//не можем увеличить fftsize
+                        if (numFftPointsIndex > 0)// можем уменьшить fftsize
+                        {
+                            numFftPointsIndex--;
+                            numFftPoints = fftSize[numFftPointsIndex];
+                            steps *= 2;
+                            //spanIndex--;
+                        }
+                        else//неможем уменьшить fftsize, уменьшим спан и увеличим количестко шагов
+                        {
+                            //значит уменьшим спан
+                            spanIndex++;
+                            steps /= 2;//соответственно нужно увеличить количество шагов
+                        }
+                    }
+                    else if (r <= 0.5)//надо уменьшить rbw на один шаг
+                    {
+                        if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
+                        {
+                            //значит уменьшим спан
+                            spanIndex++;
+                            steps *= 2;//соответственно нужно увеличить количество шагов
+                        }
+                        else
+                        {
+                            numFftPointsIndex++;
+                            numFftPoints = fftSize[numFftPointsIndex];
+                            steps /= 2;
+                        }
+                    }
+                }
+                else if (needpoints * 2 > numPointsOnStep * steps)//Много точек, надо меньше
+                {
+                    r = needrbw / rbw;
+                    if (r >= 2)//надо увеличить rbw на один шаг
+                    {
+                        if (numFftPointsIndex == fftSize.Length - 1)//не можем увеличить fftsize
                         {
                             //значит уменьшим спан
                             spanIndex--;
@@ -1047,13 +1153,114 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     }
                     else if (r <= 0.5)//надо уменьшить rbw на один шаг
                     {
-
+                        if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
+                        {
+                            //значит уменьшим спан
+                            spanIndex++;
+                            steps /= 2;//соответственно нужно увеличить количество шагов
+                        }
+                        else
+                        {
+                            numFftPointsIndex--;
+                            numFftPoints = fftSize[numFftPointsIndex];
+                        }
                     }
                 }
-                (double rbw2, uint numPoints2) = Calc(spanIndex, numFftPointsIndex);
-                exitLoop = ValSweepSett(needrbw, rbw2, (int)needpoints, (int)(numPoints2* steps));
-            }
+                else //точек норм, не устраивает RBW
+                {
+                    r = needrbw / rbw;
 
+                }
+                (double rbw2, uint numPoints2) = Calc(spanIndex, numFftPointsIndex);
+                exitLoop = ValSweepSett(needrbw, rbw2, (int)needpoints, (int)(numPoints2 * steps));
+                if (!exitLoop)
+                {
+                    rbw = rbw2;
+                    numPointsOnStep = numPoints2;
+                }
+            }
+            #region
+            //while (!exitLoop)
+            //{
+            //    if (needpoints < numPoints) //мало точек, надо больше
+            //    {
+            //        r = needrbw / rbw;
+            //        if (r >= 2)//надо увеличить rbw на один шаг
+            //        {
+            //            if (numFftPointsIndex == fftSize.Length - 1)//не можем увеличить fftsize
+            //            {
+            //                //значит уменьшим спан
+            //                spanIndex--;
+            //                steps *= 2;//соответственно нужно увеличить количество шагов
+            //            }
+            //            else
+            //            {
+            //                numFftPointsIndex++;
+            //                numFftPoints = fftSize[numFftPointsIndex];
+            //            }
+            //        }
+            //        else if (r <= 0.5)//надо уменьшить rbw на один шаг
+            //        {
+            //            if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
+            //            {
+            //                //значит уменьшим спан
+            //                spanIndex++;
+            //                steps /= 2;//соответственно нужно увеличить количество шагов
+            //            }
+            //            else
+            //            {
+            //                numFftPointsIndex--;
+            //                numFftPoints = fftSize[numFftPointsIndex];
+            //            }
+            //        }
+            //    }
+            //    else if (needpoints * 2 > numPoints)//Много точек, надо меньше
+            //    {
+
+            //    }
+            //    else //точек норм, не устраивает RBW
+            //    {
+            //        r = needrbw / rbw;
+            //        if (r >= 2)//надо увеличить rbw, на один шаг
+            //        {
+            //            if (numFftPointsIndex == fftSize.Length - 1)//не можем увеличить fftsize
+            //            {
+            //                //значит уменьшим спан
+            //                spanIndex--;
+            //                steps *= 2;//соответственно нужно увеличить количество шагов
+            //            }
+            //            else
+            //            {
+            //                numFftPointsIndex++;
+            //                numFftPoints = fftSize[numFftPointsIndex];
+            //            }
+            //        }
+            //        else if (r <= 0.5)//надо уменьшить rbw на один шаг
+            //        {
+            //            if (numFftPointsIndex < fftSize.Length - 1)//не можем увеличить fftsize
+            //            {
+            //                //значит уменьшим спан
+            //                spanIndex++;
+            //                steps /= 2;//соответственно нужно увеличить количество шагов
+            //            }
+            //            else
+            //            {
+            //                numFftPointsIndex--;
+            //                numFftPoints = fftSize[numFftPointsIndex];
+            //            }
+            //        }
+            //        else //RBW норм, по идее все хорошо
+            //        { }
+            //    }
+            //    (double rbw2, uint numPoints2) = Calc(spanIndex, numFftPointsIndex);
+            //    exitLoop = ValSweepSett(needrbw, rbw2, (int)needpoints, (int)(numPoints2 * steps));
+            //    if (!exitLoop)
+            //    {
+            //        rbw = rbw2;
+            //        numPoints = numPoints2;
+            //    }
+            //}
+            #endregion
             return (sampleRate, spanIndex, steps, numFftPointsIndex);
         }
         private (double rbw, uint numPoints) Calc(int spanindex, int numFftPointsIndex)
@@ -1073,6 +1280,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             return (rbw, numPoints);
         }
 
+
+
         private bool ValSweepSett(double needrbw, double rbw, int needpoints, int points)
         {
             if (points / needpoints >= 1 && points / needpoints < 2)
@@ -1086,445 +1295,94 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
         }
 
 
-        private bool GetTraceData(ref float[] trace, ref uint points, ref bool overload, ref double freqstep)
+        /// <summary>
+        /// ищет необходимое RBW при необходимости изменяет спан и количевство шагов
+        /// </summary>
+        /// <param name="needRBW"></param>
+        /// <param name="fftSizeIndex"></param>
+        /// <param name="needSpanIndex"></param>
+        /// <param name="steps"></param>
+        /// <returns></returns>
+        private bool FindNeedRBW(double needRBW, ref int fftSizeIndex, ref int needSpanIndex, ref int steps)
         {
-            bool res = false;
-            AgSalLib.SegmentData dataHeader = new AgSalLib.SegmentData();
-            AgSalLib.SalError err;
-
-            bool exitLoop = false;
-            DateTime t0 = DateTime.Now;
-            int maxDataReadMillisecs = 10; // how long to read data before exiting
-
-            while ((!exitLoop) && (gMeasHandle != IntPtr.Zero))
+            double rbw = 0;
+            uint numPoints = 0;
+            for (int i = 0; i < fftSize.Length; i++)
             {
-                TimeSpan elaspsedTime = DateTime.Now.Subtract(t0);
-                if (elaspsedTime.Milliseconds > maxDataReadMillisecs)
+                (rbw, numPoints) = Calc(needSpanIndex, i);
+                if (rbw < needRBW)
                 {
-                    break;
+                    fftSizeIndex = i;
+                    return true;
+                }
+                if (i == fftSize.Length - 1 && needSpanIndex > 0)
+                {
+                    needSpanIndex--;
+                    steps *= 2;
+                    i--;
                 }
 
-                //////////////////////////////////////
-                // See if there is a new data block //   
-                //////////////////////////////////////
-                err = AgSalLib.salGetSegmentData(gMeasHandle, out dataHeader, trace, (uint)(LevelArrTemp.Length * 4));
-                if (err == AgSalLib.SalError.SAL_ERR_NONE)// нету ошибок
+            }
+            return false;
+        }
+        /// <summary>
+        /// ищет необходимое RBW при необходимости изменяет спан и количевство шагов
+        /// </summary>
+        /// <param name="needRBW"></param>
+        /// <param name="fftSizeIndex"></param>
+        /// <param name="needSpanIndex"></param>
+        /// <param name="steps"></param>
+        /// <returns></returns>
+        private bool FindNeedTracePoints(int tracePonts, ref int fftSizeIndex, ref int needSpanIndex, ref int steps)
+        {
+            double rbw = 0;
+            uint numPoints = 0;
+            double step = 0;
+            double startfreq = (double)FreqStart;
+            double stopfreq = (double)FreqStop;
+            int resFreqStopIndex = 0;
+            int pointsonthis = 0;
+            for (int i = 0; i < fftSize.Length; i++)
+            {
+                (rbw, numPoints) = Calc(needSpanIndex, i);
+                step = gSpans[needSpanIndex] / numPoints;
+
+                for (int rf = 0; rf < steps * numPoints; rf++)
                 {
-                    if (dataHeader.numPoints > 0)
+                    if (startfreq + rf * step > stopfreq)
                     {
-                        gMeasState = MeasState.Running;
-                        // Invalidate the spectrum display area; this will force a repaint
-                        // with the new data
-                        gDataHeader = dataHeader;
-                        freqstep = dataHeader.frequencyStep;
-                        points = dataHeader.numPoints;
-                        overload = (dataHeader.overload != 0);
-                        res = true;
-                        exitLoop = true;
+                        resFreqStopIndex = rf;
+                        break;
                     }
-
-                    //if (dataHeader.lastSegment != 0)//данные пришли остоновим цикл
-                    //{
-                    //    gMeasState = MeasState.Stopped;
-                    //    exitLoop = true;
-                    //    //res = true;
-                    //}
                 }
-                else if (err != AgSalLib.SalError.SAL_ERR_NO_DATA_AVAILABLE)//еще нет данных
+                if (resFreqStopIndex == 0)
                 {
+                    pointsonthis = steps * (int)numPoints;
                 }
-            }
-            return res;
-        }
-
-        private bool GetTraceData(ref float[] trace, ref uint points, ref bool overload, double centr, double span, uint fftPoints)
-        {
-            bool res = false;
-            AgSalLib.SegmentData dataHeader = new AgSalLib.SegmentData();
-            AgSalLib.SalError err;
-            uint numSweepsThisTime = 0;
-
-            bool exitLoop = false;
-            DateTime t0 = DateTime.Now;
-            int maxDataReadMillisecs = 10; // how long to read data before exiting
-
-            while ((!exitLoop) && (gMeasHandle != IntPtr.Zero))
-            {
-
-                TimeSpan elaspsedTime = DateTime.Now.Subtract(t0);
-                if (elaspsedTime.Milliseconds > maxDataReadMillisecs)
+                else
                 {
-                    break;
+                    pointsonthis = resFreqStopIndex;
                 }
 
-                //////////////////////////////////////
-                // See if there is a new data block //   
-                //////////////////////////////////////
-                err = AgSalLib.salGetSegmentData(gMeasHandle, out dataHeader, trace, (uint)(LevelArrTemp.Length * 4));
 
-                switch (err)
+                if (pointsonthis > tracePonts)
                 {
-                    case AgSalLib.SalError.SAL_ERR_NONE:
-                        ////////////////////////////////////////////////
-                        // there is new data, so do something with it //
-                        ////////////////////////////////////////////////
-
-                        if (dataHeader.errorNum != AgSalLib.SalError.SAL_ERR_NONE)
-                        {
-                            string message = "Segment data header returned an error: \n\n";
-                            message += "errorNumber: " + dataHeader.errorNum.ToString() + "\n";
-                            message += "errorInfo:   " + dataHeader.errorInfo;
-                            //MessageBox.Show(message, "RF Sensor Error");
-                            break;
-                        }
-
-                        if (dataHeader.sequenceNumber == 0)
-                        {
-                            //// sequence number == 0, so this is a new measurement
-                            //// force a rescale whenever measurement restarts
-                            //gSpectrumYMax = double.MinValue;
-                            //gSpectrumYMin = double.MaxValue;
-                            //gSweepCount.reset(); // reset our sweep counter/timer
-                        }
-
-                        if (dataHeader.segmentIndex == 0)
-                        {
-                            // segmentIndex == 0, so this is the beginning of a new sweep
-                            numSweepsThisTime++;
-                            // gSweepCount.plusplus();
-                        }
-
-                        if (dataHeader.numPoints > 0)
-                        {
-                            gMeasState = MeasState.Running;
-                            // Invalidate the spectrum display area; this will force a repaint
-                            // with the new data
-                            gDataHeader = dataHeader;
-                            points = dataHeader.numPoints;
-
-                            //// Disable plotting when checked
-                            //if (disablePlottingCB.Checked == false)
-                            //{
-                            //    SpectrumPlot.Invalidate();
-                            //}
-                            overload = (dataHeader.overload != 0);
-                            res = true;
-                        }
-
-                        if (dataHeader.lastSegment != 0)
-                        {
-                            gMeasState = MeasState.Stopped;
-                            exitLoop = true;
-
-                        }
-                        //if (dataHeader.IsMonitor() != gMonitorMode)
-                        //{
-                        //    gMonitorMode = dataHeader.IsMonitor();
-                        //    MonitorModeChanged();
-                        //}
-
-                        break;
-                    case AgSalLib.SalError.SAL_ERR_NO_DATA_AVAILABLE:
-                        // OK, data just not ready
-                        break;
-                    default:
-                        // treat other errors as restart
-                        if (SensorError(err, "salIqGetData"))
-                        {
-
-                            if (gMeasHandle != IntPtr.Zero)
-                            {
-                                AgSalLib.salClose(gMeasHandle);
-                                gMeasHandle = IntPtr.Zero;
-                            }
-
-                            sensorStartSweep(centr, span, fftPoints);
-                        }
-                        break;
+                    fftSizeIndex = i;
+                    return true;
                 }
-
-            }
-
-
-            //lblNumSweeps.Text = gSweepCount.count.ToString() + " sweeps";
-
-            switch (gMeasState)
-            {
-                case MeasState.Idle:
-                    gMeasState = MeasState.Starting;
-                    sensorStartSweep(centr, span, fftPoints);
-                    break;
-                case MeasState.Starting:
-                    break;
-                case MeasState.Running:
-                    if (gSetupChange)
-                    {
-                        // we have a GUI change - send the stop command
-                        AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-                        gMeasState = MeasState.Stopping;
-                    }
-                    break;
-
-                case MeasState.Stopping:
-                    break;
-                case MeasState.Stopped:
-                    // we have stopped (for a GUI change); restart the measurement
-                    gMeasState = MeasState.Starting;
-                    sensorStartSweep(centr, span, fftPoints);
-                    break;
-            }
-
-            return res;
-        }
-        private bool SetSweepCommandAndStart(double centr, double span, uint fftPoints)
-        {
-            bool res = false;
-            //if (gMeasHandle != IntPtr.Zero)
-            //{
-            //    AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-            //    gMeasState = MeasState.Stopping;
-            //}
-            uint numSegments = 1;
-            gMeasHandle = IntPtr.Zero;
-            AgSalLib.SalError err;
-            AgSalLib.TunerParms tunerParms = new AgSalLib.TunerParms();
-            AgSalLib.SweepParms sweepParms = new AgSalLib.SweepParms();
-            AgSalLib.FrequencySegment[] fs = new AgSalLib.FrequencySegment[numSegments];
-
-            if (preAmp == 1)
-            {
-                attLevelSet = 0 - attMin;
-                attLevelSet += AttLevel;
-            }
-            else
-            {
-                attLevelSet = AttLevel;
-            }
-
-            double desiredSampleRate = span * gSensorCapabilities.sampleRateToSpanRatio;
-
-            // *** WARNING: A workaround for an Electrum BUG... 
-            // capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
-            // while tuner's max sample rate is still 28MSa/s.
-            //double sampleRate = gSensorCapabilities.maxSampleRate;
-            if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-            double sampleRate = gSensorCapabilities.maxSampleRate;
-
-            while (sampleRate / desiredSampleRate > 2)
-            {
-                sampleRate /= 2;
-            }
-
-            // Setup tuner
-            tunerParms.centerFrequency = centr;
-            tunerParms.sampleRate = sampleRate;
-            tunerParms.attenuation = attLevelSet;
-            tunerParms.mixerLevel = 0;
-            tunerParms.antenna = antennaType;
-            tunerParms.preamp = preAmp;
-
-            err = AgSalLib.salSetTuner(gSensorHandle, ref tunerParms);
-
-            if (SensorError(err, "salSetTuner"))
-            {
-                return false;
-            }
-
-            RBW = sampleRate / fftPoints * windowMult;
-
-            uint numPoints = (uint)((double)fftPoints * (span / sampleRate));
-            if ((numPoints % 2) == 0) numPoints++; // want odd number so CF is in middle of display
-
-            uint firstPoint = (fftPoints - (numPoints - 1)) / 2;
-
-            for (int i = 0; i < numSegments; i++)
-            {
-                fs[i].attenuation = attLevelSet;
-                fs[i].antenna = antennaType;
-                fs[i].centerFrequency = centr;
-                fs[i].sampleRate = sampleRate;
-                fs[i].numAverages = averageNumber;
-                fs[i].averageType = averageType;
-                fs[i].numFftPoints = fftPoints;
-                fs[i].firstPoint = firstPoint;
-                fs[i].numPoints = numPoints;
-                fs[i].preamp = preAmp;
-                //if (overlapCB.Checked == true)
-                //    fs[i].overlapType = AgSalLib.OverlapType.OverlapType_on;
-                //else
-                fs[i].overlapType = AgSalLib.OverlapType.OverlapType_off;
-                // Disable tuner setting with each segment
-                // Alloy inner loop optimization. Alloy-1762
-                //fs[i].noTunerChange = 1;
-            }
-
-            sweepParms.numSweeps = 0; // sweep forever
-            sweepParms.numSegments = numSegments;
-            sweepParms.sweepInterval = 0;
-            sweepParms.window = window;
-            sweepParms.userWorkspace = IntPtr.Zero;
-            sweepParms.monitorMode = AgSalLib.MonitorMode.MonitorMode_off;
-            sweepParms.monitorInterval = 0.0;
-
-
-            gDataHeader.numPoints = 0; // we are restarting, so mark data as invalid
-
-            // Setup pacing
-            AgSalLib.salFlowControl flowControl = new AgSalLib.salFlowControl();
-            flowControl.maxBacklogSeconds = 0.5F;
-            flowControl.maxBacklogMessages = 50;
-            flowControl.maxBytesPerSec = 0F;
-            flowControl.pacingPolicy = 0; // disabled
-
-
-            err = AgSalLib.salStartSweep2(out gMeasHandle, gSensorHandle, ref sweepParms, ref fs, ref flowControl, null);
-
-            if (SensorError(err, "salStartSweep"))
-            {
-                if (err == AgSalLib.SalError.SAL_ERR_MEAS_IN_PROGRESS)
+                if (i == fftSize.Length - 1 && needSpanIndex > 0)
                 {
-                    AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-                    gMeasState = MeasState.Stopping;
+                    needSpanIndex--;
+                    steps *= 2;
+                    i--;
                 }
-                return false;
+
             }
-
-            gSetupChange = false;
-
-            res = true;
-            return res;
-        }
-        private bool SetStopSweepCommand()
-        {
-            bool res = false;
-            AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
-            gMeasState = MeasState.Stopping;
-            res = true;
-            return res;
+            return false;
         }
 
-        private bool sensorStartSweep(double centr, double span, uint fftPoints) // returns true if no errors
-        {
-            uint numSegments = 1;
-
-            AgSalLib.SalError err;
-            AgSalLib.TunerParms tunerParms = new AgSalLib.TunerParms();
-            AgSalLib.SweepParms sweepParms = new AgSalLib.SweepParms();
-            AgSalLib.FrequencySegment[] fs = new AgSalLib.FrequencySegment[numSegments];
-
-            if (preAmp == 1)
-            {
-                attLevelSet = 0 - attMin;
-                attLevelSet += AttLevel;
-            }
-            else
-            {
-                attLevelSet = AttLevel;
-            }
-
-            //double centerFrequency = (double)guiFrequencyMHz.Value * 1e6;
-            //if (centerFrequency < gSensorCapabilities.minFrequency) centerFrequency = gSensorCapabilities.minFrequency;
-            //else if (centerFrequency > gSensorCapabilities.maxFrequency) centerFrequency = gSensorCapabilities.maxFrequency;
-
-            //double span = gSpans[guiSpan.SelectedIndex];
-            //if (span > gSensorCapabilities.maxSpan) span = gSensorCapabilities.maxSpan;
-
-            double desiredSampleRate = span * gSensorCapabilities.sampleRateToSpanRatio;
-
-            // *** WARNING: A workaround for an Electrum BUG... 
-            // capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
-            // while tuner's max sample rate is still 28MSa/s.
-            //double sampleRate = gSensorCapabilities.maxSampleRate;
-            if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-            double sampleRate = gSensorCapabilities.maxSampleRate;
-
-            while (sampleRate / desiredSampleRate > 2)
-            {
-                sampleRate /= 2;
-            }
-
-            // Setup tuner
-            tunerParms.centerFrequency = centr;
-            tunerParms.sampleRate = sampleRate;
-            tunerParms.attenuation = attLevelSet;
-            tunerParms.mixerLevel = 0;
-            tunerParms.antenna = antennaType;
-            tunerParms.preamp = preAmp;
-
-            err = AgSalLib.salSetTuner(gSensorHandle, ref tunerParms);
-
-            if (SensorError(err, "salSetTuner"))
-            {
-                return false;
-            }
-
-            //uint numFftPoints = (uint)(int)guiFftSize.SelectedItem;           
-
-            RBW = sampleRate / fftPoints * windowMult;
-
-            uint numPoints = (uint)((double)fftPoints * (span / sampleRate));
-            if ((numPoints % 2) == 0) numPoints++; // want odd number so CF is in middle of display
-
-            uint firstPoint = (fftPoints - (numPoints - 1)) / 2;
-
-
-
-
-            for (int i = 0; i < numSegments; i++)
-            {
-                fs[i].attenuation = attLevelSet;
-                fs[i].antenna = antennaType;
-                fs[i].centerFrequency = centr;
-                fs[i].sampleRate = sampleRate;
-                fs[i].numAverages = averageNumber;
-                fs[i].averageType = averageType;
-                fs[i].numFftPoints = fftPoints;
-                fs[i].firstPoint = firstPoint;
-                fs[i].numPoints = numPoints;
-                fs[i].preamp = preAmp;
-                //if (overlapCB.Checked == true)
-                //    fs[i].overlapType = AgSalLib.OverlapType.OverlapType_on;
-                //else
-                fs[i].overlapType = AgSalLib.OverlapType.OverlapType_off;
-
-
-                // Disable tuner setting with each segment
-                // Alloy inner loop optimization. Alloy-1762
-                //fs[i].noTunerChange = 1;
-            }
-
-            sweepParms.numSweeps = 0; // sweep forever
-            sweepParms.numSegments = numSegments;
-            sweepParms.sweepInterval = 0;
-            sweepParms.window = window;
-            sweepParms.userWorkspace = IntPtr.Zero;
-            sweepParms.monitorMode = AgSalLib.MonitorMode.MonitorMode_off;
-            sweepParms.monitorInterval = 0.0;
-
-
-            gDataHeader.numPoints = 0; // we are restarting, so mark data as invalid
-
-            // Setup pacing
-            AgSalLib.salFlowControl flowControl = new AgSalLib.salFlowControl();
-            flowControl.maxBacklogSeconds = 0.5F;
-            flowControl.maxBacklogMessages = 50;
-            flowControl.maxBytesPerSec = 0F;
-            flowControl.pacingPolicy = 0; // disabled
-
-
-            err = AgSalLib.salStartSweep2(out gMeasHandle, gSensorHandle, ref sweepParms, ref fs, ref flowControl, null);
-
-            if (SensorError(err, "salStartSweep"))
-            {
-                return false;
-            }
-
-            gSetupChange = false;
-
-            return true;
-        }
-
-        private void SetTraceData(float[] trace, uint points)
+        #region Works
+        private void SetTraceData(float[] trace, int points)
         {
             if (trace != null && trace.Length > 0)
             {
@@ -1589,6 +1447,254 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 }
             }
         }
+
+
+        private TimeSpan sleep = new TimeSpan(10000);
+        private bool GetTraceData(ref float[] trace, ref int points, ref bool overload, ref double freqstart, ref double freqstep)
+        {
+            bool res = false;
+            AgSalLib.SegmentData dataHeader = new AgSalLib.SegmentData();
+            AgSalLib.SalError err;
+            uint numSweepsThisTime = 0;
+
+            bool exitLoop = false;
+            DateTime t0 = DateTime.Now;
+            int maxDataReadMillisecs = 10; // how long to read data before exiting
+
+            while ((!exitLoop) && (gMeasHandle != IntPtr.Zero))
+            {
+
+                TimeSpan elaspsedTime = DateTime.Now.Subtract(t0);
+                if (elaspsedTime.Milliseconds > maxDataReadMillisecs)
+                {
+                    break;
+                }
+
+                //////////////////////////////////////
+                // See if there is a new data block //   
+                //////////////////////////////////////
+                err = AgSalLib.salGetSegmentData(gMeasHandle, out dataHeader, trace, (uint)(trace.Length * 4));
+
+                switch (err)
+                {
+                    case AgSalLib.SalError.SAL_ERR_NONE:
+                        ////////////////////////////////////////////////
+                        // there is new data, so do something with it //
+                        ////////////////////////////////////////////////
+
+                        if (dataHeader.errorNum != AgSalLib.SalError.SAL_ERR_NONE)
+                        {
+                            //string message = "Segment data header returned an error: \n\n";
+                            //message += "errorNumber: " + dataHeader.errorNum.ToString() + "\n";
+                            //message += "errorInfo:   " + dataHeader.errorInfo;
+                            //MessageBox.Show(message, "RF Sensor Error");
+                            break;
+                        }
+
+                        //if (dataHeader.sequenceNumber == 0)
+                        //{
+                        //    // sequence number == 0, so this is a new measurement
+                        //    // force a rescale whenever measurement restarts
+                        //    gSpectrumYMax = double.MinValue;
+                        //    gSpectrumYMin = double.MaxValue;
+                        //    gSweepCount.reset(); // reset our sweep counter/timer
+                        //}
+
+                        if (dataHeader.segmentIndex == 0)
+                        {
+                            // segmentIndex == 0, so this is the beginning of a new sweep
+                            numSweepsThisTime++;
+                            //gSweepCount.plusplus();
+                        }
+
+                        if (dataHeader.numPoints > 0)
+                        {
+                            gMeasState = MeasState.Running;
+                            // Invalidate the spectrum display area; this will force a repaint
+                            // with the new data
+                            gDataHeader = dataHeader;
+                            freqstart = dataHeader.startFrequency;
+                            freqstep = dataHeader.frequencyStep;
+                            points = (int)dataHeader.numPoints;
+                            overload = (dataHeader.overload != 0);
+                            res = true;
+                        }
+
+                        if (dataHeader.lastSegment != 0)
+                        {
+                            gMeasState = MeasState.Stopped;
+                            exitLoop = true;
+                            //System.Diagnostics.Debug.WriteLine("Stopped");
+                        }
+
+
+                        break;
+                    case AgSalLib.SalError.SAL_ERR_NO_DATA_AVAILABLE:
+                        System.Threading.Thread.Sleep(sleep);
+                        // OK, data just not ready
+                        //System.Diagnostics.Debug.WriteLine("SAL_ERR_NO_DATA_AVAILABLE");
+                        break;
+                    default:
+                        // treat other errors as restart
+                        if (SensorError(err, "salIqGetData"))
+                        {
+
+                            if (gMeasHandle != IntPtr.Zero)
+                            {
+                                AgSalLib.salClose(gMeasHandle);
+                                gMeasHandle = IntPtr.Zero;
+                            }
+
+                            StartSweep();
+                        }
+                        //System.Diagnostics.Debug.WriteLine("default");
+                        break;
+                }
+
+            }
+
+
+
+            switch (gMeasState)
+            {
+                case MeasState.Idle:
+                    gMeasState = MeasState.Starting;
+                    StartSweep();
+                    break;
+                case MeasState.Starting:
+                    break;
+                case MeasState.Running:
+                    if (gSetupChange)
+                    {
+                        // we have a GUI change - send the stop command
+                        AgSalLib.salSendSweepCommand(gMeasHandle, AgSalLib.SweepCommand.SweepCommand_stop);
+                        //System.Diagnostics.Debug.WriteLine("Stop");
+                        gMeasState = MeasState.Stopping;
+                    }
+                    break;
+
+                case MeasState.Stopping:
+                    break;
+                case MeasState.Stopped:
+                    // we have stopped (for a GUI change); restart the measurement
+                    gMeasState = MeasState.Starting;
+                    StartSweep();
+                    break;
+            }
+
+            return res;
+        }
+        double fCentr = 0, fSpan = 0;
+        uint FftPoints = 0;
+        private bool StartSweep() // returns true if no errors
+        {
+            //System.Diagnostics.Debug.WriteLine("SetNew");
+            uint numSegments = 1;
+
+            AgSalLib.SalError err;
+            AgSalLib.TunerParms tunerParms = new AgSalLib.TunerParms();
+            AgSalLib.SweepParms sweepParms = new AgSalLib.SweepParms();
+            AgSalLib.FrequencySegment[] fs = new AgSalLib.FrequencySegment[numSegments];
+
+
+            if (fCentr < gSensorCapabilities.minFrequency) fCentr = gSensorCapabilities.minFrequency;
+            else if (fCentr > gSensorCapabilities.maxFrequency) fCentr = gSensorCapabilities.maxFrequency;
+
+            if (fSpan > gSensorCapabilities.maxSpan) fSpan = gSensorCapabilities.maxSpan;
+
+            double desiredSampleRate = fSpan * gSensorCapabilities.sampleRateToSpanRatio;
+
+            // *** WARNING: A workaround for an Electrum BUG... 
+            // capabilities.maxSampleRate is wrongly set to 200kSa/s (i.e. DDC max sample rate),
+            // while tuner's max sample rate is still 28MSa/s.
+            //double sampleRate = gSensorCapabilities.maxSampleRate;
+            if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
+            double sampleRate = gSensorCapabilities.maxSampleRate;
+
+            while (sampleRate / desiredSampleRate > 2)
+            {
+                sampleRate /= 2;
+            }
+
+            // Setup tuner
+            tunerParms.centerFrequency = fCentr;
+            tunerParms.sampleRate = sampleRate;
+            tunerParms.attenuation = 0;
+            tunerParms.mixerLevel = 0;
+            tunerParms.antenna = antennaType;
+            tunerParms.preamp = preAmp;
+
+            err = AgSalLib.salSetTuner(gSensorHandle, ref tunerParms);
+
+            if (SensorError(err, "salSetTuner"))
+            {
+                return false;
+            }
+
+            RBW = sampleRate / FftPoints * windowMult;
+
+            uint numPoints = (uint)((double)FftPoints * (fSpan / sampleRate));
+            if ((numPoints % 2) == 0) numPoints++; // want odd number so CF is in middle of display
+
+            uint firstPoint = (FftPoints - (numPoints - 1)) / 2;
+
+            for (int i = 0; i < numSegments; i++)
+            {
+                fs[i].attenuation = 0;
+                fs[i].antenna = antennaType;
+                fs[i].centerFrequency = fCentr;
+                fs[i].sampleRate = sampleRate;
+                fs[i].numAverages = 0;// (uint)guiNumAvg.Value;
+                fs[i].averageType = AgSalLib.AverageType.Average_off;
+                fs[i].numFftPoints = FftPoints;
+                fs[i].firstPoint = firstPoint;
+                fs[i].numPoints = numPoints;
+                fs[i].preamp = preAmp;
+                //if (overlapCB.Checked == true)
+                //    fs[i].overlapType = AgSalLib.OverlapType.OverlapType_on;
+                //else
+                fs[i].overlapType = AgSalLib.OverlapType.OverlapType_off;
+                // Disable tuner setting with each segment
+                // Alloy inner loop optimization. Alloy-1762
+                //fs[i].noTunerChange = 1;
+            }
+
+            sweepParms.numSweeps = 0; // sweep forever
+            sweepParms.numSegments = numSegments;
+            sweepParms.sweepInterval = 0;
+            sweepParms.window = window;
+            sweepParms.userWorkspace = IntPtr.Zero;
+
+
+            sweepParms.monitorMode = AgSalLib.MonitorMode.MonitorMode_off;
+            sweepParms.monitorInterval = 0.0;
+
+            gDataHeader.numPoints = 0; // we are restarting, so mark data as invalid
+
+            // Setup pacing
+            AgSalLib.salFlowControl flowControl = new AgSalLib.salFlowControl();
+            flowControl.pacingPolicy = 1;
+            flowControl.maxBacklogSeconds = 0.5F;
+            flowControl.maxBacklogMessages = 50;
+            flowControl.maxBytesPerSec = 0F;
+            flowControl.pacingPolicy = 0;
+
+            err = AgSalLib.salStartSweep2(out gMeasHandle, gSensorHandle, ref sweepParms, ref fs, ref flowControl, null);
+
+            if (SensorError(err, "salStartSweep"))
+            {
+                return false;
+            }
+
+            gSetupChange = false;
+
+            return true;
+        }
+
+        #endregion Works
+
+
+
 
         private void FindTracePoolName(int size, ref bool state, ref string name)
         {
@@ -1698,6 +1804,12 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     MaxSize = 20,
                     Size = 500005
                 },
+                 new CFG.AdapterResultPool()
+                {
+                    MinSize = 5,
+                    MaxSize = 10,
+                    Size = 1200000
+                },
             };
         }
         private (MesureTraceDeviceProperties, MesureIQStreamDeviceProperties) GetProperties(CFG.AdapterMainConfig config)
@@ -1740,46 +1852,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             //    sdp.PreAmpMax_dB = 0;
             //}
             //
-            int numFftPointsMin = gSensorCapabilities.fftMinBlocksize;
-            int numFftPointsMax = gSensorCapabilities.fftMaxBlocksize;
-            double mult = 1.0;
-            switch (window)
-            {
-                case AgSalLib.WindowType.Window_hann: mult = 1.5; break;
-                case AgSalLib.WindowType.Window_gaussTop: mult = 2.215349684; break;
-                case AgSalLib.WindowType.Window_flatTop: mult = 3.822108760; break;
-                case AgSalLib.WindowType.Window_uniform: mult = 1.0; break;
-            }
-            double spanMax = gSpans[0];
-            if (spanMax > gSensorCapabilities.maxSpan) spanMax = gSensorCapabilities.maxSpan;
-            double desiredSampleRateMax = spanMax * gSensorCapabilities.sampleRateToSpanRatio;
 
-            if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-            double sampleRateMax = gSensorCapabilities.maxSampleRate;
-
-            while (sampleRateMax / desiredSampleRateMax > 2)
-            {
-                sampleRateMax /= 2;
-            }
-            double spanMin = gSpans[gSpans.Length - 1];
-            double desiredSampleRateMin = spanMin * gSensorCapabilities.sampleRateToSpanRatio;
-
-            if (gSensorCapabilities.maxSampleRate == 200.0e3) gSensorCapabilities.maxSampleRate = 28.0e6;
-            double sampleRateMin = gSensorCapabilities.maxSampleRate;
-
-            while (sampleRateMin / desiredSampleRateMin > 2)
-            {
-                sampleRateMin /= 2;
-            }
-            double rbwmin = sampleRateMax / numFftPointsMin * mult;
-            double rbwmax = sampleRateMin / numFftPointsMax * mult;
-            //
+            (double rbwmin, uint numPoints1) = Calc(0, fftSize.Length - 1);
+            (double rbwmax, uint numPoints2) = Calc(gSpans.Length -1, 0);
             MesureTraceDeviceProperties mtdp = new MesureTraceDeviceProperties()
             {
                 RBWMax_Hz = rbwmax,
                 RBWMin_Hz = rbwmin,
-                SweepTimeMin_s = 0,
-                SweepTimeMax_s = 0,
+                SweepTimeMin_s = 0.003125,
+                SweepTimeMax_s = 0.3125,
                 StandardDeviceProperties = sdp,
                 //DeviceId ничего не писать, ID этого экземпляра адаптера
             };
