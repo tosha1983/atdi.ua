@@ -323,7 +323,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 if (this.Name == "DS_KS" && KSAdapter != null && Freq.Length >0)
                 {
                     gl.DrawText((int)w - 210, (int)h - 15, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, Freq.Length.ToString() + "  " +
-                    Math.Round(KSAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2));
+                    Math.Round(KSAdapter.RBW, 2) + "  " + Math.Round(Freq[10] - Freq[9], 2) + "   Span " + FreqSpan/1000000);
                     //gl.DrawText((int)w - 210, (int)h - 50, 1.0f, 0.0f, 0.0f, "Segoe UI", 14.0f, MeasChannelPower(Freq, Level, FreqCentr, 10000000, (double)ANAdapter.RBW).ToString());
                     gl.Flush();
                 }

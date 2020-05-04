@@ -17,5 +17,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
         /// Uniform  = 8     
         /// </summary>
         public uint WindowType = 0;
+        public bool UseGNSS = false;
     }
 }
