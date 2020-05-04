@@ -72,7 +72,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private int _startType;
         private EmittingViewModel[] _emittings;
         private FRM.Form _form;
-        private string _endpointUrls;
+        private readonly string _endpointUrls = "";
         private List<long> _sensorIds;
         private DateTime? _timeMeas;
 
@@ -87,7 +87,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._shortSensors = new ShortSensorDataAdatper();
             this.StartCommand = new WpfCommand(this.OnStartCommand);
 
-            string _endpointUrls = PluginHelper.GetRestApiEndPoint();
+            _endpointUrls = PluginHelper.GetRestApiEndPoint();
 
             if (string.IsNullOrEmpty(_endpointUrls))
                 return;
@@ -698,8 +698,8 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             else if (this._startType == 2)
             {
-                //_dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
-                //_dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
+                _dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
+                _dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
                 //if (_dateStart > _dateStop || _dateStart.AddMonths(1) < _dateStop)
                 //{
                 //    MessageBox.Show("Incorrect value 'Date From' or 'Date To'!");

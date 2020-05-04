@@ -972,7 +972,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                     foreach (var emitting in measResult.Emittings)
                     {
-                        //var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6, 8);
+                        //var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6);
 
                         //for (int i = 0; i < result.MaskLevels_dB.Length - 1; i++)
                         //{
