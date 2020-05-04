@@ -9,7 +9,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 {
     public class AveragedTrace
     {
-        public uint TracePoints;
+        public int TracePoints;
 
         public bool CalcAfterAdd;
 
@@ -65,7 +65,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             NumberOfSweeps = 0;
         }
 
-        public void AddTraceToAverade(double newFreqStart, double newFreqStep, float[] newTraceLevels, uint newTraceLevelsPoints, MEN.LevelUnit inputLevelUnit, MEN.LevelUnit outputLevelUnit)
+        public void AddTraceToAverade(double newFreqStart, double newFreqStep, float[] newTraceLevels, int newTraceLevelsPoints, MEN.LevelUnit inputLevelUnit, MEN.LevelUnit outputLevelUnit)
         {
             //сбросит трейс если че
             if (NumberOfSweeps == 0 || //Если данных еще нет
@@ -84,28 +84,28 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 
                 //AveragedLevels = new float[TracePoints];
 
-                for (uint i = 0; i < TracePoints; i++)
+                for (int i = 0; i < TracePoints; i++)
                 {
                     tracesToAverageSumm[i] = newTraceLevels[i];
                 }
                 NumberOfSweeps = 0;
                 if (inputLevelUnit == MEN.LevelUnit.dBm)
                 {
-                    for (uint i = 0; i < TracePoints; i++)
+                    for (int i = 0; i < TracePoints; i++)
                     {
                         tracesToAverageSumm[i] = (double)(Math.Pow(10, newTraceLevels[i] / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.dBµV)
                 {
-                    for (uint i = 0; i < TracePoints; i++)
+                    for (int i = 0; i < TracePoints; i++)
                     {
                         tracesToAverageSumm[i] = (double)(Math.Pow(10, (newTraceLevels[i] - 107) / 10) / 1000.0);
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.Watt)
                 {
-                    for (uint i = 0; i < TracePoints; i++)
+                    for (int i = 0; i < TracePoints; i++)
                     {
                         tracesToAverageSumm[i] = newTraceLevels[i];
                     }
@@ -117,21 +117,21 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 int thisNumberOfSweeps = NumberOfSweeps + 1;
                 if (inputLevelUnit == MEN.LevelUnit.dBm)
                 {
-                    for (uint i = 0; i < TracePoints; i++)
+                    for (int i = 0; i < TracePoints; i++)
                     {
                         tracesToAverageSumm[i] = (tracesToAverageSumm[i] * NumberOfSweeps + Math.Pow(10, newTraceLevels[i] / 10) / 1000.0) / thisNumberOfSweeps;
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.dBµV)
                 {
-                    for (uint i = 0; i < TracePoints; i++)
+                    for (int i = 0; i < TracePoints; i++)
                     {
                         tracesToAverageSumm[i] = (tracesToAverageSumm[i] * NumberOfSweeps + Math.Pow(10, (newTraceLevels[i] - 107) / 10) / 1000.0) / thisNumberOfSweeps;
                     }
                 }
                 else if (inputLevelUnit == MEN.LevelUnit.Watt)
                 {
-                    for (uint i = 0; i < TracePoints; i++)
+                    for (int i = 0; i < TracePoints; i++)
                     {
                         tracesToAverageSumm[i] = (tracesToAverageSumm[i] * NumberOfSweeps + newTraceLevels[i]) / thisNumberOfSweeps;
                     }
@@ -164,14 +164,14 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             {
                 if (OutputlevelUnit == MEN.LevelUnit.dBm)
                 {
-                    for (uint x = 0; x < TracePoints; x++)
+                    for (int x = 0; x < TracePoints; x++)
                     {
                         AveragedLevels[x] = (float)(10.0 * Math.Log10(1000.0 * tracesToAverageSumm[x]));
                     }
                 }
                 else if (OutputlevelUnit == MEN.LevelUnit.dBµV)
                 {
-                    for (uint x = 0; x < TracePoints; x++)
+                    for (int x = 0; x < TracePoints; x++)
                     {
 
                         AveragedLevels[x] = (float)(107.0 + 10.0 * Math.Log10(1000.0 * tracesToAverageSumm[x]));

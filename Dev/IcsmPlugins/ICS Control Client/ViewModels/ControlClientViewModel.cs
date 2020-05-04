@@ -972,12 +972,12 @@ namespace XICSM.ICSControlClient.ViewModels
 
                     foreach (var emitting in measResult.Emittings)
                     {
-                        var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6, 8);
+                        //var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6, 8);
 
-                        for (int i = 0; i < result.MaskLevels_dB.Length - 1; i++)
-                        {
-                            output.Add($"{result.MaskLevels_dB[i]};{result.MaskFrequencies_kHz[i]}");
-                        }
+                        //for (int i = 0; i < result.MaskLevels_dB.Length - 1; i++)
+                        //{
+                        //    output.Add($"{result.MaskLevels_dB[i]};{result.MaskFrequencies_kHz[i]}");
+                        //}
                     }
                     System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
                     MessageBox.Show("Your file was generated and its ready for use.");

@@ -95,27 +95,30 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             var ha_m = args.Ha_m + args.ReliefProfile[args.ReliefStartIndex];
             var hb_m = args.Hb_m + args.ReliefProfile[profileEndIndex];
 
+            var tanTiltA = Math.Tan(tilta_deg * degToRad);
+            var tanTiltB = Math.Tan(tiltb_deg * degToRad);
+
             for (int i = args.ReliefStartIndex + 1; i <= profileEndIndex; i++)
             {
 
-                clutterHeightMin = args.ReliefProfile[i] + args.BuildingProfile[i];
-                clutterHeightMax = args.ReliefProfile[i] + args.BuildingProfile[i] + args.ClutterProfile[i];
-                
-                beamAHeight = pixelLength_km * (i - args.ReliefStartIndex) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (i - args.ReliefStartIndex) * invRe) + ha_m;
-                beamBHeight = pixelLength_km * (profileEndIndex - i) * (1000 * Math.Tan(tilta_deg * degToRad) + 500 * pixelLength_km * (profileEndIndex - i) * invRe) + hb_m;
+                clutterHeightMin = args.ReliefProfile[i];
+                clutterHeightMax = args.HeightProfile[i];//args.ReliefProfile[i] + args.ClutterProfile[i];//args.HeightProfile[i];
+
+                beamAHeight = 1000 * pixelLength_km * (i - args.ReliefStartIndex) * (tanTiltA + .5 * pixelLength_km * (i - args.ReliefStartIndex) * invRe) + ha_m;
+                beamBHeight = 1000 * pixelLength_km * (profileEndIndex - i) * (tanTiltB + .5 * pixelLength_km * (profileEndIndex - i) * invRe) + hb_m;
 
                 // определение луча, который пересекает препятствие
                 if (beamAHeight <= beamBHeight)
                 {
                     beamHeight = beamAHeight;
-                    beamPrevHeight = pixelLength_km * (i - args.ReliefStartIndex - 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + ha_m;
+                    beamPrevHeight = 1000 * pixelLength_km * (i - args.ReliefStartIndex - 1) * (tanTiltA + 0.5 * pixelLength_km * (i - args.ReliefStartIndex - 1) * invRe) + ha_m;
                     alpha = tilta_deg;
                     distanceTo_km = pixelLength_km * (i - args.ReliefStartIndex);
                 }
                 else
                 {
                     beamHeight = beamBHeight;
-                    beamPrevHeight = pixelLength_km * (profileEndIndex - i + 1) * (1000 * Math.Tan(tilta_deg) + 0.5 * invRe) + hb_m;
+                    beamPrevHeight = 1000 * pixelLength_km * (profileEndIndex - i + 1) * (tanTiltB + 0.5 * pixelLength_km * (profileEndIndex - i + 1) * invRe) + hb_m;
                     alpha = tiltb_deg;
                     distanceTo_km = pixelLength_km * (profileEndIndex - i);
                 }
@@ -146,7 +149,8 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     obstacleIntersection = true;
                     distanceInside_km += pixelLength_km;
                 }
-                else if ((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true))
+                else if (((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true)) ||
+                    (args.ClutterProfile[i] != args.ClutterProfile[i+1] && i < profileEndIndex && obstacleIntersection == true))
                 {
                     obstacleIntersection = false;
                 }
@@ -157,7 +161,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     
                     EstimationClutterObstaclesResult obs = new EstimationClutterObstaclesResult()
                     {
-                        clutterCode = 7, // код клатера определяется из профиля клатеров
+                        clutterCode = args.ClutterProfile[i], // код клатера определяется из профиля клатеров
                         d_km = distanceInside_km, // дистанция прохождения в данном клатере
                         elevation_deg = theta_deg, // УМ вхождения в клатер
                         endPoint = isEndPoint // признак того что это препятсвие в котором (внутри) находиться точка а иди б
