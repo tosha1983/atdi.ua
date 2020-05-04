@@ -469,7 +469,7 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
                 int counter = 0;
-                var b = emittingsIds.GroupBy(_ => counter++ / 500).Select(v => v.ToArray());
+                var b = emittingsIds.Keys.GroupBy(_ => counter++ / 500).Select(v => v.ToArray());
 
                 foreach (var ids in b.Select(v => String.Join(",", v)))
                 {
