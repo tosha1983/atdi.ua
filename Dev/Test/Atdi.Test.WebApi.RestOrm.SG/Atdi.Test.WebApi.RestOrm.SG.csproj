@@ -54,6 +54,10 @@
       <Project>{48ace960-6ba0-4a99-b060-4dbb8a182206}</Project>
       <Name>Atdi.Api.EntityOrm.WebClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Atdi.Common\Atdi.Common.csproj">
+      <Project>{d3cffba9-c232-4c8d-bacd-5a30ded686d2}</Project>
+      <Name>Atdi.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Contracts\Api\Atdi.Contracts.Api.EntityOrm.WebClient\Atdi.Contracts.Api.EntityOrm.WebClient.csproj">
       <Project>{a252d199-1162-484d-b50a-8c44a4edd670}</Project>
       <Name>Atdi.Contracts.Api.EntityOrm.WebClient</Name>
@@ -65,6 +69,14 @@
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server.Entities\Atdi.DataModels.Sdrns.Server.Entities.csproj">
       <Project>{4178c008-8b0f-4ea8-a1d9-1b86bf8dc428}</Project>
       <Name>Atdi.DataModels.Sdrns.Server.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrns.Server\Atdi.DataModels.Sdrns.Server.csproj">
+      <Project>{e1234fea-9bb0-402a-aad1-9ee393c25d1f}</Project>
+      <Name>Atdi.DataModels.Sdrns.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
