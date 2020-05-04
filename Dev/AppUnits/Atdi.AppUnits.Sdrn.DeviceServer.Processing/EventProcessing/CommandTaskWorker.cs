@@ -166,41 +166,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                     if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                     {
                         var eventCommand = new CommandHandler<SOTask, SpectrumOccupationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                        var listDeferredTasksTemp = new List<TaskParameters>();
-                        var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSOTasks, action, ref listDeferredTasksTemp, ref listRunTask, loadData.Length);
-                        if (listDeferredTasksTemp.Count > 0)
-                        {
-                            if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
-                            {
-                                context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
-                            }
-                        }
+                        var isSuccess = eventCommand.StartCommand(tskParam,  ref context.Process.contextSOTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
                     }
                     else if (tskParam.MeasurementType == MeasType.Signaling)
                     {
                         var eventCommand = new CommandHandler<SignalizationTask, SignalizationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                        var listDeferredTasksTemp = new List<TaskParameters>();
-                        var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSignalizationTasks, action, ref listDeferredTasksTemp, ref listRunTask, loadData.Length);
-                        if (listDeferredTasksTemp.Count > 0)
-                        {
-                            if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
-                            {
-                                context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
-                            }
-                        }
+                        var isSuccess = eventCommand.StartCommand(tskParam,ref context.Process.contextSignalizationTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
                     }
                     else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
                     {
                         var eventCommand = new CommandHandler<BandWidthTask, BandWidthProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                        var listDeferredTasksTemp = new List<TaskParameters>();
-                        var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextBandWidthTasks, action, ref listDeferredTasksTemp, ref listRunTask, loadData.Length);
-                        if (listDeferredTasksTemp.Count > 0)
-                        {
-                            if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
-                            {
-                                context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
-                            }
-                        }
+                        var isSuccess = eventCommand.StartCommand(tskParam, ref context.Process.contextBandWidthTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, loadData.Length);
                     }
                     else
                     {
@@ -208,7 +184,6 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                     }
                 }
-
             }
         }
 
@@ -264,77 +239,100 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                         if (tskParam.MeasurementType == MeasType.SpectrumOccupation)
                                         {
                                             var eventCommand = new CommandHandler<SOTask, SpectrumOccupationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                                            var listDeferredTasksTemp = new List<TaskParameters>();
-                                            var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSOTasks, action, ref listDeferredTasksTemp, ref listRunTask, 1);
-                                            if (listDeferredTasksTemp.Count > 0)
-                                            {
-                                                if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
-                                                {
-                                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
-                                                }
-                                            }
-                                            if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
-                                            {
-                                                var findDefferedTask = context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
-                                                if (findDefferedTask != null)
-                                                {
-                                                    findDefferedTask.status = tskParam.status;
-                                                }
-                                            }
-
+                                            var isSuccess = eventCommand.StartCommand(tskParam, ref context.Process.contextSOTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, 1);
                                         }
                                         else if (tskParam.MeasurementType == MeasType.Signaling)
                                         {
                                             var eventCommand = new CommandHandler<SignalizationTask, SignalizationProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                                            var listDeferredTasksTemp = new List<TaskParameters>();
-                                            var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextSignalizationTasks, action, ref listDeferredTasksTemp, ref listRunTask, 1);
-                                            if (listDeferredTasksTemp.Count > 0)
-                                            {
-                                                if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
-                                                {
-                                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
-                                                }
-                                            }
-                                            if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
-                                            {
-                                                var findDefferedTask = context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
-                                                if (findDefferedTask != null)
-                                                {
-                                                    findDefferedTask.status = tskParam.status;
-                                                }
-                                            }
+                                            var isSuccess = eventCommand.StartCommand(tskParam, ref context.Process.contextSignalizationTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, 1);
                                         }
                                         else if (tskParam.MeasurementType == MeasType.BandwidthMeas)
                                         {
                                             var eventCommand = new CommandHandler<BandWidthTask, BandWidthProcess>(this._logger, this._repositoryTaskParametersByString, this._config);
-                                            var listDeferredTasksTemp = new List<TaskParameters>();
-                                            var isSuccess = eventCommand.StartCommand(tskParam, context.Process.contextBandWidthTasks, action, ref listDeferredTasksTemp, ref listRunTask, 1);
-                                            if (listDeferredTasksTemp.Count > 0)
-                                            {
-                                                if (context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId) == null)
-                                                {
-                                                    context.Process.listDeferredTasks.AddRange(listDeferredTasksTemp);
-                                                }
-                                            }
-                                            if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
-                                            {
-                                                var findDefferedTask = context.Process.listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
-                                                if (findDefferedTask != null)
-                                                {
-                                                    findDefferedTask.status = tskParam.status;
-                                                }
-                                            }
+                                            var isSuccess = eventCommand.StartCommand(tskParam, ref context.Process.contextBandWidthTasks, action, ref context.Process.listDeferredTasks, ref listRunTask, 1);
                                         }
                                         else
                                         {
                                             _logger.Error(Contexts.CommandTaskWorker, Categories.Processing, Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                                             throw new NotImplementedException(Exceptions.MeasurementTypeNotsupported.With(tskParam.MeasurementType));
                                         }
+                                        if ((context.Process.listDeferredTasks != null) && (context.Process.listDeferredTasks.Count > 0))
+                                        {
+                                            for (int m = 0; m < context.Process.listDeferredTasks.Count; m++)
+                                            {
+                                                var val = context.Process.listDeferredTasks.ElementAt(m);
+                                                if (val.SDRTaskId == tskParam.SDRTaskId)
+                                                {
+                                                    val.status = tskParam.status;
+                                                    break;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                        this._repositoryTaskParametersByString.RemoveOldObjects();
+                        if (((deviceCommands != null) && (deviceCommands.Length == 0)) || (deviceCommands == null))
+                        {
+                            this._repositoryTaskParametersByString.RemoveOldObjects();
+                            var contextTasks = context.Process.contextSOTasks;
+                            var contextSignalizationTasks = context.Process.contextSignalizationTasks;
+                            var contextBandWidthTasks = context.Process.contextBandWidthTasks;
+                            if ((contextTasks != null) && (contextTasks.Count > 0))
+                            {
+                                for (int m = 0; m < contextTasks.Count; m++)
+                                {
+                                    var val = contextTasks.ElementAt(m);
+                                    if (val.Task != null)
+                                    {
+                                        if (val.Task.taskParameters != null)
+                                        {
+                                            if ((val.Task.taskParameters.status == StatusTask.C.ToString()) || (val.Task.taskParameters.status == StatusTask.Z.ToString()))
+                                            {
+                                                listRunTask.Remove(val.Task.taskParameters.SDRTaskId);
+                                                context.Process.contextSOTasks = context.Process.contextSOTasks.Remove(val);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if ((contextSignalizationTasks != null) && (contextSignalizationTasks.Count > 0))
+                            {
+                                for (int m = 0; m < contextSignalizationTasks.Count; m++)
+                                {
+                                    var val = contextSignalizationTasks.ElementAt(m);
+                                    if (val.Task != null)
+                                    {
+                                        if (val.Task.taskParameters != null)
+                                        {
+                                            if ((val.Task.taskParameters.status == StatusTask.C.ToString()) || (val.Task.taskParameters.status == StatusTask.Z.ToString()))
+                                            {
+                                                listRunTask.Remove(val.Task.taskParameters.SDRTaskId);
+                                                context.Process.contextSignalizationTasks = context.Process.contextSignalizationTasks.Remove(val);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if ((contextBandWidthTasks != null) && (contextBandWidthTasks.Count > 0))
+                            {
+                                for (int m = 0; m < contextBandWidthTasks.Count; m++)
+                                {
+                                    var val = contextBandWidthTasks.ElementAt(m);
+                                    if (val.Task != null)
+                                    {
+                                        if (val.Task.taskParameters != null)
+                                        {
+                                            if ((val.Task.taskParameters.status == StatusTask.C.ToString()) || (val.Task.taskParameters.status == StatusTask.Z.ToString()))
+                                            {
+                                                listRunTask.Remove(val.Task.taskParameters.SDRTaskId);
+                                                context.Process.contextBandWidthTasks = context.Process.contextBandWidthTasks.Remove(val);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 // контекст никогда не выгружается т.к. в этом воркере происходит процесс постоянного ожидания для обработки сообщений типа DeviceCommand и TaskParameters

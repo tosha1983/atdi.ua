@@ -9,6 +9,8 @@ using Atdi.DataModels.EntityOrm;
 using DM = Atdi.DataModels.Sdrns.Device;
 using Atdi.Contracts.Api.Sdrn.MessageBus;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
 {
@@ -30,15 +32,97 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
             this._repositoryTaskParametersByString = repositoryTaskParametersByString;
         }
 
-        public bool StartCommand(TaskParameters tskParam, List<ITaskContext<Task, Process>> contextTasks, Action action, ref List<TaskParameters> listDeferredTasks, ref List<string> listRunTask, int cntActiveTaskParameters)
+        private ITaskContext<Task, Process> FindTask(ConcurrentBag<ITaskContext<Task, Process>> contextTasks, TaskParameters tskParam, StatusTask statusTask, ref bool isSuccess)
+        {
+            isSuccess = true;
+            ITaskContext<Task, Process> findTask = null;
+            if (contextTasks != null)
+            {
+                for (int i = 0; i < contextTasks.Count; i++)
+                {
+                    var val = contextTasks.ElementAt(i);
+                    if (val != null)
+                    {
+                        if (val.Task != null)
+                        {
+                            if (val.Task.taskParameters != null)
+                            {
+                                if ((val.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId) && (val.Task.taskParameters.status == statusTask.ToString()))
+                                {
+                                    isSuccess = false;
+                                    findTask = val;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return findTask;
+        }
+
+        private ITaskContext<Task, Process> FindTask(ConcurrentBag<ITaskContext<Task, Process>> contextTasks, TaskParameters tskParam, ref bool isSuccess)
+        {
+            isSuccess = true;
+            ITaskContext<Task, Process> findTask = null;
+            if (contextTasks != null)
+            {
+                for (int i = 0; i < contextTasks.Count; i++)
+                {
+                    var val = contextTasks.ElementAt(i);
+                    if (val != null)
+                    {
+                        if (val.Task != null)
+                        {
+                            if (val.Task.taskParameters != null)
+                            {
+                                if (val.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId)
+                                {
+                                    isSuccess = false;
+                                    findTask = val;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return findTask;
+        }
+
+        private bool FindTask(ConcurrentBag<TaskParameters> listDeferredTasks, TaskParameters tskParam)
+        {
+            bool isFindTask = false;
+            if (listDeferredTasks != null)
+            {
+                for (int i = 0; i < listDeferredTasks.Count; i++)
+                {
+                    var val = listDeferredTasks.ElementAt(i);
+                    if (val != null)
+                    {
+                        if (val.SDRTaskId == tskParam.SDRTaskId)
+                        {
+                            isFindTask = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            return isFindTask;
+        }
+
+
+
+        public bool StartCommand(TaskParameters tskParam, ref ConcurrentBag<ITaskContext<Task, Process>> contextTasks, Action action, ref ConcurrentBag<TaskParameters> listDeferredTasks, ref List<string> listRunTask, int cntActiveTaskParameters)
         {
             bool isSuccess = true;
             try
             {
+                var concurrectBagCopy = contextTasks.ToList();
                 ITaskContext<Task, Process> findTask = null;
                 if (tskParam.status == StatusTask.N.ToString())
                 {
-                    findTask = contextTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.N.ToString());
+                    findTask = FindTask(contextTasks, tskParam, StatusTask.N, ref isSuccess);
                     if (findTask != null)
                     {
                         isSuccess = false;
@@ -58,7 +142,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         else
                         {
                             // здесь необходимо добавлять в список отложенных задач
-                            listDeferredTasks.Add(tskParam);
+                            var findTaskDeffered = FindTask(listDeferredTasks, tskParam);
+                            if (findTaskDeffered == false)
+                            {
+                                listDeferredTasks.Add(tskParam);
+                            }
                         }
                     }
                     else if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
@@ -78,17 +166,31 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else if (tskParam.status == StatusTask.A.ToString())
                 {
-                    findTask = contextTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId && z.Task.taskParameters.status == StatusTask.A.ToString());
+                    findTask = FindTask(contextTasks, tskParam, StatusTask.A, ref isSuccess);
                     if (findTask != null)
                     {
                         isSuccess = false;
                         return isSuccess;
                     }
 
-                    findTask = contextTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                    findTask = FindTask(contextTasks, tskParam, ref isSuccess);
                     if (findTask != null)
                     {
-                        findTask.Task.taskParameters.status = StatusTask.A.ToString();
+                        for (int m = 0; m < contextTasks.Count; m++)
+                        {
+                            var val = contextTasks.ElementAt(m);
+                            if (val.Task != null)
+                            {
+                                if (val.Task.taskParameters != null)
+                                {
+                                    if (val.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId)
+                                    {
+                                        val.Task.taskParameters.status = StatusTask.A.ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
@@ -105,7 +207,11 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                             else
                             {
                                 // здесь необходимо добавлять в список отложенных задач
-                                listDeferredTasks.Add(tskParam);
+                                var findTaskDeffered = FindTask(listDeferredTasks, tskParam);
+                                if (findTaskDeffered == false)
+                                {
+                                    listDeferredTasks.Add(tskParam);
+                                }
                             }
                         }
                         else if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
@@ -126,10 +232,24 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else if (tskParam.status == StatusTask.F.ToString())
                 {
-                    findTask = contextTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                    findTask = FindTask(contextTasks, tskParam, ref isSuccess);
                     if (findTask != null)
                     {
-                        findTask.Task.taskParameters.status = StatusTask.F.ToString();
+                        for (int m = 0; m < contextTasks.Count; m++)
+                        {
+                            var val = contextTasks.ElementAt(m);
+                            if (val.Task != null)
+                            {
+                                if (val.Task.taskParameters != null)
+                                {
+                                    if (val.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId)
+                                    {
+                                        val.Task.taskParameters.status = StatusTask.F.ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
@@ -137,12 +257,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                         {
                             if ((tskParam.StartTime.Value <= DateTime.Now) && (tskParam.StopTime.Value >= DateTime.Now))
                             {
-                                //tskParam.status = StatusTask.A.ToString();
-                                //this._repositoryTaskParametersByInt.Update(tskParam);
                                 tskParam.status = StatusTask.F.ToString();
                                 action.Invoke();
-                                //System.Threading.Thread.Sleep(this._config.SleepTimeForUpdateContextSOTask_ms);
-
                                 this._repositoryTaskParametersByString.Update(tskParam);
                             }
                             else
@@ -156,8 +272,8 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                                 {
                                     if (tskParam.StartTime.Value > DateTime.Now)
                                     {
-                                        var findDefferedTask = listDeferredTasks.Find(x => x.SDRTaskId == tskParam.SDRTaskId);
-                                        if (findDefferedTask == null)
+                                        var findTaskDeffered = FindTask(listDeferredTasks, tskParam);
+                                        if (findTaskDeffered == false)
                                         {
                                             listDeferredTasks.Add(tskParam);
                                         }
@@ -169,16 +285,41 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Processing
                 }
                 else if (tskParam.status == StatusTask.Z.ToString())
                 {
-                    findTask = contextTasks.Find(z => z.Task.taskParameters.SDRTaskId == tskParam.SDRTaskId);
+                    findTask = FindTask(contextTasks, tskParam, ref isSuccess);
                     if (findTask != null)
                     {
                         findTask.Task.taskParameters.status = StatusTask.Z.ToString();
                         this._repositoryTaskParametersByString.Update(tskParam);
                         listRunTask.Remove(tskParam.SDRTaskId);
-                        listDeferredTasks.RemoveAll(x => x.SDRTaskId == tskParam.SDRTaskId);
+                        contextTasks = contextTasks.Remove(findTask);
+                    }
+                    for (int i = 0; i < listDeferredTasks.Count; i++)
+                    {
+                        var valDeferredTask = listDeferredTasks.ElementAt(i);
+                        if (valDeferredTask != null)
+                        {
+                            if (valDeferredTask.SDRTaskId == tskParam.SDRTaskId)
+                            {
+                                listDeferredTasks = listDeferredTasks.Remove(valDeferredTask);
+                                break;
+                            }
+                        }
                     }
                 }
-                contextTasks.RemoveAll(z => z.Task.taskParameters.status == StatusTask.Z.ToString() || z.Task.taskParameters.status == StatusTask.C.ToString());
+                for (int m = 0; m < contextTasks.Count; m++)
+                {
+                    var val = contextTasks.ElementAt(m);
+                    if (val.Task != null)
+                    {
+                        if (val.Task.taskParameters != null)
+                        {
+                            if ((val.Task.taskParameters.status == StatusTask.Z.ToString()) || (val.Task.taskParameters.status == StatusTask.C.ToString()))
+                            {
+                                contextTasks = contextTasks.Remove(val);
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
