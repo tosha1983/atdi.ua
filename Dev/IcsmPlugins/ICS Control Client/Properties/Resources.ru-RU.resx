@@ -1113,4 +1113,28 @@
   <data name="ZTR" xml:space="preserve">
     <value>ЗТР</value>
   </data>
+  <data name="ExportCommand" xml:space="preserve">
+    <value>Експорт</value>
+  </data>
+  <data name="DateStartExport" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="DateStopExport" xml:space="preserve">
+    <value>Дата окончания</value>
+  </data>
+  <data name="DirectoryNameForExport" xml:space="preserve">
+    <value>Наименование директории для экспорта данных:</value>
+  </data>
+  <data name="Export SO data to *.csv" xml:space="preserve">
+    <value>Экспорт данных ЗС в * .csv</value>
+  </data>
+  <data name="FreqStartExport" xml:space="preserve">
+    <value>Минимальная частота канала, МГц</value>
+  </data>
+  <data name="FreqStopExport" xml:space="preserve">
+    <value>Максимальная частота канала, МГц</value>
+  </data>
+  <data name="SpectrumOccupationTypeVal" xml:space="preserve">
+    <value>Тип занятия спектром</value>
+  </data>
 </root>

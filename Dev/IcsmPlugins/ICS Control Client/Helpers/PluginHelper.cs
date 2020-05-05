@@ -75,6 +75,18 @@ namespace XICSM.ICSControlClient
             }
             return endpointUrls;
         }
+        public static string GetRestApiDataContext()
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            string dataContext = appSettings["DataContext"];
+
+            if (string.IsNullOrEmpty(dataContext))
+            {
+                MessageBox.Show("Undefined value for DataContext in file ICSM3.exe.config.");
+                return null;
+            }
+            return dataContext;
+        }
         public static string GetFullTaskStatus(string state)
         {
             string statusFull = "";
