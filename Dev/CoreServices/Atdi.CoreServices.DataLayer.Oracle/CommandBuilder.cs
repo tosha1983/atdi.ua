@@ -740,12 +740,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             _sql.AppendLine($" OPEN :{cursorName} FOR SELECT {fieldsName} FROM {schema}.{source} WHERE {fieldsValues}; ");
         }
 
-        public string CreateCountLimt(int count)
+        public string CreateCountLimt(long count)
         {
             return $" AND ROWNUM<= {count}";
         }
 
-        public string CreatePercentLimt(int percent)
+        public string CreatePercentLimt(long percent)
         {
             throw new NotImplementedException();
         }

@@ -27,7 +27,7 @@ namespace Atdi.CoreServices.EntityOrm
 
         public InsertQueryDescriptor InsertDecriptor => this._queryDescriptor;
 
-        public SelectQueryDescriptor SelectDecriptor => _selectStatement.SelectDecriptor;
+        public SelectQueryDescriptor SelectDecriptor => _selectStatement.SelectDescriptor;
 
         public IQueryInsertStatement Select(params string[] columns)
         {

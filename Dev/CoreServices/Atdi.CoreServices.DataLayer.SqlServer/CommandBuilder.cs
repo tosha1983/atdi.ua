@@ -498,12 +498,12 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             return _sql.ToString();
         }
 
-        public string CreateCountLimt(int count)
+        public string CreateCountLimt(long count)
         {
             return $"TOP ({count})";
         }
 
-        public string CreatePercentLimt(int percent)
+        public string CreatePercentLimt(long percent)
         {
             return $"TOP ({percent}) PERCENT";
         }
@@ -513,7 +513,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             return $"DISTINCT";
         }
 
-        public void Select(string[] columns, string from, string[][] joins = null, string where = null, string[] orderBy = null, string distinct = null, string limit = null)
+        public void Select(string[] columns, string from, string[][] joins = null, string where = null, string[] orderBy = null, string distinct = null, string limit = null, long offset = -1, long fetch = -1)
         {
             if (string.IsNullOrEmpty(distinct))
             {
@@ -536,6 +536,14 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
             {
                 _sql.AppendLine($"ORDER BY");
                 _sql.AppendLine($"    {string.Join(", ", orderBy)}");
+                if (offset >= 0)
+                {
+	                _sql.AppendLine($"OFFSET {offset} ROWS");
+	                if (fetch >= 0)
+	                {
+		                _sql.AppendLine($"FETCH NEXT {fetch} ROWS ONLY");
+					}
+				}
             }
         }
 

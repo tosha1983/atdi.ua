@@ -106,7 +106,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle.PatternHandlers
             var sqlLimit = string.Empty;
             string[] sqlOrderBy = null;
 
-            if (expression.Destinct)
+            if (expression.Distinct)
             {
                 sqlDistinct = context.Builder.CreateDistinct();
             }
