@@ -18,20 +18,21 @@ namespace Atdi.Test.Platform
         public static void Run(IServicesResolver servicesResolver)
         {
             var dataLayer = servicesResolver.Resolve<IDataLayer<EntityDataOrm>>();
-            // var builder = dataLayer.GetBuilder<ITestDataType>();
-            // var executor = dataLayer.Executor<SdrnServerDataContext>();
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    Test_InsertPatterns(dataLayer);
-            //}
-            //Test_AssembliesContext(dataLayer);
-            Test_InsertPatterns(dataLayer);
-            //Test_SelectPatterns(dataLayer);
-            //Test_UpdatePatterns(dataLayer);
-            //Test_DeletePatterns(dataLayer);
+			// var builder = dataLayer.GetBuilder<ITestDataType>();
+			// var executor = dataLayer.Executor<SdrnServerDataContext>();
+			//for (int i = 0; i < 100; i++)
+			//{
+			//    Test_InsertPatterns(dataLayer);
+			//}
+			//Test_AssembliesContext(dataLayer);
+			//Test_InsertPatterns(dataLayer);
+			//Test_SelectPatterns(dataLayer);
+			Test_SelectPagingPatterns(dataLayer);
+			//Test_UpdatePatterns(dataLayer);
+			//Test_DeletePatterns(dataLayer);
 
-            //Test_ReferenceFields(dataLayer);
-            //Test_Boolean(builder, executor);
+			//Test_ReferenceFields(dataLayer);
+			//Test_Boolean(builder, executor);
         }
 
         private static void Test_AssembliesContext(IDataLayer<EntityDataOrm> dataLayer)
@@ -171,7 +172,7 @@ namespace Atdi.Test.Platform
                 try
                 {
                     var result = scope.Executor.Execute(update2);
-                    Console.WriteLine($"Updeted count = {result}");
+                    Console.WriteLine($"Updated count = {result}");
                 }
                 catch (Exception e)
                 {
@@ -184,7 +185,49 @@ namespace Atdi.Test.Platform
             Console.ReadLine();
 
         }
-        private static void Test_SelectPatterns(IDataLayer<EntityDataOrm> dataLayer)
+
+        private static void Test_SelectPagingPatterns(IDataLayer<EntityDataOrm> dataLayer)
+        {
+	        var offsetRows = 10;
+	        var fetchRows = 7;
+	        var refQuery = dataLayer.GetBuilder<ITestEntityRef1>()
+			        .From()
+			        .Select(c => c.Ref1PkId1)
+			        .Select(c => c.Ref1PkId2)
+			        .OrderByDesc(c => c.Ref1PkId1)
+			        //.Paginate(5, 10)
+			        .OrderByDesc(c => c.Ref1PkId2)
+			        //.OffsetRows(offsetRows)
+			        .FetchRows(fetchRows)
+		        ;
+
+			using (var scope = dataLayer.CreateScope<SdrnServerDataContext>())
+			{
+				try
+				{
+					var pk = scope.Executor.ExecuteAndFetch(refQuery, reader =>
+					{
+						var result = new List<long>();
+						while (reader.Read())
+						{
+							result.Add(reader.GetValue(c => c.Ref1PkId1));
+							Console.WriteLine($"Ref1PkId1 = {reader.GetValue(c => c.Ref1PkId1)}");
+						}
+						return result.ToArray();
+					});
+					Console.WriteLine($"Count = {pk.Length}");
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+					Console.ReadLine();
+				}
+
+			}
+			Console.ReadLine();
+		}
+
+		private static void Test_SelectPatterns(IDataLayer<EntityDataOrm> dataLayer)
         {
             var refQuery = dataLayer.GetBuilder<ITestEntityRef1>()
                 .From()

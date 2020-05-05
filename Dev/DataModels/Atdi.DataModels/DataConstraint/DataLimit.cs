@@ -14,7 +14,8 @@ namespace Atdi.DataModels.DataConstraint
     public class DataLimit
     {
         [DataMember]
-        public int Value { get; set; }
+        public long Value { get; set; }
+
         [DataMember]
         public LimitValueType Type { get; set; }
     }

@@ -14,9 +14,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQuerySelectStatement Where(Condition condition);
 
-        IQuerySelectStatement OrderByAsc(params string[] paths);
+        IQueryPagingStatement OrderByAsc(params string[] paths);
 
-        IQuerySelectStatement OrderByDesc(params string[] paths);
+        IQueryPagingStatement OrderByDesc(params string[] paths);
 
         IQuerySelectStatement OnTop(int count);
 
@@ -24,9 +24,19 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQuerySelectStatement Distinct();
 
+        IQuerySelectStatement FetchRows(long count);
+
+	}
+
+    public interface IQueryPagingStatement : IQuerySelectStatement
+    {
+	    IQuerySelectStatement OffsetRows(long count);
+
+	    IQuerySelectStatement Paginate(long offsetRows, long fetchRows);
     }
 
-    public interface IQuerySelectStatement<TModel> : IQueryStatement<TModel>
+
+	public interface IQuerySelectStatement<TModel> : IQueryStatement<TModel>
     {
         IQuerySelectStatement<TModel> Select(params Expression<Func<TModel, object>>[] columnsExpressions);
 
@@ -36,9 +46,9 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQuerySelectStatement<TModel> Where<TValue>(Expression<Func<TModel, TValue>> columnExpression, ConditionOperator conditionOperator, params TValue[] values);
 
-        IQuerySelectStatement<TModel> OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions);
+        IQueryPagingStatement<TModel> OrderByAsc(params Expression<Func<TModel, object>>[] columnsExpressions);
 
-        IQuerySelectStatement<TModel> OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions);
+        IQueryPagingStatement<TModel> OrderByDesc(params Expression<Func<TModel, object>>[] columnsExpressions);
 
         IQuerySelectStatement<TModel> OnTop(int count);
 
@@ -46,9 +56,20 @@ namespace Atdi.Contracts.CoreServices.DataLayer
 
         IQuerySelectStatement<TModel> Distinct();
 
-    }
+        IQuerySelectStatement<TModel> FetchRows(long count);
 
-    public interface IQuerySelectStatementOperation
+	}
+
+	public interface IQueryPagingStatement<TModel> : IQuerySelectStatement<TModel>
+	{
+		IQuerySelectStatement<TModel> OffsetRows(long count);
+
+		IQuerySelectStatement<TModel> Paginate(long offsetRows, long fetchRows);
+	}
+
+
+
+	public interface IQuerySelectStatementOperation
     {
         bool Between<TValue>(TValue testValue, TValue arg1, TValue arg2);
 
@@ -72,10 +93,10 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                 switch (limit.Type)
                 {
                     case DataModels.DataConstraint.LimitValueType.Records:
-                        query.OnTop(limit.Value);
+                        query.FetchRows(limit.Value);
                         break;
                     case DataModels.DataConstraint.LimitValueType.Percent:
-                        query.OnPercentTop(limit.Value);
+                        query.OnPercentTop((int)limit.Value);
                         break;
                     default:
                         break;
