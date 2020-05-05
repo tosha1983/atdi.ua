@@ -12,8 +12,6 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 
     }
 
-    
-
     public class FieldDescriptor : API.IFieldDescriptor
     {
         public string Path { get; set; }

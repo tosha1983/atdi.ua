@@ -105,7 +105,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
             return query;
         }
 
-        public static IQuerySelectStatement OrderBy(this IQuerySelectStatement query, DataModels.DataConstraint.OrderExpression[] orderExpressions)
+        public static IQueryPagingStatement OrderBy(this IQuerySelectStatement query, DataModels.DataConstraint.OrderExpression[] orderExpressions)
         {
             if (orderExpressions != null)
             {
@@ -122,7 +122,7 @@ namespace Atdi.Contracts.CoreServices.DataLayer
                     }
                 }
             }
-            return query;
+            return (IQueryPagingStatement)query;
         }
 
         public static IQuerySelectStatement Where(this IQuerySelectStatement query, string column, string value)

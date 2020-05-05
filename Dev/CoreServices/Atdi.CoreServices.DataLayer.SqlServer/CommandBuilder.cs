@@ -539,9 +539,13 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                 if (offset >= 0)
                 {
 	                _sql.AppendLine($"OFFSET {offset} ROWS");
-	                if (fetch >= 0)
+	                if (fetch > 0)
 	                {
 		                _sql.AppendLine($"FETCH NEXT {fetch} ROWS ONLY");
+					}
+	                else if (fetch == 0)
+	                {
+		                throw new InvalidOperationException($"Invalid value of fetch rows for FETCH NEXT ... ROWS ONLY SQL Expression");
 					}
 				}
             }
@@ -640,25 +644,25 @@ namespace Atdi.CoreServices.DataLayer.SqlServer
                 case MoreOperandsOperator.In:
                     if (operands == null || operands.Length < 1)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for IN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for IN SQL Expression");
                     }
                     return $"{testOperand} IN ({string.Join(", ", operands)})";
                 case MoreOperandsOperator.NotIn:
                     if(operands == null || operands.Length < 1)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for NOT IN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for NOT IN SQL Expression");
                     }
                     return $"{testOperand} NOT IN ({string.Join(", ", operands)})";
                 case MoreOperandsOperator.Between:
                     if (operands == null || operands.Length != 2)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for BETWEEN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for BETWEEN SQL Expression");
                     }
                     return $"{testOperand} BETWEEN {operands[0]} AND {operands[1]}";
                 case MoreOperandsOperator.NotBetween:
                     if (operands == null || operands.Length != 2)
                     {
-                        throw new InvalidOperationException($"Invalid numer of operand for BETWEEN SQL Expression");
+                        throw new InvalidOperationException($"Invalid numbers of operand for BETWEEN SQL Expression");
                     }
                     return $"{testOperand} NOT BETWEEN {operands[0]} AND {operands[1]}";
                 default:
