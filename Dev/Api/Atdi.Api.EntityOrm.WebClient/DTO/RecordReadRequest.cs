@@ -15,5 +15,11 @@ namespace Atdi.Api.EntityOrm.WebClient.DTO
 		public string[] Filter;
 
 		public long Top;
+
+		public long? Offset;
+
+		public long? Fetch;
+
+		public bool Distinct;
 	}
 }

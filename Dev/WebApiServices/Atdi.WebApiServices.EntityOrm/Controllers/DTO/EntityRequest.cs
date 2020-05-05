@@ -26,8 +26,14 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers.DTO
 
         public string[] Filter { get; set; }
 
-        public long Top { get; set; } 
-    }
+        public long Top { get; set; }
+
+        public long? Offset { get; set; }
+
+		public long? Fetch { get; set; }
+
+		public bool Distinct { get; set; }
+	}
 
     public class DataRecordRequest : EntityRequest, API.IDataRecordRequest
     {
