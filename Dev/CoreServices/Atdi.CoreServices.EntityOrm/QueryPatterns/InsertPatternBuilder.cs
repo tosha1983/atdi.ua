@@ -39,17 +39,17 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             this._counter = _statistics.Counter(CounterKey);
         }
 
-        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
+        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContext)
         {
             _counter?.Increment();
 
-            var statement = executionContex.Statement as QueryInsertStatement;
+            var statement = executionContext.Statement as QueryInsertStatement;
 
             // построение запроса согласно патерна
             var pattern = this.Build(statement);
             
             // выполняем запросы согласно патерна
-            return this.Execute(executionContex, statement, pattern);
+            return this.Execute(executionContext, statement, pattern);
         }
 
         private PS.InsertPattern Build(QueryInsertStatement statement)

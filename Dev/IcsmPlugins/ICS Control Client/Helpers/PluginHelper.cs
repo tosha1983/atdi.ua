@@ -22,10 +22,10 @@ namespace XICSM.ICSControlClient
         {
             MessageBox.Show($"{Properties.Resources.Message_TheValue} '{fieldTo}' {Properties.Resources.Message_ShouldBeGreatOfThe} '{fieldFrom}'!", MessageBoxCaption);
         }
-        public static WebApiEndpoint GetEndpoint()
-        {
-            return new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
-        }
+        //public static WebApiEndpoint GetEndpoint()
+        //{
+        //    return new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
+        //}
         public static double? ConvertStringToDouble(string s, bool isShowMessage = false)
         {
             if (string.IsNullOrEmpty(s))

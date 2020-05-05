@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Atdi.Platform.Workflows;
 
-namespace Atdi.Test.Platform
+namespace Atdi.Test.Platform.Oracle
 {
     class Program
     {
@@ -16,26 +15,17 @@ namespace Atdi.Test.Platform
         {
             Console.WriteLine($"Press any key to start ATDI Platform ...");
             Console.ReadLine();
-            //LoggerTest.Run(null);
-            //Console.WriteLine($"Press any key to stop SDRN App Server (AK) ...");
-            //Console.ReadLine();
 
-			using (var host = PlatformConfigurator.BuildHost())
+            using (var host = PlatformConfigurator.BuildHost())
             {
                 try
                 {
                     host.Start();
-
                     var resolver = host.Container.GetResolver<IServicesResolver>();
 
-                    //var jobBroker = resolver.Resolve<IJobBroker>();
                     var logger = resolver.Resolve<ILogger>();
-                    
-                    //JobsTest.Run(jobBroker, host.Container, logger);
-
-                    //var calc = new CalclCrowed(logger);
-                    // DataLayerTest.Run(resolver);
-                     EntityOrmTest.Run(resolver);
+                    //DataLayerTest.Run(resolver);
+                    EntityOrmTest.Run(resolver);
 
                     //LoggerTest.Run(logger);
 
@@ -50,7 +40,7 @@ namespace Atdi.Test.Platform
 
                 try
                 {
-                    host.Stop("Normal completion");
+                    host.Stop();
                 }
                 catch (Exception e)
                 {

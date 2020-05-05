@@ -15,5 +15,11 @@ namespace Atdi.DataModels.EntityOrm.Api
         string[] Filter { get; set; }
 
         long Top { get; set; }
-    }
+
+        long? Offset { get; set; }
+
+		long? Fetch { get; set; }
+
+		bool Distinct { get; set; }
+	}
 }

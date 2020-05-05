@@ -43,29 +43,29 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
             this._counter = _statistics.Counter(CounterKey);
         }
 
-        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContex)
+        public TResult BuildAndExecute<TResult, TModel>(PatternExecutionContex<TResult, TModel> executionContext)
         {
             _counter?.Increment();
 
-            var statement = executionContex.Statement as QuerySelectStatement;
+            var statement = executionContext.Statement as QuerySelectStatement;
 
             var context = new SelectBuildingContext("singlton", _dataTypeSystem);
             // построение запроса согласно патерна
             var pattern = this.Build(statement, context);
 
             // выполняем запросы согласно патерна
-            return this.Execute(executionContex, pattern, context);
+            return this.Execute(executionContext, pattern, context);
         }
 
         private PS.SelectPattern Build(QuerySelectStatement statement, SelectBuildingContext context)
         {
             // формируем столбур выборки состоящий из самой базовой таблицы и приджойненых к ней наследников
-            var query = statement.SelectDecriptor;
+            var query = statement.SelectDescriptor;
             context.Fields = query.Cache;
 
             var selectExpression = new PS.SelectExpression()
             {
-                Destinct = query.IsDistinct,
+                Distinct = query.IsDistinct,
                 Limit = query.Limit
             };
 
@@ -111,17 +111,25 @@ namespace Atdi.CoreServices.EntityOrm.QueryPatterns
                 selectExpression.Condition = this.BuildConditionExpressions(query.Conditions.ToArray(), context);
             }
 
-            if (query.SortableFields != null)
+            selectExpression.OffsetRows = -1;
+
+			if (query.SortableFields != null)
             {
                 selectExpression.Sorting = this.BuildSorting(query.SortableFields.ToArray(), context);
+
+                if (query.OffsetRows >= 0)
+                {
+	                selectExpression.OffsetRows = query.OffsetRows;
+
+                }
             }
 
-            var pattren = new PS.SelectPattern
+            var pattern = new PS.SelectPattern
             {
                 Expressions = new PS.SelectExpression[] { selectExpression }
             };
 
-            return pattren;
+            return pattern;
         }
 
         private PS.JoinExpression[] ScanAndBuildJoinExpressions(FieldDescriptor[] fields, PS.TargetObject rootObject, IEntityMetadata rootEntity, SelectBuildingContext context)

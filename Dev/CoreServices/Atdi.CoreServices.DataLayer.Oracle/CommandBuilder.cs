@@ -533,7 +533,7 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             return $"DISTINCT";
         }
 
-        public void Select(string[] columns, string from, string[][] joins = null, string where = null, string[] orderBy = null, string distinct = null, string limit = null)
+        public void Select(string[] columns, string from, string[][] joins = null, string where = null, string[] orderBy = null, string distinct = null, string limit = null, long offset = -1, long fetch = -1)
         {
             if (string.IsNullOrEmpty(distinct))
             {
@@ -556,6 +556,14 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             {
                 _sql.AppendLine($"ORDER BY");
                 _sql.AppendLine($"    {string.Join(", ", orderBy)}");
+                if (offset >= 0)
+                {
+                    _sql.AppendLine($"OFFSET {offset} ROWS");
+                    if (fetch >= 0)
+                    {
+                        _sql.AppendLine($"FETCH NEXT {fetch} ROWS ONLY");
+                    }
+                }
             }
         }
 
@@ -740,12 +748,12 @@ namespace Atdi.CoreServices.DataLayer.Oracle
             _sql.AppendLine($" OPEN :{cursorName} FOR SELECT {fieldsName} FROM {schema}.{source} WHERE {fieldsValues}; ");
         }
 
-        public string CreateCountLimt(int count)
+        public string CreateCountLimt(long count)
         {
             return $" AND ROWNUM<= {count}";
         }
 
-        public string CreatePercentLimt(int percent)
+        public string CreatePercentLimt(long percent)
         {
             throw new NotImplementedException();
         }

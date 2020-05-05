@@ -35,7 +35,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 
         [HttpGet]
         [Route("{context}/{ns}/{entity}")]
-        public IHttpActionResult GetDataSet(string context, string ns, string entity, [FromUri] string[] select = null, [FromUri] string[] filter = null, [FromUri] string[] orderBy = null, [FromUri] int top = -1)
+        public IHttpActionResult GetDataSet(string context, string ns, string entity, [FromUri] string[] select = null, [FromUri] string[] filter = null, [FromUri] string[] orderBy = null, [FromUri] int top = -1, [FromUri] long fetch = -1, [FromUri] long offset = -1, [FromUri] bool distinct = false)
         {
             var query = new DTO.DataSetRequest
             {
@@ -45,10 +45,20 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
                 Select = select,
                 Filter = filter,
                 OrderBy = orderBy,
-                Top = top
+                Top = top,
+				Distinct =  distinct
             };
 
-            return this.GetDataSet(query);
+            if (fetch >= 0)
+            {
+	            query.Fetch = fetch;
+            }
+            if (offset >= 0)
+            {
+	            query.Offset = offset;
+            }
+
+			return this.GetDataSet(query);
         }
 
         [HttpPost]
@@ -80,16 +90,34 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 				{
 					ormQuery.OnTop((int)query.Top);
 				}
+
 				if (query.Filter != null && query.Filter.Length > 0)
 				{
 					var condition = Helpers.FilterParser.Parse(query.Filter);
 					ormQuery.Where(condition);
 				}
+
 				if (query.OrderBy != null && query.OrderBy.Length > 0)
 				{
 					var orderByExpressions = Helpers.FieldParser.ParseOrderBy(query.OrderBy);
-					ormQuery.OrderBy(orderByExpressions);
+					var pagingQuery = ormQuery.OrderBy(orderByExpressions);
+
+					if (query.Offset.HasValue && query.Offset >= 0)
+					{
+						pagingQuery.OffsetRows(query.Offset.Value);
+					}
 				}
+				
+				if (query.Fetch.HasValue && query.Fetch >= 0)
+				{
+					ormQuery.FetchRows(query.Fetch.Value);
+				}
+
+				if (query.Distinct)
+				{
+					ormQuery.Distinct();
+				}
+				
 
 				using (var scope = _dataLayer.CreateScope(new SimpleDataContext(query.Context)))
 				{
