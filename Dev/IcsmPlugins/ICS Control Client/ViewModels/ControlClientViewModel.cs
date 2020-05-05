@@ -963,22 +963,49 @@ namespace XICSM.ICSControlClient.ViewModels
             if (this._currentMeasurementResult != null && this._currentMeasurementResult != null)
             {
                 var measResult = SVC.SdrnsControllerWcfClient.GetMeasurementResultByResId(this._currentMeasurementResult.MeasSdrResultsId, null, null);
+                if (measResult.Emittings == null)
+                {
+                    MessageBox.Show("No data for export.");
+                    return;
+                }
+
+                var form = new FM.ExportRSParametersForm();
+                form.ShowDialog();
+                form.Dispose();
+
+                if (!form.IsPresOK)
+                    return;
 
                 FRM.SaveFileDialog sfd = new FRM.SaveFileDialog() { Filter = "CSV (*.csv)|*.csv", FileName = $"RS_Result_{this._currentMeasurementResult.MeasSdrResultsId}.csv" };
                 if (sfd.ShowDialog() == FRM.DialogResult.OK)
                 {
                     var output = new List<string>();
-                    output.Add("MaskLevels_dB;MaskFrequencies_kHz");
+                    output.Add("MaskLevels_dB;MaskFrequencies_MHz;CentralFrequency_MHz;Power_dBm");
 
+                    var emittings = new List<EmittingSpectrum>();
+                    double spectrumSteps_kHz = 0;
                     foreach (var emitting in measResult.Emittings)
                     {
-                        //var result = CreateMaskFromSpectrum.CreateMaskFromEmitting(emitting.Spectrum.Levels_dBm, emitting.Spectrum.SpectrumStartFreq_MHz, emitting.Spectrum.SpectrumSteps_kHz, 6, 6, 8);
-
-                        //for (int i = 0; i < result.MaskLevels_dB.Length - 1; i++)
-                        //{
-                        //    output.Add($"{result.MaskLevels_dB[i]};{result.MaskFrequencies_kHz[i]}");
-                        //}
+                        if ((form.CorrectEstimationValue.HasValue && form.CorrectEstimationValue == emitting.Spectrum.CorrectnessEstimations) || !form.CorrectEstimationValue.HasValue)
+                        {
+                            emittings.Add(new EmittingSpectrum()
+                            {
+                                Levels_dBm = emitting.Spectrum.Levels_dBm,
+                                StartFreq_MHz = emitting.Spectrum.SpectrumStartFreq_MHz
+                            });
+                            spectrumSteps_kHz = emitting.Spectrum.SpectrumSteps_kHz;
+                        }
                     }
+
+                    var result = CreateMaskFromSpectrum.CreateMasksFromEmittings(emittings.ToArray(), spectrumSteps_kHz, form.Cutoff, form.NumberPoints);
+                    foreach (var res in result)
+                    {
+                        for (int i = 0; i < res.MaskLevels_dB.Length - 1; i++)
+                        {
+                            output.Add($"{res.MaskLevels_dB[i]};{res.MaskFrequencies_MHz[i]};{res.CentralFrequency_MHz};{res.Power_dBm}");
+                        }
+                    }
+
                     System.IO.File.WriteAllLines(sfd.FileName, output, System.Text.Encoding.UTF8);
                     MessageBox.Show("Your file was generated and its ready for use.");
                 }

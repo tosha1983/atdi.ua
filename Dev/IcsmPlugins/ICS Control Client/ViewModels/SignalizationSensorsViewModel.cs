@@ -72,7 +72,7 @@ namespace XICSM.ICSControlClient.ViewModels
         private int _startType;
         private EmittingViewModel[] _emittings;
         private FRM.Form _form;
-        private string _endpointUrls;
+        private readonly string _endpointUrls = "";
         private List<long> _sensorIds;
         private DateTime? _timeMeas;
 
@@ -87,7 +87,7 @@ namespace XICSM.ICSControlClient.ViewModels
             this._shortSensors = new ShortSensorDataAdatper();
             this.StartCommand = new WpfCommand(this.OnStartCommand);
 
-            string _endpointUrls = PluginHelper.GetRestApiEndPoint();
+            _endpointUrls = PluginHelper.GetRestApiEndPoint();
 
             if (string.IsNullOrEmpty(_endpointUrls))
                 return;
@@ -456,13 +456,13 @@ namespace XICSM.ICSControlClient.ViewModels
                     }
                 }
 
-                if (emittingsIds.Count > 1000 && emittingsIds.Count < 2000)
+                if (emittingsIds.Count > 5000 && emittingsIds.Count < 20000)
                 {
                     if (MessageBox.Show("Attention! Received a large amount of radiation, it will take a long time to get the result. Are you sure you want to continue?", PluginHelper.MessageBoxCaption, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                         return null;
                 }
 
-                if (emittingsIds.Count > 2000)
+                if (emittingsIds.Count > 20000)
                 {
                     MessageBox.Show("Attention! A large number of emissions have been received, please reduce the amount of data obtaining.");
                     return null;
@@ -470,7 +470,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
 
                 int counter = 0;
-                var b = emittingsIds.GroupBy(_ => counter++ / 500).Select(v => v.ToArray());
+                var b = emittingsIds.Keys.GroupBy(_ => counter++ / 500).Select(v => v.ToArray());
 
                 foreach (var ids in b.Select(v => String.Join(",", v)))
                 {
@@ -698,8 +698,8 @@ namespace XICSM.ICSControlClient.ViewModels
             }
             else if (this._startType == 2)
             {
-                //_dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
-                //_dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
+                _dateStart = DateFrom.AddHours(TimeFrom.Hour).AddMinutes(TimeFrom.Minute);
+                _dateStop = DateTo.AddHours(TimeTo.Hour).AddMinutes(TimeTo.Minute);
                 //if (_dateStart > _dateStop || _dateStart.AddMonths(1) < _dateStop)
                 //{
                 //    MessageBox.Show("Incorrect value 'Date From' or 'Date To'!");
