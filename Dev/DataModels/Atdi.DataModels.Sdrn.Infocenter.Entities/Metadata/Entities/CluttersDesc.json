@@ -148,13 +148,13 @@
         },
         {
           "Code": 3,
-          "LinearLoss_dBkm": 150.00,
+          "LinearLoss_dBkm": 50.00,
           "FlatLoss_dB": 0.00,
           "Reflection": 0.300
         },
         {
           "Code": 4,
-          "LinearLoss_dBkm": 50.00,
+          "LinearLoss_dBkm": 20.00,
           "FlatLoss_dB": 0.00,
           "Reflection": 0.300
         },
@@ -208,44 +208,44 @@
         },
         {
           "Code": 13,
-          "LinearLoss_dBkm": 200.00,
-          "FlatLoss_dB": 15.00,
+          "LinearLoss_dBkm": 100.00,
+          "FlatLoss_dB": 2.00,
           "Reflection": 0.300
         },
         {
           "Code": 14,
-          "LinearLoss_dBkm": 100.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
           "Reflection": 0.300
         },
         {
           "Code": 15,
-          "LinearLoss_dBkm": 300.00,
-          "FlatLoss_dB": 15.00,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
           "Reflection": 0.309
         },
         {
           "Code": 16,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 4.00,
           "Reflection": 0.444
         },
         {
           "Code": 17,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 250.00,
+          "FlatLoss_dB": 5.00,
           "Reflection": 0.040
         },
         {
           "Code": 18,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 25.00,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 5.00,
           "Reflection": 0.370
         },
         {
           "Code": 19,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 25.00,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 10.00,
           "Reflection": 0.300
         }
       ]
@@ -274,7 +274,7 @@
         },
         {
           "Code": 3,
-          "LinearLoss_dBkm": 150.00,
+          "LinearLoss_dBkm": 100.00,
           "FlatLoss_dB": 0.00,
           "Reflection": 0.300
         },
@@ -334,44 +334,44 @@
         },
         {
           "Code": 13,
-          "LinearLoss_dBkm": 200.00,
-          "FlatLoss_dB": 15.00,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
           "Reflection": 0.300
         },
         {
           "Code": 14,
-          "LinearLoss_dBkm": 100.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 150.00,
+          "FlatLoss_dB": 4.00,
           "Reflection": 0.300
         },
         {
           "Code": 15,
-          "LinearLoss_dBkm": 300.00,
-          "FlatLoss_dB": 15.00,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 6.00,
           "Reflection": 0.309
         },
         {
           "Code": 16,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 10.00,
           "Reflection": 0.444
         },
         {
           "Code": 17,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 200.00,
+          "FlatLoss_dB": 10.00,
           "Reflection": 0.040
         },
         {
           "Code": 18,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 25.00,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 15.00,
           "Reflection": 0.370
         },
         {
           "Code": 19,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 25.00,
+          "LinearLoss_dBkm": 400.00,
+          "FlatLoss_dB": 20.00,
           "Reflection": 0.300
         }
       ]
@@ -526,13 +526,13 @@
         },
         {
           "Code": 3,
-          "LinearLoss_dBkm": 150.00,
+          "LinearLoss_dBkm": 200.00,
           "FlatLoss_dB": 0.00,
           "Reflection": 0.300
         },
         {
           "Code": 4,
-          "LinearLoss_dBkm": 50.00,
+          "LinearLoss_dBkm": 75.00,
           "FlatLoss_dB": 0.00,
           "Reflection": 0.300
         },
@@ -586,44 +586,44 @@
         },
         {
           "Code": 13,
-          "LinearLoss_dBkm": 200.00,
-          "FlatLoss_dB": 15.00,
+          "LinearLoss_dBkm": 300.00,
+          "FlatLoss_dB": 20.00,
           "Reflection": 0.300
         },
         {
           "Code": 14,
-          "LinearLoss_dBkm": 100.00,
+          "LinearLoss_dBkm": 350.00,
           "FlatLoss_dB": 20.00,
           "Reflection": 0.300
         },
         {
           "Code": 15,
-          "LinearLoss_dBkm": 300.00,
-          "FlatLoss_dB": 15.00,
+          "LinearLoss_dBkm": 400.00,
+          "FlatLoss_dB": 25.00,
           "Reflection": 0.309
         },
         {
           "Code": 16,
           "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 20.00,
+          "FlatLoss_dB": 30.00,
           "Reflection": 0.444
         },
         {
           "Code": 17,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 20.00,
+          "LinearLoss_dBkm": 600.00,
+          "FlatLoss_dB": 30.00,
           "Reflection": 0.040
         },
         {
           "Code": 18,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 25.00,
+          "LinearLoss_dBkm": 700.00,
+          "FlatLoss_dB": 35.00,
           "Reflection": 0.370
         },
         {
           "Code": 19,
-          "LinearLoss_dBkm": 500.00,
-          "FlatLoss_dB": 25.00,
+          "LinearLoss_dBkm": 900.00,
+          "FlatLoss_dB": 35.00,
           "Reflection": 0.300
         }
       ]
