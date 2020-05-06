@@ -50,13 +50,16 @@ namespace Atdi.WcfServices.Sdrn.Server
 
         public CommonOperationResult UpdateMeasTaskParametersAndRecalcResults(MeasTask task)
         {
-            var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientCommands);
-            var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+            System.Threading.Tasks.Task.Run(() =>
             {
-                MeasTaskPipeBox = MapperForMeasTask.ToMap(task),
-                MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.UpdateAndRecalcResults
+                var site = this._pipelineSite.GetByName<SdrnsServer.ClientMeasTaskPipebox, SdrnsServer.ClientMeasTaskPiperesult>(SdrnsServer.Pipelines.ClientCommands);
+                var result = site.Execute(new SdrnsServer.ClientMeasTaskPipebox()
+                {
+                    MeasTaskPipeBox = MapperForMeasTask.ToMap(task),
+                    MeasTaskModePipeBox = SdrnsServer.MeasTaskMode.UpdateAndRecalcResults
+                });
             });
-
+            /*
             var commonOperationResult = new CommonOperationResult();
             commonOperationResult.FaultCause = result.CommonOperationPipeBoxResult.FaultCause;
             switch (result.CommonOperationPipeBoxResult.State)
@@ -68,6 +71,9 @@ namespace Atdi.WcfServices.Sdrn.Server
                     commonOperationResult.State = CommonOperationState.Success;
                     break;
             }
+            */
+            var commonOperationResult = new CommonOperationResult();
+            commonOperationResult.State = CommonOperationState.Success;
             return commonOperationResult;
         }
 
