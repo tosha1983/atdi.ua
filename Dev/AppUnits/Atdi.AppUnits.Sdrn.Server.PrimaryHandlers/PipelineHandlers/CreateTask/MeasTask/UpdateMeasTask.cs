@@ -87,6 +87,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             catch (Exception e)
             {
                 isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }
@@ -139,6 +140,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             catch (Exception e)
             {
                 isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }
@@ -201,6 +203,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             catch (Exception e)
             {
                 isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }
@@ -437,6 +440,7 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
             catch (Exception e)
             {
                 isSuccess = false;
+                this._logger.Exception(Contexts.ThisComponent, e);
             }
             return isSuccess;
         }
