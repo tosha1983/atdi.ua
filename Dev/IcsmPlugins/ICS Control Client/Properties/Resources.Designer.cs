@@ -2231,6 +2231,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Restrictions of export.
+        /// </summary>
+        public static string RestrictionsOfExport {
+            get {
+                return ResourceManager.GetString("RestrictionsOfExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Results.
         /// </summary>
         public static string Results {

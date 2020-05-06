@@ -1117,10 +1117,10 @@
     <value>Експорт</value>
   </data>
   <data name="DateStartExport" xml:space="preserve">
-    <value>Дата начала</value>
+    <value>Дата c</value>
   </data>
   <data name="DateStopExport" xml:space="preserve">
-    <value>Дата окончания</value>
+    <value>Дата по</value>
   </data>
   <data name="DirectoryNameForExport" xml:space="preserve">
     <value>Наименование директории для экспорта данных:</value>
@@ -1136,5 +1136,8 @@
   </data>
   <data name="SpectrumOccupationTypeVal" xml:space="preserve">
     <value>Тип занятия спектром</value>
+  </data>
+  <data name="RestrictionsOfExport" xml:space="preserve">
+    <value>Ограничения экспорта</value>
   </data>
 </root>

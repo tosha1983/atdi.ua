@@ -1137,4 +1137,7 @@
   <data name="DirectoryNameForExport" xml:space="preserve">
     <value>Directory name for export</value>
   </data>
+  <data name="RestrictionsOfExport" xml:space="preserve">
+    <value>Restrictions of export</value>
+  </data>
 </root>

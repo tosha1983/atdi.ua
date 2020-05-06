@@ -27,6 +27,7 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Sdrns.Server.Entities;
 using System.Security.Cryptography;
 using Atdi.DataModels.Sdrns.Server;
+using Model = XICSM.ICSControlClient.Models;
 
 
 
@@ -51,12 +52,14 @@ namespace XICSM.ICSControlClient.ViewModels
         private string _exportDirectoryName;
         private bool _isEnabledExport = false;
         private SpectrumOccupationType _spectrumOccupationType;
+        private FM.WaitForm _waitForm = null;
+
 
 
         private ShortSensorDataAdatper _sensors;
         public WpfCommand ExportCommand { get; set; }
 
-        
+
 
         public ExportSODatatoCSVModelViewModel()
         {
@@ -152,100 +155,63 @@ namespace XICSM.ICSControlClient.ViewModels
             this._sensors.Source = sdrSensors;
         }
 
-        private void SelectSensors()
-        {
-
-            var listSensors = new List<ShortSensorViewModel>();
-            var listSensorsIndexes = new List<long>();
-            long index = 0;
-
-            var sensorsIds = new Dictionary<SDR.SensorIdentifier, SDR.ShortSensor>();
-
-            if (this._sensors.Source != null && this._sensors.Source.Length > 0)
-            {
-                foreach (var sensor in this._sensors.Source)
-                {
-                    sensorsIds.Add(sensor.Id, sensor);
-                    listSensorsIndexes.Add(index);
-                    index++;
-                }
-            }
-
-            foreach (var sensor in sensorsIds.Values)
-            {
-                listSensors.Add(Mappers.Map(sensor));
-            }
-
-            this._currentSensors = listSensors;
-            this.CurrentSensorsIndexes = listSensorsIndexes.ToArray();
-        }
-
-
         private void OnExportCommand(object parameter)
         {
-
-            if (!DateStartExport.HasValue)
+            MessageBox.Show("Результати експорту можуть мати великій розмір. За необхідністю експорт відбудеться в декілька файлів/таблиць!", PluginHelper.MessageBoxCaption, MessageBoxButton.OK);
             {
-                MessageBox.Show("Undefined Date Start!");
-                return;
-            }
-            if (!DateStopExport.HasValue)
-            {
-                MessageBox.Show("Undefined Date Stop!");
-                return;
-            }
-            if (DateStartExport > DateStopExport)
-            {
-                MessageBox.Show("Date Stop should be great of the Date Start!");
-                return;
-            }
-
-
-            if (!FreqStartExport.HasValue)
-            {
-                MessageBox.Show("Undefined Channel Frequency Min, MHz!");
-                return;
-            }
-            if (!FreqStopExport.HasValue)
-            {
-                MessageBox.Show("Undefined Channel Frequency Max, MHz!");
-                return;
-            }
-            if (FreqStartExport > FreqStopExport)
-            {
-                MessageBox.Show("Frequency Max should be great of the Frequency Min!");
-                return;
-            }
-
-            var uri = new Uri(PluginHelper.GetRestApiEndPoint());
-            var endpoint = new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "appserver/v1");
-            //var endpoint = new WebApiEndpoint(uri, "");
-            var dataContext = new WebApiDataContext(PluginHelper.GetRestApiDataContext());
-
-            var dataLayer = new WebApiDataLayer();
-            var executor = dataLayer.GetExecutor(endpoint, dataContext);
-
-            ReadData(executor, dataLayer);
-
-
-            FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
-            {
-                if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
+                if (!DateStartExport.HasValue)
                 {
-                    ExportDirectoryName = folderDialog.SelectedPath;
+                    MessageBox.Show("Undefined Date Start!");
+                    return;
+                }
+                if (!DateStopExport.HasValue)
+                {
+                    MessageBox.Show("Undefined Date Stop!");
+                    return;
+                }
+                if (DateStartExport > DateStopExport)
+                {
+                    MessageBox.Show("Date Stop should be great of the Date Start!");
+                    return;
+                }
+
+
+                if (!FreqStartExport.HasValue)
+                {
+                    MessageBox.Show("Undefined Channel Frequency Min, MHz!");
+                    return;
+                }
+                if (!FreqStopExport.HasValue)
+                {
+                    MessageBox.Show("Undefined Channel Frequency Max, MHz!");
+                    return;
+                }
+                if (FreqStartExport > FreqStopExport)
+                {
+                    MessageBox.Show("Frequency Max should be great of the Frequency Min!");
+                    return;
+                }
+
+
+                FRM.FolderBrowserDialog folderDialog = new FRM.FolderBrowserDialog();
+                if (folderDialog.ShowDialog() == FRM.DialogResult.OK)
+                {
+                    if (!string.IsNullOrEmpty(folderDialog.SelectedPath))
+                    {
+                        ExportDirectoryName = folderDialog.SelectedPath;
+                        ReadData();
+                    }
                 }
             }
         }
-      
+
         private void RedrawMap()
         {
             var data = new MP.MapDrawingData();
             var points = new List<MP.MapDrawingDataPoint>();
-            
 
-            if (this._currentSensors != null)
-                foreach (ShortSensorViewModel sensor in this._currentSensors)
+            if (CurrentSensors != null)
+                foreach (ShortSensorViewModel sensor in CurrentSensors)
                     DrawSensor(points, sensor.Id);
             else if (this._sensors.Source != null && this._sensors.Source.Length > 0)
                 foreach (var sensor in this._sensors.Source)
@@ -275,301 +241,436 @@ namespace XICSM.ICSControlClient.ViewModels
         }
 
 
-
-
-
-        private void ReadData(IQueryExecutor executor, WebApiDataLayer dataLayer)
+        private void ReadData()
         {
-            var countMaxRec = 100;
-            var dateMin = DateStartExport.Value;
-            var dateMax = DateStopExport.Value;
-            var typeMeasurements = "SpectrumOccupation";
-            float channelFrequencyMin_MHz = (float)FreqStartExport.Value;
-            float channelFrequencyMax_MHz = (float)FreqStopExport.Value;
-            var sensorIds = new long[this._currentSensors.Count];
-            if (this._currentSensors != null)
+            bool isSuccess = true;
+            try
             {
-                int idx = 0;
-                foreach (ShortSensorViewModel sensor in this._currentSensors)
-                {
-                    sensorIds[idx] = sensor.Id;
-                    idx++;
-                }
-            }
-            
+                var isThreshHoldExportSO = false;
+                var threshHoldExportSO = PluginHelper.GetThreshHoldExportSO();
+                var countMaxRecInPage = PluginHelper.GetMaxCountRecordInPage();
+                var countMaxRecordInCsvFile = PluginHelper.GetMaxCountRecordInCsvFile();
+                var endpoint = new WebApiEndpoint(new Uri(PluginHelper.GetWebAPIBaseAddress()), PluginHelper.GetWebAPIUrl());
+                var dataContext = new WebApiDataContext(PluginHelper.GetDataContext());
+                var dataLayer = new WebApiDataLayer();
+                var executor = dataLayer.GetExecutor(endpoint, dataContext);
 
-            var lstMeasTask = new List<MeasTask>();
-            var lstMeasTaskIds = new List<long>();
-            var lstSensors = new List<Sensor>();
-            var lstSensorsIds = new List<long>();
-            var listSensors = BreakDownElemBlocks.BreakDown(sensorIds);
-            for (int i = 0; i < sensorIds.Length; i++)
-            {
-                long countResLevels = 0;
-                do
-                {
-                    var webQueryResLevels = dataLayer.GetBuilder<IResLevels>()
-                    .Read()
-                    .Select(
-                       c => c.Id,
-                       c => c.FreqMeas,
-                       c => c.ValueSpect,
-                       c => c.VMinLvl,
-                       c => c.VMMaxLvl,
-                       c => c.ValueLvl,
-                       c => c.RES_MEAS.TimeMeas,
-                       c => c.RES_MEAS.ScansNumber,
-                       c => c.RES_MEAS.TypeMeasurements,
-                       c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id,
-                       c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Name,
-                       c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id,
-                       c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name,
-                       c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId,
-                       c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Title
-                    )
-                    .OrderByAsc(c => c.Id)
-                    .BeginFilter()
-                        .Condition(c => c.RES_MEAS.TimeMeas, FilterOperator.LessEqual, dateMax)
-                         .And()
-                        .Condition(c => c.RES_MEAS.TimeMeas, FilterOperator.GreaterEqual, dateMin)
-                         .And()
-                        .Condition(c => c.RES_MEAS.TypeMeasurements, FilterOperator.Equal, typeMeasurements)
-                         .And()
-                        .Condition(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id, FilterOperator.In, listSensors[i].ToArray())
-                         .And()
-                        .Condition(c => c.FreqMeas, FilterOperator.Between, channelFrequencyMin_MHz, channelFrequencyMax_MHz)
-                    .EndFilter()
-                    .OnTop(100);
+                string currFileName = string.Empty;
+                var countAllRec = 0; 
+                var countRecInOneFile = 0; var indexNumFile = 0;
+                var lstMeasTask = new List<MeasTaskSpectrumOccupation>();
+                var lstMeasTaskIds = new List<long>();
+                var lstAllSensors = new List<Sensor>();
+                var typeMeasurements = "SpectrumOccupation";
+                var sensorIds = new long[CurrentSensors.Count];
 
-                    countResLevels = executor.Execute(webQueryResLevels);
-                    if (countResLevels > 0)
+                if (CurrentSensors != null)
+                {
+                    int idx = 0;
+                    foreach (ShortSensorViewModel sensor in CurrentSensors)
                     {
-                        var resLevelsArray = new IResLevels[countResLevels];
-                        var recordsResLevels = executor.ExecuteAndFetch(webQueryResLevels, readerResLevels =>
+                        sensorIds[idx] = sensor.Id;
+                        idx++;
+                    }
+                }
+
+                _waitForm = new FM.WaitForm();
+                _waitForm.SetMessage($"Please wait...");
+                _waitForm.TopMost = true;
+
+                Task.Run(() =>
+                {
+                    var listSensors = BreakDownElemBlocks.BreakDown(sensorIds);
+                    for (int i = 0; i < listSensors.Count; i++)
+                    {
+                        long countResLevels = 0;
+                        long offsetResLevels = 0;
+                        do
                         {
-                            while (readerResLevels.Read())
+                            var webQueryResLevels = dataLayer.GetBuilder<IResLevels>()
+                            .Read()
+                            .Select(
+                               c => c.Id, c => c.FreqMeas, c => c.OccupancySpect, c => c.VMinLvl, c => c.VMMaxLvl, c => c.ValueLvl, c => c.RES_MEAS.Id, c => c.RES_MEAS.TimeMeas, c => c.RES_MEAS.ScansNumber, c => c.RES_MEAS.TypeMeasurements, c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id,
+                               c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Name, c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id, c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name, c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId, c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Title)
+                            .OrderByAsc(c => c.Id)
+                            .Paginate(offsetResLevels, countMaxRecInPage)
+                            .BeginFilter()
+                                .Condition(c => c.RES_MEAS.TimeMeas, FilterOperator.LessEqual, DateStopExport.Value)
+                                 .And()
+                                .Condition(c => c.RES_MEAS.TimeMeas, FilterOperator.GreaterEqual, DateStartExport.Value)
+                                 .And()
+                                .Condition(c => c.RES_MEAS.TypeMeasurements, FilterOperator.Equal, typeMeasurements)
+                                 .And()
+                                .Condition(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id, FilterOperator.In, listSensors[i].ToArray())
+                                 .And()
+                                .Condition(c => c.FreqMeas, FilterOperator.Between, (float)FreqStartExport.Value, (float)FreqStopExport.Value)
+                            .EndFilter();
+
+
+                            var recordsResLevels = executor.ExecuteAndFetch(webQueryResLevels, readerResLevels =>
                             {
-                                if (!lstMeasTaskIds.Contains(readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id)))
+                                countResLevels = readerResLevels.Count;
+                                if (countResLevels > 0)
                                 {
-                                    lstMeasTaskIds.Add(readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id));
-
-
-                                    var measTask = new MeasTaskSpectrumOccupation();
-                                    measTask.Id = new MeasTaskIdentifier();
-                                    measTask.Id.Value = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
-                                    measTask.Name = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Name);
-
-
-                                    MeasurementType typeMeas;
-                                    if (Enum.TryParse<MeasurementType>(readerResLevels.GetValue(c => c.RES_MEAS.TypeMeasurements), out typeMeas))
+                                    while (readerResLevels.Read())
                                     {
-                                        measTask.TypeMeasurements = typeMeas;
-                                    }
-                                    IReadQuery<IMeasOther> webQueryMeasOther = null;
+                                        var taskId = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id);
+                                        var sensorId = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id);
 
-                                    if (SpectrumOccupationTypeVal != SpectrumOccupationType.All)
-                                    {
-                                        webQueryMeasOther = dataLayer.GetBuilder<IMeasOther>()
-                                       .Read()
-                                       .Select(
-                                       c => c.Id,
-                                       c => c.LevelMinOccup,
-                                       c => c.TypeSpectrumOccupation,
-                                       c => c.Nchenal
-                                       )
-                                       .OrderByAsc(c => c.Id)
-                                       .BeginFilter()
-                                           .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id))
-                                           .And()
-                                           .Condition(c => c.TypeSpectrumOccupation, FilterOperator.Equal, SpectrumOccupationTypeVal.ToString())
-                                       .EndFilter()
-                                       .OnTop(1);
-                                    }
-                                    else
-                                    {
-                                        webQueryMeasOther = dataLayer.GetBuilder<IMeasOther>()
-                                        .Read()
-                                        .Select(
-                                        c => c.Id,
-                                        c => c.LevelMinOccup,
-                                        c => c.TypeSpectrumOccupation,
-                                        c => c.Nchenal
-                                        )
-                                        .OrderByAsc(c => c.Id)
-                                        .BeginFilter()
-                                            .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id))
-                                        .EndFilter()
-                                        .OnTop(1);
-                                    }
-
-                                    var countMeasOthers = executor.Execute(webQueryMeasOther);
-                                    if (countMeasOthers > 0)
-                                    {
-                                        measTask.SpectrumOccupationParameters = new SpectrumOccupationParameters();
-                                        var recordsMeasOther = executor.ExecuteAndFetch(webQueryMeasOther, readerMeasOther =>
+                                        if (!lstMeasTaskIds.Contains(taskId))
                                         {
-                                            while (readerMeasOther.Read())
+                                            lstMeasTaskIds.Add(taskId);
+                                            var measTask = new MeasTaskSpectrumOccupation();
+                                            measTask.Id = new MeasTaskIdentifier();
+                                            measTask.Id.Value = taskId;
+                                            measTask.Name = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Name);
+
+                                            MeasurementType typeMeas;
+                                            if (Enum.TryParse<MeasurementType>(readerResLevels.GetValue(c => c.RES_MEAS.TypeMeasurements), out typeMeas))
                                             {
-                                                Atdi.DataModels.Sdrns.Server.SpectrumOccupationType spectrumOccupationType;
-                                                if (Enum.TryParse<Atdi.DataModels.Sdrns.Server.SpectrumOccupationType>(readerMeasOther.GetValue(c => c.TypeSpectrumOccupation), out spectrumOccupationType))
-                                                {
-                                                    measTask.SpectrumOccupationParameters.TypeSpectrumOccupation = spectrumOccupationType;
-                                                }
-                                                measTask.SpectrumOccupationParameters.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
-                                                measTask.SpectrumOccupationParameters.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
-                                                break;
+                                                measTask.TypeMeasurements = typeMeas;
                                             }
-                                            return true;
-                                        });
+                                            IReadQuery<IMeasOther> webQueryMeasOther = null;
 
-
-                                        var webQueryMeasFreqParam = dataLayer.GetBuilder<IMeasFreqParam>()
-                                       .Read()
-                                       .Select(
-                                       c => c.Id,
-                                       c => c.Mode,
-                                       c => c.Rgl,
-                                       c => c.Rgu,
-                                       c => c.Step
-                                       )
-                                       .OrderByAsc(c => c.Id)
-                                       .BeginFilter()
-                                           .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id))
-                                       .EndFilter()
-                                       .OnTop(1);
-
-
-                                        var countMeasFreqParam = executor.Execute(webQueryMeasFreqParam);
-                                        var recordsMeasFreqParam = executor.ExecuteAndFetch(webQueryMeasFreqParam, readerMeasFreqParam =>
-                                        {
-                                            measTask.MeasFreqParam = new MeasFreqParam();
-                                            while (readerMeasFreqParam.Read())
+                                            if (SpectrumOccupationTypeVal != SpectrumOccupationType.All)
                                             {
-                                                measTask.MeasFreqParam.Step = readerMeasFreqParam.GetValue(c => c.Step);
-                                                measTask.MeasFreqParam.RgU = readerMeasFreqParam.GetValue(c => c.Rgu);
-                                                measTask.MeasFreqParam.RgL = readerMeasFreqParam.GetValue(c => c.Rgl);
-                                                FrequencyMode frequencyMode;
-                                                if (Enum.TryParse<FrequencyMode>(readerMeasFreqParam.GetValue(c => c.Mode), out frequencyMode))
-                                                {
-                                                    measTask.MeasFreqParam.Mode = frequencyMode;
-                                                }
-                                                break;
+                                                webQueryMeasOther = dataLayer.GetBuilder<IMeasOther>()
+                                               .Read()
+                                               .Select(
+                                               c => c.Id, c => c.LevelMinOccup, c => c.TypeSpectrumOccupation, c => c.Nchenal)
+                                               .OrderByAsc(c => c.Id)
+                                               .BeginFilter()
+                                                   .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, taskId)
+                                                   .And()
+                                                   .Condition(c => c.TypeSpectrumOccupation, FilterOperator.Equal, SpectrumOccupationTypeVal.ToString())
+                                               .EndFilter()
+                                               .OnTop(1);
                                             }
-                                            return true;
-                                        });
-
-
-                                        var webQueryMeasDtParam = dataLayer.GetBuilder<IMeasDtParam>()
-                                   .Read()
-                                   .Select(
-                                   c => c.Id,
-                                   c => c.Mode,
-                                   c => c.Demod,
-                                   c => c.DetectType,
-                                   c => c.Ifattenuation,
-                                   c => c.MeasTime,
-                                   c => c.NumberTotalScan,
-                                   c => c.Preamplification,
-                                   c => c.Rbw,
-                                   c => c.ReferenceLevel,
-                                   c => c.Rfattenuation,
-                                   c => c.SwNumber,
-                                   c => c.Vbw
-                                   )
-                                   .OrderByAsc(c => c.Id)
-                                   .BeginFilter()
-                                       .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id))
-                                   .EndFilter()
-                                   .OnTop(1);
-
-                                        var countMeasDtParam = executor.Execute(webQueryMeasDtParam);
-                                        var recordsMeasDtParam = executor.ExecuteAndFetch(webQueryMeasDtParam, readerMeasDtParam =>
-                                        {
-                                            measTask.MeasDtParam = new MeasDtParam();
-                                            while (readerMeasDtParam.Read())
+                                            else
                                             {
-                                                measTask.MeasDtParam.Demod = readerMeasDtParam.GetValue(c => c.Demod);
-                                                MeasurementMode measurementMode;
-                                                if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out measurementMode))
-                                                {
-                                                    measTask.MeasDtParam.Mode = measurementMode;
-                                                }
-                                                DetectingType detectingType;
-                                                if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectingType))
-                                                {
-                                                    measTask.MeasDtParam.DetectType = detectingType;
-                                                }
-                                                measTask.MeasDtParam.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation);
-                                                measTask.MeasDtParam.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
-                                                measTask.MeasDtParam.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
-                                                measTask.MeasDtParam.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification);
-                                                measTask.MeasDtParam.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
-                                                measTask.MeasDtParam.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
-                                                measTask.MeasDtParam.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation);
-                                                measTask.MeasDtParam.SwNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
-                                                measTask.MeasDtParam.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
-                                                break;
+                                                webQueryMeasOther = dataLayer.GetBuilder<IMeasOther>()
+                                                .Read()
+                                                .Select(
+                                                c => c.Id, c => c.LevelMinOccup, c => c.TypeSpectrumOccupation, c => c.Nchenal)
+                                                .OrderByAsc(c => c.Id)
+                                                .BeginFilter()
+                                                    .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, taskId)
+                                                .EndFilter()
+                                                .OnTop(1);
                                             }
-                                            return true;
-                                        });
 
-                                        if (!lstSensorsIds.Contains(readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id)))
-                                        {
-                                            lstSensorsIds.Add(readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id));
-
-                                            var sensor = new Sensor();
-                                            sensor.Id = new SensorIdentifier();
-                                            sensor.Id.Value = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id); ;
-                                            sensor.Name = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name);
-                                            sensor.Equipment = new SensorEquip();
-                                            sensor.Equipment.TechId = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId);
-
-
-                                            var sensorLocation = new SensorLocation();
-                                            var webQuerySensorLocation = dataLayer.GetBuilder<ISensorLocation>()
-                                         .Read()
-                                         .Select(
-                                         c => c.Id,
-                                         c => c.Lon,
-                                         c => c.Lat,
-                                         c => c.Status,
-                                         c => c.Asl,
-                                         c => c.DateCreated
-                                         )
-                                         .OrderByAsc(c => c.Id)
-                                         .BeginFilter()
-                                             .Condition(c => c.SENSOR.Id, FilterOperator.Equal, readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id))
-                                             .And()
-                                             .Condition(c => c.SENSOR.Status, FilterOperator.Equal, "A")
-                                         .EndFilter()
-                                         .OnTop(1);
-
-                                            var recordsSensorLocation = executor.ExecuteAndFetch(webQuerySensorLocation, readerSensorLocation =>
-                                            {
-                                                while (readerSensorLocation.Read())
+                                            long cntMeasOther = 0;
+                                            measTask.SpectrumOccupationParameters = new SpectrumOccupationParameters();
+                                            var recordsMeasOther = executor.ExecuteAndFetch(webQueryMeasOther, readerMeasOther =>
                                                 {
-                                                    sensorLocation.ASL = readerSensorLocation.GetValue(c => c.Asl);
-                                                    sensorLocation.DataCreated = readerSensorLocation.GetValue(c => c.DateCreated);
-                                                    sensorLocation.Lon = readerSensorLocation.GetValue(c => c.Lon);
-                                                    sensorLocation.Lat = readerSensorLocation.GetValue(c => c.Lat);
-                                                    sensorLocation.Status = readerSensorLocation.GetValue(c => c.Status);
+                                                    cntMeasOther = readerMeasOther.Count;
+                                                    while (readerMeasOther.Read())
+                                                    {
+                                                        Atdi.DataModels.Sdrns.Server.SpectrumOccupationType spectrumOccupationType;
+                                                        if (Enum.TryParse<Atdi.DataModels.Sdrns.Server.SpectrumOccupationType>(readerMeasOther.GetValue(c => c.TypeSpectrumOccupation), out spectrumOccupationType))
+                                                        {
+                                                            measTask.SpectrumOccupationParameters.TypeSpectrumOccupation = spectrumOccupationType;
+                                                        }
+                                                        measTask.SpectrumOccupationParameters.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
+                                                        measTask.SpectrumOccupationParameters.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
+                                                        break;
+                                                    }
+                                                    return true;
+                                                });
+
+                                            if (cntMeasOther == 0)
+                                            {
+                                                continue;
+                                            }
+
+
+
+                                            var webQueryMeasFreqParam = dataLayer.GetBuilder<IMeasFreqParam>()
+                                               .Read()
+                                               .Select(
+                                               c => c.Id, c => c.Mode, c => c.Rgl, c => c.Rgu, c => c.Step)
+                                               .OrderByAsc(c => c.Id)
+                                               .BeginFilter()
+                                                   .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, taskId)
+                                               .EndFilter()
+                                               .OnTop(1);
+
+
+                                            var recordsMeasFreqParam = executor.ExecuteAndFetch(webQueryMeasFreqParam, readerMeasFreqParam =>
+                                                {
+                                                    measTask.MeasFreqParam = new MeasFreqParam();
+                                                    while (readerMeasFreqParam.Read())
+                                                    {
+                                                        measTask.MeasFreqParam.Step = readerMeasFreqParam.GetValue(c => c.Step);
+                                                        measTask.MeasFreqParam.RgU = readerMeasFreqParam.GetValue(c => c.Rgu);
+                                                        measTask.MeasFreqParam.RgL = readerMeasFreqParam.GetValue(c => c.Rgl);
+                                                        FrequencyMode frequencyMode;
+                                                        if (Enum.TryParse<FrequencyMode>(readerMeasFreqParam.GetValue(c => c.Mode), out frequencyMode))
+                                                        {
+                                                            measTask.MeasFreqParam.Mode = frequencyMode;
+                                                        }
+                                                        break;
+                                                    }
+                                                    return true;
+                                                });
+
+
+                                            var webQueryMeasDtParam = dataLayer.GetBuilder<IMeasDtParam>()
+                                           .Read()
+                                           .Select(
+                                           c => c.Id, c => c.Mode, c => c.Demod, c => c.DetectType, c => c.Ifattenuation, c => c.MeasTime, c => c.NumberTotalScan, c => c.Preamplification, c => c.Rbw, c => c.ReferenceLevel, c => c.Rfattenuation, c => c.SwNumber, c => c.Vbw)
+                                           .OrderByAsc(c => c.Id)
+                                           .BeginFilter()
+                                               .Condition(c => c.MEAS_TASK.Id, FilterOperator.Equal, taskId)
+                                           .EndFilter()
+                                           .OnTop(1);
+
+
+                                            var recordsMeasDtParam = executor.ExecuteAndFetch(webQueryMeasDtParam, readerMeasDtParam =>
+                                            {
+                                                measTask.MeasDtParam = new MeasDtParam();
+                                                while (readerMeasDtParam.Read())
+                                                {
+                                                    measTask.MeasDtParam.Demod = readerMeasDtParam.GetValue(c => c.Demod);
+                                                    MeasurementMode measurementMode;
+                                                    if (Enum.TryParse<MeasurementMode>(readerMeasDtParam.GetValue(c => c.Mode), out measurementMode))
+                                                    {
+                                                        measTask.MeasDtParam.Mode = measurementMode;
+                                                    }
+                                                    DetectingType detectingType;
+                                                    if (Enum.TryParse<DetectingType>(readerMeasDtParam.GetValue(c => c.DetectType), out detectingType))
+                                                    {
+                                                        measTask.MeasDtParam.DetectType = detectingType;
+                                                    }
+                                                    measTask.MeasDtParam.IfAttenuation = readerMeasDtParam.GetValue(c => c.Ifattenuation);
+                                                    measTask.MeasDtParam.MeasTime = readerMeasDtParam.GetValue(c => c.MeasTime);
+                                                    measTask.MeasDtParam.NumberTotalScan = readerMeasDtParam.GetValue(c => c.NumberTotalScan);
+                                                    measTask.MeasDtParam.Preamplification = readerMeasDtParam.GetValue(c => c.Preamplification);
+                                                    measTask.MeasDtParam.RBW = readerMeasDtParam.GetValue(c => c.Rbw);
+                                                    measTask.MeasDtParam.ReferenceLevel = readerMeasDtParam.GetValue(c => c.ReferenceLevel);
+                                                    measTask.MeasDtParam.RfAttenuation = readerMeasDtParam.GetValue(c => c.Rfattenuation);
+                                                    measTask.MeasDtParam.SwNumber = readerMeasDtParam.GetValue(c => c.SwNumber);
+                                                    measTask.MeasDtParam.VBW = readerMeasDtParam.GetValue(c => c.Vbw);
                                                     break;
                                                 }
                                                 return true;
                                             });
 
-                                            sensor.Locations = new SensorLocation[1] { sensorLocation };
-                                            lstSensors.Add(sensor);
+
+                                            var lstMeasSensor = new List<MeasSensor>();
+                                            var lstSensors = new List<Sensor>();
+                                            var lstSensorIds = new List<long>();
+
+                                            var webQuerySensor = dataLayer.GetBuilder<ISubTaskSensor>()
+                                                .Read()
+                                                .Select(
+                                                c => c.Id, c => c.SUBTASK.MEAS_TASK.Id, c => c.SENSOR.Id, c => c.SENSOR.Name, c => c.SENSOR.TechId)
+                                                .OrderByAsc(c => c.Id)
+                                                .BeginFilter()
+                                                .Condition(c => c.SUBTASK.MEAS_TASK.Id, FilterOperator.Equal, taskId)
+                                                .EndFilter();
+                                            var recordswebQuerySensor = executor.ExecuteAndFetch(webQuerySensor, readerSubTaskSensor =>
+                                                {
+                                                    while (readerSubTaskSensor.Read())
+                                                    {
+                                                        if (!lstSensorIds.Contains(readerSubTaskSensor.GetValue(c => c.SENSOR.Id)))
+                                                        {
+                                                            lstSensorIds.Add(readerSubTaskSensor.GetValue(c => c.SENSOR.Id));
+
+                                                            var sensor = new Sensor();
+                                                            sensor.Id = new SensorIdentifier();
+                                                            sensor.Id.Value = readerSubTaskSensor.GetValue(c => c.SENSOR.Id);
+                                                            sensor.Name = readerSubTaskSensor.GetValue(c => c.SENSOR.Name);
+                                                            sensor.Equipment = new SensorEquip();
+                                                            sensor.Equipment.TechId = readerSubTaskSensor.GetValue(c => c.SENSOR.TechId);
+
+                                                            var sensorLocation = new SensorLocation();
+                                                            var webQuerySensorLocation = dataLayer.GetBuilder<ISensorLocation>()
+                                                            .Read()
+                                                            .Select(
+                                                            c => c.Id, c => c.Lon, c => c.Lat, c => c.Status, c => c.Asl, c => c.DateCreated)
+                                                            .OrderByAsc(c => c.Id)
+                                                            .BeginFilter()
+                                                                .Condition(c => c.SENSOR.Id, FilterOperator.Equal, sensor.Id.Value)
+                                                                .And()
+                                                                .Condition(c => c.SENSOR.Status, FilterOperator.Equal, "A")
+                                                            .EndFilter()
+                                                            .OnTop(1);
+
+                                                            var recordsSensorLocation = executor.ExecuteAndFetch(webQuerySensorLocation, readerSensorLocation =>
+                                                            {
+                                                                while (readerSensorLocation.Read())
+                                                                {
+                                                                    sensorLocation.ASL = readerSensorLocation.GetValue(c => c.Asl);
+                                                                    sensorLocation.DataCreated = readerSensorLocation.GetValue(c => c.DateCreated);
+                                                                    sensorLocation.Lon = readerSensorLocation.GetValue(c => c.Lon);
+                                                                    sensorLocation.Lat = readerSensorLocation.GetValue(c => c.Lat);
+                                                                    sensorLocation.Status = readerSensorLocation.GetValue(c => c.Status);
+                                                                    break;
+                                                                }
+                                                                return true;
+                                                            });
+
+                                                            sensor.Locations = new SensorLocation[1] { sensorLocation };
+                                                            lstSensors.Add(sensor);
+
+                                                            if (lstAllSensors.Find(x => x.Id.Value == sensor.Id.Value) == null)
+                                                            {
+                                                                if (listSensors[i].Contains(sensor.Id.Value))
+                                                                {
+                                                                    lstAllSensors.Add(sensor);
+                                                                }
+                                                            }
+                                                            if (listSensors[i].Contains(sensor.Id.Value))
+                                                            {
+
+                                                                for (int j = 0; j < lstSensors.Count; j++)
+                                                                {
+                                                                    var measSensor = new MeasSensor()
+                                                                    {
+                                                                        SensorName = lstSensors[j].Name,
+                                                                        SensorId = new MeasSensorIdentifier()
+                                                                        {
+                                                                            Value = lstSensors[j].Id.Value
+                                                                        },
+                                                                        SensorTechId = lstSensors[j].Equipment.TechId,
+                                                                    };
+                                                                    lstMeasSensor.Add(measSensor);
+                                                                }
+                                                            }
+                                                        }
+                                                    };
+                                                    return true;
+                                                });
+
+                                            if (lstMeasSensor.Count > 0)
+                                            {
+                                                measTask.Sensors = lstMeasSensor.ToArray();
+                                                lstMeasTask.Add(measTask);
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        var tskFind = lstMeasTask.Find(x => x.Id.Value == taskId);
+                                        if (tskFind != null)
+                                        {
+                                            if ((tskFind.SpectrumOccupationParameters != null) && (tskFind.MeasFreqParam != null))
+                                            {
+                                                for (int j = 0; j < tskFind.Sensors.Length; j++)
+                                                {
+                                                    double lon = -1;
+                                                    double lat = -1;
+                                                    string sensorName = "";
+                                                    var sensorFnd = lstAllSensors.Find(x => x.Id.Value == tskFind.Sensors[j].SensorId.Value);
+                                                    if ((sensorFnd != null) && (sensorFnd.Locations != null) && (sensorFnd.Locations.Length > 0))
+                                                    {
+                                                        if (sensorFnd.Locations[0].Lon != null)
+                                                        {
+                                                            lon = sensorFnd.Locations[0].Lon.Value;
+                                                        }
+                                                        if (sensorFnd.Locations[0].Lat != null)
+                                                        {
+                                                            lat = sensorFnd.Locations[0].Lat.Value;
+                                                        }
+                                                        sensorName = sensorFnd.Name;
+                                                    }
+                                                    if ((countRecInOneFile == 0) || (countRecInOneFile == countMaxRecordInCsvFile))
+                                                    {
+                                                        currFileName = ExportDirectoryName + $"\\SpectrumOccupation_{Guid.NewGuid().ToString()}_{DateTime.Now.ToString("dd_MM_yyyy")}_{indexNumFile}.csv";
+                                                        indexNumFile++;
+                                                        countRecInOneFile = 0;
+                                                        System.IO.File.AppendAllLines(currFileName, new string[] {"Id;"+
+                                                                                            "Частота, МГц;" +
+                                                                                            "Занятість спектру %;" +
+                                                                                            "Рівень Мінімальний, дБм;" +
+                                                                                            "Рівень Середній, дБм;" +
+                                                                                            "Рівень Максимальний, дБм;" +
+                                                                                            "Дата (число);" +
+                                                                                            "Дата (години);" +
+                                                                                            "Кількість вимірів;" +
+                                                                                            "Ширина каналу, кГц;" +
+                                                                                            "Тип ЗС;" +
+                                                                                            "Мінімальний рівень ЗС, дБм;" +
+                                                                                            "ID завдання;" +
+                                                                                            "Назва сенсора;" +
+                                                                                            "Довгота сенсора, град;" +
+                                                                                            "Широта сенсора, град" }, System.Text.Encoding.UTF8);
+                                                    }
+
+                                                    System.IO.File.AppendAllLines(currFileName, new string[] {
+                                                       $"{readerResLevels.GetValue(c => c.Id)};" +
+                                                       $"{readerResLevels.GetValue(c => c.FreqMeas)};" +
+                                                       $"{readerResLevels.GetValue(c => c.OccupancySpect)};" +
+                                                       $"{readerResLevels.GetValue(c => c.VMinLvl)};" +
+                                                       $"{readerResLevels.GetValue(c => c.ValueLvl)};" +
+                                                       $"{ readerResLevels.GetValue(c => c.VMMaxLvl)};" +
+                                                       $"{readerResLevels.GetValue(c => c.RES_MEAS.TimeMeas).Value.ToString("dd.MM.yyyy")};" +
+                                                       $"{readerResLevels.GetValue(c => c.RES_MEAS.TimeMeas).Value.ToString("MM:HH:ss")};" +
+                                                       $"{readerResLevels.GetValue(c => c.RES_MEAS.ScansNumber)};{tskFind.MeasFreqParam.Step};" +
+                                                       $"{tskFind.SpectrumOccupationParameters.TypeSpectrumOccupation.ToString()};" +
+                                                       $"{tskFind.SpectrumOccupationParameters.LevelMinOccup};" +
+                                                       $"{taskId};" +
+                                                       $"{sensorName};" +
+                                                       $"{XICSM.ICSControlClient.ViewModels.Reports.ConvertCoordinates.DecToDmsToString2(lon, Coordinates.EnumCoordLine.Lon)};" +
+                                                       $"{XICSM.ICSControlClient.ViewModels.Reports.ConvertCoordinates.DecToDmsToString2(lat, Coordinates.EnumCoordLine.Lat)}" }, System.Text.Encoding.UTF8);
+
+                                                    countRecInOneFile++;
+                                                    countAllRec++;
+                                                    if (threshHoldExportSO == countAllRec)
+                                                    {
+                                                        isThreshHoldExportSO = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (isThreshHoldExportSO)
+                                        {
+                                            break;
                                         }
                                     }
-                                    lstMeasTask.Add(measTask);
                                 }
-                            }
-                            return true;
-                        });
+                                return true;
+                            });
+                            offsetResLevels += countResLevels;
+                        }
+                        while ((countMaxRecInPage == countResLevels) && (isThreshHoldExportSO==false));
+                        if (isThreshHoldExportSO==true)
+                        {
+                            break;
+                        }
                     }
+                }).ContinueWith(task =>
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        if (_waitForm != null)
+                        {
+                            _waitForm.Close();
+                            _waitForm = null;
+                        }
+                    }));
+                });
+                _waitForm.ShowDialog();
+            }
+            catch (Exception e)
+            {
+                isSuccess = false;
+                MessageBox.Show(e.Message);
+            }
+            finally
+            {
+                if (_waitForm != null)
+                {
+                    _waitForm.Close();
+                    _waitForm = null;
                 }
-                while (countMaxRec == countResLevels);
+            }
+            if (isSuccess)
+            {
+                MessageBox.Show("Your file(s) was generated and its ready for use.");
             }
         }
     }
