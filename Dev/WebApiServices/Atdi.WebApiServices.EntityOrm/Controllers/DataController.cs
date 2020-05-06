@@ -7,6 +7,7 @@ using Atdi.DataModels.DataConstraint;
 using Atdi.DataModels.EntityOrm;
 using Atdi.Platform.Logging;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -65,8 +66,20 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
         [Route("$DataSet")]
         public IHttpActionResult GetDataSet([FromBody] DTO.DataSetRequest query)
         {
-	        try
-	        {
+	        
+			try
+			{
+				try
+				{
+					var c = 0;
+					var d = 1 / c;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+					throw new InvalidOperationException("New exception", e);
+				}
+				
 				if (!this.CheckQuery(query, out var message))
 				{
 					return BadRequest(message);
@@ -149,7 +162,9 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 	        catch (Exception e)
 	        {
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetDataSet", e);
-				throw;
+				//throw;
+				//return this.BadRequest("Bad request message!!!!");
+				return this.InternalServerError(e);
 	        }
             
         }
@@ -234,8 +249,8 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
             catch (Exception e)
             {
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetDataRecord", e);
-				throw;
-            }
+				return this.InternalServerError(e);
+			}
             
         }
 
@@ -318,8 +333,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			catch (Exception e)
 			{
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"CreateDataRecord", e);
-				return BadRequest(e.ToString());
-				//return InternalServerError(e);
+				return this.InternalServerError(e);
 			}
 			
 		}
@@ -376,7 +390,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			catch (Exception e)
 			{
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"UpdateDataRecord", e);
-				throw;
+				return this.InternalServerError(e);
 			}
 			
 		}
@@ -434,7 +448,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			catch (Exception e)
 			{
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"UpdateDataRecords", e);
-				throw;
+				return this.InternalServerError(e);
 			}
 			
 		}
@@ -533,7 +547,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			catch (Exception e)
 			{
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"ApplyDataRecord", e);
-				throw;
+				return this.InternalServerError(e);
 			}
 
 			
@@ -579,7 +593,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			catch (Exception e)
 			{
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"DeleteDataRecords", e);
-				throw;
+				return this.InternalServerError(e);
 			}
 			
 		}
@@ -624,7 +638,7 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 			catch (Exception e)
 			{
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"DeleteDataRecord", e);
-				throw;
+				return this.InternalServerError(e);
 			}
 			
 		}
@@ -719,8 +733,8 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 	        catch (Exception e)
 	        {
 				this.Logger.Exception((EventContext)"EntityOrmWebApi", (EventCategory)"GetFieldValue", e);
-				throw;
-	        }
+				return this.InternalServerError(e);
+			}
             
         }
 

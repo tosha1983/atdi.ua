@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityOrmWebApiException.cs" />
     <Compile Include="FilterOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebApiDataContext.cs" />
