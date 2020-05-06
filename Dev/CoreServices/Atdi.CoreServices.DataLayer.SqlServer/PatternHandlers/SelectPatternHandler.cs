@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.DataModels.DataConstraint;
 using PS = Atdi.Contracts.CoreServices.DataLayer.Patterns;
 
 namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
@@ -111,43 +112,47 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
         {
             var sqlColumns = new List<string>();
             var sqlJoins = new List<string[]>();
-            var sqlFrom = string.Empty;
             var sqlWhere = string.Empty;
             var sqlDistinct = string.Empty;
             var sqlLimit = string.Empty;
             string[] sqlOrderBy = null;
+            long fetch = -1;
 
-            if (expression.Destinct)
+			if (expression.Distinct)
             {
                 sqlDistinct = context.Builder.CreateDistinct();
             }
 
-            if (expression.Limit != null)
+            if (expression.Limit != null && expression.OffsetRows <= -1)
             {
                 sqlLimit = this.BuildLimitExpression(expression, context);
             }
+            else if (expression.Limit != null && expression.Limit.Type == LimitValueType.Records)
+            {
+	            fetch = expression.Limit.Value;
+            }
 
-            for (int i = 0; i < expression.Columns.Length; i++)
+			for (var i = 0; i < expression.Columns.Length; i++)
             {
                 var column = expression.Columns[i];
                 if (column is PS.MemberColumnExpression memberColumn)
                 {
-                    string columnAlias = context.EnsureColumnAlias(memberColumn);
-                    string sourceAlias = context.EnsureSourceAlias(memberColumn.Member.Owner);
+                    var columnAlias = context.EnsureColumnAlias(memberColumn);
+                    var sourceAlias = context.EnsureSourceAlias(memberColumn.Member.Owner);
                     var sqlColumn = context.Builder.CreateSelectColumn(sourceAlias, memberColumn.Member.Name, columnAlias);
                     sqlColumns.Add(sqlColumn);
                 }
             }
 
-            sqlFrom = context.BuildFromExpression(expression.From);
+            var sqlFrom = context.BuildFromExpression(expression.From);
 
             if (expression.Joins != null && expression.Joins.Length > 0)
             {
-                for (int i = 0; i < expression.Joins.Length; i++)
+                for (var i = 0; i < expression.Joins.Length; i++)
                 {
                     var join = expression.Joins[i];
-                    var sqlJoion = context.BuildJoinExpression(join);
-                    sqlJoins.Add(sqlJoion);
+                    var sqlJoin = context.BuildJoinExpression(join);
+                    sqlJoins.Add(sqlJoin);
                 }
             }
 
@@ -161,8 +166,7 @@ namespace Atdi.CoreServices.DataLayer.SqlServer.PatternHandlers
                 sqlOrderBy = this.BuildOrderByExpression(expression.Sorting, context);
             }
 
-            context.Builder.Select(sqlColumns.ToArray(), sqlFrom, sqlJoins.ToArray(), sqlWhere, sqlOrderBy, sqlDistinct, sqlLimit);
-
+            context.Builder.Select(sqlColumns.ToArray(), sqlFrom, sqlJoins.ToArray(), sqlWhere, sqlOrderBy, sqlDistinct, sqlLimit, expression.OffsetRows, fetch);
         }
 
         private string BuildLimitExpression(PS.SelectExpression expression, SelectBuildingContex context)
