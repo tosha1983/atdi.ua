@@ -245,42 +245,43 @@ namespace XICSM.ICSControlClient.ViewModels
 
         private void ReadData()
         {
-            bool isSuccess = true;
-            try
+            bool isSuccess = false;
+
+            var isThreshHoldExportSO = false;
+            var threshHoldExportSO = PluginHelper.GetThreshHoldExportSO();
+            var countMaxRecInPage = PluginHelper.GetMaxCountRecordInPage();
+            var countMaxRecordInCsvFile = PluginHelper.GetMaxCountRecordInCsvFile();
+            var endpoint = new WebApiEndpoint(new Uri(PluginHelper.GetWebAPIBaseAddress()), PluginHelper.GetWebAPIUrl());
+            var dataContext = new WebApiDataContext(PluginHelper.GetDataContext());
+            var dataLayer = new WebApiDataLayer();
+            var executor = dataLayer.GetExecutor(endpoint, dataContext);
+
+            string currFileName = string.Empty;
+            var countAllRec = 0;
+            var countRecInOneFile = 0; var indexNumFile = 0;
+            var lstMeasTask = new List<MeasTaskSpectrumOccupation>();
+            var lstMeasTaskIds = new List<long>();
+            var lstAllSensors = new List<Sensor>();
+            var typeMeasurements = "SpectrumOccupation";
+            var sensorIds = new long[CurrentSensors.Count];
+
+            if (CurrentSensors != null)
             {
-                var isThreshHoldExportSO = false;
-                var threshHoldExportSO = PluginHelper.GetThreshHoldExportSO();
-                var countMaxRecInPage = PluginHelper.GetMaxCountRecordInPage();
-                var countMaxRecordInCsvFile = PluginHelper.GetMaxCountRecordInCsvFile();
-                var endpoint = new WebApiEndpoint(new Uri(PluginHelper.GetWebAPIBaseAddress()), PluginHelper.GetWebAPIUrl());
-                var dataContext = new WebApiDataContext(PluginHelper.GetDataContext());
-                var dataLayer = new WebApiDataLayer();
-                var executor = dataLayer.GetExecutor(endpoint, dataContext);
-
-                string currFileName = string.Empty;
-                var countAllRec = 0; 
-                var countRecInOneFile = 0; var indexNumFile = 0;
-                var lstMeasTask = new List<MeasTaskSpectrumOccupation>();
-                var lstMeasTaskIds = new List<long>();
-                var lstAllSensors = new List<Sensor>();
-                var typeMeasurements = "SpectrumOccupation";
-                var sensorIds = new long[CurrentSensors.Count];
-
-                if (CurrentSensors != null)
+                int idx = 0;
+                foreach (ShortSensorViewModel sensor in CurrentSensors)
                 {
-                    int idx = 0;
-                    foreach (ShortSensorViewModel sensor in CurrentSensors)
-                    {
-                        sensorIds[idx] = sensor.Id;
-                        idx++;
-                    }
+                    sensorIds[idx] = sensor.Id;
+                    idx++;
                 }
+            }
 
-                _waitForm = new FM.WaitForm();
-                _waitForm.SetMessage($"Please wait...");
-                _waitForm.TopMost = true;
+            _waitForm = new FM.WaitForm();
+            _waitForm.SetMessage($"Please wait...");
+            _waitForm.TopMost = true;
 
-                Task.Run(() =>
+            Task.Run(() =>
+            {
+                try
                 {
                     var listSensors = BreakDownElemBlocks.BreakDown(sensorIds);
                     for (int i = 0; i < listSensors.Count; i++)
@@ -644,52 +645,57 @@ namespace XICSM.ICSControlClient.ViewModels
                             });
 
                             var subValue = threshHoldExportSO - countAllRec;
-                            if (subValue<= countMaxRecInPage)
+                            if (subValue <= countMaxRecInPage)
                             {
                                 countMaxRecInPage = subValue;
                             }
                             offsetResLevels += countResLevels;
                         }
-                        while ((countMaxRecInPage>0) && (isThreshHoldExportSO == false));
-                        if (isThreshHoldExportSO==true)
+                        while ((countMaxRecInPage > 0) && (isThreshHoldExportSO == false));
+                        if (isThreshHoldExportSO == true)
                         {
                             break;
                         }
                     }
-                }).ContinueWith(task =>
-                {
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        if (_waitForm != null)
-                        {
-                            _waitForm.Close();
-                            _waitForm = null;
-                        }
-                    }));
-                });
-                _waitForm.ShowDialog();
-            }
-            catch (EntityOrmWebApiException e)
-            {
-                isSuccess = false;
-                MessageBox.Show(e.ToString());
-            }
-            catch (Exception e)
-            {
-                isSuccess = false;
-                MessageBox.Show(e.ToString());
-            }
-            finally
-            {
-                if (_waitForm != null)
-                {
-                    _waitForm.Close();
-                    _waitForm = null;
                 }
-            }
+                catch (EntityOrmWebApiException e)
+                {
+                    isSuccess = false;
+                    MessageBox.Show(e.ToString());
+                }
+                catch (Exception e)
+                {
+                    isSuccess = false;
+                    MessageBox.Show(e.ToString());
+                }
+                finally
+                {
+                    if (_waitForm != null)
+                    {
+                        _waitForm.Close();
+                        _waitForm = null;
+                    }
+                }
+            }).ContinueWith(task =>
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    if (_waitForm != null)
+                    {
+                        _waitForm.Close();
+                        _waitForm = null;
+                    }
+                }));
+            });
+            _waitForm.ShowDialog();
+
             if (isSuccess)
             {
                 MessageBox.Show("Your file(s) was generated and its ready for use.");
+            }
+            else
+            {
+                MessageBox.Show("Errors occurred during export!");
             }
         }
     }
