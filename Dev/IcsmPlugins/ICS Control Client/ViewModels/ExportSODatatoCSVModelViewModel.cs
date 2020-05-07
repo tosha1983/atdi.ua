@@ -31,6 +31,8 @@ using Model = XICSM.ICSControlClient.Models;
 
 
 
+
+
 namespace XICSM.ICSControlClient.ViewModels
 {
     public class ExportSODatatoCSVModelViewModel : WpfViewModelBase
@@ -287,6 +289,11 @@ namespace XICSM.ICSControlClient.ViewModels
                         long offsetResLevels = 0;
                         do
                         {
+                            if ((threshHoldExportSO - countMaxRecInPage) < 0)
+                            {
+                                countMaxRecInPage = threshHoldExportSO;
+                            }
+
                             var webQueryResLevels = dataLayer.GetBuilder<IResLevels>()
                             .Read()
                             .Select(
@@ -618,6 +625,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                                                     countRecInOneFile++;
                                                     countAllRec++;
+                                                    isSuccess = true;
                                                     if (threshHoldExportSO == countAllRec)
                                                     {
                                                         isThreshHoldExportSO = true;
@@ -634,9 +642,15 @@ namespace XICSM.ICSControlClient.ViewModels
                                 }
                                 return true;
                             });
+
+                            var subValue = threshHoldExportSO - countAllRec;
+                            if (subValue<= countMaxRecInPage)
+                            {
+                                countMaxRecInPage = subValue;
+                            }
                             offsetResLevels += countResLevels;
                         }
-                        while ((countMaxRecInPage == countResLevels) && (isThreshHoldExportSO==false));
+                        while ((countMaxRecInPage>0) && (isThreshHoldExportSO == false));
                         if (isThreshHoldExportSO==true)
                         {
                             break;
@@ -655,10 +669,15 @@ namespace XICSM.ICSControlClient.ViewModels
                 });
                 _waitForm.ShowDialog();
             }
+            catch (EntityOrmWebApiException e)
+            {
+                isSuccess = false;
+                MessageBox.Show(e.ToString());
+            }
             catch (Exception e)
             {
                 isSuccess = false;
-                MessageBox.Show(e.Message);
+                MessageBox.Show(e.ToString());
             }
             finally
             {
