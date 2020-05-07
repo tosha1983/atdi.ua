@@ -253,8 +253,8 @@ namespace XICSM.ICSControlClient.ViewModels
             var countMaxRecordInCsvFile = PluginHelper.GetMaxCountRecordInCsvFile();
             var endpoint = new WebApiEndpoint(new Uri(PluginHelper.GetWebAPIBaseAddress()), PluginHelper.GetWebAPIUrl());
             var dataContext = new WebApiDataContext(PluginHelper.GetDataContext());
-            var dataLayer = new WebApiDataLayer();
-            var executor = dataLayer.GetExecutor(endpoint, dataContext);
+            var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+
 
             string currFileName = string.Empty;
             var countAllRec = 0;
@@ -315,7 +315,7 @@ namespace XICSM.ICSControlClient.ViewModels
                             .EndFilter();
 
 
-                            var recordsResLevels = executor.ExecuteAndFetch(webQueryResLevels, readerResLevels =>
+                            var recordsResLevels = dataLayer.Executor.ExecuteAndFetch(webQueryResLevels, readerResLevels =>
                             {
                                 countResLevels = readerResLevels.Count;
                                 if (countResLevels > 0)
@@ -369,7 +369,7 @@ namespace XICSM.ICSControlClient.ViewModels
 
                                             long cntMeasOther = 0;
                                             measTask.SpectrumOccupationParameters = new SpectrumOccupationParameters();
-                                            var recordsMeasOther = executor.ExecuteAndFetch(webQueryMeasOther, readerMeasOther =>
+                                            var recordsMeasOther = dataLayer.Executor.ExecuteAndFetch(webQueryMeasOther, readerMeasOther =>
                                                 {
                                                     cntMeasOther = readerMeasOther.Count;
                                                     while (readerMeasOther.Read())
@@ -404,7 +404,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                                .OnTop(1);
 
 
-                                            var recordsMeasFreqParam = executor.ExecuteAndFetch(webQueryMeasFreqParam, readerMeasFreqParam =>
+                                            var recordsMeasFreqParam = dataLayer.Executor.ExecuteAndFetch(webQueryMeasFreqParam, readerMeasFreqParam =>
                                                 {
                                                     measTask.MeasFreqParam = new MeasFreqParam();
                                                     while (readerMeasFreqParam.Read())
@@ -434,7 +434,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                            .OnTop(1);
 
 
-                                            var recordsMeasDtParam = executor.ExecuteAndFetch(webQueryMeasDtParam, readerMeasDtParam =>
+                                            var recordsMeasDtParam = dataLayer.Executor.ExecuteAndFetch(webQueryMeasDtParam, readerMeasDtParam =>
                                             {
                                                 measTask.MeasDtParam = new MeasDtParam();
                                                 while (readerMeasDtParam.Read())
@@ -477,7 +477,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                                 .BeginFilter()
                                                 .Condition(c => c.SUBTASK.MEAS_TASK.Id, FilterOperator.Equal, taskId)
                                                 .EndFilter();
-                                            var recordswebQuerySensor = executor.ExecuteAndFetch(webQuerySensor, readerSubTaskSensor =>
+                                            var recordswebQuerySensor = dataLayer.Executor.ExecuteAndFetch(webQuerySensor, readerSubTaskSensor =>
                                                 {
                                                     while (readerSubTaskSensor.Read())
                                                     {
@@ -505,7 +505,7 @@ namespace XICSM.ICSControlClient.ViewModels
                                                             .EndFilter()
                                                             .OnTop(1);
 
-                                                            var recordsSensorLocation = executor.ExecuteAndFetch(webQuerySensorLocation, readerSensorLocation =>
+                                                            var recordsSensorLocation = dataLayer.Executor.ExecuteAndFetch(webQuerySensorLocation, readerSensorLocation =>
                                                             {
                                                                 while (readerSensorLocation.Read())
                                                                 {
