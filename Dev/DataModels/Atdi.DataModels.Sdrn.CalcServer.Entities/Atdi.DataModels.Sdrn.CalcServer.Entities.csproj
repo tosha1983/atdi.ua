@@ -99,6 +99,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS.sql" />
+    <Content Include="DataLayer\Oracle\Tables\CALC.CALCTASKS_COVERAGEPROFILES.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCRESULTS_POINTFIELDSTRENGTH.sql" />
     <Content Include="DataLayer\SqlServer\Tables\CALC.CALCTASKS_POINTFIELDSTRENGTH_ARGS_DEF.sql" />
@@ -239,7 +243,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataLayer\Oracle\Functions\" />
-    <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
   </ItemGroup>
   <ItemGroup />

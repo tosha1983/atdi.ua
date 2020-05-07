@@ -50,59 +50,63 @@ namespace Atdi.AppUnits.Sdrn.Server.PrimaryHandlers.PipelineHandlers
                         using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
                         {
                             scope.BeginTran();
-
                             var builderUpdateMeasOther = this._dataLayer.GetBuilder<MD.IMeasOther>().Update();
                             builderUpdateMeasOther.Where(c => c.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
                             builderUpdateMeasOther.SetValue(c => c.LevelMinOccup, spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup);
-                            if (scope.Executor.Execute(builderUpdateMeasOther) > 0)
+                            scope.Executor.Execute(builderUpdateMeasOther);
+                            scope.Commit();
+                        }
+
+                        using (var scope = this._dataLayer.CreateScope<SdrnServerDataContext>())
+                        {
+                            scope.BeginTran();
+
+                            var freqSampleList = new List<DEV.FrequencySample>();
+                            var builderResMeasLevels = this._dataLayer.GetBuilder<MD.IResLevels>().From();
+                            builderResMeasLevels.Select(c => c.VMMaxLvl, c => c.VMinLvl, c => c.ValueLvl, c => c.ValueSpect, c => c.OccupancySpect, c => c.FreqMeas, c => c.LevelMinArr, c => c.SpectrumOccupationArr, c => c.Id);
+                            builderResMeasLevels.Where(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
+                            scope.Executor.Fetch(builderResMeasLevels, readerResMeasLevels =>
                             {
-                                var freqSampleList = new List<DEV.FrequencySample>();
-                                var builderResMeasLevels = this._dataLayer.GetBuilder<MD.IResLevels>().From();
-                                builderResMeasLevels.Select(c => c.VMMaxLvl, c => c.VMinLvl, c => c.ValueLvl, c => c.ValueSpect, c => c.OccupancySpect, c => c.FreqMeas, c => c.LevelMinArr, c => c.SpectrumOccupationArr, c => c.Id);
-                                builderResMeasLevels.Where(c => c.RES_MEAS.SUBTASK_SENSOR.SUBTASK.MEAS_TASK.Id, ConditionOperator.Equal, measTask.Id.Value);
-                                scope.Executor.Fetch(builderResMeasLevels, readerResMeasLevels =>
+                                while (readerResMeasLevels.Read())
                                 {
-                                    while (readerResMeasLevels.Read())
+                                    var spectrumOccupationArr = readerResMeasLevels.GetValue(c => c.SpectrumOccupationArr);
+                                    if ((spectrumOccupationArr != null) && (spectrumOccupationArr.Length > 0))
                                     {
-                                        var spectrumOccupationArr = readerResMeasLevels.GetValue(c => c.SpectrumOccupationArr);
-                                        if ((spectrumOccupationArr != null) && (spectrumOccupationArr.Length > 0))
+                                        var id = readerResMeasLevels.GetValue(c => c.Id);
+                                        if (readerResMeasLevels.GetValue(c => c.LevelMinArr) != null)
                                         {
-                                            var id = readerResMeasLevels.GetValue(c => c.Id);
-                                            if (readerResMeasLevels.GetValue(c => c.LevelMinArr) != null)
+                                            var subValue = (int)(spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup - readerResMeasLevels.GetValue(c => c.LevelMinArr));
+                                            if (subValue >= 0)
                                             {
-                                                var subValue = (int)(spectOccupationTask.SpectrumOccupationParameters.LevelMinOccup - readerResMeasLevels.GetValue(c => c.LevelMinArr));
-                                                if (subValue >= 0)
-                                                {
-                                                    if ((spectrumOccupationArr.Length - 1) >= subValue)
-                                                    {
-                                                        var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
-                                                        builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
-                                                        builderUpdateResLevels.SetValue(c => c.OccupancySpect, spectrumOccupationArr[subValue]);
-                                                        scope.Executor.Execute(builderUpdateResLevels);
-                                                    }
-                                                    else if ((spectrumOccupationArr.Length - 1) < subValue)
-                                                    {
-                                                        var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
-                                                        builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
-                                                        builderUpdateResLevels.SetValue(c => c.OccupancySpect, 0);
-                                                        scope.Executor.Execute(builderUpdateResLevels);
-                                                    }
-                                                }
-                                                else
+                                                if ((spectrumOccupationArr.Length - 1) >= subValue)
                                                 {
                                                     var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
                                                     builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
-                                                    builderUpdateResLevels.SetValue(c => c.OccupancySpect, 100);
+                                                    builderUpdateResLevels.SetValue(c => c.OccupancySpect, spectrumOccupationArr[subValue]);
+                                                    scope.Executor.Execute(builderUpdateResLevels);
+                                                }
+                                                else if ((spectrumOccupationArr.Length - 1) < subValue)
+                                                {
+                                                    var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                    builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                    builderUpdateResLevels.SetValue(c => c.OccupancySpect, 0);
                                                     scope.Executor.Execute(builderUpdateResLevels);
                                                 }
                                             }
+                                            else
+                                            {
+                                                var builderUpdateResLevels = this._dataLayer.GetBuilder<MD.IResLevels>().Update();
+                                                builderUpdateResLevels.Where(c => c.Id, ConditionOperator.Equal, id);
+                                                builderUpdateResLevels.SetValue(c => c.OccupancySpect, 100);
+                                                scope.Executor.Execute(builderUpdateResLevels);
+                                            }
                                         }
                                     }
-                                    return true;
-                                });
+                                }
+                                return true;
+                            });
+                            isSuccess = true;
 
-                                isSuccess = true;
-                            }
                             if (isSuccess == true)
                             {
                                 scope.Commit();

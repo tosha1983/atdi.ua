@@ -77,10 +77,12 @@ namespace Atdi.Contracts.CoreServices.DataLayer.Patterns
 
         public SortExpression[] Sorting { get; set; }
 
-        public bool Destinct { get; set; }
+        public bool Distinct { get; set; }
 
         public CS.DataLimit Limit { get; set; }
 
+
+		public long OffsetRows { get; set; }
 
     }
 

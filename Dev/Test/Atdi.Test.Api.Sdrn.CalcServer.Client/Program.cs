@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Atdi.Api.EntityOrm.WebClient;
 using Atdi.Test.Api.Sdrn.CalcServer.Client.Tasks;
+using DM = Atdi.DataModels.Sdrn.CalcServer.Entities;
 
 namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 {
@@ -20,7 +21,8 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			Console.WriteLine($"Press any key to start SDRN Calculation Server Client (AK) ...");
 			Console.ReadLine();
 
-			RunPointFieldStrengthCalcTask();
+			TestWebApiOrm();
+			//RunPointFieldStrengthCalcTask();
 
 			Console.ReadLine();
 			Console.ReadLine();
@@ -100,6 +102,44 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 			PointFieldStrengthCalcTask.Run(dataLayer, dataLayer.GetExecutor(endpoint, dataContext));
 		}
 
+		static void TestWebApiOrm()
+		{
+			try
+			{
+				var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
+				var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+
+				var dataLayer = new WebApiDataLayer(endpoint, dataContext);
+
+				var webQuery = dataLayer.GetBuilder<DM.IProject>()
+					.Read()
+					.Select(c => c.Id)
+					.Distinct()
+					.OrderByDesc(c => c.Id)
+					.Paginate(5, 5);
+
+				var result = dataLayer.Executor.ExecuteAndRead(webQuery, reader =>
+				{
+					return reader.GetValue(c => c.Id);
+				});
+
+				for (int i = 0; i < result.Length; i++)
+				{
+					Console.WriteLine($" {i:d3} = {result[i]}");
+				}
+			}
+			catch (EntityOrmWebApiException e)
+			{
+				Console.WriteLine(e);
+
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				
+			}
+			Console.ReadLine();
+		}
 		static long CreateProject()
 		{
 			var request = new DTO.RecordCreateRequest

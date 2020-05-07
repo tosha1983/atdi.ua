@@ -35,9 +35,9 @@ namespace Atdi.Test.Platform
 
                     //var calc = new CalclCrowed(logger);
                     // DataLayerTest.Run(resolver);
-                    // EntityOrmTest.Run(resolver);
+                     EntityOrmTest.Run(resolver);
 
-                    LoggerTest.Run(logger);
+                    //LoggerTest.Run(logger);
 
                 }
                 catch (Exception e)

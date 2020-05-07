@@ -18,6 +18,7 @@ namespace Atdi.CoreServices.EntityOrm
 
         private DataLimit _limit;
         private bool _isDistinct;
+        private long _offsetRows;
 
         public SelectQueryDescriptor(IEntityOrm entityOrm, IEntityMetadata entityMetadata)
         {
@@ -25,6 +26,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._selection = new QuerySelection(_root);
             this._condition = new QueryCondition(_root);
             this._sorting = new QuerySorting(_root);
+            this._offsetRows = -1;
         }
 
         public IEntityMetadata Entity => this._root.Entity;
@@ -32,6 +34,8 @@ namespace Atdi.CoreServices.EntityOrm
         public bool IsDistinct => this._isDistinct;
 
         public DataLimit Limit => this._limit;
+
+        public long OffsetRows => this._offsetRows;
 
         public IReadOnlyDictionary<string, FieldDescriptor> Cache => this._root.Cache;
 
@@ -69,7 +73,7 @@ namespace Atdi.CoreServices.EntityOrm
             this._isDistinct = true;
         }
 
-        public void SetLimit(int limitValue, LimitValueType limitType)
+        public void SetLimit(long limitValue, LimitValueType limitType)
         {
             if (this._limit == null)
             {
@@ -79,9 +83,14 @@ namespace Atdi.CoreServices.EntityOrm
             this._limit.Value = limitValue;
         }
 
-        public override string ToString()
+        public void SetOffsetRows(long count)
         {
-            return $"Root = [{this._root}], Selection = [{_selection}], Condition = [{_condition}], Sorting = [{_sorting}]";
+	        this._offsetRows = count;
+        }
+
+		public override string ToString()
+        {
+            return $"Root = [{this._root}], Selection = [{_selection}], Condition = [{_condition}], Sorting = [{_sorting}], OffsetRows={_offsetRows}";
         }
     }
 }

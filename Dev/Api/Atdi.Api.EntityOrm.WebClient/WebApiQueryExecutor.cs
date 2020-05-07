@@ -42,30 +42,24 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public long Execute(IWebApiQuery webQuery)
 		{
-			var handler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = handler.CreateRequest(webQuery);
+			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
+			var request = methodHandler.CreateRequest(webQuery);
 			request.Context = _dataContext.Name;
 
-			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, handler.WebMethodUrl), request)
-				.GetAwaiter()
-				.GetResult();
-			response.EnsureSuccessStatusCode();
-			var result = handler.Handle(response);
+			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
+			var result = methodHandler.Handle(response);
 
 			return result;
 		}
 
 		public TResult Execute<TResult>(IWebApiQuery webQuery)
 		{
-			var handler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = handler.CreateRequest(webQuery);
+			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
+			var request = methodHandler.CreateRequest(webQuery);
 			request.Context = _dataContext.Name;
 
-			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, handler.WebMethodUrl), request)
-				.GetAwaiter()
-				.GetResult();
-			response.EnsureSuccessStatusCode();
-			var result = handler.Handle<TResult>(response);
+			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
+			var result = methodHandler.Handle<TResult>(response);
 
 			return result;
 		}
@@ -76,10 +70,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var request = methodHandler.CreateRequest(webQuery);
 			request.Context = _dataContext.Name;
 
-			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request)
-				.GetAwaiter()
-				.GetResult();
-			response.EnsureSuccessStatusCode();
+			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
 			var result = methodHandler.Handle(response, handler);
 
 			return result;
@@ -91,10 +82,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var request = methodHandler.CreateRequest(webQuery);
 			request.Context = _dataContext.Name;
 
-			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request)
-				.GetAwaiter()
-				.GetResult();
-			response.EnsureSuccessStatusCode();
+			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
 			var result = methodHandler.Handle(response, handler);
 
 			return result;
@@ -106,10 +94,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var request = methodHandler.CreateRequest(webQuery);
 			request.Context = _dataContext.Name;
 
-			var response = _httpClient.PostAsJsonAsync(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request)
-				.GetAwaiter()
-				.GetResult();
-			response.EnsureSuccessStatusCode();
+			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
 			var result = methodHandler.Handle(response, (IDataReader<TEntity> reader) =>
 			{
 				var count = reader.Count;
@@ -131,6 +116,28 @@ namespace Atdi.Api.EntityOrm.WebClient
 			});
 
 			return result;
+		}
+
+		private HttpResponseMessage Post<TData>(string requestUri, TData data)
+		{
+			var response = _httpClient.PostAsJsonAsync(requestUri, data)
+				.GetAwaiter()
+				.GetResult();
+
+			if (!response.IsSuccessStatusCode)
+			{
+				var exceptionResponse = response.Content.ReadAsAsync<WebApiServerException>()
+					.GetAwaiter()
+					.GetResult();
+
+				throw new EntityOrmWebApiException(
+					response.StatusCode,
+					response.RequestMessage.RequestUri.ToString(), 
+					"An error occurred while executing a POST request.", 
+					exceptionResponse);
+			}
+
+			return response;
 		}
 	}
 }
