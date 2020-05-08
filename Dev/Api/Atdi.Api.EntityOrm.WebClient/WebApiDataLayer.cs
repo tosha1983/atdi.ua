@@ -6,30 +6,31 @@ using System.Collections.Generic;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	public class WebApiDataLayer
+	public sealed class WebApiDataLayer
 	{
 		private readonly ProxyInstanceFactory _proxyInstanceFactory;
-		private readonly Dictionary<WebApiQueryType, IWebApiMethodHandler> _methodHandlers;
+		private readonly Dictionary<WebApiQueryType, IWebApiQueryHandler> _queryHandlers;
 		private readonly ConcurrentDictionary<string, IQueryBuilder> _queryBuilders;
 		private readonly ConcurrentDictionary<Type, object> _typedQueryBuilders;
 		private readonly IQueryExecutor _executor;
+		private readonly IMetadataSite _metadataSite;
 
 		public WebApiDataLayer()
 		{
 			_queryBuilders = new ConcurrentDictionary<string, IQueryBuilder>();
 			_typedQueryBuilders = new ConcurrentDictionary<Type, object>();
 			_proxyInstanceFactory = new ProxyInstanceFactory();
-			_methodHandlers = new Dictionary<WebApiQueryType, IWebApiMethodHandler>
+			_queryHandlers = new Dictionary<WebApiQueryType, IWebApiQueryHandler>
 			{
-				[WebApiQueryType.Create] = new CreateMethodHandler(_proxyInstanceFactory),
-				[WebApiQueryType.Read] = new ReadMethodHandler(_proxyInstanceFactory),
-				[WebApiQueryType.Update] = new UpdateMethodHandler(_proxyInstanceFactory),
-				[WebApiQueryType.Delete] = new DeleteMethodHandler(_proxyInstanceFactory),
-				[WebApiQueryType.Apply] = new ApplyMethodHandler(_proxyInstanceFactory)
+				[WebApiQueryType.Create] = new CreateQueryHandler(_proxyInstanceFactory),
+				[WebApiQueryType.Read] = new ReadQueryHandler(_proxyInstanceFactory),
+				[WebApiQueryType.Update] = new UpdateQueryHandler(_proxyInstanceFactory),
+				[WebApiQueryType.Delete] = new DeleteQueryHandler(_proxyInstanceFactory),
+				[WebApiQueryType.Apply] = new ApplyQueryHandler(_proxyInstanceFactory)
 			};
 		}
 
-		internal Dictionary<WebApiQueryType, IWebApiMethodHandler> MethodHandlers => _methodHandlers;
+		internal Dictionary<WebApiQueryType, IWebApiQueryHandler> QueryHandlers => _queryHandlers;
 
 		public ProxyInstanceFactory ProxyInstanceFactory => _proxyInstanceFactory;
 
@@ -37,6 +38,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			: this()
 		{
 			_executor = new WebApiQueryExecutor(this, endpoint, dataContext);
+			_metadataSite = new WebApiMetadataSite(this, endpoint);
 		}
 
 		public IQueryBuilder<TEntity> GetBuilder<TEntity>()
@@ -85,6 +87,15 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 
 		public IQueryExecutor Executor => _executor;
-		
+
+
+		public IMetadataSite MetadataSite => _metadataSite;
+
+		public IMetadataSite GetMetadataSite(WebApiEndpoint endpoint)
+		{
+			return new WebApiMetadataSite(this, endpoint);
+		}
+
+
 	}
 }

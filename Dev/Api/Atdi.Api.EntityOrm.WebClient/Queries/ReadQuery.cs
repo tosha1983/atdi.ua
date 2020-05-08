@@ -10,7 +10,7 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class ReadQuery : IReadQuery, IWebApiRequestCreator, IPagingReadQuery
+	internal sealed class ReadQuery : IReadQuery, IWebApiRequestCreator, IPagingReadQuery
 	{
 		private readonly Dictionary<string, string> _select;
 		private readonly List<string> _filters;
@@ -35,7 +35,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public WebApiQueryType QueryType => WebApiQueryType.Read;
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			var count = _select.Count;
 
@@ -46,7 +46,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 			var select = new string[count];
 
-			var request = new RecordReadRequest
+			var request = new ReadQueryRequest
 			{
 				Namespace = _entityNamespace,
 				Entity = _entityName,
@@ -171,7 +171,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return new QueryFilter<TEntity, IReadQuery<TEntity>>(this, this);
 		}
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			return _readQuery.Create();
 		}

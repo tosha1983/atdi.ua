@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atdi.Api.EntityOrm.WebClient.DTO
+namespace Atdi.DataModels.Api.EntityOrm.WebClient
 {
 	public class DataTypeMetadata
 	{
@@ -22,24 +22,15 @@ namespace Atdi.Api.EntityOrm.WebClient.DTO
 
 		public int? Scale;
 
-		public bool Autonum;
-	}
+		public bool Counter;
 
-	public class FieldDescriptor
-	{
-		public int Index;
-
-		public string Path;
-
-		public DataTypeMetadata Type;
-	}
-
-	public class RecordReadResponse
-	{
-		public FieldDescriptor[] Fields { get; set; }
-
-		public object[][] Records;
-
-		public long Count;
+		public override string ToString()
+		{
+			if (string.IsNullOrEmpty(ClrType))
+			{
+				return $"{Name}";
+			}
+			return $"{Name}, {ClrType}";
+		}
 	}
 }

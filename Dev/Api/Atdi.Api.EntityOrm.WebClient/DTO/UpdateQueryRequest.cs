@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
-	public class RecordUpdateRequest : EntityRequest
+	public class UpdateQueryRequest : EntityQueryRequest
 	{
 		public string[] Fields;
 

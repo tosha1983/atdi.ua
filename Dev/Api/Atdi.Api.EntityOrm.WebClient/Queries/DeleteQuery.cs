@@ -9,7 +9,7 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class DeleteQuery : IDeleteQuery, IWebApiRequestCreator
+	internal sealed class DeleteQuery : IDeleteQuery, IWebApiRequestCreator
 	{
 		private readonly List<string> _filters;
 		private readonly string _entityNamespace;
@@ -24,10 +24,10 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public WebApiQueryType QueryType => WebApiQueryType.Delete;
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			
-			var request = new RecordDeleteRequest()
+			var request = new DeleteQueryRequest()
 			{
 				Namespace = _entityNamespace,
 				Entity = _entityName,
@@ -44,7 +44,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 	}
 
-	internal class DeleteQuery<TEntity> : IDeleteQuery<TEntity>, IWebApiRequestCreator, IFilterSite
+	internal sealed class DeleteQuery<TEntity> : IDeleteQuery<TEntity>, IWebApiRequestCreator, IFilterSite
 	{
 		private readonly DeleteQuery _updateQuery;
 
@@ -60,7 +60,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return new QueryFilter<TEntity, IDeleteQuery<TEntity>>(this, this);
 		}
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			return _updateQuery.Create();
 		}

@@ -9,7 +9,7 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class UpdateQuery : IUpdateQuery, IWebApiRequestCreator
+	internal sealed class UpdateQuery : IUpdateQuery, IWebApiRequestCreator
 	{
 		private readonly List<string> _filters;
 		private readonly Dictionary<string, object> _setValues;
@@ -26,7 +26,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public WebApiQueryType QueryType => WebApiQueryType.Update;
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			var count = _setValues.Count;
 
@@ -38,7 +38,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var fields = new string[count];
 			var values = new object[count];
 
-			var request = new RecordUpdateRequest()
+			var request = new UpdateQueryRequest()
 			{
 				Namespace = _entityNamespace,
 				Entity = _entityName,
@@ -72,7 +72,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 	}
 
-	internal class UpdateQuery<TEntity> : IUpdateQuery<TEntity>, IWebApiRequestCreator, IFilterSite
+	internal sealed class UpdateQuery<TEntity> : IUpdateQuery<TEntity>, IWebApiRequestCreator, IFilterSite
 	{
 		private readonly UpdateQuery _updateQuery;
 
@@ -88,7 +88,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return new QueryFilter<TEntity, IUpdateQuery<TEntity>>(this, this);
 		}
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			return _updateQuery.Create();
 		}

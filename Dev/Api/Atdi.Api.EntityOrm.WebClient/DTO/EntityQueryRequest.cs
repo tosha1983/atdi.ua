@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
-	public class EntityRequest 
+	public class EntityQueryRequest 
 	{
 		public string Context;
 

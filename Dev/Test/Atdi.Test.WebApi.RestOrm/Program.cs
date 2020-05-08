@@ -2,7 +2,7 @@
 using Atdi.Contracts.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
-
+using Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,47 +33,55 @@ namespace Atdi.Test.WebApi.RestOrm
 
 			var endpoint = new WebApiEndpoint(new Uri("http://localhost:15070/"), "/appserver/v1");
 			var dataContext = new WebApiDataContext("SDRN_CalcServer_DB");
+			var dataLayer = new WebApiDataLayer(endpoint, dataContext);
 
-			var dataLayer = new WebApiDataLayer();
-			var webQuery = dataLayer.GetBuilder<IProject>()
-				.Create()
-				.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
-				.SetValue(c => c.Projection, "4UTN35")
-				.SetValue(c => c.StatusCode, (byte) ProjectStatusCode.Created)
-				.SetValue(c => c.StatusName, ProjectStatusCode.Created.ToString())
-				.SetValue(c => c.OwnerInstance, "Atdi.Test.WebApi.RestOrm")
-				.SetValue(c => c.OwnerProjectId, Guid.NewGuid())
-				.SetValue(c => c.Name, "Web API ORM Test project")
-				.SetValue(c => c.Note, "The Web API ORM Test project");
+			//var webQuery = dataLayer.GetBuilder<IProject>()
+			//	.Create()
+			//	.SetValue(c => c.CreatedDate, DateTimeOffset.Now)
+			//	.SetValue(c => c.Projection, "4UTN35")
+			//	.SetValue(c => c.StatusCode, (byte) ProjectStatusCode.Created)
+			//	.SetValue(c => c.StatusName, ProjectStatusCode.Created.ToString())
+			//	.SetValue(c => c.OwnerInstance, "Atdi.Test.WebApi.RestOrm")
+			//	.SetValue(c => c.OwnerProjectId, Guid.NewGuid())
+			//	.SetValue(c => c.Name, "Web API ORM Test project")
+			//	.SetValue(c => c.Note, "The Web API ORM Test project");
 
+			//var projectPk = dataLayer.Executor.Execute<IProject_PK>(webQuery);
 
-			var executor = dataLayer.GetExecutor(endpoint, dataContext);
-			var projectPk = executor.Execute<IProject_PK>(webQuery);
+			//TestReadMethod(dataLayer);
+			//TestUpdateMethod(dataLayer);
+			//TestDeleteMethod(dataLayer);
 
-			TestReadMethod(executor, dataLayer);
-			TestUpdateMethod(executor, dataLayer);
-			TestDeleteMethod(executor, dataLayer);
+			var e1 = dataLayer.MetadataSite.GetEntityMetadata(
+				"Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks.PointFieldStrengthArgs");
+
+			var e2 = dataLayer.MetadataSite.GetEntityMetadata(
+				"Atdi.DataModels.Sdrn.CalcServer.Entities.Tasks", "PointFieldStrengthArgs");
+
+			var e3 = dataLayer.MetadataSite.GetEntityMetadata<IPointFieldStrengthArgs>();
+
+			
 		}
 
-		static void TestUpdateMethod(IQueryExecutor executor, WebApiDataLayer dataLayer)
+		static void TestUpdateMethod(WebApiDataLayer dataLayer)
 		{
 			var webQuery = dataLayer.GetBuilder<IProject>()
 				.Update()
 				.SetValue(c => c.StatusCode, (byte) ProjectStatusCode.Available)
 				.SetValue(c => c.StatusName, ProjectStatusCode.Available.ToString())
 				.Filter(c => c.Id, 28);
-			var count = executor.Execute(webQuery);
+			var count = dataLayer.Executor.Execute(webQuery);
 		}
 
-		static void TestDeleteMethod(IQueryExecutor executor, WebApiDataLayer dataLayer)
+		static void TestDeleteMethod(WebApiDataLayer dataLayer)
 		{
 			var webQuery = dataLayer.GetBuilder<IProject>()
 				.Delete()
 				.Filter(c => c.Id, 29);
-			var count = executor.Execute(webQuery);
+			var count = dataLayer.Executor.Execute(webQuery);
 		}
 
-		static void TestReadMethod(IQueryExecutor executor, WebApiDataLayer dataLayer)
+		static void TestReadMethod(WebApiDataLayer dataLayer)
 		{
 			var webQuery = dataLayer.GetBuilder<IProject>()
 				.Read()
@@ -115,8 +123,8 @@ namespace Atdi.Test.WebApi.RestOrm
 				.EndFilter()
 				.OnTop(100);
 
-			var count = executor.Execute(webQuery);
-			var records = executor.ExecuteAndFetch(webQuery, reader =>
+			var count = dataLayer.Executor.Execute(webQuery);
+			var records = dataLayer.Executor.ExecuteAndFetch(webQuery, reader =>
 			{
 				var data = new IProject[reader.Count];
 				var index = 0;

@@ -6,20 +6,8 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
-	public class RecordReadRequest : EntityRequest
+	public class DeleteQueryRequest : EntityQueryRequest
 	{
-		public string[] Select;
-
-		public string[] OrderBy;
-
 		public string[] Filter;
-
-		public long Top;
-
-		public long? Offset;
-
-		public long? Fetch;
-
-		public bool Distinct;
 	}
 }

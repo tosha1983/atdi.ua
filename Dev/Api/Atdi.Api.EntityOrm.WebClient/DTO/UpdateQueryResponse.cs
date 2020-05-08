@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
-	public class RecordDeleteRequest : EntityRequest
+
+	public class UpdateQueryResponse
 	{
-		public string[] Filter;
+		public int Count;
 	}
+
 }

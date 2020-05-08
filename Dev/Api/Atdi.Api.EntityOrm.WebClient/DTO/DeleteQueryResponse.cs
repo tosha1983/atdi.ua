@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
 
-	public class RecordUpdateResponse
+	public class DeleteQueryResponse
 	{
 		public int Count;
 	}

@@ -7,35 +7,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class WebApiQueryBuilder : IQueryBuilder
+	internal sealed class WebApiQueryBuilder : IQueryBuilder
 	{
 		private readonly string _entityName;
 		private readonly string _entityNamespace;
 
-		public WebApiQueryBuilder(string entityFullName)
+		public WebApiQueryBuilder(string qualifiedName)
 		{
-			if (string.IsNullOrEmpty(entityFullName))
-			{
-				throw new ArgumentNullException(nameof(entityFullName));
-			}
-
-			var nameParts = entityFullName.Split('.');
-			if (nameParts.Length == 1)
-			{
-				throw new InvalidOperationException($"Incorrect entity full name '{entityFullName}'. Undefined namespace or entity name");
-			}
-
-			_entityName = nameParts[nameParts.Length - 1];
-			_entityNamespace = entityFullName.Substring(0, entityFullName.Length - 1 - _entityName.Length);
-
-			if (string.IsNullOrEmpty(_entityName))
-			{
-				throw new InvalidOperationException($"Incorrect entity full name '{entityFullName}'. Undefined entity name");
-			}
-			if (string.IsNullOrEmpty(_entityNamespace))
-			{
-				throw new InvalidOperationException($"Incorrect entity full name '{entityFullName}'. Undefined entity namespace");
-			}
+			var decodedName = WebApiUtility.DecodeEntityQualifiedName(qualifiedName);
+			_entityName = decodedName.Name;
+			_entityNamespace = decodedName.Namespace;
 		}
 
 		public string EntityName => _entityName;

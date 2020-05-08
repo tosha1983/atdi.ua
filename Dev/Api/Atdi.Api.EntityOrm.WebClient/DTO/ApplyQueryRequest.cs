@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient.DTO
 {
-	public class RecordApplyRequest : EntityRequest
+	public class ApplyQueryRequest : EntityQueryRequest
 	{
 		public string[] FieldsToCreate;
 

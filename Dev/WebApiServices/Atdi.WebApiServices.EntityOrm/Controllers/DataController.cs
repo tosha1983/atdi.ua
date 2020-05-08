@@ -69,16 +69,16 @@ namespace Atdi.WebApiServices.EntityOrm.Controllers
 	        
 			try
 			{
-				try
-				{
-					var c = 0;
-					var d = 1 / c;
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e);
-					throw new InvalidOperationException("New exception", e);
-				}
+				//try
+				//{
+				//	var c = 0;
+				//	var d = 1 / c;
+				//}
+				//catch (Exception e)
+				//{
+				//	Console.WriteLine(e);
+				//	throw new InvalidOperationException("New exception", e);
+				//}
 				
 				if (!this.CheckQuery(query, out var message))
 				{

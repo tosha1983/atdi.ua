@@ -9,7 +9,7 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class CreateQuery : ICreateQuery, IWebApiRequestCreator
+	internal sealed class CreateQuery : ICreateQuery, IWebApiRequestCreator
 	{
 		private readonly Dictionary<string, object> _setValues;
 		private readonly string _entityNamespace;
@@ -24,7 +24,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public WebApiQueryType QueryType => WebApiQueryType.Create;
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			var count = _setValues.Count;
 
@@ -36,7 +36,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			var fields = new string[count];
 			var values = new object[count];
 
-			var request = new RecordCreateRequest
+			var request = new CreateQueryRequest
 			{
 				Namespace = _entityNamespace,
 				Entity = _entityName,
@@ -63,7 +63,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 	}
 
-	internal class CreateQuery<TEntity> : ICreateQuery<TEntity>, IWebApiRequestCreator
+	internal sealed class CreateQuery<TEntity> : ICreateQuery<TEntity>, IWebApiRequestCreator
 	{
 		private readonly CreateQuery _createQuery;
 
@@ -74,7 +74,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public WebApiQueryType QueryType => WebApiQueryType.Create;
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			return _createQuery.Create();
 		}

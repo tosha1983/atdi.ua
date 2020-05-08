@@ -9,7 +9,7 @@ using Atdi.DataModels.Api.EntityOrm.WebClient;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class ApplyQuery : IApplyQuery, IWebApiRequestCreator
+	internal sealed class ApplyQuery : IApplyQuery, IWebApiRequestCreator
 	{
 		private readonly CreateQuery _createQuery;
 		private readonly UpdateQuery _updateQuery;
@@ -36,12 +36,12 @@ namespace Atdi.Api.EntityOrm.WebClient
 
 		public WebApiQueryType QueryType => WebApiQueryType.Apply;
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
-			var createRequest = _createQuery.Create() as RecordCreateRequest;
-			var updateRequest = _updateQuery.Create() as RecordUpdateRequest;
+			var createRequest = _createQuery.Create() as CreateQueryRequest;
+			var updateRequest = _updateQuery.Create() as UpdateQueryRequest;
 
-			var request = new RecordApplyRequest
+			var request = new ApplyQueryRequest
 			{
 				Namespace = _entityNamespace,
 				Entity = _entityName,
@@ -90,7 +90,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 	}
 
-	internal class ApplyQuery<TEntity> : IApplyQuery<TEntity>, IWebApiRequestCreator, IFilterSite
+	internal sealed class ApplyQuery<TEntity> : IApplyQuery<TEntity>, IWebApiRequestCreator, IFilterSite
 	{
 		private readonly ApplyQuery _applyQuery;
 
@@ -106,7 +106,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return new QueryFilter<TEntity, IApplyQuery<TEntity>>(this, this);
 		}
 
-		public EntityRequest Create()
+		public EntityQueryRequest Create()
 		{
 			return _applyQuery.Create();
 		}

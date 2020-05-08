@@ -10,42 +10,39 @@ using Atdi.Contracts.Api.EntityOrm.WebClient;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class DeleteMethodHandler : IWebApiMethodHandler
+	internal sealed class ApplyQueryHandler : IWebApiQueryHandler
 	{
 		private readonly ProxyInstanceFactory _proxyInstanceFactory;
 
-		public string WebMethodUrl => "/api/orm/data/$DataSet/delete";
+		public string WebQueryUrl => "/api/orm/data/$Record/apply";
 
-		public DeleteMethodHandler(ProxyInstanceFactory proxyInstanceFactory)
+		public ApplyQueryHandler(ProxyInstanceFactory proxyInstanceFactory)
 		{
 			_proxyInstanceFactory = proxyInstanceFactory;
 		}
-		public EntityRequest CreateRequest(IWebApiQuery query)
+		public EntityQueryRequest CreateRequest(IWebApiQuery query)
 		{
 			var creator = (IWebApiRequestCreator) query;
 			return creator.Create();
 		}
 
-		public TResult Handle<TResult>(HttpResponseMessage response, Func<IDataReader, TResult> handler)
+		public TResult Handle<TResult>(WebApiHttpResponse response, Func<IDataReader, TResult> handler)
 		{
 			throw new NotImplementedException();
 		}
 
-		public TResult Handle<TEntity, TResult>(HttpResponseMessage response, Func<IDataReader<TEntity>, TResult> handler)
+		public TResult Handle<TEntity, TResult>(WebApiHttpResponse response, Func<IDataReader<TEntity>, TResult> handler)
 		{
 			throw new NotImplementedException();
 		}
 
-		public long Handle(HttpResponseMessage response)
+		public long Handle(WebApiHttpResponse response)
 		{
-			var result = response.Content.ReadAsAsync<RecordDeleteResponse>()
-				.GetAwaiter()
-				.GetResult();
-
+			var result = response.Decode<ApplyQueryResponse>();
 			return result.Count;
 		}
 
-		public TResult Handle<TResult>(HttpResponseMessage response)
+		public TResult Handle<TResult>(WebApiHttpResponse response)
 		{
 			throw new NotImplementedException();
 		}

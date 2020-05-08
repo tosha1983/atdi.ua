@@ -300,7 +300,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 	}
 
-	internal class QueryFilter<TEntity, TQuery> : IQueryFilter<TEntity, TQuery>
+	internal sealed class QueryFilter<TEntity, TQuery> : IQueryFilter<TEntity, TQuery>
 	{
 		
 		private readonly IFilterSite _filterSite;
