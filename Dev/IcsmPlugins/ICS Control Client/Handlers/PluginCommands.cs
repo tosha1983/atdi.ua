@@ -80,5 +80,18 @@ namespace XICSM.ICSControlClient
             }
         }
 
+        public static void ExportSODatatoCSV()
+        {
+            try
+            {
+                var mainForm = new FM.ExportSODatatoCSVForm();
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+        }
     }
 }

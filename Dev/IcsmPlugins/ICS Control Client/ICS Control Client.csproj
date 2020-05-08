@@ -132,6 +132,12 @@
     <Compile Include="Forms\Base\gridFilterBase.Designer.cs">
       <DependentUpon>gridFilterBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ExportSODatatoCSVForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExportSODatatoCSVForm.Designer.cs">
+      <DependentUpon>ExportSODatatoCSVForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GroupeEmissionWithStationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -303,6 +309,7 @@
     <Compile Include="Models\Common\LocationPolygon.cs" />
     <Compile Include="Models\Common\LocationPolygonRect.cs" />
     <Compile Include="Models\Common\MeasStationsSignalization.cs" />
+    <Compile Include="Models\Common\ExportSO.cs" />
     <Compile Include="Models\Common\MeasTask.cs" />
     <Compile Include="Models\Common\StationsEquipment.cs" />
     <Compile Include="Models\DataStore.cs" />
@@ -408,6 +415,7 @@
     <Compile Include="ViewModels\ControlClientViewModel.cs" />
     <Compile Include="ViewModels\CreateMeasTaskViewModel.cs" />
     <Compile Include="ViewModels\GrapficViewModel.cs" />
+    <Compile Include="ViewModels\ExportSODatatoCSVModelViewModel.cs" />
     <Compile Include="ViewModels\GroupeEmissionWithStationModelViewModel.cs" />
     <Compile Include="ViewModels\GroupeEmissionWithStationProtocolModelViewModel.cs" />
     <Compile Include="ViewModels\MeasResultSignalizationViewViewModel.cs" />
@@ -473,6 +481,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Base\gridFilterNumeric.resx">
       <DependentUpon>gridFilterNumeric.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportSODatatoCSVForm.resx">
+      <DependentUpon>ExportSODatatoCSVForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GroupeEmissionWithStationForm.resx">
       <DependentUpon>GroupeEmissionWithStationForm.cs</DependentUpon>

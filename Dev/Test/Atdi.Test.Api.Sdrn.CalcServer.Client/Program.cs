@@ -128,6 +128,11 @@ namespace Atdi.Test.Api.Sdrn.CalcServer.Client
 					Console.WriteLine($" {i:d3} = {result[i]}");
 				}
 			}
+			catch (EntityOrmWebApiException e)
+			{
+				Console.WriteLine(e);
+
+			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);

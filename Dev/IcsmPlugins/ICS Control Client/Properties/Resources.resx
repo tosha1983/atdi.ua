@@ -1116,4 +1116,28 @@
   <data name="ZTR" xml:space="preserve">
     <value>ZTR</value>
   </data>
+  <data name="ExportCommand" xml:space="preserve">
+    <value>ExportCommand</value>
+  </data>
+  <data name="DateStartExport" xml:space="preserve">
+    <value>Date Start</value>
+  </data>
+  <data name="DateStopExport" xml:space="preserve">
+    <value>Date Stop</value>
+  </data>
+  <data name="FreqStartExport" xml:space="preserve">
+    <value>Channel Frequency Min, MHz</value>
+  </data>
+  <data name="FreqStopExport" xml:space="preserve">
+    <value>Channel Frequency Max, MHz</value>
+  </data>
+  <data name="SpectrumOccupationTypeVal" xml:space="preserve">
+    <value>Type Of Spectrum Occupation</value>
+  </data>
+  <data name="DirectoryNameForExport" xml:space="preserve">
+    <value>Directory name for export</value>
+  </data>
+  <data name="RestrictionsOfExport" xml:space="preserve">
+    <value>Restrictions of export</value>
+  </data>
 </root>

@@ -6,12 +6,12 @@ namespace Atdi.DataModels.Api.EntityOrm.WebClient
 	{
 		public Uri BaseAddress;
 
-		public string ApiUrl;
+		public string ApiUri;
 
-		public WebApiEndpoint(Uri baseAddress, string apiUrl)
+		public WebApiEndpoint(Uri baseAddress, string apiUri)
 		{
 			this.BaseAddress = baseAddress;
-			this.ApiUrl = apiUrl;
+			this.ApiUri = apiUri;
 
 		}
 

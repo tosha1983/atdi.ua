@@ -74,6 +74,7 @@
     <Compile Include="Entities\ISpectrum.cs" />
     <Compile Include="Entities\ITestDataType.cs" />
     <Compile Include="Entities\ISignalingSysInfoWorkTime.cs" />
+    <Compile Include="Entities\IXvResLevels.cs" />
     <Compile Include="Entities\IWorkTime.cs" />
     <Compile Include="Entities\IBearing.cs" />
     <Compile Include="Entities\IEntityPart.cs" />
@@ -180,6 +181,7 @@
     <Content Include="DataLayer\Oracle\Tables\ICSC.SYNCHRO_PROCESS.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.VALIDATION_LOGS.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.WORK_TIME.sql" />
+    <Content Include="DataLayer\Oracle\Views\ICSC.XV_RES_LEVELS.sql" />
     <Content Include="DataLayer\Oracle\Views\ICSC.UNIT.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.STATION_SITE.sql" />
     <Content Include="DataLayer\Oracle\Tables\ICSC.STATION.sql" />
@@ -441,6 +443,7 @@
     <Content Include="Metadata\Entities\Entity.xml" />
     <Content Include="Metadata\Entities\EntityPart.xml" />
     <Content Include="Metadata\Entities\FreqSample.xml" />
+    <Content Include="Metadata\Entities\XvResLevels.xml" />
     <Content Include="Metadata\Entities\ValidationLogs.xml" />
     <Content Include="Metadata\Entities\MeasTaskSignaling.xml" />
     <Content Include="Metadata\Entities\ReferenceSituation.xml" />

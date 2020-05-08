@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class WebApiDataReader : IDataReader
+	internal sealed class WebApiDataReader : IDataReader
 	{
-		private readonly RecordReadResponse _response;
+		private readonly ReadQueryResponse _response;
 		private readonly Dictionary<string, FieldDescriptor> _fields;
 		private readonly long _maxIndex;
 		private long _currentIndex;
 		private object[] _currentRecord; 
 		private long _count;
 
-		public WebApiDataReader(RecordReadResponse response)
+		public WebApiDataReader(ReadQueryResponse response)
 		{
 			_response = response;
 			_fields = response.Fields.ToDictionary(k => k.Path, v => v);
@@ -164,7 +164,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 	}
 
-	internal class WebApiDataReader<TEntity> : IDataReader<TEntity>
+	internal sealed class WebApiDataReader<TEntity> : IDataReader<TEntity>
 	{
 		private readonly IDataReader _reader;
 

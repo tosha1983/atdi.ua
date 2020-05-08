@@ -149,7 +149,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var adapterConfig = new ADP.KTN6841A.AdapterConfig()
                 {
                     SensorName = "",
-                    SmsHostName = "",
+                    SmsHostName = "192.168.0.3",
                     WindowType = 8
                     //SerialNumber = "101396",
                     //IPAddress = "192.168.2.110",
@@ -317,7 +317,7 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
             {
                 var adapterConfig = new ADP.GPS.ConfigGPS()
                 {
-                    PortName = "COM21",
+                    PortName = "COM45",
                     PortBaudRate = "baudRate9600",
                     PortDataBits = "dataBits8",
                     PortHandshake = "None",
@@ -391,14 +391,15 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = -1;// 0.003;
                 command.Parameter.TraceCount = 1;
-                command.Parameter.TracePoint = 200000;
+                command.Parameter.TracePoint = -1;
                 command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
-                //long t1 = TimeService.TimeStamp.Ticks;
+                long t1 = TimeService.TimeStamp.Ticks;
                 KSadapter.MesureTraceCommandHandler(command, context);
-                //long t2 = TimeService.TimeStamp.Ticks;
-
+                long t2 = TimeService.TimeStamp.Ticks;
+                string rbw = KSadapter.RBW.ToString() + "  ";
+                string tp = KSadapter.LevelArrLength.ToString() + "  ";
 
                 centr = 500m * 1000000;
                 span = 5.0m * 1000000;//0.025m
@@ -406,18 +407,29 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
                 command.Parameter.RBW_Hz = 50000;
                 command.Parameter.VBW_Hz = 50000;
-                KSadapter.MesureTraceCommandHandler(command, context);
 
+                KSadapter.MesureTraceCommandHandler(command, context);
+                rbw += KSadapter.RBW.ToString() + "  ";
+                tp += KSadapter.LevelArrLength.ToString() + "  ";
+
+                long t3 = TimeService.TimeStamp.Ticks;
                 centr = 2000m * 1000000;
                 span = 20.0m * 1000000;//0.025m
                 command.Parameter.FreqStart_Hz = centr - span / 2;//910 * 1000000;//424.625m * 1000000;//424.650
                 command.Parameter.FreqStop_Hz = centr + span / 2;//930*1000000;//424.675m * 1000000;
-                command.Parameter.RBW_Hz = 300000;
-                command.Parameter.VBW_Hz = 300000;
+                command.Parameter.RBW_Hz = 50000;
+                command.Parameter.VBW_Hz = 50000;
                 KSadapter.MesureTraceCommandHandler(command, context);
-                //long t3 = TimeService.TimeStamp.Ticks;
+                rbw += KSadapter.RBW.ToString() + "  ";
+                tp += KSadapter.LevelArrLength.ToString() + "  ";
 
-                //MessageBox.Show(new TimeSpan(t2 - t1).ToString() + "   \r\n" + new TimeSpan(t3 - t2).ToString());
+                long t4 = TimeService.TimeStamp.Ticks;
+
+                Debug.WriteLine(new TimeSpan(t2 - t1).ToString() + 
+                    "   \r\n" + new TimeSpan(t3 - t2).ToString() + 
+                    "   \r\n" + new TimeSpan(t4 - t3).ToString() +
+                    "   \r\n" + rbw +
+                    "   \r\n" + tp);
             }
             finally
             {
@@ -522,16 +534,16 @@ namespace Atdi.Test.Sdrn.DeviceServer.Adapters.WPF
                 var context = new DummyExecutionContextMy(logger);
                 var command = new CMD.MesureTraceCommand();
                 command.Parameter.Att_dB = 0;
-                command.Parameter.FreqStart_Hz = 1800 * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
-                command.Parameter.FreqStop_Hz = 1900 * 1000000;// 421.5425m * 1000000;//110000000;
+                command.Parameter.FreqStart_Hz = 150.05m * 1000000;// 421.5075m * 1000000;// 100000000;421.525m
+                command.Parameter.FreqStop_Hz = 167.7625m * 1000000;// 421.5425m * 1000000;//110000000;
                 command.Parameter.PreAmp_dB = 0;
-                command.Parameter.RBW_Hz = 30000;
-                command.Parameter.VBW_Hz = 30000;
+                command.Parameter.RBW_Hz = -1;
+                command.Parameter.VBW_Hz = -1;
                 command.Parameter.RefLevel_dBm = -40;
                 command.Parameter.SweepTime_s = 0.00001;
-                command.Parameter.TraceCount = 100;
-                command.Parameter.TracePoint = 10000;
-                command.Parameter.TraceType = CMD.Parameters.TraceType.Average;
+                command.Parameter.TraceCount = 10;
+                command.Parameter.TracePoint = 141700;
+                command.Parameter.TraceType = CMD.Parameters.TraceType.ClearWhrite;
                 command.Parameter.DetectorType = CMD.Parameters.DetectorType.MaxPeak;
                 command.Parameter.LevelUnit = CMD.Parameters.LevelUnit.dBm;
 
