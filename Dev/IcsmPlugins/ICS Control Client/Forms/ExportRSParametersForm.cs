@@ -76,7 +76,7 @@ namespace XICSM.ICSControlClient.Forms
 
         private void txtNumberPoints_TextChanged(object sender, EventArgs e)
         {
-            Int32.TryParse(txtCutoff.Text, out int result);
+            Int32.TryParse(txtNumberPoints.Text, out int result);
             this._numberPoints = result;
         }
     }

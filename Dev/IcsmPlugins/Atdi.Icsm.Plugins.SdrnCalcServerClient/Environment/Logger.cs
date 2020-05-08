@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Diagnostics;
 using ICSM;
-using MD = XICSM.ICSControlClient.Metadata;
+using MD = Atdi.Icsm.Plugins.SdrnCalcServerClient.Metadata;
 
-namespace XICSM.ICSControlClient.Environment
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {
     public class Logger
     {
@@ -49,7 +49,7 @@ namespace XICSM.ICSControlClient.Environment
             }
 
             #region IDisposable Support
-            private bool disposedValue = false; 
+            private bool disposedValue = false;
 
             protected virtual void Dispose(bool disposing)
             {
@@ -232,7 +232,7 @@ namespace XICSM.ICSControlClient.Environment
 
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.ToString(), "Logger.WriteToDb", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
