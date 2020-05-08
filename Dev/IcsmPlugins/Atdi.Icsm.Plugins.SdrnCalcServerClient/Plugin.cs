@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ICSM;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient;
 
 
-
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
+namespace XICSM.SdrnCalcServerClient
 {
     /// <summary>
     /// The class of the Control Client Plugin
