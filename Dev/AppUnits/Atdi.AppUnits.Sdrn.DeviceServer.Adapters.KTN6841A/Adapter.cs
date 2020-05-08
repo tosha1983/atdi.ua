@@ -936,6 +936,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             err = AgSalLib.salOpenSms(out gSmsHandle, gSmsHostname, 0, null);
             if (SensorError(err, "salOpenSms: hostname = " + gSmsHostname))
             {
+                throw new Exception("There are no salOpenSms available on host 1 " + gSmsHostname);
                 return false;
             }
 
@@ -960,7 +961,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                 }
                 else
                 {
-                    throw new Exception("There are no sensors available on host " + gSmsHostname);
+                    throw new Exception("There are no sensors available on host 2 " + gSmsHostname);
                 }
             }
 
@@ -968,6 +969,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             err = AgSalLib.salConnectSensor2(out gSensorHandle, gSmsHandle, gSensorName, "Fft Demo", 0);
             if (SensorError(err, "salConnectSensor"))
             {
+                throw new Exception("There are no sensors available on host 3 " + gSmsHostname);
                 return false;
             }
 
@@ -989,7 +991,7 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
             else
             {
-                throw new Exception("There are no sensors available on host " + gSmsHostname);
+                throw new Exception("There are no sensors available on host 4 " + gSmsHostname);
             }
 
             err = AgSalLib.salGetSensorCapabilities(gSensorHandle, out gSensorCapabilities);
@@ -1006,17 +1008,17 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
             }
 
 
-            err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Tuner);
-            if (SensorError(err, "salLockResource(Tuner)"))
-            {
-                return false;
-            }
+            //err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Tuner);
+            //if (SensorError(err, "salLockResource(Tuner)"))
+            //{
+            //    return false;
+            //}
 
-            err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Fft);
-            if (SensorError(err, "salLockResource(FFT)"))
-            {
-                return false;
-            }
+            //err = AgSalLib.salLockResource(gSensorHandle, AgSalLib.Resource.Fft);
+            //if (SensorError(err, "salLockResource(FFT)"))
+            //{
+            //    return false;
+            //}
             //if (!gEnableMonitorMode)
             //{
 
@@ -1353,6 +1355,10 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
                     {
                         resFreqStopIndex = rf;
                         break;
+                    }
+                    if (rf == steps * numPoints - 1)
+                    {
+                        resFreqStopIndex = 0;
                     }
                 }
                 if (resFreqStopIndex == 0)

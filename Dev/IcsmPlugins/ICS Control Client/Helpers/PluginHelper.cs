@@ -75,6 +75,69 @@ namespace XICSM.ICSControlClient
             }
             return endpointUrls;
         }
+        public static string GetDataContext()
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            string dataContext = appSettings["DataContext"];
+
+            if (string.IsNullOrEmpty(dataContext))
+            {
+                MessageBox.Show("Undefined value for DataContext in file ICSM3.exe.config.");
+                return null;
+            }
+            return dataContext;
+        }
+        public static string GetWebAPIBaseAddress()
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            string dataWebAPIBaseAddress = appSettings["WebAPIBaseAddress"];
+
+            if (string.IsNullOrEmpty(dataWebAPIBaseAddress))
+            {
+                MessageBox.Show("Undefined value for WebAPIBaseAddress in file ICSM3.exe.config.");
+                return null;
+            }
+            return dataWebAPIBaseAddress;
+        }
+
+        public static string GetWebAPIUrl()
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            string dataWebAPIUrl = appSettings["WebAPIUrl"];
+
+            if (string.IsNullOrEmpty(dataWebAPIUrl))
+            {
+                MessageBox.Show("Undefined value for WebAPIUrl in file ICSM3.exe.config.");
+                return null;
+            }
+            return dataWebAPIUrl;
+        }
+
+
+        public static long GetMaxCountRecordInPage()
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            string dataMaxCountRecordInPage = appSettings["MaxCountRecordInPage"];
+            if (string.IsNullOrEmpty(dataMaxCountRecordInPage))
+            {
+                MessageBox.Show("Undefined value for MaxCountRecordInPage in file ICSM3.exe.config.");
+                return 0;
+            }
+            return Convert.ToInt64(dataMaxCountRecordInPage);
+        }
+
+        public static long GetMaxCountRecordInCsvFile()
+        {
+            var appSettings = ConfigurationManager.AppSettings;
+            string dataMaxCountRecordInCsvFile = appSettings["MaxCountRecordInCsvFile"];
+
+            if (string.IsNullOrEmpty(dataMaxCountRecordInCsvFile))
+            {
+                MessageBox.Show("Undefined value for MaxCountRecordInCsvFile in file ICSM3.exe.config.");
+                return 0;
+            }
+            return Convert.ToInt64(dataMaxCountRecordInCsvFile);
+        }
         public static string GetFullTaskStatus(string state)
         {
             string statusFull = "";

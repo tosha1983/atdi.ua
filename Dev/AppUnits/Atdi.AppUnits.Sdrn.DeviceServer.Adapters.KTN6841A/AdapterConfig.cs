@@ -8,15 +8,15 @@ namespace Atdi.AppUnits.Sdrn.DeviceServer.Adapters.KTN6841A
 {
     public class AdapterConfig
     {
-        public string SmsHostName = "";
-        public string SensorName = "";
+        public string SmsHostName { get; set; } = "";
+        public string SensorName { get; set; } = "";
         /// <summary>
         /// Hann     = 1    
         /// Gausstop = 2     
         /// Flattop  = 4     
         /// Uniform  = 8     
         /// </summary>
-        public uint WindowType = 0;
-        public bool UseGNSS = false;
+        public int WindowType { get; set; } = 0;
+        public bool UseGNSS { get; set; } = false;
     }
 }

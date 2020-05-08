@@ -39,6 +39,7 @@ namespace XICSM.ICSControlClient
                 public static readonly string MeasResults = "Meas. results";
                 public static readonly string AnalyzeEmissions = "Analysis of emissions";
                 public static readonly string GroupeSynchronizationEmissionsWithStationICSM = "Group synchronization of emissions with ICSM stations";
+                public static readonly string ExportSODatatoCSV = "Export SO data to *.csv";
             }
         }
 
