@@ -113,20 +113,6 @@ namespace XICSM.ICSControlClient
             return dataWebAPIUrl;
         }
 
-        public static long  GetThreshHoldExportSO()
-        {
-            var appSettings = ConfigurationManager.AppSettings;
-            string dataThreshHoldExportSO = appSettings["ThreshHoldExportSO"];
-
-            if (string.IsNullOrEmpty(dataThreshHoldExportSO))
-            {
-                MessageBox.Show("Undefined value for ThreshHoldExportSO in file ICSM3.exe.config.");
-                return 0;
-            }
-            return Convert.ToInt64(dataThreshHoldExportSO);
-        }
-
-
 
         public static long GetMaxCountRecordInPage()
         {
