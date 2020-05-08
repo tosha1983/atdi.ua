@@ -57,6 +57,11 @@
   <ItemGroup>
     <Compile Include="Environment\Logger.cs" />
     <Compile Include="Environment\Extentions.cs" />
+    <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
+    <Compile Include="Environment\Wpf\WpfCommand.cs" />
+    <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
+    <Compile Include="Environment\Wpf\WpfExtensions.cs" />
+    <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
     <Compile Include="Forms\Base\WpfFormBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +77,8 @@
     <Compile Include="Handlers\PluginCommands.cs" />
     <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Metadata\SysLogs.cs" />
+    <Compile Include="Models\DataApadters\Mappers.cs" />
+    <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
     <Compile Include="Models\View\ClientContextViewModel.cs" />
     <Compile Include="Models\View\ProjectViewModel.cs" />
     <Compile Include="Plugin.cs" />

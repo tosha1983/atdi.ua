@@ -3,21 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Models
 {
     public class ClientContextViewModel
     {
-        long Id { get; set; }
-        string Name { get; set; }
-        string Note { get; set; }
-        string OwnerInstance { get; set; }
-        Guid OwnerContextId { get; set; }
-        DateTimeOffset CreatedDate { get; set; }
-        byte TypeCode { get; set; }
-        string TypeName { get; set; }
-        byte StatusCode { get; set; }
-        string StatusName { get; set; }
-        string StatusNote { get; set; }
+        [WpfColumn("Id", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public long Id { get; set; }
+
+        [WpfColumn("Name", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string Name { get; set; }
+
+        [WpfColumn("Note", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string Note { get; set; }
+
+        [WpfColumn("OwnerInstance", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string OwnerInstance { get; set; }
+
+        [WpfColumn("OwnerContextId", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public Guid OwnerContextId { get; set; }
+
+        [WpfColumn("CreatedDate", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public DateTimeOffset CreatedDate { get; set; }
+
+        [WpfColumn("TypeCode", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public byte TypeCode { get; set; }
+
+        [WpfColumn("TypeName", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string TypeName { get; set; }
+
+        [WpfColumn("StatusCode", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public byte StatusCode { get; set; }
+
+        [WpfColumn("StatusName", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StatusName { get; set; }
+
+        [WpfColumn("StatusNote", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
+        public string StatusNote { get; set; }
     }
 }
