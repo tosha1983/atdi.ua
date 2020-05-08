@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.Metadata;
 using ICSM;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
@@ -15,7 +16,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 
         public static void InsertItem(this IMMainMenu mainMenu, string parentToolName, string toolName, Action action)
         {
-            //mainMenu.InsertItem(mainMenu.BuildToolName(parentToolName, toolName), () => action(), MD.Tours.TableName);
+            mainMenu.InsertItem(mainMenu.BuildToolName(parentToolName, toolName), () => action(), SysLogs.TableName);
         }
 
         public static void SetLocation(this IMMainMenu mainMenu)

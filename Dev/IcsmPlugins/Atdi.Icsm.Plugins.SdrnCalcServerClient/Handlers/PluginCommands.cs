@@ -5,8 +5,9 @@ using System.Text;
 using ICSM;
 using System.Windows.Forms;
 using FM = Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
+namespace XICSM.SdrnCalcServerClient
 {
     public class PluginCommands
     {
