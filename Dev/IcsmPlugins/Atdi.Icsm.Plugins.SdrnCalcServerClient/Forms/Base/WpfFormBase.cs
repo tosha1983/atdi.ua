@@ -8,19 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Reflection;
 using CTR = System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Input;
 using System.Configuration;
-using System.Windows.Controls.Primitives;
-//using FM = XICSM.ICSControlClient.Forms;
-using System.Windows.Controls;
-//using ADP = XICSM.ICSControlClient.Models.WcfDataApadters;
-using System.Windows.Data;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms
 {

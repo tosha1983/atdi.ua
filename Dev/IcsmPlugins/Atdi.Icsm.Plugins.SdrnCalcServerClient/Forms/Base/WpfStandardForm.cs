@@ -27,12 +27,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms
                 Type modelType = Type.GetType($"Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.{viewModelClassName}", false, true);
                 if (modelType != null)
                 {
-                    System.Reflection.ConstructorInfo ci = modelType.GetConstructor(new Type[] { });
                     this._wpfElementHost.Child = (UIElement)XamlReader.Load(fileStream);
+                    var ci = modelType.GetConstructor(new Type[] { });
                     (this._wpfElementHost.Child as System.Windows.Controls.UserControl).DataContext = ci.Invoke(new object[] { });
                 }
                 else
-                    Console.WriteLine($"Класс {viewModelClassName} не найден!");
+                    Console.WriteLine($"Класс '{viewModelClassName}' не найден!");
             }
         }
     }

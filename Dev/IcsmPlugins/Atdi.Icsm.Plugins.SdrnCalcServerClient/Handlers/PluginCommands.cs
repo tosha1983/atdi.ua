@@ -22,7 +22,7 @@ namespace XICSM.SdrnCalcServerClient
             MessageBox.Show(text.ToString(), "About Plugin", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public static void OnRunCommand()
+        public static void OnRunProjectManagerCommand()
         {
             try
             {

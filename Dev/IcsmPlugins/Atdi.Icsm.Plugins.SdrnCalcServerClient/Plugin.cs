@@ -22,8 +22,8 @@ namespace XICSM.SdrnCalcServerClient
         public void GetMainMenu(IMMainMenu mainMenu)
         {
             mainMenu.SetLocation();
-            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.Run, PluginCommands.OnRunCommand);
-
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunProjectManagerCommand, PluginCommands.OnRunProjectManagerCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, PluginCommands.OnAboutCommand);
         }
 
         public bool OtherMessage(string message, object inParam, ref object outParam)

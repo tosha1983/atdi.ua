@@ -10,7 +10,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Models.WcfDataApadters
 {
     public class ProjectDataAdapter : WpfDataAdapter<object, VM.ProjectViewModel, ProjectDataAdapter>
     {
-        protected override Func<object, VM.ProjectViewModel> GetMapper()
+        protected override Func<object /* пока временно так */, VM.ProjectViewModel> GetMapper()
         {
             return Mappers.Map;
         }

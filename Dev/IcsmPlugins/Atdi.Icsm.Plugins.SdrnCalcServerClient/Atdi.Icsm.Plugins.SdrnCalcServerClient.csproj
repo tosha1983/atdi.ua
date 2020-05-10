@@ -55,7 +55,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Environment\Logger.cs" />
     <Compile Include="Environment\Extentions.cs" />
     <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
     <Compile Include="Environment\Wpf\WpfCommand.cs" />
@@ -79,8 +78,9 @@
     <Compile Include="Metadata\SysLogs.cs" />
     <Compile Include="Models\DataApadters\Mappers.cs" />
     <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
-    <Compile Include="Models\View\ClientContextViewModel.cs" />
-    <Compile Include="Models\View\ProjectViewModel.cs" />
+    <Compile Include="Models\Views\ClientContextViewModel.cs" />
+    <Compile Include="Models\Views\ProjectMapViewModel.cs" />
+    <Compile Include="Models\Views\ProjectViewModel.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,15 +113,26 @@
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.EntityOrm\Atdi.WpfControls.EntityOrm.csproj">
+      <Project>{23df4b39-cb83-4c82-8d84-a7fd1e6b6bef}</Project>
+      <Name>Atdi.WpfControls.EntityOrm</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

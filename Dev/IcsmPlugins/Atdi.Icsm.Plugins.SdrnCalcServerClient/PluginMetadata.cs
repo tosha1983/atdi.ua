@@ -24,7 +24,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 
             public static class Tools
             {
-                public static readonly string Run = "Open new plugin";
+                public static readonly string RunProjectManagerCommand = "Project manager";
                 public static readonly string About = "About";
             }
         }
