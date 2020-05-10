@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atdi.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Api.EntityOrm.WebClient;
+using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.Models.Views;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms;
+using System.Windows;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
 {
@@ -25,6 +30,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
         public WpfCommand ContextModifyCommand { get; set; }
         public WpfCommand ContextDeleteCommand { get; set; }
 
+        public ProjectViewModel[] Projects { get; set; }
+
         public ProjectManagerViewModel()
         {
             this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);
@@ -37,6 +44,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
             this.ContextNewCommand = new WpfCommand(this.OnContextNewCommand);
             this.ContextModifyCommand = new WpfCommand(this.OnContextModifyCommand);
             this.ContextDeleteCommand = new WpfCommand(this.OnContextDeleteCommand);
+
+            this.Projects = new List<ProjectViewModel>().ToArray();
+
             ReloadData();
         }
 
@@ -58,6 +68,8 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
 
         private void OnChangedCurrentProject(ProjectViewModel project)
         {
+            ReloadProjectMaps(project.Id);
+            ReloadProjectContexts(project.Id);
             this.CurrentProjectMap = null;
             this.CurrentProjectContext = null;
         }
@@ -70,16 +82,75 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
 
         private void ReloadData()
         {
-            //throw new NotImplementedException();
+            ReloadProjects();
         }
-
-        private void OnProjectAddCommand(object parameter)
+        private void ReloadProjects()
+        {
+            var listProjects = new List<ProjectViewModel>();
+            //var endpoint = PluginHelper.GetEndpoint();
+            var endpoint = new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
+            var dataContext = new WebApiDataContext("SDRN_Server_DB");
+            var dataLayer = new WebApiDataLayer();
+            var webQuery = dataLayer.GetBuilder<IProject>()
+                .Read()
+                .Select(c => c.Id, c => c.Name, c => c.Note, c => c.StatusName, c => c.StatusCode, c => c.StatusNote, c => c.CreatedDate, c => c.OwnerInstance, c => c.OwnerProjectId, c => c.Projection);
+            var executor = dataLayer.GetExecutor(endpoint, dataContext);
+            var records = executor.ExecuteAndFetch(webQuery, reader =>
+            {
+                while (reader.Read())
+                {
+                    var project = new ProjectViewModel()
+                    {
+                        Id = reader.GetValue(c => c.Id),
+                        Name = reader.GetValue(c => c.Name),
+                        Note = reader.GetValue(c => c.Note),
+                        StatusName = reader.GetValue(c => c.StatusName),
+                        StatusCode = reader.GetValue(c => c.StatusCode),
+                        StatusNote = reader.GetValue(c => c.StatusNote),
+                        CreatedDate = reader.GetValue(c => c.CreatedDate),
+                        OwnerInstance = reader.GetValue(c => c.OwnerInstance),
+                        OwnerProjectId = reader.GetValue(c => c.OwnerProjectId),
+                        Projection = reader.GetValue(c => c.Projection),
+                    };
+                    listProjects.Add(project);
+                }
+                return true;
+            });
+            Projects = listProjects.ToArray();
+        }
+        private void ReloadProjectMaps(long projectId)
         {
 
+        }
+        private void ReloadProjectContexts(long projectId)
+        {
+
+        }
+        private void OnProjectAddCommand(object parameter)
+        {
+            try
+            {
+                var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnProjectModifyCommand(object parameter)
         {
-
+            try
+            {
+                var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnProjectDeleteCommand(object parameter)
         {
@@ -95,7 +166,16 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
         }
         private void OnMapCreateNewCommand(object parameter)
         {
-
+            try
+            {
+                var mainForm = new WpfStandardForm("ProjectMapCard.xaml", "ProjectMapCardViewModel");
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnMapDeleteCommand(object parameter)
         {
@@ -103,19 +183,42 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
         }
         private void OnContextNewCommand(object parameter)
         {
-
-        }
-        private void OnGetCSVCommand(object parameter)
-        {
-
+            try
+            {
+                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnContextModifyCommand(object parameter)
         {
-
+            try
+            {
+                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
         private void OnContextDeleteCommand(object parameter)
         {
-
+            try
+            {
+                var mainForm = new WpfStandardForm("ProjectContextCard.xaml", "ProjectContextCardViewModel");
+                mainForm.ShowDialog();
+                mainForm.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
     }
 }

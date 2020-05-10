@@ -5,8 +5,6 @@
              xmlns:local="clr-namespace:XICSM.SdrnCalcServerClient.WpfControls"
              xmlns:res="clr-namespace:Atdi.Icsm.Plugins.SdrnCalcServerClient.Properties;assembly=XICSM_SdrnCalcServerClient"
              xmlns:cdg="clr-namespace:Atdi.WpfControls.EntityOrm;assembly=Atdi.WpfControls.EntityOrm"
-             
-             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
   <UserControl.Resources>    
