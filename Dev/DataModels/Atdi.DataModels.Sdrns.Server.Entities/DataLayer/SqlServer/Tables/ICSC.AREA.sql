@@ -5,7 +5,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [ICSC].[AREA](
-	[ID] [bigint] NOT NULL,
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
 	[NAME] [nvarchar](500) NULL,
 	[TYPE_OF_AREA] [nvarchar](50) NULL,
 	[CREATED_BY] [nvarchar](100) NULL,

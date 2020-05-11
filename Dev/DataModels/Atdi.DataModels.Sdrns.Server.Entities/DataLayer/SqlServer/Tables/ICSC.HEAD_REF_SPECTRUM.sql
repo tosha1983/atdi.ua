@@ -5,7 +5,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [ICSC].[HEAD_REF_SPECTRUM](
-	[ID] [bigint] NOT NULL,
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
 	[FILE_NAME] [nvarchar](500) NULL,
 	[CREATED_DATE] [datetime] NULL,
 	[CREATED_BY] [nvarchar](100) NULL,
