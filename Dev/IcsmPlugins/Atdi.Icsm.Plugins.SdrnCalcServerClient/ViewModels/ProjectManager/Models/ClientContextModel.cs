@@ -5,11 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Models.Views
-{
-    public class ClientContextViewModel
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
+{ 
+	public class ClientContextModel
     {
-        [WpfColumn("Id", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
         public long Id { get; set; }
 
         [WpfColumn("Name", WidthRule = ColumnWidthRule.AutoSize, Width = 80, CellStyle = "DataGridCellCentered", HeaderStyle = "DataGridHeaderCentered")]
