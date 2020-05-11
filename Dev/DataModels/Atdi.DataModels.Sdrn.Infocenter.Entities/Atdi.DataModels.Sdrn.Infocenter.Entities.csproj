@@ -51,6 +51,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[CLUTTERS_DESCS_FREQS_CLUTTERS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAPS].sql" />
+    <Content Include="DataLayer\Oracle\Tables\[INFOC].[MAP_SECTORS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_CLUTTERS].sql" />
     <Content Include="DataLayer\SqlServer\Tables\[INFOC].[CLUTTERS_DESCS_FREQS].sql" />
@@ -133,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataLayer\Oracle\Functions\" />
-    <Folder Include="DataLayer\Oracle\Tables\" />
     <Folder Include="DataLayer\SqlServer\Functions\" />
   </ItemGroup>
   <ItemGroup>
