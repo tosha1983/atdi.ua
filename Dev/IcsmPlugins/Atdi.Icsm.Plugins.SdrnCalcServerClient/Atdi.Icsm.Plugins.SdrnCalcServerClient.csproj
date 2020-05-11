@@ -78,9 +78,9 @@
     <Compile Include="Metadata\SysLogs.cs" />
     <Compile Include="Models\DataApadters\Mappers.cs" />
     <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
-    <Compile Include="Models\Views\ClientContextViewModel.cs" />
-    <Compile Include="Models\Views\ProjectMapViewModel.cs" />
-    <Compile Include="Models\Views\ProjectViewModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,7 +94,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ProjectManagerViewModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
@@ -127,6 +127,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\Views\" />
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>

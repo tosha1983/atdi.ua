@@ -7,17 +7,17 @@ using Atdi.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Api.EntityOrm.WebClient;
 using Atdi.DataModels.Sdrn.CalcServer.Entities;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
-using Atdi.Icsm.Plugins.SdrnCalcServerClient.Models.Views;
+
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms;
 using System.Windows;
 
-namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
+namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
-    public class ProjectManagerViewModel : WpfViewModelBase
+    public class View : WpfViewModelBase
     {
-        private ProjectViewModel _currentProject;
-        private ProjectMapViewModel _currentProjectMap;
-        private ClientContextViewModel _currentProjectContext;
+        private ProjectModel _currentProject;
+        private ProjectMapModel _currentProjectMap;
+        private ClientContextModel _currentProjectContext;
 
         public WpfCommand ProjectAddCommand { get; set; }
         public WpfCommand ProjectModifyCommand { get; set; }
@@ -30,9 +30,9 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
         public WpfCommand ContextModifyCommand { get; set; }
         public WpfCommand ContextDeleteCommand { get; set; }
 
-        public ProjectViewModel[] Projects { get; set; }
+        public ProjectModel[] Projects { get; set; }
 
-        public ProjectManagerViewModel()
+        public View()
         {
             this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);
             this.ProjectModifyCommand = new WpfCommand(this.OnProjectModifyCommand);
@@ -45,48 +45,50 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
             this.ContextModifyCommand = new WpfCommand(this.OnContextModifyCommand);
             this.ContextDeleteCommand = new WpfCommand(this.OnContextDeleteCommand);
 
-            this.Projects = new List<ProjectViewModel>().ToArray();
+            this.Projects = new List<ProjectModel>().ToArray();
 
             ReloadData();
         }
 
-        public ProjectViewModel CurrentProject
+        public ProjectModel CurrentProject
         {
             get => this._currentProject;
             set => this.Set(ref this._currentProject, value, () => { this.OnChangedCurrentProject(value); });
         }
-        public ProjectMapViewModel CurrentProjectMap
+        public ProjectMapModel CurrentProjectMap
         {
             get => this._currentProjectMap;
             set => this.Set(ref this._currentProjectMap, value, () => { this.OnChangedCurrentProjectMap(value); });
         }
-        public ClientContextViewModel CurrentProjectContext
+        public ClientContextModel CurrentProjectContext
         {
             get => this._currentProjectContext;
             set => this.Set(ref this._currentProjectContext, value, () => { this.OnChangedCurrentProjectContext(value); });
         }
 
-        private void OnChangedCurrentProject(ProjectViewModel project)
+        private void OnChangedCurrentProject(ProjectModel project)
         {
             ReloadProjectMaps(project.Id);
             ReloadProjectContexts(project.Id);
             this.CurrentProjectMap = null;
             this.CurrentProjectContext = null;
         }
-        private void OnChangedCurrentProjectMap(ProjectMapViewModel project)
+        private void OnChangedCurrentProjectMap(ProjectMapModel project)
         {
         }
-        private void OnChangedCurrentProjectContext(ClientContextViewModel project)
+        private void OnChangedCurrentProjectContext(ClientContextModel project)
         {
+			///TODO:
         }
 
         private void ReloadData()
         {
-            ReloadProjects();
-        }
-        private void ReloadProjects()
+			///TODO: нужно реализовать ReloadData
+		}
+
+		private void ReloadProjects()
         {
-            var listProjects = new List<ProjectViewModel>();
+            var listProjects = new List<ProjectModel>();
             //var endpoint = PluginHelper.GetEndpoint();
             var endpoint = new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
             var dataContext = new WebApiDataContext("SDRN_Server_DB");
@@ -99,7 +101,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
             {
                 while (reader.Read())
                 {
-                    var project = new ProjectViewModel()
+                    var project = new ProjectModel()
                     {
                         Id = reader.GetValue(c => c.Id),
                         Name = reader.GetValue(c => c.Name),
