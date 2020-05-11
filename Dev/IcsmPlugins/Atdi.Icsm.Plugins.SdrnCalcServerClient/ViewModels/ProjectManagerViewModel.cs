@@ -82,7 +82,7 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels
 
         private void ReloadData()
         {
-            ReloadProjects();
+            //ReloadProjects();
         }
         private void ReloadProjects()
         {
