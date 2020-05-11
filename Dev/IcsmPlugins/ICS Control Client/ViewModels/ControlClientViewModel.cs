@@ -455,7 +455,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this.CurrentGeneralResult = null;
             this.CurrentResultsMeasurementsStationData = null;
             this.ShortSensors.ClearFilter();
-            this.ShortSensors.ApplyFilter(c => c.Name == measurementResults.SensorName);
+            if (measurementResults != null)
+                this.ShortSensors.ApplyFilter(c => c.Name == measurementResults.SensorName);
 
             if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation && this.CurrentMeasurementResult != null)
             {

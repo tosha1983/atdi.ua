@@ -31,18 +31,73 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NetPlugins">
+      <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins.dll</HintPath>
+    </Reference>
+    <Reference Include="NetPlugins2">
+      <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins2.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Environment\Extentions.cs" />
+    <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
+    <Compile Include="Environment\Wpf\WpfCommand.cs" />
+    <Compile Include="Environment\Wpf\WpfDataAdapter.cs" />
+    <Compile Include="Environment\Wpf\WpfExtensions.cs" />
+    <Compile Include="Environment\Wpf\WpfViewModelBase.cs" />
+    <Compile Include="Forms\Base\WpfFormBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\WpfFormBase.Designer.cs">
+      <DependentUpon>WpfFormBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Base\WpfStandardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Base\WpfStandardForm.Designer.cs">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\PluginCommands.cs" />
+    <Compile Include="Helpers\PluginHelper.cs" />
+    <Compile Include="Metadata\SysLogs.cs" />
+    <Compile Include="Models\DataApadters\Mappers.cs" />
+    <Compile Include="Models\DataApadters\ProjectDataAdapter.cs" />
+    <Compile Include="ViewModels\ProjectManager\Models\ClientContextModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\Models\ProjectMapModel.cs" />
+    <Compile Include="ViewModels\ProjectManager\Models\ProjectModel.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="PluginMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ProjectManager\View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Api\Atdi.Api.EntityOrm.WebClient\Atdi.Api.EntityOrm.WebClient.csproj">
@@ -61,10 +116,49 @@
       <Project>{6a72e0c5-f8a4-412f-9395-13abe07367b1}</Project>
       <Name>Atdi.DataModels.Sdrn.CalcServer.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataModels\Atdi.DataModels.Sdrn.Infocenter.Entities\Atdi.DataModels.Sdrn.Infocenter.Entities.csproj">
+      <Project>{b793c198-41c4-4e9e-9e18-479a8a51b0b0}</Project>
+      <Name>Atdi.DataModels.Sdrn.Infocenter.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DataModels\Atdi.DataModels\Atdi.DataModels.csproj">
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.EntityOrm\Atdi.WpfControls.EntityOrm.csproj">
+      <Project>{23df4b39-cb83-4c82-8d84-a7fd1e6b6bef}</Project>
+      <Name>Atdi.WpfControls.EntityOrm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Views\" />
+    <Folder Include="Xaml\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
+      <DependentUpon>WpfStandardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Properties\Resources.uk-UA.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICS Manager UCRF"
+copy "$(TargetDir)XICSM_SdrnCalcServerClient.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"
+copy "$(TargetDir)\ru-RU" "C:\ATDI\ICS Manager UCRF\ru-RU\"
+copy "$(TargetDir)\uk-UA" "C:\ATDI\ICS Manager UCRF\uk-UA\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
