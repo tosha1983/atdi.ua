@@ -20,6 +20,7 @@ namespace Atdi.Modules.Sdrn.Calculation
         public double[] MaskFrequencies_MHz;
         public double CentralFrequency_MHz;
         public double Power_dBm;
+        public double Bandwidth_kHz;
     }
 
     public static class CreateMaskFromSpectrum
@@ -228,6 +229,7 @@ namespace Atdi.Modules.Sdrn.Calculation
 
                     resultMask.MaskFrequencies_MHz[3] = resultMask.MaskFrequencies_MHz[2];
                     resultMask.MaskLevels_dB[3] = spectrumLevels_dBm[minAfterMaxIndex];
+                    numberOfMask_pt = 4;
                 }
                 else// if (spectrumLevels_dBm.Length == 1)
                 {
@@ -247,6 +249,7 @@ namespace Atdi.Modules.Sdrn.Calculation
 
                     resultMask.MaskFrequencies_MHz[3] = resultMask.MaskFrequencies_MHz[2];
                     resultMask.MaskLevels_dB[3] = resultMask.MaskLevels_dB[0];
+                    numberOfMask_pt = 4;
                 }
                 
             }
@@ -273,11 +276,11 @@ namespace Atdi.Modules.Sdrn.Calculation
                 {
                     dPower += -dPower;
                 }
-            }
-
-            
+            }            
 
             resultMask.Power_dBm = 10 * Math.Log10(power_W / 0.001);
+
+            resultMask.Bandwidth_kHz = 1000 * (resultMask.MaskFrequencies_MHz[numberOfMask_pt - 1] - resultMask.MaskFrequencies_MHz[0]);
 
             return resultMask;
 
