@@ -10,12 +10,19 @@ using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
 
 using Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms;
 using System.Windows;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
+using Atdi.Platform.Logging;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 {
-    public class View : WpfViewModelBase
+
+	[ViewXaml("ProjectManager.xaml")]
+	[ViewCaption("Calc Server Client: Project Manager")]
+	public class View : WpfViewModelBase
     {
-        private ProjectModel _currentProject;
+	    private readonly ViewStarter _starter;
+	    private readonly ILogger _logger;
+	    private ProjectModel _currentProject;
         private ProjectMapModel _currentProjectMap;
         private ClientContextModel _currentProjectContext;
 
@@ -32,9 +39,12 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 
         public ProjectModel[] Projects { get; set; }
 
-        public View()
+        public View(ViewStarter _starter, ILogger logger)
         {
-            this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);
+	        this._starter = _starter;
+	        this._logger = logger;
+
+	        this.ProjectAddCommand = new WpfCommand(this.OnProjectAddCommand);
             this.ProjectModifyCommand = new WpfCommand(this.OnProjectModifyCommand);
             this.ProjectDeleteCommand = new WpfCommand(this.OnProjectDeleteCommand);
             this.ProjectActivateCommand = new WpfCommand(this.OnProjectActivateCommand);
@@ -87,8 +97,10 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
 		}
 
 		private void ReloadProjects()
-        {
-            var listProjects = new List<ProjectModel>();
+		{
+			
+
+			var listProjects = new List<ProjectModel>();
             //var endpoint = PluginHelper.GetEndpoint();
             var endpoint = new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
             var dataContext = new WebApiDataContext("SDRN_Server_DB");
@@ -130,15 +142,19 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.ViewModels.ProjectManager
         }
         private void OnProjectAddCommand(object parameter)
         {
+			
             try
             {
-                var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
-                mainForm.ShowDialog();
-                mainForm.Dispose();
-            }
+                //var mainForm = new WpfStandardForm("ProjectCard.xaml", "ProjectCardViewModel");
+                //mainForm.ShowDialog();
+                //mainForm.Dispose();
+
+                //_starter.Start<>();
+			}
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
+				//_logger.Exception();
             }
         }
         private void OnProjectModifyCommand(object parameter)

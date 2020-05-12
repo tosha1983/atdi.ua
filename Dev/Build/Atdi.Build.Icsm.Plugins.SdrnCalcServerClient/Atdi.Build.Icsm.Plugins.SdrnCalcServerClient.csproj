@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{98E79B80-3176-4CAD-B7BA-B5CAA6752FAB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Atdi.Platform.Configurator</RootNamespace>
-    <AssemblyName>Atdi.Platform.Configurator</AssemblyName>
+    <ProjectGuid>{DE7E38B1-59AC-41D6-B473-98659D6B849B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Atdi.Build.Icsm.Plugins.SdrnCalcServerClient</RootNamespace>
+    <AssemblyName>Atdi.Build.Icsm.Plugins.SdrnCalcServerClient</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,28 +43,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppServer\ComponentConfig.cs" />
-    <Compile Include="ConfigParameters.cs" />
-    <Compile Include="ConfigSections\AtdiPlatformConfigElement.cs" />
-    <Compile Include="ConfigSections\AppServerComponentConfigElement.cs" />
-    <Compile Include="ConfigSections\ComponentConfigElement.cs" />
-    <Compile Include="ConfigSections\AppServerComponentsConfigElement.cs" />
-    <Compile Include="ConfigSections\ComponentsConfigElement.cs" />
-    <Compile Include="ConfigSections\InstallersConfigElement.cs" />
-    <Compile Include="ConfigSections\ParametersConfigElement.cs" />
-    <Compile Include="ConfigSections\PropertiesConfigElement.cs" />
-    <Compile Include="ConfigSections\InstallConfigElement.cs" />
-    <Compile Include="ConfigSections\ParameterConfigElement.cs" />
-    <Compile Include="ConfigSections\PropertyConfigElement.cs" />
-    <Compile Include="ConfigSections\AppServerConfigElement.cs" />
-    <Compile Include="ConfigSections\ServicesContainerConfigElement.cs" />
-    <Compile Include="PlatformConfigurator.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AppServer\ServerConfig.cs" />
-    <Compile Include="TypeResolver.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Atdi.Platform\Atdi.Platform.csproj">
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\IcsmPlugins\Atdi.Icsm.Plugins.SdrnCalcServerClient\Atdi.Icsm.Plugins.SdrnCalcServerClient.csproj">
+      <Project>{6f90d378-968f-49bc-89ef-f6feb12e7332}</Project>
+      <Name>Atdi.Icsm.Plugins.SdrnCalcServerClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.AppServer\Atdi.Platform.AppServer.csproj">
+      <Project>{20d45626-3779-4fc8-a55a-1c919d95649e}</Project>
+      <Name>Atdi.Platform.AppServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Logging\Atdi.Platform.Logging.csproj">
+      <Project>{1389b99f-ff39-4671-9789-d2e1aa91527c}</Project>
+      <Name>Atdi.Platform.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.ServicesContainer\Atdi.Platform.ServicesContainer.csproj">
+      <Project>{153006da-1f99-4d33-b490-d3a87e7dfd03}</Project>
+      <Name>Atdi.Platform.ServicesContainer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
       <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
       <Name>Atdi.Platform</Name>
     </ProjectReference>
