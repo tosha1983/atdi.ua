@@ -10,18 +10,18 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Stations;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
-	internal static class CalcAntennaGain
-	{
-        
+    internal static class CalcAntennaGain
+    {
+
         public static double Calc(in CalcAntennaGainArgs args)
-		{
+        {
             var antenna = args.Antenna;
             if (antenna is null) { return 0; }
             var tilt_deg = args.TiltToTarget_deg;
             var azimut_deg = args.AzimutToTarget_deg;
             var polarizationEquipment = args.PolarizationEquipment;
             var polarizationWave = args.PolarizationWave;
-     
+
             double tilt = tilt_deg - antenna.Tilt_deg;
             double azimut = azimut_deg - antenna.Azimuth_deg;
             float Gain = 0;
@@ -34,12 +34,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 Gain = CalcAntennaGainByITUModel(antenna.ItuPattern, antenna.Gain_dB, tilt, azimut);
             }
             return Gain;
-		}
+        }
         private static float CalcAntennaGainByPatterns(in StationAntenna antenna, double tilt, double azimut, PolarizationType polarizationEquipment, PolarizationType polarizationWave)
         {
             const float addLossCircletoLinear = 3;
             float addLoss = 0;
-            if (polarizationWave == PolarizationType.U) { polarizationWave = polarizationEquipment;}
+            if (polarizationWave == PolarizationType.U) { polarizationWave = polarizationEquipment; }
             float GainPattern = antenna.Gain_dB;
             float patternH = 0;
             float patternV = 0;
@@ -52,7 +52,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     {
                         addLoss = antenna.XPD_dB;
                     }
-                    if ((polarizationEquipment == PolarizationType.RL)|| (polarizationEquipment == PolarizationType.CL))
+                    if ((polarizationEquipment == PolarizationType.RL) || (polarizationEquipment == PolarizationType.CL))
                     {
                         addLoss = addLossCircletoLinear;
                     }
@@ -71,7 +71,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     break;
                 case PolarizationType.CL:
                     patternH = Math.Min(CalcPatternLossH(in antenna.HvPattern, azimut), CalcPatternLossH(in antenna.HhPattern, azimut));
-                    patternV = Math.Min(CalcPatternLossV(in antenna.VvPattern, azimut), CalcPatternLossV(in antenna.VhPattern, azimut));
+                    patternV = Math.Min(CalcPatternLossV(in antenna.VvPattern, tilt), CalcPatternLossV(in antenna.VhPattern, tilt));
                     if (polarizationEquipment == PolarizationType.RL)
                     {
                         addLoss = antenna.XPD_dB;
@@ -83,7 +83,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     break;
                 case PolarizationType.RL:
                     patternH = Math.Min(CalcPatternLossH(in antenna.HvPattern, azimut), CalcPatternLossH(in antenna.HhPattern, azimut));
-                    patternV = Math.Min(CalcPatternLossV(in antenna.VvPattern, azimut), CalcPatternLossV(in antenna.VhPattern, azimut));
+                    patternV = Math.Min(CalcPatternLossV(in antenna.VvPattern, tilt), CalcPatternLossV(in antenna.VhPattern, tilt));
                     if (polarizationEquipment == PolarizationType.CL)
                     {
                         addLoss = antenna.XPD_dB;
@@ -97,7 +97,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 case PolarizationType.U:
                 default:
                     patternH = Math.Min(CalcPatternLossH(in antenna.HvPattern, azimut), CalcPatternLossH(in antenna.HhPattern, azimut));
-                    patternV = Math.Min(CalcPatternLossV(in antenna.VvPattern, azimut), CalcPatternLossV(in antenna.VhPattern, azimut));
+                    patternV = Math.Min(CalcPatternLossV(in antenna.VvPattern, tilt), CalcPatternLossV(in antenna.VhPattern, tilt));
                     break;
             }
             float GainByPatterns = GainPattern - patternH - patternV - addLoss;
@@ -113,12 +113,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         { // НЕ ТЕСТИЛ
             if (pattern.Angle_deg.Length == 0) { return 0; }
             if (pattern.Angle_deg.Length == 1) { return pattern.Loss_dB[0]; }
-            if (angle > 360) { angle = angle % 360;}
-            if (angle < 0) { angle = - Math.Floor(angle / 360) * 360 + angle; }
+            if (angle > 360) { angle = angle % 360; }
+            if (angle < 0) { angle = -Math.Floor(angle / 360) * 360 + angle; }
             double PatternLoss = 0;
             if (pattern.Angle_deg[0] > angle)
             {
-                PatternLoss = pattern.Loss_dB[pattern.Angle_deg.Length-1] + (pattern.Loss_dB[0] - pattern.Loss_dB[pattern.Angle_deg.Length - 1]) * (angle + 360 - pattern.Angle_deg[pattern.Angle_deg.Length - 1]) / (pattern.Angle_deg[0] + 360 - pattern.Angle_deg[pattern.Angle_deg.Length - 1]);
+                PatternLoss = pattern.Loss_dB[pattern.Angle_deg.Length - 1] + (pattern.Loss_dB[0] - pattern.Loss_dB[pattern.Angle_deg.Length - 1]) * (angle + 360 - pattern.Angle_deg[pattern.Angle_deg.Length - 1]) / (pattern.Angle_deg[0] + 360 - pattern.Angle_deg[pattern.Angle_deg.Length - 1]);
             }
             else if (pattern.Angle_deg[pattern.Angle_deg.Length - 1] < angle)
             {
@@ -126,7 +126,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             else
             {
-                for (int i = 0; pattern.Angle_deg.Length -1 > i; i++)
+                for (int i = 0; pattern.Angle_deg.Length - 1 > i; i++)
                 {
                     if ((angle > pattern.Angle_deg[i]) && (angle < pattern.Angle_deg[i + 1]))
                     {
@@ -147,7 +147,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         { // НЕ ТЕСТИЛ
             if (pattern.Angle_deg.Length == 0) { return 0; }
             if (pattern.Angle_deg.Length == 1) { return pattern.Loss_dB[0]; }
-            if (angle > pattern.Angle_deg[pattern.Angle_deg.Length-1]) { return pattern.Loss_dB[pattern.Angle_deg.Length - 1]; }
+            if (angle > pattern.Angle_deg[pattern.Angle_deg.Length - 1]) { return pattern.Loss_dB[pattern.Angle_deg.Length - 1]; }
             if (angle < pattern.Angle_deg[0]) { return pattern.Loss_dB[0]; }
             double PatternLoss = 0;
             for (int i = 0; pattern.Angle_deg.Length - 1 > i; i++)
