@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{23DF4B39-CB83-4C82-8D84-A7FD1E6B6BEF}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Atdi.WpfControls.EntityOrm</RootNamespace>
     <AssemblyName>Atdi.WpfControls.EntityOrm</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -73,4 +76,10 @@
     <Folder Include="Controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.*.dll" "C:\ATDI\ICS Manager"
+copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICS Manager UCRF"
+copy "$(TargetDir)Atdi.WpfControls.EntityOrm.dll" "C:\ATDI\ICSM_UCRF_MON_2019_04_18_x_sig_214"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

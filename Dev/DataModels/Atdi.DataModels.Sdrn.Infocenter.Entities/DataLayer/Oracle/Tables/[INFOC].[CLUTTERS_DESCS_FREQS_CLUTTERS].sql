@@ -1,0 +1,63 @@
+﻿CREATE TABLE INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS
+(
+  FREQ_ID           NUMBER(15)                  NOT NULL,
+  CODE              NUMBER(3)                   NOT NULL,
+  LINEAR_LOSS_DBKM  NUMBER(30,10),
+  FLAT_LOSS_DB      NUMBER(30,10),
+  REFLECTION_MHZ    NUMBER(30,10),
+  NOTE              NCLOB
+)
+TABLESPACE USERS
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
+CREATE UNIQUE INDEX INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS_PK ON INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS
+(FREQ_ID)
+LOGGING
+TABLESPACE USERS
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE INFOC.CLUTTERS_DESCS_FREQS_CLUTTERS ADD (
+  CONSTRAINT CLUTTERS_DESCS_FREQS_CLUTTERS_PK
+ PRIMARY KEY
+ (FREQ_ID)
+    USING INDEX 
+    TABLESPACE USERS
+    PCTFREE    10
+    INITRANS   2
+    MAXTRANS   255
+    STORAGE    (
+                INITIAL          64K
+                NEXT             1M
+                MINEXTENTS       1
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+               ));

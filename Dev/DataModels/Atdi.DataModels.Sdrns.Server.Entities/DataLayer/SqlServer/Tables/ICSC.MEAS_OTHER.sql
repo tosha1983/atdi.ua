@@ -7,6 +7,7 @@ create table [ICSC].[MEAS_OTHER] (
 	[LEVEL_MIN_OCCUP]	[float] null,
 	[NCHENAL]	[int] null,
 	[MEAS_TASK_ID]	[bigint] null,
+	[SUPP_MULTY_LEVEL] [bit] null
 	constraint [PK_MEAS_OTHER] primary key clustered ([ID]) on [PRIMARY]  
 ) on [PRIMARY]
 go

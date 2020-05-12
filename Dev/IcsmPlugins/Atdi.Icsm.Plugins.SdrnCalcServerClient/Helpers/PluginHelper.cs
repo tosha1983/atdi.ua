@@ -14,11 +14,11 @@ namespace Atdi.Icsm.Plugins.SdrnCalcServerClient
 {
     public static class PluginHelper
     {
-        public const string MessageBoxCaption = "ISC Control Client";
-        //public static WebApiEndpoint GetEndpoint()
-        //{
-        //    return new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
-        //}
+        public const string MessageBoxCaption = "ICS Calc Server Client";
+        public static WebApiEndpoint GetEndpoint()
+        {
+            return new WebApiEndpoint(new Uri("http://10.1.1.195:15020/"), "/appserver/v1");
+        }
         public static double? ConvertStringToDouble(string s, bool isShowMessage = false)
         {
             if (string.IsNullOrEmpty(s))
