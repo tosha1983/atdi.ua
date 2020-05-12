@@ -10,12 +10,16 @@ using System.IO;
 using System.Windows.Markup;
 using System.Windows;
 using System.Windows.Forms;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.Core;
+using Atdi.Icsm.Plugins.SdrnCalcServerClient.Environment.Wpf;
+using Atdi.Platform.Logging;
 
 namespace Atdi.Icsm.Plugins.SdrnCalcServerClient.Forms
 {
     public partial class WpfStandardForm : WpfFormBase
     {
-        public WpfStandardForm(string xamlFileName, string viewModelClassName, string caption = "Server calculation")
+	   
+		public WpfStandardForm(string xamlFileName, string viewModelClassName, string caption = "Server calculation")
         {
             InitializeComponent();
 

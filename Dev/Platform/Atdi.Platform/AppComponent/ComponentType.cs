@@ -14,6 +14,7 @@ namespace Atdi.Platform.AppComponent
         AppServices,
         CoreServices,
         LegacyServices,
-        AppUnit
+        AppUnit,
+        IcsmPlugin
     }
 }

@@ -11,6 +11,9 @@ namespace Atdi.Platform
 {
     public sealed class PlatformConfigurator : IPlatformConfigurator
     {
+	    private static AppServer.IServerHost SingleHost;
+		private static object _lockObject = new object();
+
         private readonly AtdiPlatformConfigElement _config;
         private readonly ITypeResolver _typeResolver;
 
@@ -115,6 +118,19 @@ namespace Atdi.Platform
             return container.GetResolver<IServicesResolver>().Resolve<AppServer.IServerHost>();
         }
 
+        public static AppServer.IServerHost GetSingleHost()
+        {
+	        if (PlatformConfigurator.SingleHost != null)
+	        {
+		        return PlatformConfigurator.SingleHost;
 
+	        }
+			lock (_lockObject)
+			{
+				PlatformConfigurator.SingleHost = PlatformConfigurator.BuildHost();
+				PlatformConfigurator.SingleHost.Start();
+			}
+			return PlatformConfigurator.SingleHost;
+        }
     }
 }

@@ -37,9 +37,6 @@
     <Reference Include="NetPlugins2">
       <HintPath>..\ICS Control Client\ICSM 6.2.70\NetPlugins2.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -58,6 +55,17 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppComponent.cs" />
+    <Compile Include="AppComponentConfig.cs" />
+    <Compile Include="Core\ViewCaptionAttribute.cs" />
+    <Compile Include="Core\ViewStarter.cs" />
+    <Compile Include="Core\ViewXamlAttribute.cs" />
+    <Compile Include="Core\ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Core\ViewForm.Designer.cs">
+      <DependentUpon>ViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Environment\Extentions.cs" />
     <Compile Include="Environment\Wpf\WpfColumnAttribute.cs" />
     <Compile Include="Environment\Wpf\WpfCommand.cs" />
@@ -76,7 +84,7 @@
     <Compile Include="Forms\Base\WpfStandardForm.Designer.cs">
       <DependentUpon>WpfStandardForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handlers\PluginCommands.cs" />
+    <Compile Include="PluginMenuCommands.cs" />
     <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Metadata\SysLogs.cs" />
     <Compile Include="Models\DataApadters\Mappers.cs" />
@@ -124,6 +132,14 @@
       <Project>{506b3655-4706-42f8-87f1-fb13869aa4c1}</Project>
       <Name>Atdi.DataModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform.Configurator\Atdi.Platform.Configurator.csproj">
+      <Project>{98e79b80-3176-4cad-b7ba-b5caa6752fab}</Project>
+      <Name>Atdi.Platform.Configurator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platform\Atdi.Platform\Atdi.Platform.csproj">
+      <Project>{2c2b4fdf-ff87-49b5-8080-da8a5715710a}</Project>
+      <Name>Atdi.Platform</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WpfControls\Atdi.WpfControls.EntityOrm\Atdi.WpfControls.EntityOrm.csproj">
       <Project>{23df4b39-cb83-4c82-8d84-a7fd1e6b6bef}</Project>
       <Name>Atdi.WpfControls.EntityOrm</Name>
@@ -134,6 +150,9 @@
     <Folder Include="Xaml\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Core\ViewForm.resx">
+      <DependentUpon>ViewForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Base\WpfStandardForm.resx">
       <DependentUpon>WpfStandardForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,7 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

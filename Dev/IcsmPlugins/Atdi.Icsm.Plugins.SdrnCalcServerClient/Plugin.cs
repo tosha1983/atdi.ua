@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using ICSM;
 using Atdi.Icsm.Plugins.SdrnCalcServerClient;
-
+using Atdi.Platform;
+using Atdi.Platform.AppServer;
+using Atdi.Platform.DependencyInjection;
+using Atdi.Platform.Logging;
 
 namespace XICSM.SdrnCalcServerClient
 {
@@ -13,17 +16,31 @@ namespace XICSM.SdrnCalcServerClient
     /// </summary>
     public class Plugin : IPlugin
     {
+	    private readonly IServerHost _platformHost;
+	    private readonly ILogger _logger;
+	    private readonly PluginMenuCommands _menuCommands;
+
         public double SchemaVersion => PluginMetadata.SchemaVersion;
 
         public string Description => PluginMetadata.Title;
 
         public string Ident => PluginMetadata.Ident;
 
-        public void GetMainMenu(IMMainMenu mainMenu)
+        public Plugin()
+        {
+	        this._platformHost = PlatformConfigurator.GetSingleHost();
+	        var resolver = this._platformHost.Container.GetResolver<IServicesResolver>();
+	        _logger = resolver.Resolve<ILogger>();
+	        _menuCommands = resolver.Resolve<PluginMenuCommands>();
+
+			_logger.Info("CalcServerClient", "Init", "Plugin loaded");
+        }
+
+		public void GetMainMenu(IMMainMenu mainMenu)
         {
             mainMenu.SetLocation();
-            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunProjectManagerCommand, PluginCommands.OnRunProjectManagerCommand);
-            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, PluginCommands.OnAboutCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.RunProjectManagerCommand, _menuCommands.OnRunProjectManagerCommand);
+            mainMenu.InsertItem(PluginMetadata.Menu.MainTool, PluginMetadata.Menu.Tools.About, _menuCommands.OnAboutCommand);
         }
 
         public bool OtherMessage(string message, object inParam, ref object outParam)
