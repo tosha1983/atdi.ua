@@ -5,6 +5,8 @@ namespace Atdi.Contracts.Api.EntityOrm.WebClient
 {
 	public interface IDataReader
 	{
+		long Position { get; }
+
 		long Count { get; }
 
 		bool Read();
@@ -16,9 +18,13 @@ namespace Atdi.Contracts.Api.EntityOrm.WebClient
 		bool IsNotNull(string path);
 
 		bool Has(string path);
+
+		bool MoveTo(int index);
 	}
 	public interface IDataReader<TEntity>
 	{
+		long Position { get; }
+
 		long Count { get; }
 
 		bool Read();
@@ -30,5 +36,7 @@ namespace Atdi.Contracts.Api.EntityOrm.WebClient
 		bool IsNotNull<TValue>(Expression<Func<TEntity, TValue>> pathExpression);
 
 		bool Has<TValue>(Expression<Func<TEntity, TValue>> pathExpression);
+
+		bool MoveTo(int index);
 	}
 }

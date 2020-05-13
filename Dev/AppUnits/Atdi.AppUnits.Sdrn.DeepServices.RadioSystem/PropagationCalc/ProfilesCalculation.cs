@@ -12,7 +12,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
     {
         private static double CalcElevAngleArgs(double h1, double h2, double d, double rE)
         {
-            return ((h2 - h1)/d - 500 * d / rE) / 1000;
+            return ((h2 - h1) / d - 500 * d / rE) / 1000;
         }
 
         public static void CalcTilts(double re_km, double ha_m, double hb_m, double d_km, in short[] profile_m, int profileStartPosition, int profilePointsNumber, out double tiltA_deg, out double tiltB_deg)
@@ -21,18 +21,19 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             double dN = d_km / (profilePointsNumber - profileStartPosition);
             double h1_m = ha_m + profile_m[profileStartPosition];
             double h2_m = hb_m + profile_m[profileEndPosition];
-            
+
             double maxAngleArgAB = CalcElevAngleArgs(h1_m, h2_m, d_km, re_km);
             double maxAngleArgBA = CalcElevAngleArgs(h2_m, h1_m, d_km, re_km);
 
 
-            for (int n = profileStartPosition; n < profileEndPosition; n++)
+            for (int n = profileStartPosition + 1; n < profileEndPosition - 1; n++)
             {
                 double dAN = dN * (n - profileStartPosition);
-                double dNB = dN * (profileEndPosition - n);
-                
+                //double dNB = dN * (profileEndPosition - n);
+
                 double nAngleArgAB = CalcElevAngleArgs(h1_m, profile_m[n + profileStartPosition], dAN, re_km);
-                double nAngleArgBA = CalcElevAngleArgs(h2_m, profile_m[profileEndPosition - n], dNB, re_km);
+                //double nAngleArgBA = CalcElevAngleArgs(h2_m, profile_m[profileEndPosition - n], dNB, re_km);
+                double nAngleArgBA = CalcElevAngleArgs(h2_m, profile_m[profileEndPosition - n], dAN, re_km);
 
                 if (maxAngleArgAB < nAngleArgAB)
                 {
@@ -44,14 +45,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 }
             }
 
-            
+
             tiltA_deg = (Math.Atan(maxAngleArgAB)) * 180 / Math.PI;
             tiltB_deg = (Math.Atan(maxAngleArgBA)) * 180 / Math.PI;
         }
 
 
         public static void CalcTilts(double re_km, double h1_m, double h2_m, double d_km, out double tiltA_deg, out double tiltB_deg)
-        {            
+        {
             tiltA_deg = (Math.Atan(CalcElevAngleArgs(h1_m, h2_m, d_km, re_km))) * 180 / Math.PI;
             tiltB_deg = (Math.Atan(CalcElevAngleArgs(h2_m, h1_m, d_km, re_km))) * 180 / Math.PI;
         }
@@ -65,7 +66,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         /// <returns></returns>
         public static double CalcLossOfObstacles(Func<double, EstimationClutterObstaclesResult, double> FunctionCalc, in CalcLossArgs args, double tilta_deg, double tiltb_deg)
         {
-            
+
             double LossObs = 0;
 
             bool obstacleIntersection = false;
@@ -75,7 +76,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 
             int clutterHeightMin;
             int clutterHeightMax;
-            
+
             double beamAHeight;
             double beamBHeight;
             double beamHeight;
@@ -127,14 +128,18 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 if (beamHeight >= clutterHeightMin && beamHeight <= clutterHeightMax)
                 {
                     // если в предыдущей точке луч не пересекает клаттер, но элемент слоя клаттеров есть - тогда считаем, что луч падает сверху 
-                    if (beamPrevHeight >= clutterHeightMin && beamPrevHeight <= clutterHeightMax && args.ClutterProfile[i - 1] != 0 && obstacleIntersection == false)
+                    if (beamPrevHeight >= clutterHeightMin && beamHeight <= clutterHeightMax && obstacleIntersection == false)
                     {
                         theta_deg = alpha - 180 * distanceTo_km * invPi * invRe;
+                        if (args.ClutterProfile[i] == args.ClutterProfile[i - 1] && theta_deg > 45)
+                        {
+                            theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
+                        }
                     }
-                    else if (obstacleIntersection == false)
-                    {
-                        theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
-                    }
+                    //else if (obstacleIntersection == false)
+                    //{
+                    //    theta_deg = 90 - alpha + 180 * distanceTo_km * invPi * invRe;
+                    //}
 
                     if ((i == args.ReliefStartIndex + 1) || (i == profileEndIndex))
                     {
@@ -149,28 +154,36 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     obstacleIntersection = true;
                     distanceInside_km += pixelLength_km;
                 }
-                else if (((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true)) ||
-                    (args.ClutterProfile[i] != args.ClutterProfile[i+1] && i < profileEndIndex && obstacleIntersection == true))
+                //if (((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) && (obstacleIntersection == true)) ||
+                //    (args.ClutterProfile[i] != args.ClutterProfile[i+1] && i < profileEndIndex && obstacleIntersection == true) || 
+                //    (i == profileEndIndex) || (i != profileEndIndex && args.ClutterProfile[i+1] != args.ClutterProfile[i]))
+                if ((obstacleIntersection == true) && ((beamHeight < clutterHeightMin || beamHeight > clutterHeightMax) ||
+                    (args.ClutterProfile[i] != args.ClutterProfile[i + 1] && i < profileEndIndex && obstacleIntersection == true) ||
+                    (i == profileEndIndex) || (i != profileEndIndex && args.ClutterProfile[i + 1] != args.ClutterProfile[i])))
                 {
                     obstacleIntersection = false;
                 }
 
                 // когда препятствие закончилось, вызывается функция расчёта
                 if (obstacleIntersection == false && distanceInside_km > 0)
-                { 
-                    
+                {
+                    bool build = true;
+                    if (args.BuildingProfile[i - 1] == 0) { build = false; }
+
                     EstimationClutterObstaclesResult obs = new EstimationClutterObstaclesResult()
                     {
-                        clutterCode = args.ClutterProfile[i], // код клатера определяется из профиля клатеров
+                        clutterCode = args.ClutterProfile[i - 1], // код клатера определяется из профиля клатеров
                         d_km = distanceInside_km, // дистанция прохождения в данном клатере
                         elevation_deg = theta_deg, // УМ вхождения в клатер
-                        endPoint = isEndPoint // признак того что это препятсвие в котором (внутри) находиться точка а иди б
+                        endPoint = isEndPoint, // признак того что это препятсвие в котором (внутри) находиться точка а иди б
+                        building = build
+
                     };
                     LossObs = FunctionCalc(LossObs, obs);
                     //LossObs += 1;
                     distanceInside_km = 0;
                 }
-                
+
             }
             return LossObs;
         }
@@ -181,5 +194,6 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         public double d_km;
         public bool endPoint;
         public double elevation_deg;
+        public bool building;
     }
 }

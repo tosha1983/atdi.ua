@@ -19,6 +19,14 @@ using Atdi.Common;
 
 namespace XICSM.ICSControlClient.Forms
 {
+    class ScvRecord
+    {
+        public double Frequency_MHz;
+        public double Bandwidth_kHz;
+        public double LevelSignal_dBm;
+        public double Freq_kHz;
+        public float Loss_dB;
+    }
     public partial class SelectRefSpectrums : Form
     {
         private IList _currentShortSensor;
@@ -72,6 +80,7 @@ namespace XICSM.ICSControlClient.Forms
             ShortSensorViewModel shortSensor = this._currentShortSensor[sensorIndex] as ShortSensorViewModel;
             string sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             SDR.ReferenceSituation refSit = new SDR.ReferenceSituation();
+            var records = new List<ScvRecord>();
 
             OpenFileDialog openFile = new OpenFileDialog() { Filter = "Текстовые файлы(*.csv)|*.csv", Title = shortSensor.Name };
             if (openFile.ShowDialog() == DialogResult.OK)
@@ -101,33 +110,47 @@ namespace XICSM.ICSControlClient.Forms
                             i++;
                             var record = parser.ReadFields();
 
-                            if (i >= 4)
+                            if (record.Length == 5)
                             {
-                                SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
-
-                                double? f = record[9].Replace(".", sep).TryToDouble();
-                                double? l = record[4].Replace(".", sep).TryToDouble();
-                                double? d = record[11].Replace(".", sep).TryToDouble();
-                                double? a = record[12].Replace(".", sep).TryToDouble();
-
-                                if (f.HasValue)
+                                records.Add(new ScvRecord()
                                 {
-                                    refSig.Frequency_MHz = f.Value;
+                                    Bandwidth_kHz = record[4].Replace(".", sep).TryToDouble().GetValueOrDefault(),
+                                    Frequency_MHz = record[2].Replace(".", sep).TryToDouble().GetValueOrDefault(),
+                                    LevelSignal_dBm = record[3].Replace(".", sep).TryToDouble().GetValueOrDefault(),
+                                    Freq_kHz = record[1].Replace(".", sep).TryToDouble().GetValueOrDefault(),
+                                    Loss_dB = (float)record[0].Replace(".", sep).TryToDouble().GetValueOrDefault()
+                                });
+                            }
+                            else
+                            {
+                                if (i >= 4)
+                                {
+                                    SDR.ReferenceSignal refSig = new SDR.ReferenceSignal();
 
-                                    if (l.HasValue)
-                                        refSig.LevelSignal_dBm = l.Value;
+                                    double? f = record[9].Replace(".", sep).TryToDouble();
+                                    double? l = record[4].Replace(".", sep).TryToDouble();
+                                    double? d = record[11].Replace(".", sep).TryToDouble();
+                                    double? a = record[12].Replace(".", sep).TryToDouble();
 
-                                    if (d.HasValue && a.HasValue)
+                                    if (f.HasValue)
                                     {
-                                        refSig.IcsmTable = "MOB_STATION";
-                                        if (!this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value))
+                                        refSig.Frequency_MHz = f.Value;
+
+                                        if (l.HasValue)
+                                            refSig.LevelSignal_dBm = l.Value;
+
+                                        if (d.HasValue && a.HasValue)
                                         {
-                                            refSig.IcsmTable = "MOB_STATION2";
-                                            this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value);
+                                            refSig.IcsmTable = "MOB_STATION";
+                                            if (!this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value))
+                                            {
+                                                refSig.IcsmTable = "MOB_STATION2";
+                                                this.GetRefSignalBySensor(ref refSig, sensorLocation, d.Value, a.Value);
+                                            }
                                         }
                                     }
+                                    listRefSig.Add(refSig);
                                 }
-                                listRefSig.Add(refSig);
                             }
                         }
                         var textBox = panel.Controls[$"path{sensorIndex}"];
@@ -137,6 +160,36 @@ namespace XICSM.ICSControlClient.Forms
                     {
                         MessageBox.Show("Incorrect format file: " + openFile.FileName + "!\r\n" + "Line: " + i.ToString() + "\r\n" + e.Message);
                         _waitForm.Close();
+                    }
+                }
+
+                if (records.Count > 0)
+                {
+                    var refSignal = new SDR.ReferenceSignal() { SignalMask = new SDR.SignalMask() };
+                    var Freq_kHz = new List<double>();
+                    var Loss_dB = new List<float>();
+                    double f = 0;
+                    double b = 0;
+                    double l = 0;
+                    foreach (var rec in records)
+                    {
+                        if (f != rec.Frequency_MHz || b != rec.Bandwidth_kHz || l != rec.LevelSignal_dBm)
+                        {
+                            refSignal = new SDR.ReferenceSignal() { SignalMask = new SDR.SignalMask() };
+                            Freq_kHz = new List<double>();
+                            Loss_dB = new List<float>();
+                            listRefSig.Add(refSignal);
+                            f = rec.Frequency_MHz;
+                            b = rec.Bandwidth_kHz;
+                            l = rec.LevelSignal_dBm;
+                        }
+                        refSignal.Frequency_MHz = rec.Frequency_MHz;
+                        refSignal.Bandwidth_kHz = rec.Bandwidth_kHz;
+                        refSignal.LevelSignal_dBm = rec.LevelSignal_dBm;
+                        Freq_kHz.Add(rec.Freq_kHz);
+                        Loss_dB.Add(rec.Loss_dB);
+                        refSignal.SignalMask.Freq_kHz = Freq_kHz.ToArray();
+                        refSignal.SignalMask.Loss_dB = Loss_dB.ToArray();
                     }
                 }
 

@@ -455,7 +455,8 @@ namespace XICSM.ICSControlClient.ViewModels
             this.CurrentGeneralResult = null;
             this.CurrentResultsMeasurementsStationData = null;
             this.ShortSensors.ClearFilter();
-            this.ShortSensors.ApplyFilter(c => c.Name == measurementResults.SensorName);
+            if (measurementResults != null)
+                this.ShortSensors.ApplyFilter(c => c.Name == measurementResults.SensorName);
 
             if (this._currentMeasurementResult.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation && this.CurrentMeasurementResult != null)
             {
@@ -980,7 +981,7 @@ namespace XICSM.ICSControlClient.ViewModels
                 if (sfd.ShowDialog() == FRM.DialogResult.OK)
                 {
                     var output = new List<string>();
-                    output.Add("MaskLevels_dB;MaskFrequencies_MHz;CentralFrequency_MHz;Power_dBm");
+                    output.Add("MaskLevels_dB;MaskFrequencies_MHz;CentralFrequency_MHz;Power_dBm;Bandwidth_kHz");
 
                     var emittings = new List<EmittingSpectrum>();
                     double spectrumSteps_kHz = 0;
@@ -1000,9 +1001,9 @@ namespace XICSM.ICSControlClient.ViewModels
                     var result = CreateMaskFromSpectrum.CreateMasksFromEmittings(emittings.ToArray(), spectrumSteps_kHz, form.Cutoff, form.NumberPoints);
                     foreach (var res in result)
                     {
-                        for (int i = 0; i < res.MaskLevels_dB.Length - 1; i++)
+                        for (int i = 0; i < res.MaskLevels_dB.Length; i++)
                         {
-                            output.Add($"{res.MaskLevels_dB[i]};{res.MaskFrequencies_MHz[i]};{res.CentralFrequency_MHz};{res.Power_dBm}");
+                            output.Add($"{res.MaskLevels_dB[i]};{res.MaskFrequencies_MHz[i]};{res.CentralFrequency_MHz};{res.Power_dBm};{res.Bandwidth_kHz}");
                         }
                     }
 
@@ -1228,11 +1229,13 @@ namespace XICSM.ICSControlClient.ViewModels
                 }
                 else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.SpectrumOccupation)
                 {
-                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
+                    if (this.CurrentMeasurementResult != null)
+                        _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
                 else if (this._currentShortMeasTask.TypeMeasurements == SDR.MeasurementType.Level)
                 {
-                    _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
+                    if (this.CurrentMeasurementResult != null)
+                        _measResult = _dataStore.GetMeasurementResultByResId(this.CurrentMeasurementResult.MeasSdrResultsId);
                 }
 
                 var form = new FM.GraphicForm(this._currentShortMeasTask.TypeMeasurements, _measResult, _generalResult, 1);
@@ -1450,6 +1453,11 @@ namespace XICSM.ICSControlClient.ViewModels
 
                 var sdrMeasResults = SVC.SdrnsControllerWcfClient.GetMeasResultsHeaderByTaskId(this.CurrentShortMeasTask.Id);
                 this.MeasResults.Source = sdrMeasResults.OrderByDescending(c => c.Id.MeasSdrResultsId).ToArray();
+
+                ResGetGraphicVisibility = Visibility.Hidden;
+                ResGetCSVVisibility = Visibility.Hidden;
+
+                MessageBox.Show(Properties.Resources.Message_ProcessStartedSuccessfully);
             }
         }
 

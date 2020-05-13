@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class WebApiDataReader : IDataReader
+	internal sealed class WebApiDataReader : IDataReader
 	{
-		private readonly RecordReadResponse _response;
+		private readonly ReadQueryResponse _response;
 		private readonly Dictionary<string, FieldDescriptor> _fields;
 		private readonly long _maxIndex;
 		private long _currentIndex;
 		private object[] _currentRecord; 
 		private long _count;
 
-		public WebApiDataReader(RecordReadResponse response)
+		public WebApiDataReader(ReadQueryResponse response)
 		{
 			_response = response;
 			_fields = response.Fields.ToDictionary(k => k.Path, v => v);
@@ -28,6 +28,8 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 
 		public long Count => _count;
+
+		public long Position => _currentIndex;
 
 		public TValue GetValue<TValue>(string path)
 		{
@@ -151,6 +153,20 @@ namespace Atdi.Api.EntityOrm.WebClient
 			throw new InvalidOperationException($"Field with path '{path}' not found");
 		}
 
+		public bool MoveTo(int index)
+		{
+			var records = _response.Records;
+
+			if (index >= 0 && index < records.Length)
+			{
+				_currentIndex = index;
+				_currentRecord = records[_currentIndex];
+				return true;
+			}
+
+			return false;
+		}
+
 		public bool Read()
 		{
 			if (_currentIndex  == _maxIndex)
@@ -164,7 +180,7 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 	}
 
-	internal class WebApiDataReader<TEntity> : IDataReader<TEntity>
+	internal sealed class WebApiDataReader<TEntity> : IDataReader<TEntity>
 	{
 		private readonly IDataReader _reader;
 
@@ -174,6 +190,8 @@ namespace Atdi.Api.EntityOrm.WebClient
 		}
 
 		public long Count => _reader.Count;
+
+		public long Position => _reader.Position;
 
 		public TValue GetValue<TValue>(System.Linq.Expressions.Expression<Func<TEntity, TValue>> pathExpression)
 		{
@@ -193,6 +211,11 @@ namespace Atdi.Api.EntityOrm.WebClient
 		public bool IsNull<TValue>(System.Linq.Expressions.Expression<Func<TEntity, TValue>> pathExpression)
 		{
 			return _reader.IsNull(pathExpression.Body.GetMemberName());
+		}
+
+		public bool MoveTo(int index)
+		{
+			return _reader.MoveTo(index);
 		}
 
 		public bool Read()

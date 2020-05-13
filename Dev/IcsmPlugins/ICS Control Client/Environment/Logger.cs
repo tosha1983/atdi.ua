@@ -238,31 +238,5 @@ namespace XICSM.ICSControlClient.Environment
             }
 
         }
-
-        //public static void Log_(string Event, string Table, string Who, string Message)
-        //{
-        //    IMRecordset rs = new IMRecordset("SYS_LOGS", IMRecordset.Mode.ReadWrite);
-        //    rs.Select("ID,EVENT,TABLE_NAME,LCOUNT,INFO1,WHO,WHEN");
-        //    rs.SetWhere("ID", IMRecordset.Operation.Eq, -1);
-        //    try
-        //    {
-        //        rs.Open();
-        //        rs.AddNew();
-        //        rs.Put("ID", IM.AllocID("SYS_LOGS", 1, -1));
-        //        rs.Put("EVENT", Event);
-        //        rs.Put("TABLE_NAME", Table.ToString());
-        //        rs.Put("INFO1", Message);
-        //        rs.Put("WHO", IM.ConnectedUser());
-        //        rs.Put("WHEN", DateTime.Now);
-        //        rs.Update();
-        //    }
-        //    finally
-        //    {
-        //        if (rs.IsOpen())
-        //            rs.Close();
-        //        rs.Destroy();
-        //    }
-
-        //}
     }
 }

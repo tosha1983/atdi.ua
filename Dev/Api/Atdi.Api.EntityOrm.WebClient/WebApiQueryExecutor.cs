@@ -12,90 +12,60 @@ using System.Threading.Tasks;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	internal class WebApiQueryExecutor : IQueryExecutor
+	internal sealed class WebApiQueryExecutor : IQueryExecutor
 	{
 		private readonly WebApiDataLayer _dataLayer;
-		private readonly WebApiEndpoint _endpoint;
 		private readonly WebApiDataContext _dataContext;
-		private readonly HttpClient _httpClient;
+		private readonly WebApiHttpClient _httpClient;
 
 		public WebApiQueryExecutor(WebApiDataLayer dataLayer, WebApiEndpoint endpoint, WebApiDataContext dataContext)
 		{
 			_dataLayer = dataLayer;
-			_endpoint = endpoint;
 			_dataContext = dataContext;
-			_httpClient = new HttpClient
-			{
-				BaseAddress = endpoint.BaseAddress
-			};
-			_httpClient.DefaultRequestHeaders.Accept.Clear();
-			_httpClient.DefaultRequestHeaders.Accept.Add(
-				new MediaTypeWithQualityHeaderValue("application/json"));
+			_httpClient = new WebApiHttpClient(endpoint);
 		}
 
-		public static string CombineUrl(string uri1, string uri2)
+		public WebApiHttpResponse PostQuery(IWebApiQuery webQuery, out IWebApiQueryHandler methodHandler)
 		{
-			uri1 = uri1.TrimEnd('/');
-			uri2 = uri2.TrimStart('/');
-			return $"{uri1}/{uri2}";
+			methodHandler = _dataLayer.QueryHandlers[webQuery.QueryType];
+			var request = methodHandler.CreateRequest(webQuery);
+			request.Context = _dataContext.Name;
+			var response = _httpClient.Post(methodHandler.WebQueryUrl, request);
+			return response;
 		}
 
 		public long Execute(IWebApiQuery webQuery)
 		{
-			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = methodHandler.CreateRequest(webQuery);
-			request.Context = _dataContext.Name;
-
-			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
-			var result = methodHandler.Handle(response);
-
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			var result = queryHandler.Handle(response);
 			return result;
 		}
 
 		public TResult Execute<TResult>(IWebApiQuery webQuery)
 		{
-			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = methodHandler.CreateRequest(webQuery);
-			request.Context = _dataContext.Name;
-
-			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
-			var result = methodHandler.Handle<TResult>(response);
-
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			var result = queryHandler.Handle<TResult>(response);
 			return result;
 		}
 
 		public TResult ExecuteAndFetch<TResult>(IWebApiQuery webQuery, Func<IDataReader, TResult> handler)
 		{
-			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = methodHandler.CreateRequest(webQuery);
-			request.Context = _dataContext.Name;
-
-			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
-			var result = methodHandler.Handle(response, handler);
-
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			var result = queryHandler.Handle(response, handler);
 			return result;
 		}
 
 		public TResult ExecuteAndFetch<TEntity, TResult>(IWebApiQuery<TEntity> webQuery, Func<IDataReader<TEntity>, TResult> handler)
 		{
-			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = methodHandler.CreateRequest(webQuery);
-			request.Context = _dataContext.Name;
-
-			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
-			var result = methodHandler.Handle(response, handler);
-
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			var result = queryHandler.Handle(response, handler);
 			return result;
 		}
 
 		public TRecord[] ExecuteAndRead<TEntity, TRecord>(IWebApiQuery<TEntity> webQuery, Func<IDataReader<TEntity>, TRecord> recordHandler)
 		{
-			var methodHandler = _dataLayer.MethodHandlers[webQuery.QueryType];
-			var request = methodHandler.CreateRequest(webQuery);
-			request.Context = _dataContext.Name;
-
-			var response = this.Post(CombineUrl(_endpoint.ApiUrl, methodHandler.WebMethodUrl), request);
-			var result = methodHandler.Handle(response, (IDataReader<TEntity> reader) =>
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			var result = queryHandler.Handle(response, (IDataReader<TEntity> reader) =>
 			{
 				var count = reader.Count;
 				if (count == 0)
@@ -118,26 +88,16 @@ namespace Atdi.Api.EntityOrm.WebClient
 			return result;
 		}
 
-		private HttpResponseMessage Post<TData>(string requestUri, TData data)
+		public IDataReader ExecuteReader(IWebApiQuery webQuery)
 		{
-			var response = _httpClient.PostAsJsonAsync(requestUri, data)
-				.GetAwaiter()
-				.GetResult();
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			return queryHandler.GetReader(response);
+		}
 
-			if (!response.IsSuccessStatusCode)
-			{
-				var exceptionResponse = response.Content.ReadAsAsync<WebApiServerException>()
-					.GetAwaiter()
-					.GetResult();
-
-				throw new EntityOrmWebApiException(
-					response.StatusCode,
-					response.RequestMessage.RequestUri.ToString(), 
-					"An error occurred while executing a POST request.", 
-					exceptionResponse);
-			}
-
-			return response;
+		public IDataReader<TEntity> ExecuteReader<TEntity>(IWebApiQuery<TEntity> webQuery)
+		{
+			var response = this.PostQuery(webQuery, out var queryHandler);
+			return queryHandler.GetReader<TEntity>(response);
 		}
 	}
 }

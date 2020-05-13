@@ -637,11 +637,29 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date Start.
+        /// </summary>
+        public static string DateStartExport {
+            get {
+                return ResourceManager.GetString("DateStartExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Stop.
         /// </summary>
         public static string DateStop {
             get {
                 return ResourceManager.GetString("DateStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date Stop.
+        /// </summary>
+        public static string DateStopExport {
+            get {
+                return ResourceManager.GetString("DateStopExport", resourceCulture);
             }
         }
         
@@ -750,6 +768,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string DiffTimestamp10x9 {
             get {
                 return ResourceManager.GetString("DiffTimestamp10x9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory name for export.
+        /// </summary>
+        public static string DirectoryNameForExport {
+            get {
+                return ResourceManager.GetString("DirectoryNameForExport", resourceCulture);
             }
         }
         
@@ -880,6 +907,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ExportCommand.
+        /// </summary>
+        public static string ExportCommand {
+            get {
+                return ResourceManager.GetString("ExportCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export RS.
         /// </summary>
         public static string ExportRS {
@@ -957,6 +993,24 @@ namespace XICSM.ICSControlClient.Properties {
         public static string FreqMHz {
             get {
                 return ResourceManager.GetString("FreqMHz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel Frequency Min, MHz.
+        /// </summary>
+        public static string FreqStartExport {
+            get {
+                return ResourceManager.GetString("FreqStartExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel Frequency Max, MHz.
+        /// </summary>
+        public static string FreqStopExport {
+            get {
+                return ResourceManager.GetString("FreqStopExport", resourceCulture);
             }
         }
         
@@ -2177,6 +2231,15 @@ namespace XICSM.ICSControlClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restrictions of export.
+        /// </summary>
+        public static string RestrictionsOfExport {
+            get {
+                return ResourceManager.GetString("RestrictionsOfExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Results.
         /// </summary>
         public static string Results {
@@ -2425,6 +2488,15 @@ namespace XICSM.ICSControlClient.Properties {
         public static string SpectrumOccupationParameters {
             get {
                 return ResourceManager.GetString("SpectrumOccupationParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type Of Spectrum Occupation.
+        /// </summary>
+        public static string SpectrumOccupationTypeVal {
+            get {
+                return ResourceManager.GetString("SpectrumOccupationTypeVal", resourceCulture);
             }
         }
         

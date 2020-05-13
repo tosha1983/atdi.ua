@@ -321,6 +321,10 @@ namespace XICSM.ICSControlClient.ViewModels
         private double? GetOccupationPtBuMinLevel(SDR.SpectrumOccupationMeasurementResult measResult)
         {
             double? OccupationPt = null;
+
+            if (measResult.LevelMinArr == null || measResult.SpectrumOccupationArr == null)
+                return null;
+
             var subValue = (int)(_levelMinOccup - measResult.LevelMinArr);
             if (subValue >= 0)
             {

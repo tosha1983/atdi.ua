@@ -21,7 +21,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
     {
         public const double re = 6371;
         public static double GetDistance_km(double x1, double y1, double x2, double y2, CoordinateUnits coordinateUnits = CoordinateUnits.m)
-        { //Надо проверить
+        { //Надо проверить - дистанция и преобразование координат совпадают с телекомом
             double d = 0;
             if (coordinateUnits == CoordinateUnits.m)
             {
@@ -37,7 +37,7 @@ namespace Atdi.AppUnits.Sdrn.CalcServer.Tasks.Iterations
             return d;
         }
         public static double GetAzimut(double xpoint, double ypoint, double xtarget, double ytarget, CoordinateUnits coordinateUnits = CoordinateUnits.m)
-        { //Надо проверить
+        { //Надо проверить - азимут совпадает с телекомом
             double az = 0;
             if (coordinateUnits == CoordinateUnits.m)
             {

@@ -10,18 +10,18 @@ using Atdi.DataModels.Sdrn.DeepServices.RadioSystem.Gis;
 
 namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
 {
-	public static class PropagationLoss
-	{
+    public static class PropagationLoss
+    {
 
         public static CalcLossResult Calc(CalcLossArgs args)
         {// Нужно тестировать
             double Lbf_dB = CalclMainBlock(in args);
             double Ldsub_dB = 0;
-            if (args.Model.SubPathDiffractionBlock.Available) {Ldsub_dB = CalcSubPathDiffractionBlok(in args);}
+            if (args.Model.SubPathDiffractionBlock.Available) { Ldsub_dB = CalcSubPathDiffractionBlok(in args); }
             double Ld_dB = 0;
-            if (args.Model.DiffractionBlock.Available) {Ld_dB = CalcDiffraction(in args, Ldsub_dB);}
+            if (args.Model.DiffractionBlock.Available) { Ld_dB = CalcDiffraction(in args, Ldsub_dB); }
             CalcLossResult Labsorption_dB = new CalcLossResult();
-            
+
             if (args.Model.AbsorptionBlock.Available) { Labsorption_dB = CalcAbsorptionBlok(in args); }
             double Lclutter_dB = 0;
             if (args.Model.ClutterBlock.Available) { Lclutter_dB = CalcClutterBlok(in args); }
@@ -49,14 +49,14 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             };
             if (args.Model.AbsorptionBlock.Available)
             {
-                LossResult.TiltaA_Deg = Labsorption_dB.LossD_dB;
-                LossResult.TiltbA_Deg = Labsorption_dB.TiltaA_Deg;
-                LossResult.LossA_dB = Lbf_dB + Labsorption_dB.TiltbA_Deg;
+                LossResult.TiltaA_Deg = Labsorption_dB.TiltaA_Deg;
+                LossResult.TiltbA_Deg = Labsorption_dB.TiltbA_Deg;
+                LossResult.LossA_dB = Lbf_dB + Labsorption_dB.LossA_dB;
             }
             return LossResult;
         }
         private static float CalclMainBlock(in CalcLossArgs args)
-		{
+        {
             float Lbf_dB = 0;
             switch (args.Model.MainBlock.ModelType)
             {
@@ -67,7 +67,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                     break;
             }
             return Lbf_dB;
-		}
+        }
         private static float CalcSubPathDiffractionBlok(in CalcLossArgs args)
         {
             float Ldsub_dB = 0;
@@ -84,9 +84,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
         }
         private static double CalcDiffraction(in CalcLossArgs args, double Ldsub_dB, bool calcabsorbtion = false)
         {
-            short[] prof; int startIndex; 
-            if (calcabsorbtion) { prof = args.ReliefProfile; startIndex = args.ReliefStartIndex;}
-            else {prof = args.HeightProfile; startIndex = args.HeightStartIndex;}
+            short[] prof; int startIndex;
+            if (calcabsorbtion) { prof = args.ReliefProfile; startIndex = args.ReliefStartIndex; }
+            else { prof = args.HeightProfile; startIndex = args.HeightStartIndex; }
 
             double Ld_dB = 0;
             switch (args.Model.DiffractionBlock.ModelType)
@@ -120,7 +120,7 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             // Вычисляем индекс частоты масива клатеров 
             int IndexFreqUp = GetIndexClutterArr(in args);
             var CluttersDesc = args.CluttersDesc;
-            double Labsorption_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs)=>AbsorptionCalc.CalcAbsorption(in CluttersDesc, IndexFreqUp, AbModel, Freq_MHz, Time_PC, currentLoss, obs),in args, tilta, tiltb);
+            double Labsorption_dB = ProfilesCalculation.CalcLossOfObstacles((currentLoss, obs) => AbsorptionCalc.CalcAbsorption(in CluttersDesc, IndexFreqUp, AbModel, Freq_MHz, Time_PC, currentLoss, obs), in args, tilta, tiltb);
             CalcLossResult result = new CalcLossResult()
             {
                 LossA_dB = Labsorption_dB + Ld_dB,
@@ -151,12 +151,12 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
                 var model = args.Model;
                 if ((model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.FlatAndLinear) ||
                    (model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.Flat) ||
-                   (model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.Linear)||
+                   (model.AbsorptionBlock.ModelType == AbsorptionCalcBlockModelType.Linear) ||
                    (model.ClutterBlock.ModelType == ClutterCalcBlockModelType.Flat))
                 {
                     // нужны в расчете параметры клатеров придется интерполировать
                     IndexFreqUp = args.CluttersDesc.Frequencies.Length;
-                    for (int i = 0; i > args.CluttersDesc.Frequencies.Length; i++)
+                    for (int i = 0; i < args.CluttersDesc.Frequencies.Length; i++)
                     {
                         if (args.Freq_Mhz < args.CluttersDesc.Frequencies[i].Freq_MHz)
                         { IndexFreqUp = i; break; }
@@ -165,9 +165,9 @@ namespace Atdi.AppUnits.Sdrn.DeepServices.RadioSystem.Signal
             }
             return IndexFreqUp;
         }
-        
-        
-        
+
+
+
 
         //private static float CalcAtmosphericBlok(in CalcLossArgs args)
         //{

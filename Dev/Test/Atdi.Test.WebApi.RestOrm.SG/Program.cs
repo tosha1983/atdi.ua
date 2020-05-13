@@ -104,7 +104,9 @@ namespace Atdi.Test.WebApi.RestOrm
 
                             MeasurementType typeMeas;
                             if (Enum.TryParse<MeasurementType>(readerResLevels.GetValue(c => c.RES_MEAS.TypeMeasurements), out typeMeas))
+                            {
                                 measTask.TypeMeasurements = typeMeas;
+                            }
 
                             var webQueryMeasOther = dataLayer.GetBuilder<IMeasOther>()
                             .Read()
@@ -132,7 +134,9 @@ namespace Atdi.Test.WebApi.RestOrm
                                      {
                                          SpectrumOccupationType spectrumOccupationType;
                                          if (Enum.TryParse<SpectrumOccupationType>(readerMeasOther.GetValue(c => c.TypeSpectrumOccupation), out spectrumOccupationType))
+                                         {
                                              measTask.SpectrumOccupationParameters.TypeSpectrumOccupation = spectrumOccupationType;
+                                         }
                                          measTask.SpectrumOccupationParameters.NChenal = readerMeasOther.GetValue(c => c.Nchenal);
                                          measTask.SpectrumOccupationParameters.LevelMinOccup = readerMeasOther.GetValue(c => c.LevelMinOccup);
                                          break;
@@ -235,15 +239,12 @@ namespace Atdi.Test.WebApi.RestOrm
                                 {
                                     lstSensorsIds.Add(readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id));
 
-                                    var measSensor = new MeasSensor();
-                                    measSensor.SensorId = new MeasSensorIdentifier();
-                                    measSensor.SensorId.Value = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id);
-                                    measSensor.SensorName = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name);
-                                    measSensor.SensorTechId = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId);
-
                                     var sensor = new Sensor();
                                     sensor.Id = new SensorIdentifier();
-                                    sensor.Id.Value = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id); ;
+                                    sensor.Id.Value = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Id); 
+                                    sensor.Name = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.Name);
+                                    sensor.Equipment = new SensorEquip();
+                                    sensor.Equipment.TechId = readerResLevels.GetValue(c => c.RES_MEAS.SUBTASK_SENSOR.SENSOR.TechId);
 
 
                                     var sensorLocation = new SensorLocation();

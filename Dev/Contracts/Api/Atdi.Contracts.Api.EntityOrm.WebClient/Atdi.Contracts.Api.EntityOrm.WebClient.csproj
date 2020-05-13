@@ -46,6 +46,7 @@
     <Compile Include="IDataReader.cs" />
     <Compile Include="IDeleteQuery.cs" />
     <Compile Include="IFilteringQuery.cs" />
+    <Compile Include="IMetadataSite.cs" />
     <Compile Include="IQueryBuilder.cs" />
     <Compile Include="IQueryExecutor.cs" />
     <Compile Include="IQueryFilter.cs" />

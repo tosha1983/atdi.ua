@@ -9,7 +9,7 @@ using RE = System.Reflection.Emit;
 
 namespace Atdi.Api.EntityOrm.WebClient
 {
-	public class ProxyInstanceFactory
+	public sealed class ProxyInstanceFactory
 	{
 		private readonly ConcurrentDictionary<Type, Type> _proxyInterfaceTypes;
 
